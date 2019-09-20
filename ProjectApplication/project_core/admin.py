@@ -71,8 +71,6 @@ class PersonAdmin(admin.ModelAdmin):
 
         return ", ".join([organisations.name for organisation in organisations])
 
-    filter_vertical = ('organisations', )
-
 
 class ContactAdmin(admin.ModelAdmin):
     list_display = ('email_address', 'work_telephone', 'mobile', 'person',)
