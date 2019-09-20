@@ -130,9 +130,9 @@ class Contact(models.Model):
         return '{} - {}'.format(self.person, self.email_address)
 
 
-class GeographicArea(models.Model):
+class GeographicalArea(models.Model):
     """Geographical area (exact coverage of this not yet determined)"""
-    area = models.CharField(help_text='Name of geograpic area', max_length=100, blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
+    area = models.CharField(help_text='Name of geographic area', max_length=100, blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
     definition = models.CharField(help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300, blank=False, null=False)
 
     def __str__(self):
@@ -143,7 +143,7 @@ class Proposal(models.Model):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
-    geographical_area = models.ForeignKey(GeographicArea, help_text='Description of the geographical area covered by the proposal', blank=False, null=False,on_delete=models.PROTECT)
+    geographical_area = models.ForeignKey(GeographicalArea, help_text='Description of the geographical area covered by the proposal', blank=False, null=False,on_delete=models.PROTECT)
     location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True)
     start_time_frame = models.CharField(help_text='Approximate date on which the proposed project is expected to start', max_length=100, blank=False, null=False)
     duration = models.CharField(help_text='Period of time expected that the proposed project will last', max_length=100, blank=False, null=False)
