@@ -40,8 +40,8 @@ class Message(models.Model):
 
 class BudgetCategory(models.Model):
     """Details of budget categories"""
-    name = models.CharField(help_text='Name of the budget category', blank=False, null=False)
-    description = models.CharField(help_text='Description of the budget category', blank=False, null=False)
+    name = models.CharField(help_text='Name of the budget category', max_length=100, blank=False, null=False)
+    description = models.CharField(help_text='Description of the budget category', max_length=300, blank=False, null=False)
     
     def __str__(self):
         return self.name
@@ -56,7 +56,7 @@ class Call(models.Model):
     call_open_date = models.DateTimeField(help_text='Date on which the call is opened', blank=False, null=False)
     submission_deadline = models.DateTimeField(help_text='Submission deadline of the call', blank=False, null=False)
     budget_categories = models.ManyToManyField(BudgetCategory, help_text='Categories required for the budget for a call')
-    budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget', blank=False, null=False)
+    budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget', decimal_places=2, max_digits=10, blank=False, null=False)
 
     def __str__(self):
         return self.long_name
@@ -90,7 +90,7 @@ class PersonTitle(models.Model):
 
 class Country(models.Model):
     """Countries"""
-    name = models.CharField(help_text='Country name')
+    name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False)
     
     def __str__(self):
         return self.name
@@ -98,9 +98,9 @@ class Country(models.Model):
 
 class Organisation(models.Model):
     """Details of an organisation - could be scientific, institution, funding etc."""
-    long_name = models.CharField(help_text='Full name by which the organisation is known', blank=False, null=False)
-    short_name = models.CharField(help_text='Short name by which the organisation is commonly known', blank=True, null=True)
-    address = models.CharField(help_text='Address of the organisation', blank=True, null=True)
+    long_name = models.CharField(help_text='Full name by which the organisation is known', max_length=100, blank=False, null=False)
+    short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50, blank=True, null=True)
+    address = models.CharField(help_text='Address of the organisation', max_length=1000, blank=True, null=True)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
     
     def __str__(self):
@@ -112,8 +112,8 @@ class Person(models.Model):
     academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False, on_delete=models.PROTECT)
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
-    organisation = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person', blank=False, null=False)
-    group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works', blank=True, null=True)
+    organisation = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
+    group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works', max_length=200, blank=True, null=True)
 
     def __str__(self):
         return '{} {} - {}'.format(self.first_name, self.surname, ', '.join(self.organisation.all()))
@@ -121,9 +121,9 @@ class Person(models.Model):
 
 class Contact(models.Model):
     """Contact details of a person"""
-    email_address = models.CharField(help_text='Email address', blank=False, null=False)
-    work_telephone = models.CharField(help_text='Work telephone number', blank=False, null=False)
-    mobile = models.CharField(help_text='Mobile telephone number', blank=True, null=True)
+    email_address = models.CharField(help_text='Email address', max_length=100, blank=False, null=False)
+    work_telephone = models.CharField(help_text='Work telephone number', max_length=20, blank=False, null=False)
+    mobile = models.CharField(help_text='Mobile telephone number', max_length=20, blank=True, null=True)
     person = models.ForeignKey(Person, help_text='Person to which the contact details belong', on_delete=models.PROTECT)
 
     def __str__(self):
@@ -132,8 +132,8 @@ class Contact(models.Model):
 
 class GeographicArea(models.Model):
     """Geographical area (exact coverage of this not yet determined)"""
-    area = models.CharField(help_text='Name of geograpic area', blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
-    definition = models.CharField(help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', blank=False, null=False)
+    area = models.CharField(help_text='Name of geograpic area', max_length=100, blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
+    definition = models.CharField(help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300, blank=False, null=False)
 
     def __str__(self):
         return '{} - {}'.format(self.area, self.definition)
@@ -143,8 +143,8 @@ class Proposal(models.Model):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
-    geographical_area = models.ForeignKey(GeographicArea, help_text='Description of the geographical area covered by the proposal', max_length=200, blank=False, null=False,on_delete=models.PROTECT)
-    location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', blank=True, null=True)
+    geographical_area = models.ForeignKey(GeographicArea, help_text='Description of the geographical area covered by the proposal', blank=False, null=False,on_delete=models.PROTECT)
+    location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True)
     start_time_frame = models.CharField(help_text='Approximate date on which the proposed project is expected to start', max_length=100, blank=False, null=False)
     duration = models.CharField(help_text='Period of time expected that the proposed project will last', max_length=100, blank=False, null=False)
     applicant = models.ForeignKey(Person, help_text='Main applicant of the proposal', blank=False, null=False, on_delete=models.PROTECT)
@@ -176,7 +176,7 @@ class BudgetItem(models.Model):
     """Itemised line in a budget, comprising of a category, full details and the amount"""
     category = models.ForeignKey(BudgetCategory, help_text='', blank=False, null=False, on_delete=models.PROTECT)
     details = models.TextField(help_text='', blank=False, null=False)
-    amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, blank=False, null=True)
+    amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, max_digits=10, blank=False, null=True)
 
     class Meta:
         abstract = True
@@ -192,8 +192,8 @@ class ProposedBudgetItem(BudgetItem):
 
 class FundingStatus(models.Model):
     """Status of funding"""
-    status = models.CharField(help_text='Name of the status', blank=False, null=False)
-    description = models.CharField(help_text='Decsription of the status', blank=False, null=False)
+    status = models.CharField(help_text='Name of the status', max_length=30, blank=False, null=False)
+    description = models.CharField(help_text='Decsription of the status', max_length=100, blank=False, null=False)
 
     def __str__(self):
         return self.status
@@ -203,7 +203,7 @@ class FundingItem(models.Model):
     """Specific item of funding"""
     organisation = models.ForeignKey(Organisation, help_text='Name of organisation from which the funding is sourced', blank=False, null=False, on_delete=models.PROTECT)
     status = models.ForeignKey(FundingStatus, help_text='Status of the funding item',blank=False, null=False, on_delete=models.PROTECT)
-    amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, blank=False, null=False)
+    amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10, blank=False, null=False)
 
     class Meta:
         abstract = True
