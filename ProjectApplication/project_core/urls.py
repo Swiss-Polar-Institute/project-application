@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import Homepage, ProposalForm, Calls, Proposal
+from .views import Homepage, Calls, Proposal
 
 urlpatterns = [
     path('', Homepage.as_view(), name='homepage'),

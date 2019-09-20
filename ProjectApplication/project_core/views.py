@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView
 from django.forms import formset_factory
-from .forms import proposal
-from .models import Call
+from .forms.proposal import PersonForm, ProposalForm
+from .models import Proposal, Call
 
 
 class Homepage(TemplateView):
@@ -11,10 +11,6 @@ class Homepage(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Homepage, self).get_context_data(**kwargs)
         return context
-
-
-class ProposalForm(TemplateView):
-    pass
 
 
 class Calls(TemplateView):
@@ -29,13 +25,54 @@ class Calls(TemplateView):
 
 
 class Proposal(TemplateView):
-    template_name = 'proposal.tmpl'
-
     def get(self, request, *args, **kwargs):
-        context = super(Proposal, self).get_context_data(**kwargs)
+        super(Proposal, self).get_context_data(**kwargs)
 
         information = {}
-        information['call_pk'] = request.GET.get('call')
-        information['call_name'] = Call.objects.get(pk=information['call_pk'])
+        call_pk = information['call_pk'] = request.GET.get('call')
+
+        call = Call.objects.get(pk=call_pk)
+
+        information['call_name'] = call.long_name
+        information['call_introductory_message'] = call.introductory_message
+        information['call_submission_deadline'] = call.submission_deadline
+
+        information['person_form'] = PersonForm()
+        information['proposal_form'] = ProposalForm()
 
         return render(request, 'proposal.tmpl', information)
+
+    def post(self, request, *args, **kwargs):
+        super(Proposal, self).get_context_data(**kwargs)
+
+        person_form = PersonForm(request.POST)
+        proposal_form = ProposalForm(request.POST)
+
+        if person_form.is_valid() and proposal_form.is_valid():
+            applicant = person_form.save()
+            proposal_form.applicant = applicant
+
+        print('hello')
+
+#
+# class Proposal(TemplateView):
+#     template_name = 'proposal.tmpl'
+#
+#     def get(self, request, *args, **kwargs):
+#         super(Proposal, self).get_context_data(**kwargs)
+#
+#         information = {}
+#         call_pk = information['call_pk'] = request.GET.get('call')
+#
+#         call = Call.objects.get(pk=call_pk)
+#
+#         information['call_name'] = call.long_name
+#         information['call_introductory_message'] = call.introductory_message
+#         information['call_submission_deadline'] = call.submission_deadline
+#         information['contact_form'] = proposal.PersonForm
+#
+#         return render(request, 'proposal.tmpl', information)
+#
+#     def post(self, request, *args, **kwargs):
+#         form_class = proposal.PersonForm
+#         form = form_class.get

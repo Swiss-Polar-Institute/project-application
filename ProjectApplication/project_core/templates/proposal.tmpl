@@ -6,17 +6,26 @@
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %} <H1>Welcome to create a new proposal</H1>
 
-        This is a proposal for Call pk: {{ call_pk }}<br>
         Proposal name: {{ call_name }}<p>
 
-        Deadline for application: {{ deadline_for_applications }}
+        Deadline for application: {{ call_submission_deadline }}
         <p>
-        {{ proposal_message }}
+        {{ call_introductory_message }}
         <p>
         Call for proposals submission form
         <br>
-        Part 1: General Information
-        <p>
+        <h1>Part 1: General Information</h1>
         {{ general_information_form }}
+        <form action="{% url 'proposal_new' %}" method="post">
+            {% csrf_token %}
+            <table>
+                {{ person_form }}
+            </table>
+            <hr>
+            <table>
+                {{ proposal_form }}
+            </table>
+            <input type="submit" value="Submit">
+        </form>
     </div>
 {% endblock %}
