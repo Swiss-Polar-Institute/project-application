@@ -6,15 +6,17 @@
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %} <H1>Welcome to create a new proposal</H1>
 
-        {{ proposal_name }}
+        This is a proposal for Call pk: {{ call_pk }}<br>
+        Proposal name: {{ call_name }}<p>
+
         Deadline for application: {{ deadline_for_applications }}
-
+        <p>
         {{ proposal_message }}
-
+        <p>
         Call for proposals submission form
+        <br>
         Part 1: General Information
-
+        <p>
         {{ general_information_form }}
-
     </div>
 {% endblock %}

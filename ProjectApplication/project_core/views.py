@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.forms import formset_factory
 from .forms import proposal
+from .models import Call
 
 
 class Homepage(TemplateView):
@@ -13,13 +14,29 @@ class Homepage(TemplateView):
 
 
 class ProposalForm(TemplateView):
-    template_name = 'proposal.tmpl'
+    pass
+
+
+class Calls(TemplateView):
+    template_name = 'list_calls.tmpl'
 
     def get_context_data(self, **kwargs):
-        context = super(ProposalForm, self).get_context_data(**kwargs)
+        context = super(Calls, self).get_context_data(**kwargs)
 
-        form = formset_factory(proposal.GeneralInformationForm)
+        context['calls'] = Call.objects.all()
 
-        context['proposal_form'] = form
+        return context
 
+
+class Proposal(TemplateView):
+    template_name = 'proposal.tmpl'
+
+    def get(self, request, *args, **kwargs):
+        context = super(Proposal, self).get_context_data(**kwargs)
+
+        information = {}
+        information['call_pk'] = request.GET.value('call')
+        information['call_name'] = Call.objects.get(pk=context['call_pk'])
+
+        return render(request, 'proposal.tmpl', information)
         return context
