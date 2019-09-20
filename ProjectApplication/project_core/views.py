@@ -35,8 +35,7 @@ class Proposal(TemplateView):
         context = super(Proposal, self).get_context_data(**kwargs)
 
         information = {}
-        information['call_pk'] = request.GET.value('call')
-        information['call_name'] = Call.objects.get(pk=context['call_pk'])
+        information['call_pk'] = request.GET.get('call')
+        information['call_name'] = Call.objects.get(pk=information['call_pk'])
 
         return render(request, 'proposal.tmpl', information)
-        return context

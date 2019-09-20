@@ -8,7 +8,7 @@
 
         <ul>
             {% for call in calls %}
-            <li><a href="{% url 'create_proposal/' %}?call={{ call.pk }}">{{ call.name }}</a></li>
+            <li><a href="{% url 'proposal_new' %}?call={{ call.pk }}">{{ call.long_name }}</a></li>
             {% endfor %}
         </ul>
 
