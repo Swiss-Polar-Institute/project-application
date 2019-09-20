@@ -1,10 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
-from django.db.models import CharField
-
-
 class Step(models.Model):
     """Notable steps during the process"""
     name = models.CharField(help_text='Name of a step', max_length=60, blank=False, null=False)
@@ -50,6 +46,25 @@ class BudgetCategory(models.Model):
         verbose_name_plural='Budget categories'
 
 
+class Question(models.Model):
+    """Questions and details relating to their answers that can be used throughout the process"""
+    TEXT = 'T'
+
+    TYPES = (
+        (TEXT, 'TextField'),
+    )
+
+    question_text = models.TextField()
+    answer_type = models.CharField(help_text='Type of field that should be applied to the question answer', max_length=5, choices=TYPES, blank=False, null=False)
+    answer_max_length = models.IntegerField(help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True)
+
+    def __str__(self):
+        return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
+
+    class Meta:
+        abstract = True
+
+
 class Call(models.Model):
     """Description of call."""
     long_name = models.CharField(help_text='Full name of the call', max_length=200, blank=False, null=False)
@@ -63,6 +78,10 @@ class Call(models.Model):
 
     def __str__(self):
         return self.long_name
+
+
+class CallQuestion(Question):
+    call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
 
 
 class Keyword(models.Model):
@@ -156,15 +175,12 @@ class Proposal(models.Model):
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
     geographical_area = models.ManyToManyField(GeographicalArea, help_text='Description of the geographical area covered by the proposal')
-    location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True)
+    location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True) # Consider having this as another text question
     start_timeframe = models.CharField(help_text='Approximate date on which the proposed project is expected to start', max_length=100, blank=False, null=False)
     duration = models.CharField(help_text='Period of time expected that the proposed project will last', max_length=100, blank=False, null=False)
     applicant = models.ForeignKey(Person, help_text='Main applicant of the proposal', blank=False, null=False, on_delete=models.PROTECT)
-    summary = models.TextField(help_text='Summary of the proposal submitted for funding', blank=False, null=False) # needs validator for max 400 words
-    description = models.TextField(help_text='Outline of proposal', blank=False, null=False) # needs validator for max 1600 words
-    requested_funds_explanation = models.TextField(help_text='Explanation about how proposed funds would be used', blank=False, null=False)
-    logistics_requirements = models.TextField(help_text='Description of requirements regarding logistics and local partners', blank=False, null=False) # Check if this is a more specifc requirement for the exploratory grants call
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False, null=False, on_delete=models.PROTECT)
+    call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
@@ -182,6 +198,19 @@ class Proposal(models.Model):
             total += item.amount
             
         return total
+
+
+class ProposalQAText(models.Model):
+    """Questions assigned to a proposal and their respective answers"""
+    proposal = models.ForeignKey(Proposal, help_text='Questions and answers for a proposal', on_delete=models.PROTECT)
+    call_question = models.ForeignKey(CallQuestion, help_text='Question from the call', on_delete=models.PROTECT)
+    answer = models.TextField(help_text='Answer to the question from the call', blank=False, null=False)
+
+    def __str__(self):
+        return 'Q: {}; A: {}'.format(self.call_question, self.answer)
+
+    class Meta:
+        verbose_name_plural='Proposal question-answer (text)'
 
 
 class BudgetItem(models.Model):
