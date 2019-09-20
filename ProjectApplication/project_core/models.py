@@ -46,6 +46,9 @@ class BudgetCategory(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural='Budget categories'
+
 
 class Call(models.Model):
     """Description of call."""
@@ -79,6 +82,9 @@ class ProposalStatus(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.name, self.description)
 
+    class Meta:
+        verbose_name_plural='Proposal status'
+
 
 class PersonTitle(models.Model):
     """Personal and academic titles"""
@@ -94,6 +100,9 @@ class Country(models.Model):
     
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural='Countries'
 
 
 class Organisation(models.Model):
@@ -117,6 +126,9 @@ class Person(models.Model):
 
     def __str__(self):
         return '{} {} - {}'.format(self.first_name, self.surname, ', '.join(self.organisation.all()))
+
+    class Meta:
+        verbose_name_plural='People'
 
 
 class Contact(models.Model):
@@ -143,9 +155,9 @@ class Proposal(models.Model):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
-    geographical_area = models.ForeignKey(GeographicalArea, help_text='Description of the geographical area covered by the proposal', blank=False, null=False,on_delete=models.PROTECT)
+    geographical_area = models.ManyToManyField(GeographicalArea, help_text='Description of the geographical area covered by the proposal')
     location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True)
-    start_time_frame = models.CharField(help_text='Approximate date on which the proposed project is expected to start', max_length=100, blank=False, null=False)
+    start_timeframe = models.CharField(help_text='Approximate date on which the proposed project is expected to start', max_length=100, blank=False, null=False)
     duration = models.CharField(help_text='Period of time expected that the proposed project will last', max_length=100, blank=False, null=False)
     applicant = models.ForeignKey(Person, help_text='Main applicant of the proposal', blank=False, null=False, on_delete=models.PROTECT)
     summary = models.TextField(help_text='Summary of the proposal submitted for funding', blank=False, null=False) # needs validator for max 400 words
@@ -197,6 +209,9 @@ class FundingStatus(models.Model):
 
     def __str__(self):
         return self.status
+
+    class Meta:
+        verbose_name_plural='Funding status'
 
 
 class FundingItem(models.Model):

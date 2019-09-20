@@ -32,7 +32,7 @@ class CallAdmin(admin.ModelAdmin):
     def budget_categories_list(self, obj):
         budget_categories = obj.budget_categories.all()
 
-        return ", ".join([budget_categories.name for budget_category in budget_categories])
+        return ", ".join([budget_category.name for budget_category in budget_categories])
 
     filter_vertical = ('budget_categories', )
 
@@ -69,7 +69,7 @@ class PersonAdmin(admin.ModelAdmin):
     def organisations_list(self, obj):
         organisations = obj.organisations.all()
 
-        return ", ".join([organisations.name for organisation in organisations])
+        return ", ".join([organisation.name for organisation in organisations])
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -81,6 +81,20 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
     list_display = ('area', 'definition',)
     ordering = ['area',]
 
+
+class ProposalAdmin(admin.ModelAdmin):
+    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant', 'summary', 'description', 'requested_funds_explanation', 'logistics_requirements', 'proposal_status')
+    ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status',]
+
+    def keywords_list(self, obj):
+        keywords = obj.keywords.all()
+
+        return ", ".join([keyword.name for keyword in keywords])
+
+    def geographical_area_list(self, obj):
+        geographical_areas= obj.geographical_areas.all()
+
+        return ", ".join([geographical_area.area for geographical_area in geographical_areas])
 
 
 
@@ -97,3 +111,4 @@ admin.site.register(project_core.models.Organisation, OrganisationAdmin)
 admin.site.register(project_core.models.Person, PersonAdmin)
 admin.site.register(project_core.models.Contact, ContactAdmin)
 admin.site.register(project_core.models.GeographicalArea, GeographicalAreaAdmin)
+admin.site.register(project_core.models.Proposal, ProposalAdmin)
