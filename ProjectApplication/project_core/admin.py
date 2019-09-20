@@ -26,15 +26,24 @@ class BudgetCategoryAdmin(admin.ModelAdmin):
 
 
 class CallAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline', 'budget_categories_list', 'budget_maximum',)
+    list_display = ('long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline', 'budget_categories_list', 'budget_maximum', 'call_questions_list')
     ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',]
 
     def budget_categories_list(self, obj):
         budget_categories = obj.budget_categories.all()
 
-        return ", ".join([budget_categories.name for budget_category in budget_categories])
+        return ", ".join([budget_category.name for budget_category in budget_categories])
 
     filter_vertical = ('budget_categories', )
+
+    def call_questions_list(self, obj):
+        call_questions = obj.callquestion_set.all()
+
+        questions = ''
+        for call_question in call_questions:
+            questions += call_question.question.question_text
+
+        return questions
 
 
 class KeywordAdmin(admin.ModelAdmin):
@@ -69,7 +78,7 @@ class PersonAdmin(admin.ModelAdmin):
     def organisations_list(self, obj):
         organisations = obj.organisations.all()
 
-        return ", ".join([organisations.name for organisation in organisations])
+        return ", ".join([organisation.name for organisation in organisations])
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -82,6 +91,53 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
     ordering = ['area',]
 
 
+class ProposalAdmin(admin.ModelAdmin):
+    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'qas_list', 'call')
+    ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'call',]
+
+    def keywords_list(self, obj):
+        keywords = obj.keywords.all()
+
+        return ", ".join([keyword.name for keyword in keywords])
+
+    def geographical_area_list(self, obj):
+        geographical_areas = obj.geographical_areas.all()
+
+        return ", ".join([geographical_area.area for geographical_area in geographical_areas])
+
+    def qas_list(self, obj):
+        qas = obj.proposalqa_set.all()
+
+        result = ''
+        for qa in qas:
+            result += 'Q: {}, A: {}'.format(qa.question.question_text, qa.answer)
+
+        return result
+
+
+class ProposedBudgetItemAdmin(admin.ModelAdmin):
+    list_display = ('proposal',)
+    ordering = ['proposal',]
+
+
+class FundingStatusAdmin(admin.ModelAdmin):
+    list_display = ('status', 'description',)
+    ordering = ['status',]
+
+
+class ProposalFundingItemAdmin(admin.ModelAdmin):
+    list_display = ('proposal',)
+    ordering = ['proposal',]
+
+
+class CallQuestionAdmin(admin.ModelAdmin):
+    list_display = ('call',)
+    ordering = ['call',]
+
+
+class ProposalQATextAdmin(admin.ModelAdmin):
+    list_display = ('proposal', 'call_question', 'answer',)
+    ordering = ['proposal', 'call_question',]
 
 
 admin.site.register(project_core.models.Step, StepAdmin)
@@ -97,3 +153,9 @@ admin.site.register(project_core.models.Organisation, OrganisationAdmin)
 admin.site.register(project_core.models.Person, PersonAdmin)
 admin.site.register(project_core.models.Contact, ContactAdmin)
 admin.site.register(project_core.models.GeographicalArea, GeographicalAreaAdmin)
+admin.site.register(project_core.models.Proposal, ProposalAdmin)
+admin.site.register(project_core.models.ProposedBudgetItem, ProposedBudgetItemAdmin)
+admin.site.register(project_core.models.FundingStatus, FundingStatusAdmin)
+admin.site.register(project_core.models.ProposalFundingItem, ProposalFundingItemAdmin)
+admin.site.register(project_core.models.CallQuestion, CallQuestionAdmin)
+admin.site.register(project_core.models.ProposalQAText, ProposalQATextAdmin)
