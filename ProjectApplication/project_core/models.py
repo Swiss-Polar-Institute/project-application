@@ -167,4 +167,3 @@ class FundingItem(models.Model):
     status = models.ForeignKey(FundingStatus, help_text='Status of the funding item')
     amount = models.DecimalField(help_text='', decimal_places=2, blank=False, null=False)
     proposal = models.ForeignKey(Proposal, help_text='Proposal for which the funding has been sourced')
-    

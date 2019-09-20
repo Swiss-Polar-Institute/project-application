@@ -1,0 +1,20 @@
+{% extends '_base.tmpl' %}
+{% load static %}
+{% block title %}Projects application{% endblock %}
+
+{% block body_contents %}
+    <div class="container theme-showcase" role="main">
+        {% include "_logo.tmpl" %} <H1>Welcome to create a new proposal</H1>
+
+        {{ proposal_name }}
+        Deadline for application: {{ deadline_for_applications }}
+
+        {{ proposal_message }}
+
+        Call for proposals submission form
+        Part 1: General Information
+
+        {{ general_information_form }}
+
+    </div>
+{% endblock %}
