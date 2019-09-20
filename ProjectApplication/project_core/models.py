@@ -2,52 +2,53 @@ from django.db import models
 
 
 # Create your models here.
+from django.db.models import CharField
 
 
 class Step(models.Model):
-    """"""
-    name = models.CharField(help_text='', max_length=60, blank=False, null=False)
-    description = models.CharField(help_text='', max_length=200, blank=False, null=False)
+    """Notable steps during the process"""
+    name = models.CharField(help_text='Name of a step', max_length=60, blank=False, null=False)
+    description = models.CharField(help_text='Description of a step', max_length=200, blank=False, null=False)
 
     def __str__(self):
-        return "{}".format(self.name)
+        return '{}'.format(self.name)
 
 
 class StepDate(models.Model):
-    """Model containing a list of notable dates that are used throughout the application."""
-    step = models.ForeignKey(Step, help_text='Name of step',max_length=128, null=False)
+    """Dates of notable steps that are used throughout the process"""
+    step = models.ForeignKey(Step, help_text='Name of step',max_length=128, null=False, on_delete=models.PROTECT)
     date = models.DateTimeField(help_text='Date and time of notable date',max_length=64, null=False)
 
     def __str__(self):
-        return "{} - {}".format(self.step, self.date)
+        return '{} - {}'.format(self.step, self.date)
 
 
 class Message(models.Model):
-
+    """Messages that can be used throughout the SPI projects application"""
     CALL_INTRODUCTORY_MESSAGE = 'CI'
 
     MESSAGES= (
         (CALL_INTRODUCTORY_MESSAGE, 'Call introductory message'),
     )
 
-    message_type = models.CharField(help_text='', max_length=5, choices=MESSAGES, blank=False, null=False)
-    message = models.TextField(help_text='')
+    message_type = models.CharField(help_text='Identification of where the message is to be used', max_length=5, choices=MESSAGES, blank=False, null=False)
+    message = models.TextField(help_text='Text of the message', blank=False, null=False)
 
     def __str__(self):
         return self.message
 
 
 class BudgetCategory(models.Model):
-    """"""
-    name = models.CharField()
-    description = models.CharField()
+    """Details of budget categories"""
+    name = models.CharField(help_text='Name of the budget category', blank=False, null=False)
+    description = models.CharField(help_text='Description of the budget category', blank=False, null=False)
     
     def __str__(self):
         return self.name
 
 
 class Call(models.Model):
-    """Description of calls."""
+    """Description of call."""
     long_name = models.CharField(help_text='Full name of the call', max_length=200, blank=False, null=False)
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
     description = models.TextField(help_text='Description of the call that can be used to distinguish it from others', blank=False, null=False)
@@ -67,51 +68,75 @@ class Keyword(models.Model):
     description = models.CharField(help_text='Decsription of a keyword that should be used to distinguish it from another keyword', max_length=512, blank=False, null=False)
 
     def __str__(self):
-        return "{} - {}".format(self.name, self.description)
+        return '{} - {}'.format(self.name, self.description)
 
 
 class ProposalStatus(models.Model):
-    """Status options for a proposal model."""
+    """Status options for a proposal"""
     name = models.CharField(help_text='Name of the status of the proposal table', max_length=50, blank=False, null=False)
     description = models.CharField(help_text='Detailed description of the proposal status name', max_length=512, blank=False, null=False)
 
     def __str__(self):
-        return "{} - {}".format(self.name, self.description)
+        return '{} - {}'.format(self.name, self.description)
 
 
 class PersonTitle(models.Model):
-    """"""
-    title = models.CharField()
+    """Personal and academic titles"""
+    title = models.CharField(help_text='Personal or academic title used by a person', max_length=50, blank=False, null=False)
+    
+    def __str__(self):
+        return self.title
 
 
 class Country(models.Model):
-    """"""
-    name = models.CharField()
+    """Countries"""
+    name = models.CharField(help_text='Country name')
+    
+    def __str__(self):
+        return self.name
 
 
 class Organisation(models.Model):
-    """"""
-    name = models.CharField()
-    group = models.CharField()
-    address = models.CharField()
-    country = models.ForeignKey(Country)
+    """Details of an organisation - could be scientific, institution, funding etc."""
+    long_name = models.CharField(help_text='Full name by which the organisation is known', blank=False, null=False)
+    short_name = models.CharField(help_text='Short name by which the organisation is commonly known', blank=True, null=True)
+    address = models.CharField(help_text='Address of the organisation', blank=True, null=True)
+    country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
+    
+    def __str__(self):
+        return '{} ({}) - {}'.format(self.long_name, self.short_name, self.country)
 
 
 class Person(models.Model):
     """Information about a person."""
-    academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False)
+    academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False, on_delete=models.PROTECT)
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
     organisation = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person', blank=False, null=False)
+    group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works', blank=True, null=True)
 
     def __str__(self):
-        return "{} {} - {}".format(self.first_name, self.last_name, ", ".join(self.organisation.all()))
+        return '{} {} - {}'.format(self.first_name, self.surname, ', '.join(self.organisation.all()))
+
+
+class Contact(models.Model):
+    """Contact details of a person"""
+    email_address = models.CharField(help_text='Email address', blank=False, null=False)
+    work_telephone = models.CharField(help_text='Work telephone number', blank=False, null=False)
+    mobile = models.CharField(help_text='Mobile telephone number', blank=True, null=True)
+    person = models.ForeignKey(Person, help_text='Person to which the contact details belong', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return '{} - {}'.format(self.person, self.email_address)
 
 
 class GeographicArea(models.Model):
-    """"""
-    area = models.CharField()
-    definition= models.CharField()
+    """Geographical area (exact coverage of this not yet determined)"""
+    area = models.CharField(help_text='Name of geograpic area', blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
+    definition = models.CharField(help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', blank=False, null=False)
+
+    def __str__(self):
+        return '{} - {}'.format(self.area, self.definition)
 
 
 class Proposal(models.Model):
@@ -130,7 +155,7 @@ class Proposal(models.Model):
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False, null=False, on_delete=models.PROTECT)
 
     def __str__(self):
-        return "{} - {}".format(self.title, self.applicant)
+        return '{} - {}'.format(self.title, self.applicant)
 
     def total_budget(self):
         """
@@ -145,26 +170,51 @@ class Proposal(models.Model):
             total += item.amount
             
         return total
-    
-    
+
+
 class BudgetItem(models.Model):
-    """"""
-    category = models.ForeignKey(BudgetCategory, help_text='', blank=False, null=False)
+    """Itemised line in a budget, comprising of a category, full details and the amount"""
+    category = models.ForeignKey(BudgetCategory, help_text='', blank=False, null=False, on_delete=models.PROTECT)
     details = models.TextField(help_text='', blank=False, null=False)
     amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, blank=False, null=True)
-    proposal = models.ForeignKey(Proposal, help_text='Proposal it which the budget item relates')
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return '{}: {}'.format(self.category, self.amount)
+
+
+class ProposedBudgetItem(BudgetItem):
+    """Itemised line in a budget as part of a proposal"""
+    proposal = models.ForeignKey(Proposal, help_text='Proposal it which the budget item relates', on_delete=models.PROTECT)
 
 
 class FundingStatus(models.Model):
-    """"""
-    status = models.CharField()
-    description = models.CharField()
+    """Status of funding"""
+    status = models.CharField(help_text='Name of the status', blank=False, null=False)
+    description = models.CharField(help_text='Decsription of the status', blank=False, null=False)
+
+    def __str__(self):
+        return self.status
 
 
 class FundingItem(models.Model):
-    """"""
-    organisation = models.ForeignKey(Organisation, help_text='Name of organisation from which the funding is sourced', blank=False, null=False)
-    status = models.ForeignKey(FundingStatus, help_text='Status of the funding item')
-    amount = models.DecimalField(help_text='', decimal_places=2, blank=False, null=False)
-    proposal = models.ForeignKey(Proposal, help_text='Proposal for which the funding has been sourced')
+    """Specific item of funding"""
+    organisation = models.ForeignKey(Organisation, help_text='Name of organisation from which the funding is sourced', blank=False, null=False, on_delete=models.PROTECT)
+    status = models.ForeignKey(FundingStatus, help_text='Status of the funding item',blank=False, null=False, on_delete=models.PROTECT)
+    amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, blank=False, null=False)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return '{} - {}: {}'.format(self.organisation, self.status, self.amount)
+
+
+class ProposalFundingItem(FundingItem):
+    """Specific item of funding for a proposal (referring to funding that has been sourced from elsewhere, rather than
+    funding that would result from that proposal being accepted)"""
+    proposal = models.ForeignKey(Proposal, help_text='Proposal for which the funding has been sourced', on_delete=models.PROTECT)
+
     
