@@ -83,7 +83,7 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
 
 
 class ProposalAdmin(admin.ModelAdmin):
-    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant', 'summary', 'description', 'requested_funds_explanation', 'logistics_requirements', 'proposal_status')
+    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant', 'summary', 'description', 'requested_funds_explanation', 'logistics_requirements', 'proposal_status',)
     ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status',]
 
     def keywords_list(self, obj):
@@ -95,6 +95,21 @@ class ProposalAdmin(admin.ModelAdmin):
         geographical_areas= obj.geographical_areas.all()
 
         return ", ".join([geographical_area.area for geographical_area in geographical_areas])
+
+
+class ProposedBudgetItemAdmin(admin.ModelAdmin):
+    list_display = ('proposal',)
+    ordering = ['proposal',]
+
+
+class FundingStatusAdmin(admin.ModelAdmin):
+    list_display = ('status', 'description',)
+    ordering = ['status',]
+
+
+class ProposalFundingItemAdmin(admin.ModelAdmin):
+    list_display = ('proposal',)
+    ordering = ['proposal',]
 
 
 
@@ -112,3 +127,6 @@ admin.site.register(project_core.models.Person, PersonAdmin)
 admin.site.register(project_core.models.Contact, ContactAdmin)
 admin.site.register(project_core.models.GeographicalArea, GeographicalAreaAdmin)
 admin.site.register(project_core.models.Proposal, ProposalAdmin)
+admin.site.register(project_core.models.ProposedBudgetItem, ProposedBudgetItemAdmin)
+admin.site.register(project_core.models.FundingStatus, FundingStatusAdmin)
+admin.site.register(project_core.models.ProposalFundingItem, ProposalFundingItemAdmin)
