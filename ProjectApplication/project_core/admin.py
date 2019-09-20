@@ -6,28 +6,28 @@ import project_core.models
 
 
 class StepAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    ordering = ['name', 'description']
+    list_display = ('name', 'description',)
+    ordering = ['name', 'description',]
 
 
 class StepDateAdmin(admin.ModelAdmin):
-    list_display = ('step', 'date')
-    ordering = ['step', 'date']
+    list_display = ('step', 'date',)
+    ordering = ['step', 'date',]
 
 
 class MessageAdmin(admin.ModelAdmin):
-    list_display = ('message_type', 'message')
-    ordering = ['message_type']
+    list_display = ('message_type', 'message',)
+    ordering = ['message_type',]
 
 
 class BudgetCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    ordering =  ['name']
+    list_display = ('name', 'description',)
+    ordering = ['name',]
 
 
 class CallAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_date', 'budget_categories_list', 'budget_maximum')
-    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_date', 'budget_maximum']
+    list_display = ('long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline', 'budget_categories_list', 'budget_maximum',)
+    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',]
 
     def budget_categories_list(self, obj):
         budget_categories = obj.budget_categories.all()
@@ -38,50 +38,50 @@ class CallAdmin(admin.ModelAdmin):
 
 
 class KeywordAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    ordering = ['description']
+    list_display = ('name', 'description',)
+    ordering = ['description',]
 
 
 class ProposalStatusAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
-    ordering = ['description']
+    list_display = ('name', 'description',)
+    ordering = ['description',]
 
 
 class PersonTitleAdmin(admin.ModelAdmin):
-    list_display = ('title')
-    ordering = ['title']
+    list_display = ('title',)
+    ordering = ['title',]
 
 
 class CountryAdmin(admin.ModelAdmin):
-    list_display = ('name')
-    ordering = ['name']
+    list_display = ('name',)
+    ordering = ['name',]
 
 
 class OrganisationAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'address', 'country')
-    ordering = ['long_name', 'short_name', 'country']
+    list_display = ('long_name', 'short_name', 'address', 'country',)
+    ordering = ['long_name', 'short_name', 'country',]
 
 
 class PersonAdmin(admin.ModelAdmin):
-    list_display = ('academic_title', 'first_name', 'surname', 'organisations_list', 'group')
-    ordering = ['academic_title', 'first_name', 'surname', 'organisation_list']
+    list_display = ('academic_title', 'first_name', 'surname', 'organisations_list', 'group',)
+    ordering = ['academic_title', 'first_name', 'surname',]
 
     def organisations_list(self, obj):
         organisations = obj.organisations.all()
 
         return ", ".join([organisations.name for organisation in organisations])
 
-    filter_vertical = ('budget_categories', )
+    filter_vertical = ('organisations', )
 
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('email_address', 'work_telephone', 'mobile', 'person')
-    ordering = ['email_address', 'work_telephone', 'mobile', 'person']
+    list_display = ('email_address', 'work_telephone', 'mobile', 'person',)
+    ordering = ['email_address', 'work_telephone', 'mobile', 'person',]
 
 
 class GeographicalAreaAdmin(admin.ModelAdmin):
-    list_display = ('area', 'definition')
-    ordering = ['area']
+    list_display = ('area', 'definition',)
+    ordering = ['area',]
 
 
 
