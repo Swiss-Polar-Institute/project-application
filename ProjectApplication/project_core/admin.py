@@ -5,20 +5,15 @@ import project_core.models
 # Register your models here.
 
 
-class DateAdmin(admin.ModelAdmin):
-    list_display = ('notable_date', 'date')
-    ordering = ['notable_date', 'date']
+class StepAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    ordering = ['name', 'description']
 
 
-class CallAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'description', 'dates_list')
-    ordering = ['long_name', 'short_name', 'description']
-
-    def dates_list(self, obj):
-        dates = obj.dates.all()
-
-        return ", ".join(["{}".format(date) for date in dates])
+class StepDateAdmin(admin.ModelAdmin):
+    list_display = ()
+    ordering = ['step', 'date']
 
 
-admin.site.register(project_core.models.Date, DateAdmin)
-admin.site.register(project_core.models.Call, CallAdmin)
+admin.site.register(project_core.models.Step, StepAdmin)
+admin.site.register(project_core.models.StepDate, StepDateAdmin)
