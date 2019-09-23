@@ -12,12 +12,15 @@ class PersonForm(ModelForm):
 
 class ProposalForm(ModelForm):
     keywords_str = forms.CharField(label='Keywords', help_text='Separated by commas', )
+    call_id = forms.IntegerField(widget=forms.HiddenInput())
+
+    def __init__(self, *args, **kwargs):
+        call_id = kwargs.pop('call_id', None)
+        super(ProposalForm, self).__init__(*args, **kwargs)
+
+        self.fields['call_id'].initial = call_id
+
 
     class Meta:
         model = Proposal
         fields = ['title', 'geographical_area']
-
-    def save(self, commit=True):
-        # TODO: check what happens with keyword_str
-        return super(ProposalForm, self).save(commit=commit)
-
