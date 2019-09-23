@@ -52,7 +52,7 @@ class Proposal(TemplateView):
             applicant = person_form.save()
             proposal_form.applicant = applicant
 
-        print('hello')
+        
 
 #
 # class Proposal(TemplateView):
