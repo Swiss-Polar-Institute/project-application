@@ -16,7 +16,7 @@
         <br>
         <h1>Part 1: General Information</h1>
         {{ general_information_form }}
-        <form action="{% url 'proposal_new' %}" method="post">
+        <form action="{% url 'proposal-add' %}" method="post">
             {% csrf_token %}
             <table>
                 {{ person_form }}

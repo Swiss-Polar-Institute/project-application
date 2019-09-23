@@ -1,10 +1,11 @@
 from django.urls import path
 
-from .views import Homepage, Calls, Proposal
+from .views import Homepage, CallsView, ProposalView
 
 urlpatterns = [
     path('', Homepage.as_view(), name='homepage'),
-    path('calls/', Calls.as_view(), name='calls_list'),
-    path('proposal/new/', Proposal.as_view(), name='proposal_new'),
+    path('calls/', CallsView.as_view(), name='calls-list'),
+    path('proposal/add/', ProposalView.as_view(), name='proposal-add'),
+    path('proposal/<int:pk>/', ProposalView.as_view(), name='proposal-update'),
 
 ]

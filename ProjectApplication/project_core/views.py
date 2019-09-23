@@ -13,25 +13,29 @@ class Homepage(TemplateView):
         return context
 
 
-class Calls(TemplateView):
+class CallsView(TemplateView):
     template_name = 'list_calls.tmpl'
 
     def get_context_data(self, **kwargs):
-        context = super(Calls, self).get_context_data(**kwargs)
+        context = super(CallsView, self).get_context_data(**kwargs)
 
         context['calls'] = Call.objects.all()
 
         return context
 
 
-class Proposal(TemplateView):
+class ProposalView(TemplateView):
     def get(self, request, *args, **kwargs):
-        super(Proposal, self).get_context_data(**kwargs)
+        super(ProposalView, self).get_context_data(**kwargs)
 
         information = {}
-        call_pk = information['call_pk'] = request.GET.get('call')
 
-        call = Call.objects.get(pk=call_pk)
+        if 'pk' in kwargs:
+            call = Proposal.objects.get(pk=kwargs['pk']).call
+
+        else:
+            call_pk = information['call_pk'] = request.GET.get('call')
+            call = Call.objects.get(pk=call_pk)
 
         information['call_name'] = call.long_name
         information['call_introductory_message'] = call.introductory_message
@@ -43,7 +47,7 @@ class Proposal(TemplateView):
         return render(request, 'proposal.tmpl', information)
 
     def post(self, request, *args, **kwargs):
-        super(Proposal, self).get_context_data(**kwargs)
+        super(ProposalView, self).get_context_data(**kwargs)
 
         person_form = PersonForm(request.POST)
         proposal_form = ProposalForm(request.POST)
