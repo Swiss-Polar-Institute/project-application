@@ -23,4 +23,4 @@ class ProposalForm(ModelForm):
 
     class Meta:
         model = Proposal
-        fields = ['title', 'geographical_area']
+        fields = ['title', 'geographical_areas']
