@@ -174,7 +174,7 @@ class Proposal(models.Model):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
-    geographical_area = models.ManyToManyField(GeographicalArea, help_text='Description of the geographical area covered by the proposal')
+    geographical_areas = models.ManyToManyField(GeographicalArea, help_text='Description of the geographical area covered by the proposal')
     location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True) # Consider having this as another text question
     start_timeframe = models.CharField(help_text='Approximate date on which the proposed project is expected to start', max_length=100, blank=False, null=False)
     duration = models.CharField(help_text='Period of time expected that the proposed project will last', max_length=100, blank=False, null=False)
