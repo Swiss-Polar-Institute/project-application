@@ -7,7 +7,7 @@ from django.forms.models import inlineformset_factory
 class PersonForm(ModelForm):
     class Meta:
         model = Person
-        fields = ['academic_title', 'first_name', 'surname', 'organisation', 'group', ]
+        fields = ['academic_title', 'first_name', 'surname', 'organisations', 'group', ]
 
 
 class ProposalForm(ModelForm):

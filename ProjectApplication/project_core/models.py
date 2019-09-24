@@ -48,14 +48,14 @@ class BudgetCategory(models.Model):
 
 class Question(models.Model):
     """Questions and details relating to their answers that can be used throughout the process"""
-    TEXT = 'T'
+    TEXT = 'Text'
 
     TYPES = (
-        (TEXT, 'TextField'),
+        (TEXT, 'Text'),
     )
 
     question_text = models.TextField()
-    answer_type = models.CharField(help_text='Type of field that should be applied to the question answer', max_length=5, choices=TYPES, blank=False, null=False)
+    answer_type = models.CharField(help_text='Type of field that should be applied to the question answer', max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.IntegerField(help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True)
 
     def __str__(self):
@@ -130,6 +130,12 @@ class Organisation(models.Model):
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50, blank=True, null=True)
     address = models.CharField(help_text='Address of the organisation', max_length=1000, blank=True, null=True)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
+
+    def abbreviated_name(self):
+        if self.short_name is not None:
+            return self.short_name
+        else:
+            return (self.long_name[:47] + '...') if len(self.long_name) > 50 else self.long_name
     
     def __str__(self):
         return '{} ({}) - {}'.format(self.long_name, self.short_name, self.country)
@@ -140,14 +146,16 @@ class Person(models.Model):
     academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False, on_delete=models.PROTECT)
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
-    organisation = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
+    organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works', max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return '{} {} - {}'.format(self.first_name, self.surname, ', '.join(self.organisation.all()))
+        organisations = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
+
+        return '{} {} - {}'.format(self.first_name, self.surname, organisations)
 
     class Meta:
-        verbose_name_plural='People'
+        verbose_name_plural = 'People'
 
 
 class Contact(models.Model):

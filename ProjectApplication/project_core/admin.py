@@ -106,7 +106,7 @@ class ProposalAdmin(admin.ModelAdmin):
         return ", ".join([geographical_area.area for geographical_area in geographical_areas])
 
     def qas_list(self, obj):
-        qas = obj.proposalqa_set.all()
+        qas = obj.proposalqatext_set.all()
 
         result = ''
         for qa in qas:
@@ -131,8 +131,8 @@ class ProposalFundingItemAdmin(admin.ModelAdmin):
 
 
 class CallQuestionAdmin(admin.ModelAdmin):
-    list_display = ('call',)
-    ordering = ['call',]
+    list_display = ('call', 'question_text', 'answer_type', 'answer_max_length')
+    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length']
 
 
 class ProposalQATextAdmin(admin.ModelAdmin):
