@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView
 from django.forms import formset_factory
-from .forms.proposal import PersonForm, ProposalForm
-from .models import Proposal, Call, Keyword, ProposalStatus
+from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposal
+from .models import Proposal, Call, Keyword, ProposalStatus, ProposalQAText
+import re
 
 
 class Homepage(TemplateView):
@@ -48,7 +49,7 @@ class ProposalView(TemplateView):
 
             information['proposal_form'] = ProposalForm(prefix='proposal', instance=current_proposal)
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
-
+            # TODO: load questions for proposal
 
         else:
             call_pk = information['call_pk'] = request.GET.get('call')
@@ -56,11 +57,11 @@ class ProposalView(TemplateView):
 
             information['proposal_form'] = ProposalForm(call_id=call_pk, prefix='proposal')
             information['person_form'] = PersonForm(prefix='person')
+            information['questions_for_proposal_form'] = QuestionsForProposal(call_pk, prefix='questions_for_proposal')
 
         information['call_name'] = call.long_name
         information['call_introductory_message'] = call.introductory_message
         information['call_submission_deadline'] = call.submission_deadline
-
 
         return render(request, 'proposal.tmpl', information)
 
@@ -71,25 +72,38 @@ class ProposalView(TemplateView):
         proposal_form = ProposalForm(request.POST, prefix='proposal')
 
         if person_form.is_valid() and proposal_form.is_valid():
-            applicant = person_form.save()
-            proposal = proposal_form.save(commit=False)
+            call_id = proposal_form.cleaned_data['call_id']
 
-            proposal.applicant = applicant
-            proposal.call_id = person_form.data['proposal-call_id']
-            proposal.proposal_status = ProposalStatus.objects.get(name='test01')
+            questions_for_proposal_form = QuestionsForProposal(call_id, request.POST, prefix='questions_for_proposal')
 
-            proposal = proposal_form.save(commit=True)
+            if questions_for_proposal_form.is_valid():
+                applicant = person_form.save()
+                proposal = proposal_form.save(commit=False)
 
-            for keyword in proposal_form.data['proposal-keywords_str'].split(','):
-                keyword = keyword.strip(' ')
-                # proposal.keywords.add(Keyword.objects.get_or_create(keyword))
+                proposal.applicant = applicant
+                proposal.call_id = call_id
+                proposal.proposal_status = ProposalStatus.objects.get(name='test01')
 
-            proposal.save()
+                proposal = proposal_form.save(commit=True)
 
-            return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
+                for question, answer in questions_for_proposal_form.cleaned_data.items():
+                    call_question_id = int(question[len('question_'):])
+
+                    qa_text = ProposalQAText(proposal=proposal, call_question_id=call_question_id, answer=answer)
+                    qa_text.save()
+
+                for keyword in proposal_form.data['proposal-keywords_str'].split(','):
+                    pass
+                    # keyword = keyword.strip(' ')
+                    # proposal.keywords.add(Keyword.objects.get_or_create(keyword))
+
+                proposal.save()
+
+                return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
 
         context['person_form'] = person_form
         context['proposal_form'] = proposal_form
+        context['questions_for_proposal_form'] = questions_for_proposal_form
 
         return render(request, 'proposal.tmpl', context)
 
