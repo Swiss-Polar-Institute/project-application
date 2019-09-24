@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm, Form
 from ..models import Person, Proposal, Call, ProposalQAText
 from django.forms.models import inlineformset_factory
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class PersonForm(ModelForm):
@@ -16,9 +17,21 @@ class ProposalForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         call_id = kwargs.pop('call_id', None)
+        proposal_id = kwargs.pop('proposal_id', None)
+
         super(ProposalForm, self).__init__(*args, **kwargs)
 
         self.fields['call_id'].initial = call_id
+
+        keywords_list = []
+        if proposal_id is not None:
+            for keyword in Proposal.objects.get(id=proposal_id).keywords.all():
+                keywords_list.append(keyword.name)
+
+            self.fields['keywords_str'] = forms.CharField(label='Keywords',
+                                                          help_text='Separated by commas',
+                                                          initial=', '.join(keywords_list))
+
 
         # for question in Call.objects.get(id=call_id).callquestion_set.all():
         #     self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question.question_text, widget=forms.Textarea())
@@ -46,7 +59,10 @@ class QuestionsForProposal(Form):
         if proposal_id is not None:
             # This is a form with already answers
             for question in Proposal.objects.get(id=proposal_id).call.callquestion_set.all():
-                answer = ProposalQAText.objects.get(proposal=proposal_id, call_question=question.id).answer
+                try:
+                    answer = ProposalQAText.objects.get(proposal=proposal_id, call_question=question.id).answer
+                except ObjectDoesNotExist:
+                    answer = None
 
                 self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question.question_text,
                                                                                  widget=forms.Textarea(),

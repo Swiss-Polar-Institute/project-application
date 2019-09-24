@@ -47,7 +47,7 @@ class ProposalView(TemplateView):
 
             current_proposal: Proposal = Proposal.objects.get(pk=proposal_pk)
 
-            information['proposal_form'] = ProposalForm(prefix='proposal', instance=current_proposal)
+            information['proposal_form'] = ProposalForm(proposal_id=proposal_pk, prefix='proposal', instance=current_proposal)
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
             information['questions_for_proposal_form'] = QuestionsForProposal(proposal_id=proposal_pk, prefix='questions_for_proposal')
 

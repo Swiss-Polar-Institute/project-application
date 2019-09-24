@@ -14,20 +14,27 @@
         <p>
         Call for proposals submission form
         <br>
-        <h1>Part 1: General Information</h1>
-        {{ general_information_form }}
         <form action="{% url 'proposal-add' %}" method="post">
             {% csrf_token %}
+
+            <h1>Part 1: General Information</h1>
             <table>
-                {{ person_form }}
+                {{ person_form.as_table }}
+                {{ proposal_form.as_table }}
             </table>
-            <hr>
-            <table>
-                {{ proposal_form }}
-            </table>
-            <table>
-                {{ questions_for_proposal_form }}
-            </table>
+            <h1>Part 2: Project Description</h1>
+
+            {% for field in questions_for_proposal_form %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    {{ field.label_tag }}<br>{{ field }}
+                    {% if field.help_text %}
+                        <p class="help">{{ field.help_text|safe }}</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {{ questions_for_proposal_form.non_field_errors }}
             <input type="submit" value="Submit">
         </form>
     </div>
