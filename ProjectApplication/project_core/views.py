@@ -49,7 +49,7 @@ class ProposalView(TemplateView):
 
             information['proposal_form'] = ProposalForm(prefix='proposal', instance=current_proposal)
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
-            # TODO: load questions for proposal
+            information['questions_for_proposal_form'] = QuestionsForProposal(proposal_id=proposal_pk, prefix='questions_for_proposal')
 
         else:
             call_pk = information['call_pk'] = request.GET.get('call')
@@ -57,7 +57,7 @@ class ProposalView(TemplateView):
 
             information['proposal_form'] = ProposalForm(call_id=call_pk, prefix='proposal')
             information['person_form'] = PersonForm(prefix='person')
-            information['questions_for_proposal_form'] = QuestionsForProposal(call_pk, prefix='questions_for_proposal')
+            information['questions_for_proposal_form'] = QuestionsForProposal(call_id=call_pk, prefix='questions_for_proposal')
 
         information['call_name'] = call.long_name
         information['call_introductory_message'] = call.introductory_message
@@ -70,11 +70,14 @@ class ProposalView(TemplateView):
 
         person_form = PersonForm(request.POST, prefix='person')
         proposal_form = ProposalForm(request.POST, prefix='proposal')
+        questions_for_proposal_form = QuestionsForProposal(request.POST,
+                                                           call_id=request.POST['proposal-call_id'],
+                                                           prefix='questions_for_proposal')
 
         if person_form.is_valid() and proposal_form.is_valid():
             call_id = proposal_form.cleaned_data['call_id']
 
-            questions_for_proposal_form = QuestionsForProposal(call_id, request.POST, prefix='questions_for_proposal')
+            # questions_for_proposal_form = QuestionsForProposal(call_id, request.POST, prefix='questions_for_proposal')
 
             if questions_for_proposal_form.is_valid():
                 applicant = person_form.save()
@@ -92,10 +95,10 @@ class ProposalView(TemplateView):
                     qa_text = ProposalQAText(proposal=proposal, call_question_id=call_question_id, answer=answer)
                     qa_text.save()
 
-                for keyword in proposal_form.data['proposal-keywords_str'].split(','):
-                    pass
-                    # keyword = keyword.strip(' ')
-                    # proposal.keywords.add(Keyword.objects.get_or_create(keyword))
+                for keyword_str in proposal_form.cleaned_data['keywords_str'].split(','):
+                    keyword_str = keyword_str.strip(' ')
+                    keyword = Keyword.objects.get_or_create(name=keyword_str)[0]
+                    proposal.keywords.add(keyword)
 
                 proposal.save()
 

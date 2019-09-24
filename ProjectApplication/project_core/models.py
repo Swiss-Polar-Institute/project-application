@@ -3,6 +3,8 @@ from django.db import models
 
 class Step(models.Model):
     """Notable steps during the process"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     name = models.CharField(help_text='Name of a step', max_length=60, blank=False, null=False)
     description = models.CharField(help_text='Description of a step', max_length=200, blank=False, null=False)
 
@@ -12,6 +14,8 @@ class Step(models.Model):
 
 class StepDate(models.Model):
     """Dates of notable steps that are used throughout the process"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     step = models.ForeignKey(Step, help_text='Name of step',max_length=128, null=False, on_delete=models.PROTECT)
     date = models.DateTimeField(help_text='Date and time of notable date',max_length=64, null=False)
 
@@ -21,6 +25,8 @@ class StepDate(models.Model):
 
 class Message(models.Model):
     """Messages that can be used throughout the SPI projects application"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     CALL_INTRODUCTORY_MESSAGE = 'CI'
 
     MESSAGES= (
@@ -36,6 +42,8 @@ class Message(models.Model):
 
 class BudgetCategory(models.Model):
     """Details of budget categories"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     name = models.CharField(help_text='Name of the budget category', max_length=100, blank=False, null=False)
     description = models.CharField(help_text='Description of the budget category', max_length=300, blank=False, null=False)
     
@@ -48,6 +56,8 @@ class BudgetCategory(models.Model):
 
 class Question(models.Model):
     """Questions and details relating to their answers that can be used throughout the process"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     TEXT = 'Text'
 
     TYPES = (
@@ -67,6 +77,8 @@ class Question(models.Model):
 
 class Call(models.Model):
     """Description of call."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     long_name = models.CharField(help_text='Full name of the call', max_length=200, blank=False, null=False)
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
     description = models.TextField(help_text='Description of the call that can be used to distinguish it from others', blank=False, null=False)
@@ -81,13 +93,17 @@ class Call(models.Model):
 
 
 class CallQuestion(Question):
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
 
 
 class Keyword(models.Model):
     """Set of keywords used to describe the topic of a project, proposal, mission etc. """
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     name = models.CharField(help_text='Name of a keyword', max_length=128, blank=False, null=False)
-    description = models.CharField(help_text='Decsription of a keyword that should be used to distinguish it from another keyword', max_length=512, blank=False, null=False)
+    description = models.CharField(help_text='Description of a keyword that should be used to distinguish it from another keyword', max_length=512, blank=False, null=False)
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.description)
@@ -95,6 +111,8 @@ class Keyword(models.Model):
 
 class ProposalStatus(models.Model):
     """Status options for a proposal"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     name = models.CharField(help_text='Name of the status of the proposal table', max_length=50, blank=False, null=False)
     description = models.CharField(help_text='Detailed description of the proposal status name', max_length=512, blank=False, null=False)
 
@@ -107,6 +125,8 @@ class ProposalStatus(models.Model):
 
 class PersonTitle(models.Model):
     """Personal and academic titles"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     title = models.CharField(help_text='Personal or academic title used by a person', max_length=50, blank=False, null=False)
     
     def __str__(self):
@@ -115,6 +135,8 @@ class PersonTitle(models.Model):
 
 class Country(models.Model):
     """Countries"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False)
     
     def __str__(self):
@@ -126,6 +148,8 @@ class Country(models.Model):
 
 class Organisation(models.Model):
     """Details of an organisation - could be scientific, institution, funding etc."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     long_name = models.CharField(help_text='Full name by which the organisation is known', max_length=100, blank=False, null=False)
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50, blank=True, null=True)
     address = models.CharField(help_text='Address of the organisation', max_length=1000, blank=True, null=True)
@@ -143,6 +167,8 @@ class Organisation(models.Model):
 
 class Person(models.Model):
     """Information about a person."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False, on_delete=models.PROTECT)
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
@@ -160,6 +186,8 @@ class Person(models.Model):
 
 class Contact(models.Model):
     """Contact details of a person"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     email_address = models.CharField(help_text='Email address', max_length=100, blank=False, null=False)
     work_telephone = models.CharField(help_text='Work telephone number', max_length=20, blank=False, null=False)
     mobile = models.CharField(help_text='Mobile telephone number', max_length=20, blank=True, null=True)
@@ -171,6 +199,8 @@ class Contact(models.Model):
 
 class GeographicalArea(models.Model):
     """Geographical area (exact coverage of this not yet determined)"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     area = models.CharField(help_text='Name of geographic area', max_length=100, blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
     definition = models.CharField(help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300, blank=False, null=False)
 
@@ -180,6 +210,8 @@ class GeographicalArea(models.Model):
 
 class Proposal(models.Model):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
     geographical_areas = models.ManyToManyField(GeographicalArea, help_text='Description of the geographical area covered by the proposal')
@@ -210,6 +242,8 @@ class Proposal(models.Model):
 
 class ProposalQAText(models.Model):
     """Questions assigned to a proposal and their respective answers"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     proposal = models.ForeignKey(Proposal, help_text='Questions and answers for a proposal', on_delete=models.PROTECT)
     call_question = models.ForeignKey(CallQuestion, help_text='Question from the call', on_delete=models.PROTECT)
     answer = models.TextField(help_text='Answer to the question from the call', blank=False, null=False)
@@ -223,6 +257,8 @@ class ProposalQAText(models.Model):
 
 class BudgetItem(models.Model):
     """Itemised line in a budget, comprising of a category, full details and the amount"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     category = models.ForeignKey(BudgetCategory, help_text='', blank=False, null=False, on_delete=models.PROTECT)
     details = models.TextField(help_text='', blank=False, null=False)
     amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, max_digits=10, blank=False, null=True)
@@ -236,11 +272,15 @@ class BudgetItem(models.Model):
 
 class ProposedBudgetItem(BudgetItem):
     """Itemised line in a budget as part of a proposal"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     proposal = models.ForeignKey(Proposal, help_text='Proposal it which the budget item relates', on_delete=models.PROTECT)
 
 
 class FundingStatus(models.Model):
     """Status of funding"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     status = models.CharField(help_text='Name of the status', max_length=30, blank=False, null=False)
     description = models.CharField(help_text='Decsription of the status', max_length=100, blank=False, null=False)
 
@@ -253,6 +293,8 @@ class FundingStatus(models.Model):
 
 class FundingItem(models.Model):
     """Specific item of funding"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     organisation = models.ForeignKey(Organisation, help_text='Name of organisation from which the funding is sourced', blank=False, null=False, on_delete=models.PROTECT)
     status = models.ForeignKey(FundingStatus, help_text='Status of the funding item',blank=False, null=False, on_delete=models.PROTECT)
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10, blank=False, null=False)
@@ -267,4 +309,6 @@ class FundingItem(models.Model):
 class ProposalFundingItem(FundingItem):
     """Specific item of funding for a proposal (referring to funding that has been sourced from elsewhere, rather than
     funding that would result from that proposal being accepted)"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     proposal = models.ForeignKey(Proposal, help_text='Proposal for which the funding has been sourced', on_delete=models.PROTECT)
