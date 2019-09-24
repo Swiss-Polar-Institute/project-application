@@ -51,6 +51,8 @@ class ProposalView(TemplateView):
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
             information['questions_for_proposal_form'] = QuestionsForProposal(proposal_id=proposal_pk, prefix='questions_for_proposal')
 
+            information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
+
         else:
             call_pk = information['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
@@ -58,6 +60,8 @@ class ProposalView(TemplateView):
             information['proposal_form'] = ProposalForm(call_id=call_pk, prefix='proposal')
             information['person_form'] = PersonForm(prefix='person')
             information['questions_for_proposal_form'] = QuestionsForProposal(call_id=call_pk, prefix='questions_for_proposal')
+
+            information['proposal_action_url'] = reverse('proposal-add')
 
         information['call_name'] = call.long_name
         information['call_introductory_message'] = call.introductory_message
@@ -76,8 +80,6 @@ class ProposalView(TemplateView):
 
         if person_form.is_valid() and proposal_form.is_valid():
             call_id = proposal_form.cleaned_data['call_id']
-
-            # questions_for_proposal_form = QuestionsForProposal(call_id, request.POST, prefix='questions_for_proposal')
 
             if questions_for_proposal_form.is_valid():
                 applicant = person_form.save()

@@ -14,7 +14,7 @@
         <p>
         Call for proposals submission form
         <br>
-        <form action="{% url 'proposal-add' %}" method="post">
+        <form action="{{ proposal_action_url }}" method="post">
             {% csrf_token %}
 
             <h1>Part 1: General Information</h1>
@@ -26,7 +26,7 @@
 
             {% for field in questions_for_proposal_form %}
                 <div class="fieldWrapper">
-                    {{ field.errors }}
+                    <font color="red">{{ field.errors }}</font>
                     {{ field.label_tag }}<br>{{ field }}
                     {% if field.help_text %}
                         <p class="help">{{ field.help_text|safe }}</p>
