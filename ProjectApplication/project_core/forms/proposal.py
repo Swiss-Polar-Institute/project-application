@@ -49,14 +49,14 @@ class ProposalForm(ModelForm):
         fields = ['call_id', 'title', 'geographical_areas', 'start_timeframe', 'duration']
 
 
-class QuestionsForProposal(Form):
+class QuestionsForProposalForm(Form):
     def __init__(self, *args, **kwargs):
         self.call_id = kwargs.pop('call_id', None)
         self.proposal_id = kwargs.pop('proposal_id', None)
 
         assert (self.call_id is not None) or (self.proposal_id is not None)
 
-        super(QuestionsForProposal, self).__init__(*args, **kwargs)
+        super(QuestionsForProposalForm, self).__init__(*args, **kwargs)
 
         if self.call_id is not None:
             # This is a form with questions but not answers yet
@@ -84,7 +84,7 @@ class QuestionsForProposal(Form):
             qa_text.save()
 
     def clean(self):
-        cleaned_data = super(QuestionsForProposal, self).clean()
+        cleaned_data = super(QuestionsForProposalForm, self).clean()
 
         # list because otherwise dictionary size changes during execution
         # (need to check why exactly)

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView
 from django.forms import formset_factory
-from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposal, BudgetForm
+from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, BudgetForm
 from .models import Proposal, Call, Keyword, ProposalStatus, ProposalQAText
 import re
 
@@ -49,7 +49,7 @@ class ProposalView(TemplateView):
 
             information['proposal_form'] = ProposalForm(proposal_id=proposal_pk, prefix='proposal', instance=current_proposal)
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
-            information['questions_for_proposal_form'] = QuestionsForProposal(proposal_id=proposal_pk, prefix='questions_for_proposal')
+            information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
             information['budget_form'] = BudgetForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
@@ -60,7 +60,7 @@ class ProposalView(TemplateView):
 
             information['proposal_form'] = ProposalForm(call_id=call_pk, prefix='proposal')
             information['person_form'] = PersonForm(prefix='person')
-            information['questions_for_proposal_form'] = QuestionsForProposal(call_id=call_pk, prefix='questions_for_proposal')
+            information['questions_for_proposal_form'] = QuestionsForProposalForm(call_id=call_pk, prefix='questions_for_proposal')
             information['budget_form'] = BudgetForm(call_id=call_pk, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-add')
@@ -74,17 +74,20 @@ class ProposalView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super(ProposalView, self).get_context_data(**kwargs)
 
+        if 'pk' in kwargs:
+            proposal_pk = kwargs['pk']
+
         call_id = int(request.POST['proposal-call_id'])
 
         person_form = PersonForm(request.POST, prefix='person')
         proposal_form = ProposalForm(request.POST, prefix='proposal')
-        questions_for_proposal_form = QuestionsForProposal(request.POST,
-                                                           call_id=call_id,
-                                                           prefix='questions_for_proposal')
+        questions_for_proposal_form = QuestionsForProposalForm(request.POST,
+                                                               call_id=call_id,
+                                                               prefix='questions_for_proposal')
         budget_form = BudgetForm(request.POST, call_id=call_id, prefix='budget')
 
         if person_form.is_valid() and proposal_form.is_valid() and questions_for_proposal_form.is_valid() \
-            and budget_form.is_valid():
+                and budget_form.is_valid():
             applicant = person_form.save()
             proposal = proposal_form.save(commit=False)
 
@@ -111,26 +114,3 @@ class ProposalView(TemplateView):
         context['budget_form'] = budget_form
 
         return render(request, 'proposal.tmpl', context)
-
-#
-# class Proposal(TemplateView):
-#     template_name = 'proposal.tmpl'
-#
-#     def get(self, request, *args, **kwargs):
-#         super(Proposal, self).get_context_data(**kwargs)
-#
-#         information = {}
-#         call_pk = information['call_pk'] = request.GET.get('call')
-#
-#         call = Call.objects.get(pk=call_pk)
-#
-#         information['call_name'] = call.long_name
-#         information['call_introductory_message'] = call.introductory_message
-#         information['call_submission_deadline'] = call.submission_deadline
-#         information['contact_form'] = proposal.PersonForm
-#
-#         return render(request, 'proposal.tmpl', information)
-#
-#     def post(self, request, *args, **kwargs):
-#         form_class = proposal.PersonForm
-#         form = form_class.get
