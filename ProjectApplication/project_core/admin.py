@@ -116,18 +116,19 @@ class ProposalAdmin(admin.ModelAdmin):
 
 
 class ProposedBudgetItemAdmin(admin.ModelAdmin):
-    list_display = ('proposal',)
-    ordering = ['proposal',]
+    list_display = ('category', 'details', 'amount', 'proposal', )
+    ordering = ['details', 'amount', 'proposal', ]
+    search_fields = ('category__name', 'details', 'amount', 'proposal__title', )
 
 
 class FundingStatusAdmin(admin.ModelAdmin):
-    list_display = ('status', 'description',)
-    ordering = ['status',]
+    list_display = ('status', 'description', )
+    ordering = ['status', ]
 
 
 class ProposalFundingItemAdmin(admin.ModelAdmin):
-    list_display = ('proposal',)
-    ordering = ['proposal',]
+    list_display = ('proposal', )
+    ordering = ['proposal', ]
 
 
 class CallQuestionAdmin(admin.ModelAdmin):
