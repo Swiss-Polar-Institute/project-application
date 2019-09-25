@@ -73,43 +73,41 @@ class ProposalView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super(ProposalView, self).get_context_data(**kwargs)
 
+        call_id = int(request.POST['proposal-call_id'])
+
         person_form = PersonForm(request.POST, prefix='person')
         proposal_form = ProposalForm(request.POST, prefix='proposal')
         questions_for_proposal_form = QuestionsForProposal(request.POST,
-                                                           call_id=request.POST['proposal-call_id'],
+                                                           call_id=call_id,
                                                            prefix='questions_for_proposal')
+        budget_form = BudgetForm(request.POST, call_id=call_id, prefix='budget')
 
-        if person_form.is_valid() and proposal_form.is_valid():
-            call_id = proposal_form.cleaned_data['call_id']
+        if person_form.is_valid() and proposal_form.is_valid() and questions_for_proposal_form.is_valid() \
+            and budget_form.is_valid():
+            applicant = person_form.save()
+            proposal = proposal_form.save(commit=False)
 
-            if questions_for_proposal_form.is_valid():
-                applicant = person_form.save()
-                proposal = proposal_form.save(commit=False)
+            proposal.applicant = applicant
 
-                proposal.applicant = applicant
-                proposal.call_id = call_id
-                proposal.proposal_status = ProposalStatus.objects.get(name='test01')
+            proposal.proposal_status = ProposalStatus.objects.get(name='test01')
 
-                proposal = proposal_form.save(commit=True)
+            proposal = proposal_form.save(commit=True)
 
-                for question, answer in questions_for_proposal_form.cleaned_data.items():
-                    call_question_id = int(question[len('question_'):])
+            budget_form.proposal_id = proposal.id
 
-                    qa_text = ProposalQAText(proposal=proposal, call_question_id=call_question_id, answer=answer)
-                    qa_text.save()
+            questions_for_proposal_form.proposal_id = proposal.pk
+            questions_for_proposal_form.save_answers()
 
-                for keyword_str in proposal_form.cleaned_data['keywords_str'].split(','):
-                    keyword_str = keyword_str.strip(' ')
-                    keyword = Keyword.objects.get_or_create(name=keyword_str)[0]
-                    proposal.keywords.add(keyword)
+            proposal.save()
 
-                proposal.save()
+            budget_form.save_budget()
 
-                return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
+            return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
 
         context['person_form'] = person_form
         context['proposal_form'] = proposal_form
         context['questions_for_proposal_form'] = questions_for_proposal_form
+        context['budget_form'] = budget_form
 
         return render(request, 'proposal.tmpl', context)
 

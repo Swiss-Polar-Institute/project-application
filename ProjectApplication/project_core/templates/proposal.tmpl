@@ -24,6 +24,8 @@
             </table>
             <h1>Part 2: Project Description</h1>
 
+            {{ questions_for_proposal_form.non_field_errors }}
+
             {% for field in questions_for_proposal_form %}
                 <div class="fieldWrapper">
                     <font color="red">{{ field.errors }}</font>
@@ -36,6 +38,9 @@
             {{ questions_for_proposal_form.non_field_errors }}
 
             <h1>Budget</h1>
+            <font color="red">
+                {{ budget_form.non_field_errors }}
+            </font>
 
             <table border="1">
                 <tr>
@@ -43,6 +48,8 @@
                 </tr>
                 <tr>
                     {% for field in budget_form %}
+                        <font color="red">{{ field.errors }}</font>
+
                         <td>{{ field.help_text }} {{ field }}</td>
                         {% if forloop.counter|divisibleby:3 %}
                             </tr></tr>
