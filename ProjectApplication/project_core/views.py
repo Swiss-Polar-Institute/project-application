@@ -1,10 +1,8 @@
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
-from django.views.generic import TemplateView, CreateView
-from django.forms import formset_factory
+from django.views.generic import TemplateView
 from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, BudgetForm
-from .models import Proposal, Call, Keyword, ProposalStatus, ProposalQAText
-import re
+from .models import Proposal, Call, ProposalStatus
 
 
 class Homepage(TemplateView):
@@ -47,7 +45,7 @@ class ProposalView(TemplateView):
 
             current_proposal: Proposal = Proposal.objects.get(pk=proposal_pk)
 
-            information['proposal_form'] = ProposalForm(proposal_id=proposal_pk, prefix='proposal', instance=current_proposal)
+            information['proposal_form'] = ProposalForm(call_id=call.id, prefix='proposal', instance=current_proposal)
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
             information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
             information['budget_form'] = BudgetForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
@@ -74,17 +72,33 @@ class ProposalView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super(ProposalView, self).get_context_data(**kwargs)
 
+        proposal_pk = None
+
         if 'pk' in kwargs:
-            proposal_pk = kwargs['pk']
+            proposal_pk = int(kwargs['pk'])
+            call_id = Proposal.objects.get(pk=proposal_pk).id
+        else:
+            call_id = int(request.POST['proposal-call_id'])
 
-        call_id = int(request.POST['proposal-call_id'])
+        if proposal_pk is None:
+            # It's a new Proposal
+            person_form = PersonForm(request.POST, prefix='person')
+            proposal_form = ProposalForm(request.POST, prefix='proposal')
+            questions_for_proposal_form = QuestionsForProposalForm(request.POST,
+                                                                   call_id=call_id,
+                                                                   prefix='questions_for_proposal')
+            budget_form = BudgetForm(request.POST, call_id=call_id, prefix='budget')
+        else:
+            # It needs to modify an existing Proposal
+            proposal = Proposal.objects.get(pk=proposal_pk)
 
-        person_form = PersonForm(request.POST, prefix='person')
-        proposal_form = ProposalForm(request.POST, prefix='proposal')
-        questions_for_proposal_form = QuestionsForProposalForm(request.POST,
-                                                               call_id=call_id,
-                                                               prefix='questions_for_proposal')
-        budget_form = BudgetForm(request.POST, call_id=call_id, prefix='budget')
+            person_form = PersonForm(request.POST, instance=proposal.applicant, prefix='person')
+            proposal_form = ProposalForm(request.POST, instance=proposal, prefix='proposal')
+            questions_for_proposal_form = QuestionsForProposalForm(request.POST,
+                                                                   proposal_id=proposal_pk,
+                                                                   prefix='questions_for_proposal')
+            budget_form = BudgetForm(request.POST, proposal_id=proposal_pk, prefix='budget')
+
 
         if person_form.is_valid() and proposal_form.is_valid() and questions_for_proposal_form.is_valid() \
                 and budget_form.is_valid():

@@ -253,6 +253,7 @@ class ProposalQAText(models.Model):
 
     class Meta:
         verbose_name_plural='Proposal question-answer (text)'
+        unique_together = (('proposal', 'call_question'), )
 
 
 class BudgetItem(models.Model):
@@ -275,6 +276,9 @@ class ProposedBudgetItem(BudgetItem):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal it which the budget item relates', on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = (('category', 'proposal',), )
 
 
 class FundingStatus(models.Model):

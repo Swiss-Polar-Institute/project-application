@@ -80,8 +80,10 @@ class QuestionsForProposalForm(Form):
         for question, answer in self.cleaned_data.items():
             call_question_id = int(question[len('question_'):])
 
-            qa_text = ProposalQAText(proposal_id=self.proposal_id, call_question_id=call_question_id, answer=answer)
-            qa_text.save()
+            ProposalQAText.objects.update_or_create(
+                proposal_id=self.proposal_id, call_question_id=call_question_id,
+                defaults={'answer': answer}
+            )
 
     def clean(self):
         cleaned_data = super(QuestionsForProposalForm, self).clean()
@@ -120,13 +122,13 @@ class BudgetForm(Form):
                 self.fields['amount_%d' % budget_category.id] = forms.DecimalField()
 
         if self.proposal_id is not None:
+            self.call_id = Proposal.objects.get(id=self.proposal_id).call.id
             for proposed_budget_item in ProposedBudgetItem.objects.filter(proposal_id=self.proposal_id):
                 budget_category_id = proposed_budget_item.category.id
                 self.fields['category_budget_name_%d' % budget_category_id] = forms.CharField(
                     help_text=proposed_budget_item.category.name, widget=forms.HiddenInput(), required=False)
                 self.fields['details_%d' % budget_category_id] = forms.CharField(initial=proposed_budget_item.details)
                 self.fields['amount_%d' % budget_category_id] = forms.DecimalField(initial=proposed_budget_item.amount)
-
 
     def clean(self):
         cleaned_data = super(BudgetForm, self).clean()
@@ -153,10 +155,11 @@ class BudgetForm(Form):
 
     def save_budget(self):
         for budget_category in Call.objects.get(id=self.call_id).budget_categories.all():
-            proposed_budget_item = ProposedBudgetItem()
-            proposed_budget_item.category = budget_category
-            proposed_budget_item.details = self.cleaned_data['details_%d' % budget_category.id]
-            proposed_budget_item.amount = self.cleaned_data['amount_%d' % budget_category.id]
-            proposed_budget_item.proposal = Proposal.objects.get(id=self.proposal_id)
-
-            proposed_budget_item.save()
+            ProposedBudgetItem.objects.update_or_create(
+                proposal=Proposal.objects.get(id=self.proposal_id),
+                category=budget_category,
+                defaults={
+                    'details': self.cleaned_data['details_%d' % budget_category.id],
+                    'amount': self.cleaned_data['amount_%d' % budget_category.id]
+                }
+            )

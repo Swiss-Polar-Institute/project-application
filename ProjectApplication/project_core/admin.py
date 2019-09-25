@@ -1,6 +1,6 @@
 from django.contrib import admin
 import project_core.models
-
+from typing import List
 
 # Register your models here.
 
@@ -78,7 +78,7 @@ class PersonAdmin(admin.ModelAdmin):
     def organisations_list(self, obj):
         organisations = obj.organisations.all()
 
-        return ", ".join([organisation.name for organisation in organisations])
+        return ', '.join([str(organisation) for organisation in organisations])
 
 
 class ContactAdmin(admin.ModelAdmin):
@@ -110,7 +110,9 @@ class ProposalAdmin(admin.ModelAdmin):
 
         result = ''
         for qa in qas:
-            result += 'Q: {}, A: {}'.format(qa.question.question_text, qa.answer)
+            qa: project_core.models.ProposalQAText
+
+            result += 'Q: {}, A: {}'.format(qa.call_question.question_text, qa.answer)
 
         return result
 
