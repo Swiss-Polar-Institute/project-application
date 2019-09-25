@@ -119,6 +119,15 @@ class BudgetForm(Form):
                 self.fields['details_%d' % budget_category.id] = forms.CharField()
                 self.fields['amount_%d' % budget_category.id] = forms.DecimalField()
 
+        if self.proposal_id is not None:
+            for proposed_budget_item in ProposedBudgetItem.objects.filter(proposal_id=self.proposal_id):
+                budget_category_id = proposed_budget_item.category.id
+                self.fields['category_budget_name_%d' % budget_category_id] = forms.CharField(
+                    help_text=proposed_budget_item.category.name, widget=forms.HiddenInput(), required=False)
+                self.fields['details_%d' % budget_category_id] = forms.CharField(initial=proposed_budget_item.details)
+                self.fields['amount_%d' % budget_category_id] = forms.DecimalField(initial=proposed_budget_item.amount)
+
+
     def clean(self):
         cleaned_data = super(BudgetForm, self).clean()
 

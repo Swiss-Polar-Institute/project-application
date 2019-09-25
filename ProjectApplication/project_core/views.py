@@ -50,6 +50,7 @@ class ProposalView(TemplateView):
             information['proposal_form'] = ProposalForm(proposal_id=proposal_pk, prefix='proposal', instance=current_proposal)
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
             information['questions_for_proposal_form'] = QuestionsForProposal(proposal_id=proposal_pk, prefix='questions_for_proposal')
+            information['budget_form'] = BudgetForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
 
