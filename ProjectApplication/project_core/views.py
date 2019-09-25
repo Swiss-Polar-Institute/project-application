@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView
 from django.forms import formset_factory
-from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposal
+from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposal, BudgetForm
 from .models import Proposal, Call, Keyword, ProposalStatus, ProposalQAText
 import re
 
@@ -60,6 +60,7 @@ class ProposalView(TemplateView):
             information['proposal_form'] = ProposalForm(call_id=call_pk, prefix='proposal')
             information['person_form'] = PersonForm(prefix='person')
             information['questions_for_proposal_form'] = QuestionsForProposal(call_id=call_pk, prefix='questions_for_proposal')
+            information['budget_form'] = BudgetForm(call_id=call_pk, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-add')
 

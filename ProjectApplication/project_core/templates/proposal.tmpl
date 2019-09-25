@@ -33,8 +33,26 @@
                     {% endif %}
                 </div>
             {% endfor %}
-
             {{ questions_for_proposal_form.non_field_errors }}
+
+            <h1>Budget</h1>
+
+            <table border="1">
+                <tr>
+                    <td><b>Category</b></td><td><b>Details</b></td><td><b>Amount Requested</b></td>
+                </tr>
+                <tr>
+                    {% for field in budget_form %}
+                        <td>{{ field.help_text }} {{ field }}</td>
+                        {% if forloop.counter|divisibleby:3 %}
+                            </tr></tr>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </table>
+
+            <p></p>
+
             <input type="submit" value="Submit">
         </form>
     </div>

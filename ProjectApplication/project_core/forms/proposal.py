@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import ModelForm, Form
-from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion
+from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, BudgetCategory
 from django.forms.models import inlineformset_factory
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -86,26 +86,20 @@ class QuestionsForProposal(Form):
                 self.add_error(question_number, 'Too long. Current: {} words, maximum: {}'.format(current_words, max_word_length))
 
         return cleaned_data
-    #
-    #
-    #
-    # def clean_question_1(self):
-    #     answer = self.cleaned_data['question_1']
-    #
-    #     words_count = len(answer.split())
-    #
-    #     if words_count > 5:
-    #         raise forms.ValidationError('Too many words1')
-    #
-    #     return answer
-    #
-    # def clean_question_2(self):
-    #     answer = self.cleaned_data['question_2']
-    #
-    #     words_count = len(answer.split())
-    #
-    #     if words_count > 5:
-    #         raise forms.ValidationError('Too many words2')
-    #
-    #     return answer
-    #
+
+
+class BudgetForm(Form):
+    def __init__(self, *args, **kwargs):
+        self.call_id = kwargs.pop('call_id', None)
+        self.proposal_id = kwargs.pop('proposal_id', None)
+
+        assert (self.call_id is not None) or (self.proposal_id is not None)
+
+        super(BudgetForm, self).__init__(*args, **kwargs)
+
+        if self.call_id is not None:
+            for budget_category in Call.objects.get(id=self.call_id).budget_categories.all():
+                self.fields['category_name_{}'.format(budget_category.id)] = forms.CharField(
+                    help_text=budget_category.description, widget=forms.HiddenInput())
+                self.fields['category_description_{}'.format(budget_category.id)] = forms.CharField()
+                self.fields['category_amount_{}'.format(budget_category.id)] = forms.DecimalField()

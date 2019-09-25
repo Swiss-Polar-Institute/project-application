@@ -41,7 +41,7 @@ class CallAdmin(admin.ModelAdmin):
 
         questions = ''
         for call_question in call_questions:
-            questions += call_question.question.question_text
+            questions += call_question.question_text
 
         return questions
 
