@@ -49,7 +49,7 @@ class ProposalView(TemplateView):
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
 
             information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
-            information['budget_form'] = BudgetForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
+            information['budget_form'] = BudgetForm(proposal_id=proposal_pk, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
 
@@ -63,6 +63,8 @@ class ProposalView(TemplateView):
             information['budget_form'] = BudgetForm(call_id=call_pk, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-add')
+
+        information['maximum_budget'] = information['budget_form'].maximum_budget
 
         information['call_name'] = call.long_name
         information['call_introductory_message'] = call.introductory_message
