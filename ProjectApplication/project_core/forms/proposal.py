@@ -13,6 +13,9 @@ class PersonForm(ModelForm):
 
 
 class ProposalFundingItemForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProposalFundingItemForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = ProposalFundingItem
         fields = ['organisation', 'status', 'amount', 'proposal', ]
@@ -134,7 +137,7 @@ class BudgetForm(Form):
 
         for budget_category in self._call.budget_categories.all().order_by('name'):
             self.fields['category_budget_name_%d' % budget_category.id] = forms.CharField(
-                help_text=budget_category.description, widget=forms.HiddenInput(), required=True)
+                help_text=budget_category.description, widget=forms.HiddenInput(), required=False)
 
             proposal_details = None
             proposal_amount = None
@@ -183,34 +186,9 @@ class BudgetForm(Form):
             )
 
 
-# class FundingOrganisationsForm(Form):
-#     def __init__(self, *args, **kwargs):
-#         self._call = kwargs.pop('call', None)
-#
-#         super(FundingOrganisationsForm, self).__init__(*args, **kwargs)
-#
-#         self._proposal = None
-#
-#         for budget_category in self._call.budget_categories.all().order_by('name'):
-#             self.fields['category_budget_name_%d' % budget_category.id] = forms.CharField(
-#                 help_text=budget_category.description, widget=forms.HiddenInput(), required=True)
-#
-#             proposal_details = None
-#             proposal_amount = None
-#
-#             if self._proposal:
-#                 proposed_budget_item = ProposedBudgetItem.objects.get(proposal=self._proposal, category=budget_category)
-#                 proposal_details = proposed_budget_item.details
-#                 proposal_amount = proposed_budget_item.amount
-#
-#             self.fields['details_%d' % budget_category.id] = forms.CharField(initial=proposal_details)
-#             self.fields['amount_%d' % budget_category.id] = forms.DecimalField(initial=proposal_amount)
-
-
 class FundingOrganisationsForm(Form):
     def __init__(self, *args, **kwargs):
         super(FundingOrganisationsForm, self).__init__(*args, **kwargs)
-
 
         organisations = FundingOrganisationsForm._organisations_tuple()
         for funding_status in FundingStatus.objects.all().order_by('status'):
@@ -233,5 +211,5 @@ class FundingOrganisationsForm(Form):
         for organisation in Organisation.objects.all().order_by('short_name'):
             organisations.append((organisation.id, organisation.abbreviated_name()),)
 
-        organisations.append((0, 'Other'),)
+        organisations.append((99, 'Other'),)
         return organisations

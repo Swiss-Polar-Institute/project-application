@@ -48,7 +48,7 @@ class ProposalView(TemplateView):
             information['proposal_form'] = ProposalForm(call=call, prefix='proposal', instance=proposal)
             information['person_form'] = PersonForm(prefix='person', instance=proposal.applicant)
 
-            information['proposal_funding_item_form_set'] = ProposalFundingItemFormSet(prefix='funding') # TODO pass parameters, make it read
+            information['proposal_funding_item_form_set'] = ProposalFundingItemFormSet(prefix='funding', instance=proposal)
 
             information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal=proposal, prefix='questions_for_proposal')
             information['budget_form'] = BudgetForm(proposal=proposal, prefix='budget')
@@ -97,11 +97,12 @@ class ProposalView(TemplateView):
         if proposal_pk is None:
             # It's a new Proposal
             person_form = PersonForm(request.POST, prefix='person')
-            proposal_form = ProposalForm(request.POST, prefix='proposal')
+            proposal_form = ProposalForm(request.POST, call=call, prefix='proposal')
             questions_for_proposal_form = QuestionsForProposalForm(request.POST,
                                                                    call=call,
                                                                    prefix='questions_for_proposal')
             budget_form = BudgetForm(request.POST, call=call, prefix='budget')
+            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix='funding')
         else:
             # It needs to modify an existing Proposal
             proposal = Proposal.objects.get(pk=proposal_pk)
@@ -112,9 +113,10 @@ class ProposalView(TemplateView):
                                                                    proposal=proposal,
                                                                    prefix='questions_for_proposal')
             budget_form = BudgetForm(request.POST, proposal=proposal, prefix='budget')
+            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix='funding', instance=proposal)
 
         if person_form.is_valid() and proposal_form.is_valid() and questions_for_proposal_form.is_valid() \
-                and budget_form.is_valid():
+                and budget_form.is_valid() and funding_item_form_set.is_valid():
             applicant = person_form.save()
             proposal = proposal_form.save(commit=False)
 
@@ -122,9 +124,16 @@ class ProposalView(TemplateView):
 
             proposal.proposal_status = ProposalStatus.objects.get(name='test01')
 
-            proposal = proposal_form.save(commit=True)
+            funding_items = funding_item_form_set.save(commit=False)
 
-            budget_form._proposal_id = proposal.id
+            proposal = proposal_form.save(commit=True)
+            proposal.save()
+
+            for funding_item in funding_items:
+                funding_item.proposal = proposal
+                funding_item.save()
+
+            budget_form._proposal_id = proposal.id  # TODO do not access internal variable
 
             questions_for_proposal_form._proposal_id = proposal.pk
             questions_for_proposal_form.save_answers()
