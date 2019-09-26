@@ -64,23 +64,20 @@ class QuestionsForProposalForm(Form):
 
         super(QuestionsForProposalForm, self).__init__(*args, **kwargs)
 
-        if self._call:
-            # This is a form with questions but not answers yet
-            for question in self._call.callquestion_set.all().order_by('question_text'):
-                self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question.question_text,
-                                                                                 widget=forms.Textarea())
+        if self._proposal:
+            self._call = self._proposal.call
 
-        if self._proposal is not None:
-            # This is a form with already answers
-            for question in self._proposal.call.callquestion_set.all().order_by('question_text'):
+        for question in self._call.callquestion_set.all().order_by('question_text'):
+            answer = None
+            if self._proposal:
                 try:
-                    answer = ProposalQAText.objects.get(proposal=self._proposal, call_question=question.id).answer
+                    answer = ProposalQAText.objects.get(proposal=self._proposal, call_question=question).answer
                 except ObjectDoesNotExist:
-                    answer = None
+                    pass
 
-                self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question.question_text,
-                                                                                 widget=forms.Textarea(),
-                                                                                 initial=answer)
+            self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question.question_text,
+                                                                             widget=forms.Textarea(),
+                                                                             initial=answer)
 
     def save_answers(self):
         for question, answer in self.cleaned_data.items():
@@ -145,16 +142,15 @@ class BudgetForm(Form):
 
         maximum_budget = self._call.budget_maximum
 
-        for key in list(cleaned_data.keys()):
-            answer = cleaned_data[key]
+        for budget_category in self._call.budget_categories.all():
+            amount = cleaned_data['amount_%d' % budget_category.id]
 
-            if key.startswith('amount_'):
-                budget_amount += answer
+            budget_amount += amount
 
-            if key.startswith('amount_') and answer > maximum_budget:
-                number = int(key[len('amount_'):])
-                budget_name = self.fields['category_budget_name_%d' % number]
-                self.add_error(key, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_name.help_text))
+            if amount > maximum_budget:
+                budget_description = budget_category.description
+                field = 'category_budget_name_%d' % budget_category.id
+                self.add_error(field, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_description))
 
         if budget_amount > maximum_budget:
             self.add_error(None,
@@ -173,10 +169,3 @@ class BudgetForm(Form):
                     'amount': self.cleaned_data['amount_%d' % budget_category.id]
                 }
             )
-
-
-# class OtherSourcesOfFunding(Form):
-#     def __init__(self, *args, **kwargs):
-#         super(OtherSourcesOfFunding, self).__init__(*args, **kwargs)
-#
-#         for Organisation.objects.all
