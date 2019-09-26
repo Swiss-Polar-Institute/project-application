@@ -47,6 +47,7 @@ class ProposalView(TemplateView):
 
             information['proposal_form'] = ProposalForm(call_id=call.id, prefix='proposal', instance=current_proposal)
             information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
+
             information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
             information['budget_form'] = BudgetForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
 

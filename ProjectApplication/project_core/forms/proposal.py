@@ -16,15 +16,14 @@ class ProposalForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self._call_id = kwargs.pop('call_id', None)
-        self._proposal_id = kwargs.pop('proposal_id', None)
 
         super(ProposalForm, self).__init__(*args, **kwargs)
 
         self.fields['call_id'].initial = self._call_id
 
         keywords_list = []
-        if self._proposal_id is not None:
-            for keyword in Proposal.objects.get(id=self._proposal_id).keywords.all():
+        if self.instance:
+            for keyword in self.instance.keywords.all().order_by('name'):
                 keywords_list.append(keyword.name)
 
             self.fields['keywords_str'] = forms.CharField(label='Keywords',
@@ -37,6 +36,8 @@ class ProposalForm(ModelForm):
         model = super(ProposalForm, self).save(commit)
 
         if commit:
+            model.keywords.clear()
+
             for keyword_str in self.cleaned_data['keywords_str'].split(','):
                 keyword_str = keyword_str.strip(' ')
                 keyword = Keyword.objects.get_or_create(name=keyword_str)[0]
