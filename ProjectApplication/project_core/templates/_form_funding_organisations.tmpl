@@ -1,0 +1,19 @@
+<font color="red">
+    {{ funding_organisations_form.non_field_errors }}
+</font>
+
+<table border="1">
+    <tr>
+        <td><b>Status</b></td><td><b>Organisation</b></td><td><b>Amount</b></td>
+    </tr>
+    <tr>
+        {% for field in funding_organisations_form %}
+            <font color="red">{{ field.errors }}</font>
+
+            <td>{{ field.help_text }} {{ field }}</td>
+            {% if forloop.counter|divisibleby:3 %}
+                </tr></tr>
+            {% endif %}
+        {% endfor %}
+    </tr>
+</table>

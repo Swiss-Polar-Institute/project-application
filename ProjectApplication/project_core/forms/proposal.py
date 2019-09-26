@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelForm, Form
 from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, Keyword, ProposedBudgetItem, \
-    Organisation
+    Organisation, FundingStatus
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -122,7 +122,7 @@ class BudgetForm(Form):
 
         for budget_category in self._call.budget_categories.all().order_by('name'):
             self.fields['category_budget_name_%d' % budget_category.id] = forms.CharField(
-                help_text=budget_category.description, widget=forms.HiddenInput(), required=False)
+                help_text=budget_category.description, widget=forms.HiddenInput(), required=True)
 
             proposal_details = None
             proposal_amount = None
@@ -169,3 +169,57 @@ class BudgetForm(Form):
                     'amount': self.cleaned_data['amount_%d' % budget_category.id]
                 }
             )
+
+
+# class FundingOrganisationsForm(Form):
+#     def __init__(self, *args, **kwargs):
+#         self._call = kwargs.pop('call', None)
+#
+#         super(FundingOrganisationsForm, self).__init__(*args, **kwargs)
+#
+#         self._proposal = None
+#
+#         for budget_category in self._call.budget_categories.all().order_by('name'):
+#             self.fields['category_budget_name_%d' % budget_category.id] = forms.CharField(
+#                 help_text=budget_category.description, widget=forms.HiddenInput(), required=True)
+#
+#             proposal_details = None
+#             proposal_amount = None
+#
+#             if self._proposal:
+#                 proposed_budget_item = ProposedBudgetItem.objects.get(proposal=self._proposal, category=budget_category)
+#                 proposal_details = proposed_budget_item.details
+#                 proposal_amount = proposed_budget_item.amount
+#
+#             self.fields['details_%d' % budget_category.id] = forms.CharField(initial=proposal_details)
+#             self.fields['amount_%d' % budget_category.id] = forms.DecimalField(initial=proposal_amount)
+
+
+class FundingOrganisationsForm(Form):
+    def __init__(self, *args, **kwargs):
+        super(FundingOrganisationsForm, self).__init__(*args, **kwargs)
+
+
+        organisations = FundingOrganisationsForm._organisations_tuple()
+        for funding_status in FundingStatus.objects.all().order_by('status'):
+            self.fields['funding_status_name_%d' % funding_status.id] = forms.CharField(
+                help_text=funding_status.status, widget=forms.HiddenInput(), required=True)
+
+            self.fields['source_of_funding_%d' % funding_status.id] = forms.ChoiceField(
+                choices=organisations, required=True)
+
+            self.fields['amount_%d' % funding_status.id] = forms.DecimalField(required=True)
+
+    def clean(self):
+        cleaned_data = super(FundingOrganisationsForm, self).clean()
+        return cleaned_data
+
+    @staticmethod
+    def _organisations_tuple():
+        organisations = []
+
+        for organisation in Organisation.objects.all().order_by('short_name'):
+            organisations.append((organisation.id, organisation.abbreviated_name()),)
+
+        organisations.append((0, 'Other'),)
+        return organisations

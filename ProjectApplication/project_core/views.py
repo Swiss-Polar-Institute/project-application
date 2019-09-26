@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from django.views.generic import TemplateView
-from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, BudgetForm
+from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, BudgetForm, FundingOrganisationsForm
 from .models import Proposal, Call, ProposalStatus
 
 
@@ -50,6 +50,7 @@ class ProposalView(TemplateView):
 
             information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal=proposal, prefix='questions_for_proposal')
             information['budget_form'] = BudgetForm(proposal=proposal, prefix='budget')
+            information['funding_organisations_form'] = FundingOrganisationsForm(prefix='funding_organisations')
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
 
@@ -61,6 +62,8 @@ class ProposalView(TemplateView):
             information['person_form'] = PersonForm(prefix='person')
             information['questions_for_proposal_form'] = QuestionsForProposalForm(call=call, prefix='questions_for_proposal')
             information['budget_form'] = BudgetForm(call=call, prefix='budget')
+
+            information['funding_organisations_form'] = FundingOrganisationsForm(prefix='funding_organisations')
 
             information['proposal_action_url'] = reverse('proposal-add')
 
