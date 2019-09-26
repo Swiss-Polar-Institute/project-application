@@ -2,6 +2,7 @@
 {% load static %}
 {% block title %}Projects application{% endblock %}
 
+
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %} <H1>New proposal</H1>
@@ -22,6 +23,7 @@
                 {{ person_form.as_table }}
                 {{ proposal_form.as_table }}
             </table>
+
             <h1>Part 2: Project Description</h1>
             {% include "_form_dynamic_questions.tmpl" %}
 
@@ -31,9 +33,10 @@
 
             <h1>Funding organisations</h1>
             {% include "_form_funding_organisations.tmpl" %}
-
+            <p></p>
             <input type="submit" value="Submit">
         </form>
         <p>
     </div>
+    -->
 {% endblock %}

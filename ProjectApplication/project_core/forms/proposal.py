@@ -1,14 +1,21 @@
 from django import forms
 from django.forms import ModelForm, Form
 from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, Keyword, ProposedBudgetItem, \
-    Organisation, FundingStatus
+    Organisation, FundingStatus, ProposalFundingItem
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms.models import inlineformset_factory
 
 
 class PersonForm(ModelForm):
     class Meta:
         model = Person
         fields = ['academic_title', 'first_name', 'surname', 'organisations', 'group', ]
+
+
+class ProposalFundingItemForm(ModelForm):
+    class Meta:
+        model = ProposalFundingItem
+        fields = ['organisation', 'status', 'amount', 'proposal', ]
 
 
 class ProposalForm(ModelForm):
@@ -53,6 +60,11 @@ class ProposalForm(ModelForm):
     class Meta:
         model = Proposal
         fields = ['call_id', 'title', 'geographical_areas', 'start_timeframe', 'duration']
+
+
+# See documentation in: https://medium.com/@adandan01/django-inline-formsets-example-mybook-420cc4b6225d
+ProposalFundingItemFormSet = inlineformset_factory(
+    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, extra=1, can_delete=True)
 
 
 class QuestionsForProposalForm(Form):
