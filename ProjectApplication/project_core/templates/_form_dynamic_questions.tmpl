@@ -1,0 +1,11 @@
+{{ questions_for_proposal_form.non_field_errors }}
+
+{% for field in questions_for_proposal_form %}
+    <div class="fieldWrapper">
+        <font color="red">{{ field.errors }}</font>
+        {{ field.label_tag }}<br>{{ field }}
+        {% if field.help_text %}
+            <p class="help">{{ field.help_text|safe }}</p>
+        {% endif %}
+    </div>
+{% endfor %}

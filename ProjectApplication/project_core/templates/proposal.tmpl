@@ -4,9 +4,9 @@
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
-        {% include "_logo.tmpl" %} <H1>Welcome to create a new proposal</H1>
+        {% include "_logo.tmpl" %} <H1>New proposal</H1>
 
-        Proposal name: {{ call_name }}<p>
+        Call name: {{ call_name }}<p>
 
         Deadline for application: {{ call_submission_deadline }}
         <p>
@@ -23,46 +23,14 @@
                 {{ proposal_form.as_table }}
             </table>
             <h1>Part 2: Project Description</h1>
-
-            {{ questions_for_proposal_form.non_field_errors }}
-
-            {% for field in questions_for_proposal_form %}
-                <div class="fieldWrapper">
-                    <font color="red">{{ field.errors }}</font>
-                    {{ field.label_tag }}<br>{{ field }}
-                    {% if field.help_text %}
-                        <p class="help">{{ field.help_text|safe }}</p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-            {{ questions_for_proposal_form.non_field_errors }}
+            {% include "_form_dynamic_questions.tmpl" %}
 
             <h1>Budget</h1>
-            Maximum budget: {{ maximum_budget }}
-
-            <font color="red">
-                {{ budget_form.non_field_errors }}
-            </font>
-
-            <table border="1">
-                <tr>
-                    <td><b>Category</b></td><td><b>Details</b></td><td><b>Amount Requested</b></td>
-                </tr>
-                <tr>
-                    {% for field in budget_form %}
-                        <font color="red">{{ field.errors }}</font>
-
-                        <td>{{ field.help_text }} {{ field }}</td>
-                        {% if forloop.counter|divisibleby:3 %}
-                            </tr></tr>
-                        {% endif %}
-                    {% endfor %}
-                </tr>
-            </table>
-
+            {% include "_form_budget.tmpl" %}
             <p></p>
 
             <input type="submit" value="Submit">
         </form>
+        <p>
     </div>
 {% endblock %}

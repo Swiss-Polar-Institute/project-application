@@ -64,13 +64,19 @@ class ProposalView(TemplateView):
 
             information['proposal_action_url'] = reverse('proposal-add')
 
-        information['maximum_budget'] = information['budget_form'].maximum_budget
+        information.update(ProposalView._call_information_for_template(call))
 
+        return render(request, 'proposal.tmpl', information)
+
+    @staticmethod
+    def _call_information_for_template(call):
+        information = {}
+        information['maximum_budget'] = call.budget_maximum
         information['call_name'] = call.long_name
         information['call_introductory_message'] = call.introductory_message
         information['call_submission_deadline'] = call.submission_deadline
 
-        return render(request, 'proposal.tmpl', information)
+        return information
 
     def post(self, request, *args, **kwargs):
         context = super(ProposalView, self).get_context_data(**kwargs)
@@ -79,18 +85,18 @@ class ProposalView(TemplateView):
 
         if 'pk' in kwargs:
             proposal_pk = int(kwargs['pk'])
-            call_id = Proposal.objects.get(pk=proposal_pk).id
+            call = Proposal.objects.get(pk=proposal_pk).call
         else:
-            call_id = int(request.POST['proposal-call_id'])
+            call = Call.objects.get(id=int(request.POST['proposal-call_id']))
 
         if proposal_pk is None:
             # It's a new Proposal
             person_form = PersonForm(request.POST, prefix='person')
             proposal_form = ProposalForm(request.POST, prefix='proposal')
             questions_for_proposal_form = QuestionsForProposalForm(request.POST,
-                                                                   call_id=call_id,
+                                                                   call_id=call.id,
                                                                    prefix='questions_for_proposal')
-            budget_form = BudgetForm(request.POST, call_id=call_id, prefix='budget')
+            budget_form = BudgetForm(request.POST, call_id=call.id, prefix='budget')
         else:
             # It needs to modify an existing Proposal
             proposal = Proposal.objects.get(pk=proposal_pk)
@@ -101,7 +107,6 @@ class ProposalView(TemplateView):
                                                                    proposal_id=proposal_pk,
                                                                    prefix='questions_for_proposal')
             budget_form = BudgetForm(request.POST, proposal_id=proposal_pk, prefix='budget')
-
 
         if person_form.is_valid() and proposal_form.is_valid() and questions_for_proposal_form.is_valid() \
                 and budget_form.is_valid():
@@ -114,9 +119,9 @@ class ProposalView(TemplateView):
 
             proposal = proposal_form.save(commit=True)
 
-            budget_form.proposal_id = proposal.id
+            budget_form._proposal_id = proposal.id
 
-            questions_for_proposal_form.proposal_id = proposal.pk
+            questions_for_proposal_form._proposal_id = proposal.pk
             questions_for_proposal_form.save_answers()
 
             proposal.save()
@@ -129,5 +134,7 @@ class ProposalView(TemplateView):
         context['proposal_form'] = proposal_form
         context['questions_for_proposal_form'] = questions_for_proposal_form
         context['budget_form'] = budget_form
+
+        context.update(ProposalView._call_information_for_template(call))
 
         return render(request, 'proposal.tmpl', context)
