@@ -43,13 +43,13 @@ class ProposalView(TemplateView):
             proposal_pk = kwargs['pk']
             call = Proposal.objects.get(pk=kwargs['pk']).call
 
-            current_proposal: Proposal = Proposal.objects.get(pk=proposal_pk)
+            proposal: Proposal = Proposal.objects.get(pk=proposal_pk)
 
-            information['proposal_form'] = ProposalForm(call_id=call.id, prefix='proposal', instance=current_proposal)
-            information['person_form'] = PersonForm(prefix='person', instance=current_proposal.applicant)
+            information['proposal_form'] = ProposalForm(call=call, prefix='proposal', instance=proposal)
+            information['person_form'] = PersonForm(prefix='person', instance=proposal.applicant)
 
-            information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal_id=proposal_pk, prefix='questions_for_proposal')
-            information['budget_form'] = BudgetForm(proposal_id=proposal_pk, prefix='budget')
+            information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal=proposal, prefix='questions_for_proposal')
+            information['budget_form'] = BudgetForm(proposal=proposal, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
 
@@ -57,10 +57,10 @@ class ProposalView(TemplateView):
             call_pk = information['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
 
-            information['proposal_form'] = ProposalForm(call_id=call_pk, prefix='proposal')
+            information['proposal_form'] = ProposalForm(call=call, prefix='proposal')
             information['person_form'] = PersonForm(prefix='person')
-            information['questions_for_proposal_form'] = QuestionsForProposalForm(call_id=call_pk, prefix='questions_for_proposal')
-            information['budget_form'] = BudgetForm(call_id=call_pk, prefix='budget')
+            information['questions_for_proposal_form'] = QuestionsForProposalForm(call=call, prefix='questions_for_proposal')
+            information['budget_form'] = BudgetForm(call=call, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-add')
 
@@ -94,9 +94,9 @@ class ProposalView(TemplateView):
             person_form = PersonForm(request.POST, prefix='person')
             proposal_form = ProposalForm(request.POST, prefix='proposal')
             questions_for_proposal_form = QuestionsForProposalForm(request.POST,
-                                                                   call_id=call.id,
+                                                                   call=call,
                                                                    prefix='questions_for_proposal')
-            budget_form = BudgetForm(request.POST, call_id=call.id, prefix='budget')
+            budget_form = BudgetForm(request.POST, call=call, prefix='budget')
         else:
             # It needs to modify an existing Proposal
             proposal = Proposal.objects.get(pk=proposal_pk)
@@ -104,9 +104,9 @@ class ProposalView(TemplateView):
             person_form = PersonForm(request.POST, instance=proposal.applicant, prefix='person')
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix='proposal')
             questions_for_proposal_form = QuestionsForProposalForm(request.POST,
-                                                                   proposal_id=proposal_pk,
+                                                                   proposal=proposal,
                                                                    prefix='questions_for_proposal')
-            budget_form = BudgetForm(request.POST, proposal_id=proposal_pk, prefix='budget')
+            budget_form = BudgetForm(request.POST, proposal=proposal, prefix='budget')
 
         if person_form.is_valid() and proposal_form.is_valid() and questions_for_proposal_form.is_valid() \
                 and budget_form.is_valid():

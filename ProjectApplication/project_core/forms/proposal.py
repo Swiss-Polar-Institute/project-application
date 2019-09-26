@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm, Form
-from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, BudgetCategory, Keyword, ProposedBudgetItem
+from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, Keyword, ProposedBudgetItem, \
+    Organisation
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -15,11 +16,14 @@ class ProposalForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
-        self._call_id = kwargs.pop('call_id', None)
+        self._call = kwargs.pop('call', None)
 
         super(ProposalForm, self).__init__(*args, **kwargs)
 
-        self.fields['call_id'].initial = self._call_id
+        if self.instance.id:
+            self.fields['call_id'].initial = self.instance.call.id
+        else:
+            self.fields['call_id'].initial = self._call.id
 
         keywords_list = []
         if self.instance.id:
@@ -53,24 +57,24 @@ class ProposalForm(ModelForm):
 
 class QuestionsForProposalForm(Form):
     def __init__(self, *args, **kwargs):
-        self._call_id = kwargs.pop('call_id', None)
-        self._proposal_id = kwargs.pop('proposal_id', None)
+        self._call = kwargs.pop('call', None)
+        self._proposal = kwargs.pop('proposal', None)
 
-        assert self._call_id or self._proposal_id
+        assert self._call or self._proposal
 
         super(QuestionsForProposalForm, self).__init__(*args, **kwargs)
 
-        if self._call_id is not None:
+        if self._call:
             # This is a form with questions but not answers yet
-            for question in Call.objects.get(id=self._call_id).callquestion_set.all():
+            for question in self._call.callquestion_set.all().order_by('question_text'):
                 self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question.question_text,
                                                                                  widget=forms.Textarea())
 
-        if self._proposal_id is not None:
+        if self._proposal is not None:
             # This is a form with already answers
-            for question in Proposal.objects.get(id=self._proposal_id).call.callquestion_set.all():
+            for question in self._proposal.call.callquestion_set.all().order_by('question_text'):
                 try:
-                    answer = ProposalQAText.objects.get(proposal=self._proposal_id, call_question=question.id).answer
+                    answer = ProposalQAText.objects.get(proposal=self._proposal, call_question=question.id).answer
                 except ObjectDoesNotExist:
                     answer = None
 
@@ -109,37 +113,37 @@ class QuestionsForProposalForm(Form):
 
 class BudgetForm(Form):
     def __init__(self, *args, **kwargs):
-        self._call_id = kwargs.pop('call_id', None)
-        self._proposal_id = kwargs.pop('proposal_id', None)
-        self._maximum_budget = None
+        self._call: Call = kwargs.pop('call', None)
+        self._proposal: Proposal = kwargs.pop('proposal', None)
 
-        assert self._call_id or self._proposal_id
+        assert self._call or self._proposal
+
+        if self._proposal:
+            self._call = self._proposal.call
 
         super(BudgetForm, self).__init__(*args, **kwargs)
 
-        if self._call_id:
-            for budget_category in Call.objects.get(id=self._call_id).budget_categories.all():
-                self.fields['category_budget_name_%d' % budget_category.id] = forms.CharField(
-                    help_text=budget_category.description, widget=forms.HiddenInput(), required=False)
-                self.fields['details_%d' % budget_category.id] = forms.CharField()
-                self.fields['amount_%d' % budget_category.id] = forms.DecimalField()
+        for budget_category in self._call.budget_categories.all().order_by('name'):
+            self.fields['category_budget_name_%d' % budget_category.id] = forms.CharField(
+                help_text=budget_category.description, widget=forms.HiddenInput(), required=False)
 
-        if self._proposal_id:
-            self._call_id = Proposal.objects.get(id=self._proposal_id).call.id
+            proposal_details = None
+            proposal_amount = None
 
-            for proposed_budget_item in ProposedBudgetItem.objects.filter(proposal_id=self._proposal_id):
-                budget_category_id = proposed_budget_item.category.id
-                self.fields['category_budget_name_%d' % budget_category_id] = forms.CharField(
-                    help_text=proposed_budget_item.category.name, widget=forms.HiddenInput(), required=False)
-                self.fields['details_%d' % budget_category_id] = forms.CharField(initial=proposed_budget_item.details)
-                self.fields['amount_%d' % budget_category_id] = forms.DecimalField(initial=proposed_budget_item.amount)
+            if self._proposal:
+                proposed_budget_item = ProposedBudgetItem.objects.get(proposal=self._proposal, category=budget_category)
+                proposal_details = proposed_budget_item.details
+                proposal_amount = proposed_budget_item.amount
 
-        self._maximum_budget = Call.objects.get(id=self._call_id).budget_maximum
+            self.fields['details_%d' % budget_category.id] = forms.CharField(initial=proposal_details)
+            self.fields['amount_%d' % budget_category.id] = forms.DecimalField(initial=proposal_amount)
 
     def clean(self):
         cleaned_data = super(BudgetForm, self).clean()
 
         budget_amount = 0
+
+        maximum_budget = self._call.budget_maximum
 
         for key in list(cleaned_data.keys()):
             answer = cleaned_data[key]
@@ -147,19 +151,19 @@ class BudgetForm(Form):
             if key.startswith('amount_'):
                 budget_amount += answer
 
-            if key.startswith('amount_') and answer > self._maximum_budget:
+            if key.startswith('amount_') and answer > maximum_budget:
                 number = int(key[len('amount_'):])
                 budget_name = self.fields['category_budget_name_%d' % number]
                 self.add_error(key, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_name.help_text))
 
-        if budget_amount > self._maximum_budget:
+        if budget_amount > maximum_budget:
             self.add_error(None,
-                           'Maximum budget for this call is {} total budget for your proposal {}'.format(self._maximum_budget, budget_amount))
+                           'Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
 
         return cleaned_data
 
     def save_budget(self):
-        for budget_category in Call.objects.get(id=self._call_id).budget_categories.all():
+        for budget_category in self._call.budget_categories.all():
 
             ProposedBudgetItem.objects.update_or_create(
                 proposal=Proposal.objects.get(id=self._proposal_id),
@@ -169,3 +173,10 @@ class BudgetForm(Form):
                     'amount': self.cleaned_data['amount_%d' % budget_category.id]
                 }
             )
+
+
+# class OtherSourcesOfFunding(Form):
+#     def __init__(self, *args, **kwargs):
+#         super(OtherSourcesOfFunding, self).__init__(*args, **kwargs)
+#
+#         for Organisation.objects.all
