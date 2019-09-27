@@ -148,6 +148,7 @@ class ProposalView(TemplateView):
         context['proposal_form'] = proposal_form
         context['questions_for_proposal_form'] = questions_for_proposal_form
         context['budget_form'] = budget_form
+        context['funding'] = funding_item_form_set
 
         context.update(ProposalView._call_information_for_template(call))
 

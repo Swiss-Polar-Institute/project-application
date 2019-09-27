@@ -162,7 +162,7 @@ class BudgetForm(Form):
                 proposal_details = proposed_budget_item.details
                 proposal_amount = proposed_budget_item.amount
 
-            self.fields['details_%d' % budget_category.id] = forms.CharField(initial=proposal_details)
+            self.fields['details_%d' % budget_category.id] = forms.CharField(initial=proposal_details, required=False)
             self.fields['amount_%d' % budget_category.id] = forms.DecimalField(initial=proposal_amount)
 
     def clean(self):
@@ -176,7 +176,7 @@ class BudgetForm(Form):
             amount = cleaned_data['amount_%d' % budget_category.id]
             detail = cleaned_data['details_%d' % budget_category.id]
             budget_description = budget_category.description
-            field_for_validation = 'category_budget_name_%d'
+            field_for_validation = 'category_budget_name_%d' % budget_category.id
 
             budget_amount += amount
 
