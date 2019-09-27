@@ -4,8 +4,6 @@
     <div class="fieldWrapper">
         <font color="red">{{ field.errors }}</font>
         {{ field.label_tag }}<br>{{ field }}
-        {% if field.help_text %}
             <p class="help">{{ field.help_text|safe }}</p>
-        {% endif %}
     </div>
 {% endfor %}

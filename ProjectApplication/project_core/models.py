@@ -65,6 +65,7 @@ class Question(models.Model):
     )
 
     question_text = models.TextField()
+    question_description = models.TextField(null=True, blank=True)
     answer_type = models.CharField(help_text='Type of field that should be applied to the question answer', max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.IntegerField(help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True)
 
@@ -261,7 +262,7 @@ class BudgetItem(models.Model):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     category = models.ForeignKey(BudgetCategory, help_text='', blank=False, null=False, on_delete=models.PROTECT)
-    details = models.TextField(help_text='', blank=False, null=False)
+    details = models.TextField(help_text='', blank=True, null=False)
     amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, max_digits=10, blank=False, null=True)
 
     class Meta:

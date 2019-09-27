@@ -4,6 +4,7 @@ from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, Keywo
     Organisation, FundingStatus, ProposalFundingItem
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms.models import inlineformset_factory
+from django.forms import ModelChoiceField
 
 
 class PersonForm(ModelForm):
@@ -12,7 +13,14 @@ class PersonForm(ModelForm):
         fields = ['academic_title', 'first_name', 'surname', 'organisations', 'group', ]
 
 
+class OrganisationChoiceField(ModelChoiceField):
+    def label_from_instance(self, organisation):
+        return organisation.abbreviated_name()
+
+
 class ProposalFundingItemForm(ModelForm):
+    organisation = OrganisationChoiceField(queryset=Organisation.objects.all())
+
     def __init__(self, *args, **kwargs):
         super(ProposalFundingItemForm, self).__init__(*args, **kwargs)
 
@@ -90,11 +98,18 @@ class QuestionsForProposalForm(Form):
                 except ObjectDoesNotExist:
                     pass
 
-            self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question.question_text,
+            question_text = question.question_text
+            if question.answer_max_length:
+                question_text += ' (maximum {} words)'.format(question.answer_max_length)
+
+            self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question_text,
                                                                              widget=forms.Textarea(),
-                                                                             initial=answer)
+                                                                             initial=answer,
+                                                                             help_text=question.question_description)
 
     def save_answers(self):
+        # for question in self._call.callquestion_set.all():
+        #     answer = self.cleaned_data['']
         for question, answer in self.cleaned_data.items():
             call_question_id = int(question[len('question_'):])
 
@@ -159,13 +174,20 @@ class BudgetForm(Form):
 
         for budget_category in self._call.budget_categories.all():
             amount = cleaned_data['amount_%d' % budget_category.id]
+            detail = cleaned_data['details_%d' % budget_category.id]
+            budget_description = budget_category.description
+            field_for_validation = 'category_budget_name_%d'
 
             budget_amount += amount
 
             if amount > maximum_budget:
-                budget_description = budget_category.description
-                field = 'category_budget_name_%d' % budget_category.id
-                self.add_error(field, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_description))
+                self.add_error(field_for_validation, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_description))
+
+            if amount > 0 and detail == '':
+                self.add_error(field_for_validation, 'Details of item "{}" cannot be empty because the value is not 0'.format(budget_description))
+
+            if amount < 0:
+                self.add_error(field_for_validation, 'Amount of item "{}" is negative. Amount cannot be negative'.format(budget_description))
 
         if budget_amount > maximum_budget:
             self.add_error(None,

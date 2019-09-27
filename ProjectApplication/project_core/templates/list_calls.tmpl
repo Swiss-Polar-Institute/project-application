@@ -6,11 +6,15 @@
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %} <H1>List of calls</H1>
 
+        {% if calls %}
         <ul>
             {% for call in calls %}
-            <li><a href="{% url 'proposal-add' %}?call={{ call.pk }}">{{ call.long_name }}</a></li>
+                <li><a href="{% url 'proposal-add' %}?call={{ call.pk }}">{{ call.long_name }}</a></li>
             {% endfor %}
         </ul>
+        {% else %}
+            No calls at the moment.
+        {% endif %}
 
     </div>
 {% endblock %}
