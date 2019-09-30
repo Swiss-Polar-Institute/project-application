@@ -247,10 +247,16 @@ ProposalFundingItemFormSet = inlineformset_factory(
 
 
 class BudgetItemForm(Form):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, call, proposal, **kwargs):
         super(Form, self).__init__(*args, **kwargs)
 
-        initial = kwargs['initial']
+        self._call = call
+        self._proposal = proposal
+
+        initial = {}
+
+        if 'initial' in kwargs:
+            initial = kwargs.get('initial')
 
         category_help_text = '{}: {}'.format(initial.get('name'), initial.get('description'))
 
@@ -259,6 +265,9 @@ class BudgetItemForm(Form):
 
         self.fields['details'] = forms.CharField(label='Details', initial=initial.get('details', None))
         self.fields['amount'] = forms.DecimalField(label='Amount', initial=initial.get('amount', None))
+
+    def save_budget(self):
+        print('save budget')
 
 
 BudgetItemFormSet = formset_factory(BudgetItemForm, extra=0)
