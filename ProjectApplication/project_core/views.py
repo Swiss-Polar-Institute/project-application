@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
-    BudgetItemFormSet
+    BudgetItemFormSet, budget_form_factory
 from .models import Proposal, Call, ProposalStatus, BudgetCategory
 
 
@@ -55,7 +55,7 @@ class ProposalView(TemplateView):
 
             information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal=proposal,
                                                                                   prefix='questions_for_proposal')
-            information['budget_form'] = BudgetItemFormSet(proposal=proposal, prefix='budget')
+            information['budget_form'] = BudgetItemFormSet(instance=proposal, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
 
@@ -75,11 +75,9 @@ class ProposalView(TemplateView):
 
             initial_budget = []
             for budget_category in call.budget_categories.all():
-                initial_budget.append({'category_id': budget_category.id})
+                initial_budget.append({'category_id': budget_category.id, 'amount': None, 'details': None})
 
-            # initial_budget = [{'category': 1, 'details': 'test', 'amount': 11}]
-            information['budget_form'] = BudgetItemFormSet(prefix='budget', initial=initial_budget, instance=None)
-            # information['budget_form'] = BudgetItemFormSet(prefix='budget')
+            information['budget_form'] = budget_form_factory(extra=len(initial_budget))(prefix='budget', initial=initial_budget, instance=None)
             information['proposal_action_url'] = reverse('proposal-add')
 
         information.update(ProposalView._call_information_for_template(call))

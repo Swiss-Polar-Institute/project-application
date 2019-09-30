@@ -262,19 +262,14 @@ class PlainTextWidget(forms.Widget):
 class BudgetItemForm(ModelForm):
     category_id = forms.CharField(widget=PlainTextWidget, required=False)
     details = forms.CharField()
+    id = forms.IntegerField(widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
         super(BudgetItemForm, self).__init__(*args, **kwargs)
 
-        # initial = {}
-        #
-        # if 'initial' in kwargs:
-        #     initial = kwargs.get('initial')
-        #     # assert False
-        #
-        # category_help_text = '{}'.format(self.instance.category)
-
-        if 'category_id' in self.initial:
+        if self.instance and self.instance.pk:
+            category_id = self.instance.category.id
+        elif 'category_id' in self.initial:
             category_id = self.initial['category_id']
         elif hasattr(self, 'cleaned_data'):
             category_id = self.cleaned_data['category_id']
@@ -283,6 +278,7 @@ class BudgetItemForm(ModelForm):
 
         if category_id:
             self.fields['category_id'].help_text = BudgetCategory.objects.get(id=category_id).name
+            self.fields['category_id'].initial = category_id
             self.fields['amount'].help_text = ''
 
         print('category_id', category_id)
@@ -308,7 +304,7 @@ class BudgetItemForm(ModelForm):
 
     class Meta:
         model = ProposedBudgetItem
-        fields = ['category_id', 'details', 'amount', ]
+        fields = ['id', 'category_id', 'details', 'amount', ]
 
 
 class BaseBudgetItemFormSet(BaseInlineFormSet):
@@ -349,5 +345,8 @@ class BaseBudgetItemFormSet(BaseInlineFormSet):
         return cleaned_data
 
 
-# BudgetItemFormSet = modelformset_factory(ProposedBudgetItem, form=BudgetItemForm, formset=BaseBudgetItemFormSet, extra=0)
-BudgetItemFormSet = inlineformset_factory(Proposal, ProposedBudgetItem, form=BudgetItemForm, formset=BaseBudgetItemFormSet, can_delete=False)
+BudgetItemFormSet = inlineformset_factory(Proposal, ProposedBudgetItem, form=BudgetItemForm, formset=BaseBudgetItemFormSet, can_delete=False, extra=0)
+
+
+def budget_form_factory(extra):
+    return inlineformset_factory(Proposal, ProposedBudgetItem, form=BudgetItemForm, formset=BaseBudgetItemFormSet, can_delete=False, extra=extra)
