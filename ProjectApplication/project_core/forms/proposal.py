@@ -1,11 +1,13 @@
 from django import forms
-from django.forms import ModelForm, Form
-from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, Keyword, ProposedBudgetItem, \
-    Organisation, FundingStatus, ProposalFundingItem
-from django.core.exceptions import ObjectDoesNotExist
-from django.forms.models import inlineformset_factory
-from django.forms import ModelChoiceField
+from django.forms import ModelForm, Form, BaseFormSet, BaseModelFormSet
+from django.utils.safestring import SafeText
 
+from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, Keyword, ProposedBudgetItem, \
+    Organisation, FundingStatus, ProposalFundingItem, BudgetCategory
+from django.core.exceptions import ObjectDoesNotExist
+from django.forms.models import inlineformset_factory, formset_factory
+from django.forms import ModelChoiceField, modelformset_factory
+from django.forms.widgets import Select
 
 class PersonForm(ModelForm):
     class Meta:
@@ -73,11 +75,6 @@ class ProposalForm(ModelForm):
         fields = ['call_id', 'title', 'geographical_areas', 'start_timeframe', 'duration']
 
 
-# See documentation in: https://medium.com/@adandan01/django-inline-formsets-example-mybook-420cc4b6225d
-ProposalFundingItemFormSet = inlineformset_factory(
-    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, extra=1, can_delete=True)
-
-
 class QuestionsForProposalForm(Form):
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
@@ -138,75 +135,75 @@ class QuestionsForProposalForm(Form):
         return cleaned_data
 
 
-class BudgetForm(Form):
-    def __init__(self, *args, **kwargs):
-        self._call: Call = kwargs.pop('call', None)
-        self._proposal: Proposal = kwargs.pop('proposal', None)
-
-        assert self._call or self._proposal
-
-        if self._proposal:
-            self._call = self._proposal.call
-
-        super(BudgetForm, self).__init__(*args, **kwargs)
-
-        for budget_category in self._call.budget_categories.all().order_by('name'):
-            self.fields['category_budget_name_%d' % budget_category.id] = forms.CharField(
-                help_text=budget_category.description, widget=forms.HiddenInput(), required=False)
-
-            proposal_details = None
-            proposal_amount = None
-
-            if self._proposal:
-                proposed_budget_item = ProposedBudgetItem.objects.get(proposal=self._proposal, category=budget_category)
-                proposal_details = proposed_budget_item.details
-                proposal_amount = proposed_budget_item.amount
-
-            self.fields['details_%d' % budget_category.id] = forms.CharField(initial=proposal_details, required=False)
-            self.fields['amount_%d' % budget_category.id] = forms.DecimalField(initial=proposal_amount)
-
-    def clean(self):
-        cleaned_data = super(BudgetForm, self).clean()
-
-        budget_amount = 0
-
-        maximum_budget = self._call.budget_maximum
-
-        for budget_category in self._call.budget_categories.all():
-            amount = cleaned_data['amount_%d' % budget_category.id]
-            detail = cleaned_data['details_%d' % budget_category.id]
-            budget_description = budget_category.description
-            field_for_validation = 'category_budget_name_%d' % budget_category.id
-
-            budget_amount += amount
-
-            if amount > maximum_budget:
-                self.add_error(field_for_validation, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_description))
-
-            if amount > 0 and detail == '':
-                self.add_error(field_for_validation, 'Details of item "{}" cannot be empty because the value is not 0'.format(budget_description))
-
-            if amount < 0:
-                self.add_error(field_for_validation, 'Amount of item "{}" is negative. Amount cannot be negative'.format(budget_description))
-
-        if budget_amount > maximum_budget:
-            self.add_error(None,
-                           'Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
-
-        return cleaned_data
-
-    def save_budget(self):
-        for budget_category in self._call.budget_categories.all():
-
-            ProposedBudgetItem.objects.update_or_create(
-                proposal=Proposal.objects.get(id=self._proposal_id),
-                category=budget_category,
-                defaults={
-                    'details': self.cleaned_data['details_%d' % budget_category.id],
-                    'amount': self.cleaned_data['amount_%d' % budget_category.id]
-                }
-            )
-
+# class BudgetForm(Form):
+#     def __init__(self, *args, **kwargs):
+#         self._call: Call = kwargs.pop('call', None)
+#         self._proposal: Proposal = kwargs.pop('proposal', None)
+#
+#         assert self._call or self._proposal
+#
+#         if self._proposal:
+#             self._call = self._proposal.call
+#
+#         super(BudgetForm, self).__init__(*args, **kwargs)
+#
+#         for budget_category in self._call.budget_categories.all().order_by('name'):
+#             self.fields['category_budget_name_%d' % budget_category.id] = forms.CharField(
+#                 help_text=budget_category.description, widget=forms.HiddenInput(), required=False)
+#
+#             proposal_details = None
+#             proposal_amount = None
+#
+#             if self._proposal:
+#                 proposed_budget_item = ProposedBudgetItem.objects.get(proposal=self._proposal, category=budget_category)
+#                 proposal_details = proposed_budget_item.details
+#                 proposal_amount = proposed_budget_item.amount
+#
+#             self.fields['details_%d' % budget_category.id] = forms.CharField(initial=proposal_details, required=False)
+#             self.fields['amount_%d' % budget_category.id] = forms.DecimalField(initial=proposal_amount)
+#
+#     def clean(self):
+#         cleaned_data = super(BudgetForm, self).clean()
+#
+#         budget_amount = 0
+#
+#         maximum_budget = self._call.budget_maximum
+#
+#         for budget_category in self._call.budget_categories.all():
+#             amount = cleaned_data['amount_%d' % budget_category.id]
+#             detail = cleaned_data['details_%d' % budget_category.id]
+#             budget_description = budget_category.description
+#             field_for_validation = 'category_budget_name_%d' % budget_category.id
+#
+#             budget_amount += amount
+#
+#             if amount > maximum_budget:
+#                 self.add_error(field_for_validation, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_description))
+#
+#             if amount > 0 and detail == '':
+#                 self.add_error(field_for_validation, 'Details of item "{}" cannot be empty because the value is not 0'.format(budget_description))
+#
+#             if amount < 0:
+#                 self.add_error(field_for_validation, 'Amount of item "{}" is negative. Amount cannot be negative'.format(budget_description))
+#
+#         if budget_amount > maximum_budget:
+#             self.add_error(None,
+#                            'Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
+#
+#         return cleaned_data
+#
+#     def save_budget(self):
+#         for budget_category in self._call.budget_categories.all():
+#
+#             ProposedBudgetItem.objects.update_or_create(
+#                 proposal=Proposal.objects.get(id=self._proposal_id),
+#                 category=budget_category,
+#                 defaults={
+#                     'details': self.cleaned_data['details_%d' % budget_category.id],
+#                     'amount': self.cleaned_data['amount_%d' % budget_category.id]
+#                 }
+#             )
+#
 
 class FundingOrganisationsForm(Form):
     def __init__(self, *args, **kwargs):
@@ -235,3 +232,43 @@ class FundingOrganisationsForm(Form):
 
         organisations.append((99, 'Other'),)
         return organisations
+
+
+# See documentation in: https://medium.com/@adandan01/django-inline-formsets-example-mybook-420cc4b6225d
+ProposalFundingItemFormSet = inlineformset_factory(
+    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, extra=1, can_delete=True)
+
+
+class ProposalBudgetItemCategoryAsText(Select):
+    def render(self, name, value, attrs=None, renderer=None):
+        category = BudgetCategory.objects.get(id=value).name
+        ret = SafeText('{}<input type="hidden" name="{}" value="{} id="{}">'.format(category, name, value, attrs['id']))
+        return ret
+
+
+class BudgetItemForm(Form):
+    def __init__(self, *args, **kwargs):
+        super(Form, self).__init__(*args, **kwargs)
+
+        initial = kwargs['initial']
+        # self.fields['id'] = forms.CharField(label='id', help_text='Id', initial=kwargs.get('id', None))
+        self.fields['category'] = forms.CharField(label='category', initial=initial.get('id', None), \
+                                              widget=forms.HiddenInput(), required=False)
+
+        self.fields['details'] = forms.CharField(label='details', initial=initial.get('details', None))
+        self.fields['amount'] = forms.DecimalField(label='amount', initial=initial.get('amount', None))
+        print('test')
+
+#         for budget_category in self._call.budget_categories.all():
+#
+#             ProposedBudgetItem.objects.update_or_create(
+#                 proposal=Proposal.objects.get(id=self._proposal_id),
+#                 category=budget_category,
+#                 defaults={
+#                     'details': self.cleaned_data['details_%d' % budget_category.id],
+#                     'amount': self.cleaned_data['amount_%d' % budget_category.id]
+#                 }
+#             )
+
+
+BudgetItemFormSet = formset_factory(BudgetItemForm, extra=0)

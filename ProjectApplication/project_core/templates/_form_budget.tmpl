@@ -3,19 +3,32 @@ Maximum budget: {{ maximum_budget }}
 <font color="red">
     {{ budget_form.non_field_errors }}
 </font>
+<p>
+    {{ budget_form.management_form }}
 
-<table border>
-    <tr>
-        <td><b>Category</b></td><td><b>Details</b></td><td><b>Amount Requested</b></td>
-    </tr>
-    <tr>
-        {% for field in budget_form %}
-            <font color="red">{{ field.errors }}</font>
-
-            <td>{{ field.help_text }} {{ field }}</td>
-            {% if forloop.counter|divisibleby:3 %}
-                </tr></tr>
+    <table border="1">
+        {% for form in budget_form.forms %}
+            {% if forloop.first %}
+                <thead>
+                    <tr>
+                        {% for field in form %}
+                            <th>{{ field.label }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
             {% endif %}
-        {% endfor %}
-    </tr>
-</table>
+
+            <tbody>
+
+            <tr>
+                {% for field in form %}
+                <td>
+                        {{ field.errors.as_ul }}
+                        {{ field.label }}
+                        {{ field }}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
