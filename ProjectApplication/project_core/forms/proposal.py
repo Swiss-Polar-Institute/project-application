@@ -1,13 +1,12 @@
 from django import forms
-from django.forms import ModelForm, Form, BaseFormSet, BaseModelFormSet
-from django.utils.safestring import SafeText
-
-from ..models import Person, Proposal, Call, ProposalQAText, CallQuestion, Keyword, ProposedBudgetItem, \
-    Organisation, FundingStatus, ProposalFundingItem, BudgetCategory
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import ModelChoiceField
+from django.forms import ModelForm, Form
 from django.forms.models import inlineformset_factory, formset_factory
-from django.forms import ModelChoiceField, modelformset_factory
-from django.forms.widgets import Select
+
+from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Organisation, FundingStatus, \
+    ProposalFundingItem
+
 
 class PersonForm(ModelForm):
     class Meta:
@@ -130,7 +129,8 @@ class QuestionsForProposalForm(Form):
             current_words = len(answer.split())
 
             if current_words > max_word_length:
-                self.add_error(question_number, 'Too long. Current: {} words, maximum: {} words'.format(current_words, max_word_length))
+                self.add_error(question_number,
+                               'Too long. Current: {} words, maximum: {} words'.format(current_words, max_word_length))
 
         return cleaned_data
 
@@ -228,9 +228,9 @@ class FundingOrganisationsForm(Form):
         organisations = []
 
         for organisation in Organisation.objects.all().order_by('short_name'):
-            organisations.append((organisation.id, organisation.abbreviated_name()),)
+            organisations.append((organisation.id, organisation.abbreviated_name()), )
 
-        organisations.append((99, 'Other'),)
+        organisations.append((99, 'Other'), )
         return organisations
 
 
@@ -239,11 +239,11 @@ ProposalFundingItemFormSet = inlineformset_factory(
     Proposal, ProposalFundingItem, form=ProposalFundingItemForm, extra=1, can_delete=True)
 
 
-class ProposalBudgetItemCategoryAsText(Select):
-    def render(self, name, value, attrs=None, renderer=None):
-        category = BudgetCategory.objects.get(id=value).name
-        ret = SafeText('{}<input type="hidden" name="{}" value="{} id="{}">'.format(category, name, value, attrs['id']))
-        return ret
+# class ProposalBudgetItemCategoryAsText(Select):
+#     def render(self, name, value, attrs=None, renderer=None):
+#         category = BudgetCategory.objects.get(id=value).name
+#         ret = SafeText('{}<input type="hidden" name="{}" value="{} id="{}">'.format(category, name, value, attrs['id']))
+#         return ret
 
 
 class BudgetItemForm(Form):
@@ -251,24 +251,14 @@ class BudgetItemForm(Form):
         super(Form, self).__init__(*args, **kwargs)
 
         initial = kwargs['initial']
-        # self.fields['id'] = forms.CharField(label='id', help_text='Id', initial=kwargs.get('id', None))
-        self.fields['category'] = forms.CharField(label='category', initial=initial.get('id', None), \
-                                              widget=forms.HiddenInput(), required=False)
 
-        self.fields['details'] = forms.CharField(label='details', initial=initial.get('details', None))
-        self.fields['amount'] = forms.DecimalField(label='amount', initial=initial.get('amount', None))
-        print('test')
+        category_help_text = '{}: {}'.format(initial.get('name'), initial.get('description'))
 
-#         for budget_category in self._call.budget_categories.all():
-#
-#             ProposedBudgetItem.objects.update_or_create(
-#                 proposal=Proposal.objects.get(id=self._proposal_id),
-#                 category=budget_category,
-#                 defaults={
-#                     'details': self.cleaned_data['details_%d' % budget_category.id],
-#                     'amount': self.cleaned_data['amount_%d' % budget_category.id]
-#                 }
-#             )
+        self.fields['category'] = forms.CharField(label='Category', widget=forms.HiddenInput(), required=False,
+                                                  help_text=category_help_text)
+
+        self.fields['details'] = forms.CharField(label='Details', initial=initial.get('details', None))
+        self.fields['amount'] = forms.DecimalField(label='Amount', initial=initial.get('amount', None))
 
 
 BudgetItemFormSet = formset_factory(BudgetItemForm, extra=0)

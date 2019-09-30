@@ -24,8 +24,8 @@ Maximum budget: {{ maximum_budget }}
                 {% for field in form %}
                 <td>
                         {{ field.errors.as_ul }}
-                        {{ field.label }}
                         {{ field }}
+                        {{ field.help_text }}
                 </td>
                 {% endfor %}
             </tr>
