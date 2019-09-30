@@ -11,7 +11,7 @@ Maximum budget: {{ maximum_budget }}
             {% if forloop.first %}
                 <thead>
                     <tr>
-                        {% for field in form %}
+                        {% for field in form.visible_fields %}
                             <th>{{ field.label }}</th>
                         {% endfor %}
                     </tr>
@@ -21,7 +21,7 @@ Maximum budget: {{ maximum_budget }}
             <tbody>
 
             <tr>
-                {% for field in form %}
+                {% for field in form.visible_fields %}
                 <td>
                         {{ field.errors.as_ul }}
                         {{ field }}

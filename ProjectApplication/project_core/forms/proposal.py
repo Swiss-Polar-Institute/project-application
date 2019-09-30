@@ -1,11 +1,14 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
-from django.forms import ModelChoiceField
+from django.forms import ModelChoiceField, BaseModelFormSet, BaseInlineFormSet
 from django.forms import ModelForm, Form
-from django.forms.models import inlineformset_factory, formset_factory
+from django.forms.models import inlineformset_factory, formset_factory, modelformset_factory
+from django.utils.safestring import mark_safe
+from django.db.models import F
+
 
 from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Organisation, FundingStatus, \
-    ProposalFundingItem
+    ProposalFundingItem, ProposedBudgetItem, BudgetItem, BudgetCategory
 
 
 class PersonForm(ModelForm):
@@ -115,7 +118,7 @@ class QuestionsForProposalForm(Form):
             )
 
     def clean(self):
-        cleaned_data = super(QuestionsForProposalForm, self).clean()
+        cleaned_data = super().clean()
 
         # list because otherwise dictionary size changes during execution
         # (need to check why exactly)
@@ -245,29 +248,106 @@ ProposalFundingItemFormSet = inlineformset_factory(
 #         ret = SafeText('{}<input type="hidden" name="{}" value="{} id="{}">'.format(category, name, value, attrs['id']))
 #         return ret
 
+class PlainTextWidget(forms.Widget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-class BudgetItemForm(Form):
-    def __init__(self, *args, call, proposal, **kwargs):
-        super(Form, self).__init__(*args, **kwargs)
-
-        self._call = call
-        self._proposal = proposal
-
-        initial = {}
-
-        if 'initial' in kwargs:
-            initial = kwargs.get('initial')
-
-        category_help_text = '{}: {}'.format(initial.get('name'), initial.get('description'))
-
-        self.fields['category'] = forms.CharField(label='Category', widget=forms.HiddenInput(), required=False,
-                                                  help_text=category_help_text)
-
-        self.fields['details'] = forms.CharField(label='Details', initial=initial.get('details', None))
-        self.fields['amount'] = forms.DecimalField(label='Amount', initial=initial.get('amount', None))
-
-    def save_budget(self):
-        print('save budget')
+    def render(self, name, value, attrs=None, renderer=None):
+        if value:
+            return '<input type="hidden" name="{}" value="{}" id="{}">'.format(name, value, attrs['id'])
+        else:
+            return '-'
 
 
-BudgetItemFormSet = formset_factory(BudgetItemForm, extra=0)
+class BudgetItemForm(ModelForm):
+    category_id = forms.CharField(widget=PlainTextWidget, required=False)
+    details = forms.CharField()
+
+    def __init__(self, *args, **kwargs):
+        super(BudgetItemForm, self).__init__(*args, **kwargs)
+
+        # initial = {}
+        #
+        # if 'initial' in kwargs:
+        #     initial = kwargs.get('initial')
+        #     # assert False
+        #
+        # category_help_text = '{}'.format(self.instance.category)
+
+        if 'category_id' in self.initial:
+            category_id = self.initial['category_id']
+        elif hasattr(self, 'cleaned_data'):
+            category_id = self.cleaned_data['category_id']
+        else:
+            category_id = None
+
+        if category_id:
+            self.fields['category_id'].help_text = BudgetCategory.objects.get(id=category_id).name
+            self.fields['amount'].help_text = ''
+
+        print('category_id', category_id)
+
+        # category_help_text = '{}: {}'.format(initial.get('name'), initial.get('description'))
+        #
+        # self.fields['category'] = forms.CharField(label='Category', widget=forms.HiddenInput(), required=False,
+        #                                           help_text=category_help_text)
+        #
+        # self.fields['details'] = forms.CharField(label='Details', initial=initial.get('details', None))
+        # self.fields['amount'] = forms.DecimalField(label='Amount', initial=initial.get('amount', None))
+
+        # category_help_text = '{}: {}'.format(initial.get('name'), initial.get('description'))
+        # self.fields['category'] = forms.CharField(label='Category', widget=forms.HiddenInput(), required=False,
+        #                                           help_text=category_help_text)
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        cleaned_data['category'] = BudgetCategory.objects.get(id=cleaned_data['category_id'])
+
+        return cleaned_data
+
+    class Meta:
+        model = ProposedBudgetItem
+        fields = ['category_id', 'details', 'amount', ]
+
+
+class BaseBudgetItemFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super(BaseBudgetItemFormSet, self).__init__(*args, **kwargs)
+
+        # if form_kwargs:
+        #     # if 'call' in form_kwargs:
+        #     #     call = form_kwargs['call']
+        #     #
+        #     #     self.queryset = call.budget_categories.annotate(category=F('name'))
+        #     #
+        #     if 'proposal' in form_kwargs:
+        #         proposal = form_kwargs['proposal']
+        #         self.queryset = ProposedBudgetItem.objects.filter(proposal=proposal)
+
+    def is_valid(self):
+        return super(BaseBudgetItemFormSet, self).is_valid()
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # # list because otherwise dictionary size changes during execution
+        # # (need to check why exactly)
+        # for question_number in list(cleaned_data.keys()):
+        #     answer = cleaned_data[question_number]
+        #     question_id = question_number[len('question_'):]
+        #
+        #     call_question = CallQuestion.objects.get(id=question_id)
+        #
+        #     max_word_length = call_question.answer_max_length
+        #     current_words = len(answer.split())
+        #
+        #     if current_words > max_word_length:
+        #         self.add_error(question_number,
+        #                        'Too long. Current: {} words, maximum: {} words'.format(current_words, max_word_length))
+
+        return cleaned_data
+
+
+# BudgetItemFormSet = modelformset_factory(ProposedBudgetItem, form=BudgetItemForm, formset=BaseBudgetItemFormSet, extra=0)
+BudgetItemFormSet = inlineformset_factory(Proposal, ProposedBudgetItem, form=BudgetItemForm, formset=BaseBudgetItemFormSet, can_delete=False)

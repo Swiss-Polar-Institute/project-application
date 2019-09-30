@@ -70,10 +70,16 @@ class ProposalView(TemplateView):
 
             information['questions_for_proposal_form'] = QuestionsForProposalForm(call=call,
                                                                                   prefix='questions_for_proposal')
-            information['budget_form'] = BudgetItemFormSet(form_kwargs={'call': call, 'proposal': None},
-                                                           prefix='budget',
-                                                           initial=BudgetCategory.objects.filter(call=call).values())
+            # information['budget_form'] = BudgetItemFormSet(form_kwargs={'call': call}, prefix='budget',
+            #                                                initial=[{'amount': 11}])
 
+            initial_budget = []
+            for budget_category in call.budget_categories.all():
+                initial_budget.append({'category_id': budget_category.id})
+
+            # initial_budget = [{'category': 1, 'details': 'test', 'amount': 11}]
+            information['budget_form'] = BudgetItemFormSet(prefix='budget', initial=initial_budget, instance=None)
+            # information['budget_form'] = BudgetItemFormSet(prefix='budget')
             information['proposal_action_url'] = reverse('proposal-add')
 
         information.update(ProposalView._call_information_for_template(call))
@@ -108,7 +114,7 @@ class ProposalView(TemplateView):
             questions_for_proposal_form = QuestionsForProposalForm(request.POST,
                                                                    call=call,
                                                                    prefix='questions_for_proposal')
-            budget_form = BudgetItemFormSet(request.POST, form_kwargs={'call': call, 'proposal': None}, prefix='budget')
+            budget_form = BudgetItemFormSet(request.POST, prefix='budget')
             funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix='funding')
         else:
             # It needs to modify an existing Proposal
@@ -119,8 +125,7 @@ class ProposalView(TemplateView):
             questions_for_proposal_form = QuestionsForProposalForm(request.POST,
                                                                    proposal=proposal,
                                                                    prefix='questions_for_proposal')
-            budget_form = BudgetItemFormSet(request.POST, form_kwargs={'proposal': proposal, 'call': None},
-                                            prefix='budget')
+            budget_form = BudgetItemFormSet(request.POST, instance=proposal, prefix='budget')
             funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix='funding', instance=proposal)
 
         if person_form.is_valid() and proposal_form.is_valid() and questions_for_proposal_form.is_valid() \
@@ -141,15 +146,21 @@ class ProposalView(TemplateView):
                 funding_item.proposal = proposal
                 funding_item.save()
 
-            budget_form._proposal_id = proposal.id  # TODO do not access internal variable
+            # budget_form._proposal_id = proposal.id  # TODO do not access internal variable
 
             questions_for_proposal_form._proposal_id = proposal.pk
             questions_for_proposal_form.save_answers()
 
             proposal.save()
 
-            for budget_item in budget_form:
-                budget_item.save_budget()
+            for budget_item_form in budget_form:
+                budget_item = budget_item_form.save(commit=False)
+                budget_item.proposal = proposal
+                budget_item.category = budget_item_form.cleaned_data['category']
+                budget_item.save()
+
+            # for budget_item in budget_form:
+            #     budget_item.save_budget()
 
             return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
 
