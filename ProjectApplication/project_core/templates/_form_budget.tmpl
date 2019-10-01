@@ -34,9 +34,12 @@ Maximum budget: {{ maximum_budget }}
         <tr>
             {% for field in form.visible_fields %}
             <td>
-                    {{ field.errors.as_ul }}
                     {{ field }}
                     {{ field.help_text }}
+                    <font color="red">
+                        {{ field.errors.as_ul }}
+                    </font>
+
             </td>
             {% endfor %}
         </tr>

@@ -439,35 +439,24 @@ class BudgetItemForm(forms.Form):
 
         budget_item.save()
 
-        # def clean(self):
-        #     cleaned_data = super(BudgetItemForm, self).clean()
-        #
-        #     budget_amount = 0
-        #
-        #     maximum_budget = self._call.budget_maximum
-        #
-        #     for budget_category in self._call.budget_categories.all():
-        #         amount = cleaned_data['amount_%d' % budget_category.id]
-        #         detail = cleaned_data['details_%d' % budget_category.id]
-        #         budget_description = budget_category.description
-        #         field_for_validation = 'category_budget_name_%d' % budget_category.id
-        #
-        #         budget_amount += amount
-        #
-        #         if amount > maximum_budget:
-        #             self.add_error(field_for_validation, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_description))
-        #
-        #         if amount > 0 and detail == '':
-        #             self.add_error(field_for_validation, 'Details of item "{}" cannot be empty because the value is not 0'.format(budget_description))
-        #
-        #         if amount < 0:
-        #             self.add_error(field_for_validation, 'Amount of item "{}" is negative. Amount cannot be negative'.format(budget_description))
-        #
-        #     if budget_amount > maximum_budget:
-        #         self.add_error(None,
-        #                        'Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
-        #
-        #     return cleaned_data
+    def clean(self):
+        cleaned_data = super(BudgetItemForm, self).clean()
+
+        budget_amount = 0
+
+        amount = cleaned_data['amount']
+        detail_with_text = 'details' in cleaned_data and len(cleaned_data['details']) > 0
+        category = BudgetCategory.objects.get(id=cleaned_data['category'])
+
+        budget_amount += amount
+
+        if amount > 0 and detail_with_text == '':
+            self.add_error('details', 'Details of item "{}" cannot be empty because the value is not 0'.format(category))
+
+        if amount < 0:
+            self.add_error('amount', 'Cannot be negative'.format(category))
+
+        return cleaned_data
 
 
 class BudgetFormSet(BaseFormSet):
