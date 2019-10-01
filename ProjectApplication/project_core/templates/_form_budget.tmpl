@@ -1,7 +1,9 @@
 Maximum budget: {{ maximum_budget }}
 
 <font color="red">
-    {{ budget_form.non_field_errors }}
+    {% for error in budget_form.non_field_errors %}
+        {{ error }}
+    {% endfor %}
 </font>
 <p>
     {{ budget_form.management_form }}
@@ -10,8 +12,12 @@ Maximum budget: {{ maximum_budget }}
         {% for hidden in form.hidden_fields %}
             {{ hidden }}
         {% endfor %}
-    {% endfor %}
 
+        {% for error in budget_form.non_field_errors %}
+            {{ error }}
+        {% endfor %}
+
+    {% endfor %}
     <table border="1">
 
         {% for form in budget_form.forms %}
@@ -30,9 +36,9 @@ Maximum budget: {{ maximum_budget }}
             <tr>
                 {% for field in form.visible_fields %}
                 <td>
+                        {{ field.help_text }}
                         {{ field.errors.as_ul }}
                         {{ field }}
-                        {{ field.help_text }}
                 </td>
                 {% endfor %}
             </tr>

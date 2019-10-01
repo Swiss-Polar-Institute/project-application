@@ -260,28 +260,38 @@ class PlainTextWidget(forms.Widget):
 
 
 class BudgetItemForm(ModelForm):
-    category_id = forms.CharField(widget=PlainTextWidget, required=False)
+    category_id = forms.CharField(widget=PlainTextWidget)
     details = forms.CharField()
-    id = forms.IntegerField(widget=forms.HiddenInput())
+    id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
     def __init__(self, *args, **kwargs):
         super(BudgetItemForm, self).__init__(*args, **kwargs)
 
+        self._category_id = None
+
+        # needed to ensure that self.cleaned_data exists
+        self.is_valid()
+
+        print('00 hasattr self cleaned_data', hasattr(self, 'cleaned_data'))
+
         if self.instance and self.instance.pk:
-            category_id = self.instance.category.id
+            self._category_id = self.instance.category.id
         elif 'category_id' in self.initial:
-            category_id = self.initial['category_id']
+            self._category_id = self.initial['category_id']
         elif hasattr(self, 'cleaned_data'):
-            category_id = self.cleaned_data['category_id']
+            self._category_id = self.cleaned_data['category_id']
         else:
-            category_id = None
+            self._category_id = None
 
-        if category_id:
-            self.fields['category_id'].help_text = BudgetCategory.objects.get(id=category_id).name
-            self.fields['category_id'].initial = category_id
-            self.fields['amount'].help_text = ''
+        print('00 hasattr self cleaned_data', hasattr(self, 'cleaned_data'))
 
-        print('category_id', category_id)
+        if self._category_id:
+            self.fields['category_id'].help_text = BudgetCategory.objects.get(id=self._category_id).name
+            self.fields['category_id'].initial = self._category_id
+        else:
+            print('no category_id')
+
+        print('init category_id', self._category_id)
 
         # category_help_text = '{}: {}'.format(initial.get('name'), initial.get('description'))
         #
@@ -296,7 +306,9 @@ class BudgetItemForm(ModelForm):
         #                                           help_text=category_help_text)
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super(BudgetItemForm, self).clean()
+
+        print('clean category_id', self._category_id)
 
         cleaned_data['category'] = BudgetCategory.objects.get(id=cleaned_data['category_id'])
 
@@ -305,10 +317,18 @@ class BudgetItemForm(ModelForm):
     class Meta:
         model = ProposedBudgetItem
         fields = ['id', 'category_id', 'details', 'amount', ]
+        help_texts = {'amount': '', }
 
 
 class BaseBudgetItemFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
+        if 'call' in kwargs:
+            self._call = kwargs.pop('call')
+        elif self.instance:
+            self._call = self.instance.call
+        else:
+            assert False
+
         super(BaseBudgetItemFormSet, self).__init__(*args, **kwargs)
 
         # if form_kwargs:
@@ -321,26 +341,22 @@ class BaseBudgetItemFormSet(BaseInlineFormSet):
         #         proposal = form_kwargs['proposal']
         #         self.queryset = ProposedBudgetItem.objects.filter(proposal=proposal)
 
-    def is_valid(self):
-        return super(BaseBudgetItemFormSet, self).is_valid()
+    # def is_valid(self):
+    #     return super(BaseBudgetItemFormSet, self).is_valid()
 
     def clean(self):
-        cleaned_data = super().clean()
+        cleaned_data = super(BaseBudgetItemFormSet, self).clean()
 
-        # # list because otherwise dictionary size changes during execution
-        # # (need to check why exactly)
-        # for question_number in list(cleaned_data.keys()):
-        #     answer = cleaned_data[question_number]
-        #     question_id = question_number[len('question_'):]
-        #
-        #     call_question = CallQuestion.objects.get(id=question_id)
-        #
-        #     max_word_length = call_question.answer_max_length
-        #     current_words = len(answer.split())
-        #
-        #     if current_words > max_word_length:
-        #         self.add_error(question_number,
-        #                        'Too long. Current: {} words, maximum: {} words'.format(current_words, max_word_length))
+        budget_amount = 0
+        maximum_budget = self._call.budget_maximum
+
+        for budget_item_form in self.forms:
+            amount = budget_item_form.cleaned_data.get('amount', 0)
+
+            budget_amount += amount
+
+        if budget_amount > maximum_budget:
+            raise forms.ValidationError('Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
 
         return cleaned_data
 

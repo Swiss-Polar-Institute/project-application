@@ -77,7 +77,7 @@ class ProposalView(TemplateView):
             for budget_category in call.budget_categories.all():
                 initial_budget.append({'category_id': budget_category.id, 'amount': None, 'details': None})
 
-            information['budget_form'] = budget_form_factory(extra=len(initial_budget))(prefix='budget', initial=initial_budget, instance=None)
+            information['budget_form'] = budget_form_factory(extra=len(initial_budget))(call=call, prefix='budget', initial=initial_budget, instance=None)
             information['proposal_action_url'] = reverse('proposal-add')
 
         information.update(ProposalView._call_information_for_template(call))
@@ -112,7 +112,7 @@ class ProposalView(TemplateView):
             questions_for_proposal_form = QuestionsForProposalForm(request.POST,
                                                                    call=call,
                                                                    prefix='questions_for_proposal')
-            budget_form = BudgetItemFormSet(request.POST, prefix='budget')
+            budget_form = BudgetItemFormSet(request.POST, call=call, prefix='budget')
             funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix='funding')
         else:
             # It needs to modify an existing Proposal
@@ -169,5 +169,8 @@ class ProposalView(TemplateView):
         context['funding'] = funding_item_form_set
 
         context.update(ProposalView._call_information_for_template(call))
+
+        print('views.help_text')
+        print(context['budget_form'][0])
 
         return render(request, 'proposal.tmpl', context)
