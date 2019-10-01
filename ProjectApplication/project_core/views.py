@@ -77,7 +77,7 @@ class ProposalView(TemplateView):
             for budget_category in call.budget_categories.all():
                 initial_budget.append({'category': budget_category, 'amount': None, 'details': None})
 
-            information['budget_form'] = budget_form_factory(extra=len(initial_budget))(call=call, prefix='budget', initial=initial_budget, instance=None)
+            information['budget_form'] = BudgetItemFormSet(call=call, prefix='budget', initial=initial_budget, instance=None)
             information['proposal_action_url'] = reverse('proposal-add')
 
         information.update(ProposalView._call_information_for_template(call))
@@ -153,10 +153,11 @@ class ProposalView(TemplateView):
             proposal.save()
 
             for budget_item_form in budget_form:
-                budget_item = budget_item_form.save(commit=False)
-                budget_item.proposal = proposal
-                budget_item.category = budget_item_form.cleaned_data['category']
-                budget_item.save()
+                budget_item_form.save_budget()
+                # budget_item = budget_item_form.save(commit=False)
+                # budget_item.proposal = proposal
+                # budget_item.category = budget_item_form.cleaned_data['category']
+                # budget_item.save()
 
             # for budget_item in budget_form:
             #     budget_item.save_budget()
