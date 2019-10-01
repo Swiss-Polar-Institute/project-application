@@ -427,18 +427,28 @@ class BudgetItemForm(forms.Form):
         self.fields['category'].help_text = category.name
         self.fields['category'].value = category.id
 
-    def save_budget(self):
-        budget_item = BudgetItem()
+    def save_budget(self, proposal):
+        budget_item = ProposedBudgetItem()
         budget_item.amount = self.cleaned_data['amount']
         budget_item.details = self.cleaned_data['details']
         budget_item.category = BudgetCategory.objects.get(id=self.cleaned_data['category'])
+        budget_item.proposal = proposal
+
+        budget_item.save()
 
 
 class BudgetFormSet(BaseFormSet):
     def __init__(self, *args, **kwargs):
         call = kwargs.pop('call', None)
-        instance = kwargs.pop('instance', None)
+        proposal = kwargs.pop('proposal', None)
 
+        if proposal:
+            initial_budget = []
+
+            for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal):
+                initial_budget.append({'category': proposed_item_budget.category, 'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details})
+
+            kwargs['initial'] = initial_budget
         super(BudgetFormSet, self).__init__(*args, **kwargs)
 
 

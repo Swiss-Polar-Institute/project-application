@@ -55,7 +55,7 @@ class ProposalView(TemplateView):
 
             information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal=proposal,
                                                                                   prefix='questions_for_proposal')
-            information['budget_form'] = BudgetItemFormSet(instance=proposal, prefix='budget')
+            information['budget_form'] = BudgetItemFormSet(proposal=proposal, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
 
@@ -77,7 +77,7 @@ class ProposalView(TemplateView):
             for budget_category in call.budget_categories.all():
                 initial_budget.append({'category': budget_category, 'amount': None, 'details': None})
 
-            information['budget_form'] = BudgetItemFormSet(call=call, prefix='budget', initial=initial_budget, instance=None)
+            information['budget_form'] = BudgetItemFormSet(call=call, prefix='budget', initial=initial_budget)
             information['proposal_action_url'] = reverse('proposal-add')
 
         information.update(ProposalView._call_information_for_template(call))
@@ -153,7 +153,7 @@ class ProposalView(TemplateView):
             proposal.save()
 
             for budget_item_form in budget_form:
-                budget_item_form.save_budget()
+                budget_item_form.save_budget(proposal)
                 # budget_item = budget_item_form.save(commit=False)
                 # budget_item.proposal = proposal
                 # budget_item.category = budget_item_form.cleaned_data['category']
