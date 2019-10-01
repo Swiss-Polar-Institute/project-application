@@ -254,44 +254,79 @@ class PlainTextWidget(forms.Widget):
 
     def render(self, name, value, attrs=None, renderer=None):
         if value:
-            return '<input type="hidden" name="{}" value="{}" id="{}">'.format(name, value, attrs['id'])
+            if type(value) == str:
+                final_value = value
+            else:
+                final_value = value.id
+
+            return '<input type="hidden" name="{}" value="{}" id="{}">'.format(name, final_value, attrs['id'])
         else:
             return '-'
 
 
 class BudgetItemForm(ModelForm):
-    category_id = forms.CharField(widget=PlainTextWidget)
+    category = forms.CharField(widget=PlainTextWidget())
     details = forms.CharField()
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
     def __init__(self, *args, **kwargs):
         super(BudgetItemForm, self).__init__(*args, **kwargs)
 
-        self._category_id = None
+        self.fields['category'] = forms.CharField(widget=PlainTextWidget())
+        print('cleaned_data', hasattr(self, 'cleaned_data'))
+
+        print('hasattr before:', hasattr(self, 'cleaned_data'))
+        print('is_valid:', self.is_valid())
+        print('hasattr after:', hasattr(self, 'cleaned_data'))
+
+        if 'initial' in kwargs:
+            category = kwargs['initial']['category']
+        elif hasattr(self, 'cleaned_data'):
+            category_id = self.cleaned_data['category']
+            category = BudgetCategory.objects.get(id=category_id)
+        else:
+            category = None
+
+        print('cleaned_data', hasattr(self, 'cleaned_data'))
+
+        self.fields['category'].help_text = category.name
+
+        self.order_fields(['category', 'details', 'amount', 'id'])
+        print('test')
+
+        # self.is_valid()
+        # self.fields['category'].help_text = self.cleaned_data['category'].name
+        # print(self.fields['category'].help_text)
+        # self.fields['test'] = forms.CharField()
+        # self.fields['test'].help_test = 'hi'
+        # self._category_id = None
 
         # needed to ensure that self.cleaned_data exists
-        self.is_valid()
+        # self.is_valid()
 
-        print('00 hasattr self cleaned_data', hasattr(self, 'cleaned_data'))
-
-        if self.instance and self.instance.pk:
-            self._category_id = self.instance.category.id
-        elif 'category_id' in self.initial:
-            self._category_id = self.initial['category_id']
-        elif hasattr(self, 'cleaned_data'):
-            self._category_id = self.cleaned_data['category_id']
-        else:
-            self._category_id = None
-
-        print('00 hasattr self cleaned_data', hasattr(self, 'cleaned_data'))
-
-        if self._category_id:
-            self.fields['category_id'].help_text = BudgetCategory.objects.get(id=self._category_id).name
-            self.fields['category_id'].initial = self._category_id
-        else:
-            print('no category_id')
-
-        print('init category_id', self._category_id)
+        # print('00 hasattr self cleaned_data', hasattr(self, 'cleaned_data'))
+        #
+        # if self.instance and self.instance.category:
+        #     self._category_id = self.instance.category.id
+        # elif 'category' in self.initial:
+        #     self._category_id = self.initial['category'].id
+        # elif hasattr(self, 'cleaned_data'):
+        #     self._category_id = self.cleaned_data['category'].id
+        # else:
+        #     self._category_id = None
+        #
+        # # print('self_cleaned_data:', self.cleaned_data)
+        # print('00 hasattr self cleaned_data', hasattr(self, 'cleaned_data'))
+        #
+        # if self._category_id:
+        #     self.fields['category'].help_text = BudgetCategory.objects.get(id=self._category_id).name
+        #     self.fields['category'].initial = BudgetCategory.objects.get(id=self._category_id)
+        #     self.fields['category'].long_help = 'test'
+        #
+        # else:
+        #     print('no category_id')
+        #
+        # print('init category_id', self._category_id)
 
         # category_help_text = '{}: {}'.format(initial.get('name'), initial.get('description'))
         #
@@ -308,16 +343,19 @@ class BudgetItemForm(ModelForm):
     def clean(self):
         cleaned_data = super(BudgetItemForm, self).clean()
 
-        print('clean category_id', self._category_id)
-
-        cleaned_data['category'] = BudgetCategory.objects.get(id=cleaned_data['category_id'])
+        # print('clean category:', cleaned_data['category'])
+        # cleaned_data['category'] = BudgetCategory.objects.get(id=cleaned_data['category'])
+        # cleaned_data['category'] = BudgetCategory.objects.get(id=cleaned_data['category'])
+        # cleaned_data['category'] = int(cleaned_data['category'])
+        # cleaned_data['category'] = BudgetCategory.objects.get(id=cleaned_data['category_id'])
 
         return cleaned_data
 
     class Meta:
         model = ProposedBudgetItem
-        fields = ['id', 'category_id', 'details', 'amount', ]
-        help_texts = {'amount': '', }
+        fields = ['id', 'details', 'amount', ]
+
+
 
 
 class BaseBudgetItemFormSet(BaseInlineFormSet):
@@ -345,7 +383,7 @@ class BaseBudgetItemFormSet(BaseInlineFormSet):
     #     return super(BaseBudgetItemFormSet, self).is_valid()
 
     def clean(self):
-        cleaned_data = super(BaseBudgetItemFormSet, self).clean()
+        super(BaseBudgetItemFormSet, self).clean()
 
         budget_amount = 0
         maximum_budget = self._call.budget_maximum
@@ -357,8 +395,6 @@ class BaseBudgetItemFormSet(BaseInlineFormSet):
 
         if budget_amount > maximum_budget:
             raise forms.ValidationError('Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
-
-        return cleaned_data
 
 
 BudgetItemFormSet = inlineformset_factory(Proposal, ProposedBudgetItem, form=BudgetItemForm, formset=BaseBudgetItemFormSet, can_delete=False, extra=0)

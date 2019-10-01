@@ -75,13 +75,14 @@ class ProposalView(TemplateView):
 
             initial_budget = []
             for budget_category in call.budget_categories.all():
-                initial_budget.append({'category_id': budget_category.id, 'amount': None, 'details': None})
+                initial_budget.append({'category': budget_category, 'amount': None, 'details': None})
 
             information['budget_form'] = budget_form_factory(extra=len(initial_budget))(call=call, prefix='budget', initial=initial_budget, instance=None)
             information['proposal_action_url'] = reverse('proposal-add')
 
         information.update(ProposalView._call_information_for_template(call))
 
+        print(information['budget_form'])
         return render(request, 'proposal.tmpl', information)
 
     @staticmethod
@@ -170,7 +171,10 @@ class ProposalView(TemplateView):
 
         context.update(ProposalView._call_information_for_template(call))
 
-        print('views.help_text')
-        print(context['budget_form'][0])
-
+        # print('views.help_text')
+        # print(context['budget_form'][0])
+        #
+        # print('form errors:')
+        # print(budget_form.non_form_errors())
+        print(budget_form)
         return render(request, 'proposal.tmpl', context)
