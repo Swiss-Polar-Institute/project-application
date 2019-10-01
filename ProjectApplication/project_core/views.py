@@ -50,7 +50,7 @@ class ProposalView(TemplateView):
             information['proposal_form'] = ProposalForm(call=call, prefix='proposal', instance=proposal)
             information['person_form'] = PersonForm(prefix='person', instance=proposal.applicant)
 
-            information['proposal_funding_item_form_set'] = ProposalFundingItemFormSet(prefix='funding',
+            information['funding'] = ProposalFundingItemFormSet(prefix='funding',
                                                                                        instance=proposal)
 
             information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal=proposal,
@@ -66,12 +66,10 @@ class ProposalView(TemplateView):
             information['proposal_form'] = ProposalForm(call=call, prefix='proposal')
             information['person_form'] = PersonForm(prefix='person')
 
-            information['proposal_funding_item_form_set'] = ProposalFundingItemFormSet(prefix='funding')
+            information['funding'] = ProposalFundingItemFormSet(prefix='funding')
 
             information['questions_for_proposal_form'] = QuestionsForProposalForm(call=call,
                                                                                   prefix='questions_for_proposal')
-            # information['budget_form'] = BudgetItemFormSet(form_kwargs={'call': call}, prefix='budget',
-            #                                                initial=[{'amount': 11}])
 
             initial_budget = []
             for budget_category in call.budget_categories.all():
@@ -124,11 +122,17 @@ class ProposalView(TemplateView):
             questions_for_proposal_form = QuestionsForProposalForm(request.POST,
                                                                    proposal=proposal,
                                                                    prefix='questions_for_proposal')
-            budget_form = BudgetItemFormSet(request.POST, instance=proposal, prefix='budget')
+            budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix='budget')
             funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix='funding', instance=proposal)
 
-        if person_form.is_valid() and proposal_form.is_valid() and questions_for_proposal_form.is_valid() \
-                and budget_form.is_valid() and funding_item_form_set.is_valid():
+        # TODO do it in a loop...
+        person_form_is_valid = person_form.is_valid()
+        proposal_form_is_valid = proposal_form.is_valid()
+        questions_for_proposal_form_is_valid = questions_for_proposal_form.is_valid()
+        budget_form_is_valid = budget_form.is_valid()
+        funding_item_form_set_is_valid = funding_item_form_set.is_valid()
+
+        if person_form_is_valid and proposal_form_is_valid and questions_for_proposal_form_is_valid and budget_form_is_valid and funding_item_form_set_is_valid:
             applicant = person_form.save()
             proposal = proposal_form.save(commit=False)
 
@@ -145,8 +149,6 @@ class ProposalView(TemplateView):
                 funding_item.proposal = proposal
                 funding_item.save()
 
-            # budget_form._proposal_id = proposal.id  # TODO do not access internal variable
-
             questions_for_proposal_form._proposal_id = proposal.pk
             questions_for_proposal_form.save_answers()
 
@@ -154,13 +156,6 @@ class ProposalView(TemplateView):
 
             for budget_item_form in budget_form:
                 budget_item_form.save_budget(proposal)
-                # budget_item = budget_item_form.save(commit=False)
-                # budget_item.proposal = proposal
-                # budget_item.category = budget_item_form.cleaned_data['category']
-                # budget_item.save()
-
-            # for budget_item in budget_form:
-            #     budget_item.save_budget()
 
             return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
 
@@ -170,12 +165,8 @@ class ProposalView(TemplateView):
         context['budget_form'] = budget_form
         context['funding'] = funding_item_form_set
 
+        print(funding_item_form_set)
+
         context.update(ProposalView._call_information_for_template(call))
 
-        # print('views.help_text')
-        # print(context['budget_form'][0])
-        #
-        # print('form errors:')
-        # print(budget_form.non_form_errors())
-        print(budget_form)
         return render(request, 'proposal.tmpl', context)

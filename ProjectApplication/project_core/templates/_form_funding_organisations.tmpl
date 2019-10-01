@@ -1,11 +1,15 @@
 {% load static %}
 <font color="red">
-    {{ funding_organisations_form.non_field_errors }}
+    {{ funding.non_field_errors }}
 </font>
-    {{ proposal_funding_item_form_set.management_form }}
+    {{ funding.management_form }}
+
+    {% for form in funding.forms %}
+        {{ form.management_form }}
+    {% endfor %}
 
     <table border>
-    {% for form in proposal_funding_item_form_set.forms %}
+    {% for form in funding.forms %}
         {% if forloop.first %}
             <thead>
                 <tr>
@@ -31,9 +35,6 @@
             {% endfor %}
         </tr>
     {% endfor %}
-    <tr class="add_row">
-        <td>AddRowTest</td>
-    </tr>
     </tbody>
     </table>
 

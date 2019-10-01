@@ -405,7 +405,6 @@ class PlainTextWidget(forms.Widget):
 # def budget_form_factory(extra):
 #     return inlineformset_factory(Proposal, ProposedBudgetItem, form=BudgetItemForm, formset=BaseBudgetItemFormSet, can_delete=False, extra=extra)
 
-
 class BudgetItemForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
@@ -428,7 +427,11 @@ class BudgetItemForm(forms.Form):
         self.fields['category'].value = category.id
 
     def save_budget(self, proposal):
-        budget_item = ProposedBudgetItem()
+        if self.cleaned_data['id']:
+            budget_item = ProposedBudgetItem.objects.get(id=self.cleaned_data['id'])
+        else:
+            budget_item = ProposedBudgetItem()
+
         budget_item.amount = self.cleaned_data['amount']
         budget_item.details = self.cleaned_data['details']
         budget_item.category = BudgetCategory.objects.get(id=self.cleaned_data['category'])
@@ -436,24 +439,68 @@ class BudgetItemForm(forms.Form):
 
         budget_item.save()
 
+        # def clean(self):
+        #     cleaned_data = super(BudgetItemForm, self).clean()
+        #
+        #     budget_amount = 0
+        #
+        #     maximum_budget = self._call.budget_maximum
+        #
+        #     for budget_category in self._call.budget_categories.all():
+        #         amount = cleaned_data['amount_%d' % budget_category.id]
+        #         detail = cleaned_data['details_%d' % budget_category.id]
+        #         budget_description = budget_category.description
+        #         field_for_validation = 'category_budget_name_%d' % budget_category.id
+        #
+        #         budget_amount += amount
+        #
+        #         if amount > maximum_budget:
+        #             self.add_error(field_for_validation, 'Amount of item "{}" exceeds the total maximum budget'.format(budget_description))
+        #
+        #         if amount > 0 and detail == '':
+        #             self.add_error(field_for_validation, 'Details of item "{}" cannot be empty because the value is not 0'.format(budget_description))
+        #
+        #         if amount < 0:
+        #             self.add_error(field_for_validation, 'Amount of item "{}" is negative. Amount cannot be negative'.format(budget_description))
+        #
+        #     if budget_amount > maximum_budget:
+        #         self.add_error(None,
+        #                        'Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
+        #
+        #     return cleaned_data
+
 
 class BudgetFormSet(BaseFormSet):
     def __init__(self, *args, **kwargs):
-        call = kwargs.pop('call', None)
         proposal = kwargs.pop('proposal', None)
+        self._call = kwargs.pop('call', None)
 
         if proposal:
             initial_budget = []
 
             for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal):
-                initial_budget.append({'category': proposed_item_budget.category, 'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details})
+                initial_budget.append({'id': proposed_item_budget.id, 'category': proposed_item_budget.category, 'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details})
 
             kwargs['initial'] = initial_budget
+
         super(BudgetFormSet, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        super(BudgetFormSet, self).clean()
+
+        budget_amount = 0
+        maximum_budget = self._call.budget_maximum
+
+        for budget_item_form in self.forms:
+            amount = budget_item_form.cleaned_data.get('amount', 0)
+
+            budget_amount += amount
+
+        if budget_amount > maximum_budget:
+            raise forms.ValidationError('Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
 
 
 BudgetItemFormSet = formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=0)
-
 
 def budget_form_factory(extra):
     return formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=extra)

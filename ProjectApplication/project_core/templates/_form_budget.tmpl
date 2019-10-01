@@ -1,41 +1,45 @@
 Maximum budget: {{ maximum_budget }}
 
-    {{ budget_form.management_form }}
+{{ budget_form.management_form }}
 
-    <font color="red">
-        {{ budget_form.non_form_errors }}
-    </font>
-    <p>
+{% for form in budget_form.forms %}
+    {{ form.management_form }}
+{% endfor %}
+
+<font color="red">
+    {{ budget_form.non_form_errors }}
+</font>
+<p>
+
+{% for form in budget_form.forms %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+{% endfor %}
+<table border="1">
 
     {% for form in budget_form.forms %}
-        {% for hidden in form.hidden_fields %}
-            {{ hidden }}
-        {% endfor %}
-    {% endfor %}
-    <table border="1">
+        {% if forloop.first %}
+            <thead>
+                <tr>
+                    {% for field in form.visible_fields %}
+                        <th>{{ field.label }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+        {% endif %}
 
-        {% for form in budget_form.forms %}
-            {% if forloop.first %}
-                <thead>
-                    <tr>
-                        {% for field in form.visible_fields %}
-                            <th>{{ field.label }}</th>
-                        {% endfor %}
-                    </tr>
-                </thead>
-            {% endif %}
+        <tbody>
 
-            <tbody>
-
-            <tr>
-                {% for field in form.visible_fields %}
-                <td>
-                        {{ field.errors.as_ul }}
-                        {{ field }}
-                        {{ field.help_text }}
-                </td>
-                {% endfor %}
-            </tr>
+        <tr>
+            {% for field in form.visible_fields %}
+            <td>
+                    {{ field.errors.as_ul }}
+                    {{ field }}
+                    {{ field.help_text }}
+            </td>
             {% endfor %}
-        </tbody>
-    </table>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
