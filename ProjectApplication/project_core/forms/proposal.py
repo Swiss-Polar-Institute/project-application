@@ -4,7 +4,6 @@ from django.forms import ModelChoiceField, BaseInlineFormSet, BaseFormSet
 from django.forms import ModelForm, Form
 from django.forms.models import inlineformset_factory, formset_factory
 
-
 from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Organisation, \
     ProposalFundingItem, ProposedBudgetItem, BudgetCategory
 
@@ -147,9 +146,11 @@ class ProposalFundingFormSet(BaseInlineFormSet):
                 proposal_item.proposal = proposal
                 proposal_item.save()
 
+
 # See documentation in: https://medium.com/@adandan01/django-inline-formsets-example-mybook-420cc4b6225d
 ProposalFundingItemFormSet = inlineformset_factory(
-    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, formset=ProposalFundingFormSet, min_num=1, extra=0, can_delete=True)
+    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, formset=ProposalFundingFormSet, min_num=1, extra=0,
+    can_delete=True)
 
 
 class PlainTextWidget(forms.Widget):
@@ -231,7 +232,8 @@ class BudgetFormSet(BaseFormSet):
             initial_budget = []
 
             for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal):
-                initial_budget.append({'id': proposed_item_budget.id, 'category': proposed_item_budget.category, 'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details})
+                initial_budget.append({'id': proposed_item_budget.id, 'category': proposed_item_budget.category,
+                                       'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details})
 
             kwargs['initial'] = initial_budget
 
@@ -249,7 +251,9 @@ class BudgetFormSet(BaseFormSet):
             budget_amount += amount
 
         if budget_amount > maximum_budget:
-            raise forms.ValidationError('Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
+            raise forms.ValidationError(
+                'Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget,
+                                                                                              budget_amount))
 
     def save_budgets(self, proposal):
         for form in self.forms:

@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 
 from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet
-from .models import Proposal, Call, ProposalStatus, BudgetCategory
+from .models import Proposal, Call, ProposalStatus
 
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
@@ -67,11 +67,11 @@ class ProposalView(TemplateView):
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, instance=proposal.applicant)
             questions_form = QuestionsForProposalForm(proposal=proposal,
-                                                                                  prefix=QUESTIONS_FORM_NAME)
+                                                      prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
 
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
-                                                                                       instance=proposal)
+                                                      instance=proposal)
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
 
@@ -82,7 +82,7 @@ class ProposalView(TemplateView):
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME)
             questions_form = QuestionsForProposalForm(call=call,
-                                                                                  prefix=QUESTIONS_FORM_NAME)
+                                                      prefix=QUESTIONS_FORM_NAME)
 
             initial_budget = []
             for budget_category in call.budget_categories.all():
@@ -130,20 +130,20 @@ class ProposalView(TemplateView):
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, instance=proposal.applicant, prefix=PERSON_FORM_NAME)
             questions_form = QuestionsForProposalForm(request.POST,
-                                                                   proposal=proposal,
-                                                                   prefix=QUESTIONS_FORM_NAME)
+                                                      proposal=proposal,
+                                                      prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
-            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME, instance=proposal)
+            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
+                                                               instance=proposal)
         else:
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = QuestionsForProposalForm(request.POST,
-                                                                   call=call,
-                                                                   prefix=QUESTIONS_FORM_NAME)
+                                                      call=call,
+                                                      prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
             funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
-
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
                              funding_item_form_set]
