@@ -147,26 +147,12 @@ class ProposalView(TemplateView):
             proposal = proposal_form.save(commit=False)
 
             proposal.applicant = applicant
-
             proposal.proposal_status = ProposalStatus.objects.get(name='test01')
-
-            funding_items = funding_item_form_set.save(commit=False)
-
-            proposal = proposal_form.save(commit=True)
             proposal.save()
 
-            for funding_item in funding_items:
-                funding_item.proposal = proposal
-                funding_item.save()
-
-            questions_form._proposal_id = proposal.pk
-            questions_form.save_answers()
-
-            proposal.save()
-
-            for budget_item_form in budget_form:
-                budget_item_form.save_budget(proposal)
-
+            funding_item_form_set.save_fundings(proposal)
+            questions_form.save_answers(proposal)
+            budget_form.save_budgets(proposal)
             return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
 
         context[PERSON_FORM_NAME] = person_form

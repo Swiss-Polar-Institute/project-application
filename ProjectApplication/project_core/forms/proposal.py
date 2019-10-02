@@ -22,17 +22,6 @@ class OrganisationChoiceField(ModelChoiceField):
         return organisation.abbreviated_name()
 
 
-class ProposalFundingItemForm(ModelForm):
-    organisation = OrganisationChoiceField(queryset=Organisation.objects.all())
-
-    def __init__(self, *args, **kwargs):
-        super(ProposalFundingItemForm, self).__init__(*args, **kwargs)
-
-    class Meta:
-        model = ProposalFundingItem
-        fields = ['organisation', 'status', 'amount', 'proposal', ]
-
-
 class ProposalForm(ModelForm):
     keywords_str = forms.CharField(label='Keywords', help_text='Separated by commas', )
     call_id = forms.IntegerField(widget=forms.HiddenInput())
@@ -62,13 +51,14 @@ class ProposalForm(ModelForm):
 
         model = super(ProposalForm, self).save(commit)
 
-        if commit:
-            model.keywords.clear()
+        model.keywords.clear()
 
-            for keyword_str in self.cleaned_data['keywords_str'].split(','):
-                keyword_str = keyword_str.strip(' ')
-                keyword = Keyword.objects.get_or_create(name=keyword_str)[0]
-                model.keywords.add(keyword)
+        for keyword_str in self.cleaned_data['keywords_str'].split(','):
+            keyword_str = keyword_str.strip(' ')
+            keyword = Keyword.objects.get_or_create(name=keyword_str)[0]
+            model.keywords.add(keyword)
+
+        model.geographical_areas.set(self.cleaned_data['geographical_areas'])
 
         return model
 
@@ -106,14 +96,14 @@ class QuestionsForProposalForm(Form):
                                                                              initial=answer,
                                                                              help_text=question.question_description)
 
-    def save_answers(self):
+    def save_answers(self, proposal):
         # for question in self._call.callquestion_set.all():
         #     answer = self.cleaned_data['']
         for question, answer in self.cleaned_data.items():
             call_question_id = int(question[len('question_'):])
 
             ProposalQAText.objects.update_or_create(
-                proposal_id=self._proposal_id, call_question_id=call_question_id,
+                proposal=proposal, call_question_id=call_question_id,
                 defaults={'answer': answer}
             )
 
@@ -138,38 +128,31 @@ class QuestionsForProposalForm(Form):
         return cleaned_data
 
 
-class FundingOrganisationsForm(Form):
+class ProposalFundingItemForm(ModelForm):
+    organisation = OrganisationChoiceField(queryset=Organisation.objects.all())
+
     def __init__(self, *args, **kwargs):
-        super(FundingOrganisationsForm, self).__init__(*args, **kwargs)
+        super(ProposalFundingItemForm, self).__init__(*args, **kwargs)
 
-        organisations = FundingOrganisationsForm._organisations_tuple()
-        for funding_status in FundingStatus.objects.all().order_by('status'):
-            self.fields['funding_status_name_%d' % funding_status.id] = forms.CharField(
-                help_text=funding_status.status, widget=forms.HiddenInput(), required=True)
+    class Meta:
+        model = ProposalFundingItem
+        fields = ['organisation', 'status', 'amount', 'proposal', ]
 
-            self.fields['source_of_funding_%d' % funding_status.id] = forms.ChoiceField(
-                choices=organisations, required=True)
 
-            self.fields['amount_%d' % funding_status.id] = forms.DecimalField(required=True)
+class ProposalFundingFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-    def clean(self):
-        cleaned_data = super(FundingOrganisationsForm, self).clean()
-        return cleaned_data
-
-    @staticmethod
-    def _organisations_tuple():
-        organisations = []
-
-        for organisation in Organisation.objects.all().order_by('short_name'):
-            organisations.append((organisation.id, organisation.abbreviated_name()), )
-
-        organisations.append((99, 'Other'), )
-        return organisations
-
+    def save_fundings(self, proposal):
+        for form in self.forms:
+            if form.cleaned_data:
+                proposal_item = form.save(commit=False)
+                proposal_item.proposal = proposal
+                proposal_item.save()
 
 # See documentation in: https://medium.com/@adandan01/django-inline-formsets-example-mybook-420cc4b6225d
 ProposalFundingItemFormSet = inlineformset_factory(
-    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, extra=1, can_delete=True)
+    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, formset=ProposalFundingFormSet, extra=1, can_delete=True)
 
 
 class PlainTextWidget(forms.Widget):
@@ -270,6 +253,10 @@ class BudgetFormSet(BaseFormSet):
 
         if budget_amount > maximum_budget:
             raise forms.ValidationError('Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget, budget_amount))
+
+    def save_budgets(self, proposal):
+        for form in self.forms:
+            form.save_budget(proposal)
 
 
 BudgetItemFormSet = formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=0)
