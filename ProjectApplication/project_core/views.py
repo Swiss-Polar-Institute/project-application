@@ -22,7 +22,7 @@ class Homepage(TemplateView):
         return context
 
 
-class CallsView(TemplateView):
+class CallsList(TemplateView):
     template_name = 'list_calls.tmpl'
 
     def get_context_data(self, **kwargs):
@@ -33,11 +33,22 @@ class CallsView(TemplateView):
         return context
 
 
+class ProposalsList(TemplateView):
+    template_name = 'list_proposals.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['proposals'] = Proposal.objects.all()
+
+        return context
+
+
 class ProposalThankYouView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['pk'] = kwargs['pk']
+        context['uuid'] = kwargs['uuid']
 
         return render(request, 'proposal-thank-you.tmpl', context)
 
@@ -48,11 +59,10 @@ class ProposalView(TemplateView):
 
         information = {}
 
-        if 'pk' in kwargs:
-            proposal_pk = kwargs['pk']
-            call = Proposal.objects.get(pk=kwargs['pk']).call
-
-            proposal: Proposal = Proposal.objects.get(pk=proposal_pk)
+        if 'uuid' in kwargs:
+            proposal_uuid = kwargs['uuid']
+            proposal: Proposal = Proposal.objects.get(uuid=proposal_uuid)
+            call = proposal.call
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, instance=proposal.applicant)
@@ -63,7 +73,7 @@ class ProposalView(TemplateView):
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
                                                                                        instance=proposal)
 
-            information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
+            information['proposal_action_url'] = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
 
         else:
             call_pk = information['call_pk'] = request.GET.get('call')
@@ -156,7 +166,7 @@ class ProposalView(TemplateView):
             questions_form.save_answers(proposal)
             budget_form.save_budgets(proposal)
 
-            return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
+            return redirect(reverse('proposal-thank-you', kwargs={'uuid': proposal.uuid}))
 
         context[PERSON_FORM_NAME] = person_form
         context[PROPOSAL_FORM_NAME] = proposal_form

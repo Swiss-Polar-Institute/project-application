@@ -1,4 +1,7 @@
 from django.db import models
+from django.urls import reverse
+
+import uuid as uuid_lib
 
 
 class Step(models.Model):
@@ -213,6 +216,8 @@ class Proposal(models.Model):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
+    uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
+
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
     geographical_areas = models.ManyToManyField(GeographicalArea, help_text='Description of the geographical area covered by the proposal')
@@ -239,6 +244,9 @@ class Proposal(models.Model):
             total += item.amount
             
         return total
+
+    def get_absolute_url(self):
+        return reverse('proposal-update', kwargs={'uuid': self.uuid})
 
 
 class ProposalQAText(models.Model):
