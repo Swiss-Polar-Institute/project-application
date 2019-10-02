@@ -1,6 +1,6 @@
 {{ questions_for_proposal_form.non_field_errors }}
 
-{% for field in questions_for_proposal_form %}
+{% for field in questions_form %}
     <div class="fieldWrapper">
         <font color="red">{{ field.errors }}</font>
         {{ field.label_tag }}<br>{{ field }}

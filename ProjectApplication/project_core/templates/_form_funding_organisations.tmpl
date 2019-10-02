@@ -1,15 +1,15 @@
 {% load static %}
 <font color="red">
-    {{ funding.non_field_errors }}
+    {{ funding_form.non_field_errors }}
 </font>
-    {{ funding.management_form }}
+    {{ funding_form.management_form }}
 
-    {% for form in funding.forms %}
+    {% for form in funding_form.forms %}
         {{ form.management_form }}
     {% endfor %}
 
     <table border>
-    {% for form in funding.forms %}
+    {% for form in funding_form.forms %}
         {% if forloop.first %}
             <thead>
                 <tr>

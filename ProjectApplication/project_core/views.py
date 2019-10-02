@@ -3,9 +3,15 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
-    BudgetItemFormSet, budget_form_factory
+    BudgetItemFormSet
 from .models import Proposal, Call, ProposalStatus, BudgetCategory
 
+# Form names (need to match what's in the templates)
+PROPOSAL_FORM_NAME = 'proposal_form'
+PERSON_FORM_NAME = 'person_form'
+QUESTIONS_FORM_NAME = 'questions_form'
+BUDGET_FORM_NAME = 'budget_form'
+FUNDING_FORM_NAME = 'funding_form'
 
 class Homepage(TemplateView):
     template_name = 'homepage.tmpl'
@@ -47,15 +53,14 @@ class ProposalView(TemplateView):
 
             proposal: Proposal = Proposal.objects.get(pk=proposal_pk)
 
-            information['proposal_form'] = ProposalForm(call=call, prefix='proposal', instance=proposal)
-            information['person_form'] = PersonForm(prefix='person', instance=proposal.applicant)
+            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
+            person_form = PersonForm(prefix=PERSON_FORM_NAME, instance=proposal.applicant)
+            questions_form = QuestionsForProposalForm(proposal=proposal,
+                                                                                  prefix=QUESTIONS_FORM_NAME)
+            budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
 
-            information['funding'] = ProposalFundingItemFormSet(prefix='funding',
+            funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
                                                                                        instance=proposal)
-
-            information['questions_for_proposal_form'] = QuestionsForProposalForm(proposal=proposal,
-                                                                                  prefix='questions_for_proposal')
-            information['budget_form'] = BudgetItemFormSet(proposal=proposal, prefix='budget')
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'pk': proposal_pk})
 
@@ -63,24 +68,28 @@ class ProposalView(TemplateView):
             call_pk = information['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
 
-            information['proposal_form'] = ProposalForm(call=call, prefix='proposal')
-            information['person_form'] = PersonForm(prefix='person')
-
-            information['funding'] = ProposalFundingItemFormSet(prefix='funding')
-
-            information['questions_for_proposal_form'] = QuestionsForProposalForm(call=call,
-                                                                                  prefix='questions_for_proposal')
+            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
+            person_form = PersonForm(prefix=PERSON_FORM_NAME)
+            questions_form = QuestionsForProposalForm(call=call,
+                                                                                  prefix=QUESTIONS_FORM_NAME)
 
             initial_budget = []
             for budget_category in call.budget_categories.all():
                 initial_budget.append({'category': budget_category, 'amount': None, 'details': None})
 
-            information['budget_form'] = BudgetItemFormSet(call=call, prefix='budget', initial=initial_budget)
+            budget_form  = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
+            funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
+
             information['proposal_action_url'] = reverse('proposal-add')
 
         information.update(ProposalView._call_information_for_template(call))
 
-        print(information['budget_form'])
+        information[PROPOSAL_FORM_NAME] = proposal_form
+        information[PERSON_FORM_NAME] = person_form
+        information[FUNDING_FORM_NAME] = funding_form
+        information[QUESTIONS_FORM_NAME] = questions_form
+        information[BUDGET_FORM_NAME] = budget_form
+
         return render(request, 'proposal.tmpl', information)
 
     @staticmethod
@@ -106,33 +115,33 @@ class ProposalView(TemplateView):
 
         if proposal_pk is None:
             # It's a new Proposal
-            person_form = PersonForm(request.POST, prefix='person')
-            proposal_form = ProposalForm(request.POST, call=call, prefix='proposal')
-            questions_for_proposal_form = QuestionsForProposalForm(request.POST,
+            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
+            person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
+            questions_form = QuestionsForProposalForm(request.POST,
                                                                    call=call,
-                                                                   prefix='questions_for_proposal')
-            budget_form = BudgetItemFormSet(request.POST, call=call, prefix='budget')
-            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix='funding')
+                                                                   prefix=QUESTIONS_FORM_NAME)
+            budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
+            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
         else:
             # It needs to modify an existing Proposal
             proposal = Proposal.objects.get(pk=proposal_pk)
-
-            person_form = PersonForm(request.POST, instance=proposal.applicant, prefix='person')
-            proposal_form = ProposalForm(request.POST, instance=proposal, prefix='proposal')
-            questions_for_proposal_form = QuestionsForProposalForm(request.POST,
+            proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
+            person_form = PersonForm(request.POST, instance=proposal.applicant, prefix=PERSON_FORM_NAME)
+            questions_form = QuestionsForProposalForm(request.POST,
                                                                    proposal=proposal,
-                                                                   prefix='questions_for_proposal')
-            budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix='budget')
-            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix='funding', instance=proposal)
+                                                                   prefix=QUESTIONS_FORM_NAME)
+            budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
+            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME, instance=proposal)
 
-        # TODO do it in a loop...
-        person_form_is_valid = person_form.is_valid()
-        proposal_form_is_valid = proposal_form.is_valid()
-        questions_for_proposal_form_is_valid = questions_for_proposal_form.is_valid()
-        budget_form_is_valid = budget_form.is_valid()
-        funding_item_form_set_is_valid = funding_item_form_set.is_valid()
+        forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
+                             funding_item_form_set]
 
-        if person_form_is_valid and proposal_form_is_valid and questions_for_proposal_form_is_valid and budget_form_is_valid and funding_item_form_set_is_valid:
+        all_valid = True
+        for form in forms_to_validate:
+            is_valid = form.is_valid()
+            all_valid = all_valid and is_valid
+
+        if all_valid:
             applicant = person_form.save()
             proposal = proposal_form.save(commit=False)
 
@@ -149,8 +158,8 @@ class ProposalView(TemplateView):
                 funding_item.proposal = proposal
                 funding_item.save()
 
-            questions_for_proposal_form._proposal_id = proposal.pk
-            questions_for_proposal_form.save_answers()
+            questions_form._proposal_id = proposal.pk
+            questions_form.save_answers()
 
             proposal.save()
 
@@ -159,13 +168,11 @@ class ProposalView(TemplateView):
 
             return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
 
-        context['person_form'] = person_form
-        context['proposal_form'] = proposal_form
-        context['questions_for_proposal_form'] = questions_for_proposal_form
-        context['budget_form'] = budget_form
-        context['funding'] = funding_item_form_set
-
-        print(funding_item_form_set)
+        context[PERSON_FORM_NAME] = person_form
+        context[PROPOSAL_FORM_NAME] = proposal_form
+        context[QUESTIONS_FORM_NAME] = questions_form
+        context[BUDGET_FORM_NAME] = budget_form
+        context[FUNDING_FORM_NAME] = funding_item_form_set
 
         context.update(ProposalView._call_information_for_template(call))
 
