@@ -1,14 +1,12 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
-from django.forms import ModelChoiceField, BaseModelFormSet, BaseInlineFormSet, BaseFormSet
+from django.forms import ModelChoiceField, BaseInlineFormSet, BaseFormSet
 from django.forms import ModelForm, Form
-from django.forms.models import inlineformset_factory, formset_factory, modelformset_factory
-from django.utils.safestring import mark_safe
-from django.db.models import F
+from django.forms.models import inlineformset_factory, formset_factory
 
 
-from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Organisation, FundingStatus, \
-    ProposalFundingItem, ProposedBudgetItem, BudgetItem, BudgetCategory
+from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Organisation, \
+    ProposalFundingItem, ProposedBudgetItem, BudgetCategory
 
 
 class PersonForm(ModelForm):
@@ -29,7 +27,7 @@ class ProposalForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
 
-        super(ProposalForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
@@ -49,16 +47,17 @@ class ProposalForm(ModelForm):
         self.instance.call_id = self.cleaned_data['call_id']
         # TODO: verify permissions/that the call is open/etc.
 
-        model = super(ProposalForm, self).save(commit)
+        model = super().save(commit)
 
-        model.keywords.clear()
+        if commit:
+            model.keywords.clear()
 
-        for keyword_str in self.cleaned_data['keywords_str'].split(','):
-            keyword_str = keyword_str.strip(' ')
-            keyword = Keyword.objects.get_or_create(name=keyword_str)[0]
-            model.keywords.add(keyword)
+            for keyword_str in self.cleaned_data['keywords_str'].split(','):
+                keyword_str = keyword_str.strip(' ')
+                keyword = Keyword.objects.get_or_create(name=keyword_str)[0]
+                model.keywords.add(keyword)
 
-        model.geographical_areas.set(self.cleaned_data['geographical_areas'])
+            model.geographical_areas.set(self.cleaned_data['geographical_areas'])
 
         return model
 
@@ -74,7 +73,7 @@ class QuestionsForProposalForm(Form):
 
         assert self._call or self._proposal
 
-        super(QuestionsForProposalForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         if self._proposal:
             self._call = self._proposal.call
@@ -97,8 +96,6 @@ class QuestionsForProposalForm(Form):
                                                                              help_text=question.question_description)
 
     def save_answers(self, proposal):
-        # for question in self._call.callquestion_set.all():
-        #     answer = self.cleaned_data['']
         for question, answer in self.cleaned_data.items():
             call_question_id = int(question[len('question_'):])
 
@@ -132,7 +129,7 @@ class ProposalFundingItemForm(ModelForm):
     organisation = OrganisationChoiceField(queryset=Organisation.objects.all())
 
     def __init__(self, *args, **kwargs):
-        super(ProposalFundingItemForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = ProposalFundingItem
@@ -179,7 +176,7 @@ class BudgetItemForm(forms.Form):
     amount = forms.DecimalField(required=False)
 
     def __init__(self, *args, **kwargs):
-        super(BudgetItemForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.is_valid()
 
@@ -206,7 +203,7 @@ class BudgetItemForm(forms.Form):
         budget_item.save()
 
     def clean(self):
-        cleaned_data = super(BudgetItemForm, self).clean()
+        cleaned_data = super().clean()
 
         budget_amount = 0
 
@@ -238,10 +235,10 @@ class BudgetFormSet(BaseFormSet):
 
             kwargs['initial'] = initial_budget
 
-        super(BudgetFormSet, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def clean(self):
-        super(BudgetFormSet, self).clean()
+        super().clean()
 
         budget_amount = 0
         maximum_budget = self._call.budget_maximum

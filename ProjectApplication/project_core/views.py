@@ -17,7 +17,7 @@ class Homepage(TemplateView):
     template_name = 'homepage.tmpl'
 
     def get_context_data(self, **kwargs):
-        context = super(Homepage, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         return context
 
 
@@ -25,7 +25,7 @@ class CallsView(TemplateView):
     template_name = 'list_calls.tmpl'
 
     def get_context_data(self, **kwargs):
-        context = super(CallsView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context['calls'] = Call.objects.all()
 
@@ -34,7 +34,7 @@ class CallsView(TemplateView):
 
 class ProposalThankYouView(TemplateView):
     def get(self, request, *args, **kwargs):
-        context = super(ProposalThankYouView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         context['pk'] = kwargs['pk']
 
@@ -43,7 +43,7 @@ class ProposalThankYouView(TemplateView):
 
 class ProposalView(TemplateView):
     def get(self, request, *args, **kwargs):
-        super(ProposalView, self).get_context_data(**kwargs)
+        super().get_context_data(**kwargs)
 
         information = {}
 
@@ -103,7 +103,7 @@ class ProposalView(TemplateView):
         return information
 
     def post(self, request, *args, **kwargs):
-        context = super(ProposalView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         proposal_pk = None
 
@@ -144,15 +144,17 @@ class ProposalView(TemplateView):
 
         if all_valid:
             applicant = person_form.save()
-            proposal = proposal_form.save(commit=False)
 
+            proposal = proposal_form.save(commit=False)
             proposal.applicant = applicant
             proposal.proposal_status = ProposalStatus.objects.get(name='test01')
             proposal.save()
+            proposal_form.save(commit=True)
 
             funding_item_form_set.save_fundings(proposal)
             questions_form.save_answers(proposal)
             budget_form.save_budgets(proposal)
+
             return redirect(reverse('proposal-thank-you', kwargs={'pk': proposal.pk}))
 
         context[PERSON_FORM_NAME] = person_form
