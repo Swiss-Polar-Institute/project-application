@@ -97,9 +97,9 @@ class ProposalView(TemplateView):
 
         information[PROPOSAL_FORM_NAME] = proposal_form
         information[PERSON_FORM_NAME] = person_form
-        information[FUNDING_FORM_NAME] = funding_form
         information[QUESTIONS_FORM_NAME] = questions_form
         information[BUDGET_FORM_NAME] = budget_form
+        information[FUNDING_FORM_NAME] = funding_form
 
         return render(request, 'proposal.tmpl', information)
 
@@ -116,24 +116,23 @@ class ProposalView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        proposal_pk = None
-
-        if 'pk' in kwargs:
-            proposal_pk = int(kwargs['pk'])
-            call = Proposal.objects.get(pk=proposal_pk).call
+        if 'uuid' in kwargs:
+            proposal_uuid = kwargs['uuid']
+            proposal = Proposal.objects.get(uuid=proposal_uuid)
+            call = proposal.call
         else:
             call = Call.objects.get(id=int(request.POST['proposal_form-call_id']))
+            proposal = None
 
-        if proposal_pk:
+        if proposal:
             # Editing an existing proposal
-            proposal = Proposal.objects.get(pk=proposal_pk)
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, instance=proposal.applicant, prefix=PERSON_FORM_NAME)
             questions_form = QuestionsForProposalForm(request.POST,
                                                       proposal=proposal,
                                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
-            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
+            funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
                                                                instance=proposal)
         else:
             # Creating a new proposal
@@ -143,10 +142,10 @@ class ProposalView(TemplateView):
                                                       call=call,
                                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
-            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
+            funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
-                             funding_item_form_set]
+                             funding_form]
 
         all_valid = True
         for form in forms_to_validate:
@@ -162,7 +161,7 @@ class ProposalView(TemplateView):
             proposal.save()
             proposal_form.save(commit=True)
 
-            funding_item_form_set.save_fundings(proposal)
+            funding_form.save_fundings(proposal)
             questions_form.save_answers(proposal)
             budget_form.save_budgets(proposal)
 
@@ -172,7 +171,7 @@ class ProposalView(TemplateView):
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
-        context[FUNDING_FORM_NAME] = funding_item_form_set
+        context[FUNDING_FORM_NAME] = funding_form
 
         context.update(ProposalView._call_information_for_template(call))
 

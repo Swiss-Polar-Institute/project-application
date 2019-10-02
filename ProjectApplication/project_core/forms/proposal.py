@@ -143,7 +143,7 @@ class ProposalFundingFormSet(BaseInlineFormSet):
         for form in self.forms:
             if form.cleaned_data:
                 if form.cleaned_data['DELETE'] and form.cleaned_data['id']:
-                    proposal_item = ProposedBudgetItem.objects.get(form.cleaned_data['id'])
+                    proposal_item = form.cleaned_data['id']
                     proposal_item.delete()
                 elif form.cleaned_data['DELETE'] is False:
                     proposal_item = form.save(commit=False)

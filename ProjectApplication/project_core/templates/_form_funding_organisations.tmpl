@@ -1,6 +1,6 @@
 {% load static %}
 <font color="red">
-    {{ funding_form.non_field_errors }}
+    {{ funding_form.non_form_errors }}
 </font>
     {{ funding_form.management_form }}
 
@@ -23,9 +23,12 @@
                 {% if forloop.first %}
                     {% for hidden in form.hidden_fields %}
                         {{ hidden }}
+                        {{ hidden.errors.as_ul }}
                     {% endfor %}
                 {% endif %}
-                    {{ field.errors.as_ul }}
+                    <font color="red">
+                        {{ field.errors.as_ul }}
+                    </font>
                     {{ field }}
             </td>
             {% endfor %}
