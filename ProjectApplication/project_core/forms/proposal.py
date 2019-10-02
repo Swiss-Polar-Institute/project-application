@@ -192,8 +192,8 @@ class BudgetItemForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
     category = forms.CharField(widget=PlainTextWidget())
-    details = forms.CharField()
-    amount = forms.DecimalField()
+    details = forms.CharField(required=False)
+    amount = forms.DecimalField(required=False)
 
     def __init__(self, *args, **kwargs):
         super(BudgetItemForm, self).__init__(*args, **kwargs)
@@ -227,14 +227,14 @@ class BudgetItemForm(forms.Form):
 
         budget_amount = 0
 
-        amount = cleaned_data['amount']
-        detail_with_text = 'details' in cleaned_data and len(cleaned_data['details']) > 0
+        amount = cleaned_data['amount'] or 0
+        details = cleaned_data['details'] or ''
         category = BudgetCategory.objects.get(id=cleaned_data['category'])
 
         budget_amount += amount
 
-        if amount > 0 and detail_with_text == '':
-            self.add_error('details', 'Details of item "{}" cannot be empty because the value is not 0'.format(category))
+        if amount > 0 and details == '':
+            self.add_error('details', 'Please fill in details'.format(category))
 
         if amount < 0:
             self.add_error('amount', 'Cannot be negative'.format(category))
@@ -264,7 +264,7 @@ class BudgetFormSet(BaseFormSet):
         maximum_budget = self._call.budget_maximum
 
         for budget_item_form in self.forms:
-            amount = budget_item_form.cleaned_data.get('amount', 0)
+            amount = budget_item_form.cleaned_data['amount'] or 0
 
             budget_amount += amount
 

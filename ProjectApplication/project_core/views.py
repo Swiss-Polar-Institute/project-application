@@ -77,7 +77,7 @@ class ProposalView(TemplateView):
             for budget_category in call.budget_categories.all():
                 initial_budget.append({'category': budget_category, 'amount': None, 'details': None})
 
-            budget_form  = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
+            budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
 
             information['proposal_action_url'] = reverse('proposal-add')
@@ -111,19 +111,10 @@ class ProposalView(TemplateView):
             proposal_pk = int(kwargs['pk'])
             call = Proposal.objects.get(pk=proposal_pk).call
         else:
-            call = Call.objects.get(id=int(request.POST['proposal-call_id']))
+            call = Call.objects.get(id=int(request.POST['proposal_form-call_id']))
 
-        if proposal_pk is None:
-            # It's a new Proposal
-            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
-            person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
-            questions_form = QuestionsForProposalForm(request.POST,
-                                                                   call=call,
-                                                                   prefix=QUESTIONS_FORM_NAME)
-            budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
-            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
-        else:
-            # It needs to modify an existing Proposal
+        if proposal_pk:
+            # Editing an existing proposal
             proposal = Proposal.objects.get(pk=proposal_pk)
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, instance=proposal.applicant, prefix=PERSON_FORM_NAME)
@@ -132,6 +123,16 @@ class ProposalView(TemplateView):
                                                                    prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
             funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME, instance=proposal)
+        else:
+            # Creating a new proposal
+            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
+            person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
+            questions_form = QuestionsForProposalForm(request.POST,
+                                                                   call=call,
+                                                                   prefix=QUESTIONS_FORM_NAME)
+            budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
+            funding_item_form_set = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
+
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
                              funding_item_form_set]
