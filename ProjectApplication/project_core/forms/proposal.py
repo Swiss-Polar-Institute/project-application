@@ -142,14 +142,18 @@ class ProposalFundingFormSet(BaseInlineFormSet):
     def save_fundings(self, proposal):
         for form in self.forms:
             if form.cleaned_data:
-                proposal_item = form.save(commit=False)
-                proposal_item.proposal = proposal
-                proposal_item.save()
+                if form.cleaned_data['DELETE'] and form.cleaned_data['id']:
+                    proposal_item = ProposedBudgetItem.objects.get(form.cleaned_data['id'])
+                    proposal_item.delete()
+                elif form.cleaned_data['DELETE'] is False:
+                    proposal_item = form.save(commit=False)
+                    proposal_item.proposal = proposal
+                    proposal_item.save()
 
 
 # See documentation in: https://medium.com/@adandan01/django-inline-formsets-example-mybook-420cc4b6225d
 ProposalFundingItemFormSet = inlineformset_factory(
-    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, formset=ProposalFundingFormSet, min_num=1, extra=0,
+    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, formset=ProposalFundingFormSet, extra=1,
     can_delete=True)
 
 
