@@ -13,6 +13,7 @@ QUESTIONS_FORM_NAME = 'questions_form'
 BUDGET_FORM_NAME = 'budget_form'
 FUNDING_FORM_NAME = 'funding_form'
 
+
 class Homepage(TemplateView):
     template_name = 'homepage.tmpl'
 

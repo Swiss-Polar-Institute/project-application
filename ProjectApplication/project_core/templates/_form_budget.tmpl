@@ -2,10 +2,6 @@ Maximum budget: {{ maximum_budget }}
 
 {{ budget_form.management_form }}
 
-{% for form in budget_form.forms %}
-    {{ form.management_form }}
-{% endfor %}
-
 <font color="red">
     {{ budget_form.non_form_errors }}
 </font>

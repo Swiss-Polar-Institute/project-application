@@ -4,11 +4,7 @@
 </font>
     {{ funding_form.management_form }}
 
-    {% for form in funding_form.forms %}
-        {{ form.management_form }}
-    {% endfor %}
-
-    <table border>
+    <table id="funding_form_table" border="1">
     {% for form in funding_form.forms %}
         {% if forloop.first %}
             <thead>
@@ -18,9 +14,9 @@
                     {% endfor %}
                 </tr>
             </thead>
+            <tbody>
         {% endif %}
-        <tbody>
-        <tr class="formset_row">
+        <tr id="{{ form.prefix }}-row">
             {% for field in form.visible_fields %}
             <td>
                 {# Include the hidden fields in the form #}
@@ -41,10 +37,13 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 <script type="text/javascript">
-    $('.formset_row').formset({
-        addText: 'Add funding source',
-        deleteText: 'remove',
-        prefix: 'funding'
-    });
+    $(function() {
+        $('#funding_form_table tbody tr').formset({
+            // For inline formsets, be sure to set the prefix, as the default prefix
+            // ('form') isn't correct.
+            // Django appears to generate the prefix from the lowercase plural
+            // name of the related model, with camel-case converted to underscores.
+            prefix: 'funding_form'
+        })
+    })
 </script>
--

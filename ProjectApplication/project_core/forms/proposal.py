@@ -149,7 +149,7 @@ class ProposalFundingFormSet(BaseInlineFormSet):
 
 # See documentation in: https://medium.com/@adandan01/django-inline-formsets-example-mybook-420cc4b6225d
 ProposalFundingItemFormSet = inlineformset_factory(
-    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, formset=ProposalFundingFormSet, extra=1, can_delete=True)
+    Proposal, ProposalFundingItem, form=ProposalFundingItemForm, formset=ProposalFundingFormSet, min_num=1, extra=0, can_delete=True)
 
 
 class PlainTextWidget(forms.Widget):
