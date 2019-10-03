@@ -1,0 +1,49 @@
+{% extends "../_base.tmpl" %}
+
+{% block title %}Internal login for projects application{% endblock %}
+
+{% block body_contents %}
+
+    <div class="container theme-showcase" role="main">
+      {% include "_logo.tmpl" %}
+      <p>
+      <H1>Login for the projects application</H1>
+    <p>
+{% if form.errors %}
+  <p>Your username and password didn't match. Please try again.</p>
+{% endif %}
+
+{% if next %}
+  {% if user.is_authenticated %}
+    <p>Your account doesn't have access to this page. To proceed,
+    please login with an account that has access.</p>
+  {% else %}
+    <p>Please login to see this page.</p>
+  {% endif %}
+{% endif %}
+
+<form method="post" action="{% url 'login' %}">
+{% csrf_token %}
+<table>
+
+<tr>
+  <td>{{ form.username.label_tag }}</td>
+  <td>{{ form.username }}</td>
+</tr>
+
+<tr>
+  <td>{{ form.password.label_tag }}</td>
+  <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value="Login" />
+<input type="hidden" name="next" value="{{ next }}" />
+</form>
+
+      If you have problems login please contact {{ contact }}
+
+{# Assumes you setup the password_reset view in your URLconf #}
+{# <p><a href="{% url 'password_reset' %}">Lost password?</a></p> #}
+    </div>
+{% endblock %}

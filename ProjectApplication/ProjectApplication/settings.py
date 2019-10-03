@@ -129,6 +129,10 @@ STATIC_URL = '/static/'
 # For deployment
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# For the Debugging extension
 # INTERNAL_IPS = [
 #     '127.0.0.1',
 # ]
+
+# Redirect to home URL after login (Default redirects to /accounts/profile/)
+LOGIN_REDIRECT_URL = '/internal/'

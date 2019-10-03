@@ -11,5 +11,7 @@
         <ul>
             <li><a href="{% url 'internal-proposals-list' %}">List of proposals</a></li>
         </ul>
+
+        <a href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
     </div>
 {% endblock %}

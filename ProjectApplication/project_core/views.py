@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet
@@ -33,8 +34,9 @@ class CallsList(TemplateView):
         return context
 
 
-class ProposalsList(TemplateView):
+class ProposalsList(LoginRequiredMixin, TemplateView):
     template_name = 'list_proposals.tmpl'
+    login_url = reverse_lazy('login')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -53,7 +55,9 @@ class ProposalThankYouView(TemplateView):
         return render(request, 'proposal-thank-you.tmpl', context)
 
 
-class InternalHomepage(TemplateView):
+class InternalHomepage(LoginRequiredMixin, TemplateView):
+    login_url = reverse_lazy('login')
+
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
