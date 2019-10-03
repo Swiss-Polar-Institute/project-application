@@ -2,6 +2,9 @@ from django.views.generic import TemplateView
 from django.urls import reverse, reverse_lazy
 from ..models import Proposal
 from django.shortcuts import render, redirect
+from ..forms.call import CallForm
+
+CALL_FORM_NAME = 'call_form'
 
 
 class ProposalsList(TemplateView):
@@ -29,4 +32,7 @@ class CallView(TemplateView):
     def get(self, request, *args, **kwargs):
         super().get_context_data(**kwargs)
 
-        return render(request, 'internal/call.tmpl', {})
+        context = {}
+        context[CALL_FORM_NAME] = CallForm()
+
+        return render(request, 'internal/call.tmpl', context)

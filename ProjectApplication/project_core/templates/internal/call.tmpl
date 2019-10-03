@@ -7,7 +7,15 @@
         {% include "_logo.tmpl" %}
         <H1>You can create a new call</H1>
 
-        This needs to be done
+        Create a new call
 
+        <form method="post">
+            <table>
+                {{ call_form }}
+            </table>
+
+            <input type="submit" value="Submit">
+        </form>
+    <p>
     </div>
 {% endblock %}
