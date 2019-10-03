@@ -30,5 +30,3 @@ class CallView(TemplateView):
         super().get_context_data(**kwargs)
 
         return render(request, 'internal/call.tmpl', {})
-
-
