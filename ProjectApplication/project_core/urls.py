@@ -1,6 +1,8 @@
 from django.urls import include, path
 
-from .views import Homepage, CallView, CallsList, ProposalView, ProposalsList, ProposalThankYouView, InternalHomepage
+from .views.external import Homepage, CallsList, ProposalView, ProposalThankYouView
+from .views.internal import CallView, ProposalsList, InternalHomepage
+
 
 urlpatterns = [
     path('', Homepage.as_view(), name='homepage'),
