@@ -1,0 +1,15 @@
+{% extends '_base.tmpl' %}
+{% load static %}
+{% block title %}Internal homepage{% endblock %}
+
+{% block body_contents %}
+    <div class="container theme-showcase" role="main">
+        {% include "_logo.tmpl" %} <H1>Welcome to the internal homepage</H1>
+
+        This homepage is accessible only by internal users.
+
+        <ul>
+            <li><a href="{% url 'internal-proposals-list' %}">List of proposals</a></li>
+        </ul>
+    </div>
+{% endblock %}

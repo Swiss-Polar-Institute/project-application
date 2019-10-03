@@ -1,12 +1,13 @@
 from django.urls import path
 
-from .views import Homepage, CallsList, ProposalView, ProposalsList, ProposalThankYouView
+from .views import Homepage, CallsList, ProposalView, ProposalsList, ProposalThankYouView, InternalHomepage
 
 urlpatterns = [
     path('', Homepage.as_view(), name='homepage'),
     path('calls/', CallsList.as_view(), name='calls-list'),
-    path('internal/proposals', ProposalsList.as_view(), name='proposals-list'),
     path('proposal/add/', ProposalView.as_view(), name='proposal-add'),
     path('proposal/<uuid:uuid>/', ProposalView.as_view(), name='proposal-update'),
     path('proposal/thank-you/<uuid:uuid>/', ProposalThankYouView.as_view(), name='proposal-thank-you'),
+    path('internal/proposals', ProposalsList.as_view(), name='internal-proposals-list'),
+    path('internal/', InternalHomepage.as_view(), name='internal-homepage'),
 ]

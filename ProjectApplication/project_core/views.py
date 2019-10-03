@@ -53,6 +53,13 @@ class ProposalThankYouView(TemplateView):
         return render(request, 'proposal-thank-you.tmpl', context)
 
 
+class InternalHomepage(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        return render(request, 'internal-homepage.tmpl', context)
+
+
 class ProposalView(TemplateView):
     def get(self, request, *args, **kwargs):
         super().get_context_data(**kwargs)
@@ -75,6 +82,8 @@ class ProposalView(TemplateView):
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
 
+            information['action'] = 'Edit'
+
         else:
             call_pk = information['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
@@ -92,6 +101,8 @@ class ProposalView(TemplateView):
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
 
             information['proposal_action_url'] = reverse('proposal-add')
+
+            information['action'] = 'New'
 
         information.update(ProposalView._call_information_for_template(call))
 
@@ -172,6 +183,8 @@ class ProposalView(TemplateView):
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
         context[FUNDING_FORM_NAME] = funding_form
+
+        context['action'] = 'Edit'
 
         context.update(ProposalView._call_information_for_template(call))
 
