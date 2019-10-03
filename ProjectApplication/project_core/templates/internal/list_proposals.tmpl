@@ -4,7 +4,7 @@
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
-        {% include "_logo.tmpl" %} <H1>List of proposals</H1>
+        {% include "_logo.tmpl" %} <H1>List of submitted proposals</H1>
 
         {% if proposals %}
         <ul>
@@ -13,7 +13,7 @@
             {% endfor %}
         </ul>
         {% else %}
-            No proposals in the system
+            No submitted proposals in the system
         {% endif %}
     </div>
 {% endblock %}
