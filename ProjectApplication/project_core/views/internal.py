@@ -19,14 +19,32 @@ class ProposalsList(TemplateView):
         return context
 
 
-class InternalHomepage(TemplateView):
+class CallUpdated(TemplateView):
+    template_name = 'internal/call-updated.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['id'] = kwargs['id']
+        action = self.request.GET['action']
+
+        if action in ('created', 'updated'):
+            context['action'] = action
+        else:
+            # should not happen
+            context['action'] = ''
+
+        return context
+
+
+class Homepage(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
         return render(request, 'internal/homepage.tmpl', context)
 
 
-class InternalCallsList(TemplateView):
+class CallsList(TemplateView):
     template_name = 'internal/call-list.tmpl'
 
     def get_context_data(self, **kwargs):
@@ -63,20 +81,18 @@ class CallView(TemplateView):
             call_form = CallForm(request.POST, instance=call)
 
             context['call_action_url'] = reverse('call-update', kwargs={'id': call.id})
-            context['action'] = 'modified'
+            action = 'updated'
 
         else:
             # creates a call
             call_form = CallForm(request.POST)
             context['call_action_url'] = reverse('call-add')
-            context['action'] = 'created'
+            action = 'created'
 
         if call_form.is_valid():
             call = call_form.save()
 
-            context['id'] = call.id
-
-            return render(request, 'internal/call-modified.tmpl', context)
+            return redirect(reverse('internal-call-updated', kwargs={'id': call.id}) + '?action={}'.format(action))
 
         context = {}
 

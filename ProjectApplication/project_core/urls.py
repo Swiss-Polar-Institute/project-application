@@ -1,21 +1,22 @@
 from django.urls import include, path
 
-from .views.external import Homepage, CallsList, ProposalView, ProposalThankYouView
-from .views.internal import CallView, ProposalsList, InternalHomepage, InternalCallsList
+from .views import external
+from .views import internal
 
 
 urlpatterns = [
-    path('', Homepage.as_view(), name='homepage'),
-    path('calls/', CallsList.as_view(), name='calls-list'),
-    path('proposal/add/', ProposalView.as_view(), name='proposal-add'),
-    path('proposal/<uuid:uuid>/', ProposalView.as_view(), name='proposal-update'),
-    path('proposal/thank-you/<uuid:uuid>/', ProposalThankYouView.as_view(), name='proposal-thank-you'),
+    path('', external.Homepage.as_view(), name='homepage'),
+    path('calls/', external.CallsList.as_view(), name='calls-list'),
+    path('proposal/add/', external.ProposalView.as_view(), name='proposal-add'),
+    path('proposal/<uuid:uuid>/', external.ProposalView.as_view(), name='proposal-update'),
+    path('proposal/thank-you/<uuid:uuid>/', external.ProposalThankYouView.as_view(), name='proposal-thank-you'),
 
-    path('internal/proposals', ProposalsList.as_view(), name='internal-proposals-list'),
-    path('internal/call/add/', CallView.as_view(), name='call-add'),
-    path('internal/call/<int:id>/', CallView.as_view(), name='call-update'),
-    path('internal/calls/', InternalCallsList.as_view(), name='internal-calls-list'),
-    path('internal/', InternalHomepage.as_view(), name='internal-homepage'),
+    path('internal/proposals', internal.ProposalsList.as_view(), name='internal-proposals-list'),
+    path('internal/call/add/', internal.CallView.as_view(), name='call-add'),
+    path('internal/call/<int:id>/', internal.CallView.as_view(), name='call-update'),
+    path('internal/call/updated/<int:id>/', internal.CallUpdated.as_view(), name='internal-call-updated'),
+    path('internal/calls/', internal.CallsList.as_view(), name='internal-calls-list'),
+    path('internal/', internal.Homepage.as_view(), name='internal-homepage'),
 
     path('accounts/', include('django.contrib.auth.urls')),
 ]
