@@ -12,8 +12,11 @@ class DateTimePickerWidget(forms.SplitDateTimeWidget):
 
 
 class CallForm(forms.ModelForm):
-    call_open_date = forms.DateTimeField(widget=DateTimePickerWidget)
-    submission_deadline = forms.DateTimeField(widget=DateTimePickerWidget)
+    call_open_date = forms.SplitDateTimeField(widget=DateTimePickerWidget)
+    submission_deadline = forms.SplitDateTimeField(widget=DateTimePickerWidget)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     class Meta:
         model = Call
