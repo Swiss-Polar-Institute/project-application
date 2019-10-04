@@ -249,6 +249,12 @@ class BudgetFormSet(BaseFormSet):
         budget_amount = 0
         maximum_budget = self._call.budget_maximum
 
+        if not self.is_valid():
+            # if one of the budget items is not valid: doesn't validate the general form
+            # E.g. if an amount is negative it will have an error in the amount but the
+            # amount is removed from the form.cleaned_data
+            return
+
         for budget_item_form in self.forms:
             amount = budget_item_form.cleaned_data['amount'] or 0
 

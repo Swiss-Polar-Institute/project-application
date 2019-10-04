@@ -22,6 +22,17 @@ class Homepage(TemplateView):
         return context
 
 
+class ProposalThankYouView(TemplateView):
+    template_name = 'proposal-thank_you.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+
+        context['uuid'] = kwargs['uuid']
+
+        return context
+
 class CallsList(TemplateView):
     template_name = 'call-list.tmpl'
 
