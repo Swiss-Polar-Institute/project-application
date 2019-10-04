@@ -67,8 +67,8 @@ class Question(models.Model):
         (TEXT, 'Text'),
     )
 
-    question_text = models.TextField()
-    question_description = models.TextField(null=True, blank=True)
+    question_text = models.TextField(help_text='Text of a question', null=False, blank=False)
+    question_description = models.TextField(help_text='Description that should go alongside the question text by way of explanation for completion of answer', null=True, blank=True)
     answer_type = models.CharField(help_text='Type of field that should be applied to the question answer', max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.IntegerField(help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True)
 
@@ -269,8 +269,8 @@ class BudgetItem(models.Model):
     """Itemised line in a budget, comprising of a category, full details and the amount"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    category = models.ForeignKey(BudgetCategory, help_text='', blank=False, null=False, on_delete=models.PROTECT)
-    details = models.TextField(help_text='', blank=True, null=False)
+    category = models.ForeignKey(BudgetCategory, help_text='Name of the budget item', blank=False, null=False, on_delete=models.PROTECT)
+    details = models.TextField(help_text='Details of the budget item', blank=True, null=False)
     amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, max_digits=10, blank=False, null=True)
 
     class Meta:
@@ -325,3 +325,56 @@ class ProposalFundingItem(FundingItem):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal for which the funding has been sourced', on_delete=models.PROTECT)
+
+
+class CareerStage(models.Model):
+    """Stage of a person within their career."""
+    stage = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False)
+    description = models.CharField(help_text='Description of the career stage', max_length=100, null=False, blank=False)
+
+    def __str__(self):
+        return '{}: {}'.format(self.stage, self.description)
+
+
+class Role(models.Model):
+    """Role a person can take in a variety of different circumstances."""
+    PROPOSAL = 'Proposal'
+    PROJECT = 'Project'
+    EXPEDITION = 'Expedition'
+
+    TYPES = (
+        (PROPOSAL, 'Proposal'),
+        (PROJECT, 'Project'),
+        (EXPEDITION, 'Expedition'),
+    )
+
+    role = models.CharField(help_text='Name of role', max_length=50, null=False, blank=False)
+    description = models.CharField(help_text='Description of role to distinguish it from others', max_length=200, null=False, blank=False)
+    type = models.CharField(help_text='Part of the application to which the role refers, determining where it can be used in some cases', choices=TYPES, max_length=25, null=False, blank=False)
+
+    def __str__(self):
+        return '{} ({}): {}'.format(self.role, self.type, self.description)
+
+
+class Partner(models.Model):
+    """Person who is a partner"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    person = models.ForeignKey(Person, help_text='Person that is a partner', on_delete=models.PROTECT)
+    career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career', on_delete=models.PROTECT)
+    role = models.ForeignKey(Role, help_text='Role of the person', on_delete=models.PROTECT)
+    role_description = models.TextField(help_text='Description of what the person will be doing', null=False, blank=False)
+    competences = models.TextField(help_text='Description of the competences of the person', null=False, blank=False)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return '{} ({}) - {}'.format(self.person, self.career_stage, self.role)
+
+
+class ProposalPartner(Partner):
+    """Partner that is part of a proposal."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    proposal = models.ForeignKey(Proposal, help_text='Proposal to on which the partner is collaborating', on_delete=models.PROTECT)

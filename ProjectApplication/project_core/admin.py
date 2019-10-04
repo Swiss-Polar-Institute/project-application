@@ -143,6 +143,21 @@ class ProposalQATextAdmin(admin.ModelAdmin):
     ordering = ['proposal', 'call_question',]
 
 
+class CareerStageAdmin(admin.ModelAdmin):
+    list_display = ('stage', 'description')
+    ordering = ['stage']
+
+
+class RoleAdmin(admin.ModelAdmin):
+    list_display = ('role', 'description', 'type')
+    ordering = ['role', 'type']
+
+
+class ProposalPartnerAdmin(admin.ModelAdmin):
+    list_display = ('proposal', 'person', 'career_stage', 'role', 'role_description', 'competences')
+    ordering = ['proposal', 'person', 'career_stage', 'role']
+
+
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.StepDate, StepDateAdmin)
 admin.site.register(project_core.models.Message, MessageAdmin)
@@ -162,3 +177,6 @@ admin.site.register(project_core.models.FundingStatus, FundingStatusAdmin)
 admin.site.register(project_core.models.ProposalFundingItem, ProposalFundingItemAdmin)
 admin.site.register(project_core.models.CallQuestion, CallQuestionAdmin)
 admin.site.register(project_core.models.ProposalQAText, ProposalQATextAdmin)
+admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
+admin.site.register(project_core.models.Role, RoleAdmin)
+admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
