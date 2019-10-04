@@ -4,7 +4,39 @@ from django.urls import reverse
 import uuid as uuid_lib
 
 
-class Step(models.Model):
+class BudgetCategory(models.Model):
+    """Details of budget categories"""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    name = models.CharField(help_text='Name of the budget category', max_length=100, blank=False, null=False)
+    description = models.CharField(help_text='Description of the budget category', max_length=300, blank=False,
+                                   null=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Budget categories'
+
+
+class Call(models.Model):
+    """Description of call."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    long_name = models.CharField(help_text='Full name of the call', max_length=200, blank=False, null=False)
+    short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
+    description = models.TextField(help_text='Description of the call that can be used to distinguish it from others', blank=False, null=False)
+    introductory_message = models.TextField(help_text='Introductory text to the call for applicants', blank=True, null=True)
+    call_open_date = models.DateTimeField(help_text='Date on which the call is opened', blank=False, null=False)
+    submission_deadline = models.DateTimeField(help_text='Submission deadline of the call', blank=False, null=False)
+    budget_categories = models.ManyToManyField(BudgetCategory, help_text='Categories required for the budget for a call')
+    budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget', decimal_places=2, max_digits=10, blank=False, null=False)
+
+    def __str__(self):
+        return self.long_name
+
+
+class StepType(models.Model):
     """Notable steps during the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -15,11 +47,12 @@ class Step(models.Model):
         return '{}'.format(self.name)
 
 
-class StepDate(models.Model):
+class Step(models.Model):
     """Dates of notable steps that are used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    step = models.ForeignKey(Step, help_text='Name of step',max_length=128, null=False, on_delete=models.PROTECT)
+    call = models.ForeignKey(Call, help_text='Step within a call', on_delete=models.PROTECT)
+    step = models.ForeignKey(StepType, help_text='Name of step', max_length=128, null=False, on_delete=models.PROTECT)
     date = models.DateTimeField(help_text='Date and time of notable date',max_length=64, null=False)
 
     def __str__(self):
@@ -41,20 +74,6 @@ class Message(models.Model):
 
     def __str__(self):
         return self.message
-
-
-class BudgetCategory(models.Model):
-    """Details of budget categories"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
-
-    name = models.CharField(help_text='Name of the budget category', max_length=100, blank=False, null=False)
-    description = models.CharField(help_text='Description of the budget category', max_length=300, blank=False, null=False)
-    
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural='Budget categories'
 
 
 class AbstractQuestion(models.Model):
@@ -79,21 +98,7 @@ class AbstractQuestion(models.Model):
         return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
 
 
-class Call(models.Model):
-    """Description of call."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    long_name = models.CharField(help_text='Full name of the call', max_length=200, blank=False, null=False)
-    short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
-    description = models.TextField(help_text='Description of the call that can be used to distinguish it from others', blank=False, null=False)
-    introductory_message = models.TextField(help_text='Introductory text to the call for applicants', blank=True, null=True)
-    call_open_date = models.DateTimeField(help_text='Date on which the call is opened', blank=False, null=False)
-    submission_deadline = models.DateTimeField(help_text='Submission deadline of the call', blank=False, null=False)
-    budget_categories = models.ManyToManyField(BudgetCategory, help_text='Categories required for the budget for a call')
-    budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget', decimal_places=2, max_digits=10, blank=False, null=False)
-
-    def __str__(self):
-        return self.long_name
 
 
 class CallQuestion(AbstractQuestion):

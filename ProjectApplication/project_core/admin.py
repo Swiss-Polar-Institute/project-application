@@ -5,14 +5,14 @@ from typing import List
 # Register your models here.
 
 
-class StepAdmin(admin.ModelAdmin):
+class StepTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
     ordering = ['name', 'description',]
 
 
-class StepDateAdmin(admin.ModelAdmin):
-    list_display = ('step', 'date',)
-    ordering = ['step', 'date',]
+class StepAdmin(admin.ModelAdmin):
+    list_display = ('call', 'step', 'date',)
+    ordering = ['call', 'step', 'date',]
 
 
 class MessageAdmin(admin.ModelAdmin):
@@ -163,8 +163,8 @@ class ProposalPartnerAdmin(admin.ModelAdmin):
     ordering = ['proposal', 'person', 'career_stage', 'role']
 
 
+admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
-admin.site.register(project_core.models.StepDate, StepDateAdmin)
 admin.site.register(project_core.models.Message, MessageAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
 admin.site.register(project_core.models.Call, CallAdmin)
