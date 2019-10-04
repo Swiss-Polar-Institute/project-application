@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
-from django.forms import ModelChoiceField, BaseInlineFormSet, BaseFormSet
+from django.forms import ModelChoiceField, BaseInlineFormSet, BaseFormSet, ModelMultipleChoiceField
 from django.forms import ModelForm, Form
 from django.forms.models import inlineformset_factory, formset_factory
 
@@ -8,15 +8,22 @@ from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Or
     ProposalFundingItem, ProposedBudgetItem, BudgetCategory
 
 
-class PersonForm(ModelForm):
-    class Meta:
-        model = Person
-        fields = ['academic_title', 'first_name', 'surname', 'organisations', 'group', ]
-
-
 class OrganisationChoiceField(ModelChoiceField):
     def label_from_instance(self, organisation):
         return organisation.abbreviated_name()
+
+
+class OrganisationMultipleChoiceField(ModelMultipleChoiceField):
+    def label_from_instance(self, organisation):
+        return organisation.abbreviated_name()
+
+
+class PersonForm(ModelForm):
+    organisations = OrganisationMultipleChoiceField(queryset=Organisation.objects.all())
+
+    class Meta:
+        model = Person
+        fields = ['academic_title', 'first_name', 'surname', 'organisations', 'group', ]
 
 
 class ProposalForm(ModelForm):
