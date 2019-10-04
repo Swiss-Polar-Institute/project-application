@@ -57,7 +57,7 @@ class BudgetCategory(models.Model):
         verbose_name_plural='Budget categories'
 
 
-class Question(models.Model):
+class AbstractQuestion(models.Model):
     """Questions and details relating to their answers that can be used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -72,11 +72,11 @@ class Question(models.Model):
     answer_type = models.CharField(help_text='Type of field that should be applied to the question answer', max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.IntegerField(help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True)
 
-    def __str__(self):
-        return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
-
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
 
 
 class Call(models.Model):
@@ -96,10 +96,14 @@ class Call(models.Model):
         return self.long_name
 
 
-class CallQuestion(Question):
+class CallQuestion(AbstractQuestion):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
+
+
+class Question(AbstractQuestion):
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
 
 class Keyword(models.Model):
