@@ -192,7 +192,7 @@ class Contact(models.Model):
     """Contact details of a person"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    email_address = models.CharField(help_text='Email address', max_length=100, blank=False, null=False)
+    email_address = models.EmailField(help_text='Email address', blank=False, null=False)
     work_telephone = models.CharField(help_text='Work telephone number', max_length=20, blank=False, null=False)
     mobile = models.CharField(help_text='Mobile telephone number', max_length=20, blank=True, null=True)
     person = models.ForeignKey(Person, help_text='Person to which the contact details belong', on_delete=models.PROTECT)
