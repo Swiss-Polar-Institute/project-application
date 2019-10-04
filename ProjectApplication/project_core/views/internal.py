@@ -9,7 +9,7 @@ CALL_FORM_NAME = 'call_form'
 
 
 class ProposalsList(TemplateView):
-    template_name = 'internal/list_proposals.tmpl'
+    template_name = 'internal/proposal-list.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

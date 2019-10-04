@@ -2,9 +2,7 @@ Maximum budget: {{ maximum_budget }}
 
 {{ budget_form.management_form }}
 
-<font color="red">
-    {{ budget_form.non_form_errors }}
-</font>
+{{ budget_form.non_form_errors }}
 <p>
 
 {% for form in budget_form.forms %}
@@ -29,11 +27,9 @@ Maximum budget: {{ maximum_budget }}
         <tr>
             {% for field in form.visible_fields %}
             <td>
+                    {{ field.errors.as_ul }}
                     {{ field }}
                     {{ field.help_text }}
-                    <font color="red">
-                        {{ field.errors.as_ul }}
-                    </font>
             </td>
             {% endfor %}
         </tr>
