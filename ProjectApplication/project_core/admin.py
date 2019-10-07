@@ -15,11 +15,6 @@ class StepAdmin(admin.ModelAdmin):
     ordering = ['call', 'step', 'date',]
 
 
-class MessageAdmin(admin.ModelAdmin):
-    list_display = ('message_type', 'message',)
-    ordering = ['message_type',]
-
-
 class BudgetCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
     ordering = ['name',]
@@ -175,7 +170,6 @@ class CallCommentAdmin(admin.ModelAdmin):
 
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
-admin.site.register(project_core.models.Message, MessageAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
 admin.site.register(project_core.models.Call, CallAdmin)
 admin.site.register(project_core.models.Keyword, KeywordAdmin)

@@ -11,7 +11,7 @@ class BudgetCategory(models.Model):
     """Details of budget categories"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    name = models.CharField(help_text='Name of the budget category', max_length=100, blank=False, null=False)
+    name = models.CharField(help_text='Name of the budget category', max_length=100, blank=False, null=False, unique=True)
     description = models.CharField(help_text='Description of the budget category', max_length=300, blank=False,
                                    null=False)
 
@@ -26,7 +26,7 @@ class Call(models.Model):
     """Description of call."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    long_name = models.CharField(help_text='Full name of the call', max_length=200, blank=False, null=False)
+    long_name = models.CharField(help_text='Full name of the call', max_length=200, blank=False, null=False, unique=True)
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
     description = models.TextField(help_text='Description of the call that can be used to distinguish it from others', blank=False, null=False)
     introductory_message = models.TextField(help_text='Introductory text to the call for applicants', blank=True, null=True)
@@ -43,7 +43,7 @@ class StepType(models.Model):
     """Notable steps during the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    name = models.CharField(help_text='Name of a step', max_length=60, blank=False, null=False)
+    name = models.CharField(help_text='Name of a step', max_length=60, blank=False, null=False, unique=True)
     description = models.CharField(help_text='Description of a step', max_length=200, blank=False, null=False)
 
     def __str__(self):
@@ -58,25 +58,11 @@ class Step(models.Model):
     step = models.ForeignKey(StepType, help_text='Name of step', max_length=128, null=False, on_delete=models.PROTECT)
     date = models.DateTimeField(help_text='Date and time of notable date',max_length=64, null=False)
 
+    class Meta:
+        unique_together = (('call', 'step'), )
+
     def __str__(self):
         return '{} - {}'.format(self.step, self.date)
-
-
-class Message(models.Model):
-    """Messages that can be used throughout the SPI projects application"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
-
-    CALL_INTRODUCTORY_MESSAGE = 'CI'
-
-    MESSAGES= (
-        (CALL_INTRODUCTORY_MESSAGE, 'Call introductory message'),
-    )
-
-    message_type = models.CharField(help_text='Identification of where the message is to be used', max_length=5, choices=MESSAGES, blank=False, null=False)
-    message = models.TextField(help_text='Text of the message', blank=False, null=False)
-
-    def __str__(self):
-        return self.message
 
 
 class AbstractQuestion(models.Model):
@@ -94,11 +80,11 @@ class AbstractQuestion(models.Model):
     answer_type = models.CharField(help_text='Type of field that should be applied to the question answer', max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.IntegerField(help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True)
 
-    class Meta:
-        abstract = True
-
     def __str__(self):
         return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
+
+    class Meta:
+        abstract = True
 
 
 class TemplateQuestion(AbstractQuestion):
@@ -111,7 +97,7 @@ class CallQuestion(AbstractQuestion):
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
     question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based', on_delete=models.PROTECT)
     time_added = models.DateTimeField(help_text='Date and time at which the question was added to the call', default=timezone.now)
-    order = models.IntegerField(help_text='Use the integer order to order the questions', blank=False, null=False, validators=[MinValueValidator(1)])
+    order = models.PositiveIntegerField(help_text='Use the integer order to order the questions', blank=False, null=False, unique=True)
 
     @staticmethod
     def from_template(template_question):
@@ -125,6 +111,9 @@ class CallQuestion(AbstractQuestion):
 
         return call_question
 
+    class Meta:
+        unique_together = (('call', 'question'), )
+
 
 class Keyword(models.Model):
     """Set of keywords used to describe the topic of a project, proposal, mission etc. """
@@ -136,12 +125,15 @@ class Keyword(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.name, self.description)
 
+    class Meta:
+        unique_together = (('name', 'description'), )
+
 
 class ProposalStatus(models.Model):
     """Status options for a proposal"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    name = models.CharField(help_text='Name of the status of the proposal table', max_length=50, blank=False, null=False)
+    name = models.CharField(help_text='Name of the status of the proposal table', max_length=50, blank=False, null=False, unique=True)
     description = models.CharField(help_text='Detailed description of the proposal status name', max_length=512, blank=False, null=False)
 
     def __str__(self):
@@ -155,7 +147,7 @@ class PersonTitle(models.Model):
     """Personal and academic titles"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    title = models.CharField(help_text='Personal or academic title used by a person', max_length=50, blank=False, null=False)
+    title = models.CharField(help_text='Personal or academic title used by a person', max_length=50, blank=False, null=False, unique=True)
     
     def __str__(self):
         return self.title
@@ -165,7 +157,7 @@ class Country(models.Model):
     """Countries"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False)
+    name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False, unique=True)
     
     def __str__(self):
         return self.name
@@ -180,7 +172,7 @@ class Organisation(models.Model):
 
     long_name = models.CharField(help_text='Full name by which the organisation is known', max_length=100, blank=False, null=False)
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50, blank=True, null=True)
-    street = models.CharField(help_text='Street address of the organisation', max_length=1000, blank=False, null=False)
+    street = models.CharField(help_text='Street address of the organisation', max_length=500, blank=False, null=False)
     city = models.CharField(help_text='City in which the organisation is based', max_length=100, blank=False, null=False)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
@@ -193,6 +185,9 @@ class Organisation(models.Model):
     
     def __str__(self):
         return '{} ({}) - {}'.format(self.long_name, self.short_name, self.country)
+
+    class Meta:
+        unique_together = (('long_name', 'country'), )
 
 
 class Person(models.Model):
@@ -218,7 +213,7 @@ class Contact(models.Model):
     """Contact details of a person"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    email_address = models.EmailField(help_text='Email address', validators=[EmailValidator], blank=False, null=False)
+    email_address = models.EmailField(help_text='Email address', validators=[EmailValidator], blank=False, null=False, unique=True)
     work_telephone = models.CharField(help_text='Work telephone number', max_length=20, blank=False, null=False)
     mobile = models.CharField(help_text='Mobile telephone number', max_length=20, blank=True, null=True)
     person = models.ForeignKey(Person, help_text='Person to which the contact details belong', on_delete=models.PROTECT)
@@ -226,12 +221,15 @@ class Contact(models.Model):
     def __str__(self):
         return '{} - {}'.format(self.person, self.email_address)
 
+    class Meta:
+        unique_together = (('person', 'email_address'), )
+
 
 class GeographicalArea(models.Model):
     """Geographical area (exact coverage of this not yet determined)"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    name = models.CharField(help_text='Name of geographic area', max_length=100, blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
+    name = models.CharField(help_text='Name of geographic area', max_length=100, blank=False, null=False, unique=True) # Need to define in more detail if this should be a region, continent, country etc.
     definition = models.CharField(help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300, blank=False, null=False)
 
     def __str__(self):
@@ -244,7 +242,7 @@ class Proposal(models.Model):
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
 
-    title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
+    title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
     geographical_areas = models.ManyToManyField(GeographicalArea, help_text='Description of the geographical area covered by the proposal')
     location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True) # Consider having this as another text question
@@ -276,6 +274,9 @@ class Proposal(models.Model):
     def get_absolute_url(self):
         return reverse('proposal-update', kwargs={'uuid': self.uuid})
 
+    class Meta:
+        unique_together = (('title', 'applicant', 'call'), )
+
 
 class ProposalQAText(models.Model):
     """Questions assigned to a proposal and their respective answers"""
@@ -289,7 +290,7 @@ class ProposalQAText(models.Model):
         return 'Q: {}; A: {}'.format(self.call_question, self.answer)
 
     class Meta:
-        verbose_name_plural='Proposal question-answer (text)'
+        verbose_name_plural = 'Proposal question-answer (text)'
         unique_together = (('proposal', 'call_question'), )
 
 
@@ -322,14 +323,14 @@ class FundingStatus(models.Model):
     """Status of funding"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    status = models.CharField(help_text='Name of the status', max_length=30, blank=False, null=False)
-    description = models.CharField(help_text='Decsription of the status', max_length=100, blank=False, null=False)
+    status = models.CharField(help_text='Name of the status', max_length=30, blank=False, null=False, unique=True)
+    description = models.CharField(help_text='Description of the status', max_length=100, blank=False, null=False)
 
     def __str__(self):
         return self.status
 
     class Meta:
-        verbose_name_plural='Funding status'
+        verbose_name_plural = 'Funding status'
 
 
 class FundingItem(models.Model):
@@ -354,10 +355,13 @@ class ProposalFundingItem(FundingItem):
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal for which the funding has been sourced', on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('organisation', 'status', 'proposal', 'amount'), )
+
 
 class CareerStage(models.Model):
     """Stage of a person within their career."""
-    name = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False)
+    name = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False, unique=True)
     description = models.CharField(help_text='Description of the career stage', max_length=100, null=False, blank=False)
 
     def __str__(self):
@@ -383,6 +387,9 @@ class Role(models.Model):
     def __str__(self):
         return '{} ({}): {}'.format(self.name, self.type, self.description)
 
+    class Meta:
+        unique_together = (('name', 'type'), )
+
 
 class Partner(models.Model):
     """Person who is a partner"""
@@ -407,6 +414,9 @@ class ProposalPartner(Partner):
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal to on which the partner is collaborating', on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('person', 'role', 'proposal'), )
+
 
 class Comment(models.Model):
     """Comments can be made by a user about an aspect of something contained in the database"""
@@ -416,6 +426,7 @@ class Comment(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = (('time', 'user'), )
 
     def __str__(self):
         return '{} by {} at {}'.format(self.text, self.time, self.user)
@@ -425,8 +436,14 @@ class ProposalComment(Comment):
     """Comments made about a proposal"""
     proposal = models.ForeignKey(Proposal, help_text='Proposal about which the comment was made', on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('proposal', 'time', 'user'), )
+
 
 class CallComment(Comment):
     """Comments made about a call"""
     call = models.ForeignKey(Call, help_text='Call about which the comment was made', on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = (('call', 'time', 'user'), )
 
