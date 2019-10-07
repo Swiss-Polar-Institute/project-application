@@ -149,8 +149,8 @@ class ProposalQATextAdmin(admin.ModelAdmin):
 
 
 class CareerStageAdmin(admin.ModelAdmin):
-    list_display = ('stage', 'description')
-    ordering = ['stage']
+    list_display = ('name', 'description')
+    ordering = ['name']
 
 
 class RoleAdmin(admin.ModelAdmin):

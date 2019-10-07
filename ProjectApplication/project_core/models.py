@@ -342,11 +342,11 @@ class ProposalFundingItem(FundingItem):
 
 class CareerStage(models.Model):
     """Stage of a person within their career."""
-    stage = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False)
+    name = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False)
     description = models.CharField(help_text='Description of the career stage', max_length=100, null=False, blank=False)
 
     def __str__(self):
-        return '{}: {}'.format(self.stage, self.description)
+        return '{}: {}'.format(self.name, self.description)
 
 
 class Role(models.Model):
