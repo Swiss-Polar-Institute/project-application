@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -108,6 +109,8 @@ class CallQuestion(AbstractQuestion):
 
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
     question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based', on_delete=models.PROTECT)
+    time_added = models.DateTimeField(help_text='Date and time at which the question was added to the call', default=timezone.now)
+    order = models.IntegerField(help_text='Use the integer order to order the questions', blank=False, null=False, validators=[MinValueValidator(1)])
 
 
 class Keyword(models.Model):
