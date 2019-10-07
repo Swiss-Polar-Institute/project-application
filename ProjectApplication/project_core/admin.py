@@ -134,8 +134,8 @@ class ProposalFundingItemAdmin(admin.ModelAdmin):
 
 
 class CallQuestionAdmin(admin.ModelAdmin):
-    list_display = ('call', 'question_text', 'question_description', 'answer_type', 'answer_max_length')
-    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length']
+    list_display = ('call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'time_added', 'order')
+    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'time_added', 'order',]
 
 
 class TemplateQuestionAdmin(admin.ModelAdmin):
