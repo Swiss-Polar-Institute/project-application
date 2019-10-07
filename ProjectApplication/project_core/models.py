@@ -1,3 +1,5 @@
+from _testcapi import test_pep3118_obsolete_write_locks
+
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
@@ -111,6 +113,18 @@ class CallQuestion(AbstractQuestion):
     question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based', on_delete=models.PROTECT)
     time_added = models.DateTimeField(help_text='Date and time at which the question was added to the call', default=timezone.now)
     order = models.IntegerField(help_text='Use the integer order to order the questions', blank=False, null=False, validators=[MinValueValidator(1)])
+
+    @staticmethod
+    def from_template(template_question):
+        call_question = CallQuestion()
+
+        call_question.question_text = template_question.question_text
+        call_question.question_description = template_question.question_description
+        call_question.answer_type = template_question.answer_type
+        call_question.answer_max_length = template_question.answer_max_length
+        call_question.question = template_question
+
+        return call_question
 
 
 class Keyword(models.Model):
