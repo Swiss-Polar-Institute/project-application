@@ -35,7 +35,7 @@ class Call(models.Model):
     call_open_date = models.DateTimeField(help_text='Date on which the call is opened', blank=False, null=False)
     submission_deadline = models.DateTimeField(help_text='Submission deadline of the call', blank=False, null=False)
     budget_categories = models.ManyToManyField(BudgetCategory, help_text='Categories required for the budget for a call')
-    budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget', decimal_places=2, max_digits=10, blank=False, null=False)
+    budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget', decimal_places=2, max_digits=10, validators=[MinValueValidator(0)], blank=False, null=False)
 
     def __str__(self):
         return self.long_name
@@ -301,7 +301,7 @@ class BudgetItem(models.Model):
 
     category = models.ForeignKey(BudgetCategory, help_text='Name of the budget item', blank=False, null=False, on_delete=models.PROTECT)
     details = models.TextField(help_text='Details of the budget item', blank=True, null=False)
-    amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, max_digits=10, blank=False, null=True)
+    amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, max_digits=10, validators=[MinValueValidator(0)], blank=False, null=True)
 
     class Meta:
         abstract = True
@@ -340,7 +340,7 @@ class FundingItem(models.Model):
 
     organisation = models.ForeignKey(Organisation, help_text='Name of organisation from which the funding is sourced', blank=False, null=False, on_delete=models.PROTECT)
     status = models.ForeignKey(FundingStatus, help_text='Status of the funding item',blank=False, null=False, on_delete=models.PROTECT)
-    amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10, blank=False, null=False)
+    amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10, validators=[MinValueValidator(0)], blank=False, null=False)
 
     class Meta:
         abstract = True
