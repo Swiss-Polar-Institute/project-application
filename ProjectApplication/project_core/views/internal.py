@@ -2,11 +2,12 @@ from django.views.generic import TemplateView
 from django.urls import reverse, reverse_lazy
 from ..models import Proposal, TemplateQuestion
 from django.shortcuts import render, redirect
-from ..forms.call import CallForm
+from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..forms.question import QuestionForm
 from ..models import Call
 
 CALL_FORM_NAME = 'call_form'
+CALL_QUESTION_FORM_NAME = 'call_question_form'
 QUESTION_FORM_NAME = 'question_form'
 
 
@@ -140,8 +141,10 @@ class CallView(TemplateView):
             call = Call.objects.get(id=call_id)
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
+            context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
+            context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(prefix=CALL_QUESTION_FORM_NAME)
 
         return render(request, 'internal/call.tmpl', context)
 
@@ -153,23 +156,26 @@ class CallView(TemplateView):
         if 'id' in kwargs:
             call = Call.objects.get(id=kwargs['id'])
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
-
+            call_question_form = CallQuestionItemFormSet(request.POST, instance=call, prefix=CALL_QUESTION_FORM_NAME)
             context['call_action_url'] = reverse('call-update', kwargs={'id': call.id})
             action = 'updated'
 
         else:
             # creates a call
             call_form = CallForm(request.POST, prefix=CALL_FORM_NAME)
+            call_question_form = CallQuestionItemFormSet(request.POST, prefix=CALL_QUESTION_FORM_NAME)
             context['call_action_url'] = reverse('call-add')
             action = 'created'
 
-        if call_form.is_valid():
+        if call_form.is_valid() and call_question_form.is_valid():
             call = call_form.save()
+            call_question_form.save()
 
             return redirect(reverse('internal-call-updated', kwargs={'id': call.id}) + '?action={}'.format(action))
 
         context = {}
 
         context[CALL_FORM_NAME] = call_form
+        context[CALL_QUESTION_FORM_NAME] = call_question_form
 
         return render(request, 'internal/call.tmpl', context)

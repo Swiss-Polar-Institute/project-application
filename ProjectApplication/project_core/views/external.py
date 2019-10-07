@@ -33,6 +33,7 @@ class ProposalThankYouView(TemplateView):
 
         return context
 
+
 class CallsList(TemplateView):
     template_name = 'call-list.tmpl'
 

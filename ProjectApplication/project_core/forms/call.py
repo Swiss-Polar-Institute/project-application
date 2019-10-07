@@ -1,6 +1,7 @@
 from django import forms
 
 from ..models import Call, TemplateQuestion, CallQuestion
+from django.forms.models import inlineformset_factory
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -9,6 +10,12 @@ class DateTimePickerWidget(forms.SplitDateTimeWidget):
                          date_attrs={'type': 'date'},
                          time_attrs={'type': 'time'}
                          )
+
+
+class CallQuestionItemForm(forms.ModelForm):
+    class Meta:
+        model = CallQuestion
+        fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length']
 
 
 class CallForm(forms.ModelForm):
@@ -24,7 +31,7 @@ class CallForm(forms.ModelForm):
         else:
             questions_qs = TemplateQuestion.objects.all()
 
-        self.fields['template_questions'] = forms.ModelMultipleChoiceField(queryset=questions_qs)
+        self.fields['template_questions'] = forms.ModelMultipleChoiceField(queryset=questions_qs, required=False)
 
     def save(self, commit=True):
         instance = super().save(commit)
@@ -47,3 +54,6 @@ class CallForm(forms.ModelForm):
                   'submission_deadline', 'budget_categories', 'budget_maximum', ]
 
 
+CallQuestionItemFormSet = inlineformset_factory(
+    Call, CallQuestion, form=CallQuestionItemForm, extra=0,
+    can_delete=True)
