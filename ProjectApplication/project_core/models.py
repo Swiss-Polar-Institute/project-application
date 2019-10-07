@@ -230,11 +230,11 @@ class GeographicalArea(models.Model):
     """Geographical area (exact coverage of this not yet determined)"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    area = models.CharField(help_text='Name of geographic area', max_length=100, blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
+    name = models.CharField(help_text='Name of geographic area', max_length=100, blank=False, null=False) # Need to define in more detail if this should be a region, continent, country etc.
     definition = models.CharField(help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300, blank=False, null=False)
 
     def __str__(self):
-        return '{} - {}'.format(self.area, self.definition)
+        return '{} - {}'.format(self.name, self.definition)
 
 
 class Proposal(models.Model):

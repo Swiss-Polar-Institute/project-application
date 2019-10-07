@@ -87,8 +87,8 @@ class ContactAdmin(admin.ModelAdmin):
 
 
 class GeographicalAreaAdmin(admin.ModelAdmin):
-    list_display = ('area', 'definition',)
-    ordering = ['area',]
+    list_display = ('name', 'definition',)
+    ordering = ['name',]
 
 
 class ProposalAdmin(admin.ModelAdmin):
