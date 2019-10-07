@@ -1,5 +1,4 @@
 {% extends '_base.tmpl' %}
-{% load static %}
 {% block title %}Internal homepage{% endblock %}
 
 {% block body_contents %}
@@ -12,12 +11,25 @@
 
         <p>This homepage is accessible only by internal users.</p>
 
-        Options:
+        Call options:
         <ul>
-            <li><a href="{% url 'internal-proposals-list' %}">List of submitted proposals</a></li>
             <li><a href="{% url 'internal-calls-list' %}">List calls</a></li>
             <li><a href="{% url 'call-add' %}">Create a new call</a></li>
         </ul>
+
+        Questions:
+        <ul>
+            <li><a href="{% url 'questions-list' %}">List of questions</a></li>
+            <li><a href="{% url 'question-add' %}">Create a new question</a></li>
+        </ul>
+
+        Proposals:
+        <ul>
+            <li><a href="{% url 'internal-proposals-list' %}">List of submitted proposals</a></li>
+        </ul>
+
+
+
 
         <a href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
     </div>

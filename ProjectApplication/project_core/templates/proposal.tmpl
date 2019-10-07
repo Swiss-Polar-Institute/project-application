@@ -5,16 +5,15 @@
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
-        {% include "_logo.tmpl" %} <H1>{{ action }} proposal</H1>
+        {% include "_logo.tmpl" %}
+        <H1>{{ action }} proposal</H1>
 
-        Call name: {{ call_name }}<p>
+        <p><b>Call name:</b> {{ call_name }}</p>
 
-        Deadline for application: {{ call_submission_deadline }}
-        <p>
-        {{ call_introductory_message }}
-        <p>
-        Call for proposals submission form
-        <br>
+        <p><b>Deadline for application:</b> {{ call_submission_deadline }}
+
+        <p>{{ call_introductory_message }}</p>
+
         <form action="{{ proposal_action_url }}" method="post">
             {% csrf_token %}
 
@@ -30,11 +29,11 @@
 
             <h1>Budget</h1>
             {% include "_form_budget.tmpl" %}
-            <p></p>
 
             <h1>Funding organisations</h1>
-            {% include "_form_funding_organisations.tmpl" %}
-            <p></p>
+            <p>
+                {% include "_form_funding_organisations.tmpl" %}
+            </p>
             <input type="submit" value="Submit">
         </form>
         <p>

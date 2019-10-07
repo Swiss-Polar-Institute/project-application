@@ -1,10 +1,10 @@
 {% extends '_base.tmpl' %}
-{% load static %}
 {% block title %}Projects application{% endblock %}
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
-        {% include "_logo.tmpl" %} <H1>List of calls</H1>
+        {% include "_logo.tmpl" %}
+        <H1>List of calls</H1>
 
         {% if calls %}
         <ul>
@@ -15,6 +15,5 @@
         {% else %}
             No calls at the moment.
         {% endif %}
-
     </div>
 {% endblock %}

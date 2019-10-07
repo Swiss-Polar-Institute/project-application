@@ -18,5 +18,10 @@ urlpatterns = [
     path('internal/calls/', internal.CallsList.as_view(), name='internal-calls-list'),
     path('internal/', internal.Homepage.as_view(), name='internal-homepage'),
 
+    path('internal/question/add', internal.QuestionView.as_view(), name='question-add'),
+    path('internal/question/<int:id>/', internal.QuestionView.as_view(), name='question-update'),
+    path('internal/question/updated/<int:id>/', internal.QuestionUpdated.as_view(), name='question-updated'),
+    path('internal/questions/', internal.QuestionsList.as_view(), name='questions-list'),
+
     path('accounts/', include('django.contrib.auth.urls')),
 ]

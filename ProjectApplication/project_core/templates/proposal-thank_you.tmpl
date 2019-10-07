@@ -6,10 +6,10 @@
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %} <H1>Welcome to create a new proposal</H1>
 
-        Proposal identifier: {{ uuid }}<p>
+        <p>Proposal identifier: {{ uuid }}</p>
 
-        Edit it here: <a href="{% url 'proposal-update' uuid=uuid %}">Edit</a>
+        <p>Edit it here: <a href="{% url 'proposal-update' uuid=uuid %}">Edit</a></p>
 
-        Thank you for submitting the proposal.
+        <p>Thank you for submitting the proposal.</p>
     </div>
 {% endblock %}

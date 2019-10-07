@@ -1,0 +1,19 @@
+{% extends '_base.tmpl' %}
+{% block title %}Projects application{% endblock %}
+
+{% block body_contents %}
+    <div class="container theme-showcase" role="main">
+        {% include "_logo.tmpl" %} <H1>List of questions</H1>
+
+        {% if questions %}
+        <ul>
+            {% for question in questions %}
+            <li>{{ question.question_text }} - <a href="{% url 'question-update' id=question.id %}">Edit question</a></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            No questions entered in the system
+        {% endif %}
+
+    </div>
+{% endblock %}
