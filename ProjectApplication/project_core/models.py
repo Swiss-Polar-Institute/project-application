@@ -98,17 +98,15 @@ class AbstractQuestion(models.Model):
         return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
 
 
-
+class TemplateQuestion(AbstractQuestion):
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
 
 class CallQuestion(AbstractQuestion):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
-
-
-class TemplateQuestion(AbstractQuestion):
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
+    question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based', on_delete=models.PROTECT)
 
 
 class Keyword(models.Model):
