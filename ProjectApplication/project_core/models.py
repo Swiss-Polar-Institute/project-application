@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 import uuid as uuid_lib
 
@@ -181,7 +182,9 @@ class Organisation(models.Model):
 
     long_name = models.CharField(help_text='Full name by which the organisation is known', max_length=100, blank=False, null=False)
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50, blank=True, null=True)
-    address = models.CharField(help_text='Address of the organisation', max_length=1000, blank=True, null=True)
+    street = models.CharField(help_text='Street address of the organisation', max_length=1000, blank=False, null=False)
+    city = models.CharField(help_text='City in which the organisation is based', max_length=100, blank=False, null=False)
+    postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
 
     def abbreviated_name(self):
@@ -405,3 +408,27 @@ class ProposalPartner(Partner):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal to on which the partner is collaborating', on_delete=models.PROTECT)
+
+
+class Comment(models.Model):
+    """Comments can be made by a user about an aspect of something contained in the database"""
+    text = models.TextField(help_text='Text of a comment', null=False, blank=False)
+    time = models.DateTimeField(help_text='Date and time on which a comment was made', null=False, blank=False, default=timezone.now)
+    user = models.ForeignKey(User, help_text='User by which the comment was made', on_delete=models.PROTECT)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return '{} by {} at {}'.format(self.text, self.time, self.user)
+
+
+class ProposalComment(Comment):
+    """Comments made about a proposal"""
+    proposal = models.ForeignKey(Proposal, help_text='Proposal about which the comment was made', on_delete=models.PROTECT)
+
+
+class CallComment(Comment):
+    """Comments made about a call"""
+    call = models.ForeignKey(Call, help_text='Call about which the comment was made', on_delete=models.PROTECT)
+

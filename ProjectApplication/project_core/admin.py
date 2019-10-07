@@ -67,8 +67,8 @@ class CountryAdmin(admin.ModelAdmin):
 
 
 class OrganisationAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'address', 'country',)
-    ordering = ['long_name', 'short_name', 'country',]
+    list_display = ('long_name', 'short_name', 'street', 'city', 'postal_code', 'country',)
+    ordering = ['long_name', 'short_name', 'city', 'country',]
 
 
 class PersonAdmin(admin.ModelAdmin):
@@ -163,6 +163,16 @@ class ProposalPartnerAdmin(admin.ModelAdmin):
     ordering = ['proposal', 'person', 'career_stage', 'role']
 
 
+class ProposalCommentAdmin(admin.ModelAdmin):
+    list_display = ('proposal', 'text', 'user', 'time')
+    ordering = ['proposal', 'text', 'user', 'time']
+
+
+class CallCommentAdmin(admin.ModelAdmin):
+    list_display = ('call', 'text', 'user', 'time')
+    ordering = ['call', 'text', 'user', 'time']
+
+
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.Message, MessageAdmin)
@@ -186,3 +196,5 @@ admin.site.register(project_core.models.ProposalQAText, ProposalQATextAdmin)
 admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
 admin.site.register(project_core.models.Role, RoleAdmin)
 admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
+admin.site.register(project_core.models.ProposalComment, ProposalCommentAdmin)
+admin.site.register(project_core.models.CallComment, CallCommentAdmin)
