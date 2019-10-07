@@ -1,8 +1,8 @@
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 
 import uuid as uuid_lib
-import datetime
 
 
 class BudgetCategory(models.Model):
@@ -235,8 +235,8 @@ class Proposal(models.Model):
     applicant = models.ForeignKey(Person, help_text='Main applicant of the proposal', blank=False, null=False, on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False, null=False, on_delete=models.PROTECT)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
-    date_started = models.DateTimeField(help_text='Date and time (UTC) at which the proposal was first started', default=datetime.datetime.now(), blank=False, null=False)
-    last_modified = models.DateTimeField(help_text='Latest date and time at which the proposal was modified', default=datetime.datetime.now(), blank=False, null=False)
+    date_started = models.DateTimeField(help_text='Date and time (UTC) at which the proposal was first started', default=timezone.now, blank=False, null=False)
+    last_modified = models.DateTimeField(help_text='Latest date and time at which the proposal was modified', default=timezone.now, blank=False, null=False)
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
