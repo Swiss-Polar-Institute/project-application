@@ -65,26 +65,6 @@ class Step(models.Model):
         return '{} - {}'.format(self.step, self.date)
 
 
-class Message(models.Model):
-    """Messages that can be used throughout the SPI projects application"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
-
-    CALL_INTRODUCTORY_MESSAGE = 'CI'
-
-    MESSAGES= (
-        (CALL_INTRODUCTORY_MESSAGE, 'Call introductory message'),
-    )
-
-    message_type = models.CharField(help_text='Identification of where the message is to be used', max_length=5, choices=MESSAGES, blank=False, null=False)
-    message = models.TextField(help_text='Text of the message', blank=False, null=False)
-
-    class Meta:
-        unique_together = (('message', 'message_type'),)
-
-    def __str__(self):
-        return self.message
-
-
 class AbstractQuestion(models.Model):
     """Questions and details relating to their answers that can be used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -99,10 +79,6 @@ class AbstractQuestion(models.Model):
     question_description = models.TextField(help_text='Description that should go alongside the question text by way of explanation for completion of answer', null=True, blank=True)
     answer_type = models.CharField(help_text='Type of field that should be applied to the question answer', max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.IntegerField(help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True)
-
-    class Meta:
-        abstract = True
-        unique_together = (('question_text', 'question_description', 'answer_type', 'answer_max_length'), )
 
     def __str__(self):
         return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
@@ -296,7 +272,7 @@ class Proposal(models.Model):
         return reverse('proposal-update', kwargs={'uuid': self.uuid})
 
     class Meta:
-        unique_together = (('title', 'applicant', 'call'))
+        unique_together = (('title', 'applicant', 'call'), )
 
 
 class ProposalQAText(models.Model):
@@ -311,7 +287,7 @@ class ProposalQAText(models.Model):
         return 'Q: {}; A: {}'.format(self.call_question, self.answer)
 
     class Meta:
-        verbose_name_plural ='Proposal question-answer (text)'
+        verbose_name_plural = 'Proposal question-answer (text)'
         unique_together = (('proposal', 'call_question'), )
 
 
@@ -447,7 +423,7 @@ class Comment(models.Model):
 
     class Meta:
         abstract = True
-        unique_together = (('text', 'time', 'user'), )
+        unique_together = (('time', 'user'), )
 
     def __str__(self):
         return '{} by {} at {}'.format(self.text, self.time, self.user)
@@ -458,7 +434,7 @@ class ProposalComment(Comment):
     proposal = models.ForeignKey(Proposal, help_text='Proposal about which the comment was made', on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('proposal', 'text', 'time', 'user'), )
+        unique_together = (('proposal', 'time', 'user'), )
 
 
 class CallComment(Comment):
@@ -466,5 +442,5 @@ class CallComment(Comment):
     call = models.ForeignKey(Call, help_text='Call about which the comment was made', on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('call', 'text', 'time', 'user'), )
+        unique_together = (('call', 'time', 'user'), )
 
