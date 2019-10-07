@@ -154,8 +154,8 @@ class CareerStageAdmin(admin.ModelAdmin):
 
 
 class RoleAdmin(admin.ModelAdmin):
-    list_display = ('role', 'description', 'type')
-    ordering = ['role', 'type']
+    list_display = ('name', 'description', 'type')
+    ordering = ['name', 'type']
 
 
 class ProposalPartnerAdmin(admin.ModelAdmin):

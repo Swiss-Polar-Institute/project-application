@@ -361,12 +361,12 @@ class Role(models.Model):
         (EXPEDITION, 'Expedition'),
     )
 
-    role = models.CharField(help_text='Name of role', max_length=50, null=False, blank=False)
+    name = models.CharField(help_text='Name of role', max_length=50, null=False, blank=False)
     description = models.CharField(help_text='Description of role to distinguish it from others', max_length=200, null=False, blank=False)
     type = models.CharField(help_text='Part of the application to which the role refers, determining where it can be used in some cases', choices=TYPES, max_length=25, null=False, blank=False)
 
     def __str__(self):
-        return '{} ({}): {}'.format(self.role, self.type, self.description)
+        return '{} ({}): {}'.format(self.name, self.type, self.description)
 
 
 class Partner(models.Model):
