@@ -31,7 +31,8 @@ class CallForm(forms.ModelForm):
         else:
             questions_qs = TemplateQuestion.objects.all()
 
-        self.fields['template_questions'] = forms.ModelMultipleChoiceField(queryset=questions_qs, required=False)
+        self.fields['template_questions'] = forms.ModelMultipleChoiceField(queryset=questions_qs, required=False,
+                                                                           help_text='Templates not used in this call')
 
     def save(self, commit=True):
         instance = super().save(commit)

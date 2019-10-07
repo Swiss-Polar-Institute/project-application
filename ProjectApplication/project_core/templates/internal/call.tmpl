@@ -12,7 +12,9 @@
             {% csrf_token %}
             <table>
                 {{ call_form }}
-                {{ call_question_form }}
+            </table>
+
+            {% include "internal/_form_call_question.tmpl" %}
             </table>
 
             <input type="submit" value="Submit">

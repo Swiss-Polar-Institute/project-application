@@ -1,0 +1,16 @@
+{{ call_question_form.management_form }}
+
+{{ call_question_form.non_form_errors }}
+
+{% if call_question_form.forms %}
+    <H2>Questions</H2>
+    <table>
+        {% for form in call_question_form.forms %}
+            {% if not forloop.first %}
+                <tr><td colspan="2"><hr></td></tr>
+            {% endif %}
+
+            {{ form.as_table }}
+        {% endfor %}
+    </table>
+{% endif %}
