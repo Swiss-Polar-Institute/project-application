@@ -1,6 +1,6 @@
 from django.views.generic import TemplateView
 from django.urls import reverse, reverse_lazy
-from ..models import Proposal, Question
+from ..models import Proposal, TemplateQuestion
 from django.shortcuts import render, redirect
 from ..forms.call import CallForm
 from ..forms.question import QuestionForm
@@ -79,7 +79,7 @@ class QuestionsList(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['questions'] = Question.objects.all()
+        context['questions'] = TemplateQuestion.objects.all()
 
         return render(request, 'internal/question-list.tmpl', context)
 
@@ -91,7 +91,7 @@ class QuestionView(TemplateView):
         context = {}
 
         if 'id' in kwargs:
-            question = Question.objects.get(id=kwargs['id'])
+            question = TemplateQuestion.objects.get(id=kwargs['id'])
             context[QUESTION_FORM_NAME] = QuestionForm(instance=question, prefix=QUESTION_FORM_NAME)
         else:
             context[QUESTION_FORM_NAME] = QuestionForm(prefix=QUESTION_FORM_NAME)
@@ -105,7 +105,7 @@ class QuestionView(TemplateView):
 
         if 'id' in kwargs:
             # Editing an existing question
-            question = Question.objects.get(id=kwargs['id'])
+            question = TemplateQuestion.objects.get(id=kwargs['id'])
             question_form = QuestionForm(request.POST, instance=question, prefix=QUESTION_FORM_NAME)
 
             context[QUESTION_FORM_NAME] = question_form

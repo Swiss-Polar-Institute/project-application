@@ -107,7 +107,7 @@ class CallQuestion(AbstractQuestion):
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
 
 
-class Question(AbstractQuestion):
+class TemplateQuestion(AbstractQuestion):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
 

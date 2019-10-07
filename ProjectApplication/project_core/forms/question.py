@@ -1,6 +1,6 @@
 from django import forms
 
-from ..models import Question
+from ..models import TemplateQuestion
 
 
 class QuestionForm(forms.ModelForm):
@@ -8,5 +8,5 @@ class QuestionForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
     class Meta:
-        model = Question
+        model = TemplateQuestion
         fields = ['question_text', 'question_description', 'answer_max_length']

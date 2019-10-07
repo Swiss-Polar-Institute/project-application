@@ -138,7 +138,7 @@ class CallQuestionAdmin(admin.ModelAdmin):
     ordering = ['call', 'question_text', 'answer_type', 'answer_max_length']
 
 
-class QuestionAdmin(admin.ModelAdmin):
+class TemplateQuestionAdmin(admin.ModelAdmin):
     list_display = ('question_text', 'question_description', 'answer_type', 'answer_max_length')
     ordering = ['question_text', 'answer_type', 'answer_max_length']
 
@@ -181,7 +181,7 @@ admin.site.register(project_core.models.ProposedBudgetItem, ProposedBudgetItemAd
 admin.site.register(project_core.models.FundingStatus, FundingStatusAdmin)
 admin.site.register(project_core.models.ProposalFundingItem, ProposalFundingItemAdmin)
 admin.site.register(project_core.models.CallQuestion, CallQuestionAdmin)
-admin.site.register(project_core.models.Question, QuestionAdmin)
+admin.site.register(project_core.models.TemplateQuestion, TemplateQuestionAdmin)
 admin.site.register(project_core.models.ProposalQAText, ProposalQATextAdmin)
 admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
 admin.site.register(project_core.models.Role, RoleAdmin)
