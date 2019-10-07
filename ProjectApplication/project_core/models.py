@@ -1,6 +1,4 @@
-from _testcapi import test_pep3118_obsolete_write_locks
-
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, EmailValidator
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
@@ -220,7 +218,7 @@ class Contact(models.Model):
     """Contact details of a person"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    email_address = models.EmailField(help_text='Email address', blank=False, null=False)
+    email_address = models.EmailField(help_text='Email address', validators=[EmailValidator], blank=False, null=False)
     work_telephone = models.CharField(help_text='Work telephone number', max_length=20, blank=False, null=False)
     mobile = models.CharField(help_text='Mobile telephone number', max_length=20, blank=True, null=True)
     person = models.ForeignKey(Person, help_text='Person to which the contact details belong', on_delete=models.PROTECT)
