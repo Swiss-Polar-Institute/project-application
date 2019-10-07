@@ -84,7 +84,7 @@ class QuestionsForProposalForm(Form):
         if self._proposal:
             self._call = self._proposal.call
 
-        for question in self._call.callquestion_set.all().order_by('question_text'):
+        for question in self._call.callquestion_set.all().order_by('order'):
             answer = None
             if self._proposal:
                 try:

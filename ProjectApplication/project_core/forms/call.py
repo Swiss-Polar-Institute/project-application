@@ -1,7 +1,7 @@
 from django import forms
 
 from ..models import Call, TemplateQuestion, CallQuestion
-from django.forms.models import inlineformset_factory
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -38,14 +38,10 @@ class CallForm(forms.ModelForm):
         instance = super().save(commit)
 
         if commit:
-            current_order = 1
             for question in self.cleaned_data['template_questions']:
                 call_question = CallQuestion.from_template(question)
                 call_question.call = instance
-                call_question.order = current_order
                 call_question.save()
-
-                current_order += 1
 
         return instance
 
@@ -55,6 +51,12 @@ class CallForm(forms.ModelForm):
                   'submission_deadline', 'budget_categories', 'budget_maximum', ]
 
 
+class CallQuestionFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.queryset = self.queryset.order_by('order')
+
+
 CallQuestionItemFormSet = inlineformset_factory(
-    Call, CallQuestion, form=CallQuestionItemForm, extra=0,
+    Call, CallQuestion, form=CallQuestionItemForm, formset=CallQuestionFormSet, extra=0,
     can_delete=True)
