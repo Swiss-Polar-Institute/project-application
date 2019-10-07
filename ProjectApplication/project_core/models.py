@@ -83,6 +83,9 @@ class AbstractQuestion(models.Model):
     def __str__(self):
         return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
 
+    class Meta:
+        abstract = True
+
 
 class TemplateQuestion(AbstractQuestion):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -169,7 +172,7 @@ class Organisation(models.Model):
 
     long_name = models.CharField(help_text='Full name by which the organisation is known', max_length=100, blank=False, null=False)
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50, blank=True, null=True)
-    street = models.CharField(help_text='Street address of the organisation', max_length=1000, blank=False, null=False)
+    street = models.CharField(help_text='Street address of the organisation', max_length=500, blank=False, null=False)
     city = models.CharField(help_text='City in which the organisation is based', max_length=100, blank=False, null=False)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
@@ -239,7 +242,7 @@ class Proposal(models.Model):
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
 
-    title = models.CharField(help_text='Title of the proposal being submitted', max_length=1000, blank=False, null=False)
+    title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal', blank=False)
     geographical_areas = models.ManyToManyField(GeographicalArea, help_text='Description of the geographical area covered by the proposal')
     location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True) # Consider having this as another text question
