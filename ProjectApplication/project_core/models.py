@@ -1,8 +1,9 @@
 from django.core.validators import MinValueValidator, EmailValidator
-from django.db import models
+from django.db import models, transaction
 from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db.models import Max
 
 import uuid as uuid_lib
 
@@ -110,6 +111,17 @@ class CallQuestion(AbstractQuestion):
         call_question.question = template_question
 
         return call_question
+
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            call_questions = CallQuestion.objects.filter(call=self.call)
+            if call_questions:
+                self.order = call_questions.aggregate(Max('order'))['order__max']+1
+            else:
+                self.order = 1
+
+        super().save(*args, **kwargs)
 
     class Meta:
         unique_together = (('call', 'question'), )
