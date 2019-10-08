@@ -170,6 +170,8 @@ class Country(models.Model):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False, unique=True)
+    source = models.CharField(help_text='Source of country name', max_length=100, blank=False, null=False)
+    last_modified = models.DateTimeField(help_text='Last date and time of modification', default=timezone.now, blank=False, null=False)
     
     def __str__(self):
         return self.name
