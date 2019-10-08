@@ -1,6 +1,7 @@
 {% extends '_base.tmpl' %}
 {% load static %}
 {% block title %}Projects application{% endblock %}
+{% load crispy_forms_tags %}
 
 
 {% block body_contents %}
@@ -18,11 +19,11 @@
             {% csrf_token %}
 
             <h1>Part 1: General Information</h1>
-            Please complete the information about the applicant
-            <table>
-                {{ person_form.as_table }}
-                {{ proposal_form.as_table }}
-            </table>
+            <h2>Applicant</h2>
+            {% crispy person_form %}
+
+            <h2>Proposal</h2>
+            {% crispy proposal_form %}
 
             <h1>Part 2: Project Description</h1>
             {% include "_form_dynamic_questions.tmpl" %}
@@ -31,9 +32,7 @@
             {% include "_form_budget.tmpl" %}
 
             <h1>Funding organisations</h1>
-            <p>
-                {% include "_form_funding_organisations.tmpl" %}
-            </p>
+            {% include "_form_funding_organisations.tmpl" %}
             <input type="submit" value="Submit">
         </form>
         <p>

@@ -3,9 +3,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelChoiceField, BaseInlineFormSet, BaseFormSet, ModelMultipleChoiceField
 from django.forms import ModelForm, Form
 from django.forms.models import inlineformset_factory, formset_factory
+from crispy_forms.layout import Layout, Submit, Row, Column, Div
 
 from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Organisation, \
     ProposalFundingItem, ProposedBudgetItem, BudgetCategory
+
+from crispy_forms.helper import FormHelper
 
 
 class OrganisationChoiceField(ModelChoiceField):
@@ -20,6 +23,26 @@ class OrganisationMultipleChoiceField(ModelMultipleChoiceField):
 
 class PersonForm(ModelForm):
     organisations = OrganisationMultipleChoiceField(queryset=Organisation.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Div(
+                Div('academic_title', css_class='col-2'),
+                Div('first_name', css_class='col-5'),
+                Div('surname', css_class='col-5'),
+                css_class='row'
+            ),
+            Div(
+                Div('organisations', css_class='col-12'), css_class='row'
+            ),
+            Div(
+                Div('group', css_class='col-12'), css_class='row',
+            )
+        )
 
     class Meta:
         model = Person
@@ -48,6 +71,9 @@ class ProposalForm(ModelForm):
             self.fields['keywords_str'] = forms.CharField(label='Keywords',
                                                           help_text='Separated by commas',
                                                           initial=', '.join(keywords_list))
+
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
 
     def save(self, commit=True):
         self.instance.call_id = self.cleaned_data['call_id']
@@ -101,6 +127,9 @@ class QuestionsForProposalForm(Form):
                                                                              initial=answer,
                                                                              help_text=question.question_description)
 
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
     def save_answers(self, proposal):
         for question, answer in self.cleaned_data.items():
             call_question_id = int(question[len('question_'):])
@@ -137,6 +166,9 @@ class ProposalFundingItemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
     class Meta:
         model = ProposalFundingItem
         fields = ['organisation', 'status', 'amount', 'proposal', ]
@@ -145,6 +177,9 @@ class ProposalFundingItemForm(ModelForm):
 class ProposalFundingFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
 
     def save_fundings(self, proposal):
         for form in self.forms:
@@ -201,6 +236,9 @@ class BudgetItemForm(forms.Form):
         self.fields['category'].help_text = category.name
         self.fields['category'].value = category.id
 
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
     def save_budget(self, proposal):
         if self.cleaned_data['id']:
             budget_item = ProposedBudgetItem.objects.get(id=self.cleaned_data['id'])
@@ -249,6 +287,9 @@ class BudgetFormSet(BaseFormSet):
             kwargs['initial'] = initial_budget
 
         super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
 
     def clean(self):
         super().clean()
