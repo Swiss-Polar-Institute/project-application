@@ -177,7 +177,7 @@ class Country(models.Model):
         return self.name
 
     class Meta:
-        verbose_name_plural='Countries'
+        verbose_name_plural = 'Countries'
 
 
 class Organisation(models.Model):
