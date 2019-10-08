@@ -30,8 +30,6 @@ class CallForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper(self)
-        self.helper.form_tag = False
 
         if self.instance.pk:
             template_ids_used = CallQuestion.objects.filter(call=self.instance).values_list('question', flat=True)
@@ -41,6 +39,10 @@ class CallForm(forms.ModelForm):
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(queryset=questions_qs, required=False,
                                                                            help_text='Templates not used in this call')
+
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
 
     def save(self, commit=True):
         instance = super().save(commit)
@@ -64,7 +66,7 @@ class CallQuestionFormSet(BaseInlineFormSet):
         super().__init__(*args, **kwargs)
         self.queryset = self.queryset.order_by('order')
 
-        self.helper = FormHelper(self)
+        self.helper = FormHelper()
         self.helper.form_tag = False
 
 
