@@ -1,6 +1,6 @@
 {% extends '_base.tmpl' %}
 {% block title %}Internal homepage{% endblock %}
-
+{% load crispy_forms_tags %}
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %}
@@ -11,7 +11,7 @@
         <form method="post" action="{{ call_action_url }}">
             {% csrf_token %}
             <table>
-                {{ call_form }}
+                {{ call_form|crispy }}
             </table>
 
             {% include "internal/_form_call_question.tmpl" %}

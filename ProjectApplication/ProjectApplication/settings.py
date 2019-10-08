@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
     'project_core',
 ]
 
@@ -136,3 +137,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
 LOGIN_REDIRECT_URL = '/internal/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
