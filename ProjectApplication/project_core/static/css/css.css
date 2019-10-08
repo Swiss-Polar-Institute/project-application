@@ -6,3 +6,8 @@
 .error input, .error select {
     border: 2px red solid;
 }
+
+.helptext
+{
+    color: grey;
+}
