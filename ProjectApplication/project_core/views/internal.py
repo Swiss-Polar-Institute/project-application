@@ -142,9 +142,11 @@ class CallView(TemplateView):
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
+            context['call_action_url'] = reverse('call-update', kwargs={'id': call_id})
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(prefix=CALL_QUESTION_FORM_NAME)
+            context['call_action_url'] = reverse('call-add')
 
         return render(request, 'internal/call.tmpl', context)
 

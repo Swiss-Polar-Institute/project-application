@@ -2,6 +2,7 @@ from django import forms
 
 from ..models import Call, TemplateQuestion, CallQuestion
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
+from crispy_forms.helper import FormHelper
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -13,6 +14,11 @@ class DateTimePickerWidget(forms.SplitDateTimeWidget):
 
 
 class CallQuestionItemForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
     class Meta:
         model = CallQuestion
         fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length']
@@ -24,6 +30,8 @@ class CallForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
 
         if self.instance.pk:
             template_ids_used = CallQuestion.objects.filter(call=self.instance).values_list('question', flat=True)
@@ -55,6 +63,9 @@ class CallQuestionFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.queryset = self.queryset.order_by('order')
+
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
 
 
 CallQuestionItemFormSet = inlineformset_factory(

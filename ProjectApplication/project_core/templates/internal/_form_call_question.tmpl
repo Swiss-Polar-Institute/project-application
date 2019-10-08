@@ -3,15 +3,5 @@
 {{ call_question_form.non_form_errors }}
 {% load crispy_forms_tags %}
 
-{% if call_question_form.forms %}
-    <H2>Questions</H2>
-    <table>
-        {% for form in call_question_form.forms %}
-            {% if not forloop.first %}
-                <tr><td colspan="2"><hr></td></tr>
-            {% endif %}
-
-            {{ form|crispy }}
-        {% endfor %}
-    </table>
-{% endif %}
+<H2>Questions</H2>
+{% crispy call_question_form %}
