@@ -4,9 +4,9 @@
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %}
-        <H1>You can create a new call</H1>
+        <H1>Create a new call</H1>
 
-        Create a new call
+        <a href="{% url 'internal-homepage' %}">Internal Homepage</a>
 
         <form method="post" action="{{ call_action_url }}">
             {% csrf_token %}
@@ -15,7 +15,6 @@
             </table>
 
             {% include "internal/_form_call_question.tmpl" %}
-            </table>
 
             <input type="submit" value="Submit">
         </form>

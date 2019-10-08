@@ -3,8 +3,11 @@
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
-        {% include "_logo.tmpl" %} <H1>List of calls</H1>
+        {% include "_logo.tmpl" %}
+        <H1>List of calls</H1>
 
+        <a href="{% url 'internal-homepage' %}">Internal Homepage</a>
+        <p></p>
         {% if calls %}
         <ul>
             {% for call in calls %}
@@ -14,6 +17,8 @@
         {% else %}
             No calls at the moment.
         {% endif %}
+
+        <a href="{% url 'call-add' %}">Create new call.</a>
 
     </div>
 {% endblock %}

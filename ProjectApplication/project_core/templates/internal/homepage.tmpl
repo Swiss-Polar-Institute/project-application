@@ -17,18 +17,16 @@
             <li><a href="{% url 'call-add' %}">Create a new call</a></li>
         </ul>
 
-        Questions:
+        Question options:
         <ul>
             <li><a href="{% url 'questions-list' %}">List of questions</a></li>
             <li><a href="{% url 'question-add' %}">Create a new question</a></li>
         </ul>
 
-        Proposals:
+        Proposal options:
         <ul>
             <li><a href="{% url 'internal-proposals-list' %}">List of submitted proposals</a></li>
         </ul>
-
-
 
 
         <a href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
