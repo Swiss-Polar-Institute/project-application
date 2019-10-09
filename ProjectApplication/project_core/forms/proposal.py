@@ -240,6 +240,7 @@ class BudgetItemForm(forms.Form):
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+        self.helper.form_show_labels = False
 
     def save_budget(self, proposal):
         if self.cleaned_data['id']:
@@ -292,6 +293,8 @@ class BudgetFormSet(BaseFormSet):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.form_show_labels = False
+
 
     def clean(self):
         super().clean()
