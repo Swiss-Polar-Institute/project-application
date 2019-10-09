@@ -198,6 +198,16 @@ class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
+    def create_object(self, text):
+        d = {self.create_field: text,
+             'description': 'user entered'}
+
+        return self.get_queryset().get_or_create(
+            **d)[0]
+
+    def get_result_label(self, result):
+        return result.name
+
     def get_queryset(self):
         qs = Keyword.objects.all()
 
