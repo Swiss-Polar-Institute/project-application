@@ -1,5 +1,7 @@
 {% extends '_base.tmpl' %}
 {% block title %}Internal homepage{% endblock %}
+{% load crispy_forms_tags %}
+
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
@@ -7,10 +9,7 @@
         <H1>Create a question</H1>
 
         <form method="post" action="{{ call_action_url }}">
-            {% csrf_token %}
-            <table>
-                {{ question_form }}
-            </table>
+            {% crispy question_form %}
 
             <input type="submit" value="Submit">
         </form>
