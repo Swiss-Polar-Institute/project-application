@@ -6,7 +6,7 @@ from django.forms.models import inlineformset_factory, formset_factory
 from crispy_forms.layout import Layout, Submit, Row, Column, Div
 
 from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Organisation, \
-    ProposalFundingItem, ProposedBudgetItem, BudgetCategory
+    ProposalFundingItem, ProposedBudgetItem, BudgetCategory, Contact
 
 from crispy_forms.helper import FormHelper
 
@@ -47,6 +47,18 @@ class PersonForm(ModelForm):
     class Meta:
         model = Person
         fields = ['academic_title', 'first_name', 'surname', 'organisations', 'group', ]
+
+
+class ContactForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+    class Meta:
+        model = Contact
+        fields = ['email_address']
 
 
 class ProposalForm(ModelForm):
