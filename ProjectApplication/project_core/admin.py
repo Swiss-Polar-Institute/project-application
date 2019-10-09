@@ -7,22 +7,22 @@ from typing import List
 
 class StepTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    ordering = ['name', 'description',]
+    ordering = ['name', 'description', ]
 
 
 class StepAdmin(admin.ModelAdmin):
     list_display = ('call', 'step', 'date',)
-    ordering = ['call', 'step', 'date',]
+    ordering = ['call', 'step', 'date', ]
 
 
 class BudgetCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    ordering = ['name',]
+    ordering = ['name', ]
 
 
 class CallAdmin(admin.ModelAdmin):
     list_display = ('long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline', 'budget_categories_list', 'budget_maximum', 'call_questions_list')
-    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',]
+    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum', ]
 
     def budget_categories_list(self, obj):
         budget_categories = obj.budget_categories.all()
@@ -43,32 +43,47 @@ class CallAdmin(admin.ModelAdmin):
 
 class KeywordAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    ordering = ['description',]
+    ordering = ['description', ]
 
 
 class ProposalStatusAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    ordering = ['description',]
+    ordering = ['description', ]
 
 
 class PersonTitleAdmin(admin.ModelAdmin):
     list_display = ('title',)
-    ordering = ['title',]
+    ordering = ['title', ]
 
 
 class CountryAdmin(admin.ModelAdmin):
     list_display = ('name',)
-    ordering = ['name',]
+    ordering = ['name', ]
 
 
 class OrganisationAdmin(admin.ModelAdmin):
     list_display = ('long_name', 'short_name', 'street', 'city', 'postal_code', 'country',)
-    ordering = ['long_name', 'short_name', 'city', 'country',]
+    ordering = ['long_name', 'short_name', 'city', 'country', ]
 
 
-class PersonAdmin(admin.ModelAdmin):
-    list_display = ('academic_title', 'first_name', 'surname', 'organisations_list', 'group',)
-    ordering = ['academic_title', 'first_name', 'surname',]
+class UuidSourceAdmin(admin.ModelAdmin):
+    list_display = ('source', 'date_created')
+    ordering = ['source', 'date_created', ]
+
+
+class PhysicalPersonAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'surname', 'date_created')
+    ordering = ['first_name', 'surname', 'date_created', ]
+
+
+class PersonUuidAdmin(admin.ModelAdmin):
+    list_display = ('person', 'uuid', 'source', 'date_created')
+    ordering = ['person', 'uuid', 'source', 'date_created', ]
+
+
+class PersonPositionAdmin(admin.ModelAdmin):
+    list_display = ('person', 'academic_title', 'organisations_list', 'group', 'date_created')
+    ordering = ['person', 'academic_title', 'organisations_list', 'group', 'date_created', ]
 
     def organisations_list(self, obj):
         organisations = obj.organisations.all()
@@ -77,18 +92,18 @@ class PersonAdmin(admin.ModelAdmin):
 
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('email_address', 'work_telephone', 'mobile', 'person',)
-    ordering = ['email_address', 'work_telephone', 'mobile', 'person',]
+    list_display = ('person_position', 'method', 'entry')
+    ordering = ['person_position', 'method', 'entry', ]
 
 
 class GeographicalAreaAdmin(admin.ModelAdmin):
     list_display = ('name', 'definition',)
-    ordering = ['name',]
+    ordering = ['name', ]
 
 
 class ProposalAdmin(admin.ModelAdmin):
     list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'qas_list', 'call', 'date_started', 'last_modified')
-    ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'call', 'date_started', 'last_modified',]
+    ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'call', 'date_started', 'last_modified', ]
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
@@ -125,47 +140,47 @@ class FundingStatusAdmin(admin.ModelAdmin):
 
 class ProposalFundingItemAdmin(admin.ModelAdmin):
     list_display = ('proposal', 'organisation', 'status', 'amount')
-    ordering = ['proposal', 'organisation', 'status', 'amount']
+    ordering = ['proposal', 'organisation', 'status', 'amount', ]
 
 
 class CallQuestionAdmin(admin.ModelAdmin):
     list_display = ('call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'time_added', 'order')
-    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'time_added', 'order',]
+    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'time_added', 'order', ]
 
 
 class TemplateQuestionAdmin(admin.ModelAdmin):
     list_display = ('question_text', 'question_description', 'answer_type', 'answer_max_length')
-    ordering = ['question_text', 'answer_type', 'answer_max_length']
+    ordering = ['question_text', 'answer_type', 'answer_max_length', ]
 
 
 class ProposalQATextAdmin(admin.ModelAdmin):
     list_display = ('proposal', 'call_question', 'answer',)
-    ordering = ['proposal', 'call_question',]
+    ordering = ['proposal', 'call_question', ]
 
 
 class CareerStageAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
-    ordering = ['name']
+    ordering = ['name', ]
 
 
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'type')
-    ordering = ['name', 'type']
+    ordering = ['name', 'type', ]
 
 
 class ProposalPartnerAdmin(admin.ModelAdmin):
     list_display = ('proposal', 'person', 'career_stage', 'role', 'role_description', 'competences')
-    ordering = ['proposal', 'person', 'career_stage', 'role']
+    ordering = ['proposal', 'person', 'career_stage', 'role', ]
 
 
 class ProposalCommentAdmin(admin.ModelAdmin):
     list_display = ('proposal', 'text', 'user', 'time')
-    ordering = ['proposal', 'text', 'user', 'time']
+    ordering = ['proposal', 'text', 'user', 'time', ]
 
 
 class CallCommentAdmin(admin.ModelAdmin):
     list_display = ('call', 'text', 'user', 'time')
-    ordering = ['call', 'text', 'user', 'time']
+    ordering = ['call', 'text', 'user', 'time', ]
 
 
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
@@ -177,7 +192,10 @@ admin.site.register(project_core.models.ProposalStatus, ProposalStatusAdmin)
 admin.site.register(project_core.models.PersonTitle, PersonTitleAdmin)
 admin.site.register(project_core.models.Country, CountryAdmin)
 admin.site.register(project_core.models.Organisation, OrganisationAdmin)
-admin.site.register(project_core.models.Person, PersonAdmin)
+admin.site.register(project_core.models.UuidSource, UuidSourceAdmin)
+admin.site.register(project_core.models.PersonUuid, PersonUuidAdmin)
+admin.site.register(project_core.models.PhysicalPerson, PhysicalPersonAdmin)
+admin.site.register(project_core.models.PersonPosition, PersonPositionAdmin)
 admin.site.register(project_core.models.Contact, ContactAdmin)
 admin.site.register(project_core.models.GeographicalArea, GeographicalAreaAdmin)
 admin.site.register(project_core.models.Proposal, ProposalAdmin)

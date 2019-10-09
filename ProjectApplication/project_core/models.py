@@ -204,39 +204,108 @@ class Organisation(models.Model):
         unique_together = (('long_name', 'country'), )
 
 
-class Person(models.Model):
-    """Information about a person."""
+class UuidSource(models.Model):
+    """Source from where a UUID may originate."""
+
+    source = models.CharField(help_text='Source from which a UUID may originate', blank=False, null=False)
+    date_created = models.DateTimeField(help_text='Date and time at which this source was created', default=timezone.now, blank=False, null=False)
+
+    def __str__(self):
+        return '{}'.format(self.source)
+
+
+class Uuid(models.Model):
+
+    uuid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
+    source = models.ForeignKey(UuidSource, help_text='Source of the UUID', on_delete=models.PROTECT)
+    date_created = models.DateTimeField(help_text='Date and time at which this UUID was created', default=timezone.now, blank=False, null=False)
+
+    def __str__(self):
+        return '{}: {} {}'.format(self.source, self.uuid, self.date_created)
+
+    class Meta:
+        abstract = True
+        unique_together = (('uuid', 'source'), )
+
+
+class PhysicalPerson(models.Model):
+    """Information about a unique person."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False, on_delete=models.PROTECT)
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
+    date_created = models.DateTimeField(help_text='Date and time at which this person was created', default=timezone.now, blank=False, null=False)
+
+    def __str__(self):
+        return '{} {}: {}'.format(self.first_name, self.surname, self.date_created)
+
+    class Meta:
+        unique_together = (('first_name', 'surname', 'uuid'), )
+
+
+class PersonUuid(Uuid):
+    """UUID used for a person"""
+
+    person = models.OneToOneField(PhysicalPerson, help_text='Person to which the UUID refers', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return '{} {}: {}'.format(self.person, self.source, self.uuid)
+
+
+class PersonPosition(models.Model):
+    """Information about a person that may change as they move through their career."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    person = models.ForeignKey(PhysicalPerson, help_text='A unique physical person', on_delete=models.PROTECT)
+    academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False, on_delete=models.PROTECT)
     organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works', max_length=200, blank=True, null=True)
+    date_created = models.DateTimeField(help_text='Date and time at which this person was created', default=timezone.now, blank=False, null=False)
+
+    # academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False, on_delete=models.PROTECT)
+    # first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
+    # surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
+    # organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
+    # group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works', max_length=200, blank=True, null=True)
 
     def __str__(self):
         organisations = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
 
-        return '{} {} - {}'.format(self.first_name, self.surname, organisations)
+        return '{} {} - {}'.format(self.academic_title, self.person, organisations)
 
     class Meta:
-        verbose_name_plural = 'People'
+        verbose_name_plural = 'People from organisation(s)'
 
 
 class Contact(models.Model):
     """Contact details of a person"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    email_address = models.EmailField(help_text='Email address', validators=[EmailValidator], blank=False, null=False, unique=True)
-    work_telephone = models.CharField(help_text='Work telephone number', max_length=20, blank=False, null=False)
-    mobile = models.CharField(help_text='Mobile telephone number', max_length=20, blank=True, null=True)
-    person = models.ForeignKey(Person, help_text='Person to which the contact details belong', on_delete=models.PROTECT)
+    OFFICE = 'Office'
+    MOBILE = 'Mobile'
+    EMAIL = 'Email'
+
+    METHOD = (
+        (OFFICE, 'Office'),
+        (MOBILE, 'Mobile'),
+        (EMAIL, 'Email'),
+    )
+
+    person_position = models.ForeignKey(PersonPosition, help_text='Person to whom the contact details belong', on_delete=models.PROTECT)
+    entry = models.CharField(help_text='Text of contact entry, such as phone number, pager etc.', blank=False, null=False)
+    method = models.CharField(help_text='Type of contact method', max_length=30, choices=METHOD, blank=False, null=False)
+    date_created = models.DateTimeField(help_text='Date and time at which this contact was created', default=timezone.now, blank=False, null=False)
+
+    # email_address = models.EmailField(help_text='Email address', validators=[EmailValidator], blank=False, null=False, unique=True)
+    # work_telephone = models.CharField(help_text='Work telephone number', max_length=20, blank=False, null=False)
+    # mobile = models.CharField(help_text='Mobile telephone number', max_length=20, blank=True, null=True)
+    # person = models.ForeignKey(Person, help_text='Person to which the contact details belong', on_delete=models.PROTECT)
 
     def __str__(self):
-        return '{} - {}'.format(self.person, self.email_address)
+        return '{} - {}: {}'.format(self.person_position, self.method, self.entry)
 
     class Meta:
-        unique_together = (('person', 'email_address'), )
+        unique_together = (('person_position', 'entry'), )
 
 
 class GeographicalArea(models.Model):
@@ -262,7 +331,7 @@ class Proposal(models.Model):
     location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)', max_length=200, blank=True, null=True) # Consider having this as another text question
     start_timeframe = models.CharField(help_text='Approximate date on which the proposed project is expected to start', max_length=100, blank=False, null=False)
     duration = models.CharField(help_text='Period of time expected that the proposed project will last', max_length=100, blank=False, null=False)
-    applicant = models.ForeignKey(Person, help_text='Main applicant of the proposal', blank=False, null=False, on_delete=models.PROTECT)
+    applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal', blank=False, null=False, on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False, null=False, on_delete=models.PROTECT)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
     date_started = models.DateTimeField(help_text='Date and time (UTC) at which the proposal was first started', default=timezone.now, blank=False, null=False)
@@ -409,7 +478,7 @@ class Partner(models.Model):
     """Person who is a partner"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    person = models.ForeignKey(Person, help_text='Person that is a partner', on_delete=models.PROTECT)
+    person = models.ForeignKey(PersonPosition, help_text='Person that is a partner', on_delete=models.PROTECT)
     career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career', on_delete=models.PROTECT)
     role = models.ForeignKey(Role, help_text='Role of the person', on_delete=models.PROTECT)
     role_description = models.TextField(help_text='Description of what the person will be doing', null=False, blank=False)
