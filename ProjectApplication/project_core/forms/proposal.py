@@ -27,7 +27,7 @@ class PersonForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['organisations'] = OrganisationMultipleChoiceField(queryset=Organisation.objects.all(),
-                                                                       widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisation'))
+                                                                       widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'))
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -65,7 +65,6 @@ class ContactForm(ModelForm):
 
 
 class ProposalForm(ModelForm):
-    keywords_str = forms.CharField(label='Keywords', help_text='Separated by commas', )
     call_id = forms.IntegerField(widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
@@ -78,15 +77,6 @@ class ProposalForm(ModelForm):
         else:
             self.fields['call_id'].initial = self._call.id
 
-        keywords_list = []
-        if self.instance.id:
-            for keyword in self.instance.keywords.all().order_by('name'):
-                keywords_list.append(keyword.name)
-
-            self.fields['keywords_str'] = forms.CharField(label='Keywords',
-                                                          help_text='Separated by commas',
-                                                          initial=', '.join(keywords_list))
-
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
@@ -96,21 +86,13 @@ class ProposalForm(ModelForm):
 
         model = super().save(commit)
 
-        if commit:
-            model.keywords.clear()
-
-            for keyword_str in self.cleaned_data['keywords_str'].split(','):
-                keyword_str = keyword_str.strip(' ')
-                keyword = Keyword.objects.get_or_create(name=keyword_str)[0]
-                model.keywords.add(keyword)
-
-            model.geographical_areas.set(self.cleaned_data['geographical_areas'])
-
         return model
 
     class Meta:
         model = Proposal
-        fields = ['call_id', 'title', 'geographical_areas', 'start_timeframe', 'duration']
+        fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'start_timeframe', 'duration']
+
+        widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords')}
 
 
 class QuestionsForProposalForm(Form):
@@ -180,7 +162,7 @@ class ProposalFundingItemForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['organisation'] = OrganisationChoiceField(queryset=Organisation.objects.all(),
-                                                               widget=autocomplete.ModelSelect2(url='autocomplete-organisation'))
+                                                               widget=autocomplete.ModelSelect2(url='autocomplete-organisations'))
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

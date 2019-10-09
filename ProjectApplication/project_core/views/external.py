@@ -5,7 +5,7 @@ from dal import autocomplete
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet, ContactForm
-from ..models import Proposal, Call, ProposalStatus, Organisation
+from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword
 
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
@@ -59,7 +59,7 @@ class ProposalView(TemplateView):
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, instance=proposal.applicant)
-            contact_form = ContactForm(prefix=CONTACT_FORM_NAME, instance=proposal.applicant.contact)
+            contact_form = ContactForm(prefix=CONTACT_FORM_NAME, instance=proposal.applicant.contact_set.all()[0])
             questions_form = QuestionsForProposalForm(proposal=proposal,
                                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
@@ -128,7 +128,7 @@ class ProposalView(TemplateView):
             # Editing an existing proposal
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, instance=proposal.applicant, prefix=PERSON_FORM_NAME)
-            contact_form = ContactForm(request.POST, instance=proposal.applicant.contact, prefix=CONTACT_FORM_NAME)
+            contact_form = ContactForm(request.POST, instance=proposal.applicant.contact_set.all()[0], prefix=CONTACT_FORM_NAME)
             questions_form = QuestionsForProposalForm(request.POST,
                                                       proposal=proposal,
                                                       prefix=QUESTIONS_FORM_NAME)
@@ -187,11 +187,21 @@ class ProposalView(TemplateView):
         return render(request, 'proposal.tmpl', context)
 
 
-class OrganisationAutocomplete(autocomplete.Select2QuerySetView):
+class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):
         qs = Organisation.objects.all()
 
         if self.q:
             qs = qs.filter(long_name__contains=self.q)
+
+        return qs
+
+
+class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Keyword.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__contains=self.q)
 
         return qs
