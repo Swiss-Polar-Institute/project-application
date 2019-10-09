@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView
+from dal import autocomplete
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet, ContactForm
-from ..models import Proposal, Call, ProposalStatus
+from ..models import Proposal, Call, ProposalStatus, Organisation
 
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
@@ -184,3 +185,13 @@ class ProposalView(TemplateView):
         context.update(ProposalView._call_information_for_template(call))
 
         return render(request, 'proposal.tmpl', context)
+
+
+class OrganisationAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Organisation.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__contains=self.q)
+
+        return qs

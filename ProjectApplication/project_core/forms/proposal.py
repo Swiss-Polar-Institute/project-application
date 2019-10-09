@@ -9,6 +9,7 @@ from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Or
     ProposalFundingItem, ProposedBudgetItem, BudgetCategory, Contact
 
 from crispy_forms.helper import FormHelper
+from dal import autocomplete
 
 
 class OrganisationChoiceField(ModelChoiceField):
@@ -22,10 +23,12 @@ class OrganisationMultipleChoiceField(ModelMultipleChoiceField):
 
 
 class PersonForm(ModelForm):
-    organisations = OrganisationMultipleChoiceField(queryset=Organisation.objects.all())
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.fields['organisations'] = OrganisationMultipleChoiceField(queryset=Organisation.objects.all(),
+                                                                       widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisation'))
+
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 

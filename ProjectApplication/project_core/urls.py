@@ -24,4 +24,6 @@ urlpatterns = [
     path('internal/questions/', internal.QuestionsList.as_view(), name='questions-list'),
 
     path('accounts/', include('django.contrib.auth.urls')),
+
+    path('autocomplete/organisation/', external.OrganisationAutocomplete.as_view(), name='autocomplete-organisation')
 ]

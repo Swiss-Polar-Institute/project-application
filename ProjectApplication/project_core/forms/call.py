@@ -43,7 +43,6 @@ class CallForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
-
     def save(self, commit=True):
         instance = super().save(commit)
 
