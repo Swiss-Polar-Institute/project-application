@@ -192,6 +192,6 @@ class OrganisationAutocomplete(autocomplete.Select2QuerySetView):
         qs = Organisation.objects.all()
 
         if self.q:
-            qs = qs.filter(name__contains=self.q)
+            qs = qs.filter(long_name__contains=self.q)
 
         return qs

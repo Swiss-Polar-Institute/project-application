@@ -176,10 +176,11 @@ class QuestionsForProposalForm(Form):
 
 
 class ProposalFundingItemForm(ModelForm):
-    organisation = OrganisationChoiceField(queryset=Organisation.objects.all())
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.fields['organisation'] = OrganisationChoiceField(queryset=Organisation.objects.all(),
+                                                               widget=autocomplete.ModelSelect2(url='autocomplete-organisation'))
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
