@@ -1,38 +1,8 @@
 {% load static %}
-    {{ funding_form.non_form_errors }}
+{% load crispy_forms_tags %}
 
-    {{ funding_form.management_form }}
+{% crispy funding_form %}
 
-    <table id="funding_form_table" class="table">
-    {% for form in funding_form.forms %}
-        {% if forloop.first %}
-            <thead>
-                <tr>
-                    {% for field in form.visible_fields %}
-                        <th>{{ field.label }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-        {% endif %}
-        <tr id="{{ form.prefix }}-row">
-            {% for field in form.visible_fields %}
-            <td>
-                {# Include the hidden fields in the form #}
-                {% if forloop.first %}
-                    {% for hidden in form.hidden_fields %}
-                        {{ hidden }}
-                        {{ hidden.errors.as_ul }}
-                    {% endfor %}
-                {% endif %}
-                        {{ field.errors.as_ul }}
-                    {{ field }}
-            </td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
-    </tbody>
-    </table>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>

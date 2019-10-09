@@ -180,6 +180,8 @@ class ProposalFundingFormSet(BaseInlineFormSet):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.template = 'bootstrap4/table_inline_formset.html'
+        self.helper.form_id = 'funding_form'
 
     def save_fundings(self, proposal):
         for form in self.forms:
