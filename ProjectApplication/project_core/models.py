@@ -272,12 +272,6 @@ class PersonPosition(models.Model):
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works', max_length=200, blank=True, null=True)
     date_created = models.DateTimeField(help_text='Date and time at which this person was created', default=timezone.now, blank=False, null=False)
 
-    # academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False, on_delete=models.PROTECT)
-    # first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
-    # surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
-    # organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
-    # group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works', max_length=200, blank=True, null=True)
-
     def __str__(self):
         organisations = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
 
@@ -305,11 +299,6 @@ class Contact(models.Model):
     entry = models.CharField(help_text='Text of contact entry, such as phone number, pager etc.', blank=False, null=False)
     method = models.CharField(help_text='Type of contact method', max_length=30, choices=METHOD, blank=False, null=False)
     date_created = models.DateTimeField(help_text='Date and time at which this contact was created', default=timezone.now, blank=False, null=False)
-
-    # email_address = models.EmailField(help_text='Email address', validators=[EmailValidator], blank=False, null=False, unique=True)
-    # work_telephone = models.CharField(help_text='Work telephone number', max_length=20, blank=False, null=False)
-    # mobile = models.CharField(help_text='Mobile telephone number', max_length=20, blank=True, null=True)
-    # person = models.ForeignKey(Person, help_text='Person to which the contact details belong', on_delete=models.PROTECT)
 
     def __str__(self):
         return '{} - {}: {}'.format(self.person_position, self.method, self.entry)
@@ -344,7 +333,7 @@ class Proposal(models.Model):
     applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal', blank=False, null=False, on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False, null=False, on_delete=models.PROTECT)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
-    date_started = models.DateTimeField(help_text='Date and time (UTC) at which the proposal was first started', default=timezone.now, blank=False, null=False)
+    date_created = models.DateTimeField(help_text='Date and time (UTC) at which the proposal was first created', default=timezone.now, blank=False, null=False)
     last_modified = models.DateTimeField(help_text='Latest date and time at which the proposal was modified', default=timezone.now, blank=False, null=False)
 
     def __str__(self):

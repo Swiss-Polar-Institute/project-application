@@ -107,8 +107,8 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
 
 
 class ProposalAdmin(admin.ModelAdmin):
-    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'qas_list', 'call', 'date_started', 'last_modified')
-    ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'call', 'date_started', 'last_modified', ]
+    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'qas_list', 'call', 'date_created', 'last_modified')
+    ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'call', 'date_created', 'last_modified', ]
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
