@@ -53,7 +53,9 @@ class CallsList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['calls'] = Call.objects.all()
+        context['open_calls'] = Call.open_calls()
+        context['closed_calls'] = Call.closed_calls()
+        context['future_calls'] = Call.future_calls()
 
         return context
 

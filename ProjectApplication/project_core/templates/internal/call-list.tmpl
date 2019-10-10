@@ -4,21 +4,43 @@
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %}
-        <H1>List of all calls</H1>
-
+        <p></p>
         <a href="{% url 'internal-homepage' %}">Internal Homepage</a>
         <p></p>
-        {% if calls %}
+
+        <h1>Current open calls</h1>
+        {% if open_calls %}
         <ul>
-            {% for call in calls %}
-                <li>{{ call.long_name }} - <a href="{% url 'call-update' id=call.id %}">Edit call</a> - <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a></li>
+            {% for call in open_calls %}
+                <li>{{ call.long_name }} (Number or proposals: {{ call.number_of_proposals }}) - <a href="{% url 'call-update' id=call.id %}">Edit call</a> - <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a></li>
             {% endfor %}
         </ul>
         {% else %}
-            No calls at the moment.
+            No open calls at the moment.
         {% endif %}
 
-        <a href="{% url 'call-add' %}">Create new call.</a>
+        <p></p>
+        <h1>Future calls</h1>
+        {% if future_calls %}
+        <ul>
+            {% for call in future_calls %}
+                <li>{{ call.long_name }} (Number or proposals: {{ call.number_of_proposals }}) - <a href="{% url 'call-update' id=call.id %}">Edit call</a> - <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            No future calls at the moment.
+        {% endif %}
 
+        <p></p>
+        <h1>Past calls</h1>
+        {% if past_calls %}
+        <ul>
+            {% for call in closed_calls %}
+                <li>{{ call.long_name }} (Number or proposals: {{ call.number_of_proposals }}) - <a href="{% url 'call-update' id=call.id %}">Edit call</a> - <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a></li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            No past calls at the moment.
+        {% endif %}
     </div>
 {% endblock %}

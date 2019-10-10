@@ -7,8 +7,6 @@ from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm,
     BudgetItemFormSet
 from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword
 
-import datetime
-
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -42,8 +40,7 @@ class CallsList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['calls'] = Call.objects.filter(call_open_date__lte=datetime.datetime.now(),
-                                               submission_deadline__gte=datetime.datetime.now())
+        context['calls'] = Call.open_calls()
 
         return context
 

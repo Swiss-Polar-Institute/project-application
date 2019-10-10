@@ -37,8 +37,27 @@ class Call(models.Model):
     budget_categories = models.ManyToManyField(BudgetCategory, help_text='Categories required for the budget for a call')
     budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget', decimal_places=2, max_digits=10, validators=[MinValueValidator(0)], blank=False, null=False)
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     def __str__(self):
         return self.long_name
+
+    @staticmethod
+    def open_calls():
+        return Call.objects.filter(call_open_date__lte=timezone.now(),
+                       submission_deadline__gte=timezone.now())
+
+    @staticmethod
+    def closed_calls():
+        return Call.objects.filter(submission_deadline__lte=timezone.now())
+
+    @staticmethod
+    def future_calls():
+        return Call.objects.filter(call_open_date__gte=timezone.now())
+
+    def number_of_proposals(self):
+        return self.proposal_set.count()
 
 
 class StepType(models.Model):

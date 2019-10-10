@@ -51,8 +51,7 @@ class CallForm(forms.ModelForm):
             self.add_error('call_open_date', 'Call open date needs to be before the submission deadline')
 
         if cleaned_data['submission_deadline'] < timezone.now():
-            self.add_error('submission_deadline', 'Call open date needs to be in the future')
-
+            self.add_error('submission_deadline', 'Call submission deadline needs to be in the future')
 
     def save(self, commit=True):
         instance = super().save(commit)
