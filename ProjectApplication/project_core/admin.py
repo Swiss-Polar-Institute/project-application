@@ -66,14 +66,19 @@ class OrganisationAdmin(admin.ModelAdmin):
     ordering = ['long_name', 'short_name', 'city', 'country', ]
 
 
-class UuidSourceAdmin(admin.ModelAdmin):
+class SourceAdmin(admin.ModelAdmin):
     list_display = ('source', 'date_created')
     ordering = ['source', 'date_created', ]
 
 
+class GenderAdmin(admin.ModelAdmin):
+    list_display = ('name', 'date_created')
+    ordering = ['name', 'date_created', ]
+
+
 class PhysicalPersonAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'surname', 'date_created')
-    ordering = ['first_name', 'surname', 'date_created', ]
+    list_display = ('first_name', 'surname', 'gender', 'date_created')
+    ordering = ['first_name', 'surname', 'gender', 'date_created', ]
 
 
 class PersonUuidAdmin(admin.ModelAdmin):
@@ -192,8 +197,9 @@ admin.site.register(project_core.models.ProposalStatus, ProposalStatusAdmin)
 admin.site.register(project_core.models.PersonTitle, PersonTitleAdmin)
 admin.site.register(project_core.models.Country, CountryAdmin)
 admin.site.register(project_core.models.Organisation, OrganisationAdmin)
-admin.site.register(project_core.models.UuidSource, UuidSourceAdmin)
+admin.site.register(project_core.models.Source, SourceAdmin)
 admin.site.register(project_core.models.PersonUuid, PersonUuidAdmin)
+admin.site.register(project_core.models.Gender, GenderAdmin)
 admin.site.register(project_core.models.PhysicalPerson, PhysicalPersonAdmin)
 admin.site.register(project_core.models.PersonPosition, PersonPositionAdmin)
 admin.site.register(project_core.models.Contact, ContactAdmin)

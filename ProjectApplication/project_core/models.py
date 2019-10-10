@@ -165,12 +165,22 @@ class PersonTitle(models.Model):
         return self.title
 
 
+class Source(models.Model):
+    """Source from where a UUID may originate."""
+
+    source = models.CharField(help_text='Source from which a UUID may originate', blank=False, null=False)
+    date_created = models.DateTimeField(help_text='Date and time at which this source was created', default=timezone.now, blank=False, null=False)
+
+    def __str__(self):
+        return '{}'.format(self.source)
+
+
 class Country(models.Model):
     """Countries"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False, unique=True)
-    source = models.CharField(help_text='Source of country name', max_length=100, blank=False, null=False)
+    source = models.ForeignKey(Source, help_text='Source of country name', on_delete=models.PROTECT)
     last_modified = models.DateTimeField(help_text='Last date and time of modification', default=timezone.now, blank=False, null=False)
     
     def __str__(self):
@@ -204,20 +214,10 @@ class Organisation(models.Model):
         unique_together = (('long_name', 'country'), )
 
 
-class UuidSource(models.Model):
-    """Source from where a UUID may originate."""
-
-    source = models.CharField(help_text='Source from which a UUID may originate', blank=False, null=False)
-    date_created = models.DateTimeField(help_text='Date and time at which this source was created', default=timezone.now, blank=False, null=False)
-
-    def __str__(self):
-        return '{}'.format(self.source)
-
-
 class Uuid(models.Model):
 
     uuid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
-    source = models.ForeignKey(UuidSource, help_text='Source of the UUID', on_delete=models.PROTECT)
+    source = models.ForeignKey(Source, help_text='Source of the UUID', on_delete=models.PROTECT)
     date_created = models.DateTimeField(help_text='Date and time at which this UUID was created', default=timezone.now, blank=False, null=False)
 
     def __str__(self):
@@ -228,12 +228,22 @@ class Uuid(models.Model):
         unique_together = (('uuid', 'source'), )
 
 
+class Gender(models.Model):
+    """Gender with which a person identifies."""
+    name = models.CharField(help_text='Name of gender', max_length=20, blank=False, null=False, unique=True)
+    date_created = models.DateTimeField(help_text='Date and time at which this gender was created', default=timezone.now, blank=False, null=False)
+
+    def __str__(self):
+        return '{} {}'.format(self.name, self.date_created)
+
+
 class PhysicalPerson(models.Model):
     """Information about a unique person."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
+    gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', on_delete=models.PROTECT)
     date_created = models.DateTimeField(help_text='Date and time at which this person was created', default=timezone.now, blank=False, null=False)
 
     def __str__(self):
