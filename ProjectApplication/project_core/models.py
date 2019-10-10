@@ -420,14 +420,14 @@ class FundingItem(models.Model):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     organisation = models.ForeignKey(Organisation, help_text='Name of organisation from which the funding is sourced', blank=False, null=False, on_delete=models.PROTECT)
-    status = models.ForeignKey(FundingStatus, help_text='Status of the funding item',blank=False, null=False, on_delete=models.PROTECT)
+    funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding item', blank=False, null=False, on_delete=models.PROTECT)
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10, validators=[MinValueValidator(0)], blank=False, null=False)
 
     class Meta:
         abstract = True
 
     def __str__(self):
-        return '{} - {}: {}'.format(self.organisation, self.status, self.amount)
+        return '{} - {}: {}'.format(self.organisation, self.funding_status, self.amount)
 
 
 class ProposalFundingItem(FundingItem):
