@@ -167,9 +167,9 @@ class PersonTitle(models.Model):
 
 
 class Source(models.Model):
-    """Source from where a UUID may originate."""
+    """Source from where a UID may originate."""
 
-    source = models.CharField(help_text='Source from which a UUID may originate', max_length=100, blank=False, null=False)
+    source = models.CharField(help_text='Source from which a UID may originate', max_length=100, blank=False, null=False)
     date_created = models.DateTimeField(help_text='Date and time at which this source was created', default=timezone.now, blank=False, null=False)
 
     def __str__(self):
@@ -215,18 +215,18 @@ class Organisation(models.Model):
         unique_together = (('long_name', 'country'), )
 
 
-class Uuid(models.Model):
+class Uid(models.Model):
 
-    uuid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
-    source = models.ForeignKey(Source, help_text='Source of the UUID', on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time at which this UUID was created', default=timezone.now, blank=False, null=False)
+    uid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
+    source = models.ForeignKey(Source, help_text='Source of the UID', on_delete=models.PROTECT)
+    date_created = models.DateTimeField(help_text='Date and time at which this UID was created', default=timezone.now, blank=False, null=False)
 
     def __str__(self):
-        return '{}: {} {}'.format(self.source, self.uuid, self.date_created)
+        return '{}: {} {}'.format(self.source, self.uid, self.date_created)
 
     class Meta:
         abstract = True
-        unique_together = (('uuid', 'source'), )
+        unique_together = (('uid', 'source'), )
 
 
 class Gender(models.Model):
@@ -254,13 +254,13 @@ class PhysicalPerson(models.Model):
         unique_together = (('first_name', 'surname', ), )
 
 
-class PersonUuid(Uuid):
-    """UUID used for a person"""
+class PersonUid(Uid):
+    """UID used for a person"""
 
-    person = models.OneToOneField(PhysicalPerson, help_text='Person to which the UUID refers', on_delete=models.PROTECT)
+    person = models.OneToOneField(PhysicalPerson, help_text='Person to which the UID refers', on_delete=models.PROTECT)
 
     def __str__(self):
-        return '{} {}: {}'.format(self.person, self.source, self.uuid)
+        return '{} {}: {}'.format(self.person, self.source, self.uid)
 
 
 class PersonPosition(models.Model):
