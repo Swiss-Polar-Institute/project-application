@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib.auth.models import User
 from django.db.models import Max
+from django.core.validators import validate_email
 
 import uuid as uuid_lib
 
@@ -243,7 +244,7 @@ class PhysicalPerson(models.Model):
 
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
-    gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', on_delete=models.PROTECT)
+    gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True, on_delete=models.PROTECT)
     date_created = models.DateTimeField(help_text='Date and time at which this person was created', default=timezone.now, blank=False, null=False)
 
     def __str__(self):
@@ -273,9 +274,9 @@ class PersonPosition(models.Model):
     date_created = models.DateTimeField(help_text='Date and time at which this person was created', default=timezone.now, blank=False, null=False)
 
     def __str__(self):
-        organisations = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
+        organisations_str = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
 
-        return '{} {} - {}'.format(self.academic_title, self.person, organisations)
+        return '{} {} - {}'.format(self.academic_title, self.person, organisations_str)
 
     class Meta:
         verbose_name_plural = 'People from organisation(s)'
@@ -299,6 +300,12 @@ class Contact(models.Model):
     entry = models.CharField(help_text='Text of contact entry, such as phone number, pager etc.', max_length=100, blank=False, null=False)
     method = models.CharField(help_text='Type of contact method', max_length=30, choices=METHOD, blank=False, null=False)
     date_created = models.DateTimeField(help_text='Date and time at which this contact was created', default=timezone.now, blank=False, null=False)
+
+    def clean(self):
+        if self.method == Contact.EMAIL:
+            validate_email(self.entry)
+
+        super().clean()
 
     def __str__(self):
         return '{} - {}: {}'.format(self.person_position, self.method, self.entry)

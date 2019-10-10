@@ -25,29 +25,94 @@ class OrganisationMultipleChoiceField(ModelMultipleChoiceField):
 
 class PersonForm(Form):
     def __init__(self, *args, **kwargs):
-        proposal = kwargs.pop('proposal')
+        self.person_position = kwargs.pop('person_position', None)
         super().__init__(*args, **kwargs)
 
+        first_name_initial = surname_initial = organisations_initial = group_initial = \
+            academic_title_initial = email_initial = None
+
+        if self.person_position:
+            first_name_initial = self.person_position.person.first_name
+            surname_initial = self.person_position.person.surname
+            organisations_initial = self.person_position.organisations.all()
+            group_initial = self.person_position.group
+            academic_title_initial = self.person_position.academic_title
+            email_initial = self.person_position.contact_set.filter(method=Contact.EMAIL).order_by('date_created')[0].entry
+
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
-                                                               help_text='to be typed')
+                                                               help_text='to be typed',
+                                                               initial=academic_title_initial)
 
-        self.fields['first_name'] = forms.CharField(initial='some value if possible',
+        self.fields['first_name'] = forms.CharField(initial=first_name_initial,
                                                     help_text='To be written')
 
-        self.fields['surname'] = forms.CharField(initial='some value if possible',
+        self.fields['surname'] = forms.CharField(initial=surname_initial,
                                                     help_text='To be written')
 
-        self.fields['organisations'] = forms.ModelMultipleChoiceField(query=Organisation.objects.all(),
-                                                                      widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'))
+        self.fields['email'] = forms.CharField(initial=email_initial,
+                                               help_text='To be written')
 
-        self.fields['group'] = forms.CharField(initial='some value if possible',
+        self.fields['organisations'] = forms.ModelMultipleChoiceField(queryset=Organisation.objects.all(),
+                                                                      widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'),
+                                                                      initial=organisations_initial)
+
+        self.fields['group'] = forms.CharField(initial=group_initial,
                                                help_text='to be written')
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
-    def save_person(self, proposal):
-        print('save person')
+        self.helper.layout = Layout(
+            Div(
+                Div('academic_title', css_class='col-2'),
+                Div('first_name', css_class='col-5'),
+                Div('surname', css_class='col-5'),
+                css_class='row'
+            ),
+            Div(
+                Div('email', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('organisations', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('group', css_class='col-12'),
+                css_class='row'
+            )
+        )
+
+    def save_person(self):
+        physical_person, created = PhysicalPerson.objects.get_or_create(
+            first_name=self.cleaned_data['first_name'],
+            surname=self.cleaned_data['surname']
+        )
+
+        if self.person_position:
+            person_position = self.person_position
+        else:
+            person_position = PersonPosition()
+
+        person_position.person = physical_person
+        person_position.academic_title = self.cleaned_data['academic_title']
+        person_position.group = self.cleaned_data['group']
+
+        person_position.save()
+
+        person_position.organisations.set(self.cleaned_data['organisations'])
+
+        try:
+            email_contact = person_position.contact_set.get(method=Contact.EMAIL)
+        except ObjectDoesNotExist:
+            email_contact = Contact()
+            email_contact.method = Contact.EMAIL
+            email_contact.person_position = person_position
+
+        email_contact.entry = self.cleaned_data['email']
+        email_contact.save()
+
+        return person_position
 
 
 class ProposalForm(ModelForm):

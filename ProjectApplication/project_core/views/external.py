@@ -57,7 +57,7 @@ class ProposalView(TemplateView):
             call = proposal.call
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
-            person_form = PersonForm(prefix=PERSON_FORM_NAME, instance=proposal.applicant)
+            person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
             questions_form = QuestionsForProposalForm(proposal=proposal,
                                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
@@ -93,7 +93,6 @@ class ProposalView(TemplateView):
 
         information[PROPOSAL_FORM_NAME] = proposal_form
         information[PERSON_FORM_NAME] = person_form
-        information[CONTACT_FORM_NAME] = contact_form
         information[QUESTIONS_FORM_NAME] = questions_form
         information[BUDGET_FORM_NAME] = budget_form
         information[FUNDING_FORM_NAME] = funding_form
@@ -124,7 +123,7 @@ class ProposalView(TemplateView):
         if proposal:
             # Editing an existing proposal
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
-            person_form = PersonForm(request.POST, instance=proposal.applicant, prefix=PERSON_FORM_NAME)
+            person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             questions_form = QuestionsForProposalForm(request.POST,
                                                       proposal=proposal,
                                                       prefix=QUESTIONS_FORM_NAME)
@@ -141,7 +140,7 @@ class ProposalView(TemplateView):
             budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
 
-        forms_to_validate = [person_form, contact_form, proposal_form, questions_form, budget_form,
+        forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
                              funding_form]
 
         all_valid = True
@@ -150,11 +149,7 @@ class ProposalView(TemplateView):
             all_valid = all_valid and is_valid
 
         if all_valid:
-            applicant = person_form.save()
-
-            contact = contact_form.save(commit=False)
-            contact.person = applicant
-            contact.save()
+            applicant = person_form.save_person()
 
             proposal = proposal_form.save(commit=False)
             proposal.applicant = applicant
@@ -169,7 +164,6 @@ class ProposalView(TemplateView):
             return redirect(reverse('proposal-thank-you', kwargs={'uuid': proposal.uuid}))
 
         context[PERSON_FORM_NAME] = person_form
-        context[CONTACT_FORM_NAME] = contact_form
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
