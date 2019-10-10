@@ -133,7 +133,6 @@ class ProposalForm(ModelForm):
 
     def save(self, commit=True):
         self.instance.call_id = self.cleaned_data['call_id']
-        # TODO: verify permissions/that the call is open/etc.
 
         model = super().save(commit)
 

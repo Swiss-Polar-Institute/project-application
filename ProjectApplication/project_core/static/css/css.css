@@ -1,6 +1,6 @@
 /** Next select2 selectors is because django-autocomplete-light uses select2
     and the spacing in choice / choicemultiple is wrong for Bootstrap4
-*/
+    */
 .introductory-message {
     padding: 20px;
     white-space: pre-wrap;
@@ -25,4 +25,11 @@
 
 .select2-selection__arrow {
     height: 50px !important;
+}
+
+/** https://github.com/twbs/bootstrap/issues/23454 - to show form validation messages
+    in date+time pickers
+    */
+.invalid-feedback {
+  display: block;
 }

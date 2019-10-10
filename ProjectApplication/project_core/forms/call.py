@@ -3,6 +3,7 @@ from django import forms
 from ..models import Call, TemplateQuestion, CallQuestion
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from crispy_forms.helper import FormHelper
+from django.utils import timezone
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -42,6 +43,16 @@ class CallForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if cleaned_data['call_open_date'] >= cleaned_data['submission_deadline']:
+            self.add_error('call_open_date', 'Call open date needs to be before the submission deadline')
+
+        if cleaned_data['submission_deadline'] < timezone.now():
+            self.add_error('submission_deadline', 'Call open date needs to be in the future')
+
 
     def save(self, commit=True):
         instance = super().save(commit)

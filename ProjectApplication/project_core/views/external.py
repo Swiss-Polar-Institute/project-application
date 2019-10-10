@@ -7,6 +7,8 @@ from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm,
     BudgetItemFormSet
 from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword
 
+import datetime
+
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -40,7 +42,8 @@ class CallsList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['calls'] = Call.objects.all()
+        context['calls'] = Call.objects.filter(call_open_date__lte=datetime.datetime.now(),
+                                               submission_deadline__gte=datetime.datetime.now())
 
         return context
 
@@ -113,10 +116,12 @@ class ProposalView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         if 'uuid' in kwargs:
+            # Editing an existing proposal
             proposal_uuid = kwargs['uuid']
             proposal = Proposal.objects.get(uuid=proposal_uuid)
             call = proposal.call
         else:
+            # New proposal
             call = Call.objects.get(id=int(request.POST['proposal_form-call_id']))
             proposal = None
 
