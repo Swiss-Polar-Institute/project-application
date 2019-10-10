@@ -168,7 +168,7 @@ class PersonTitle(models.Model):
 class Source(models.Model):
     """Source from where a UUID may originate."""
 
-    source = models.CharField(help_text='Source from which a UUID may originate', blank=False, null=False)
+    source = models.CharField(help_text='Source from which a UUID may originate', max_length=100, blank=False, null=False)
     date_created = models.DateTimeField(help_text='Date and time at which this source was created', default=timezone.now, blank=False, null=False)
 
     def __str__(self):
@@ -250,7 +250,7 @@ class PhysicalPerson(models.Model):
         return '{} {}: {}'.format(self.first_name, self.surname, self.date_created)
 
     class Meta:
-        unique_together = (('first_name', 'surname', 'uuid'), )
+        unique_together = (('first_name', 'surname', ), )
 
 
 class PersonUuid(Uuid):
@@ -438,7 +438,7 @@ class ProposalFundingItem(FundingItem):
     proposal = models.ForeignKey(Proposal, help_text='Proposal for which the funding has been sourced', on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('organisation', 'status', 'proposal', 'amount'), )
+        unique_together = (('organisation', 'funding_status', 'proposal', 'amount'), )
 
 
 class CareerStage(models.Model):
