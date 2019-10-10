@@ -4,7 +4,7 @@ from django.views.generic import TemplateView
 from dal import autocomplete
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
-    BudgetItemFormSet, ContactForm
+    BudgetItemFormSet
 from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword
 
 # Form names (need to match what's in the templates)
@@ -13,7 +13,6 @@ PERSON_FORM_NAME = 'person_form'
 QUESTIONS_FORM_NAME = 'questions_form'
 BUDGET_FORM_NAME = 'budget_form'
 FUNDING_FORM_NAME = 'funding_form'
-CONTACT_FORM_NAME = 'contact_form'
 
 
 class Homepage(TemplateView):
@@ -59,7 +58,6 @@ class ProposalView(TemplateView):
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, instance=proposal.applicant)
-            contact_form = ContactForm(prefix=CONTACT_FORM_NAME, instance=proposal.applicant.contact_set.all()[0])
             questions_form = QuestionsForProposalForm(proposal=proposal,
                                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
@@ -77,7 +75,6 @@ class ProposalView(TemplateView):
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME)
-            contact_form = ContactForm(prefix=CONTACT_FORM_NAME)
             questions_form = QuestionsForProposalForm(call=call,
                                                       prefix=QUESTIONS_FORM_NAME)
 
@@ -128,7 +125,6 @@ class ProposalView(TemplateView):
             # Editing an existing proposal
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, instance=proposal.applicant, prefix=PERSON_FORM_NAME)
-            contact_form = ContactForm(request.POST, instance=proposal.applicant.contact_set.all()[0], prefix=CONTACT_FORM_NAME)
             questions_form = QuestionsForProposalForm(request.POST,
                                                       proposal=proposal,
                                                       prefix=QUESTIONS_FORM_NAME)
@@ -139,7 +135,6 @@ class ProposalView(TemplateView):
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
-            contact_form = ContactForm(request.POST, prefix=CONTACT_FORM_NAME)
             questions_form = QuestionsForProposalForm(request.POST,
                                                       call=call,
                                                       prefix=QUESTIONS_FORM_NAME)

@@ -296,7 +296,7 @@ class Contact(models.Model):
     )
 
     person_position = models.ForeignKey(PersonPosition, help_text='Person to whom the contact details belong', on_delete=models.PROTECT)
-    entry = models.CharField(help_text='Text of contact entry, such as phone number, pager etc.', blank=False, null=False)
+    entry = models.CharField(help_text='Text of contact entry, such as phone number, pager etc.', max_length=100, blank=False, null=False)
     method = models.CharField(help_text='Type of contact method', max_length=30, choices=METHOD, blank=False, null=False)
     date_created = models.DateTimeField(help_text='Date and time at which this contact was created', default=timezone.now, blank=False, null=False)
 

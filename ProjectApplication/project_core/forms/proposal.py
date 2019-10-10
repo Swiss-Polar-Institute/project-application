@@ -3,10 +3,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelChoiceField, BaseInlineFormSet, BaseFormSet, ModelMultipleChoiceField
 from django.forms import ModelForm, Form
 from django.forms.models import inlineformset_factory, formset_factory
-from crispy_forms.layout import Layout, Submit, Row, Column, Div
+from crispy_forms.layout import Layout, Div
 
-from ..models import Person, Proposal, ProposalQAText, CallQuestion, Keyword, Organisation, \
-    ProposalFundingItem, ProposedBudgetItem, BudgetCategory, Contact
+from ..models import Proposal, ProposalQAText, CallQuestion, Organisation, \
+    ProposalFundingItem, ProposedBudgetItem, BudgetCategory, Contact, \
+    PhysicalPerson, PersonPosition, PersonTitle
 
 from crispy_forms.helper import FormHelper
 from dal import autocomplete
@@ -22,46 +23,31 @@ class OrganisationMultipleChoiceField(ModelMultipleChoiceField):
         return organisation.abbreviated_name()
 
 
-class PersonForm(ModelForm):
+class PersonForm(Form):
     def __init__(self, *args, **kwargs):
+        proposal = kwargs.pop('proposal')
         super().__init__(*args, **kwargs)
 
-        self.fields['organisations'] = OrganisationMultipleChoiceField(queryset=Organisation.objects.all(),
-                                                                       widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'))
+        self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
+                                                               help_text='to be typed')
+
+        self.fields['first_name'] = forms.CharField(initial='some value if possible',
+                                                    help_text='To be written')
+
+        self.fields['surname'] = forms.CharField(initial='some value if possible',
+                                                    help_text='To be written')
+
+        self.fields['organisations'] = forms.ModelMultipleChoiceField(query=Organisation.objects.all(),
+                                                                      widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'))
+
+        self.fields['group'] = forms.CharField(initial='some value if possible',
+                                               help_text='to be written')
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
-        self.helper.layout = Layout(
-            Div(
-                Div('academic_title', css_class='col-2'),
-                Div('first_name', css_class='col-5'),
-                Div('surname', css_class='col-5'),
-                css_class='row'
-            ),
-            Div(
-                Div('organisations', css_class='col-12'), css_class='row'
-            ),
-            Div(
-                Div('group', css_class='col-12'), css_class='row',
-            )
-        )
-
-    class Meta:
-        model = Person
-        fields = ['academic_title', 'first_name', 'surname', 'organisations', 'group', ]
-
-
-class ContactForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.helper = FormHelper(self)
-        self.helper.form_tag = False
-
-    class Meta:
-        model = Contact
-        fields = ['email_address']
+    def save_person(self, proposal):
+        print('save person')
 
 
 class ProposalForm(ModelForm):
@@ -169,7 +155,7 @@ class ProposalFundingItemForm(ModelForm):
 
     class Meta:
         model = ProposalFundingItem
-        fields = ['organisation', 'status', 'amount', 'proposal', ]
+        fields = ['organisation', 'funding_status', 'amount', 'proposal', ]
 
 
 class ProposalFundingFormSet(BaseInlineFormSet):
