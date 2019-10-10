@@ -81,9 +81,9 @@ class PhysicalPersonAdmin(admin.ModelAdmin):
     ordering = ['first_name', 'surname', 'gender', 'date_created', ]
 
 
-class PersonUuidAdmin(admin.ModelAdmin):
-    list_display = ('person', 'uuid', 'source', 'date_created')
-    ordering = ['person', 'uuid', 'source', 'date_created', ]
+class PersonUidAdmin(admin.ModelAdmin):
+    list_display = ('person', 'uid', 'source', 'date_created')
+    ordering = ['person', 'uid', 'source', 'date_created', ]
 
 
 class PersonPositionAdmin(admin.ModelAdmin):
@@ -198,7 +198,7 @@ admin.site.register(project_core.models.PersonTitle, PersonTitleAdmin)
 admin.site.register(project_core.models.Country, CountryAdmin)
 admin.site.register(project_core.models.Organisation, OrganisationAdmin)
 admin.site.register(project_core.models.Source, SourceAdmin)
-admin.site.register(project_core.models.PersonUuid, PersonUuidAdmin)
+admin.site.register(project_core.models.PersonUid, PersonUidAdmin)
 admin.site.register(project_core.models.Gender, GenderAdmin)
 admin.site.register(project_core.models.PhysicalPerson, PhysicalPersonAdmin)
 admin.site.register(project_core.models.PersonPosition, PersonPositionAdmin)
