@@ -56,14 +56,14 @@ class Step(models.Model):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Step within a call', on_delete=models.PROTECT)
-    step = models.ForeignKey(StepType, help_text='Name of step', max_length=128, null=False, on_delete=models.PROTECT)
-    date = models.DateTimeField(help_text='Date and time of notable date',max_length=64, null=False)
+    step_type = models.ForeignKey(StepType, help_text='Name of step', max_length=128, null=False, on_delete=models.PROTECT)
+    date = models.DateTimeField(help_text='Date and time of notable date', max_length=64, null=False)
 
     class Meta:
-        unique_together = (('call', 'step'), )
+        unique_together = (('call', 'step_type'), )
 
     def __str__(self):
-        return '{} - {}'.format(self.step, self.date)
+        return '{} - {}'.format(self.step_type, self.date)
 
 
 class AbstractQuestion(models.Model):
