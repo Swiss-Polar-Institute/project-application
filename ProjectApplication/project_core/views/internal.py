@@ -1,10 +1,11 @@
-from django.views.generic import TemplateView
-from django.urls import reverse, reverse_lazy
-from ..models import Proposal, TemplateQuestion
 from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.views.generic import TemplateView
+
 from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..forms.question import QuestionForm
 from ..models import Call
+from ..models import Proposal, TemplateQuestion
 
 CALL_FORM_NAME = 'call_form'
 CALL_QUESTION_FORM_NAME = 'call_question_form'

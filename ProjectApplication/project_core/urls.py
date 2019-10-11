@@ -3,7 +3,6 @@ from django.urls import include, path
 from .views import external
 from .views import internal
 
-
 urlpatterns = [
     path('', external.Homepage.as_view(), name='homepage'),
     path('calls/', external.CallsList.as_view(), name='calls-list'),
@@ -25,6 +24,8 @@ urlpatterns = [
 
     path('accounts/', include('django.contrib.auth.urls')),
 
-    path('autocomplete/organisations/', external.OrganisationsAutocomplete.as_view(), name='autocomplete-organisations'),
-    path('autocomplete/keywords/', external.KeywordsAutocomplete.as_view(create_field='name'), name='autocomplete-keywords')
+    path('autocomplete/organisations/', external.OrganisationsAutocomplete.as_view(),
+         name='autocomplete-organisations'),
+    path('autocomplete/keywords/', external.KeywordsAutocomplete.as_view(create_field='name'),
+         name='autocomplete-keywords')
 ]

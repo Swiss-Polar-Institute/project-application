@@ -1,6 +1,7 @@
 from django.contrib import admin
+
 import project_core.models
-from typing import List
+
 
 # Register your models here.
 
@@ -21,7 +22,9 @@ class BudgetCategoryAdmin(admin.ModelAdmin):
 
 
 class CallAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline', 'budget_categories_list', 'budget_maximum', 'call_questions_list')
+    list_display = (
+    'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline',
+    'budget_categories_list', 'budget_maximum', 'call_questions_list')
     ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum', ]
 
     def budget_categories_list(self, obj):
@@ -29,7 +32,7 @@ class CallAdmin(admin.ModelAdmin):
 
         return ", ".join([budget_category.name for budget_category in budget_categories])
 
-    filter_vertical = ('budget_categories', )
+    filter_vertical = ('budget_categories',)
 
     def call_questions_list(self, obj):
         call_questions = obj.callquestion_set.all()
@@ -107,8 +110,11 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
 
 
 class ProposalAdmin(admin.ModelAdmin):
-    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'qas_list', 'call', 'date_created', 'last_modified')
-    ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'call', 'date_created', 'last_modified', ]
+    list_display = (
+    'title', 'keywords_list', 'geographical_area_list', 'location', 'start_timeframe', 'duration', 'applicant',
+    'proposal_status', 'qas_list', 'call', 'date_created', 'last_modified')
+    ordering = ['title', 'start_timeframe', 'duration', 'applicant', 'proposal_status', 'call', 'date_created',
+                'last_modified', ]
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
@@ -133,13 +139,13 @@ class ProposalAdmin(admin.ModelAdmin):
 
 
 class ProposedBudgetItemAdmin(admin.ModelAdmin):
-    list_display = ('category', 'details', 'amount', 'proposal', )
+    list_display = ('category', 'details', 'amount', 'proposal',)
     ordering = ['details', 'amount', 'proposal', ]
-    search_fields = ('category__name', 'details', 'amount', 'proposal__title', )
+    search_fields = ('category__name', 'details', 'amount', 'proposal__title',)
 
 
 class FundingStatusAdmin(admin.ModelAdmin):
-    list_display = ('status', 'description', )
+    list_display = ('status', 'description',)
     ordering = ['status', ]
 
 
@@ -149,7 +155,8 @@ class ProposalFundingItemAdmin(admin.ModelAdmin):
 
 
 class CallQuestionAdmin(admin.ModelAdmin):
-    list_display = ('call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'date_created', 'order')
+    list_display = (
+    'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'date_created', 'order')
     ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'date_created', 'order', ]
 
 

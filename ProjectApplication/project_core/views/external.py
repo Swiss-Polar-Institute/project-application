@@ -1,7 +1,7 @@
-from django.shortcuts import render, redirect
-from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView
 from dal import autocomplete
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.views.generic import TemplateView
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet
@@ -131,7 +131,7 @@ class ProposalView(TemplateView):
                                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
-                                                               instance=proposal)
+                                                      instance=proposal)
         else:
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
