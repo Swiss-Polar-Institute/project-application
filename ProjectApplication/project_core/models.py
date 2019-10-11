@@ -110,7 +110,7 @@ class AbstractQuestion(models.Model):
         null=True, blank=True)
     answer_type = models.CharField(help_text='Type of field that should be applied to the question answer',
                                    max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
-    answer_max_length = models.IntegerField(
+    answer_max_length = models.PositiveIntegerField(
         help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True)
 
     def __str__(self):
