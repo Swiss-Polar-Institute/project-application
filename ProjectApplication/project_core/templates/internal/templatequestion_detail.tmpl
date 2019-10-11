@@ -8,24 +8,19 @@
         {% include "_logo.tmpl" %}
 
         <h1>Question details</h1>
-
         {% if messages %}
-            <ul class="messages">
                 {% for message in messages %}
-                    <li id="message_{{ forloop.counter }}"
-                        {% if message.tags %} class="{{ message.tags }}"
-                        {% endif %} >
+                    <div class="alert alert-{{ message.tags }}" role="alert">
                         {{ message }}
-                    </li>
+                    </div>
                 {% endfor %}
-            </ul>
         {% endif %}
+        <p></p>
+        <p>Question:<br>{{ object.question_text }}</p>
+        <p>Question description:<br>{{ object.question_description }}</p>
+        <p>Question max words:<br>{{ object.answer_max_length }}</p>
+        <hr>
 
-        Question: {{ object.question_text }}<br>
-        Question description: {{ object.question_description }}<br>
-        Question max words: {{ object.answer_max_length }}<br>
-
-                You can:
         <ul>
             <li><a href="{% url 'question-update' pk=object.id %}">Edit the question</a></li>
             <li><a href="{% url 'question-add' %}">Create new question</a></li>
