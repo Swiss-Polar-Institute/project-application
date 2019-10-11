@@ -1,0 +1,36 @@
+{% extends '_base.tmpl' %}
+{% block title %}Internal homepage{% endblock %}
+{% load crispy_forms_tags %}
+
+
+{% block body_contents %}
+    <div class="container theme-showcase" role="main">
+        {% include "_logo.tmpl" %}
+
+        <h1>Question details</h1>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li id="message_{{ forloop.counter }}"
+                        {% if message.tags %} class="{{ message.tags }}"
+                        {% endif %} >
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        Question: {{ object.question_text }}<br>
+        Question description: {{ object.question_description }}<br>
+        Question max words: {{ object.answer_max_length }}<br>
+
+                You can:
+        <ul>
+            <li><a href="{% url 'question-update' pk=object.id %}">Edit the question</a></li>
+            <li><a href="{% url 'question-add' %}">Create new question</a></li>
+            <li><a href="{% url 'questions-list' %}">List questions</a></li>
+            <li><a href="{% url 'internal-homepage' %}">Homepage</a></li>
+        </ul>
+    </div>
+{% endblock %}

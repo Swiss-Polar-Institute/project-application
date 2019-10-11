@@ -1,10 +1,13 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 
 from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..forms.question import QuestionForm
-from ..models import Call
+from ..models import Call, CallQuestion
 from ..models import Proposal, TemplateQuestion
 
 CALL_FORM_NAME = 'call_form'
@@ -88,49 +91,38 @@ class QuestionsList(TemplateView):
         return render(request, 'internal/question-list.tmpl', context)
 
 
-class QuestionView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        super().get_context_data(**kwargs)
+class TemplateQuestionMixin:
+    fields = ['question_text', 'question_description', 'answer_max_length']
 
-        context = {}
+    @property
+    def success_msg(self):
+        return NotImplemented
 
-        if 'id' in kwargs:
-            question = TemplateQuestion.objects.get(id=kwargs['id'])
-            context[QUESTION_FORM_NAME] = QuestionForm(instance=question, prefix=QUESTION_FORM_NAME)
-        else:
-            context[QUESTION_FORM_NAME] = QuestionForm(prefix=QUESTION_FORM_NAME)
 
-        return render(request, 'internal/question.tmpl', context)
+class AddCrispySubmitButtonMixin:
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.helper = FormHelper()
+        form.helper.add_input(Submit('submit', 'Submit'))
 
-    def post(self, request, *args, **kwargs):
-        super().get_context_data(**kwargs)
+        return form
 
-        context = {}
 
-        if 'id' in kwargs:
-            # Editing an existing question
-            question = TemplateQuestion.objects.get(id=kwargs['id'])
-            question_form = QuestionForm(request.POST, instance=question, prefix=QUESTION_FORM_NAME)
+class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
+    template_name = 'internal/templatequestion_form.tmpl'
+    model = TemplateQuestion
+    success_message = 'Question created'
 
-            context[QUESTION_FORM_NAME] = question_form
-            context['question_action_url'] = reverse('question-update', kwargs={'id': question.id})
-            action = 'updated'
 
-        else:
-            question_form = QuestionForm(request.POST, prefix=QUESTION_FORM_NAME)
-            context['question_action_url'] = reverse('question-add')
-            action = 'created'
+class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
+    template_name = 'internal/templatequestion_form.tmpl'
+    model = TemplateQuestion
+    success_message = 'Question updated'
 
-        if question_form.is_valid():
-            question = question_form.save()
 
-            return redirect(reverse('question-updated', kwargs={'id': question.id}) + '?action={}'.format(action))
-
-        context = {}
-
-        context[QUESTION_FORM_NAME] = question_form
-
-        return render(request, 'internal/question.tmpl', context)
+class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
+    template_name = 'internal/templatequestion_detail.tmpl'
+    model = TemplateQuestion
 
 
 class CallView(TemplateView):
