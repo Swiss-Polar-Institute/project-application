@@ -4,9 +4,19 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 
+def update_country_source(apps, schema_editor):
+    Source = apps.get_model('project_core', 'Source')
+    Country = apps.get_model('project_core', 'Country')
+
+    source = Source()
+    source.source = 'SeadataNet C32 ISO Country List 2008'
+    source.save()
+
+    for country in Country.objects.all():
+        country.source = source.id
+        country.save()
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('project_core', '0027_add_source_field_to_country'),
     ]
@@ -91,6 +101,9 @@ class Migration(migrations.Migration):
             name='date_created',
             field=models.DateTimeField(default=django.utils.timezone.now, help_text='Date and time (UTC) at which the proposal was first created'),
         ),
+
+        migrations.RunPython(update_country_source),
+
         migrations.AlterField(
             model_name='country',
             name='source',
