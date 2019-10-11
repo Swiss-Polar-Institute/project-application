@@ -2,6 +2,7 @@ from dal import autocomplete
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
+from django.contrib import messages
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet
@@ -174,6 +175,8 @@ class ProposalView(TemplateView):
         context['action'] = 'Edit'
 
         context.update(ProposalView._call_information_for_template(call))
+
+        messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again')
 
         return render(request, 'proposal.tmpl', context)
 

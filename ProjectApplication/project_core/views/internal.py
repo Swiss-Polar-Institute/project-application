@@ -157,6 +157,6 @@ class CallView(TemplateView):
         context[CALL_FORM_NAME] = call_form
         context[CALL_QUESTION_FORM_NAME] = call_question_form
 
-        messages.error(request, 'Call not saved. Please correct the errors in the form in order to save')
+        messages.error(request, 'Call not saved. Please correct the errors in the form and try again')
 
         return render(request, 'internal/call.tmpl', context)
