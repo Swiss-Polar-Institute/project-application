@@ -2,19 +2,13 @@
 {% block title %}Internal homepage{% endblock %}
 {% load crispy_forms_tags %}
 
-
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %}
 
         <h1>Question details</h1>
-        {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }}" role="alert">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-        {% endif %}
+        {% include "messages-box.tmpl" %}
+
         <p></p>
         <p>Question:<br>{{ object.question_text }}</p>
         <p>Question description:<br>{{ object.question_description }}</p>

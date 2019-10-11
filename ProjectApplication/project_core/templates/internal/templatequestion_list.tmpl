@@ -8,7 +8,7 @@
         {% if questions %}
         <ul>
             {% for question in questions %}
-            <li>{{ question.question_text }} - <a href="{% url 'question-update' id=question.id %}">Edit question</a></li>
+            <li>{{ question.question_text }} - <a href="{% url 'question-update' pk=question.id %}">Edit question</a></li>
             {% endfor %}
         </ul>
         {% else %}

@@ -1,13 +1,13 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 
 from ..forms.call import CallForm, CallQuestionItemFormSet
-from ..forms.question import QuestionForm
-from ..models import Call, CallQuestion
+from ..models import Call
 from ..models import Proposal, TemplateQuestion
 
 CALL_FORM_NAME = 'call_form'
@@ -64,31 +64,13 @@ class CallsList(TemplateView):
         return context
 
 
-class QuestionUpdated(TemplateView):
-    template_name = 'internal/question-updated.tmpl'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['id'] = kwargs['id']
-        action = self.request.GET['action']
-
-        if action in ('created', 'updated'):
-            context['action'] = action
-        else:
-            # should not happen
-            context['action'] = ''
-
-        return context
-
-
 class QuestionsList(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context['questions'] = TemplateQuestion.objects.all()
 
-        return render(request, 'internal/question-list.tmpl', context)
+        return render(request, 'internal/templatequestion_list.tmpl', context)
 
 
 class TemplateQuestionMixin:
@@ -174,5 +156,7 @@ class CallView(TemplateView):
 
         context[CALL_FORM_NAME] = call_form
         context[CALL_QUESTION_FORM_NAME] = call_question_form
+
+        messages.error(request, 'Call not saved. Please correct the errors in the form in order to save')
 
         return render(request, 'internal/call.tmpl', context)

@@ -7,6 +7,8 @@
         {% include "_logo.tmpl" %}
         <H1>Create a new call</H1>
 
+        {% include "messages-box.tmpl" %}
+
         <a href="{% url 'internal-homepage' %}">Internal Homepage</a>
 
         <form method="post" action="{{ call_action_url }}">
@@ -15,7 +17,7 @@
 
             {% include "internal/_form_call_question.tmpl" %}
 
-            <input type="submit" name="submit" value="Submit" class="btn btn-primary" id="submit-id-submit">
+            {% include "submit-button.tmpl" %}
         </form>
         <p></p>
     </div>

@@ -4,4 +4,8 @@
 {% load crispy_forms_tags %}
 
 <H2>Questions</H2>
-{% crispy call_question_form %}
+{% if call_question_form.forms %}
+    {% crispy call_question_form %}
+{% else %}
+    <p>No questions added yet. To add questions select them from the "Template questions"</p>
+{% endif %}
