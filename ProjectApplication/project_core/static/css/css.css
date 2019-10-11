@@ -33,3 +33,12 @@
 .invalid-feedback {
   display: block;
 }
+
+/** For the form validation errors: crispy forms form uses:
+    <div class="alert alert-block alert-danger"> with a <ul> inside
+    Here we are deleting the margin around the ul so the space between the box and the text is the same
+    before the text and after the text (browsers add spacing after </ul>)
+    */
+div.alert ul {
+    margin: 0;
+}
