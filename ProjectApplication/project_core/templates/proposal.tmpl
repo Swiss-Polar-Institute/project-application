@@ -15,7 +15,7 @@
 
         <p><b>Deadline for application:</b> {{ call_submission_deadline }}
 
-        <div class="introductory-message border rounded">{{ call_introductory_message }}</div>
+        <div class="introductory-message border border-dark rounded">{{ call_introductory_message }}</div>
 
         <form action="{{ proposal_action_url }}" method="post">
             {% csrf_token %}

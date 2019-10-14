@@ -134,6 +134,26 @@ class ProposalForm(ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
+        self.helper.layout = Layout(
+            Div(
+                Div('title', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('geographical_areas', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('keywords', css_class='col-12'),
+                css_class='r   ow'
+            ),
+            Div(
+                Div('start_timeframe', css_class='col-6'),
+                Div('duration', css_class='col-6'),
+                css_class='row'
+            )
+        )
+
     def save(self, commit=True):
         self.instance.call_id = self.cleaned_data['call_id']
 

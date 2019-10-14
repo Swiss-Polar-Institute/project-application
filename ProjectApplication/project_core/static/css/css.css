@@ -4,6 +4,7 @@
 .introductory-message {
     padding: 20px;
     white-space: pre-wrap;
+    background: #e1e1e1;
 }
 
 .select2-selection__choice {
