@@ -395,10 +395,10 @@ class Proposal(models.Model):
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
 
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=False, null=False)
-    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the topic of the proposal',
+    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the proposal',
                                       blank=False)
     geographical_areas = models.ManyToManyField(GeographicalArea,
-                                                help_text='Description of the geographical area covered by the proposal')
+                                                help_text='Geographical area(s) covered by the proposal')
     location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)',
                                 max_length=200, blank=True, null=True)  # Consider having this as another text question
     start_timeframe = models.CharField(help_text='Approximate date on which the proposed project is expected to start',
