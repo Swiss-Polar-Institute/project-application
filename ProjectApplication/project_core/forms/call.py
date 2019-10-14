@@ -1,9 +1,9 @@
+from crispy_forms.helper import FormHelper
 from django import forms
+from django.forms.models import inlineformset_factory, BaseInlineFormSet
+from django.utils import timezone
 
 from ..models import Call, TemplateQuestion, CallQuestion
-from django.forms.models import inlineformset_factory, BaseInlineFormSet
-from crispy_forms.helper import FormHelper
-from django.utils import timezone
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -68,6 +68,14 @@ class CallForm(forms.ModelForm):
         model = Call
         fields = ['long_name', 'short_name', 'description', 'introductory_message', 'call_open_date',
                   'submission_deadline', 'budget_categories', 'budget_maximum', ]
+
+        help_texts = {'description': 'Brief description of the call (internal only)',
+                      'introductory_message': 'This text will be displayed at the top of the application form. '
+                                              'It should include information required to complete the application  '
+                                              'correctly such as <b>eligibility<b>, <b>criteria</b>, '
+                                              '<b>application</b> and <b>submission</b>',
+                      'call_open_date': 'Enter the date and time at which the call opens. Swiss time',
+                      'submission_deadline': 'Enter the date and time after which no more submissions are accepted. Swiss time'}
 
 
 class CallQuestionFormSet(BaseInlineFormSet):
