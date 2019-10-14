@@ -65,8 +65,8 @@ class CountryAdmin(admin.ModelAdmin):
 
 
 class OrganisationAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'street', 'city', 'postal_code', 'country',)
-    ordering = ['long_name', 'short_name', 'city', 'country', ]
+    list_display = ('long_name', 'short_name', 'street', 'city', 'postal_code', 'country', 'date_created', 'source')
+    ordering = ['long_name', 'short_name', 'city', 'country', 'date_created', 'source', ]
 
 
 class SourceAdmin(admin.ModelAdmin):
