@@ -3,7 +3,7 @@ from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
 
-from ..models import Call, TemplateQuestion, CallQuestion
+from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -26,9 +26,6 @@ class CallQuestionItemForm(forms.ModelForm):
 
 
 class CallForm(forms.ModelForm):
-    call_open_date = forms.SplitDateTimeField(widget=DateTimePickerWidget)
-    submission_deadline = forms.SplitDateTimeField(widget=DateTimePickerWidget)
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -39,7 +36,11 @@ class CallForm(forms.ModelForm):
             questions_qs = TemplateQuestion.objects.all()
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(queryset=questions_qs, required=False,
-                                                                           help_text='Templates not used in this call')
+                                                                           help_text=self.Meta.help_texts['template_questions'])
+
+        self.fields['budget_categories'] = forms.ModelMultipleChoiceField(initial=self.instance.budget_categories.all(),
+                                                                          queryset=BudgetCategory.objects.all(),
+                                                                          widget=forms.CheckboxSelectMultiple)
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -69,13 +70,24 @@ class CallForm(forms.ModelForm):
         fields = ['long_name', 'short_name', 'description', 'introductory_message', 'call_open_date',
                   'submission_deadline', 'budget_categories', 'budget_maximum', ]
 
+        field_classes = {
+            'call_open_date': forms.SplitDateTimeField,
+            'submission_deadline': forms.SplitDateTimeField
+        }
+
+        widgets = {
+            'call_open_date': DateTimePickerWidget,
+            'submission_deadline': DateTimePickerWidget
+        }
+
         help_texts = {'description': 'Brief description of the call (internal only)',
                       'introductory_message': 'This text will be displayed at the top of the application form. '
                                               'It should include information required to complete the application  '
-                                              'correctly such as <b>eligibility<b>, <b>criteria</b>, '
+                                              'correctly such as <b>eligibility</b>, <b>criteria</b>, '
                                               '<b>application</b> and <b>submission</b>',
                       'call_open_date': 'Enter the date and time at which the call opens. Swiss time',
-                      'submission_deadline': 'Enter the date and time after which no more submissions are accepted. Swiss time'}
+                      'submission_deadline': 'Enter the date and time after which no more submissions are accepted. Swiss time',
+                      'template_questions': 'a'}
 
 
 class CallQuestionFormSet(BaseInlineFormSet):
