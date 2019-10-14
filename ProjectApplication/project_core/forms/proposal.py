@@ -40,24 +40,27 @@ class PersonForm(Form):
             email_initial = self.person_position.contact_set.filter(method=Contact.EMAIL).order_by('date_created')[0].entry
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
-                                                               help_text='to be typed',
+                                                               help_text='Select from list',
                                                                initial=academic_title_initial)
 
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,
-                                                    help_text='To be written')
+                                                    label='First name(s)')
 
         self.fields['surname'] = forms.CharField(initial=surname_initial,
-                                                    help_text='To be written')
+                                                    label='Surname(s)')
 
         self.fields['email'] = forms.CharField(initial=email_initial,
-                                               help_text='To be written')
+                                               )
 
         self.fields['organisations'] = forms.ModelMultipleChoiceField(queryset=Organisation.objects.all(),
                                                                       widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'),
-                                                                      initial=organisations_initial)
+                                                                      initial=organisations_initial,
+                                                                      help_text='Please list the organisation(s) to which you are affiliated for the purposes of this proposal',
+                                                                      label='Organisation(s)',)
 
         self.fields['group'] = forms.CharField(initial=group_initial,
-                                               help_text='to be written')
+                                               help_text='Please list the working group(s) or laboratories to which you are affiliated for the purposes of this proposal',
+                                               label='Group / lab')
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
