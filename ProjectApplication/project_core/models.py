@@ -463,7 +463,7 @@ class BudgetItem(models.Model):
                                  on_delete=models.PROTECT)
     details = models.TextField(help_text='Details of the budget item', blank=True, null=False)
     amount = models.DecimalField(help_text='Cost of category item', decimal_places=2, max_digits=10,
-                                 validators=[MinValueValidator(0)], blank=False, null=True, verbose_name='Amount (CHF)')
+                                 validators=[MinValueValidator(0)], blank=False, null=True)
 
     class Meta:
         abstract = True

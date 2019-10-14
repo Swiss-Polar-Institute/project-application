@@ -223,6 +223,7 @@ class ProposalFundingItemForm(ModelForm):
     class Meta:
         model = ProposalFundingItem
         fields = ['organisation', 'funding_status', 'amount', 'proposal', ]
+        labels = {'amount': 'Amount (CHF)'}
 
 
 class ProposalFundingFormSet(BaseInlineFormSet):
@@ -273,7 +274,7 @@ class BudgetItemForm(forms.Form):
 
     category = forms.CharField(widget=PlainTextWidget())
     details = forms.CharField(required=False)
-    amount = forms.DecimalField(required=False)
+    amount = forms.DecimalField(required=False, label='Amount (CHF)')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
