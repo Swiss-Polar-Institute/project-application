@@ -186,7 +186,7 @@ class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
         qs = Organisation.objects.all()
 
         if self.q:
-            qs = qs.filter(long_name__contains=self.q)
+            qs = qs.filter(long_name__icontains=self.q)
 
         return qs
 
@@ -206,6 +206,6 @@ class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
         qs = Keyword.objects.all()
 
         if self.q:
-            qs = qs.filter(name__contains=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs

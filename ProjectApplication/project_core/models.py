@@ -174,6 +174,8 @@ class Keyword(models.Model):
     description = models.CharField(
         help_text='Description of a keyword that should be used to distinguish it from another keyword', max_length=512,
         blank=False, null=False)
+    date_created = models.DateTimeField(help_text='Date and time at which the keyword was created', default=timezone.now, blank=False, null=False)
+    source = models.CharField(help_text='Source from which the keyword originated', max_length=200, blank=False, null=False)
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.description)
@@ -212,7 +214,7 @@ class PersonTitle(models.Model):
 class Source(models.Model):
     """Source from where a UID may originate."""
 
-    source = models.CharField(help_text='Source from which a UID may originate', max_length=100, blank=False,
+    source = models.CharField(help_text='Source from which a UID may originate', max_length=200, blank=False,
                               null=False)
     date_created = models.DateTimeField(help_text='Date and time at which this source was created',
                                         default=timezone.now, blank=False, null=False)
