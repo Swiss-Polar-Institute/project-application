@@ -55,11 +55,11 @@ class PersonForm(Form):
         self.fields['organisations'] = forms.ModelMultipleChoiceField(queryset=Organisation.objects.all(),
                                                                       widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'),
                                                                       initial=organisations_initial,
-                                                                      help_text='Please list the organisation(s) to which you are affiliated for the purposes of this proposal',
+                                                                      help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal',
                                                                       label='Organisation(s)',)
 
         self.fields['group'] = forms.CharField(initial=group_initial,
-                                               help_text='Please list the working group(s) or laboratories to which you are affiliated for the purposes of this proposal',
+                                               help_text='Please type the names of the working group(s) or laboratories to which you are affiliated for the purposes of this proposal',
                                                label='Group / lab')
 
         self.helper = FormHelper(self)
