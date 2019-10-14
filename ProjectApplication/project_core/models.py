@@ -104,14 +104,14 @@ class AbstractQuestion(models.Model):
         (TEXT, 'Text'),
     )
 
-    question_text = models.TextField(help_text='Text of a question', null=False, blank=False)
+    question_text = models.TextField(help_text='Question text', null=False, blank=False)
     question_description = models.TextField(
-        help_text='Description that should go alongside the question text by way of explanation for completion of answer',
+        help_text='Explanation of question to enable full completion of answer',
         null=True, blank=True)
     answer_type = models.CharField(help_text='Type of field that should be applied to the question answer',
                                    max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.PositiveIntegerField(
-        help_text='Maximum number of words that can be specified to the answer of a question', blank=True, null=True,
+        help_text='Maximum number of words for a question answer', blank=True, null=True,
         verbose_name='Answer maximum length (in words)')
 
     def __str__(self):

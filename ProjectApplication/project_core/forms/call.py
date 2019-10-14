@@ -85,8 +85,8 @@ class CallForm(forms.ModelForm):
                                               'It should include information required to complete the application  '
                                               'correctly such as <b>eligibility</b>, <b>criteria</b>, '
                                               '<b>application</b> and <b>submission</b>',
-                      'call_open_date': 'Enter the date and time at which the call opens. Swiss time',
-                      'submission_deadline': 'Enter the date and time after which no more submissions are accepted. Swiss time',
+                      'call_open_date': 'Enter the date and time at which the call opens (Swiss time)',
+                      'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
                       'template_questions': 'a'}
 
 
