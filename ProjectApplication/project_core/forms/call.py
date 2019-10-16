@@ -36,13 +36,15 @@ class CallForm(forms.ModelForm):
         if self.instance.pk:
             template_ids_used = CallQuestion.objects.filter(call=self.instance).values_list('question', flat=True)
             questions_qs = TemplateQuestion.objects.exclude(id__in=template_ids_used)
+            budget_categories_qs = self.instance.budget_categories.all()
         else:
             questions_qs = TemplateQuestion.objects.all()
+            budget_categories_qs = []
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(queryset=questions_qs, required=False,
                                                                            help_text=self.Meta.help_texts['template_questions'])
 
-        self.fields['budget_categories'] = forms.ModelMultipleChoiceField(initial=self.instance.budget_categories.all(),
+        self.fields['budget_categories'] = forms.ModelMultipleChoiceField(initial=budget_categories_qs,
                                                                           queryset=BudgetCategory.objects.all(),
                                                                           widget=forms.CheckboxSelectMultiple)
 
