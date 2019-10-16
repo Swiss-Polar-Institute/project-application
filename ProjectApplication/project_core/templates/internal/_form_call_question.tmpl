@@ -1,11 +1,17 @@
 {{ call_question_form.management_form }}
-
 {{ call_question_form.non_form_errors }}
 {% load crispy_forms_tags %}
 
 <H2>Questions</H2>
 {% if call_question_form.forms %}
-    {% crispy call_question_form %}
+    {% for form in call_question_form %}
+        {% if not for.first %}
+            <hr>
+        {% endif %}
+
+        <h4>Question {{ forloop.counter }}</h4>
+        {% crispy form %}
+    {% endfor %}
 {% else %}
     <p>No questions added yet. To add questions select them from the "Template questions"</p>
 {% endif %}

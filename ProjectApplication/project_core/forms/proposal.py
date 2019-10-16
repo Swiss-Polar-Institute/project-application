@@ -145,7 +145,7 @@ class ProposalForm(ModelForm):
             ),
             Div(
                 Div('keywords', css_class='col-12'),
-                css_class='r   ow'
+                css_class='row'
             ),
             Div(
                 Div('start_timeframe', css_class='col-6'),

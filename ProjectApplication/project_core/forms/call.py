@@ -23,6 +23,10 @@ class CallQuestionItemForm(forms.ModelForm):
     class Meta:
         model = CallQuestion
         fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length']
+        widgets = {
+            'question_text': forms.Textarea(attrs={'rows': 4}),
+            'question_description': forms.Textarea(attrs={'rows': 4})
+        }
 
 
 class CallForm(forms.ModelForm):
