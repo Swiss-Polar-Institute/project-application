@@ -136,6 +136,7 @@ class ProposalForm(ModelForm):
 
         self.helper.layout = Layout(
             Div(
+                Div('call_id', css_class='col-12', hidden='true'),
                 Div('title', css_class='col-12'),
                 css_class='row'
             ),
@@ -223,7 +224,7 @@ class QuestionsForProposalForm(Form):
             max_word_length = call_question.answer_max_length
             current_words = len(answer.split())
 
-            if current_words > max_word_length:
+            if max_word_length is not None and current_words > max_word_length:
                 self.add_error(question_number,
                                'Too long. Current: {} words, maximum: {} words'.format(current_words, max_word_length))
 
