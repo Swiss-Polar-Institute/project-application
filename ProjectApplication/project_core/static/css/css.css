@@ -44,48 +44,26 @@ div.alert ul {
     margin: 0;
 }
 
-/** For the horizontal_filter */
-div.selector-available {
-
-}
-
-
-
-div.selector-available h2 {
-    background: #f8f8f8;
-    border: 1px solid #ccc;
-    border-radius: 4px 4px 0 0;
-    color: #666;
+.selector-available > * {
     font-size: 13px;
     font-weight: 400;
+    border: 1px solid #ccc;
+    color: #666;
     margin: 0;
     padding: 8px;
     text-align: left;
+}
+
+/** For the horizontal_filter */
+div.selector-available h2 {
+    background: #f8f8f8;
+    border-radius: 4px 4px 0 0;
 }
 
 div.selector-available select {
-    border: 1px solid #ccc;
     border-radius: 0 0 4px 4px;
-    color: #666;
-    font-size: 13px;
-    font-weight: 400;
-    margin: 0;
-    padding: 8px;
-    text-align: left;
 }
 
-
-div.selector-chosen h2 {
-    background: #79aec8;
-    border: 1px solid #ccc;
-    border-radius: 4px 4px 0 0;
-    color: #666;
-    font-size: 13px;
-    font-weight: 400;
-    margin: 0;
-    padding: 8px;
-    text-align: left;
-}
 
 div.selector-chosen h2 {
     background: #79aec8;
@@ -102,6 +80,7 @@ div.selector-chosen h2 {
 div.selector-chosen select {
     border: 1px solid #ccc;
     border-radius: 0 0 4px 4px;
+    border-top: none;
     color: #666;
     font-size: 13px;
     font-weight: 400;
@@ -109,7 +88,6 @@ div.selector-chosen select {
     padding: 8px;
     text-align: left;
 }
-
 
 div.selector-filter {
     border: 1px solid #ccc;
