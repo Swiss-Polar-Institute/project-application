@@ -417,7 +417,7 @@ class Proposal(models.Model):
         blank=False, null=False)
     duration_months = models.DecimalField(
         help_text='Period of time expected that the proposed project will last in months',
-        decimal_places=1, blank=False, null=False)
+        decimal_places=1, max_digits=5, blank=False, null=False)
     applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal', blank=False, null=False,
                                   on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False,

@@ -164,7 +164,7 @@ class ProposalForm(ModelForm):
 
     class Meta:
         model = Proposal
-        fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'start_timeframe', 'duration']
+        fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'provisional_start_date', 'duration_months']
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords')}
 
