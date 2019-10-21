@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='call',
             name='created_by',
-            field=models.ForeignKey(help_text='User id of person creating the call', on_delete=django.db.models.deletion.PROTECT, related_name='call_created_by_set', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(help_text='User id of person creating the call', on_delete=django.db.models.deletion.PROTECT, related_name='call_created_by_set', to=settings.AUTH_USER_MODEL, null=True),
             preserve_default=False,
         ),
         migrations.AddField(
