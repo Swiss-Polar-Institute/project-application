@@ -29,8 +29,8 @@ class FundingInstrumentAdmin(admin.ModelAdmin):
 class CallAdmin(admin.ModelAdmin):
     list_display = (
     'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline',
-    'budget_categories_list', 'budget_maximum', 'call_questions_list', 'created_by', 'date_created', 'modified_by', 'date_modified', )
-    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum', 'created_by', 'date_created', 'modified_by', 'date_modified', ]
+    'budget_categories_list', 'budget_maximum', 'call_questions_list', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
     def budget_categories_list(self, obj):
         budget_categories = obj.budget_categories.all()
