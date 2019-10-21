@@ -75,8 +75,8 @@ class OrganisationAdmin(admin.ModelAdmin):
 
 
 class SourceAdmin(admin.ModelAdmin):
-    list_display = ('source', 'date_created')
-    ordering = ['source', 'date_created', ]
+    list_display = ('source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class GenderAdmin(admin.ModelAdmin):

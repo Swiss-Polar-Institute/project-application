@@ -237,13 +237,11 @@ class PersonTitle(models.Model):
         return self.title
 
 
-class Source(models.Model):
+class Source(CreateModify):
     """Source from where a UID may originate."""
 
     source = models.CharField(help_text='Source from which a UID or item may originate', max_length=200, blank=False,
                               null=False)
-    date_created = models.DateTimeField(help_text='Date and time at which this source was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def __str__(self):
         return '{}'.format(self.source)
