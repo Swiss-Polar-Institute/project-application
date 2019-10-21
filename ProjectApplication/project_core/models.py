@@ -31,7 +31,6 @@ class BudgetCategory(models.Model):
     description = models.CharField(help_text='Description of the budget category', max_length=300, blank=False,
                                    null=False)
 
-
     def __str__(self):
         return self.name
 
@@ -121,7 +120,7 @@ class Step(models.Model):
         return '{} - {}'.format(self.step_type, self.date)
 
 
-class AbstractQuestion(models.Model):
+class AbstractQuestion(CreateModify):
     """Questions and details relating to their answers that can be used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
