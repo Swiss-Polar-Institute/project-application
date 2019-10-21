@@ -34,7 +34,7 @@ class FundingInstrument(models.Model):
     description = models.TextField(help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False, null=False)
     created_by = models.ForeignKey(User, help_text='User id of person creating the funding instrument', related_name='created_by_set', on_delete=models.PROTECT)
     date_created = models.DateTimeField(help_text='Date and time on which the funding instrument was created', default=timezone.now, blank=False, null=False)
-    modified_by = models.ForeignKey(User, help_text='User id of person modifying the funding instrument', related_name='modified_by_set', on_delete=models.PROTECT)
+    modified_by = models.ForeignKey(User, help_text='User id of person modifying the funding instrument', related_name='modified_by_set', on_delete=models.PROTECT, blank=True, null=True)
     date_modified = models.DateTimeField(help_text='Date and time on which the funding instrument was modified', default=timezone.now, blank=True, null=True)
 
     def __str__(self):
