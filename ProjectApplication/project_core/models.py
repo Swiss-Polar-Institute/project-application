@@ -302,14 +302,12 @@ class Organisation(models.Model):
         unique_together = (('long_name', 'country'),)
 
 
-class Uid(models.Model):
+class Uid(CreateModify):
     uid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
     source = models.ForeignKey(Source, help_text='Source of the UID', on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time at which this UID was created', default=timezone.now,
-                                        blank=False, null=False)
 
     def __str__(self):
-        return '{}: {} {}'.format(self.source, self.uid, self.date_created)
+        return '{}: {} {}'.format(self.source, self.uid, self.created_on)
 
     class Meta:
         abstract = True
