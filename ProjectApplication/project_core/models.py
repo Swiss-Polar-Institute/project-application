@@ -174,8 +174,10 @@ class Keyword(models.Model):
     description = models.CharField(
         help_text='Description of a keyword that should be used to distinguish it from another keyword', max_length=512,
         blank=False, null=False)
-    date_created = models.DateTimeField(help_text='Date and time at which the keyword was created', default=timezone.now, blank=False, null=False)
-    source = models.CharField(help_text='Source from which the keyword originated', max_length=200, blank=False, null=False)
+    date_created = models.DateTimeField(help_text='Date and time at which the keyword was created',
+                                        default=timezone.now, blank=False, null=False)
+    source = models.CharField(help_text='Source from which the keyword originated', max_length=200, blank=False,
+                              null=False)
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.description)
@@ -214,7 +216,7 @@ class PersonTitle(models.Model):
 class Source(models.Model):
     """Source from where a UID may originate."""
 
-    source = models.CharField(help_text='Source from which a UID may originate', max_length=200, blank=False,
+    source = models.CharField(help_text='Source from which a UID or item may originate', max_length=200, blank=False,
                               null=False)
     date_created = models.DateTimeField(help_text='Date and time at which this source was created',
                                         default=timezone.now, blank=False, null=False)
@@ -251,10 +253,10 @@ class Organisation(models.Model):
     city = models.CharField(help_text='City in which the organisation is based', max_length=100, blank=False,
                             null=False)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
-    country = models.ForeignKey(Country, help_text='Country in which the organisation is based',
-                                on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time at which the organisation was created', default=timezone.now, blank=False, null=False)
-    source = models.CharField(help_text='Source from which the organisation has originated', max_length=200, blank=False, null=False)
+    country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
+    date_created = models.DateTimeField(help_text='Date and time at which the organisation was created',
+                                        default=timezone.now, blank=False, null=False)
+    source = models.ForeignKey(Source, help_text='Source from which the organisation has originated', on_delete=models.PROTECT)
 
     def abbreviated_name(self):
         if self.short_name is not None:
@@ -405,10 +407,15 @@ class Proposal(models.Model):
                                                 help_text='Geographical area(s) covered by the proposal')
     location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)',
                                 max_length=200, blank=True, null=True)  # Consider having this as another text question
-    start_timeframe = models.CharField(help_text='Approximate date on which the proposed project is expected to start',
-                                       max_length=100, blank=False, null=False)
-    duration = models.CharField(help_text='Period of time expected that the proposed project will last', max_length=100,
-                                blank=False, null=False)
+    provisional_start_date = models.DateField(
+        help_text='Approximate date on which the proposed project is expected to start',
+        blank=False, null=False)
+    provisional_end_date = models.DateField(
+        help_text='Approximate date on which the proposed project is expected to end',
+        blank=False, null=False)
+    duration_months = models.DecimalField(
+        help_text='Period of time expected that the proposed project will last in months',
+        decimal_places=1, max_digits=5, blank=False, null=False)
     applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal', blank=False, null=False,
                                   on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False,
