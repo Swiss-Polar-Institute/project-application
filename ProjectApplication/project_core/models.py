@@ -192,7 +192,7 @@ class CallQuestion(AbstractQuestion):
         unique_together = (('call', 'question'), ('call', 'order'),)
 
 
-class Keyword(models.Model):
+class Keyword(CreateModify):
     """Set of keywords used to describe the topic of a project, proposal, mission etc. """
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -200,8 +200,6 @@ class Keyword(models.Model):
     description = models.CharField(
         help_text='Description of a keyword that should be used to distinguish it from another keyword', max_length=512,
         blank=False, null=False)
-    date_created = models.DateTimeField(help_text='Date and time at which the keyword was created',
-                                        default=timezone.now, blank=False, null=False)
     source = models.CharField(help_text='Source from which the keyword originated', max_length=200, blank=False,
                               null=False)
 

@@ -50,8 +50,8 @@ class CallAdmin(admin.ModelAdmin):
 
 
 class KeywordAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'date_created', 'source')
-    ordering = ['name', 'description', 'date_created', 'source', ]
+    list_display = ('name', 'description', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['name', 'description', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class ProposalStatusAdmin(admin.ModelAdmin):
