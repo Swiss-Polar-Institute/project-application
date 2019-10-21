@@ -60,6 +60,14 @@ class Call(models.Model):
     budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget',
                                          decimal_places=2, max_digits=10, validators=[MinValueValidator(0)],
                                          blank=False, null=False)
+    created_by = models.ForeignKey(User, help_text='User id of person creating the call',
+                                   related_name='call_created_by_set', on_delete=models.PROTECT)
+    date_created = models.DateTimeField(help_text='Date and time on which the call was created',
+                                        default=timezone.now, blank=False, null=False)
+    modified_by = models.ForeignKey(User, help_text='User id of person modifying the call',
+                                    related_name='call_modified_by_set', on_delete=models.PROTECT, blank=True, null=True)
+    date_modified = models.DateTimeField(help_text='Date and time on which the call was modified',
+                                         default=timezone.now, blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
