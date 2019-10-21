@@ -43,3 +43,80 @@
 div.alert ul {
     margin: 0;
 }
+
+/** For the horizontal_filter */
+div.selector-available {
+
+}
+
+
+
+div.selector-available h2 {
+    background: #f8f8f8;
+    border: 1px solid #ccc;
+    border-radius: 4px 4px 0 0;
+    color: #666;
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    padding: 8px;
+    text-align: left;
+}
+
+div.selector-available select {
+    border: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
+    color: #666;
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    padding: 8px;
+    text-align: left;
+}
+
+
+div.selector-chosen h2 {
+    background: #79aec8;
+    border: 1px solid #ccc;
+    border-radius: 4px 4px 0 0;
+    color: #666;
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    padding: 8px;
+    text-align: left;
+}
+
+div.selector-chosen h2 {
+    background: #79aec8;
+    border: 1px solid #ccc;
+    border-radius: 4px 4px 0 0;
+    color: #666;
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    padding: 8px;
+    text-align: left;
+}
+
+div.selector-chosen select {
+    border: 1px solid #ccc;
+    border-radius: 0 0 4px 4px;
+    color: #666;
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+    padding: 8px;
+    text-align: left;
+}
+
+
+div.selector-filter {
+    border: 1px solid #ccc;
+    border-top: none;
+    border-width: 0 1px;
+    color: #999;
+    font-size: 10px;
+    margin: 0;
+    text-align: left;
+}

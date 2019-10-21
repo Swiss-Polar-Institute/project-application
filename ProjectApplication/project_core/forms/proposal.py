@@ -4,6 +4,7 @@ from django.forms import ModelChoiceField, BaseInlineFormSet, BaseFormSet, Model
 from django.forms import ModelForm, Form
 from django.forms.models import inlineformset_factory, formset_factory
 from crispy_forms.layout import Layout, Div
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from ..models import Proposal, ProposalQAText, CallQuestion, Organisation, \
     ProposalFundingItem, ProposedBudgetItem, BudgetCategory, Contact, \
@@ -166,7 +167,9 @@ class ProposalForm(ModelForm):
         model = Proposal
         fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'start_timeframe', 'duration']
 
-        widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords')}
+        widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
+                   'geographical_areas': FilteredSelectMultiple(verbose_name='Areas',
+                                                                is_stacked=True)}
 
 
 class QuestionsForProposalForm(Form):
