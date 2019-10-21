@@ -216,7 +216,7 @@ class PersonTitle(models.Model):
 class Source(models.Model):
     """Source from where a UID may originate."""
 
-    source = models.CharField(help_text='Source from which a UID may originate', max_length=200, blank=False,
+    source = models.CharField(help_text='Source from which a UID or item may originate', max_length=200, blank=False,
                               null=False)
     date_created = models.DateTimeField(help_text='Date and time at which this source was created',
                                         default=timezone.now, blank=False, null=False)
