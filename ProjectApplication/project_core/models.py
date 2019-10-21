@@ -420,6 +420,8 @@ class Proposal(models.Model):
                                   on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False,
                                         null=False, on_delete=models.PROTECT)
+    eligibility = models.BooleanField(help_text='Eligibility status of proposal', blank=False, null=False)
+    eligibility_comment = models.TextField(help_text='Comments regarding eligibility of proposal', blank=True, null=True)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
     date_created = models.DateTimeField(help_text='Date and time (UTC) at which the proposal was first created',
                                         default=timezone.now, blank=False, null=False)

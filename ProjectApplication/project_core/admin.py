@@ -111,10 +111,10 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
 
 class ProposalAdmin(admin.ModelAdmin):
     list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'provisional_start_date',
-                    'provisional_end_date', 'duration_months', 'applicant', 'proposal_status', 'qas_list', 'call',
-                    'date_created', 'last_modified')
+                    'provisional_end_date', 'duration_months', 'applicant', 'proposal_status', 'eligibility', 'eligibility_comment',
+                    'qas_list', 'call', 'date_created', 'last_modified')
     ordering = ['title', 'provisional_start_date', 'provisional_end_date', 'duration_months', 'applicant',
-                'proposal_status', 'call', 'date_created', 'last_modified', ]
+                'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'date_created', 'last_modified', ]
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
