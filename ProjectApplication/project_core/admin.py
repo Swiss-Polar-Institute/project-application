@@ -22,8 +22,8 @@ class BudgetCategoryAdmin(admin.ModelAdmin):
 
 
 class FundingInstrumentAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'description', 'created_by', 'date_created', 'modified_by', 'date_modified', )
-    ordering = ['long_name', 'short_name', 'description', 'created_by', 'date_created', 'modified_by', 'date_modified', ]
+    list_display = ('long_name', 'short_name', 'description', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['long_name', 'short_name', 'description', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class CallAdmin(admin.ModelAdmin):
