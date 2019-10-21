@@ -253,12 +253,10 @@ class Organisation(models.Model):
     city = models.CharField(help_text='City in which the organisation is based', max_length=100, blank=False,
                             null=False)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
-    country = models.ForeignKey(Country, help_text='Country in which the organisation is based',
-                                on_delete=models.PROTECT)
+    country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
     date_created = models.DateTimeField(help_text='Date and time at which the organisation was created',
                                         default=timezone.now, blank=False, null=False)
-    source = models.CharField(help_text='Source from which the organisation has originated', max_length=200,
-                              blank=False, null=False)
+    source = models.ForeignKey(Source, help_text='Source from which the organisation has originated', on_delete=models.PROTECT)
 
     def abbreviated_name(self):
         if self.short_name is not None:
