@@ -21,6 +21,11 @@ class BudgetCategoryAdmin(admin.ModelAdmin):
     ordering = ['name', ]
 
 
+class FundingInstrumentAdmin(admin.ModelAdmin):
+    list_display = ('long_name', 'short_name', 'description', 'created_by', 'date_created', 'modified_by', 'date_modified', )
+    ordering = ['long_name', 'short_name', 'description', 'created_by', 'date_created', 'modified_by', 'date_modified', ]
+
+
 class CallAdmin(admin.ModelAdmin):
     list_display = (
     'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline',
@@ -198,6 +203,7 @@ class CallCommentAdmin(admin.ModelAdmin):
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
+admin.site.register(project_core.models.FundingInstrument, FundingInstrumentAdmin)
 admin.site.register(project_core.models.Call, CallAdmin)
 admin.site.register(project_core.models.Keyword, KeywordAdmin)
 admin.site.register(project_core.models.ProposalStatus, ProposalStatusAdmin)

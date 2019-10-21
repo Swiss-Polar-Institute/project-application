@@ -25,6 +25,22 @@ class BudgetCategory(models.Model):
         verbose_name_plural = 'Budget categories'
 
 
+class FundingInstrument(models.Model):
+    """Details of a funding instrument. This is the highest level of something to which a call can be attributed.
+    For example, an exploratory Grant is the funding instrument, and the annual round of applications would come as part
+    of a call."""
+    long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False)
+    short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60, blank=False, null=False)
+    description = models.TextField(help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False, null=False)
+    created_by = models.ForeignKey(User, help_text='User id of person creating the funding instrument', related_name='created_by_set', on_delete=models.PROTECT)
+    date_created = models.DateTimeField(help_text='Date and time on which the funding instrument was created', default=timezone.now, blank=False, null=False)
+    modified_by = models.ForeignKey(User, help_text='User id of person modifying the funding instrument', related_name='modified_by_set', on_delete=models.PROTECT)
+    date_modified = models.DateTimeField(help_text='Date and time on which the funding instrument was modified', default=timezone.now, blank=True, null=True)
+
+    def __str__(self):
+        return '{} ({})'.format(self.long_name, self.short_name)
+
+
 class Call(models.Model):
     """Description of call."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -34,6 +50,7 @@ class Call(models.Model):
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
     description = models.TextField(help_text='Description of the call that can be used to distinguish it from others',
                                    blank=False, null=False)
+    funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the call belongs', blank=True, null=True, on_delete=models.PROTECT)
     introductory_message = models.TextField(help_text='Introductory text to the call for applicants', blank=True,
                                             null=True)
     call_open_date = models.DateTimeField(help_text='Date on which the call is opened', blank=False, null=False)
