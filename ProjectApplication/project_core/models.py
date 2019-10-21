@@ -9,6 +9,19 @@ from django.urls import reverse
 from django.utils import timezone
 
 
+class CreateModify(models.Model):
+    """Details of data creation and modification: including date, time and user, for internal data only."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    created_on = models.DateTimeField(help_text='Date and time at which the entry was created', blank=False, null=False)
+    created_by = models.ForeignKey(User, help_text='User by which the entry was created', blank=False, null=False, on_delete=models.PROTECT)
+    modified_on = models.DateTimeField(help_text='Date and time at which the entry was modified', blank=True, null=True)
+    modified_by = models.ForeignKey(User, help_text='User by which the entry was modified', blank=True, null=True, on_delete=models.PROTECT)
+
+    class Meta:
+        abstract = True
+
+
 class BudgetCategory(models.Model):
     """Details of budget categories"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
