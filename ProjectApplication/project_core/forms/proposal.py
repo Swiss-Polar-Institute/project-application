@@ -84,6 +84,12 @@ class PersonForm(Form):
             Div(
                 Div('group', css_class='col-12'),
                 css_class='row'
+            ),
+            Div(
+                Div('provisional_start_date', css_class='col-3'),
+                Div('provisional_end_date', css_class='col-3'),
+                Div('duration_months', css_class='col-3'),
+                css_class='row'
             )
         )
 
