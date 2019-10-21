@@ -9,6 +9,19 @@ from django.urls import reverse
 from django.utils import timezone
 
 
+class CreateModify(models.Model):
+    """Details of data creation and modification: including date, time and user, for internal data only."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    created_on = models.DateTimeField(help_text='Date and time at which the entry was created', default=timezone.now, blank=False, null=False)
+    created_by = models.ForeignKey(User, help_text='User by which the entry was created', related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True, on_delete=models.PROTECT)
+    modified_on = models.DateTimeField(help_text='Date and time at which the entry was modified', blank=True, null=True)
+    modified_by = models.ForeignKey(User, help_text='User by which the entry was modified', related_name="%(app_label)s_%(class)s_modified_by_related", blank=True, null=True, on_delete=models.PROTECT)
+
+    class Meta:
+        abstract = True
+
+
 class BudgetCategory(models.Model):
     """Details of budget categories"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -25,23 +38,19 @@ class BudgetCategory(models.Model):
         verbose_name_plural = 'Budget categories'
 
 
-class FundingInstrument(models.Model):
+class FundingInstrument(CreateModify):
     """Details of a funding instrument. This is the highest level of something to which a call can be attributed.
     For example, an exploratory Grant is the funding instrument, and the annual round of applications would come as part
     of a call."""
     long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False)
     short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60, blank=False, null=False)
     description = models.TextField(help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False, null=False)
-    created_by = models.ForeignKey(User, help_text='User id of person creating the funding instrument', related_name='created_by_set', on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time on which the funding instrument was created', default=timezone.now, blank=False, null=False)
-    modified_by = models.ForeignKey(User, help_text='User id of person modifying the funding instrument', related_name='modified_by_set', on_delete=models.PROTECT, blank=True, null=True)
-    date_modified = models.DateTimeField(help_text='Date and time on which the funding instrument was modified', default=timezone.now, blank=True, null=True)
 
     def __str__(self):
         return '{} ({})'.format(self.long_name, self.short_name)
 
 
-class Call(models.Model):
+class Call(CreateModify):
     """Description of call."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -60,14 +69,6 @@ class Call(models.Model):
     budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget',
                                          decimal_places=2, max_digits=10, validators=[MinValueValidator(0)],
                                          blank=False, null=False)
-    created_by = models.ForeignKey(User, help_text='User id of person creating the call',
-                                   related_name='call_created_by_set', on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time on which the call was created',
-                                        default=timezone.now, blank=False, null=False)
-    modified_by = models.ForeignKey(User, help_text='User id of person modifying the call',
-                                    related_name='call_modified_by_set', on_delete=models.PROTECT, blank=True, null=True)
-    date_modified = models.DateTimeField(help_text='Date and time on which the call was modified',
-                                         default=timezone.now, blank=True, null=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -119,7 +120,7 @@ class Step(models.Model):
         return '{} - {}'.format(self.step_type, self.date)
 
 
-class AbstractQuestion(models.Model):
+class AbstractQuestion(CreateModify):
     """Questions and details relating to their answers that can be used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -191,7 +192,7 @@ class CallQuestion(AbstractQuestion):
         unique_together = (('call', 'question'), ('call', 'order'),)
 
 
-class Keyword(models.Model):
+class Keyword(CreateModify):
     """Set of keywords used to describe the topic of a project, proposal, mission etc. """
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -199,8 +200,6 @@ class Keyword(models.Model):
     description = models.CharField(
         help_text='Description of a keyword that should be used to distinguish it from another keyword', max_length=512,
         blank=False, null=False)
-    date_created = models.DateTimeField(help_text='Date and time at which the keyword was created',
-                                        default=timezone.now, blank=False, null=False)
     source = models.CharField(help_text='Source from which the keyword originated', max_length=200, blank=False,
                               null=False)
 
@@ -238,13 +237,11 @@ class PersonTitle(models.Model):
         return self.title
 
 
-class Source(models.Model):
+class Source(CreateModify):
     """Source from where a UID may originate."""
 
     source = models.CharField(help_text='Source from which a UID or item may originate', max_length=200, blank=False,
                               null=False)
-    date_created = models.DateTimeField(help_text='Date and time at which this source was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def __str__(self):
         return '{}'.format(self.source)

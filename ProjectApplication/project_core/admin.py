@@ -22,15 +22,15 @@ class BudgetCategoryAdmin(admin.ModelAdmin):
 
 
 class FundingInstrumentAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'description', 'created_by', 'date_created', 'modified_by', 'date_modified', )
-    ordering = ['long_name', 'short_name', 'description', 'created_by', 'date_created', 'modified_by', 'date_modified', ]
+    list_display = ('long_name', 'short_name', 'description', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['long_name', 'short_name', 'description', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class CallAdmin(admin.ModelAdmin):
     list_display = (
     'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline',
-    'budget_categories_list', 'budget_maximum', 'call_questions_list', 'created_by', 'date_created', 'modified_by', 'date_modified', )
-    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum', 'created_by', 'date_created', 'modified_by', 'date_modified', ]
+    'budget_categories_list', 'budget_maximum', 'call_questions_list', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
     def budget_categories_list(self, obj):
         budget_categories = obj.budget_categories.all()
@@ -50,8 +50,8 @@ class CallAdmin(admin.ModelAdmin):
 
 
 class KeywordAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'date_created', 'source')
-    ordering = ['name', 'description', 'date_created', 'source', ]
+    list_display = ('name', 'description', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['name', 'description', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class ProposalStatusAdmin(admin.ModelAdmin):
@@ -75,8 +75,8 @@ class OrganisationAdmin(admin.ModelAdmin):
 
 
 class SourceAdmin(admin.ModelAdmin):
-    list_display = ('source', 'date_created')
-    ordering = ['source', 'date_created', ]
+    list_display = ('source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class GenderAdmin(admin.ModelAdmin):
@@ -161,13 +161,13 @@ class ProposalFundingItemAdmin(admin.ModelAdmin):
 
 class CallQuestionAdmin(admin.ModelAdmin):
     list_display = (
-    'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'date_created', 'order')
-    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'date_created', 'order', ]
+    'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'date_created', 'order', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'date_created', 'order', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class TemplateQuestionAdmin(admin.ModelAdmin):
-    list_display = ('question_text', 'question_description', 'answer_type', 'answer_max_length')
-    ordering = ['question_text', 'answer_type', 'answer_max_length', ]
+    list_display = ('question_text', 'question_description', 'answer_type', 'answer_max_length', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['question_text', 'answer_type', 'answer_max_length', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class ProposalQATextAdmin(admin.ModelAdmin):
