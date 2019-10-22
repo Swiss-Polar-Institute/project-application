@@ -104,7 +104,7 @@ class StepType(models.Model):
         return '{}'.format(self.name)
 
 
-class Step(models.Model):
+class Step(CreateModify):
     """Dates of notable steps that are used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 

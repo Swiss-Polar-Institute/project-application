@@ -12,8 +12,8 @@ class StepTypeAdmin(admin.ModelAdmin):
 
 
 class StepAdmin(admin.ModelAdmin):
-    list_display = ('call', 'step_type', 'date',)
-    ordering = ['call', 'step_type', 'date', ]
+    list_display = ('call', 'step_type', 'date', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['call', 'step_type', 'date', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class BudgetCategoryAdmin(admin.ModelAdmin):
