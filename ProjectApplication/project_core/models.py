@@ -480,7 +480,7 @@ class Proposal(CreateModify):
         unique_together = (('title', 'applicant', 'call'),)
 
 
-class ProposalQAText(models.Model):
+class ProposalQAText(CreateModify):
     """Questions assigned to a proposal and their respective answers"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
