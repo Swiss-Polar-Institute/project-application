@@ -6,7 +6,7 @@ from django.contrib import messages
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet
-from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword, Source, KeywordSource
+from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword, Source, KeywordUid
 
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'

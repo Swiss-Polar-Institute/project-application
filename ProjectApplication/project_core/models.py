@@ -43,7 +43,7 @@ class FundingInstrument(CreateModify):
     For example, an exploratory Grant is the funding instrument, and the annual round of applications would come as part
     of a call."""
     long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False)
-    short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60, blank=False, null=False)
+    short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60, blank=True, null=True)
     description = models.TextField(help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False, null=False)
 
     def __str__(self):
@@ -204,12 +204,23 @@ class Source(CreateModify):
         return '{}'.format(self.source)
 
 
-class KeywordSource(CreateModify):
-    uuid = models.UUIDField(db_index=True, unique=True, null=True, blank=True)
-    source = models.ForeignKey(Source, on_delete=models.PROTECT)
+class Uid(CreateModify):
+    uid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
+    source = models.ForeignKey(Source, help_text='Source of the UID', on_delete=models.PROTECT)
 
     def __str__(self):
-        return '{}-{}'.format(self.uuid, self.source)
+        return '{}: {} {}'.format(self.source, self.uid, self.created_on)
+
+    class Meta:
+        abstract = True
+        unique_together = (('uid', 'source'),)
+
+
+class KeywordUid(Uid):
+    pass
+
+    def __str__(self):
+        return '{}-{}'.format(self.uid, self.source)
 
 
 class Keyword(CreateModify):
@@ -220,7 +231,7 @@ class Keyword(CreateModify):
     description = models.CharField(
         help_text='Description of a keyword that should be used to distinguish it from another keyword', max_length=512,
         blank=False, null=False)
-    source = models.ForeignKey(KeywordSource, help_text='Source from which the keyword originated', on_delete=models.PROTECT)
+    uid = models.ForeignKey(KeywordUid, help_text='Source from which the keyword originated', on_delete=models.PROTECT)
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.description)
@@ -300,18 +311,6 @@ class Organisation(models.Model):
 
     class Meta:
         unique_together = (('long_name', 'country'),)
-
-
-class Uid(CreateModify):
-    uid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
-    source = models.ForeignKey(Source, help_text='Source of the UID', on_delete=models.PROTECT)
-
-    def __str__(self):
-        return '{}: {} {}'.format(self.source, self.uid, self.created_on)
-
-    class Meta:
-        abstract = True
-        unique_together = (('uid', 'source'),)
 
 
 class Gender(models.Model):

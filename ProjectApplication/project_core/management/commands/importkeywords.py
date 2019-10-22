@@ -3,7 +3,7 @@
 
 from django.core.management.base import BaseCommand
 
-from project_core.models import Keyword, Source, KeywordSource
+from project_core.models import Keyword, Source, KeywordUid
 import csv
 
 
@@ -44,7 +44,7 @@ class KeywordsImporter:
 
             for row in reader:
                 print('Doing:', row)
-                keyword_uuid = row[7]
+                keyword_uid = row[7]
                 column = min(4, len(row))
 
                 while row[column] == '':
@@ -52,9 +52,9 @@ class KeywordsImporter:
 
                 keyword_str = row[column].lower()
 
-                keyword_source, created = KeywordSource.objects.get_or_create(uuid=keyword_uuid, source=source)
+                keyword_uid, created = KeywordUid.objects.get_or_create(uid=keyword_uid, source=source)
 
                 if Keyword.objects.filter(name=keyword_str).count() == 1:
                     continue
 
-                keyword, created = Keyword.objects.get_or_create(name=keyword_str, source=keyword_source)
+                keyword, created = Keyword.objects.get_or_create(name=keyword_str, uid=keyword_uid)
