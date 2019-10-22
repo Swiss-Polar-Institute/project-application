@@ -378,7 +378,7 @@ class PersonPosition(CreateModify):
         verbose_name_plural = 'People from organisation(s)'
 
 
-class Contact(models.Model):
+class Contact(CreateModify):
     """Contact details of a person"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -398,8 +398,6 @@ class Contact(models.Model):
                              blank=False, null=False)
     method = models.CharField(help_text='Type of contact method', max_length=30, choices=METHOD, blank=False,
                               null=False)
-    date_created = models.DateTimeField(help_text='Date and time at which this contact was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def clean(self):
         if self.method == Contact.EMAIL:

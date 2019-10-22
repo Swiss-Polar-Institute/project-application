@@ -122,8 +122,8 @@ class PersonPositionAdmin(admin.ModelAdmin):
 
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('person_position', 'method', 'entry')
-    ordering = ['person_position', 'method', 'entry', ]
+    list_display = ('person_position', 'method', 'entry', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['person_position', 'method', 'entry', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class GeographicalAreaAdmin(admin.ModelAdmin):
