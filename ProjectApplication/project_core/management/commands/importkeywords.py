@@ -52,13 +52,9 @@ class KeywordsImporter:
 
                 keyword_str = row[column].lower()
 
-                keyword_source, created = KeywordSource.objects.get_or_create(uuid=keyword_uuid, source=source,
-                                                                     defaults={'uuid': keyword_uuid,
-                                                                               'source': source})
+                keyword_source, created = KeywordSource.objects.get_or_create(uuid=keyword_uuid, source=source)
 
                 if Keyword.objects.filter(name=keyword_str).count() == 1:
                     continue
-                    
-                keyword, created = Keyword.objects.get_or_create(name=keyword_str, source=keyword_source,
-                                                                  defaults={'name': keyword_str,
-                                                                            'source': keyword_source})
+
+                keyword, created = Keyword.objects.get_or_create(name=keyword_str, source=keyword_source)

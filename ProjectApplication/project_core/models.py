@@ -205,7 +205,7 @@ class Source(CreateModify):
 
 
 class KeywordSource(CreateModify):
-    uuid = models.UUIDField(db_index=True, unique=True)
+    uuid = models.UUIDField(db_index=True, unique=True, null=True, blank=True)
     source = models.ForeignKey(Source, on_delete=models.PROTECT)
 
     def __str__(self):

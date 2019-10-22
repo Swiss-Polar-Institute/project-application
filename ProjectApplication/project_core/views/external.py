@@ -6,7 +6,7 @@ from django.contrib import messages
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet
-from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword
+from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword, Source, KeywordSource
 
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
@@ -193,8 +193,13 @@ class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
 
 class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
     def create_object(self, text):
+        source, created = Source.objects.get_or_create(source='External User')
+
+        keyword_source, created = KeywordSource.objects.get_or_create(uuid=None, source=source)
+
         d = {self.create_field: text,
-             'description': 'user entered'}
+             'description': 'User entered',
+             'source': keyword_source}
 
         return self.get_queryset().get_or_create(
             **d)[0]
@@ -208,4 +213,5 @@ class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
         if self.q:
             qs = qs.filter(name__icontains=self.q)
 
+        qs = qs.order_by('name')
         return qs
