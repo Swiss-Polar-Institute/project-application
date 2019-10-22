@@ -2,9 +2,8 @@
 # Also available at: https://github.com/Swiss-Polar-Institute/science-cruise-data-management
 
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
-from project_core.models import Country
+from project_core.models import Country, Source, CountryUid
 import csv
 
 
@@ -19,11 +18,15 @@ class Command(BaseCommand):
         print(options['filename'])
         self.import_data_from_csv(options['filename'], options['source'])
 
-    def import_data_from_csv(self, filename, source):
+    def import_data_from_csv(self, filename, source_name):
         with open(filename) as csvfile:
             reader = csv.DictReader(csvfile)
+
+            source, created = Source.objects.get_or_create(source=source_name)
+            country_uid, created = CountryUid.objects.get_or_create(uid=None, source=source)
+
             for row in reader:
                 country = Country()
                 country.name = row['preflabel']
-                country.source = source
+                country.uid = country_uid
                 country.save()
