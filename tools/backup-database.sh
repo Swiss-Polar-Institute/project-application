@@ -15,7 +15,7 @@ USER=$(whoami)
 OUTPUT_NAME=$(date "+projects-%Y%m%d-%H%M%S-$USER.sql")
 OUTPUT_FILE="$DIRECTORY/$OUTPUT_NAME"
 
-mysqldump --defaults-file=/etc/mysql/projects.cnf projects > "$OUTPUT_FILE"
+mysqldump --defaults-file=/etc/mysql/project_application_mysql.conf projects > "$OUTPUT_FILE"
 
 echo
 echo "Backup done: $OUTPUT_FILE"
