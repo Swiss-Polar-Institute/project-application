@@ -32,8 +32,8 @@
         {% endif %}
 
         <p></p>
-        <h1>Past calls</h1>
-        {% if past_calls %}
+        <h1>Closed calls</h1>
+        {% if closed_calls %}
         <ul>
             {% for call in closed_calls %}
                 <li>{{ call.long_name }} (Number or proposals: {{ call.number_of_proposals }}) - <a href="{% url 'call-update' id=call.id %}">Edit call</a> - <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a></li>

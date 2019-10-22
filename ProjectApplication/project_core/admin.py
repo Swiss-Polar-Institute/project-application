@@ -97,8 +97,8 @@ class PhysicalPersonAdmin(admin.ModelAdmin):
 
 
 class PersonUidAdmin(admin.ModelAdmin):
-    list_display = ('person', 'uid', 'source', 'date_created')
-    ordering = ['person', 'uid', 'source', 'date_created', ]
+    list_display = ('person', 'uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['person', 'uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class PersonPositionAdmin(admin.ModelAdmin):
