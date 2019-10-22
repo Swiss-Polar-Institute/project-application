@@ -633,19 +633,16 @@ class ProposalPartner(Partner):
         unique_together = (('person', 'role', 'proposal'),)
 
 
-class Comment(models.Model):
+class Comment(CreateModify):
     """Comments can be made by a user about an aspect of something contained in the database"""
     text = models.TextField(help_text='Text of a comment', null=False, blank=False)
-    time = models.DateTimeField(help_text='Date and time on which a comment was made', null=False, blank=False,
-                                default=timezone.now)
-    user = models.ForeignKey(User, help_text='User by which the comment was made', on_delete=models.PROTECT)
 
     class Meta:
         abstract = True
-        unique_together = (('time', 'user'),)
+        unique_together = (('created_on', 'created_by'),)
 
     def __str__(self):
-        return '{} by {} at {}'.format(self.text, self.time, self.user)
+        return '{} by {} at {}'.format(self.text, self.created_on, self.created_by)
 
 
 class ProposalComment(Comment):
@@ -654,7 +651,7 @@ class ProposalComment(Comment):
                                  on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('proposal', 'time', 'user'),)
+        unique_together = (('proposal', 'created_on', 'created_by'),)
 
 
 class CallComment(Comment):
@@ -662,4 +659,4 @@ class CallComment(Comment):
     call = models.ForeignKey(Call, help_text='Call about which the comment was made', on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('call', 'time', 'user'),)
+        unique_together = (('call', 'created_on', 'created_by'),)
