@@ -74,12 +74,25 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ProjectApplication.wsgi.application'
 
+
+def secrets_file(file_name):
+    """ First try $HOME/.file_name, else tries /run/secrets/file_name, else raises an exception"""
+    file_path_in_home_directory = os.path.join(str(pathlib.Path.home()), "." + file_name)
+    if os.path.exists(file_path_in_home_directory):
+        return file_path_in_home_directory
+
+    file_path_in_run_secrets = os.path.join("/run/secrets", file_name)
+    if os.path.exists(file_path_in_run_secrets):
+        return file_path_in_run_secrets
+
+    raise FileNotFoundError("Configuration for {} doesn't exist".format(file_name))
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.mysql',
+        'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
             'read_default_file': '/etc/mysql/projects.cnf',
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
