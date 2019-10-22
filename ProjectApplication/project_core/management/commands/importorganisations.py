@@ -4,7 +4,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from project_core.models import Organisation, Country
+from project_core.models import Organisation, Country, Source, OrganisationUid
 import csv
 
 
@@ -19,9 +19,13 @@ class Command(BaseCommand):
         print(options['filename'])
         self.import_data_from_csv(options['filename'], options['source'])
 
-    def import_data_from_csv(self, filename, source):
+    def import_data_from_csv(self, filename, source_name):
         with open(filename) as csvfile:
             reader = csv.DictReader(csvfile)
+
+            source, created = Source.objects.get_or_create(name=source_name)
+            organisation_uid, created = OrganisationUid.objects.get_or_create(uid=None, source=source)
+
             for row in reader:
                 organisation = Organisation()
                 organisation.long_name = row['long_name']
@@ -30,6 +34,5 @@ class Command(BaseCommand):
                 organisation.city = row['city']
                 organisation.postal_code = row['postal_code']
                 organisation.country = Country.objects.get(name=row['country'])
-                organisation.created_on = timezone.now()
-                organisation.source = source
+                organisation.uid = organisation_uid
                 organisation.save()

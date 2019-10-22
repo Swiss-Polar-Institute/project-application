@@ -76,9 +76,14 @@ class CountryAdmin(admin.ModelAdmin):
     ordering = ['name', ]
 
 
+class OrganisationUidAdmin(admin.ModelAdmin):
+    list_display = ('uid', 'source', )
+    ordering = ['uid', 'source', ]
+
+
 class OrganisationAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'street', 'city', 'postal_code', 'country', 'created_by', 'created_on', 'modified_by', 'modified_on', 'source')
-    ordering = ['long_name', 'short_name', 'city', 'country', 'created_by', 'created_on', 'modified_by', 'modified_on', 'source', ]
+    list_display = ('long_name', 'short_name', 'street', 'city', 'postal_code', 'country', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['long_name', 'short_name', 'city', 'country', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class SourceAdmin(admin.ModelAdmin):
