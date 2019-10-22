@@ -1,0 +1,65 @@
+version: '3.6'
+
+services:
+  project-application:
+    image: project-application
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    secrets:
+      - project_application_mysql.conf
+    volumes:
+      - static_volume:/code/ProjectApplication/staticfiles
+      - ./ProjectApplication:/code/ProjectApplication
+    ports:
+      - 8085:8085
+    networks:
+      - nginx-proxy
+    links:
+      - database
+
+  reverse-proxy:
+    image: nginx:1.17
+    secrets:
+      - project_application_htpasswd
+    expose:
+      - "1235"
+    environment:
+      - NGINX_PORT=1235
+      - VIRTUAL_HOST=${PROJECTS_STAGING_DOMAIN}
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/code/ProjectApplication/staticfiles
+    links:
+      - project-application
+    networks:
+      - nginx-proxy
+
+  database:
+    image: mariadb:10.4
+    environment:
+      - MYSQL_DATABASE:projects
+      - MYSQL_USER=${PROJECT_APPLICATION_DB_USER}
+      - MYSQL_PASSWORD=${PROJECT_APPLICATION_DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${PROJECT_APPLICATION_ROOT_PASSWORD}
+    volumes:
+      - database:/var/lib/mysql
+    expose:
+      - "3306"
+    networks:
+      - nginx-proxy
+
+volumes:
+  static_volume: {}
+  database:
+
+secrets:
+  project_application_mysql.conf:
+    file: ${PROJECT_APPLICATION_MYSQL_CONF_PATH}
+  project_application_htpasswd:
+    file: ${PROJECT_APPLICATION_HTPASSWD}
+
+networks:
+  nginx-proxy:
+    external:
+      name: nginx-proxy

@@ -168,3 +168,9 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+try:
+    from local_settings import *
+    print('Imported local_settings')
+except ImportError:
+    pass
