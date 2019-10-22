@@ -1,4 +1,5 @@
 {% extends '_base.tmpl' %}
+{% load git_commit %}
 {% block title %}Projects application{% endblock %}
 
 {% block body_contents %}
@@ -10,5 +11,6 @@
         <ul>
             <li><a href="{% url 'calls-list' %}">List of calls</a></li>
         </ul>
+    Last update: {% version_date %}
     </div>
 {% endblock %}
