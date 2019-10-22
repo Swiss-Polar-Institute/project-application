@@ -52,11 +52,13 @@ class CallAdmin(admin.ModelAdmin):
 class KeywordAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['name', 'description', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    readonly_fields = ('created_on', 'modified_on', )
 
 
 class KeywordSourceAdmin(admin.ModelAdmin):
     list_display = ('uuid', 'source', )
     ordering = ['uuid', ]
+    readonly_fields = ('created_on', 'modified_on', )
 
 
 class ProposalStatusAdmin(admin.ModelAdmin):
