@@ -25,6 +25,5 @@ class Command(BaseCommand):
             for row in reader:
                 country = Country()
                 country.name = row['preflabel']
-                country.last_modified = timezone.now()
                 country.source = source
                 country.save()
