@@ -72,8 +72,8 @@ class PersonTitleAdmin(admin.ModelAdmin):
 
 
 class CountryAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    ordering = ['name', ]
+    list_display = ('name', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['name', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class OrganisationUidAdmin(admin.ModelAdmin):

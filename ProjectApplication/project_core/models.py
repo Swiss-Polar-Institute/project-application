@@ -267,14 +267,12 @@ class PersonTitle(models.Model):
         return self.title
 
 
-class Country(models.Model):
+class Country(CreateModify):
     """Countries"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False, unique=True)
     source = models.ForeignKey(Source, help_text='Source of country name', on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time created', default=timezone.now, blank=False,
-                                        null=False)
 
     def __str__(self):
         return self.name
