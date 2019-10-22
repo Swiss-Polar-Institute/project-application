@@ -23,7 +23,7 @@ class Command(BaseCommand):
         with open(filename) as csvfile:
             reader = csv.DictReader(csvfile)
 
-            source, created = Source.objects.get_or_create(name=source_name)
+            source, created = Source.objects.get_or_create(source=source_name)
             organisation_uid, created = OrganisationUid.objects.get_or_create(uid=None, source=source)
 
             for row in reader:
