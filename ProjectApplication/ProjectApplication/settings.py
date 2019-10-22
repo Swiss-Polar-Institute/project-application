@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import pathlib
+
 from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -75,8 +77,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ProjectApplication.wsgi.application'
 
 
-def secrets_file(file_name):
-    """ First try $HOME/.file_name, else tries /run/secrets/file_name, else raises an exception"""
+def secrets_file(file_name, optional_path=None):
+    """ First try optional_path, then $HOME/.file_name, then /run/secrets/file_name, else raises an exception"""
+
+    if optional_path is not None:
+        file_path_in_optional = os.path.join(optional_path, file_name)
+        if os.path.exists(file_path_in_optional):
+            return file_path_in_optional
+
     file_path_in_home_directory = os.path.join(str(pathlib.Path.home()), "." + file_name)
     if os.path.exists(file_path_in_home_directory):
         return file_path_in_home_directory
@@ -94,7 +102,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': '/etc/mysql/projects.cnf',
+            'read_default_file': secrets_file('project_application_mysql.conf', '/etc/mysql'),
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
             'charset': 'utf8mb4',
         }
