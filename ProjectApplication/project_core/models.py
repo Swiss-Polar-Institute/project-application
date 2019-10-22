@@ -426,7 +426,7 @@ class GeographicalArea(models.Model):
         return '{} - {}'.format(self.name, self.definition)
 
 
-class Proposal(models.Model):
+class Proposal(CreateModify):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -455,10 +455,6 @@ class Proposal(models.Model):
     eligibility = models.BooleanField(help_text='Eligibility status of proposal', blank=False, null=False)
     eligibility_comment = models.TextField(help_text='Comments regarding eligibility of proposal', blank=True, null=True)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time (UTC) at which the proposal was first created',
-                                        default=timezone.now, blank=False, null=False)
-    last_modified = models.DateTimeField(help_text='Latest date and time at which the proposal was modified',
-                                         default=timezone.now, blank=False, null=False)
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
