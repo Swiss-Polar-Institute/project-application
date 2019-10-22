@@ -267,12 +267,20 @@ class PersonTitle(models.Model):
         return self.title
 
 
+class CountryUid(Uid):
+    """"""
+    pass
+
+    def __str__(self):
+        return '{}-{}'.format(self.uid, self.source)
+
+
 class Country(CreateModify):
     """Countries"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False, unique=True)
-    source = models.ForeignKey(Source, help_text='Source of country name', on_delete=models.PROTECT)
+    uid = models.ForeignKey(CountryUid, help_text='Source of country name', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.name
