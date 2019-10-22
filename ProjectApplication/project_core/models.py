@@ -360,7 +360,7 @@ class PersonUid(Uid):
         return '{} {}: {}'.format(self.person, self.source, self.uid)
 
 
-class PersonPosition(models.Model):
+class PersonPosition(CreateModify):
     """Information about a person that may change as they move through their career."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -370,8 +370,6 @@ class PersonPosition(models.Model):
     organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works',
                              max_length=200, blank=True, null=True)
-    date_created = models.DateTimeField(help_text='Date and time at which this person was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def __str__(self):
         organisations_str = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
