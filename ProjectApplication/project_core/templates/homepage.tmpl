@@ -11,6 +11,10 @@
         <ul>
             <li><a href="{% url 'calls-list' %}">List of calls</a></li>
         </ul>
-    Last update: {% version_date %}
+
+
+        <div class="fixed-bottom">
+            <span class="text-muted"><small>Version: {% version_date %}</small></span>
+        </div>
     </div>
 {% endblock %}
