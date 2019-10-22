@@ -54,6 +54,11 @@ class KeywordAdmin(admin.ModelAdmin):
     ordering = ['name', 'description', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
+class KeywordSourceAdmin(admin.ModelAdmin):
+    list_display = ('uuid', 'source', )
+    ordering = ['uuid', ]
+
+
 class ProposalStatusAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
     ordering = ['description', ]
@@ -206,6 +211,7 @@ admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
 admin.site.register(project_core.models.FundingInstrument, FundingInstrumentAdmin)
 admin.site.register(project_core.models.Call, CallAdmin)
 admin.site.register(project_core.models.Keyword, KeywordAdmin)
+admin.site.register(project_core.models.KeywordSource, KeywordSourceAdmin)
 admin.site.register(project_core.models.ProposalStatus, ProposalStatusAdmin)
 admin.site.register(project_core.models.PersonTitle, PersonTitleAdmin)
 admin.site.register(project_core.models.Country, CountryAdmin)

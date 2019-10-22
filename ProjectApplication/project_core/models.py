@@ -13,9 +13,9 @@ class CreateModify(models.Model):
     """Details of data creation and modification: including date, time and user, for internal data only."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    created_on = models.DateTimeField(help_text='Date and time at which the entry was created', default=timezone.now, blank=False, null=False)
+    created_on = models.DateTimeField(help_text='Date and time at which the entry was created', auto_now_add=True, blank=False, null=False)
     created_by = models.ForeignKey(User, help_text='User by which the entry was created', related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True, on_delete=models.PROTECT)
-    modified_on = models.DateTimeField(help_text='Date and time at which the entry was modified', blank=True, null=True)
+    modified_on = models.DateTimeField(help_text='Date and time at which the entry was modified', auto_now=True, blank=True, null=True)
     modified_by = models.ForeignKey(User, help_text='User by which the entry was modified', related_name="%(app_label)s_%(class)s_modified_by_related", blank=True, null=True, on_delete=models.PROTECT)
 
     class Meta:
@@ -192,6 +192,26 @@ class CallQuestion(AbstractQuestion):
         unique_together = (('call', 'question'), ('call', 'order'),)
 
 
+class Source(CreateModify):
+    """Source from where a UID may originate."""
+
+    source = models.CharField(help_text='Source from which a UID or item may originate', max_length=200, blank=False,
+                              null=False)
+
+    description = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return '{}'.format(self.source)
+
+
+class KeywordSource(CreateModify):
+    uuid = models.UUIDField(db_index=True, unique=True)
+    source = models.ForeignKey(Source, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return '{}-{}'.format(self.uuid, self.source)
+
+
 class Keyword(CreateModify):
     """Set of keywords used to describe the topic of a project, proposal, mission etc. """
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -200,8 +220,7 @@ class Keyword(CreateModify):
     description = models.CharField(
         help_text='Description of a keyword that should be used to distinguish it from another keyword', max_length=512,
         blank=False, null=False)
-    source = models.CharField(help_text='Source from which the keyword originated', max_length=200, blank=False,
-                              null=False)
+    source = models.ForeignKey(KeywordSource, help_text='Source from which the keyword originated', on_delete=models.PROTECT)
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.description)
@@ -235,16 +254,6 @@ class PersonTitle(models.Model):
 
     def __str__(self):
         return self.title
-
-
-class Source(CreateModify):
-    """Source from where a UID may originate."""
-
-    source = models.CharField(help_text='Source from which a UID or item may originate', max_length=200, blank=False,
-                              null=False)
-
-    def __str__(self):
-        return '{}'.format(self.source)
 
 
 class Country(models.Model):

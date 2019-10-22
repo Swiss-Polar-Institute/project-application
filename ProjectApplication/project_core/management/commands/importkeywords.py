@@ -2,9 +2,8 @@
 # Also available at: https://github.com/Swiss-Polar-Institute/science-cruise-data-management
 
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 
-from project_core.models import Keyword, Source
+from project_core.models import Keyword, Source, KeywordSource
 import csv
 
 
@@ -44,16 +43,22 @@ class KeywordsImporter:
             next(reader) # Ignores the file normal header
 
             for row in reader:
+                print('Doing:', row)
                 keyword_uuid = row[7]
                 column = min(4, len(row))
 
                 while row[column] == '':
                     column -= 1
 
-                keyword_str = row[column]
+                keyword_str = row[column].lower()
 
-                keyword = Keyword()
-                keyword.name = keyword_str.lower()
-                keyword.source = source
+                keyword_source, created = KeywordSource.objects.get_or_create(uuid=keyword_uuid, source=source,
+                                                                     defaults={'uuid': keyword_uuid,
+                                                                               'source': source})
 
-                keyword.save()
+                if Keyword.objects.filter(name=keyword_str).count() == 1:
+                    continue
+                    
+                keyword, created = Keyword.objects.get_or_create(name=keyword_str, source=keyword_source,
+                                                                  defaults={'name': keyword_str,
+                                                                            'source': keyword_source})
