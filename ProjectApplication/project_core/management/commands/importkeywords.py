@@ -44,6 +44,7 @@ class KeywordsImporter:
             next(reader) # Ignores the file normal header
 
             for row in reader:
+                keyword_uuid = row[7]
                 column = min(4, len(row))
 
                 while row[column] == '':

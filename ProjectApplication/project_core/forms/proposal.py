@@ -84,12 +84,6 @@ class PersonForm(Form):
             Div(
                 Div('group', css_class='col-12'),
                 css_class='row'
-            ),
-            Div(
-                Div('provisional_start_date', css_class='col-3'),
-                Div('provisional_end_date', css_class='col-3'),
-                Div('duration_months', css_class='col-3'),
-                css_class='row'
             )
         )
 
@@ -156,8 +150,9 @@ class ProposalForm(ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('start_timeframe', css_class='col-6'),
-                Div('duration', css_class='col-6'),
+                Div('provisional_start_date', css_class='col-4'),
+                Div('provisional_end_date', css_class='col-4'),
+                Div('duration_months', css_class='col-4'),
                 css_class='row'
             )
         )
@@ -171,7 +166,8 @@ class ProposalForm(ModelForm):
 
     class Meta:
         model = Proposal
-        fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'provisional_start_date', 'duration_months']
+        fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'provisional_start_date',
+                  'provisional_start_date', 'provisional_end_date', 'duration_months']
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': FilteredSelectMultiple(verbose_name='Areas',
