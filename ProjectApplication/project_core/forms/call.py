@@ -93,7 +93,7 @@ class CallForm(forms.ModelForm):
                                               '<b>application</b> and <b>submission</b>',
                       'call_open_date': 'Enter the date and time at which the call opens (Swiss time)',
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
-                      'template_questions': 'a'}
+                      'template_questions': 'Select the questions that you would like to add to this call'}
 
 
 class CallQuestionFormSet(BaseInlineFormSet):
