@@ -335,7 +335,7 @@ class Gender(models.Model):
         return '{} {}'.format(self.name, self.date_created)
 
 
-class PhysicalPerson(models.Model):
+class PhysicalPerson(CreateModify):
     """Information about a unique person."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -343,11 +343,9 @@ class PhysicalPerson(models.Model):
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time at which this person was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def __str__(self):
-        return '{} {}: {}'.format(self.first_name, self.surname, self.date_created)
+        return '{} {}: {}'.format(self.first_name, self.surname, self.created_on)
 
     class Meta:
         unique_together = (('first_name', 'surname',),)
