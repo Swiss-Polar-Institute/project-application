@@ -283,7 +283,7 @@ class Country(models.Model):
         verbose_name_plural = 'Countries'
 
 
-class Organisation(models.Model):
+class Organisation(CreateModify):
     """Details of an organisation - could be scientific, institution, funding etc."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -296,8 +296,6 @@ class Organisation(models.Model):
                             null=False)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time at which the organisation was created',
-                                        default=timezone.now, blank=False, null=False)
     source = models.ForeignKey(Source, help_text='Source from which the organisation has originated', on_delete=models.PROTECT)
 
     def abbreviated_name(self):

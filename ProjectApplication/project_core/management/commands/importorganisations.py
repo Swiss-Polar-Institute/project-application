@@ -30,6 +30,6 @@ class Command(BaseCommand):
                 organisation.city = row['city']
                 organisation.postal_code = row['postal_code']
                 organisation.country = Country.objects.get(name=row['country'])
-                organisation.date_created = timezone.now()
+                organisation.created_on = timezone.now()
                 organisation.source = source
                 organisation.save()
