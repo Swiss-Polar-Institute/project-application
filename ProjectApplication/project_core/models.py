@@ -43,7 +43,7 @@ class FundingInstrument(CreateModify):
     For example, an exploratory Grant is the funding instrument, and the annual round of applications would come as part
     of a call."""
     long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False)
-    short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60, blank=False, null=False)
+    short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60, blank=True, null=True)
     description = models.TextField(help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False, null=False)
 
     def __str__(self):
