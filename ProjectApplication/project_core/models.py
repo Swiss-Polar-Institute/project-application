@@ -160,8 +160,6 @@ class CallQuestion(AbstractQuestion):
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
     question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based',
                                  on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time at which the question was added to the call',
-                                        default=timezone.now)
     order = models.PositiveIntegerField(help_text='Use the integer order to order the questions', blank=False,
                                         null=False)
 
