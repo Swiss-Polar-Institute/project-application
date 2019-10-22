@@ -12,8 +12,8 @@ class StepTypeAdmin(admin.ModelAdmin):
 
 
 class StepAdmin(admin.ModelAdmin):
-    list_display = ('call', 'step_type', 'date',)
-    ordering = ['call', 'step_type', 'date', ]
+    list_display = ('call', 'step_type', 'date', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['call', 'step_type', 'date', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class BudgetCategoryAdmin(admin.ModelAdmin):
@@ -102,8 +102,8 @@ class GenderAdmin(admin.ModelAdmin):
 
 
 class PhysicalPersonAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'surname', 'gender', 'date_created')
-    ordering = ['first_name', 'surname', 'gender', 'date_created', ]
+    list_display = ('first_name', 'surname', 'gender', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['first_name', 'surname', 'gender', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class PersonUidAdmin(admin.ModelAdmin):
@@ -112,8 +112,8 @@ class PersonUidAdmin(admin.ModelAdmin):
 
 
 class PersonPositionAdmin(admin.ModelAdmin):
-    list_display = ('person', 'academic_title', 'organisations_list', 'group', 'date_created')
-    ordering = ['person', 'academic_title', 'group', 'date_created', ]
+    list_display = ('person', 'academic_title', 'organisations_list', 'group', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['person', 'academic_title', 'group', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
     def organisations_list(self, obj):
         organisations = obj.organisations.all()
@@ -122,8 +122,8 @@ class PersonPositionAdmin(admin.ModelAdmin):
 
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('person_position', 'method', 'entry')
-    ordering = ['person_position', 'method', 'entry', ]
+    list_display = ('person_position', 'method', 'entry', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['person_position', 'method', 'entry', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class GeographicalAreaAdmin(admin.ModelAdmin):
@@ -134,9 +134,9 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
 class ProposalAdmin(admin.ModelAdmin):
     list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'provisional_start_date',
                     'provisional_end_date', 'duration_months', 'applicant', 'proposal_status', 'eligibility', 'eligibility_comment',
-                    'qas_list', 'call', 'date_created', 'last_modified')
+                    'qas_list', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on', )
     ordering = ['title', 'provisional_start_date', 'provisional_end_date', 'duration_months', 'applicant',
-                'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'date_created', 'last_modified', ]
+                'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
@@ -178,18 +178,18 @@ class ProposalFundingItemAdmin(admin.ModelAdmin):
 
 class CallQuestionAdmin(admin.ModelAdmin):
     list_display = (
-    'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'date_created', 'order', 'created_by', 'created_on', 'modified_by', 'modified_on',)
-    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'date_created', 'order', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'order', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class TemplateQuestionAdmin(admin.ModelAdmin):
-    list_display = ('question_text', 'question_description', 'answer_type', 'answer_max_length', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    list_display = ('question_text', 'question_description', 'answer_type', 'answer_max_length', 'created_by', 'created_on', 'modified_by', 'modified_on', )
     ordering = ['question_text', 'answer_type', 'answer_max_length', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class ProposalQATextAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'call_question', 'answer',)
-    ordering = ['proposal', 'call_question', ]
+    list_display = ('proposal', 'call_question', 'answer', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['proposal', 'call_question', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class CareerStageAdmin(admin.ModelAdmin):
@@ -208,13 +208,13 @@ class ProposalPartnerAdmin(admin.ModelAdmin):
 
 
 class ProposalCommentAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'text', 'user', 'time')
-    ordering = ['proposal', 'text', 'user', 'time', ]
+    list_display = ('proposal', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['proposal', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class CallCommentAdmin(admin.ModelAdmin):
-    list_display = ('call', 'text', 'user', 'time')
-    ordering = ['call', 'text', 'user', 'time', ]
+    list_display = ('call', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['call', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 admin.site.register(project_core.models.StepType, StepTypeAdmin)

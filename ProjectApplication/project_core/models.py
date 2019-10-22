@@ -104,7 +104,7 @@ class StepType(models.Model):
         return '{}'.format(self.name)
 
 
-class Step(models.Model):
+class Step(CreateModify):
     """Dates of notable steps that are used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -160,8 +160,6 @@ class CallQuestion(AbstractQuestion):
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
     question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based',
                                  on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time at which the question was added to the call',
-                                        default=timezone.now)
     order = models.PositiveIntegerField(help_text='Use the integer order to order the questions', blank=False,
                                         null=False)
 
@@ -335,7 +333,7 @@ class Gender(models.Model):
         return '{} {}'.format(self.name, self.date_created)
 
 
-class PhysicalPerson(models.Model):
+class PhysicalPerson(CreateModify):
     """Information about a unique person."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -343,11 +341,9 @@ class PhysicalPerson(models.Model):
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time at which this person was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def __str__(self):
-        return '{} {}: {}'.format(self.first_name, self.surname, self.date_created)
+        return '{} {}: {}'.format(self.first_name, self.surname, self.created_on)
 
     class Meta:
         unique_together = (('first_name', 'surname',),)
@@ -362,7 +358,7 @@ class PersonUid(Uid):
         return '{} {}: {}'.format(self.person, self.source, self.uid)
 
 
-class PersonPosition(models.Model):
+class PersonPosition(CreateModify):
     """Information about a person that may change as they move through their career."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -372,8 +368,6 @@ class PersonPosition(models.Model):
     organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works',
                              max_length=200, blank=True, null=True)
-    date_created = models.DateTimeField(help_text='Date and time at which this person was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def __str__(self):
         organisations_str = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
@@ -384,7 +378,7 @@ class PersonPosition(models.Model):
         verbose_name_plural = 'People from organisation(s)'
 
 
-class Contact(models.Model):
+class Contact(CreateModify):
     """Contact details of a person"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -404,8 +398,6 @@ class Contact(models.Model):
                              blank=False, null=False)
     method = models.CharField(help_text='Type of contact method', max_length=30, choices=METHOD, blank=False,
                               null=False)
-    date_created = models.DateTimeField(help_text='Date and time at which this contact was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def clean(self):
         if self.method == Contact.EMAIL:
@@ -434,7 +426,7 @@ class GeographicalArea(models.Model):
         return '{} - {}'.format(self.name, self.definition)
 
 
-class Proposal(models.Model):
+class Proposal(CreateModify):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -463,10 +455,6 @@ class Proposal(models.Model):
     eligibility = models.BooleanField(help_text='Eligibility status of proposal', blank=False, null=False)
     eligibility_comment = models.TextField(help_text='Comments regarding eligibility of proposal', blank=True, null=True)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
-    date_created = models.DateTimeField(help_text='Date and time (UTC) at which the proposal was first created',
-                                        default=timezone.now, blank=False, null=False)
-    last_modified = models.DateTimeField(help_text='Latest date and time at which the proposal was modified',
-                                         default=timezone.now, blank=False, null=False)
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
@@ -492,7 +480,7 @@ class Proposal(models.Model):
         unique_together = (('title', 'applicant', 'call'),)
 
 
-class ProposalQAText(models.Model):
+class ProposalQAText(CreateModify):
     """Questions assigned to a proposal and their respective answers"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -645,19 +633,16 @@ class ProposalPartner(Partner):
         unique_together = (('person', 'role', 'proposal'),)
 
 
-class Comment(models.Model):
+class Comment(CreateModify):
     """Comments can be made by a user about an aspect of something contained in the database"""
     text = models.TextField(help_text='Text of a comment', null=False, blank=False)
-    time = models.DateTimeField(help_text='Date and time on which a comment was made', null=False, blank=False,
-                                default=timezone.now)
-    user = models.ForeignKey(User, help_text='User by which the comment was made', on_delete=models.PROTECT)
 
     class Meta:
         abstract = True
-        unique_together = (('time', 'user'),)
+        unique_together = (('created_on', 'created_by'),)
 
     def __str__(self):
-        return '{} by {} at {}'.format(self.text, self.time, self.user)
+        return '{} by {} at {}'.format(self.text, self.created_on, self.created_by)
 
 
 class ProposalComment(Comment):
@@ -666,7 +651,7 @@ class ProposalComment(Comment):
                                  on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('proposal', 'time', 'user'),)
+        unique_together = (('proposal', 'created_on', 'created_by'),)
 
 
 class CallComment(Comment):
@@ -674,4 +659,4 @@ class CallComment(Comment):
     call = models.ForeignKey(Call, help_text='Call about which the comment was made', on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('call', 'time', 'user'),)
+        unique_together = (('call', 'created_on', 'created_by'),)
