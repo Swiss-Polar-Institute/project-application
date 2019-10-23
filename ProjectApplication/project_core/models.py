@@ -412,6 +412,13 @@ class Contact(CreateModify):
         unique_together = (('person_position', 'entry'),)
 
 
+class GeographicalAreaUid(Uid):
+    pass
+
+    def __str__(self):
+        return '{}-{}'.format(self.uid, self.source)
+
+
 class GeographicalArea(CreateModify):
     """Geographical area (exact coverage of this not yet determined)"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -421,6 +428,7 @@ class GeographicalArea(CreateModify):
     definition = models.CharField(
         help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300,
         blank=False, null=False)
+    uid = models.ForeignKey(GeographicalAreaUid, on_delete=models.PROTECT)
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.definition)

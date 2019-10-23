@@ -126,9 +126,14 @@ class ContactAdmin(admin.ModelAdmin):
     ordering = ['person_position', 'method', 'entry', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
+class GeographicalAreaUidAdmin(admin.ModelAdmin):
+    list_display = ('uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+
+
 class GeographicalAreaAdmin(admin.ModelAdmin):
-    list_display = ('name', 'definition', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['name', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = ('name', 'definition', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['name', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class ProposalAdmin(admin.ModelAdmin):
@@ -236,6 +241,7 @@ admin.site.register(project_core.models.Gender, GenderAdmin)
 admin.site.register(project_core.models.PhysicalPerson, PhysicalPersonAdmin)
 admin.site.register(project_core.models.PersonPosition, PersonPositionAdmin)
 admin.site.register(project_core.models.Contact, ContactAdmin)
+admin.site.register(project_core.models.GeographicalUidArea, GeographicalAreaUidAdmin)
 admin.site.register(project_core.models.GeographicalArea, GeographicalAreaAdmin)
 admin.site.register(project_core.models.Proposal, ProposalAdmin)
 admin.site.register(project_core.models.ProposedBudgetItem, ProposedBudgetItemAdmin)
