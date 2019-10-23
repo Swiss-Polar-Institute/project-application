@@ -5,6 +5,7 @@ from django.forms import ModelForm, Form
 from django.forms.models import inlineformset_factory, formset_factory
 from crispy_forms.layout import Layout, Div
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from ..widgets import DateTimePickerWidget
 
 from ..models import Proposal, ProposalQAText, CallQuestion, Organisation, \
     ProposalFundingItem, ProposedBudgetItem, BudgetCategory, Contact, \
@@ -172,7 +173,9 @@ class ProposalForm(ModelForm):
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': FilteredSelectMultiple(verbose_name='Areas',
-                                                                is_stacked=True)}
+                                                                is_stacked=True),
+                   'provisional_start_date': DateTimePickerWidget,
+                   'provisional_end_date': DateTimePickerWidget}
 
 
 class QuestionsForProposalForm(Form):

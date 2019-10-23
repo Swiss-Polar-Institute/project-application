@@ -4,16 +4,9 @@ from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from ..widgets import DateTimePickerWidget
 
 from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory
-
-
-class DateTimePickerWidget(forms.SplitDateTimeWidget):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         date_attrs={'type': 'date'},
-                         time_attrs={'type': 'time'}
-                         )
 
 
 class CallQuestionItemForm(forms.ModelForm):
@@ -41,7 +34,6 @@ class CallQuestionItemForm(forms.ModelForm):
                 css_class='row'
             )
         )
-
 
     class Meta:
         model = CallQuestion
@@ -90,7 +82,6 @@ class CallForm(forms.ModelForm):
                                                                            required=False,
                                                                            widget=FilteredSelectMultiple(is_stacked=True, verbose_name='questions'),
                                                                            help_text=self.Meta.help_texts['template_questions'])
-
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
