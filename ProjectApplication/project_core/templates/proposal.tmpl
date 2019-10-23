@@ -15,6 +15,8 @@
 
         <p><b>Deadline for application:</b> {{ call_submission_deadline|date:"D d M Y" }} {{ call_submission_deadline|time:"H:i" }} Swiss time
 
+        <p><b>Please complete all mandatory fields and press submit. Following submission of your proposal, you will be given a link which will allow editing of your proposal until the application deadline.</b></p>
+
         <div class="introductory-message shadow p-3 mb-5 bg-white rounded">{{ call_introductory_message }}</div>
 
         <form action="{{ proposal_action_url }}" method="post">
