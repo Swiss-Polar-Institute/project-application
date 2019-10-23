@@ -40,7 +40,8 @@ class PersonForm(Form):
             group_initial = self.person_position.group
             academic_title_initial = self.person_position.academic_title
             gender_initial = self.person_position.person.gender
-            email_initial = self.person_position.contact_set.filter(method=Contact.EMAIL).order_by('created_on')[0].entry
+            email_initial = self.person_position.contact_set.filter(method=Contact.EMAIL).order_by('created_on')[
+                0].entry
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                help_text='Select from list',
@@ -54,16 +55,17 @@ class PersonForm(Form):
                                                     label='First name(s)')
 
         self.fields['surname'] = forms.CharField(initial=surname_initial,
-                                                    label='Surname(s)')
+                                                 label='Surname(s)')
 
         self.fields['email'] = forms.CharField(initial=email_initial,
                                                )
 
         self.fields['organisations'] = OrganisationMultipleChoiceField(queryset=Organisation.objects.all(),
-                                                                      widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'),
-                                                                      initial=organisations_initial,
-                                                                      help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal',
-                                                                      label='Organisation(s)',)
+                                                                       widget=autocomplete.ModelSelect2Multiple(
+                                                                           url='autocomplete-organisations'),
+                                                                       initial=organisations_initial,
+                                                                       help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal',
+                                                                       label='Organisation(s)', )
 
         self.fields['group'] = forms.CharField(initial=group_initial,
                                                help_text='Please type the names of the working group(s) or laboratories to which you are affiliated for the purposes of this proposal',
@@ -252,7 +254,8 @@ class ProposalFundingItemForm(ModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields['organisation'] = OrganisationChoiceField(queryset=Organisation.objects.all(),
-                                                               widget=autocomplete.ModelSelect2(url='autocomplete-organisations'))
+                                                              widget=autocomplete.ModelSelect2(
+                                                                  url='autocomplete-organisations'))
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -424,11 +427,23 @@ class DataCollectionForm(Form):
             contact_newsletter_initial = person_position.contact_newsletter
 
         self.fields['data_policy'] = forms.BooleanField(initial=data_policy_initial,
-                                                        help_text='to be written')
+                                                        help_text='By ticking this box you agree to the Swiss Polar Insitute (SPI) storing your '
+                                                                  'personal data for the purpose of administering your '
+                                                                  'proposal. The data you provide here will be kept private and '
+                                                                  'held securely by the SPI and EPFL according '
+                                                                  'to the <a href="https://cipd.epfl.ch/en/privacy-policy/">EPFL Privacy Policy</a>. '
+                                                                  'Anonymised statistics will also be produced about the proposal applications. '
+                                                                  'If your proposal is successful, your data will also be used '
+                                                                  'for the administration of your project and may also contribute as '
+                                                                  'scientific metadata for the project.',
+                                                        label='I agree to my personal data being saved by SPI for administration of my proposal')
 
         self.fields['contact_newsletter'] = forms.BooleanField(initial=contact_newsletter_initial,
-                                                               help_text='write something',
-                                                               required=False)
+                                                               help_text='By ticking this box you agree to being contacted '
+                                                                  'by SPI with news and future opportunities. '
+                                                                  'Your contact details will not be used for other purposes.',
+                                                               required=False,
+                                                               label='I would like to be contacted by SPI with news and future opportunities')
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
