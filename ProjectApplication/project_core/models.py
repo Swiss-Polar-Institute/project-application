@@ -326,14 +326,12 @@ class Organisation(CreateModify):
         unique_together = (('long_name', 'country'),)
 
 
-class Gender(models.Model):
+class Gender(CreateModify):
     """Gender with which a person identifies."""
     name = models.CharField(help_text='Name of gender', max_length=20, blank=False, null=False, unique=True)
-    date_created = models.DateTimeField(help_text='Date and time at which this gender was created',
-                                        default=timezone.now, blank=False, null=False)
 
     def __str__(self):
-        return '{} {}'.format(self.name, self.date_created)
+        return '{} {}'.format(self.name, self.created_on)
 
 
 class PhysicalPerson(CreateModify):
