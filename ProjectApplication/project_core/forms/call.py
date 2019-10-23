@@ -22,6 +22,27 @@ class CallQuestionItemForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
+        self.helper.layout = Layout(
+            Div(
+                Div('id', css_class='col-12', hidden=True),
+                Div('order', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('question_text', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('question_description', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('answer_max_length', css_class='col-12'),
+                css_class='row'
+            )
+        )
+
+
     class Meta:
         model = CallQuestion
         fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length']
@@ -42,7 +63,7 @@ class CallQuestionFormSet(BaseInlineFormSet):
 
 CallQuestionItemFormSet = inlineformset_factory(
     Call, CallQuestion, form=CallQuestionItemForm, formset=CallQuestionFormSet, extra=0,
-    can_delete=True)
+    can_delete=False)
 
 
 class CallForm(forms.ModelForm):
@@ -125,10 +146,22 @@ class CallForm(forms.ModelForm):
         instance = super().save(commit)
 
         if commit:
-            for question in self.cleaned_data['template_questions']:
-                call_question = CallQuestion.from_template(question)
+            template_questions_wanted = []
+
+            for template_question in self.cleaned_data['template_questions']:
+                call_question = CallQuestion.from_template(template_question)
+                template_questions_wanted.append(template_question.id)
+
+                if instance.callquestion_set.filter(question=template_question):
+                    # This question was already added
+                    continue
+
                 call_question.call = instance
                 call_question.save()
+
+            for call_question in instance.callquestion_set.all():
+                if call_question.question.id not in template_questions_wanted:
+                    call_question.delete()
 
         return instance
 

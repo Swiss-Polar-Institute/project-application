@@ -4,7 +4,7 @@
 
 <H2>Questions</H2>
 {% if call_question_form.forms %}
-    {% for form in call_question_form %}
+    {% for form in call_question_form.forms %}
         {% if not for.first %}
             <hr>
         {% endif %}
