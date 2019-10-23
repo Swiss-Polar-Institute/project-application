@@ -428,7 +428,7 @@ class GeographicalArea(CreateModify):
     definition = models.CharField(
         help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300,
         blank=False, null=False)
-    uid = models.ForeignKey(GeographicalAreaUid, on_delete=models.PROTECT)
+    uid = models.ForeignKey(GeographicalAreaUid, on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.definition)
