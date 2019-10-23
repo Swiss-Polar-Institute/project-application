@@ -182,6 +182,9 @@ class ProposalView(TemplateView):
 
 
 class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
+    def get_result_label(self, result):
+        return result.long_name
+
     def get_queryset(self):
         qs = Organisation.objects.all()
 

@@ -17,12 +17,12 @@ from dal import autocomplete
 
 class OrganisationChoiceField(ModelChoiceField):
     def label_from_instance(self, organisation):
-        return organisation.abbreviated_name()
+        return organisation.long_name
 
 
 class OrganisationMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, organisation):
-        return organisation.abbreviated_name()
+        return organisation.long_name
 
 
 class PersonForm(Form):
@@ -54,7 +54,7 @@ class PersonForm(Form):
         self.fields['email'] = forms.CharField(initial=email_initial,
                                                )
 
-        self.fields['organisations'] = forms.ModelMultipleChoiceField(queryset=Organisation.objects.all(),
+        self.fields['organisations'] = OrganisationMultipleChoiceField(queryset=Organisation.objects.all(),
                                                                       widget=autocomplete.ModelSelect2Multiple(url='autocomplete-organisations'),
                                                                       initial=organisations_initial,
                                                                       help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal',
