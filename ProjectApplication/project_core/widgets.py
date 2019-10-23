@@ -9,6 +9,6 @@ class DateTimePickerWidget(forms.SplitDateTimeWidget):
                          )
 
 
-class DateTimePickerWidget(forms.DateInput):
+class DatePickerWidget(forms.DateInput):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, attrs={'type': 'date'})
