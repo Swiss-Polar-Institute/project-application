@@ -175,7 +175,8 @@ class ProposalForm(ModelForm):
                    'geographical_areas': FilteredSelectMultiple(verbose_name='Areas',
                                                                 is_stacked=True),
                    'provisional_start_date': DateTimePickerWidget,
-                   'provisional_end_date': DateTimePickerWidget}
+                   'provisional_end_date': DateTimePickerWidget
+                   }
 
 
 class QuestionsForProposalForm(Form):
