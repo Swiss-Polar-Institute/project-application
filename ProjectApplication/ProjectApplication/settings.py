@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'project_core.middleware.login.LoginRequiredForInternalMiddleware',
+    'project_core.middleware.login.LoginRequiredFormanagementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -151,12 +151,12 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # For the Debugging extension
-# INTERNAL_IPS = [
+# management_IPS = [
 #     '127.0.0.1',
 # ]
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/internal/'
+LOGIN_REDIRECT_URL = '/management/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 

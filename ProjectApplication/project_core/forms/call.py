@@ -86,7 +86,7 @@ class CallForm(forms.ModelForm):
             'submission_deadline': DateTimePickerWidget
         }
 
-        help_texts = {'description': 'Brief description of the call (internal only)',
+        help_texts = {'description': 'Brief description of the call (management only)',
                       'introductory_message': 'This text will be displayed at the top of the application form. '
                                               'It should include information required to complete the application  '
                                               'correctly such as <b>eligibility</b>, <b>criteria</b>, '

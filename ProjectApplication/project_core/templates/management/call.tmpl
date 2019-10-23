@@ -1,5 +1,5 @@
 {% extends '_base.tmpl' %}
-{% block title %}Internal homepage{% endblock %}
+{% block title %}management homepage{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block body_contents %}
@@ -9,13 +9,13 @@
 
         {% include "messages-box.tmpl" %}
 
-        <a href="{% url 'internal-homepage' %}">Internal Homepage</a>
+        <a href="{% url 'management-homepage' %}">management Homepage</a>
 
         <form method="post" action="{{ call_action_url }}">
             {% csrf_token %}
             {% crispy call_form %}
 
-            {% include "internal/_form_call_question.tmpl" %}
+            {% include "management/_form_call_question.tmpl" %}
 
             {% include "submit-button.tmpl" %}
         </form>

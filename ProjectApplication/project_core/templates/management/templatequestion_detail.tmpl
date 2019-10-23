@@ -1,5 +1,5 @@
 {% extends '_base.tmpl' %}
-{% block title %}Internal homepage{% endblock %}
+{% block title %}management homepage{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block body_contents %}
@@ -19,7 +19,7 @@
             <li><a href="{% url 'question-update' pk=object.id %}">Edit the question</a></li>
             <li><a href="{% url 'question-add' %}">Create new question</a></li>
             <li><a href="{% url 'questions-list' %}">List questions</a></li>
-            <li><a href="{% url 'internal-homepage' %}">Homepage</a></li>
+            <li><a href="{% url 'management-homepage' %}">Homepage</a></li>
         </ul>
     </div>
 {% endblock %}

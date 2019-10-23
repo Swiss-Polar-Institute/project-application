@@ -16,7 +16,7 @@ QUESTION_FORM_NAME = 'question_form'
 
 
 class ProposalsList(TemplateView):
-    template_name = 'internal/proposal-list.tmpl'
+    template_name = 'management/proposal-list.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -27,7 +27,7 @@ class ProposalsList(TemplateView):
 
 
 class CallUpdated(TemplateView):
-    template_name = 'internal/call-updated.tmpl'
+    template_name = 'management/call-updated.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -48,11 +48,11 @@ class Homepage(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        return render(request, 'internal/homepage.tmpl', context)
+        return render(request, 'management/homepage.tmpl', context)
 
 
 class CallsList(TemplateView):
-    template_name = 'internal/call-list.tmpl'
+    template_name = 'management/call-list.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -70,7 +70,7 @@ class QuestionsList(TemplateView):
 
         context['questions'] = TemplateQuestion.objects.all()
 
-        return render(request, 'internal/templatequestion_list.tmpl', context)
+        return render(request, 'management/templatequestion_list.tmpl', context)
 
 
 class TemplateQuestionMixin:
@@ -91,19 +91,19 @@ class AddCrispySubmitButtonMixin:
 
 
 class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
-    template_name = 'internal/templatequestion_form.tmpl'
+    template_name = 'management/templatequestion_form.tmpl'
     model = TemplateQuestion
     success_message = 'Question created'
 
 
 class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
-    template_name = 'internal/templatequestion_form.tmpl'
+    template_name = 'management/templatequestion_form.tmpl'
     model = TemplateQuestion
     success_message = 'Question updated'
 
 
 class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
-    template_name = 'internal/templatequestion_detail.tmpl'
+    template_name = 'management/templatequestion_detail.tmpl'
     model = TemplateQuestion
 
 
@@ -125,7 +125,7 @@ class CallView(TemplateView):
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(prefix=CALL_QUESTION_FORM_NAME)
             context['call_action_url'] = reverse('call-add')
 
-        return render(request, 'internal/call.tmpl', context)
+        return render(request, 'management/call.tmpl', context)
 
     def post(self, request, *args, **kwargs):
         super().get_context_data(**kwargs)
@@ -150,7 +150,7 @@ class CallView(TemplateView):
             call = call_form.save()
             call_question_form.save()
 
-            return redirect(reverse('internal-call-updated', kwargs={'id': call.id}) + '?action={}'.format(action))
+            return redirect(reverse('management-call-updated', kwargs={'id': call.id}) + '?action={}'.format(action))
 
         context = {}
 
@@ -159,4 +159,4 @@ class CallView(TemplateView):
 
         messages.error(request, 'Call not saved. Please correct the errors in the form and try again')
 
-        return render(request, 'internal/call.tmpl', context)
+        return render(request, 'management/call.tmpl', context)

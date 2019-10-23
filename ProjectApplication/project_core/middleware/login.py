@@ -5,7 +5,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.utils.deprecation import MiddlewareMixin
 
 
-class LoginRequiredForInternalMiddleware(MiddlewareMixin):
+class LoginRequiredFormanagementMiddleware(MiddlewareMixin):
     def process_request(self, request):
         assert hasattr(request, 'user'), (
             'The LoginRequiredMiddleware requires authentication middleware '
@@ -14,5 +14,5 @@ class LoginRequiredForInternalMiddleware(MiddlewareMixin):
         )
 
         path = request.path.lstrip('/')
-        if not request.user.is_authenticated and path.startswith('internal/'):
+        if not request.user.is_authenticated and path.startswith('management/'):
             return redirect_to_login(request.path)

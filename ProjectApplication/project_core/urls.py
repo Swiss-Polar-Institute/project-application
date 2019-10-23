@@ -1,7 +1,7 @@
 from django.urls import include, path
 
 from .views import external
-from .views import internal
+from .views import management
 
 urlpatterns = [
     path('', external.Homepage.as_view(), name='homepage'),
@@ -10,17 +10,17 @@ urlpatterns = [
     path('proposal/<uuid:uuid>/', external.ProposalView.as_view(), name='proposal-update'),
     path('proposal/thank-you/<uuid:uuid>/', external.ProposalThankYouView.as_view(), name='proposal-thank-you'),
 
-    path('internal/proposals', internal.ProposalsList.as_view(), name='internal-proposals-list'),
-    path('internal/call/add/', internal.CallView.as_view(), name='call-add'),
-    path('internal/call/<int:id>/', internal.CallView.as_view(), name='call-update'),
-    path('internal/call/updated/<int:id>/', internal.CallUpdated.as_view(), name='internal-call-updated'),
-    path('internal/calls/', internal.CallsList.as_view(), name='internal-calls-list'),
-    path('internal/', internal.Homepage.as_view(), name='internal-homepage'),
+    path('management/proposals', management.ProposalsList.as_view(), name='management-proposals-list'),
+    path('management/call/add/', management.CallView.as_view(), name='call-add'),
+    path('management/call/<int:id>/', management.CallView.as_view(), name='call-update'),
+    path('management/call/updated/<int:id>/', management.CallUpdated.as_view(), name='management-call-updated'),
+    path('management/calls/', management.CallsList.as_view(), name='management-calls-list'),
+    path('management/', management.Homepage.as_view(), name='management-homepage'),
 
-    path('internal/templatequestion/add', internal.TemplateQuestionCreateView.as_view(), name='question-add'),
-    path('internal/templatequestion/<int:pk>/', internal.TemplateQuestionDetailView.as_view(), name='question-detail'),
-    path('internal/templatequestion/<int:pk>/update', internal.TemplateQuestionUpdateView.as_view(), name='question-update'),
-    path('internal/templatequestions/', internal.QuestionsList.as_view(), name='questions-list'),
+    path('management/templatequestion/add', management.TemplateQuestionCreateView.as_view(), name='question-add'),
+    path('management/templatequestion/<int:pk>/', management.TemplateQuestionDetailView.as_view(), name='question-detail'),
+    path('management/templatequestion/<int:pk>/update', management.TemplateQuestionUpdateView.as_view(), name='question-update'),
+    path('management/templatequestions/', management.QuestionsList.as_view(), name='questions-list'),
 
     path('accounts/', include('django.contrib.auth.urls')),
 

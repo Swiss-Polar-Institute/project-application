@@ -1,19 +1,20 @@
 {% extends '_base.tmpl' %}
-{% block title %}Internal homepage{% endblock %}
+{% load git_commit %}
+{% block title %}management homepage{% endblock %}
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %}
 
-        <H1>Welcome to the internal homepage</H1>
+        <H1>Welcome to the management homepage</H1>
 
         <p>Hello {{ request.user.username }}</p>
 
-        <p>This homepage is accessible only by internal users.</p>
+        <p>This homepage is accessible only by management users.</p>
 
         Call options:
         <ul>
-            <li><a href="{% url 'internal-calls-list' %}">List of calls</a></li>
+            <li><a href="{% url 'management-calls-list' %}">List of calls</a></li>
             <li><a href="{% url 'call-add' %}">Create a new call</a></li>
         </ul>
 
@@ -25,10 +26,14 @@
 
         Proposal options:
         <ul>
-            <li><a href="{% url 'internal-proposals-list' %}">List of submitted proposals</a></li>
+            <li><a href="{% url 'management-proposals-list' %}">List of submitted proposals</a></li>
         </ul>
 
 
         <a href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
+
+        <div class="fixed-bottom">
+            <span class="text-muted"><small>Version: {% version_date %}</small></span>
+        </div>
     </div>
 {% endblock %}

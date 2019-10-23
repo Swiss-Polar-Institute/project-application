@@ -1,5 +1,5 @@
 {% extends '_base.tmpl' %}
-{% block title %}Internal homepage{% endblock %}
+{% block title %}management homepage{% endblock %}
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
@@ -10,7 +10,7 @@
         <ul>
             <li><a href="{% url 'call-update' id=id %}">Edit the call</a></li>
             <li><a href="{% url 'proposal-add' %}?call={{ id }}">Create Proposal</a></li>
-            <li><a href="{% url 'internal-calls-list' %}">List of calls</a></li>
+            <li><a href="{% url 'management-calls-list' %}">List of calls</a></li>
         </ul>
     </div>
 {% endblock %}
