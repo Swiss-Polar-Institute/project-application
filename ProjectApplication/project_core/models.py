@@ -412,7 +412,7 @@ class Contact(CreateModify):
         unique_together = (('person_position', 'entry'),)
 
 
-class GeographicalArea(models.Model):
+class GeographicalArea(CreateModify):
     """Geographical area (exact coverage of this not yet determined)"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
