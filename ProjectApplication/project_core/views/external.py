@@ -195,11 +195,11 @@ class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
     def create_object(self, text):
         source, created = Source.objects.get_or_create(source='External User')
 
-        keyword_source, created = KeywordSource.objects.get_or_create(uuid=None, source=source)
+        keyword_uuid, created = KeywordUid.objects.get_or_create(uid=None, source=source)
 
         d = {self.create_field: text,
              'description': 'User entered',
-             'source': keyword_source}
+             'uid': keyword_uuid}
 
         return self.get_queryset().get_or_create(
             **d)[0]
