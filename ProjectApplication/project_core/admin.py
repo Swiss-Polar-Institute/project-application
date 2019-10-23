@@ -151,7 +151,7 @@ class ProposalAdmin(admin.ModelAdmin):
     def geographical_area_list(self, obj):
         geographical_areas = obj.geographical_areas.all()
 
-        return ", ".join([geographical_area.area for geographical_area in geographical_areas])
+        return ", ".join([geographical_area.name for geographical_area in geographical_areas])
 
     def qas_list(self, obj):
         qas = obj.proposalqatext_set.all()
