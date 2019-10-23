@@ -334,7 +334,7 @@ class Gender(CreateModify):
     name = models.CharField(help_text='Name of gender', max_length=20, blank=False, null=False, unique=True)
 
     def __str__(self):
-        return '{} {}'.format(self.name, self.created_on)
+        return '{} {}'.format(self.name)
 
 
 class PhysicalPerson(CreateModify):
