@@ -9,7 +9,7 @@ from ..widgets import DatePickerWidget
 
 from ..models import Proposal, ProposalQAText, CallQuestion, Organisation, \
     ProposalFundingItem, ProposedBudgetItem, BudgetCategory, Contact, \
-    PhysicalPerson, PersonPosition, PersonTitle
+    PhysicalPerson, PersonPosition, PersonTitle, Gender
 
 from crispy_forms.helper import FormHelper
 from dal import autocomplete
@@ -31,7 +31,7 @@ class PersonForm(Form):
         super().__init__(*args, **kwargs)
 
         first_name_initial = surname_initial = organisations_initial = group_initial = \
-            academic_title_initial = email_initial = None
+            academic_title_initial = email_initial = gender_initial = None
 
         if self.person_position:
             first_name_initial = self.person_position.person.first_name
@@ -39,11 +39,16 @@ class PersonForm(Form):
             organisations_initial = self.person_position.organisations.all()
             group_initial = self.person_position.group
             academic_title_initial = self.person_position.academic_title
+            gender_initial = self.person_position.person.gender
             email_initial = self.person_position.contact_set.filter(method=Contact.EMAIL).order_by('created_on')[0].entry
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                help_text='Select from list',
                                                                initial=academic_title_initial)
+
+        self.fields['gender'] = forms.ModelChoiceField(queryset=Gender.objects.all(),
+                                                       help_text='Select from list',
+                                                       initial=gender_initial)
 
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,
                                                     label='First name(s)')
@@ -71,8 +76,9 @@ class PersonForm(Form):
         self.helper.layout = Layout(
             Div(
                 Div('academic_title', css_class='col-2'),
-                Div('first_name', css_class='col-5'),
-                Div('surname', css_class='col-5'),
+                Div('gender', css_class='col-2'),
+                Div('first_name', css_class='col-4'),
+                Div('surname', css_class='col-4'),
                 css_class='row'
             ),
             Div(
@@ -92,7 +98,8 @@ class PersonForm(Form):
     def save_person(self):
         physical_person, created = PhysicalPerson.objects.get_or_create(
             first_name=self.cleaned_data['first_name'],
-            surname=self.cleaned_data['surname']
+            surname=self.cleaned_data['surname'],
+            gender=self.cleaned_data['gender']
         )
 
         if self.person_position:
@@ -172,8 +179,7 @@ class ProposalForm(ModelForm):
                   'provisional_start_date', 'provisional_end_date', 'duration_months']
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
-                   'geographical_areas': FilteredSelectMultiple(verbose_name='Areas',
-                                                                is_stacked=True),
+                   'geographical_areas': forms.CheckboxSelectMultiple,
                    'provisional_start_date': DatePickerWidget,
                    'provisional_end_date': DatePickerWidget
                    }
