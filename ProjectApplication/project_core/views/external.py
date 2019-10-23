@@ -141,6 +141,7 @@ class ProposalView(TemplateView):
             data_collection_form = DataCollectionForm(request.POST,
                                                       prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
+            action = 'Edited'
 
         else:
             # Creating a new proposal
@@ -152,6 +153,8 @@ class ProposalView(TemplateView):
             budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
+
+            action = 'Created'
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
                              funding_form, data_collection_form]
@@ -175,7 +178,7 @@ class ProposalView(TemplateView):
             questions_form.save_answers(proposal)
             budget_form.save_budgets(proposal)
 
-            return redirect(reverse('proposal-thank-you', kwargs={'uuid': proposal.uuid}))
+            return redirect(reverse('proposal-thank-you', kwargs={'uuid': proposal.uuid})+'?action={}'.format(action))
 
         context[PERSON_FORM_NAME] = person_form
         context[PROPOSAL_FORM_NAME] = proposal_form

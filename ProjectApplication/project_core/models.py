@@ -350,7 +350,7 @@ class PhysicalPerson(CreateModify):
         return '{} {}: {}'.format(self.first_name, self.surname, self.created_on)
 
     class Meta:
-        unique_together = (('first_name', 'surname',),)
+        unique_together = (('first_name', 'surname', 'gender'),)
 
 
 class PersonUid(Uid):
