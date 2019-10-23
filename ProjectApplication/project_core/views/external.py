@@ -156,7 +156,7 @@ class ProposalView(TemplateView):
 
             proposal = proposal_form.save(commit=False)
             proposal.applicant = applicant
-            proposal.proposal_status = ProposalStatus.objects.get(name='test01')
+            proposal.proposal_status = ProposalStatus.objects.get(name='Submitted')
             proposal.save()
             proposal_form.save(commit=True)
 

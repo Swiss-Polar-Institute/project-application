@@ -38,7 +38,7 @@ class PersonForm(Form):
             organisations_initial = self.person_position.organisations.all()
             group_initial = self.person_position.group
             academic_title_initial = self.person_position.academic_title
-            email_initial = self.person_position.contact_set.filter(method=Contact.EMAIL).order_by('date_created')[0].entry
+            email_initial = self.person_position.contact_set.filter(method=Contact.EMAIL).order_by('created_on')[0].entry
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                help_text='Select from list',
