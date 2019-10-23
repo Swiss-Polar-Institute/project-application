@@ -1,5 +1,5 @@
 {% extends '_base.tmpl' %}
-{% block title %}management homepage{% endblock %}
+{% block title %}Management homepage{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block body_contents %}
@@ -9,7 +9,7 @@
 
         {% include "messages-box.tmpl" %}
 
-        <a href="{% url 'management-homepage' %}">management Homepage</a>
+        <a href="{% url 'management-homepage' %}">Management Homepage</a>
 
         <form method="post" action="{{ call_action_url }}">
             {% csrf_token %}

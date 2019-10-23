@@ -1,7 +1,9 @@
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div
 from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
+from django.contrib.admin.widgets import FilteredSelectMultiple
 
 from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory
 
@@ -29,27 +31,84 @@ class CallQuestionItemForm(forms.ModelForm):
         }
 
 
+class CallQuestionFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.queryset = self.queryset.order_by('order')
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
+
+CallQuestionItemFormSet = inlineformset_factory(
+    Call, CallQuestion, form=CallQuestionItemForm, formset=CallQuestionFormSet, extra=0,
+    can_delete=True)
+
+
 class CallForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         if self.instance.pk:
-            template_ids_used = CallQuestion.objects.filter(call=self.instance).values_list('question', flat=True)
-            questions_qs = TemplateQuestion.objects.exclude(id__in=template_ids_used)
+            # template_ids_used = CallQuestion.objects.filter(call=self.instance).values_list('question', flat=True)
+            # questions_qs = TemplateQuestion.objects.exclude(id__in=template_ids_used)
             budget_categories_qs = self.instance.budget_categories.all()
+            # used_questions = self.instance.call
+            questions = self.instance.callquestion_set.all().values_list('question', flat=True)
+            used_questions = TemplateQuestion.objects.filter(id__in=questions)
         else:
-            questions_qs = TemplateQuestion.objects.all()
             budget_categories_qs = []
-
-        self.fields['template_questions'] = forms.ModelMultipleChoiceField(queryset=questions_qs, required=False,
-                                                                           help_text=self.Meta.help_texts['template_questions'])
+            used_questions = []
 
         self.fields['budget_categories'] = forms.ModelMultipleChoiceField(initial=budget_categories_qs,
                                                                           queryset=BudgetCategory.objects.all(),
                                                                           widget=forms.CheckboxSelectMultiple)
 
+        self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
+                                                                           queryset=TemplateQuestion.objects.all(),
+                                                                           required=False,
+                                                                           widget=FilteredSelectMultiple(is_stacked=True, verbose_name='questions'),
+                                                                           help_text=self.Meta.help_texts['template_questions'])
+
+
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+
+        self.helper.layout = Layout(
+            Div(
+                Div('long_name', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('short_name', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('description', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('introductory_message', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('call_open_date', css_class='col-6'),
+                Div('submission_deadline', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                Div('budget_categories', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('budget_maximum', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                Div('template_questions', css_class='col-12'),
+                css_class='row'
+            )
+        )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -59,6 +118,8 @@ class CallForm(forms.ModelForm):
 
         if cleaned_data['submission_deadline'] < timezone.now():
             self.add_error('submission_deadline', 'Call submission deadline needs to be in the future')
+
+        return cleaned_data
 
     def save(self, commit=True):
         instance = super().save(commit)
@@ -94,17 +155,3 @@ class CallForm(forms.ModelForm):
                       'call_open_date': 'Enter the date and time at which the call opens (Swiss time)',
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
                       'template_questions': 'Select the questions that you would like to add to this call'}
-
-
-class CallQuestionFormSet(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.queryset = self.queryset.order_by('order')
-
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-
-
-CallQuestionItemFormSet = inlineformset_factory(
-    Call, CallQuestion, form=CallQuestionItemForm, formset=CallQuestionFormSet, extra=0,
-    can_delete=True)
