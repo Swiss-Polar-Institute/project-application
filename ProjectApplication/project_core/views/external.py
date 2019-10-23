@@ -31,6 +31,14 @@ class ProposalThankYouView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        action = self.request.GET['action']
+
+        if action in ('created', 'updated'):
+            context['action'] = action
+        else:
+            # should not happen
+            context['action'] = ''
+
         context['uuid'] = kwargs['uuid']
 
         return context
@@ -141,7 +149,7 @@ class ProposalView(TemplateView):
             data_collection_form = DataCollectionForm(request.POST,
                                                       prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
-            action = 'Edited'
+            action = 'updated'
 
         else:
             # Creating a new proposal
@@ -154,7 +162,7 @@ class ProposalView(TemplateView):
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
-            action = 'Created'
+            action = 'created'
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
                              funding_form, data_collection_form]
