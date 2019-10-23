@@ -384,7 +384,6 @@ class BudgetFormSet(BaseFormSet):
         self.helper.form_tag = False
         self.helper.form_show_labels = False
 
-
     def clean(self):
         super().clean()
 
@@ -410,6 +409,34 @@ class BudgetFormSet(BaseFormSet):
     def save_budgets(self, proposal):
         for form in self.forms:
             form.save_budget(proposal)
+
+
+class DataCollectionForm(Form):
+    def __init__(self, *args, **kwargs):
+        person_position = kwargs.pop('person_position', None)
+
+        super().__init__(*args, **kwargs)
+
+        data_policy_initial = contact_newsletter_initial = None
+
+        if person_position:
+            data_policy_initial = person_position.data_policy
+            contact_newsletter_initial = person_position.contact_newsletter
+
+        self.fields['data_policy'] = forms.BooleanField(initial=data_policy_initial,
+                                                        help_text='to be written')
+
+        self.fields['contact_newsletter'] = forms.BooleanField(initial=contact_newsletter_initial,
+                                                               help_text='write something',
+                                                               required=False)
+
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+    def update(self, person_position):
+        person_position.data_policy = self.cleaned_data['data_policy']
+        person_position.contact_newsletter = self.cleaned_data['contact_newsletter']
+        person_position.save()
 
 
 BudgetItemFormSet = formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=0)

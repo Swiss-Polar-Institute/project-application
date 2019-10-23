@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from django.contrib import messages
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
-    BudgetItemFormSet
+    BudgetItemFormSet, DataCollectionForm
 from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword, Source, KeywordUid
 
 # Form names (need to match what's in the templates)
@@ -14,6 +14,7 @@ PERSON_FORM_NAME = 'person_form'
 QUESTIONS_FORM_NAME = 'questions_form'
 BUDGET_FORM_NAME = 'budget_form'
 FUNDING_FORM_NAME = 'funding_form'
+DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 
 
 class Homepage(TemplateView):
@@ -65,6 +66,8 @@ class ProposalView(TemplateView):
 
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
                                                       instance=proposal)
+            data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME,
+                                                      person_position=proposal.applicant)
 
             information['proposal_action_url'] = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
 
@@ -85,6 +88,7 @@ class ProposalView(TemplateView):
 
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
+            data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
 
             information['proposal_action_url'] = reverse('proposal-add')
 
@@ -97,6 +101,7 @@ class ProposalView(TemplateView):
         information[QUESTIONS_FORM_NAME] = questions_form
         information[BUDGET_FORM_NAME] = budget_form
         information[FUNDING_FORM_NAME] = funding_form
+        information[DATA_COLLECTION_FORM_NAME] = data_collection_form
 
         return render(request, 'proposal.tmpl', information)
 
@@ -133,6 +138,10 @@ class ProposalView(TemplateView):
             budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
                                                       instance=proposal)
+            data_collection_form = DataCollectionForm(request.POST,
+                                                      prefix=DATA_COLLECTION_FORM_NAME,
+                                                      person_position=proposal.applicant)
+
         else:
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
@@ -142,9 +151,10 @@ class ProposalView(TemplateView):
                                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
+            data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
-                             funding_form]
+                             funding_form, data_collection_form]
 
         all_valid = True
         for form in forms_to_validate:
@@ -153,6 +163,7 @@ class ProposalView(TemplateView):
 
         if all_valid:
             applicant = person_form.save_person()
+            data_collection_form.update(applicant)
 
             proposal = proposal_form.save(commit=False)
             proposal.applicant = applicant
@@ -171,6 +182,7 @@ class ProposalView(TemplateView):
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
         context[FUNDING_FORM_NAME] = funding_form
+        context[DATA_COLLECTION_FORM_NAME] = data_collection_form
 
         context['action'] = 'Edit'
 
