@@ -372,8 +372,8 @@ class PersonPosition(CreateModify):
     organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works',
                              max_length=200, blank=True, null=True)
-    data_policy = models.BooleanField(help_text='Agree or disagree to the data policy for storage of personal information', blank=False, null=False)
-    contact_newsletter = models.BooleanField(help_text='Agree or disagree to being contacted by email with newsletter', blank=False, null=False)
+    data_policy = models.BooleanField(help_text='Agree or disagree to the data policy for storage of personal information', default=False, blank=False, null=False)
+    contact_newsletter = models.BooleanField(help_text='Agree or disagree to being contacted by email with newsletter', default=False, blank=False, null=False)
 
     def __str__(self):
         organisations_str = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
