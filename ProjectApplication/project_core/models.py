@@ -234,11 +234,11 @@ class Keyword(CreateModify):
     name = models.CharField(help_text='Name of a keyword', max_length=128, blank=False, null=False)
     description = models.CharField(
         help_text='Description of a keyword that should be used to distinguish it from another keyword', max_length=512,
-        blank=False, null=False)
+        blank=True, null=True)
     uid = models.ForeignKey(KeywordUid, help_text='Source from which the keyword originated', on_delete=models.PROTECT)
 
     def __str__(self):
-        return '{} - {}'.format(self.name, self.description)
+        return '{}'.format(self.name)
 
     class Meta:
         unique_together = (('name', 'description'),)
