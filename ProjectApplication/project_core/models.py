@@ -437,6 +437,16 @@ class GeographicalArea(CreateModify):
 
 class Proposal(CreateModify):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
+    ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
+    ELIGIBLE = 'Eligible'
+    NOTELIGIBLE = 'Not eligible'
+
+    STATUS = (
+        (ELIGIBILITYNOTCHECKED, 'Eligibility not checked'),
+        (ELIGIBLE, 'Eligible'),
+        (NOTELIGIBLE, 'Not eligible'),
+    )
+
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
@@ -461,7 +471,7 @@ class Proposal(CreateModify):
                                   on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False,
                                         null=False, on_delete=models.PROTECT)
-    eligibility = models.BooleanField(help_text='Eligibility status of proposal', blank=False, null=False)
+    eligibility = models.CharField(help_text='Status of eligibility of proposal', max_length=30, default=ELIGIBILITYNOTCHECKED, choices=STATUS, blank=False, null=False)
     eligibility_comment = models.TextField(help_text='Comments regarding eligibility of proposal', blank=True, null=True)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
 
