@@ -141,7 +141,10 @@ class AbstractQuestion(CreateModify):
         verbose_name='Answer maximum length (in words)')
 
     def __str__(self):
-        return '{}: {} - {}'.format(self.question_text, self.answer_type, self.answer_max_length)
+        if self.answer_max_length is None:
+            return '{} (no max length)'.format(self.question_text)
+        else:
+            return '{} (max words {})'.format(self.question_text, self.answer_max_length)
 
     class Meta:
         abstract = True
