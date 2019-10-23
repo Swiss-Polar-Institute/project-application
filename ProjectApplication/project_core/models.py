@@ -10,7 +10,7 @@ from django.utils import timezone
 
 
 class CreateModify(models.Model):
-    """Details of data creation and modification: including date, time and user, for internal data only."""
+    """Details of data creation and modification: including date, time and user."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     created_on = models.DateTimeField(help_text='Date and time at which the entry was created', auto_now_add=True, blank=False, null=False)
@@ -148,6 +148,7 @@ class AbstractQuestion(CreateModify):
 
 
 class TemplateQuestion(AbstractQuestion):
+    """Questions used as templates that can be added to calls or other aspects of the forms."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     def get_absolute_url(self):
@@ -155,6 +156,7 @@ class TemplateQuestion(AbstractQuestion):
 
 
 class CallQuestion(AbstractQuestion):
+    """Questions, taken from the template list, that are part of a call. """
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
@@ -191,18 +193,18 @@ class CallQuestion(AbstractQuestion):
 
 
 class Source(CreateModify):
-    """Source from where a UID may originate."""
-
+    """Source from where a UID or other item originates."""
     source = models.CharField(help_text='Source from which a UID or item may originate', max_length=200, blank=False,
                               null=False)
 
-    description = models.TextField(null=True, blank=True)
+    description = models.TextField(help_text='Description of the source eg. URL, version', null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.source)
 
 
 class Uid(CreateModify):
+    """Uid used to distinguish unique items in vocabulary lists"""
     uid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
     source = models.ForeignKey(Source, help_text='Source of the UID', on_delete=models.PROTECT)
 
@@ -215,6 +217,7 @@ class Uid(CreateModify):
 
 
 class KeywordUid(Uid):
+    """Uid used to identify a keyword"""
     pass
 
     def __str__(self):
@@ -266,7 +269,7 @@ class PersonTitle(models.Model):
 
 
 class CountryUid(Uid):
-    """"""
+    """Uid used to identify a country"""
     pass
 
     def __str__(self):
@@ -278,7 +281,7 @@ class Country(CreateModify):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False, unique=True)
-    uid = models.ForeignKey(CountryUid, help_text='Source of country name', on_delete=models.PROTECT)
+    uid = models.ForeignKey(CountryUid, help_text='UID of country name', on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -288,7 +291,7 @@ class Country(CreateModify):
 
 
 class OrganisationUid(Uid):
-    """"""
+    """Uid used to identify an organisation."""
     pass
 
     def __str__(self):
@@ -308,7 +311,7 @@ class Organisation(CreateModify):
                             null=False)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
-    uid = models.ForeignKey(OrganisationUid, on_delete=models.PROTECT)
+    uid = models.ForeignKey(OrganisationUid, help_text='UID of a country', on_delete=models.PROTECT)
 
     def abbreviated_name(self):
         if self.short_name is not None:
@@ -413,6 +416,7 @@ class Contact(CreateModify):
 
 
 class GeographicalAreaUid(Uid):
+    """UID of a geographical area."""
     pass
 
     def __str__(self):
@@ -423,12 +427,11 @@ class GeographicalArea(CreateModify):
     """Geographical area (exact coverage of this not yet determined)"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    name = models.CharField(help_text='Name of geographic area', max_length=100, blank=False, null=False,
-                            unique=True)  # Need to define in more detail if this should be a region, continent, country etc.
+    name = models.CharField(help_text='Name of geographic area', max_length=100, blank=False, null=False, unique=True)
     definition = models.CharField(
         help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300,
         blank=False, null=False)
-    uid = models.ForeignKey(GeographicalAreaUid, on_delete=models.PROTECT, blank=True, null=True)
+    uid = models.ForeignKey(GeographicalAreaUid, help_text='UID of a geographical area', on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
         return '{} - {}'.format(self.name, self.definition)
