@@ -47,7 +47,7 @@ class FundingInstrument(CreateModify):
     description = models.TextField(help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False, null=False)
 
     def __str__(self):
-        return '{} ({})'.format(self.long_name, self.short_name)
+        return '{}'.format(self.long_name)
 
 
 class Call(CreateModify):

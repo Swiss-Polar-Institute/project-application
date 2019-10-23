@@ -88,6 +88,10 @@ class CallForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
+                Div('funding_instrument', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div('long_name', css_class='col-12'),
                 css_class='row'
             ),
@@ -158,7 +162,7 @@ class CallForm(forms.ModelForm):
 
     class Meta:
         model = Call
-        fields = ['long_name', 'short_name', 'description', 'introductory_message', 'call_open_date',
+        fields = ['funding_instrument', 'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date',
                   'submission_deadline', 'budget_categories', 'budget_maximum', ]
 
         field_classes = {
