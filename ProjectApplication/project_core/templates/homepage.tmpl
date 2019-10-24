@@ -7,11 +7,13 @@
         {% include "_logo.tmpl" %}
         <H1>Welcome to Projects Application</H1>
 
-        You can now:
+        Options:
         <ul>
             <li><a href="{% url 'calls-list' %}">List of calls</a></li>
         </ul>
 
+        <hr>
+        <a href="/management">Click here for the management section.</a>
 
         <div class="fixed-bottom">
             <span class="text-muted"><small>Version: {% version_date %}</small></span>
