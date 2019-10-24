@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 from django.contrib import messages
+from django.utils import timezone
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet, DataCollectionForm
@@ -43,6 +44,17 @@ class ProposalThankYouView(TemplateView):
 
         return context
 
+class ProposalTooLate(TemplateView):
+    template_name = 'proposal-too_late.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        action = self.request.GET['action']
+
+        context['action'] = action
+
+        return context
 
 class CallsList(TemplateView):
     template_name = 'call-list.tmpl'
@@ -131,9 +143,17 @@ class ProposalView(TemplateView):
             proposal_uuid = kwargs['uuid']
             proposal = Proposal.objects.get(uuid=proposal_uuid)
             call = proposal.call
+
+            if timezone.now() > call.submission_deadline:
+                return redirect(reverse('proposal-too-late') + '?action={}'.format('edited'))
+
         else:
             # New proposal
             call = Call.objects.get(id=int(request.POST['proposal_form-call_id']))
+
+            if timezone.now() > call.submission_deadline:
+                return redirect(reverse('proposal-too-late') + '?action={}'.format('edited'))
+
             proposal = None
 
         if proposal:

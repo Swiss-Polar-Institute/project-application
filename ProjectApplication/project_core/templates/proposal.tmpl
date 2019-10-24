@@ -9,7 +9,7 @@
         {% include "_logo.tmpl" %}
         <H1>{{ action }} proposal</H1>
 
-        {% include "messages-box.tmpl" %}
+        {% include "_messages-box.tmpl" %}
 
         <p><b>Call name:</b> {{ call_name }}</p>
 
@@ -40,7 +40,7 @@
 
             {% crispy data_collection_form %}
 
-            {% include "submit-button.tmpl" %}
+            {% include "_submit-button.tmpl" %}
 
             <p>
                 You will still be able to edit this proposal after submission, until the application deadline.

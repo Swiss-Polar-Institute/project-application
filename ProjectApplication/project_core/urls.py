@@ -9,6 +9,7 @@ urlpatterns = [
     path('proposal/add/', external.ProposalView.as_view(), name='proposal-add'),
     path('proposal/<uuid:uuid>/', external.ProposalView.as_view(), name='proposal-update'),
     path('proposal/thank-you/<uuid:uuid>/', external.ProposalThankYouView.as_view(), name='proposal-thank-you'),
+    path('proposal/too-late/', external.ProposalTooLate.as_view(), name='proposal-too-late'),
 
     path('management/proposals', management.ProposalsList.as_view(), name='management-proposals-list'),
     path('management/call/add/', management.CallView.as_view(), name='call-add'),

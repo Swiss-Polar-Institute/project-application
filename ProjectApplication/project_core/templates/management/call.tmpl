@@ -7,7 +7,7 @@
         {% include "_logo.tmpl" %}
         <H1>{{ call_action }} a call</H1>
 
-        {% include "messages-box.tmpl" %}
+        {% include "_messages-box.tmpl" %}
 
         <a href="{% url 'management-homepage' %}">Management Homepage</a>
 
@@ -17,7 +17,7 @@
 
             {% include "management/_form_call_question.tmpl" %}
 
-            {% include "submit-button.tmpl" %}
+            {% include "_submit-button.tmpl" %}
         </form>
         <p></p>
     </div>

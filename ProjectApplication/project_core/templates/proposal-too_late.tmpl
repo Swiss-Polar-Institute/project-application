@@ -1,0 +1,13 @@
+{% extends '_base.tmpl' %}
+{% load static %}
+{% block title %}Projects application{% endblock %}
+
+{% block body_contents %}
+    <div class="container theme-showcase" role="main">
+        {% include "_logo.tmpl" %} <H1>Submission proposal</H1>
+
+        <div class="alert alert-danger" role="alert">
+            Your proposal cannot be {{ action }} because it's passed the Call submission deadline.
+        </div>
+    </div>
+{% endblock %}
