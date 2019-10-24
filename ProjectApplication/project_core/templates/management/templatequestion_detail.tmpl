@@ -12,7 +12,7 @@
         <p></p>
         <p><b>Question:</b><br>{{ object.question_text }}</p>
         <p><b>Question description:</b><br>{{ object.question_description }}</p>
-        <p><b>Question max words:</b><br>{{ object.answer_max_length }}</p>
+        <p><b>Question max words:</b><br>{% if object.answer_max_length %} {{ object.answer_max_length }} {% else %} Unlimited {% endif %}</p>
         <hr>
 
         <ul>

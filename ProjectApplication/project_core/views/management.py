@@ -68,7 +68,7 @@ class QuestionsList(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['questions'] = TemplateQuestion.objects.all()
+        context['template_questions'] = TemplateQuestion.objects.all()
 
         return render(request, 'management/templatequestion_list.tmpl', context)
 

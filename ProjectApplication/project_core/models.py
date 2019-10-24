@@ -155,7 +155,7 @@ class TemplateQuestion(AbstractQuestion):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     def get_absolute_url(self):
-        return reverse('question-detail', args=[str(self.pk)])
+        return reverse('template-question-detail', args=[str(self.pk)])
 
 
 class CallQuestion(AbstractQuestion):

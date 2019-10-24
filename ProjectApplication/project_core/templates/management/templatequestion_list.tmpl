@@ -5,10 +5,10 @@
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %} <H1>List of template questions</H1>
 
-        {% if questions %}
+        {% if template_questions %}
         <ul>
             {% for template_question in template_questions %}
-                <li>{{ template_question.question_text }} (max words: {{ template_question.answer_max_length }}) - <a href="{% url 'template-question-update' pk=question.id %}">Edit template question</a></li>
+                <li>{{ template_question.question_text }} {% if template_question.answer_max_length %} (max words: {{ template_question.answer_max_length }}) {% endif %} - <a href="{% url 'template-question-update' pk=template_question.id %}">Edit template question</a></li>
             {% endfor %}
         </ul>
         {% else %}

@@ -19,7 +19,7 @@ urlpatterns = [
     path('management/', management.Homepage.as_view(), name='management-homepage'),
 
     path('management/templatequestion/add', management.TemplateQuestionCreateView.as_view(), name='template-question-add'),
-    path('management/templatequestion/<int:pk>/', management.TemplateQuestionDetailView.as_view(), name='question-detail'),
+    path('management/templatequestion/<int:pk>/', management.TemplateQuestionDetailView.as_view(), name='template-question-detail'),
     path('management/templatequestion/<int:pk>/update', management.TemplateQuestionUpdateView.as_view(), name='template-question-update'),
     path('management/templatequestions/', management.QuestionsList.as_view(), name='template-questions-list'),
 
