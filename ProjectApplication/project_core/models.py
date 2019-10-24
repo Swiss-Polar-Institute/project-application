@@ -163,8 +163,8 @@ class CallQuestion(AbstractQuestion):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
-    question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based',
-                                 on_delete=models.PROTECT)
+    template_question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based',
+                                          on_delete=models.PROTECT)
     order = models.PositiveIntegerField(help_text='Use the integer order to order the questions', blank=False,
                                         null=False)
 
@@ -176,7 +176,7 @@ class CallQuestion(AbstractQuestion):
         call_question.question_description = template_question.question_description
         call_question.answer_type = template_question.answer_type
         call_question.answer_max_length = template_question.answer_max_length
-        call_question.question = template_question
+        call_question.template_question = template_question
 
         return call_question
 
@@ -192,7 +192,7 @@ class CallQuestion(AbstractQuestion):
         super().save(*args, **kwargs)
 
     class Meta:
-        unique_together = (('call', 'question'), ('call', 'order'),)
+        unique_together = (('call', 'template_question'), ('call', 'order'),)
 
 
 class Source(CreateModify):

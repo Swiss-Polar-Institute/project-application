@@ -93,13 +93,13 @@ class AddCrispySubmitButtonMixin:
 class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
     template_name = 'management/templatequestion_form.tmpl'
     model = TemplateQuestion
-    success_message = 'Question created'
+    success_message = 'Template question created'
 
 
 class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
     template_name = 'management/templatequestion_form.tmpl'
     model = TemplateQuestion
-    success_message = 'Question updated'
+    success_message = 'Template question updated'
 
 
 class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):

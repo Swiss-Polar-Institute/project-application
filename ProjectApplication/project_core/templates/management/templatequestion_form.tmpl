@@ -1,12 +1,11 @@
 {% extends '_base.tmpl' %}
 {% load crispy_forms_tags %}
-{% block title %}Question{% endblock %}
+{% block title %}Template question{% endblock %}
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %}
-        <H1>Question</H1>
-
+        <H1>Template question</H1>
         {% crispy form %}
     </div>
 {% endblock %}

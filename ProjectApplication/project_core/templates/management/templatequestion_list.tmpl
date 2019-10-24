@@ -1,14 +1,14 @@
 {% extends '_base.tmpl' %}
-{% block title %}Projects application{% endblock %}
+{% block title %}Template question{% endblock %}
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
-        {% include "_logo.tmpl" %} <H1>List of questions</H1>
+        {% include "_logo.tmpl" %} <H1>List of template questions</H1>
 
         {% if questions %}
         <ul>
-            {% for question in questions %}
-            <li>{{ question.question_text }} (max words: {{ question.answer_max_length }}) - <a href="{% url 'question-update' pk=question.id %}">Edit question</a></li>
+            {% for template_question in template_questions %}
+                <li>{{ template_question.question_text }} (max words: {{ template_question.answer_max_length }}) - <a href="{% url 'template-question-update' pk=question.id %}">Edit template question</a></li>
             {% endfor %}
         </ul>
         {% else %}

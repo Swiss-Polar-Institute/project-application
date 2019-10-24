@@ -67,7 +67,7 @@ class CallForm(forms.ModelForm):
             # questions_qs = TemplateQuestion.objects.exclude(id__in=template_ids_used)
             budget_categories_qs = self.instance.budget_categories.all()
             # used_questions = self.instance.call
-            questions = self.instance.callquestion_set.all().values_list('question', flat=True)
+            questions = self.instance.callquestion_set.all().values_list('template_question', flat=True)
             used_questions = TemplateQuestion.objects.filter(id__in=questions)
         else:
             budget_categories_qs = []
@@ -147,7 +147,7 @@ class CallForm(forms.ModelForm):
                 call_question = CallQuestion.from_template(template_question)
                 template_questions_wanted.append(template_question.id)
 
-                if instance.callquestion_set.filter(question=template_question):
+                if instance.callquestion_set.filter(template_question=template_question):
                     # This question was already added
                     continue
 
@@ -155,7 +155,7 @@ class CallForm(forms.ModelForm):
                 call_question.save()
 
             for call_question in instance.callquestion_set.all():
-                if call_question.question.id not in template_questions_wanted:
+                if call_question.template_question.id not in template_questions_wanted:
                     call_question.delete()
 
         return instance

@@ -1,24 +1,24 @@
 {% extends '_base.tmpl' %}
-{% block title %}Management homepage{% endblock %}
+{% block title %}Template question{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block body_contents %}
     <div class="container theme-showcase" role="main">
         {% include "_logo.tmpl" %}
 
-        <h1>Question details</h1>
+        <h1>Template question details</h1>
         {% include "messages-box.tmpl" %}
 
         <p></p>
-        <p>Question:<br>{{ object.question_text }}</p>
-        <p>Question description:<br>{{ object.question_description }}</p>
-        <p>Question max words:<br>{{ object.answer_max_length }}</p>
+        <p><b>Question:</b><br>{{ object.question_text }}</p>
+        <p><b>Question description:</b><br>{{ object.question_description }}</p>
+        <p><b>Question max words:</b><br>{{ object.answer_max_length }}</p>
         <hr>
 
         <ul>
-            <li><a href="{% url 'question-update' pk=object.id %}">Edit the question</a></li>
-            <li><a href="{% url 'question-add' %}">Create new question</a></li>
-            <li><a href="{% url 'questions-list' %}">List questions</a></li>
+            <li><a href="{% url 'template-question-update' pk=object.id %}">Edit the question</a></li>
+            <li><a href="{% url 'template-question-add' %}">Create new question</a></li>
+            <li><a href="{% url 'template-questions-list' %}">List questions</a></li>
             <li><a href="{% url 'management-homepage' %}">Homepage</a></li>
         </ul>
     </div>
