@@ -5,13 +5,9 @@
     {% include 'management/_navbar.tmpl' with active='calls' %}
 
     <div class="container theme-showcase" role="main">
-        <h1>Current open calls</h1>
+        <h1>Open calls</h1>
         {% if open_calls %}
-        <ul>
-            {% for call in open_calls %}
-                <li>{{ call.long_name }} (Number of proposals: {{ call.number_of_proposals }}) - <a href="{% url 'call-update' id=call.id %}">Edit call</a> - <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a></li>
-            {% endfor %}
-        </ul>
+            {% include 'management/_table_of_calls.tmpl' with calls=open_calls %}
         {% else %}
             No open calls at the moment.
         {% endif %}
@@ -19,11 +15,9 @@
         <p></p>
         <h1>Future calls</h1>
         {% if future_calls %}
-        <ul>
             {% for call in future_calls %}
-                <li>{{ call.long_name }} (Number of proposals: {{ call.number_of_proposals }}) - <a href="{% url 'call-update' id=call.id %}">Edit call</a> - <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a></li>
+                {% include 'management/_table_of_calls.tmpl' with calls=future_calls %}
             {% endfor %}
-        </ul>
         {% else %}
             No future calls at the moment.
         {% endif %}
@@ -31,11 +25,7 @@
         <p></p>
         <h1>Closed calls</h1>
         {% if closed_calls %}
-        <ul>
-            {% for call in closed_calls %}
-                <li>{{ call.long_name }} (Number of proposals: {{ call.number_of_proposals }}) - <a href="{% url 'call-update' id=call.id %}">Edit call</a> - <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a></li>
-            {% endfor %}
-        </ul>
+            {% include 'management/_table_of_calls.tmpl' with calls=closed_calls %}
         {% else %}
             No past calls at the moment.
         {% endif %}
