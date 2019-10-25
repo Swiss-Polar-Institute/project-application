@@ -169,6 +169,8 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
+LOGIN_CONTACT = 'Carles'
+
 try:
     from local_settings import *
     print('Imported local_settings')

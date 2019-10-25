@@ -3,6 +3,9 @@ from django.urls import include, path
 from .views import external
 from .views import management
 
+from django.contrib.auth import views as auth_views
+from django.conf import settings
+
 urlpatterns = [
     path('', external.Homepage.as_view(), name='homepage'),
     path('calls/', external.CallsList.as_view(), name='calls-list'),
@@ -23,6 +26,9 @@ urlpatterns = [
     path('management/templatequestion/<int:pk>/update', management.TemplateQuestionUpdateView.as_view(), name='template-question-update'),
     path('management/templatequestions/', management.QuestionsList.as_view(), name='template-questions-list'),
 
+    path('accounts/login/',
+         auth_views.LoginView.as_view(template_name='registration/login.tmpl',
+                                      extra_context={'contact': settings.LOGIN_CONTACT})),
     path('accounts/', include('django.contrib.auth.urls')),
 
     path('autocomplete/organisations/', external.OrganisationsAutocomplete.as_view(),
