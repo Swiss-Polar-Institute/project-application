@@ -7,6 +7,7 @@
         <H1>List of open calls</H1>
 
         {% if calls %}
+        Click on a call to create a proposal.
         <ul>
             {% for call in calls %}
                 <li><a href="{% url 'proposal-add' %}?call={{ call.pk }}">{{ call.long_name }}</a></li>
