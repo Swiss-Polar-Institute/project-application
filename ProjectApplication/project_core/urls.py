@@ -15,10 +15,11 @@ urlpatterns = [
     path('proposal/too-late/', external.ProposalTooLate.as_view(), name='proposal-too-late'),
 
     path('management/proposals', management.ProposalsList.as_view(), name='management-proposals-list'),
+    path('management/call/list', management.CallsList.as_view(), name='management-calls-list'),
     path('management/call/add/', management.CallView.as_view(), name='call-add'),
     path('management/call/<int:id>/', management.CallView.as_view(), name='call-update'),
     path('management/call/updated/<int:id>/', management.CallUpdated.as_view(), name='management-call-updated'),
-    path('management/calls/', management.CallsList.as_view(), name='management-calls-list'),
+    path('management/calls/', management.CallsList.as_view(), name='management-calls'),
     path('management/', management.Homepage.as_view(), name='management-homepage'),
 
     path('management/templatequestion/add', management.TemplateQuestionCreateView.as_view(), name='template-question-add'),

@@ -1,13 +1,13 @@
 {% extends "../_base.tmpl" %}
 
-{% block title %}management login for projects application{% endblock %}
+{% block title %}Management login{% endblock %}
 
 {% block body_contents %}
 
     <div class="container theme-showcase" role="main">
       {% include "_logo.tmpl" %}
       <p>
-      <H1>Login for the management area</H1>
+      <H1>Management login</H1>
     <p>
 {% if form.errors %}
   <p>Your username and password didn't match. Please try again.</p>
@@ -40,8 +40,10 @@
 {% include "_submit-button.tmpl" %}
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
-
-      If you have problems login please contact {{ contact }}
+    <hr>
+    <p>
+        If you have problems login please contact {{ contact }}
+    </p>
 
 {# Assumes you setup the password_reset view in your URLconf #}
 {# <p><a href="{% url 'password_reset' %}">Lost password?</a></p> #}

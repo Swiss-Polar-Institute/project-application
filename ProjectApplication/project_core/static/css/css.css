@@ -54,7 +54,7 @@ div.alert ul {
     text-align: left;
 }
 
-/** For the horizontal_filter */
+/** For the horizontal_filter: many2tomany in forms with the arrow and searcher*/
 div.selector-available h2 {
     background: #f8f8f8;
     border-radius: 4px 4px 0 0;
