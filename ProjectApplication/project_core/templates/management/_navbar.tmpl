@@ -1,5 +1,10 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <a class="navbar-brand">
+                {% include "_logo.tmpl" %}
+        </a>
+
         <ul class="navbar-nav mr-auto justify-content-center d-flex flex-fill">
             <li class="nav-item {% if active == 'home' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'management-homepage'%}">Home</a>
@@ -17,7 +22,7 @@
 
         <nav class="navbar">
             <span class="navbar-text">
-                User: Carles
+                User: {{ request.user.username }}
             </span>
         </nav>
 
