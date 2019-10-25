@@ -2,39 +2,46 @@
 {% block title %}Projects application{% endblock %}
 
 {% block body_contents %}
-    {% include 'management/_navbar.tmpl' with active='calls' %}
+{% include 'management/_navbar.tmpl' with active='calls' %}
 
-    <div class="container theme-showcase" role="main">
-        <h1>Open calls</h1>
-        {% if open_calls %}
+<div class="container-fluid">
+    <div class="row">
+{% include 'management/_calls-sidebar.tmpl' %}
+
+        <div class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
+            <h1>Open calls</h1>
+            {% if open_calls %}
             {% include 'management/_table_of_calls.tmpl' with calls=open_calls %}
-        {% else %}
+            {% else %}
             No open calls at the moment.
-        {% endif %}
+            {% endif %}
 
-        <p></p>
-        <h1>Future calls</h1>
-        {% if future_calls %}
+            <p></p>
+            <h1>Future calls</h1>
+            {% if future_calls %}
             {% for call in future_calls %}
-                {% include 'management/_table_of_calls.tmpl' with calls=future_calls %}
+            {% include 'management/_table_of_calls.tmpl' with calls=future_calls %}
             {% endfor %}
-        {% else %}
+            {% else %}
             No future calls at the moment.
-        {% endif %}
+            {% endif %}
 
-        <p></p>
-        <h1>Closed calls</h1>
-        {% if closed_calls %}
+            <p></p>
+            <h1>Closed calls</h1>
+            {% if closed_calls %}
             {% include 'management/_table_of_calls.tmpl' with calls=closed_calls %}
-        {% else %}
+            {% else %}
             No past calls at the moment.
-        {% endif %}
-    </div>
+            {% endif %}
+        </div>
 
-	<script type="text/javascript" class="init">
+        <script type="text/javascript" class="init">
         $(document).ready(function() {
             $('table.display').DataTable();
         } );
-    </script>
 
+
+        </script>
+    </div>
+</div>
 {% endblock %}

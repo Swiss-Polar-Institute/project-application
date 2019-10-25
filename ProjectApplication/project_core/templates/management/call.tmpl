@@ -3,7 +3,13 @@
 {% load crispy_forms_tags %}
 
 {% block body_contents %}
-    <div class="container theme-showcase" role="main">
+{% include 'management/_navbar.tmpl' with active='calls'  %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include 'management/_calls-sidebar.tmpl' %}
+
+    <div class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
         {% include "_logo.tmpl" %}
         <H1>{{ call_action }} a call</H1>
 
@@ -19,4 +25,7 @@
         </form>
         <p></p>
     </div>
+            </div>
+</div>
+
 {% endblock %}
