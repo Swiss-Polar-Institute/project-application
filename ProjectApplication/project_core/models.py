@@ -347,7 +347,7 @@ class PhysicalPerson(CreateModify):
                                on_delete=models.PROTECT)
 
     def __str__(self):
-        return '{} {}: {}'.format(self.first_name, self.surname, self.created_on)
+        return '{} {}'.format(self.first_name, self.surname)
 
     class Meta:
         unique_together = (('first_name', 'surname', 'gender'),)
