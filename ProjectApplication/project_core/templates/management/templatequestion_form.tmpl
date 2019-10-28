@@ -7,10 +7,19 @@
 
 <div class="container-fluid">
     <div class="row">
-        {% include 'management/_calls-sidebar.tmpl' with active='template-questions-add' %}
+        {% if form.instance.id %}
+            {% include 'management/_calls-sidebar.tmpl' with active='template-questions-list' %}
+        {% else %}
+            {% include 'management/_calls-sidebar.tmpl' with active='template-questions-add' %}
+        {% endif %}
 
         <div class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
-            <H1>Template question</H1>
+            {% if form.instance.id %}
+                <H1>Editing template question</H1>
+            {% else %}
+                <H1>Creating template question</H1>
+            {% endif %}
+            
             {% crispy form %}
         </div>
     </div>
