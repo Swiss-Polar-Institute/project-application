@@ -15,8 +15,8 @@
         <td>{{ call.number_of_proposals }}</td>
         <td>{{ call.submission_deadline }}</td>
         <td>
-            <a href="{% url 'call-update' id=call.id %}">Edit</a>
-            <a href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a>
+            <a class="btn btn-primary btn-xs" href="{% url 'call-update' id=call.id %}">Edit</a>
+            <a class="btn btn-primary btn-xs" href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a>
         </td>
     </tr>
 {% endfor %}

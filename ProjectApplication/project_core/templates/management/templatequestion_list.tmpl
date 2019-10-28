@@ -24,7 +24,7 @@
                         <tr>
                             <td>{{ template_question.question_text }}</td>
                             <td>{% if template_question.answer_max_length %}{{ template_question.answer_max_length }}{% endif %}</td>
-                            <td><a href="{% url 'template-question-update' pk=template_question.id %}">Edit</a></td>
+                            <td><a class="btn btn-primary btn-xs" href="{% url 'template-question-update' pk=template_question.id %}">Edit</a></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -35,7 +35,9 @@
             </div>
             <script type="text/javascript" class="init">
                 $(document).ready(function() {
-                    $('table.display').DataTable();
+                    $('table.display').DataTable( {
+                        "pageLength": 100}
+                        );
                 } );
             </script>
         </div>

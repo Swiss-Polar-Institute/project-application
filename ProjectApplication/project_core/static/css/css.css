@@ -107,3 +107,14 @@ div.selector-filter {
 .sidebar .nav-link.active {
     color: #333;
 }
+
+/** Sadly Bootstrap4 doesn't have extra-small buttons. See:
+    https://stackoverflow.com/a/50931961/9294284 from
+    https://stackoverflow.com/questions/33911049/btn-xs-no-longer-a-valid-option-in-bootstrap-4
+    */
+.btn-group-xs > .btn, .btn-xs {
+  padding: .25rem .4rem;
+  font-size: .875rem;
+  line-height: .5;
+  border-radius: .2rem;
+}
