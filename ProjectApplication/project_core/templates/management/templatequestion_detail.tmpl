@@ -3,21 +3,25 @@
 {% load crispy_forms_tags %}
 
 {% block body_contents %}
-    <div class="container" role="main">
-        <h1>Template question details</h1>
-        {% include "_messages-box.tmpl" %}
+{% include 'management/_navbar.tmpl' with active='calls' %}
 
-        <p></p>
-        <p><b>Question:</b><br>{{ object.question_text }}</p>
-        <p><b>Question description:</b><br>{{ object.question_description }}</p>
-        <p><b>Question max words:</b><br>{% if object.answer_max_length %} {{ object.answer_max_length }} {% else %} Unlimited {% endif %}</p>
-        <hr>
+<div class="container-fluid">
+    <div class="row">
+        {% include 'management/_calls-sidebar.tmpl' with active='template-questions-list' %}
 
-        <ul>
-            <li><a href="{% url 'template-question-update' pk=object.id %}">Edit the question</a></li>
-            <li><a href="{% url 'template-question-add' %}">Create new question</a></li>
-            <li><a href="{% url 'template-questions-list' %}">List questions</a></li>
-            <li><a href="{% url 'management-homepage' %}">Homepage</a></li>
-        </ul>
+        <div class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
+            <h1>Template question details</h1>
+            {% include "_messages-box.tmpl" %}
+
+            <p></p>
+            <p><b>Question:</b><br>{{ object.question_text }}</p>
+            <p><b>Question description:</b><br>{{ object.question_description }}</p>
+            <p><b>Question max words:</b><br>{% if object.answer_max_length %} {{ object.answer_max_length }} {% else %}
+                Unlimited {% endif %}</p>
+            <hr>
+
+            <a class="btn btn-primary" href="{% url 'template-question-update' pk=object.id %}">Edit the question</a>
+        </div>
     </div>
+</div>
 {% endblock %}
