@@ -437,7 +437,7 @@ class GeographicalArea(CreateModify):
     uid = models.ForeignKey(GeographicalAreaUid, help_text='UID of a geographical area', on_delete=models.PROTECT, blank=True, null=True)
 
     def __str__(self):
-        return '{} - {}'.format(self.name, self.definition)
+        return '{}'.format(self.name)
 
 
 class Proposal(CreateModify):
