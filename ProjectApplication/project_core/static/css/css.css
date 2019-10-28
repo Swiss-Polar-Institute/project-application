@@ -95,3 +95,15 @@ div.selector-filter {
     margin: 0;
     text-align: left;
 }
+
+
+/** Sidebar colors. For the navbar the default ones are used,
+    for the side bar it needs to be specified */
+.sidebar .nav-link {
+  font-weight: 500;
+  color: #333;
+}
+
+.sidebar .nav-link.active {
+    color: #007bff;
+}
