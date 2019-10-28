@@ -107,6 +107,15 @@ class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
     model = TemplateQuestion
 
 
+class CallViewDetails(TemplateView):
+    def get(self, request, *args, **kwargs):
+        super().get_context_data(**kwargs)
+
+        call = Call.objects.get(id=kwargs['id'])
+        context = {'call': call}
+
+        return render(request, 'management/call_detail.tmpl', context)
+
 class CallView(TemplateView):
     def get(self, request, *args, **kwargs):
         super().get_context_data(**kwargs)
@@ -119,7 +128,7 @@ class CallView(TemplateView):
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
-            context['call_action_url'] = reverse('call-update', kwargs={'id': call_id})
+            context['call_action_url'] = reverse('management-call-update', kwargs={'id': call_id})
             context['call_action'] = 'Edit'
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
@@ -138,7 +147,7 @@ class CallView(TemplateView):
             call = Call.objects.get(id=kwargs['id'])
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, instance=call, prefix=CALL_QUESTION_FORM_NAME)
-            context['call_action_url'] = reverse('call-update', kwargs={'id': call.id})
+            context['call_action_url'] = reverse('management-call-update', kwargs={'id': call.id})
             call_action = 'Edit'
             action = 'updated'
 
@@ -155,7 +164,8 @@ class CallView(TemplateView):
             call = call_form.save()
             call_question_form.save()
 
-            return redirect(reverse('management-call-updated', kwargs={'id': call.id}) + '?action={}'.format(action))
+            messages.success(request, 'Call has been saved')
+            return redirect(reverse('management-call-detail', kwargs={'id': call.id}) + '?action={}'.format(action))
 
         context = {}
 
