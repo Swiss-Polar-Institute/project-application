@@ -146,6 +146,8 @@ class ProposalForm(ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
+        self.fields['duration_months'].widget.attrs['min'] = 0
+
         self.helper.layout = Layout(
             Div(
                 Div('call_id', css_class='col-12', hidden='true'),
