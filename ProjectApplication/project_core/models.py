@@ -13,10 +13,16 @@ class CreateModify(models.Model):
     """Details of data creation and modification: including date, time and user."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    created_on = models.DateTimeField(help_text='Date and time at which the entry was created', auto_now_add=True, blank=False, null=False)
-    created_by = models.ForeignKey(User, help_text='User by which the entry was created', related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True, on_delete=models.PROTECT)
-    modified_on = models.DateTimeField(help_text='Date and time at which the entry was modified', auto_now=True, blank=True, null=True)
-    modified_by = models.ForeignKey(User, help_text='User by which the entry was modified', related_name="%(app_label)s_%(class)s_modified_by_related", blank=True, null=True, on_delete=models.PROTECT)
+    created_on = models.DateTimeField(help_text='Date and time at which the entry was created', auto_now_add=True,
+                                      blank=False, null=False)
+    created_by = models.ForeignKey(User, help_text='User by which the entry was created',
+                                   related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
+                                   on_delete=models.PROTECT)
+    modified_on = models.DateTimeField(help_text='Date and time at which the entry was modified', auto_now=True,
+                                       blank=True, null=True)
+    modified_by = models.ForeignKey(User, help_text='User by which the entry was modified',
+                                    related_name="%(app_label)s_%(class)s_modified_by_related", blank=True, null=True,
+                                    on_delete=models.PROTECT)
 
     class Meta:
         abstract = True
@@ -43,8 +49,11 @@ class FundingInstrument(CreateModify):
     For example, an exploratory Grant is the funding instrument, and the annual round of applications would come as part
     of a call."""
     long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False)
-    short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60, blank=True, null=True)
-    description = models.TextField(help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False, null=False)
+    short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60,
+                                  blank=True, null=True)
+    description = models.TextField(
+        help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False,
+        null=False)
 
     def __str__(self):
         return '{}'.format(self.long_name)
@@ -59,7 +68,8 @@ class Call(CreateModify):
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
     description = models.TextField(help_text='Description of the call that can be used to distinguish it from others',
                                    blank=False, null=False)
-    funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the call belongs', blank=True, null=True, on_delete=models.PROTECT)
+    funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the call belongs',
+                                           blank=True, null=True, on_delete=models.PROTECT)
     introductory_message = models.TextField(help_text='Introductory text to the call for applicants', blank=True,
                                             null=True)
     call_open_date = models.DateTimeField(help_text='Date on which the call is opened', blank=False, null=False)
@@ -163,7 +173,8 @@ class CallQuestion(AbstractQuestion):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
-    template_question = models.ForeignKey(TemplateQuestion, help_text='Template question on which this call question is based',
+    template_question = models.ForeignKey(TemplateQuestion,
+                                          help_text='Template question on which this call question is based',
                                           on_delete=models.PROTECT)
     order = models.PositiveIntegerField(help_text='Use the integer order to order the questions', blank=False,
                                         null=False)
@@ -284,7 +295,8 @@ class Country(CreateModify):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Country name', max_length=100, blank=False, null=False, unique=True)
-    uid = models.ForeignKey(CountryUid, help_text='UID of country name', on_delete=models.PROTECT, blank=True, null=True)
+    uid = models.ForeignKey(CountryUid, help_text='UID of country name', on_delete=models.PROTECT, blank=True,
+                            null=True)
 
     def __str__(self):
         return self.name
@@ -313,7 +325,8 @@ class Organisation(CreateModify):
     city = models.CharField(help_text='City in which the organisation is based', max_length=100, blank=False,
                             null=False)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
-    country = models.ForeignKey(Country, help_text='Country in which the organisation is based', on_delete=models.PROTECT)
+    country = models.ForeignKey(Country, help_text='Country in which the organisation is based',
+                                on_delete=models.PROTECT)
     uid = models.ForeignKey(OrganisationUid, help_text='UID of a country', on_delete=models.PROTECT)
 
     def abbreviated_name(self):
@@ -372,8 +385,11 @@ class PersonPosition(CreateModify):
     organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works',
                              max_length=200, blank=True, null=True)
-    data_policy = models.BooleanField(help_text='Agree or disagree to the data policy for storage of personal information', default=False, blank=False, null=False)
-    contact_newsletter = models.BooleanField(help_text='Agree or disagree to being contacted by email with newsletter', default=False, blank=False, null=False)
+    data_policy = models.BooleanField(
+        help_text='Agree or disagree to the data policy for storage of personal information', default=False,
+        blank=False, null=False)
+    contact_newsletter = models.BooleanField(help_text='Agree or disagree to being contacted by email with newsletter',
+                                             default=False, blank=False, null=False)
 
     def __str__(self):
         organisations_str = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
@@ -434,7 +450,8 @@ class GeographicalArea(CreateModify):
     definition = models.CharField(
         help_text='Detailed description of the geographic area to avoid duplicate entries or confusion', max_length=300,
         blank=False, null=False)
-    uid = models.ForeignKey(GeographicalAreaUid, help_text='UID of a geographical area', on_delete=models.PROTECT, blank=True, null=True)
+    uid = models.ForeignKey(GeographicalAreaUid, help_text='UID of a geographical area', on_delete=models.PROTECT,
+                            blank=True, null=True)
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -476,8 +493,10 @@ class Proposal(CreateModify):
                                   on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False,
                                         null=False, on_delete=models.PROTECT)
-    eligibility = models.CharField(help_text='Status of eligibility of proposal', max_length=30, default=ELIGIBILITYNOTCHECKED, choices=STATUS, blank=False, null=False)
-    eligibility_comment = models.TextField(help_text='Comments regarding eligibility of proposal', blank=True, null=True)
+    eligibility = models.CharField(help_text='Status of eligibility of proposal', max_length=30,
+                                   default=ELIGIBILITYNOTCHECKED, choices=STATUS, blank=False, null=False)
+    eligibility_comment = models.TextField(help_text='Comments regarding eligibility of proposal', blank=True,
+                                           null=True)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
 
     def __str__(self):
