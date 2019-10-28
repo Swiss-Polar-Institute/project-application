@@ -3,9 +3,16 @@
 {% block title %}Template question{% endblock %}
 
 {% block body_contents %}
-    <div class="container" role="main">
-        {% include "_logo.tmpl" %}
-        <H1>Template question</H1>
-        {% crispy form %}
+{% include 'management/_navbar.tmpl' with active='calls' %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include 'management/_calls-sidebar.tmpl' with active='template-questions-add' %}
+
+        <div class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
+            <H1>Template question</H1>
+            {% crispy form %}
+        </div>
     </div>
+</div>
 {% endblock %}
