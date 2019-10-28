@@ -259,6 +259,8 @@ class ProposalFundingItemForm(ModelForm):
                                                               widget=autocomplete.ModelSelect2(
                                                                   url='autocomplete-organisations'))
 
+        self.fields['amount'].widget.attrs['min'] = 0
+
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
@@ -331,6 +333,8 @@ class BudgetItemForm(forms.Form):
 
         self.fields['category'].help_text = category.name
         self.fields['category'].value = category.id
+
+        self.fields['amount'].widget.attrs['min'] = 0
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
