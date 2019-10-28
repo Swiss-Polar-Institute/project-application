@@ -26,24 +26,6 @@ class ProposalsList(TemplateView):
         return context
 
 
-class CallUpdated(TemplateView):
-    template_name = 'management/call-updated.tmpl'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['id'] = kwargs['id']
-        action = self.request.GET['action']
-
-        if action in ('created', 'updated'):
-            context['action'] = action
-        else:
-            # should not happen
-            context['action'] = ''
-
-        return context
-
-
 class Homepage(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
