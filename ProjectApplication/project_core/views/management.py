@@ -23,6 +23,10 @@ class ProposalsList(TemplateView):
 
         context['proposals'] = Proposal.objects.all()
 
+        context['active_section'] = 'proposals'
+        context['active_subsection'] = 'proposals-list'
+        context['sidebar_template'] = 'management/_sidebar-proposals.tmpl'
+
         return context
 
 
@@ -43,6 +47,10 @@ class CallsList(TemplateView):
         context['closed_calls'] = Call.closed_calls()
         context['future_calls'] = Call.future_calls()
 
+        context['active_section'] = 'calls'
+        context['active_subsection'] = 'calls-list'
+        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+
         return context
 
 
@@ -52,7 +60,11 @@ class QuestionsList(TemplateView):
 
         context['template_questions'] = TemplateQuestion.objects.all()
 
-        return render(request, 'management/templatequestion_list.tmpl', context)
+        context['active_section'] = 'calls'
+        context['active_subsection'] = 'template-questions-list'
+        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+
+        return render(request, 'management/templatequestion-list.tmpl', context)
 
 
 class TemplateQuestionMixin:
@@ -73,20 +85,47 @@ class AddCrispySubmitButtonMixin:
 
 
 class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
-    template_name = 'management/templatequestion_form.tmpl'
+    template_name = 'management/templatequestion-form.tmpl'
     model = TemplateQuestion
     success_message = 'Template question created'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['active_section'] = 'calls'
+        context['active_subsection'] = 'template-questions-add'
+        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+
+        return context
+
 
 class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
-    template_name = 'management/templatequestion_form.tmpl'
+    template_name = 'management/templatequestion-form.tmpl'
     model = TemplateQuestion
     success_message = 'Template question updated'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['active_section'] = 'calls'
+        context['active_subsection'] = 'template-questions-list'
+        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+
+        return context
+
 
 class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
-    template_name = 'management/templatequestion_detail.tmpl'
+    template_name = 'management/templatequestion-detail.tmpl'
     model = TemplateQuestion
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['active_section'] = 'calls'
+        context['active_subsection'] = 'template-questions-list'
+        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+
+        return context
 
 
 class CallViewDetails(TemplateView):
@@ -96,7 +135,12 @@ class CallViewDetails(TemplateView):
         call = Call.objects.get(id=kwargs['id'])
         context = {'call': call}
 
-        return render(request, 'management/call_detail.tmpl', context)
+        context['active_section'] = 'calls'
+        context['active_subsection'] = 'calls-list'
+        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+
+        return render(request, 'management/call-detail.tmpl', context)
+
 
 class CallView(TemplateView):
     def get(self, request, *args, **kwargs):
@@ -112,11 +156,17 @@ class CallView(TemplateView):
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
             context['call_action_url'] = reverse('management-call-update', kwargs={'id': call_id})
             context['call_action'] = 'Edit'
+            context['active_subsection'] = 'calls-list'
+
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(prefix=CALL_QUESTION_FORM_NAME)
             context['call_action_url'] = reverse('call-add')
             context['call_action'] = 'Create'
+            context['active_subsection'] = 'call-add'
+
+        context['active_section'] = 'calls'
+        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
 
         return render(request, 'management/call.tmpl', context)
 

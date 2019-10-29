@@ -1,0 +1,39 @@
+{% extends 'management/_base_with_menus.tmpl' %}
+{% block title %}Template question{% endblock %}
+
+{% block contents %}
+    <h1>Template questions</h1>
+    {% if template_questions %}
+        <table class="table table-stripped table-sm table-hover display">
+            <thead>
+            <tr>
+                <th>Question</th>
+                <th>Max words</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for template_question in template_questions %}
+                <tr>
+                    <td>{{ template_question.question_text }}</td>
+                    <td>{% if template_question.answer_max_length %}
+                        {{ template_question.answer_max_length }}{% endif %}</td>
+                    <td><a class="btn btn-primary btn-xs"
+                           href="{% url 'template-question-update' pk=template_question.id %}">Edit</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        No questions entered in the system
+    {% endif %}
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('table.display').DataTable({
+                    "pageLength": 100
+                }
+            );
+        });
+    </script>
+{% endblock %}

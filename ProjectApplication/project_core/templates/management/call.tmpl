@@ -1,34 +1,18 @@
-{% extends '_base.tmpl' %}
-{% block title %}Management homepage{% endblock %}
+{% extends 'management/_base_with_menus.tmpl' %}
+{% block title %}Project Application - Call{% endblock %}
 {% load crispy_forms_tags %}
 
-{% block body_contents %}
-{% include 'management/_navbar.tmpl' with active='calls'  %}
+{% block contents %}
+    <H1>{{ call_action }} a call</H1>
 
-<div class="container-fluid">
-    <div class="row">
-        {% if call_form.instance.id %}
-            {% include 'management/_calls-sidebar.tmpl' with active='calls-list' %}
-        {% else %}
-            {% include 'management/_calls-sidebar.tmpl' with active='call-add' %}
-        {% endif %}
+    {% include "_messages-box.tmpl" %}
 
-    <div class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
-        <H1>{{ call_action }} a call</H1>
+    <form method="post" action="{{ call_action_url }}">
+        {% csrf_token %}
+        {% crispy call_form %}
 
-        {% include "_messages-box.tmpl" %}
+        {% include "management/_form_call_question.tmpl" %}
 
-        <form method="post" action="{{ call_action_url }}">
-            {% csrf_token %}
-            {% crispy call_form %}
-
-            {% include "management/_form_call_question.tmpl" %}
-
-            {% include "_submit-button.tmpl" %}
-        </form>
-        <p></p>
-    </div>
-            </div>
-</div>
-
+        {% include "_submit-button.tmpl" %}
+    </form>
 {% endblock %}

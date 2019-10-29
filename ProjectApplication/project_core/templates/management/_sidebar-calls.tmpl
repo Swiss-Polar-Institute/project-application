@@ -1,0 +1,24 @@
+{% extends 'management/_sidebar-base.tmpl' %}
+{% block sidebar_contents %}
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'calls-list' %}active{% endif %}"
+               href="{% url 'management-calls-list' %}">
+                List calls
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'call-add' %}active{% endif %}" href="{% url 'call-add' %}">
+                Create call
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'template-questions-list' %}active{% endif %}"
+               href="{% url 'template-questions-list' %}">List template questions</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'template-questions-add' %}active{% endif %}"
+               href="{% url 'template-question-add' %}">Create template questions</a>
+        </li>
+    </ul>
+{% endblock %}

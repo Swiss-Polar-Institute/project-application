@@ -1,0 +1,14 @@
+{% extends 'management/_base_with_menus.tmpl' %}
+{% block title %}Call{% endblock %}
+
+{% block contents %}
+    <h1>Call details</h1>
+    {% include "_messages-box.tmpl" %}
+    <p>
+        To do for Carles: show all the call details
+    </p>
+
+    Long Name: {{ call.long_name }}
+    <p></p>
+    <a class="btn btn-primary" href="{% url 'management-call-update' id=call.id %}">Edit the call</a>
+{% endblock %}
