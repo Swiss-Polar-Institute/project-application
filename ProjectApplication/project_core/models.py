@@ -79,7 +79,8 @@ class Call(CreateModify):
     budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget',
                                          decimal_places=2, max_digits=10, validators=[MinValueValidator(0)],
                                          blank=False, null=False)
-
+    other_funding_question = models.BooleanField(help_text='True if the Other Funding question is enabled')
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

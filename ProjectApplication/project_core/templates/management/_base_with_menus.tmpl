@@ -1,0 +1,15 @@
+{% extends '_base.tmpl' %}
+
+{% block body_contents %}
+{% include 'management/_navbar.tmpl' with active=active_section %}
+
+<div class="container-fluid">
+    <div class="row">
+        {% include sidebar with active=active_subsection %}
+
+        <div class="col-md-9 ml-sm-auto col-lg-10 px-4" role="main">
+            {%  block contents %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

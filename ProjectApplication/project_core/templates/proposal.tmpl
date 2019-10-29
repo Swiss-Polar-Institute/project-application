@@ -35,8 +35,10 @@
             <h1>Budget requested</h1>
             {% include "_form_budget.tmpl" %}
 
-            <h1>Other sources of funding</h1>
-            {% include "_form_funding_organisations.tmpl" %}
+            {% if other_funding_question %}
+                <h1>Other sources of funding</h1>
+                {% include "_form_funding_organisations.tmpl" %}
+            {% endif %}
 
             {% crispy data_collection_form %}
 

@@ -44,6 +44,7 @@ class ProposalThankYouView(TemplateView):
 
         return context
 
+
 class ProposalTooLate(TemplateView):
     template_name = 'proposal-too_late.tmpl'
 
@@ -55,6 +56,7 @@ class ProposalTooLate(TemplateView):
         context['action'] = action
 
         return context
+
 
 class CallsList(TemplateView):
     template_name = 'call-list.tmpl'
@@ -132,6 +134,7 @@ class ProposalView(TemplateView):
         information['call_name'] = call.long_name
         information['call_introductory_message'] = call.introductory_message
         information['call_submission_deadline'] = call.submission_deadline
+        information['other_funding_question'] = call.other_funding_question
 
         return information
 
