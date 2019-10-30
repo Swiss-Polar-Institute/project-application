@@ -15,14 +15,15 @@
 
         <h2>Applicant</h2>
         {% with applicant=proposal.applicant %}
-            {{ applicant.academic_title }} {{ applicant.person.first_name }} {{ applicant.person.surname }} (Gender: {{ applicant.person.gender }})
+            {{ applicant.academic_title }} {{ applicant.person.first_name }} {{ applicant.person.surname }} (Gender:
+            {{ applicant.person.gender }})
             <br>
-            <strong>Email:</strong> {{  email }}
+            <strong>Email:</strong> {{ email }}
             <br>
             <strong>Organisations:</strong>
-            {% for organisation in applicant.organisations.all   %}
+            {% for organisation in applicant.organisations.all %}
                 {{ organisation }}
-                {%  if not forloop.last %}, {% endif %}
+                {% if not forloop.last %}, {% endif %}
             {% endfor %}
             <br>
             <strong>Group:</strong> {{ applicant.group }}
@@ -50,20 +51,25 @@
         <h2>Project description</h2>
         {% for question_answer in questions_answers %}
             {{ question_answer.question }}<br>
-                    <div class="pre-with-newlines border p-3 bg-white rounded">{{ question_answer.answer }}</div>
-                    <br>
+            <div class="pre-with-newlines border p-3 bg-white rounded">{{ question_answer.answer }}</div>
+            <br>
         {% endfor %}
 
         <h2>Budget requested</h2>
         <strong>Total requested budget:</strong> {{ proposal.total_budget }} CHF
-        {% include '_table-budget.tmpl' %}
+        <p><strong>Maximum budget:</strong> {{ maximum_budget }} CHF</p>
 
+        {% include '_accordion.tmpl' with prefix='budget' button_text='Budget details' template_file='_table-budget.tmpl' %}
+        <br>
         <h2>Other sources of funding</h2>
-        {% include '_table-funding.tmpl' %}
 
+        {% include '_accordion.tmpl' with prefix='funding' button_text='Funding details' template_file='_table-funding.tmpl' %}
+        <br>
         <h2>Data agreement</h2>
-        <strong>Agreed to data policy:</strong> {% include '_check-icon.tmpl' with value=proposal.applicant.data_policy %}<br>
-        <strong>Agreed to contact newsletter:</strong> {% include '_check-icon.tmpl' with value=proposal.applicant.contact_newsletter %}
+        <strong>Agreed to data
+            policy:</strong> {% include '_check-icon.tmpl' with value=proposal.applicant.data_policy %}<br>
+        <strong>Agreed to contact
+            newsletter:</strong> {% include '_check-icon.tmpl' with value=proposal.applicant.contact_newsletter %}
 
         <hr>
         <strong>Proposal created:</strong> {{ proposal.created_on }}<br>
