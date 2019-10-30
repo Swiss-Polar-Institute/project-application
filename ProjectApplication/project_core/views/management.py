@@ -130,11 +130,11 @@ class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
 
 class CallViewDetails(TemplateView):
     def get(self, request, *args, **kwargs):
-        super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
 
         call = Call.objects.get(id=kwargs['id'])
-        context = {'call': call}
 
+        context['call'] = call
         context['active_section'] = 'calls'
         context['active_subsection'] = 'calls-list'
         context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
@@ -144,9 +144,7 @@ class CallViewDetails(TemplateView):
 
 class CallView(TemplateView):
     def get(self, request, *args, **kwargs):
-        super().get_context_data(**kwargs)
-
-        context = {}
+        context = super().get_context_data(**kwargs)
 
         if 'id' in kwargs:
             call_id = kwargs['id']
@@ -171,14 +169,13 @@ class CallView(TemplateView):
         return render(request, 'management/call.tmpl', context)
 
     def post(self, request, *args, **kwargs):
-        super().get_context_data(**kwargs)
-
-        context = {}
+        context = super().get_context_data(**kwargs)
 
         if 'id' in kwargs:
             call = Call.objects.get(id=kwargs['id'])
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, instance=call, prefix=CALL_QUESTION_FORM_NAME)
+
             context['call_action_url'] = reverse('management-call-update', kwargs={'id': call.id})
             call_action = 'Edit'
             action = 'updated'
