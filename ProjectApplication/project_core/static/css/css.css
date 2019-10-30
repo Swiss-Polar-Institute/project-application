@@ -7,6 +7,12 @@
     background: #e1e1e1;
 }
 
+.pre-with-newlines {
+    padding: 20px;
+    white-space: pre-wrap;
+    background: #e1e1e1;
+}
+
 .select2-selection__choice {
     margin-top: 8px !important;
 }

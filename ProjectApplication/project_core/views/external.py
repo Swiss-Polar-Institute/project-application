@@ -96,7 +96,7 @@ class ProposalDetailView(TemplateView):
             context['questions_answers'].append({'question': question_text,
                                                  'answer': answer})
 
-            return render(request, 'proposal-detail.tmpl', context)
+        return render(request, 'proposal-detail.tmpl', context)
 
 
 def call_context_for_template(call):
@@ -168,7 +168,6 @@ class ProposalView(TemplateView):
 
         return render(request, 'proposal-form.tmpl', context)
 
-    @staticmethod
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
