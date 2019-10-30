@@ -21,7 +21,9 @@
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
                     <td>{{ proposal.proposal_status.name }}</td>
-                    <td><a class="btn btn-primary btn-xs" href="{% url 'proposal-update' uuid=proposal.uuid %}">Edit</a>
+                    <td>
+                        <a class="btn btn-primary btn-xs" href="{% url 'proposal-update' uuid=proposal.uuid %}">Edit</a>
+                        <a class="btn btn-primary btn-xs" href="{% url 'proposal-detail' uuid=proposal.uuid %}">View</a>
                     </td>
                 </tr>
             {% endfor %}

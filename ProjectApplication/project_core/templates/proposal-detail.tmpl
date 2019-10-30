@@ -27,17 +27,26 @@
             <br>
             <strong>Group:</strong> {{ applicant.group }}
         {% endwith %}
-
+        <p></p>
         <h2>Proposal</h2>
         <strong>Geographical areas:</strong>
         {% for area in proposal.geographical_areas.all %}
             {{ area }}
         {% endfor %}
         <br>
-        <strong>Provisional start date:</strong> {{ proposal.provisional_start_date }}<br>
-        <strong>Provisional end date:</strong> {{ proposal.provisional_end_date }}<br>
-        <strong>Duration months:</strong> {{ proposal.duration_months }}<br>
 
+        <div class="row">
+            <div class="col-4">
+                <strong>Provisional start date:</strong> {{ proposal.provisional_start_date }}<br>
+            </div>
+            <div class="col-4">
+                <strong>Provisional end date:</strong> {{ proposal.provisional_end_date }}<br>
+            </div>
+            <div class="col-4">
+                <strong>Duration months:</strong> {{ proposal.duration_months|floatformat }}<br>
+            </div>
+        </div>
+        <br>
         <h2>Project description</h2>
         {% for question_answer in questions_answers %}
             {{ question_answer.question }}<br>
