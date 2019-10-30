@@ -16,6 +16,8 @@ urlpatterns = [
     path('proposal/too-late/', external.ProposalTooLate.as_view(), name='proposal-too-late'),
 
     path('management/proposals', management.ProposalsList.as_view(), name='management-proposals-list'),
+    path('management/proposal/<uuid:uuid>/update', management.ProposalView.as_view(), name='management-proposal-update'),
+    path('management/proposal/<uuid:uuid>/', management.ProposalDetailView.as_view(), name='management-proposal-detail'),
     path('management/call/list', management.CallsList.as_view(), name='management-calls-list'),
     path('management/call/add/', management.CallView.as_view(), name='call-add'),
     path('management/call/<int:id>/update', management.CallView.as_view(), name='management-call-update'),

@@ -110,61 +110,67 @@ def call_context_for_template(call):
     return context
 
 
+def proposal_view_get_request_context(request, *args, **kwargs):
+    context = {}
+
+    if 'uuid' in kwargs:
+        proposal_uuid = kwargs['uuid']
+        proposal: Proposal = Proposal.objects.get(uuid=proposal_uuid)
+        call = proposal.call
+
+        proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
+        person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
+        questions_form = QuestionsForProposalForm(proposal=proposal,
+                                                  prefix=QUESTIONS_FORM_NAME)
+        budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
+
+        funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
+                                                  instance=proposal)
+        data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME,
+                                                  person_position=proposal.applicant)
+
+        context['proposal_action_url'] = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
+
+        context['action'] = 'Edit'
+
+    else:
+        call_pk = context['call_pk'] = request.GET.get('call')
+        call = Call.objects.get(pk=call_pk)
+
+        proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
+        person_form = PersonForm(prefix=PERSON_FORM_NAME)
+        questions_form = QuestionsForProposalForm(call=call,
+                                                  prefix=QUESTIONS_FORM_NAME)
+
+        initial_budget = []
+        for budget_category in call.budget_categories.all():
+            initial_budget.append({'category': budget_category, 'amount': None, 'details': None})
+
+        budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
+        funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
+        data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
+
+        context['proposal_action_url'] = reverse('proposal-add')
+
+        context['action'] = 'New'
+
+    context.update(call_context_for_template(call))
+
+    context[PROPOSAL_FORM_NAME] = proposal_form
+    context[PERSON_FORM_NAME] = person_form
+    context[QUESTIONS_FORM_NAME] = questions_form
+    context[BUDGET_FORM_NAME] = budget_form
+    context[FUNDING_FORM_NAME] = funding_form
+    context[DATA_COLLECTION_FORM_NAME] = data_collection_form
+
+    return context
+
+
 class ProposalView(TemplateView):
     def get(self, request, *args, **kwargs):
         super().get_context_data(**kwargs)
 
-        context = {}
-
-        if 'uuid' in kwargs:
-            proposal_uuid = kwargs['uuid']
-            proposal: Proposal = Proposal.objects.get(uuid=proposal_uuid)
-            call = proposal.call
-
-            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
-            person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
-            questions_form = QuestionsForProposalForm(proposal=proposal,
-                                                      prefix=QUESTIONS_FORM_NAME)
-            budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
-
-            funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
-                                                      instance=proposal)
-            data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME,
-                                                      person_position=proposal.applicant)
-
-            context['proposal_action_url'] = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
-
-            context['action'] = 'Edit'
-
-        else:
-            call_pk = context['call_pk'] = request.GET.get('call')
-            call = Call.objects.get(pk=call_pk)
-
-            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
-            person_form = PersonForm(prefix=PERSON_FORM_NAME)
-            questions_form = QuestionsForProposalForm(call=call,
-                                                      prefix=QUESTIONS_FORM_NAME)
-
-            initial_budget = []
-            for budget_category in call.budget_categories.all():
-                initial_budget.append({'category': budget_category, 'amount': None, 'details': None})
-
-            budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
-            funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
-            data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
-
-            context['proposal_action_url'] = reverse('proposal-add')
-
-            context['action'] = 'New'
-
-        context.update(call_context_for_template(call))
-
-        context[PROPOSAL_FORM_NAME] = proposal_form
-        context[PERSON_FORM_NAME] = person_form
-        context[QUESTIONS_FORM_NAME] = questions_form
-        context[BUDGET_FORM_NAME] = budget_form
-        context[FUNDING_FORM_NAME] = funding_form
-        context[DATA_COLLECTION_FORM_NAME] = data_collection_form
+        context = proposal_view_get_request_context(request, *args, **kwargs)
 
         return render(request, 'proposal-form.tmpl', context)
 

@@ -1,53 +1,10 @@
 {% extends '_base.tmpl' %}
 {% load static %}
 {% block title %}Projects application{% endblock %}
-{% load crispy_forms_tags %}
-
 
 {% block body_contents %}
     <div class="container" role="main">
         {% include "_logo.tmpl" %}
-        <h1>{{ action }} proposal</h1>
-
-        {% include "_messages-box.tmpl" %}
-
-        <p><strong>Call name:</strong> {{ call_name }}</p>
-
-        <p><strong>Deadline for application:</strong> {{ call_submission_deadline|date:"D d M Y" }} {{ call_submission_deadline|time:"H:i" }} Swiss time
-
-        <p><strong>Please complete all mandatory fields and press submit. Following submission of your proposal, you will be given a link which will allow editing of your proposal until the application deadline.</strong></p>
-
-        <div class="introductory-message shadow p-3 mb-5 bg-white rounded">{{ call_introductory_message }}</div>
-
-        <form action="{{ proposal_action_url }}" method="post">
-            {% csrf_token %}
-
-            <h2>Part 1: General Information</h2>
-            <h3>Applicant</h3>
-            {% crispy person_form %}
-
-            <h2>Proposal</h2>
-            {% crispy proposal_form %}
-
-            <h2>Part 2: Project Description</h2>
-            {% include "_form-dynamic_questions.tmpl" %}
-
-            <h2>Budget requested</h2>
-            {% include "_form-budget.tmpl" %}
-
-            {% if other_funding_question %}
-                <h2>Other sources of funding</h2>
-                {% include "_form-funding_organisations.tmpl" %}
-            {% endif %}
-
-            {% crispy data_collection_form %}
-
-            {% include "_submit-button.tmpl" %}
-
-            <p>
-               After submission, you will be able to edit this proposal until the application deadline.
-            </p>
-        </form>
-        <p>
+        {% include 'common/_proposal-form.tmpl' %}
     </div>
 {% endblock %}

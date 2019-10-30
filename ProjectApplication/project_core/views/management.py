@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 
+from project_core.views.external import proposal_view_get_request_context
 from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..models import Call
 from ..models import Proposal, TemplateQuestion
@@ -208,3 +209,21 @@ class CallView(TemplateView):
         messages.error(request, 'Call not saved. Please correct the errors in the form and try again')
 
         return render(request, 'management/call.tmpl', context)
+
+
+class ProposalView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = proposal_view_get_request_context(request, *args, **kwargs)
+
+        context['active_section'] = 'proposals'
+        context['active_subsection'] = 'proposals-list'
+        context['sidebar_template'] = 'management/_sidebar-proposals.tmpl'
+
+        return render(request, 'management/proposal-form.tmpl', context)
+
+
+class ProposalDetailView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = proposal_view_get_request_context(request, *args, **kwargs)
+
+        return render(request, 'management/proposal-form.tmpl', context)
