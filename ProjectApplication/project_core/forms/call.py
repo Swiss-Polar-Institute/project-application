@@ -122,6 +122,7 @@ class CallForm(forms.ModelForm):
             ),
             Div(
                 Div('other_funding_question', css_class='col-6'),
+                Div('proposal_partner_question', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -167,7 +168,7 @@ class CallForm(forms.ModelForm):
     class Meta:
         model = Call
         fields = ['funding_instrument', 'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date',
-                  'submission_deadline', 'budget_categories', 'budget_maximum', 'other_funding_question', ]
+                  'submission_deadline', 'budget_categories', 'budget_maximum', 'other_funding_question', 'proposal_partner_question', ]
 
         field_classes = {
             'call_open_date': forms.SplitDateTimeField,
