@@ -397,6 +397,9 @@ class PersonPosition(CreateModify):
 
         return '{} {} - {}'.format(self.academic_title, self.person, organisations_str)
 
+    def main_email(self):
+        return self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')[0].entry
+
     class Meta:
         verbose_name_plural = 'People from organisation(s)'
 
@@ -509,11 +512,12 @@ class Proposal(CreateModify):
         :return: returns total amount of budget
         """
 
-        budget_items = self.budgetitem_set.all()
+        budget_items = self.proposedbudgetitem_set.all()
 
         total = 0
         for item in budget_items:
-            total += item.amount
+            if item.amount is not None:
+                total += item.amount
 
         return total
 

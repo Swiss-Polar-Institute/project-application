@@ -7,7 +7,7 @@
 {% block body_contents %}
     <div class="container" role="main">
         {% include "_logo.tmpl" %}
-        <H1>{{ action }} proposal</H1>
+        <h1>{{ action }} proposal</h1>
 
         {% include "_messages-box.tmpl" %}
 
@@ -22,22 +22,22 @@
         <form action="{{ proposal_action_url }}" method="post">
             {% csrf_token %}
 
-            <h1>Part 1: General Information</h1>
-            <h2>Applicant</h2>
+            <h2>Part 1: General Information</h2>
+            <h3>Applicant</h3>
             {% crispy person_form %}
 
             <h2>Proposal</h2>
             {% crispy proposal_form %}
 
-            <h1>Part 2: Project Description</h1>
-            {% include "_form_dynamic_questions.tmpl" %}
+            <h2>Part 2: Project Description</h2>
+            {% include "_form-dynamic_questions.tmpl" %}
 
-            <h1>Budget requested</h1>
-            {% include "_form_budget.tmpl" %}
+            <h2>Budget requested</h2>
+            {% include "_form-budget.tmpl" %}
 
             {% if other_funding_question %}
-                <h1>Other sources of funding</h1>
-                {% include "_form_funding_organisations.tmpl" %}
+                <h2>Other sources of funding</h2>
+                {% include "_form-funding_organisations.tmpl" %}
             {% endif %}
 
             {% crispy data_collection_form %}

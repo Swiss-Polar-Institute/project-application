@@ -40,8 +40,7 @@ class PersonForm(Form):
             group_initial = self.person_position.group
             academic_title_initial = self.person_position.academic_title
             gender_initial = self.person_position.person.gender
-            email_initial = self.person_position.contact_set.filter(method=Contact.EMAIL).order_by('created_on')[
-                0].entry
+            email_initial = self.person_position.main_email()
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                help_text='Select from list',

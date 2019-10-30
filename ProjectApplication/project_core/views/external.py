@@ -1,13 +1,14 @@
 from dal import autocomplete
+from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView
-from django.contrib import messages
 from django.utils import timezone
+from django.views.generic import TemplateView
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet, DataCollectionForm
-from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword, Source, KeywordUid
+from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword, Source, KeywordUid, ProposalQAText
 
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
@@ -69,11 +70,51 @@ class CallsList(TemplateView):
         return context
 
 
+class ProposalDetailView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        super().get_context_data(**kwargs)
+
+        proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+        call = proposal.call
+
+        context = call_context_for_template(call)
+
+        context['proposal'] = proposal
+
+        context['email'] = proposal.applicant.main_email()
+
+        context['questions_answers'] = []
+
+        for question in call.callquestion_set.all().order_by('order'):
+            try:
+                answer = ProposalQAText.objects.get(proposal=proposal, call_question=question).answer
+            except ObjectDoesNotExist:
+                answer = None
+
+            question_text = question.question_text
+
+            context['questions_answers'].append({'question': question_text,
+                                                 'answer': answer})
+
+            return render(request, 'proposal-detail.tmpl', context)
+
+
+def call_context_for_template(call):
+    context = {}
+    context['maximum_budget'] = call.budget_maximum
+    context['call_name'] = call.long_name
+    context['call_introductory_message'] = call.introductory_message
+    context['call_submission_deadline'] = call.submission_deadline
+    context['other_funding_question'] = call.other_funding_question
+
+    return context
+
+
 class ProposalView(TemplateView):
     def get(self, request, *args, **kwargs):
         super().get_context_data(**kwargs)
 
-        information = {}
+        context = {}
 
         if 'uuid' in kwargs:
             proposal_uuid = kwargs['uuid']
@@ -91,12 +132,12 @@ class ProposalView(TemplateView):
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
 
-            information['proposal_action_url'] = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
+            context['proposal_action_url'] = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
 
-            information['action'] = 'Edit'
+            context['action'] = 'Edit'
 
         else:
-            call_pk = information['call_pk'] = request.GET.get('call')
+            call_pk = context['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
@@ -112,32 +153,22 @@ class ProposalView(TemplateView):
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
 
-            information['proposal_action_url'] = reverse('proposal-add')
+            context['proposal_action_url'] = reverse('proposal-add')
 
-            information['action'] = 'New'
+            context['action'] = 'New'
 
-        information.update(ProposalView._call_information_for_template(call))
+        context.update(call_context_for_template(call))
 
-        information[PROPOSAL_FORM_NAME] = proposal_form
-        information[PERSON_FORM_NAME] = person_form
-        information[QUESTIONS_FORM_NAME] = questions_form
-        information[BUDGET_FORM_NAME] = budget_form
-        information[FUNDING_FORM_NAME] = funding_form
-        information[DATA_COLLECTION_FORM_NAME] = data_collection_form
+        context[PROPOSAL_FORM_NAME] = proposal_form
+        context[PERSON_FORM_NAME] = person_form
+        context[QUESTIONS_FORM_NAME] = questions_form
+        context[BUDGET_FORM_NAME] = budget_form
+        context[FUNDING_FORM_NAME] = funding_form
+        context[DATA_COLLECTION_FORM_NAME] = data_collection_form
 
-        return render(request, 'proposal.tmpl', information)
+        return render(request, 'proposal-form.tmpl', context)
 
     @staticmethod
-    def _call_information_for_template(call):
-        information = {}
-        information['maximum_budget'] = call.budget_maximum
-        information['call_name'] = call.long_name
-        information['call_introductory_message'] = call.introductory_message
-        information['call_submission_deadline'] = call.submission_deadline
-        information['other_funding_question'] = call.other_funding_question
-
-        return information
-
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -209,7 +240,7 @@ class ProposalView(TemplateView):
             questions_form.save_answers(proposal)
             budget_form.save_budgets(proposal)
 
-            return redirect(reverse('proposal-thank-you', kwargs={'uuid': proposal.uuid})+'?action={}'.format(action))
+            return redirect(reverse('proposal-thank-you', kwargs={'uuid': proposal.uuid}) + '?action={}'.format(action))
 
         context[PERSON_FORM_NAME] = person_form
         context[PROPOSAL_FORM_NAME] = proposal_form
@@ -220,11 +251,11 @@ class ProposalView(TemplateView):
 
         context['action'] = 'Edit'
 
-        context.update(ProposalView._call_information_for_template(call))
+        context.update(call_context_for_template(call))
 
         messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again')
 
-        return render(request, 'proposal.tmpl', context)
+        return render(request, 'proposal-form.tmpl', context)
 
 
 class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):

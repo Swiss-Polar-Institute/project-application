@@ -1,0 +1,63 @@
+{% extends '_base.tmpl' %}
+{% load static %}
+{% block title %}Projects application{% endblock %}
+
+{% block body_contents %}
+    <div class="container" role="main">
+        {% include "_logo.tmpl" %}
+        <H1>Proposal</H1>
+
+        {% include "_messages-box.tmpl" %}
+
+        <p><b>Call name:</b> {{ call_name }}</p>
+
+        <p><b>Deadline for
+            application:</b> {{ call_submission_deadline|date:"D d M Y" }} {{ call_submission_deadline|time:"H:i" }}
+            Swiss time
+
+        <h2>Applicant</h2>
+        {% with applicant=proposal.applicant %}
+            {{ applicant.academic_title }} {{ applicant.person.first_name }} {{ applicant.person.surname }} ({{ applicant.person.gender }})
+            <br>
+            Email: {{  email }}
+            <br>
+            Organisations:
+            {% for organisation in applicant.organisations.all   %}
+                {{ organisation }}
+                {%  if not forloop.last %}, {% endif %}
+            {% endfor %}
+            <br>
+            Group: {{ applicant.group }}
+        {% endwith %}
+
+        <h2>Proposal</h2>
+        Title: {{ proposal.title }}<br>
+        Geographical areas:
+        {% for area in proposal.geographical_areas.all %}
+            {{ area }}
+        {% endfor %}
+        <br>
+        Provisional start date: {{ proposal.provisional_start_date }}<br>
+        Provisional end date: {{ proposal.provisional_end_date }}<br>
+        Duration months: {{ proposal.duration_months }}<br>
+
+        <h2>Project description</h2>
+        {% for question_answer in questions_answers %}
+            Question: {{ question_answer.question }}<br>
+            Answer: {{ question_answer.answer }}
+        {% endfor %}
+
+        <h2>Budget requested</h2>
+        Total requested budget: {{ proposal.total_budget }} CHF
+
+
+        {% include '_table-budget.tmpl' %}
+
+        <h2>Other sources of funding</h2>
+        {% include '_table-funding.tmpl' %}
+
+        <h2>Data agreement</h2>
+        Agred to data policy: {{ proposal.applicant.data_policy }}<br>
+        Agred to contact newsletter: {{ proposal.applicant.contact_newsletter }}
+    </div>
+{% endblock %}

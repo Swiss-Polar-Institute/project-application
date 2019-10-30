@@ -10,7 +10,8 @@ urlpatterns = [
     path('', external.Homepage.as_view(), name='homepage'),
     path('calls/', external.CallsList.as_view(), name='calls-list'),
     path('proposal/add/', external.ProposalView.as_view(), name='proposal-add'),
-    path('proposal/<uuid:uuid>/', external.ProposalView.as_view(), name='proposal-update'),
+    path('proposal/<uuid:uuid>/update', external.ProposalView.as_view(), name='proposal-update'),
+    path('proposal/<uuid:uuid>/', external.ProposalDetailView.as_view(), name='proposal-detail'),
     path('proposal/thank-you/<uuid:uuid>/', external.ProposalThankYouView.as_view(), name='proposal-thank-you'),
     path('proposal/too-late/', external.ProposalTooLate.as_view(), name='proposal-too-late'),
 
