@@ -1,6 +1,9 @@
 <br>
 {% include "_messages-box.tmpl" %}
 
+{% if edit_button %}
+    <a class="float-sm-right btn btn-primary" href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit the proposal</a>
+{% endif %}
 <H1>Proposal</H1>
 <p><strong>{{ proposal.title }}</strong></p>
 
