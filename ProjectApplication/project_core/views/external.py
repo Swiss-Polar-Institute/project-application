@@ -74,27 +74,7 @@ class ProposalDetailView(TemplateView):
     def get(self, request, *args, **kwargs):
         super().get_context_data(**kwargs)
 
-        proposal = Proposal.objects.get(uuid=kwargs['uuid'])
-        call = proposal.call
-
-        context = call_context_for_template(call)
-
-        context['proposal'] = proposal
-
-        context['email'] = proposal.applicant.main_email()
-
-        context['questions_answers'] = []
-
-        for question in call.callquestion_set.all().order_by('order'):
-            try:
-                answer = ProposalQAText.objects.get(proposal=proposal, call_question=question).answer
-            except ObjectDoesNotExist:
-                answer = None
-
-            question_text = question.question_text
-
-            context['questions_answers'].append({'question': question_text,
-                                                 'answer': answer})
+        context = proposal_view_display_request_context(request, *args, **kwargs)
 
         return render(request, 'proposal-detail.tmpl', context)
 
@@ -110,7 +90,7 @@ def call_context_for_template(call):
     return context
 
 
-def proposal_view_get_request_context(request, *args, **kwargs):
+def proposal_view_form_request_context(request, *args, **kwargs):
     context = {}
 
     if 'uuid' in kwargs:
@@ -166,11 +146,37 @@ def proposal_view_get_request_context(request, *args, **kwargs):
     return context
 
 
+def proposal_view_display_request_context(requst, *args, **kwargs):
+    proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+    call = proposal.call
+
+    context = call_context_for_template(call)
+
+    context['proposal'] = proposal
+
+    context['email'] = proposal.applicant.main_email()
+
+    context['questions_answers'] = []
+
+    for question in call.callquestion_set.all().order_by('order'):
+        try:
+            answer = ProposalQAText.objects.get(proposal=proposal, call_question=question).answer
+        except ObjectDoesNotExist:
+            answer = None
+
+        question_text = question.question_text
+
+        context['questions_answers'].append({'question': question_text,
+                                             'answer': answer})
+
+    return context
+
+
 class ProposalView(TemplateView):
     def get(self, request, *args, **kwargs):
         super().get_context_data(**kwargs)
 
-        context = proposal_view_get_request_context(request, *args, **kwargs)
+        context = proposal_view_form_request_context(request, *args, **kwargs)
 
         return render(request, 'proposal-form.tmpl', context)
 

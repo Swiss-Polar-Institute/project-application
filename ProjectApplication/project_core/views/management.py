@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 
-from project_core.views.external import proposal_view_get_request_context
+from project_core.views.external import proposal_view_form_request_context, proposal_view_display_request_context
 from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..models import Call
 from ..models import Proposal, TemplateQuestion
@@ -213,7 +213,7 @@ class CallView(TemplateView):
 
 class ProposalView(TemplateView):
     def get(self, request, *args, **kwargs):
-        context = proposal_view_get_request_context(request, *args, **kwargs)
+        context = proposal_view_form_request_context(request, *args, **kwargs)
 
         context['active_section'] = 'proposals'
         context['active_subsection'] = 'proposals-list'
@@ -224,6 +224,10 @@ class ProposalView(TemplateView):
 
 class ProposalDetailView(TemplateView):
     def get(self, request, *args, **kwargs):
-        context = proposal_view_get_request_context(request, *args, **kwargs)
+        context = proposal_view_display_request_context(request, *args, **kwargs)
 
-        return render(request, 'management/proposal-form.tmpl', context)
+        context['active_section'] = 'proposals'
+        context['active_subsection'] = 'proposals-list'
+        context['sidebar_template'] = 'management/_sidebar-proposals.tmpl'
+
+        return render(request, 'management/proposal-detail.tmpl', context)
