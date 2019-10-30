@@ -6,7 +6,6 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 
-from project_core.views.external import proposal_view_form_request_context, proposal_view_display_request_context
 from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..models import Call
 from ..models import Proposal, TemplateQuestion
