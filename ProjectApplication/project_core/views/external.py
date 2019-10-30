@@ -1,4 +1,3 @@
-from dal import autocomplete
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
@@ -8,7 +7,7 @@ from django.views.generic import TemplateView
 
 from ..forms.proposal import PersonForm, ProposalForm, QuestionsForProposalForm, ProposalFundingItemFormSet, \
     BudgetItemFormSet, DataCollectionForm
-from ..models import Proposal, Call, ProposalStatus, Organisation, Keyword, Source, KeywordUid, ProposalQAText
+from ..models import Proposal, Call, ProposalStatus, ProposalQAText
 
 # Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
@@ -255,40 +254,3 @@ class ProposalView(TemplateView):
         return render(request, 'proposal-form.tmpl', context)
 
 
-class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
-    def get_result_label(self, result):
-        return result.long_name
-
-    def get_queryset(self):
-        qs = Organisation.objects.all()
-
-        if self.q:
-            qs = qs.filter(long_name__icontains=self.q)
-
-        return qs
-
-
-class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
-    def create_object(self, text):
-        source, created = Source.objects.get_or_create(source='External User')
-
-        keyword_uuid, created = KeywordUid.objects.get_or_create(uid=None, source=source)
-
-        d = {self.create_field: text,
-             'description': 'User entered',
-             'uid': keyword_uuid}
-
-        return self.get_queryset().get_or_create(
-            **d)[0]
-
-    def get_result_label(self, result):
-        return result.name
-
-    def get_queryset(self):
-        qs = Keyword.objects.all()
-
-        if self.q:
-            qs = qs.filter(name__icontains=self.q)
-
-        qs = qs.order_by('name')
-        return qs

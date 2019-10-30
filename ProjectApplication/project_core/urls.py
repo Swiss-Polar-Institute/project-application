@@ -1,5 +1,6 @@
 from django.urls import include, path
 
+import project_core.views.autocomplete
 from .views import external
 from .views import management
 
@@ -35,8 +36,8 @@ urlpatterns = [
                                       extra_context={'contact': settings.LOGIN_CONTACT})),
     path('accounts/', include('django.contrib.auth.urls')),
 
-    path('autocomplete/organisations/', external.OrganisationsAutocomplete.as_view(),
+    path('autocomplete/organisations/', project_core.views.autocomplete.OrganisationsAutocomplete.as_view(),
          name='autocomplete-organisations'),
-    path('autocomplete/keywords/', external.KeywordsAutocomplete.as_view(create_field='name'),
+    path('autocomplete/keywords/', project_core.views.autocomplete.KeywordsAutocomplete.as_view(create_field='name'),
          name='autocomplete-keywords')
 ]
