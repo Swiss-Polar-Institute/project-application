@@ -1,11 +1,12 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 
+from project_core.views.proposal import AbstractProposalDetailView, AbstractProposalView
 from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..models import Call
 from ..models import Proposal, TemplateQuestion
@@ -207,23 +208,23 @@ class CallView(TemplateView):
         return render(request, 'management/call.tmpl', context)
 
 
-class ProposalView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        context = proposal_view_form_request_context(request, *args, **kwargs)
+class ProposalDetailView(AbstractProposalDetailView):
+    template = 'management/proposal-detail.tmpl'
 
-        context['active_section'] = 'proposals'
-        context['active_subsection'] = 'proposals-list'
-        context['sidebar_template'] = 'management/_sidebar-proposals.tmpl'
-
-        return render(request, 'management/proposal-form.tmpl', context)
+    extra_context = {'active_section': 'proposals',
+                     'active_subsection': 'proposals-list',
+                     'sidebar_template': 'management/_sidebar-proposals.tmpl'}
 
 
-class ProposalDetailView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        context = proposal_view_display_request_context(request, *args, **kwargs)
+class ProposalView(AbstractProposalView):
+    created_or_updated_url = 'management-proposal-detail'
+    form_template = 'management/proposal-form.tmpl'
 
-        context['active_section'] = 'proposals'
-        context['active_subsection'] = 'proposals-list'
-        context['sidebar_template'] = 'management/_sidebar-proposals.tmpl'
+    action_url_update = 'management-proposal-update'
+    action_url_add = 'management-proposal-add'
 
-        return render(request, 'management/proposal-detail.tmpl', context)
+    success_message = 'Proposal updated'
+
+    extra_context = {'active_section': 'proposals',
+                     'active_subsection': 'proposals-list',
+                     'sidebar_template': 'management/_sidebar-proposals.tmpl'}
