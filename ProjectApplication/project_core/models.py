@@ -80,7 +80,8 @@ class Call(CreateModify):
                                          decimal_places=2, max_digits=10, validators=[MinValueValidator(0)],
                                          blank=False, null=False)
     other_funding_question = models.BooleanField(help_text='True if the Other Funding question is enabled')
-    
+    proposal_partner_question = models.BooleanField(help_text='True if the Proposal Partner question is enabled')
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
