@@ -20,7 +20,10 @@
                     <td>{% if template_question.answer_max_length %}
                         {{ template_question.answer_max_length }}{% endif %}</td>
                     <td><a class="btn btn-primary btn-xs"
-                           href="{% url 'template-question-update' pk=template_question.id %}">Edit</a></td>
+                           href="{% url 'template-question-update' pk=template_question.id %}">Edit</a>
+                    <a class="btn btn-primary btn-xs"
+                           href="{% url 'template-question-detail' pk=template_question.id %}">View</a>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
