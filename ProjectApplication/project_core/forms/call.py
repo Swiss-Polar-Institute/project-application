@@ -114,11 +114,11 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('budget_categories', css_class='col-12'),
+                Div('budget_maximum', css_class='col-6'),
                 css_class='row'
             ),
             Div(
-                Div('budget_maximum', css_class='col-6'),
+                Div('budget_categories', css_class='col-12'),
                 css_class='row'
             ),
             Div(
