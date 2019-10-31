@@ -184,6 +184,7 @@ class CallView(TemplateView):
             context['call_action_url'] = reverse('management-call-update', kwargs={'id': call.id})
             call_action = 'Edit'
             action = 'updated'
+            active_subsection = 'calls-list'
 
         else:
             # creates a call
@@ -193,6 +194,7 @@ class CallView(TemplateView):
             context['call_action'] = 'Create'
             call_action = 'Create'
             action = 'created'
+            active_subsection = 'call-add'
 
         if call_form.is_valid() and call_question_form.is_valid():
             call = call_form.save()
@@ -206,6 +208,10 @@ class CallView(TemplateView):
         context['call_action'] = call_action
         context[CALL_FORM_NAME] = call_form
         context[CALL_QUESTION_FORM_NAME] = call_question_form
+
+        context['active_section'] = 'calls'
+        context['active_subsection'] = active_subsection
+        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
 
         messages.error(request, 'Call not saved. Please correct the errors in the form and try again')
 
