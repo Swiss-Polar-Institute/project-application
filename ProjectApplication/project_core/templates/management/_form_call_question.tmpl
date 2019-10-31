@@ -2,10 +2,9 @@
 {{ call_question_form.non_form_errors }}
 {% load crispy_forms_tags %}
 
-<H2>Questions</H2>
 {% if call_question_form.forms %}
     {% for form in call_question_form.forms %}
-        {% if not for.first %}
+        {% if not forloop.first %}
             <hr>
         {% endif %}
 

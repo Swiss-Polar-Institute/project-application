@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
+from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
@@ -81,7 +81,8 @@ class CallForm(forms.ModelForm):
                                                                            queryset=TemplateQuestion.objects.all(),
                                                                            required=False,
                                                                            widget=FilteredSelectMultiple(is_stacked=True, verbose_name='questions'),
-                                                                           help_text=self.Meta.help_texts['template_questions'])
+                                                                           help_text=self.Meta.help_texts['template_questions'],
+                                                                           label=self.Meta.labels['template_questions'])
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -123,6 +124,10 @@ class CallForm(forms.ModelForm):
             Div(
                 Div('other_funding_question', css_class='col-6'),
                 Div('proposal_partner_question', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                HTML('<h2 class="col-12">Questions</h2>'),
                 css_class='row'
             ),
             Div(
@@ -192,5 +197,6 @@ class CallForm(forms.ModelForm):
                       'proposal_partner_question': 'Tick this box if you would like the call to ask about proposal partners'}
 
         labels = {
-            'budget_maximum': 'Budget maximum (CHF)'
+            'budget_maximum': 'Budget maximum (CHF)',
+            'template_questions': ''
         }
