@@ -171,8 +171,6 @@ MESSAGE_TAGS = {
 
 LOGIN_CONTACT = 'Carles'
 
-LAST_BUDGET_CATEGORY = 'Other'
-
 try:
     from local_settings import *
     print('Imported local_settings')

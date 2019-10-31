@@ -17,8 +17,8 @@ class StepAdmin(admin.ModelAdmin):
 
 
 class BudgetCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description',)
-    ordering = ['name', ]
+    list_display = ('name', 'description', 'order', )
+    ordering = ['name', 'order', ]
 
 
 class FundingInstrumentAdmin(admin.ModelAdmin):

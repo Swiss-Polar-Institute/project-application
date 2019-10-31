@@ -73,9 +73,7 @@ class CallForm(forms.ModelForm):
             budget_categories_qs = []
             used_questions = []
 
-        self.fields['budget_categories'] = forms.ModelMultipleChoiceField(initial=budget_categories_qs,
-                                                                          queryset=BudgetCategory.all_ordered_by_name_other_last(),
-                                                                          widget=forms.CheckboxSelectMultiple)
+        self.fields['budget_categories'].queryset = BudgetCategory.all_ordered()
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
                                                                            queryset=TemplateQuestion.objects.all(),
@@ -177,12 +175,13 @@ class CallForm(forms.ModelForm):
 
         field_classes = {
             'call_open_date': forms.SplitDateTimeField,
-            'submission_deadline': forms.SplitDateTimeField
+            'submission_deadline': forms.SplitDateTimeField,
         }
 
         widgets = {
             'call_open_date': DateTimePickerWidget,
-            'submission_deadline': DateTimePickerWidget
+            'submission_deadline': DateTimePickerWidget,
+            'budget_categories': forms.CheckboxSelectMultiple
         }
 
         help_texts = {'description': 'Brief description of the call (for display to management only)',

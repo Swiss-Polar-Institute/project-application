@@ -380,7 +380,7 @@ class BudgetFormSet(BaseFormSet):
         if proposal:
             initial_budget = []
 
-            for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal):
+            for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal).order_by('category__order', 'category__name'):
                 initial_budget.append({'id': proposed_item_budget.id, 'category': proposed_item_budget.category,
                                        'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details})
 
