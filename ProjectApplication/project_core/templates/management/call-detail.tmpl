@@ -31,10 +31,10 @@
     <strong>Budget maximum:</strong> {{ call.budget_maximum }} CHF
     <div class="row">
         <div class="col-6">
-            <strong>Budget categories:</strong>
-            {% for budget_category in call.budget_categories_ordered_by_name_other_last %}{% if not forloop.first %}
-            {% endif %}
-                <span class="badge badge-secondary">{{ budget_category }}</span>{% endfor %}
+            <strong>Budget categories:</strong><br>
+            {% for budget_category in budget_categories_status %}
+                {% include 'common/_check-icon.tmpl' with value=budget_category.in_call %} {{ budget_category.name }}<br>
+            {% endfor %}
         </div>
     </div>
     <p></p>

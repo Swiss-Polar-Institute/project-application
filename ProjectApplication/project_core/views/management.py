@@ -6,6 +6,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 
+from project_core.models import BudgetCategory
 from project_core.views.proposal import AbstractProposalDetailView, AbstractProposalView
 from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..models import Call
@@ -144,6 +145,17 @@ class CallDetailView(TemplateView):
         context['active_subsection'] = 'calls-list'
         context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
 
+
+        call_budget_categories_names = list(call.budget_categories.all().values_list('name', flat=True))
+
+        budget_categories_status = []
+
+        for budget_category_name in BudgetCategory.all_ordered_by_name_other_last().values_list('name', flat=True):
+            in_call = budget_category_name in call_budget_categories_names
+            budget_categories_status.append({'in_call': in_call,
+                                             'name': budget_category_name})
+
+        context['budget_categories_status'] = budget_categories_status
         return render(request, 'management/call-detail.tmpl', context)
 
 
