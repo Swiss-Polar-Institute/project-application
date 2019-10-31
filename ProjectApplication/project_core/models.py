@@ -338,7 +338,7 @@ class Organisation(CreateModify):
             return (self.long_name[:47] + '...') if len(self.long_name) > 50 else self.long_name
 
     def __str__(self):
-        return '{} ({}) - {}'.format(self.long_name, self.short_name, self.country)
+        return '{} - {}'.format(self.long_name, self.country)
 
     class Meta:
         unique_together = (('long_name', 'country'),)
