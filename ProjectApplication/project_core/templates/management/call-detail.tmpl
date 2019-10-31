@@ -27,6 +27,8 @@
             <strong>Call Submission deadline:</strong> {{ call.submission_deadline }}
         </div>
     </div>
+    <br>
+    <strong>Budget maximum:</strong> {{ call.budget_maximum }} CHF
     <div class="row">
         <div class="col-6">
             <strong>Budget categories:</strong>
@@ -35,8 +37,6 @@
                 <span class="badge badge-secondary">{{ budget_category }}</span>{% endfor %}
         </div>
     </div>
-    <br>
-    <strong>Budget maximum:</strong> {{ call.budget_maximum }} CHF
     <p></p>
     <div class="row">
         <div class="col-6">
