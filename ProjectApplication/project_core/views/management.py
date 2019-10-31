@@ -133,7 +133,7 @@ class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
         return context
 
 
-class CallViewDetails(TemplateView):
+class CallDetailView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -203,7 +203,7 @@ class CallView(TemplateView):
             messages.success(request, 'Call has been saved')
             return redirect(reverse('management-call-detail', kwargs={'id': call.id}) + '?action={}'.format(action))
 
-        context = {}
+        context = super().get_context_data(**kwargs)
 
         context['call_action'] = call_action
         context[CALL_FORM_NAME] = call_form

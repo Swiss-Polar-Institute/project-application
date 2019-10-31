@@ -24,7 +24,7 @@ urlpatterns = [
     path('management/call/list', management.CallsList.as_view(), name='management-calls-list'),
     path('management/call/add/', management.CallView.as_view(), name='call-add'),
     path('management/call/<int:id>/update', management.CallView.as_view(), name='management-call-update'),
-    path('management/call/<int:id>/', management.CallViewDetails.as_view(), name='management-call-detail'),
+    path('management/call/<int:id>/', management.CallDetailView.as_view(), name='management-call-detail'),
     path('management/calls/', management.CallsList.as_view(), name='management-calls'),
     path('management/', management.Homepage.as_view(), name='management-homepage'),
 
