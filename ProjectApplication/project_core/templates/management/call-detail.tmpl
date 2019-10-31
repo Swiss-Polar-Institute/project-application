@@ -52,9 +52,13 @@
     <h2>Questions</h2>
     {% for question in call.callquestion_set_ordered_by_order %}
         <p>
-            <strong>Question:</strong> {{ question.question_text }}<br>
-            <strong>Maximum word length:</strong>
-            {% if question.answer_max_length %}{{ question.answer_max_length }}{% else %}Unlimited{% endif %}
+            <div class="row">
+                <div class="col-6">
+                    <strong>Question:</strong> {{ question.question_text }} (max words:
+                    {% if question.answer_max_length %}{{ question.answer_max_length }}{% else %}unlimited{% endif %})<br>
+                </div>
+            </div>
+            <strong>Description:</strong> {{ question.question_description }}<br>
         </p>
     {% endfor %}
 
