@@ -18,10 +18,15 @@
     <p>Your account doesn't have access to this page. To proceed,
     please login with an account that has access.</p>
   {% else %}
-    <p>Please login to see this page.</p>
+    <p>Please login to enter the management area.</p>
   {% endif %}
 {% endif %}
 
+<p>
+    Example login details:<br>
+    <strong>Username:</strong> {{ demo_management_user }}<br>
+    <strong>Password:</strong> {{ demo_management_password }}
+</p>
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
 <table>
@@ -42,7 +47,7 @@
 </form>
     <hr>
     <p>
-        If you have problems login please contact {{ contact }}
+        If you have problems logging in please contact {{ contact }}
     </p>
 
 {# Assumes you setup the password_reset view in your URLconf #}

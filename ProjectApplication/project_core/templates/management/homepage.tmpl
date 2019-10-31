@@ -3,31 +3,14 @@
 {% block subtitle %}Homepage{% endblock %}
 
 {% block contents %}
+    <h1>Homepage</h1>
     <p>
-        Here there will be the latest news table and information of coming up deadlines.
+        Here there will be the latest news, coming up deadlines, search tools. This is not done yet.
     </p>
 
     <p>
-        While we are changing this there are some options:
+        Meanwhile you can explore the Calls and Proposals (see the navigation bar above) and the options that appear on the left hand side.
     </p>
-    <p>
-        Call options:
-    <ul>
-        <li><a href="{% url 'management-calls-list' %}">List of calls</a></li>
-        <li><a href="{% url 'call-add' %}">Create a new call</a></li>
-    </ul>
-
-    Template question options:
-    <ul>
-        <li><a href="{% url 'template-questions-list' %}">List of template questions</a></li>
-        <li><a href="{% url 'template-question-add' %}">Create a new template question</a></li>
-    </ul>
-
-    Proposal options:
-    <ul>
-        <li><a href="{% url 'management-proposals-list' %}">List of submitted proposals</a></li>
-    </ul>
-
 
     <div class="fixed-bottom">
         <span class="text-muted"><small>Version: {% version_date %}</small></span>

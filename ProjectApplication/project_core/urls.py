@@ -33,7 +33,9 @@ urlpatterns = [
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',
-                                      extra_context={'contact': settings.LOGIN_CONTACT})),
+                                      extra_context={'contact': settings.LOGIN_CONTACT,
+                                                     'demo_management_user': settings.DEMO_MANAGEMENT_USER,
+                                                     'demo_management_password': settings.DEMO_MANAGEMENT_PASSWORD})),
     path('accounts/', include('django.contrib.auth.urls')),
 
     path('autocomplete/organisations/', project_core.views.autocomplete.OrganisationsAutocomplete.as_view(),
