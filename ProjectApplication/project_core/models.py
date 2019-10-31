@@ -104,6 +104,9 @@ class Call(CreateModify):
     def number_of_proposals(self):
         return self.proposal_set.count()
 
+    def callquestion_set_ordered_by_order(self):
+        return self.callquestion_set.all().order_by('order')
+
 
 class StepType(models.Model):
     """Notable steps during the process"""
@@ -394,12 +397,16 @@ class PersonPosition(CreateModify):
                                              default=False, blank=False, null=False)
 
     def __str__(self):
-        organisations_str = ', '.join([organisation.abbreviated_name() for organisation in self.organisations.all()])
+        organisations_str = ', '.join(
+            [organisation.abbreviated_name() for organisation in self.organisations.all().order_by('long_name')])
 
         return '{} {} - {}'.format(self.academic_title, self.person, organisations_str)
 
     def main_email(self):
         return self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')[0].entry
+
+    def organisations_ordered_by_name(self):
+        return self.organisations.all().order_by('long_name')
 
     class Meta:
         verbose_name_plural = 'People from organisation(s)'

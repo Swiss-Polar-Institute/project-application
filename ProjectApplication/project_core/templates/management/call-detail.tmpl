@@ -4,8 +4,42 @@
 {% block contents %}
     <h1>Call details</h1>
     {% include "_messages-box.tmpl" %}
-    Long Name: {{ call.long_name }}
+    <strong>Funding instrument:</strong> {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding instrument{% endif %}
+    <br>
+    <strong>Long Name:</strong> {{ call.long_name }}
+    <br>
+    <strong>Short Name:</strong> {{ call.short_name }}
+    <br>
+    <strong>Description:</strong> {{ call.description }}
+    <br>
+    <strong>Introductory message:</strong>
+    <div class="pre-with-newlines border p-3 bg-white rounded">
+    {{ call.introductory_message }}
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-6">
+            <strong>Call Open Date:</strong> {{ call.call_open_date }}
+        </div>
+        <div class="col-6">
+            <strong>Call Submission deadline:</strong> {{ call.submission_deadline }}
+        </div>
+    </div>
+    <strong>Budget categories:</strong> {{ call.budget_categories }}
+    <br>
+    <div class="row">
+        <div class="col-6">
+            <strong>Other funding question:</strong> {% include 'common/_check-icon.tmpl' with value=call.other_funding_question %}
+        </div>
+        <div class="col-6">
+            <strong>Proposal partner question:</strong> {% include 'common/_check-icon.tmpl' with value=call.proposal_partner_question %}
+        </div>
+    </div>
+    <h2>Questions</h2>
+    {% for question in call.callquestion_set_ordered_by_order %}
+        <strong>Question:</strong> {{ question.question_text }}<br>
+    {% endfor %}
 
-    <p></p>
     <a class="btn btn-primary" href="{% url 'management-call-update' id=call.id %}">Edit the call</a>
+    <p></p>
 {% endblock %}
