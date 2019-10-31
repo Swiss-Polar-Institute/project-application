@@ -6,9 +6,11 @@ from .views import management
 
 from django.contrib.auth import views as auth_views
 from django.conf import settings
+from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = [
     path('', external.Homepage.as_view(), name='homepage'),
+    path('admin/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-jsi18n'),
     path('calls/', external.CallsList.as_view(), name='calls-list'),
     path('proposal/add/', external.ProposalView.as_view(), name='proposal-add'),
     path('proposal/<uuid:uuid>/update', external.ProposalView.as_view(), name='proposal-update'),
