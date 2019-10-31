@@ -11,24 +11,21 @@
 
 <h3>Applicant</h3>
 {% with applicant=proposal.applicant %}
-    {{ applicant.academic_title }} {{ applicant.person.first_name }} {{ applicant.person.surname }} (Gender:
-    {{ applicant.person.gender }})
+    {{ applicant.academic_title }} {{ applicant.person.first_name }} {{ applicant.person.surname }}
     <br>
     <strong>Email:</strong> {{ email }}
     <br>
     <strong>Organisations:</strong>
     {% for organisation in applicant.organisations_ordered_by_name %}
-        {{ organisation }}
-        {% if not forloop.last %}, {% endif %}
+        {{ organisation }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
     <br>
-    <strong>Group:</strong> {{ applicant.group }}
 {% endwith %}
 <p></p>
 <h3>Proposal details</h3>
 <strong>Geographical areas:</strong>
 {% for area in proposal.geographical_areas.all %}
-    {{ area }}
+    {{ area }}{% if not forloop.last %}, {% endif %}
 {% endfor %}
 <br>
 
