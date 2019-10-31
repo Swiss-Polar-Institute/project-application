@@ -29,9 +29,7 @@
         <div class="tab-pane fade" id="future" role="tabpanel">
             <h1>Future calls</h1>
             {% if future_calls %}
-                {% for call in future_calls %}
-                    {% include 'management/_table_of_calls.tmpl' with calls=future_calls %}
-                {% endfor %}
+                {% include 'management/_table_of_calls.tmpl' with calls=future_calls %}
             {% else %}
                 No future calls at the moment.
             {% endif %}
