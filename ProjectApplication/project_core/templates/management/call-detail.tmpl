@@ -4,7 +4,9 @@
 {% block contents %}
     <h1>Call details</h1>
     {% include "_messages-box.tmpl" %}
-    <strong>Funding instrument:</strong> {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding instrument{% endif %}
+    <strong>Funding instrument:</strong>
+    {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding instrument
+    {% endif %}
     <br>
     <strong>Long Name:</strong> {{ call.long_name }}
     <br>
@@ -14,7 +16,7 @@
     <br>
     <strong>Introductory message:</strong>
     <div class="pre-with-newlines border p-3 bg-white rounded">
-    {{ call.introductory_message }}
+        {{ call.introductory_message }}
     </div>
     <br>
     <div class="row">
@@ -29,15 +31,21 @@
     <br>
     <div class="row">
         <div class="col-6">
-            <strong>Other funding question:</strong> {% include 'common/_check-icon.tmpl' with value=call.other_funding_question %}
+            <strong>Other funding
+                question:</strong> {% include 'common/_check-icon.tmpl' with value=call.other_funding_question %}
         </div>
         <div class="col-6">
-            <strong>Proposal partner question:</strong> {% include 'common/_check-icon.tmpl' with value=call.proposal_partner_question %}
+            <strong>Proposal partner
+                question:</strong> {% include 'common/_check-icon.tmpl' with value=call.proposal_partner_question %}
         </div>
     </div>
     <h2>Questions</h2>
     {% for question in call.callquestion_set_ordered_by_order %}
-        <strong>Question:</strong> {{ question.question_text }}<br>
+        <p>
+            <strong>Question:</strong> {{ question.question_text }}<br>
+            <strong>Maximum word length:</strong>
+            {% if question.answer_max_length %}{{ question.answer_max_length }}{% else %}Unlimited{% endif %}
+        </p>
     {% endfor %}
 
     <a class="btn btn-primary" href="{% url 'management-call-update' id=call.id %}">Edit the call</a>
