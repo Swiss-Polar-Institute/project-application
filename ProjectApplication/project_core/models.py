@@ -7,6 +7,7 @@ from django.db import models, transaction
 from django.db.models import Max
 from django.urls import reverse
 from django.utils import timezone
+from django.conf import settings
 
 
 class CreateModify(models.Model):
@@ -39,6 +40,12 @@ class BudgetCategory(models.Model):
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def all_ordered_by_name_other_last():
+        all_but_other = BudgetCategory.objects.all().exclude(name=settings.LAST_BUDGET_CATEGORY).order_by('name')
+        other = BudgetCategory.objects.filter(name=settings.LAST_BUDGET_CATEGORY)
+        return all_but_other.union(other)
 
     class Meta:
         verbose_name_plural = 'Budget categories'
@@ -106,6 +113,12 @@ class Call(CreateModify):
 
     def callquestion_set_ordered_by_order(self):
         return self.callquestion_set.all().order_by('order')
+
+    def budget_categories_ordered_by_name_other_last(self):
+        all_but_other = self.budget_categories.all().exclude(name=settings.LAST_BUDGET_CATEGORY).order_by('name')
+        other = self.budget_categories.filter(name=settings.LAST_BUDGET_CATEGORY)
+
+        return all_but_other.union(other)
 
 
 class StepType(models.Model):

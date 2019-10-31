@@ -74,7 +74,7 @@ class CallForm(forms.ModelForm):
             used_questions = []
 
         self.fields['budget_categories'] = forms.ModelMultipleChoiceField(initial=budget_categories_qs,
-                                                                          queryset=BudgetCategory.objects.all(),
+                                                                          queryset=BudgetCategory.all_ordered_by_name_other_last(),
                                                                           widget=forms.CheckboxSelectMultiple)
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,

@@ -2,8 +2,10 @@
 {% block subtitle %}Call{% endblock %}
 
 {% block contents %}
+    <br>
+    {% include '_messages-box.tmpl' %}
+    <a class="float-sm-right btn btn-primary" href="{% url 'management-call-update' id=call.id %}">Edit call</a>
     <h1>Call details</h1>
-    {% include "_messages-box.tmpl" %}
     <strong>Funding instrument:</strong>
     {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding instrument
     {% endif %}
@@ -15,9 +17,7 @@
     <strong>Description:</strong> {{ call.description }}
     <br>
     <strong>Introductory message:</strong>
-    <div class="pre-with-newlines border p-3 bg-white rounded">
-        {{ call.introductory_message }}
-    </div>
+    <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.introductory_message }}</div>
     <br>
     <div class="row">
         <div class="col-6">
@@ -27,8 +27,17 @@
             <strong>Call Submission deadline:</strong> {{ call.submission_deadline }}
         </div>
     </div>
-    <strong>Budget categories:</strong> {{ call.budget_categories }}
+    <div class="row">
+        <div class="col-6">
+            <strong>Budget categories:</strong>
+            {% for budget_category in call.budget_categories_ordered_by_name_other_last %}{% if not forloop.first %}
+            {% endif %}
+                <span class="badge badge-secondary">{{ budget_category }}</span>{% endfor %}
+        </div>
+    </div>
     <br>
+    <strong>Budget maximum:</strong> {{ call.budget_maximum }} CHF
+    <p></p>
     <div class="row">
         <div class="col-6">
             <strong>Other funding
@@ -39,6 +48,7 @@
                 question:</strong> {% include 'common/_check-icon.tmpl' with value=call.proposal_partner_question %}
         </div>
     </div>
+    <br>
     <h2>Questions</h2>
     {% for question in call.callquestion_set_ordered_by_order %}
         <p>
@@ -48,6 +58,5 @@
         </p>
     {% endfor %}
 
-    <a class="btn btn-primary" href="{% url 'management-call-update' id=call.id %}">Edit the call</a>
     <p></p>
 {% endblock %}
