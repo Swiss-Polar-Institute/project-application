@@ -5,7 +5,8 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from project_core.forms.proposal import ProposalForm, PersonForm, QuestionsForProposalForm, DataCollectionForm
+from project_core.forms.proposal import ProposalForm, PersonForm, DataCollectionForm
+from project_core.forms.questions import Questions
 from project_core.forms.proposal_funding import ProposalFundingItemFormSet
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.proposal_partners import ProposalPartnersInlineFormSet
@@ -73,8 +74,8 @@ class AbstractProposalView(TemplateView):
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
-            questions_form = QuestionsForProposalForm(proposal=proposal,
-                                                      prefix=QUESTIONS_FORM_NAME)
+            questions_form = Questions(proposal=proposal,
+                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
 
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
@@ -94,8 +95,8 @@ class AbstractProposalView(TemplateView):
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME)
-            questions_form = QuestionsForProposalForm(call=call,
-                                                      prefix=QUESTIONS_FORM_NAME)
+            questions_form = Questions(call=call,
+                                       prefix=QUESTIONS_FORM_NAME)
 
             initial_budget = []
             for budget_category in call.budget_categories.all().order_by('order', 'name'):
@@ -147,9 +148,9 @@ class AbstractProposalView(TemplateView):
             # Editing an existing proposal
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
-            questions_form = QuestionsForProposalForm(request.POST,
-                                                      proposal=proposal,
-                                                      prefix=QUESTIONS_FORM_NAME)
+            questions_form = Questions(request.POST,
+                                       proposal=proposal,
+                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
                                                       instance=proposal)
@@ -162,9 +163,9 @@ class AbstractProposalView(TemplateView):
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
-            questions_form = QuestionsForProposalForm(request.POST,
-                                                      call=call,
-                                                      prefix=QUESTIONS_FORM_NAME)
+            questions_form = Questions(request.POST,
+                                       call=call,
+                                       prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
