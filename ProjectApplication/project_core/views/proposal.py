@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 
 from project_core.forms.proposal import ProposalForm, PersonForm, QuestionsForProposalForm, BudgetItemFormSet, \
-    ProposalFundingItemFormSet, DataCollectionForm
+    ProposalFundingItemFormSet, DataCollectionForm, ProposalPartnersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus
 
 # Form names (need to match what's in the templates)
@@ -16,6 +16,7 @@ QUESTIONS_FORM_NAME = 'questions_form'
 BUDGET_FORM_NAME = 'budget_form'
 FUNDING_FORM_NAME = 'funding_form'
 DATA_COLLECTION_FORM_NAME = 'data_collection_form'
+PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
 
 
 class AbstractProposalDetailView(TemplateView):
@@ -76,6 +77,8 @@ class AbstractProposalView(TemplateView):
 
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
                                                       instance=proposal)
+            proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME,
+                                                                   instance=proposal)
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
 
@@ -98,6 +101,7 @@ class AbstractProposalView(TemplateView):
 
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
+            proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME)
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
 
             context['proposal_action_url'] = reverse(self.action_url_add)
@@ -111,6 +115,7 @@ class AbstractProposalView(TemplateView):
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
         context[FUNDING_FORM_NAME] = funding_form
+        context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
 
         return render(request, self.form_template, context)
@@ -188,7 +193,8 @@ class AbstractProposalView(TemplateView):
 
             messages.success(request, self.success_message)
 
-            return redirect(reverse(self.created_or_updated_url, kwargs={'uuid': proposal.uuid}) + '?action={}'.format(action))
+            return redirect(
+                reverse(self.created_or_updated_url, kwargs={'uuid': proposal.uuid}) + '?action={}'.format(action))
 
         context[PERSON_FORM_NAME] = person_form
         context[PROPOSAL_FORM_NAME] = proposal_form
@@ -214,5 +220,3 @@ def call_context_for_template(call):
                'other_funding_question': call.other_funding_question}
 
     return context
-
-

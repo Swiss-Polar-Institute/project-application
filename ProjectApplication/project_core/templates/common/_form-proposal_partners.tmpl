@@ -1,16 +1,17 @@
 {% load static %}
 {% load crispy_forms_tags %}
+<</h1>
 <p>
-    Please outline the status of other sources of funding.
+    Please incorporate the proposal partners.
 </p>
-{% crispy funding_form %}
+{% crispy proposal_partners_form %}
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 <script>
-    $(function() {
-        $('#funding_form_table tbody tr').formset({
-            prefix: 'funding_form'
+    $(function () {
+        $('#proposal_partners_form_table tbody tr').formset({
+            prefix: 'proposal_partners_form'
         })
     })
 </script>

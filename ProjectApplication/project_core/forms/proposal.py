@@ -8,7 +8,7 @@ from ..widgets import DatePickerWidget
 
 from ..models import Proposal, ProposalQAText, CallQuestion, Organisation, \
     ProposalFundingItem, ProposedBudgetItem, BudgetCategory, Contact, \
-    PhysicalPerson, PersonPosition, PersonTitle, Gender
+    PhysicalPerson, PersonPosition, PersonTitle, Gender, ProposalPartner
 
 from crispy_forms.helper import FormHelper
 from dal import autocomplete
@@ -295,6 +295,30 @@ ProposalFundingItemFormSet = inlineformset_factory(
     can_delete=True)
 
 
+class ProposalPartnerItemForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_tag = False
+
+    class Meta:
+        model = ProposalPartner
+        fields = ['role_description', 'competences', ]
+
+
+class ProposalPartnersFormSet(BaseInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.template = 'bootstrap4/table_inline_formset.html'
+        self.helper.form_id = 'proposal_partners_form'
+
+
+ProposalPartnersInlineFormSet = inlineformset_factory(
+    Proposal, ProposalPartner, form=ProposalPartnerItemForm, formset=ProposalPartnersFormSet, extra=1,
+    can_delete=True)
+
 class PlainTextWidget(forms.Widget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -416,8 +440,6 @@ class BudgetFormSet(BaseFormSet):
     def save_budgets(self, proposal):
         for form in self.forms:
             form.save_budget(proposal)
-
-
 
 BudgetItemFormSet = formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=0)
 
