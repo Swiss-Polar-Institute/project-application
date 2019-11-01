@@ -1,5 +1,5 @@
 <br>
-{% include "_messages-box.tmpl" %}
+{% include "common/_messages-box.tmpl" %}
 
 {% if edit_button %}
     <a class="float-sm-right btn btn-primary" href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit
@@ -52,11 +52,11 @@
 <strong>Total requested budget:</strong> {{ proposal.total_budget }} CHF
 <p><strong>Maximum budget:</strong> {{ maximum_budget }} CHF</p>
 
-{% include '_accordion.tmpl' with prefix='budget' button_text='Budget details' template_file='_table-budget.tmpl' %}
+{% include '_accordion.tmpl' with prefix='budget' button_text='Budget details' template_file='common/_table-budget.tmpl' %}
 <br>
 <h3>Other sources of funding</h3>
 
-{% include '_accordion.tmpl' with prefix='funding' button_text='Funding details' template_file='_table-funding.tmpl' %}
+{% include '_accordion.tmpl' with prefix='funding' button_text='Funding details' template_file='common/_table-funding.tmpl' %}
 <br>
 <h3>Data agreement</h3>
 <strong>Agreed to data

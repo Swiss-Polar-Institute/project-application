@@ -5,7 +5,7 @@
 {% block contents %}
     <H1>{{ call_action }} call</H1>
 
-    {% include "_messages-box.tmpl" %}
+    {% include "common/_messages-box.tmpl" %}
 
     <form method="post" action="{{ call_action_url }}">
         {% csrf_token %}
@@ -13,7 +13,7 @@
 
         {% include "management/_form_call_question.tmpl" %}
 
-        {% include "_submit-button.tmpl" %}
+        {% include "common/_submit-button.tmpl" %}
         <p></p>
     </form>
 {% endblock %}

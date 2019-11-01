@@ -1,6 +1,6 @@
 {% load crispy_forms_tags %}
 
-{% include "_messages-box.tmpl" %}
+{% include "common/_messages-box.tmpl" %}
 
 <h1>{{ action }} proposal</h1>
 
@@ -26,22 +26,22 @@
     {% crispy proposal_form %}
 
     <h2>Part 2: Project Description</h2>
-    {% include "_form-dynamic_questions.tmpl" %}
+    {% include "common/_form-dynamic_questions.tmpl" %}
 
     <h2>Budget requested</h2>
-    {% include "_form-budget.tmpl" %}
+    {% include "common/_form-budget.tmpl" %}
 
     <h2>Proposal partners</h2>
-    {% include 'common/_form-partners.tmpl' %}
+    {% include 'common/_form-proposal_partners.tmpl' %}
 
     {% if other_funding_question %}
         <h2>Other sources of funding</h2>
-        {% include "_form-funding_organisations.tmpl" %}
+        {% include "common/_form-funding_organisations.tmpl" %}
     {% endif %}
 
     {% crispy data_collection_form %}
 
-    {% include "_submit-button.tmpl" %}
+    {% include "common/_submit-button.tmpl" %}
 
     <p>
         After submission, you will be able to edit this proposal until the application deadline.
