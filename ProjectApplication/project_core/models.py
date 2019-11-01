@@ -7,7 +7,6 @@ from django.db import models, transaction
 from django.db.models import Max
 from django.urls import reverse
 from django.utils import timezone
-from django.conf import settings
 
 
 class CreateModify(models.Model):
@@ -60,7 +59,7 @@ class FundingInstrument(CreateModify):
     short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60,
                                   blank=True, null=True)
     description = models.TextField(
-        help_text='Desription of the funding instrument that can be used to distinguish it from others', blank=False,
+        help_text='Description of the funding instrument that can be used to distinguish it from others', blank=False,
         null=False)
 
     def __str__(self):

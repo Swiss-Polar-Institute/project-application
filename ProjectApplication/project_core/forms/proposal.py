@@ -4,7 +4,6 @@ from django.forms import ModelChoiceField, BaseInlineFormSet, BaseFormSet, Model
 from django.forms import ModelForm, Form
 from django.forms.models import inlineformset_factory, formset_factory
 from crispy_forms.layout import Layout, Div
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from ..widgets import DatePickerWidget
 
 from ..models import Proposal, ProposalQAText, CallQuestion, Organisation, \
@@ -419,6 +418,10 @@ class BudgetFormSet(BaseFormSet):
             form.save_budget(proposal)
 
 
+
+BudgetItemFormSet = formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=0)
+
+
 class DataCollectionForm(Form):
     def __init__(self, *args, **kwargs):
         person_position = kwargs.pop('person_position', None)
@@ -457,6 +460,3 @@ class DataCollectionForm(Form):
         person_position.data_policy = self.cleaned_data['data_policy']
         person_position.contact_newsletter = self.cleaned_data['contact_newsletter']
         person_position.save()
-
-
-BudgetItemFormSet = formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=0)
