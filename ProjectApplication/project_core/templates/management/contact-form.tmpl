@@ -1,12 +1,12 @@
 {% extends 'management/_base_with_menus.tmpl' %}
 {% load crispy_forms_tags %}
-{% block subtitle %}Template question{% endblock %}
+{% block subtitle %}Contact{% endblock %}
 
 {% block contents %}
     {% if form.instance.id %}
-        <h1>Editing template question</h1>
+        <h1>Editing contact</h1>
     {% else %}
-        <h1>Creating template question</h1>
+        <h1>Creating contact</h1>
     {% endif %}
 
     {% crispy form %}

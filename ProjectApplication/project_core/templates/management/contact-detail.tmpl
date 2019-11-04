@@ -1,0 +1,25 @@
+{% extends 'management/_base_with_menus.tmpl' %}
+{% block subtitle %}Contact{% endblock %}
+
+{% block contents %}
+    <h1>Contact</h1>
+    {% include 'common/_messages-box.tmpl' %}
+
+    <p></p>
+    <strong>Name:</strong> {{ object.academic_title }} {{ object.person.first_name }} {{ object.person.surname }}
+    <br>
+    <strong>Group:</strong> {{ object.group }}
+    <br>
+    <strong>Email:</strong> {{ object.main_email }}
+    <p></p>
+    <div class="row">
+        <div class="col-6">
+            <strong>Data policy:</strong> {% include 'common/_check-icon.tmpl' with value=object.data_policy %}
+        </div>
+        <div class="col-6">
+            <strong>Newsletter:</strong> {% include 'common/_check-icon.tmpl' with value=object.contact_newsletter %}
+        </div>
+    </div>
+    <hr>
+    <a class="btn btn-primary" href="{% url 'contact-update' pk=object.id %}">Edit contact</a>
+{% endblock %}

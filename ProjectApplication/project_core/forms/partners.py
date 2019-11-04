@@ -1,26 +1,10 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Hidden, Field
+from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
+from project_core.forms.utils import get_field_information
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, Role
-
-
-def get_model_information(model, field, information):
-    return getattr(model._meta.get_field(field), information)
-
-
-def get_field_information(model, field):
-    kwargs = {}
-
-    kwargs['help_text'] = get_model_information(model, field, 'help_text')
-    kwargs['required'] = not get_model_information(model, field, 'blank')
-
-    max_length = get_model_information(model, field, 'max_length')
-    if max_length is not None:
-        kwargs['max_length'] = max_length
-
-    return kwargs
 
 
 class RoleChoiceField(forms.ModelChoiceField):

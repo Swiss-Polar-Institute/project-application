@@ -410,7 +410,11 @@ class PersonPosition(CreateModify):
         return '{} {} - {}'.format(self.academic_title, self.person, organisations_str)
 
     def main_email(self):
-        return self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')[0].entry
+        emails = self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')
+        if emails:
+            return emails[0].entry
+        else:
+            return '-'
 
     def organisations_ordered_by_name(self):
         return self.organisations.all().order_by('long_name')
