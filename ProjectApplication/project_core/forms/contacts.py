@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm
 
 from .utils import get_field_information
@@ -52,6 +53,19 @@ class ContactForm(ModelForm):
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
+
+    def clean(self):
+        super().clean()
+
+        if self.instance is None or self.instance.pk is None:
+            # Creating a new one. Let's avoid creating duplicates and inform the user
+            try:
+                physical_person = PhysicalPerson.objects.get(first_name=self.cleaned_data['person__first_name'],
+                                           surname=self.cleaned_data['person__surname'])
+                raise forms.ValidationError('Cannot create: person already exists')
+
+            except ObjectDoesNotExist:
+                pass
 
     def save(self, commit=True):
         model = super().save(False)

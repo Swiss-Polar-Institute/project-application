@@ -19,7 +19,7 @@
                 <tr>
                     <td>{{ contact.person.first_name }}</td>
                     <td>{{ contact.person.surname }}</td>
-                    <td>{{ contact.main_email }}</td>
+                    <td><a href="mailto:{{ contact.main_email }}">{{ contact.main_email }}</a></td>
                     <td><a class="btn btn-primary btn-xs"
                            href="{% url 'contact-update' pk=contact.id %}">Edit</a>
                     <a class="btn btn-primary btn-xs"

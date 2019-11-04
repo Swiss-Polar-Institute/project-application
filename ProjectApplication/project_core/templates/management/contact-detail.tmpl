@@ -2,15 +2,19 @@
 {% block subtitle %}Contact{% endblock %}
 
 {% block contents %}
+    <br>
+
+    <a class="float-sm-right btn btn-primary" href="{% url 'contact-update' pk=object.id %}">Edit contact</a>
+
     <h1>Contact</h1>
     {% include 'common/_messages-box.tmpl' %}
 
     <p></p>
     <strong>Name:</strong> {{ object.academic_title }} {{ object.person.first_name }} {{ object.person.surname }}
     <br>
-    <strong>Group:</strong> {{ object.group }}
+    <strong>Group:</strong> {% if object.group %}{{ object.group }}{% else %}-{% endif %}
     <br>
-    <strong>Email:</strong> {{ object.main_email }}
+    <strong>Email:</strong> <a href="mailto:{{ object.main_email }}">{{ object.main_email }}</a>
     <p></p>
     <div class="row">
         <div class="col-6">
@@ -21,5 +25,4 @@
         </div>
     </div>
     <hr>
-    <a class="btn btn-primary" href="{% url 'contact-update' pk=object.id %}">Edit contact</a>
 {% endblock %}
