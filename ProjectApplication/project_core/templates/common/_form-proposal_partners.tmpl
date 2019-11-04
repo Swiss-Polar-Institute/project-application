@@ -1,9 +1,20 @@
 {% load static %}
 {% load crispy_forms_tags %}
 <p>
-    Please incorporate the proposal partners.
+    Please enter the proposal partners.
 </p>
-{% crispy proposal_partners_form %}
+
+<table id="proposal_partners_form_table" class="table table-striped table-sm">
+    <tbody>
+    <tr>
+        <td>
+            {% for proposal_partner_form in proposal_partners_form %}
+                {% crispy proposal_partner_form %}
+            {% endfor %}
+        </td>
+    </tr>
+    </tbody>
+</table>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>

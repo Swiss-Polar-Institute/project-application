@@ -7,9 +7,9 @@ from django.views.generic import TemplateView
 
 from project_core.forms.proposal import ProposalForm, PersonForm, DataCollectionForm
 from project_core.forms.questions import Questions
-from project_core.forms.proposal_funding import ProposalFundingItemFormSet
+from project_core.forms.funding import ProposalFundingItemFormSet
 from project_core.forms.budget import BudgetItemFormSet
-from project_core.forms.proposal_partners import ProposalPartnersInlineFormSet
+from project_core.forms.partners import ProposalPartnersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus
 
 # Form names (need to match what's in the templates)
