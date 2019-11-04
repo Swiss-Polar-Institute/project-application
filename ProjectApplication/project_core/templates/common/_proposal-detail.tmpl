@@ -54,10 +54,13 @@
 
 {% include '_accordion.tmpl' with prefix='budget' button_text='Budget details' template_file='common/_table-budget.tmpl' %}
 <br>
-<h3>Other sources of funding</h3>
+{% if proposal.call.other_funding_question %}
+    <h3>Other sources of funding</h3>
 
-{% include '_accordion.tmpl' with prefix='funding' button_text='Funding details' template_file='common/_table-funding.tmpl' %}
-<br>
+    {% include '_accordion.tmpl' with prefix='funding' button_text='Funding details' template_file='common/_table-funding.tmpl' %}
+    <br>
+{% endif %}
+
 <h3>Data agreement</h3>
 <strong>Agreed to data
     policy:</strong> {% include 'common/_check-icon.tmpl' with value=proposal.applicant.data_policy %}<br>
