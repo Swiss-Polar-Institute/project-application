@@ -32,6 +32,9 @@ class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
     def get_result_label(self, result):
         return result.name
 
+    def has_add_permission(self, *args, **kwargs):
+        return True
+
     def get_queryset(self):
         qs = Keyword.objects.all()
 
