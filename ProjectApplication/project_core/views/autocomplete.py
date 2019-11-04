@@ -33,6 +33,8 @@ class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
         return result.name
 
     def has_add_permission(self, *args, **kwargs):
+        # By default only authenticated users with permissions to add in the model
+        # have the option to create keywords. We allow any user to create keywords
         return True
 
     def get_queryset(self):

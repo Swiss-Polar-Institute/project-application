@@ -157,6 +157,8 @@ class AbstractProposalView(TemplateView):
             data_collection_form = DataCollectionForm(request.POST,
                                                       prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
+            proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
+                                                              instance=proposal)
             action = 'updated'
 
         else:
@@ -169,11 +171,12 @@ class AbstractProposalView(TemplateView):
             budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
             funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
+            proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME)
 
             action = 'created'
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
-                             funding_form, data_collection_form]
+                             funding_form, data_collection_form, proposal_partners_form]
 
         all_valid = True
         for form in forms_to_validate:
@@ -194,6 +197,8 @@ class AbstractProposalView(TemplateView):
             questions_form.save_answers(proposal)
             budget_form.save_budgets(proposal)
 
+            proposal_partners_form.save_partners(proposal)
+
             messages.success(request, self.success_message)
 
             return redirect(
@@ -205,6 +210,7 @@ class AbstractProposalView(TemplateView):
         context[BUDGET_FORM_NAME] = budget_form
         context[FUNDING_FORM_NAME] = funding_form
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
+        context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
 
         context['action'] = 'Edit'
 
