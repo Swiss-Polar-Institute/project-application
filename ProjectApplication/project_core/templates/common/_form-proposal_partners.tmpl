@@ -1,21 +1,27 @@
 {% load static %}
 {% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
 <p>
     Please enter the proposal partners.<br>
     If a partner changes: please, remove the partner and add a new one instead of editing the partner.
 </p>
 
-{{  proposal_partners_form.management_form }}
+{{ proposal_partners_form.management_form }}
+
+{% if proposal_partners_form.non_form_errors %}
+    {{ proposal_partners_form|as_crispy_errors }}
+{% endif %}
 
 <table id="proposal_partners_form_table" class="table table-striped table-sm">
     <tbody>
-    <tr>
-        <td>
-            {% for proposal_partner_form in proposal_partners_form %}
+    {% for proposal_partner_form in proposal_partners_form %}
+        <tr>
+            <td>
                 {% crispy proposal_partner_form %}
-            {% endfor %}
-        </td>
-    </tr>
+            </td>
+        </tr>
+
+    {% endfor %}
     </tbody>
 </table>
 

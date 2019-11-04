@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Hidden
+from crispy_forms.layout import Layout, Div, Hidden, Field
 from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
@@ -55,7 +55,6 @@ class ProposalPartnerItemForm(ModelForm):
             self.fields['id'] = self.instance.pk
             initial_role = self.instance.role
 
-
         self.fields['role'] = RoleChoiceField(queryset=Role.objects.all().order_by('name'), initial=initial_role)
 
         self.helper.layout = Layout(
@@ -84,6 +83,10 @@ class ProposalPartnerItemForm(ModelForm):
             ),
             Div(
                 Div('competences', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div(Field('DELETE'), css_class='col-12'),
                 css_class='row'
             ),
         )
