@@ -404,17 +404,30 @@ class PersonPosition(CreateModify):
                                              default=False, blank=False, null=False)
 
     def __str__(self):
-        organisations_str = ', '.join(
-            [organisation.abbreviated_name() for organisation in self.organisations.all().order_by('long_name')])
+        organisations_list = []
+
+        for organisation in self.organisations.all().order_by('long_name'):
+            organisations_list.append(organisation)
+
+        organisations_str = ', '.join(organisations_list)
 
         return '{} {} - {}'.format(self.academic_title, self.person, organisations_str)
 
     def main_email(self):
-        emails = self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')
-        if emails:
-            return emails[0].entry
+        email = self.main_email_model()
+
+        if email:
+            return email.entry
         else:
             return '-'
+
+    def main_email_model(self):
+        emails = self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')
+
+        if emails:
+            return emails[0]
+        else:
+            return None
 
     def organisations_ordered_by_name(self):
         return self.organisations.all().order_by('long_name')

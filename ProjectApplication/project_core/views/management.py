@@ -109,7 +109,26 @@ class ContactUpdateView(UpdateView):
         return reverse('contact-detail', kwargs={'pk': self.object.pk})
 
 
-class ContactDetailView(ContactMixin, DetailView):
+class ContactsCreateView(SuccessMessageMixin, CreateView):
+    template_name = 'management/contact-form.tmpl'
+    model = PersonPosition
+    success_message = 'Contact created'
+    form_class = ContactForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['active_section'] = 'contacts'
+        context['active_subsection'] = 'contacts-add'
+        context['sidebar_template'] = 'management/_sidebar-contacts.tmpl'
+
+        return context
+
+    def get_success_url(self, **kwargs):
+        return reverse('contact-detail', kwargs={'pk': self.object.pk})
+
+
+class ContactDetailView(DetailView):
     template_name = 'management/contact-detail.tmpl'
     model = PersonPosition
 
@@ -121,21 +140,6 @@ class ContactDetailView(ContactMixin, DetailView):
         context['sidebar_template'] = 'management/_sidebar-contacts.tmpl'
 
         return context
-
-
-class ContactsCreateView(ContactMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
-    template_name = 'management/contact-form.tmpl'
-    model = PersonPosition
-    success_message = 'Contact created'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['active_section'] = 'contacts'
-        context['active_subsection'] = 'contacts-add'
-        context['sidebar_template'] = 'management/_sidebar-contacts.tmpl'
-
-        return render(request, 'management/contact-list.tmpl', context)
 
 
 class QuestionsList(TemplateView):

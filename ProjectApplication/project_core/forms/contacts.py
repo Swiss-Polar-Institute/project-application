@@ -1,10 +1,11 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
-
-from ..models import PersonPosition, PhysicalPerson
-from django.forms import ModelForm
 from django import forms
+from django.forms import ModelForm
+
 from .utils import get_field_information
+from ..models import PersonPosition, PhysicalPerson, Contact
+
 
 class ContactForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -12,7 +13,7 @@ class ContactForm(ModelForm):
 
         person__first_name = person__surname = main_email = None
 
-        if self.instance and self.instance.person:
+        if self.instance and self.instance.pk and self.instance.person:
             person__first_name = self.instance.person.first_name
             person__surname = self.instance.person.surname
             main_email = self.instance.main_email()
@@ -51,6 +52,35 @@ class ContactForm(ModelForm):
             )
         )
         self.helper.add_input(Submit('submit', 'Submit'))
+
+    def save(self, commit=True):
+        model = super().save(False)
+
+        if model.person_id:
+            model.person.first_name = self.cleaned_data['person__first_name']
+            model.person.surname = self.cleaned_data['person__surname']
+
+        else:
+            model.person, created = PhysicalPerson.objects.get_or_create(
+                first_name=self.cleaned_data['person__first_name'],
+                surname=self.cleaned_data['person__surname'])
+
+        if commit:
+            model.person.save()
+            model.save()
+
+        main_email = self.instance.main_email_model()
+        if main_email:
+            main_email.entry = self.cleaned_data['email']
+        else:
+            main_email, created = Contact.objects.get_or_create(person_position=model,
+                                                                entry=self.cleaned_data['email'],
+                                                                method=Contact.EMAIL)
+
+        if commit:
+            main_email.save()
+
+        return model
 
     class Meta:
         model = PersonPosition
