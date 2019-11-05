@@ -31,8 +31,14 @@ class ProposalsList(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        call_id = self.request.GET.get('call', None)
 
         context['proposals'] = Proposal.objects.all()
+        context['call_filter'] = None
+
+        if call_id is not None:
+            context['proposals'] = context['proposals'].filter(call_id=call_id)
+            context['call_filter'] = Call.objects.get(id=call_id)
 
         context['active_section'] = 'proposals'
         context['active_subsection'] = 'proposals-list'

@@ -3,6 +3,12 @@
 
 {% block contents %}
     <h1>List of proposals</h1>
+    {% if call_filter %}
+        For call: <a href="{% url 'management-call-detail' id=call_filter.id %}">{{ call_filter.long_name }}</a>
+    {% else %}
+        All calls
+    {% endif %}
+    <p></p>
     {% if proposals %}
         <style>
             /** The buttons "Edit" and "View" in the Actions column should always be in the same line */
@@ -29,8 +35,10 @@
                     <td>{{ proposal.applicant.person }}</td>
                     <td>{{ proposal.proposal_status.name }}</td>
                     <td>
-                        <a class="btn btn-primary btn-xs" href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit</a>
-                        <a class="btn btn-primary btn-xs" href="{% url 'management-proposal-detail' uuid=proposal.uuid %}">View</a>
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit</a>
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'management-proposal-detail' uuid=proposal.uuid %}">View</a>
                     </td>
                 </tr>
             {% endfor %}
