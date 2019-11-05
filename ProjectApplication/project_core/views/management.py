@@ -321,39 +321,6 @@ class ProposalDetailView(AbstractProposalDetailView):
                      'sidebar_template': 'management/_sidebar-proposals.tmpl'}
 
 
-class ProposalsExportExcel(View):
-    def get(self, request, *args, **kwargs):
-        call_id = kwargs.get('call', None)
-
-        proposals = Proposal.objects.all().order_by('title')
-
-        date = timezone.now().strftime('%Y%m%d-%H%M%S')
-        if call_id:
-            proposals = proposals.filter(call_id=call_id)
-            filename = 'proposals-{}-{}.xlsx'.format(Call.objects.get(id=call_id).short_name, date)
-        else:
-            filename = 'proposals-all-{}.xlsx'.format(date)
-
-        output = io.BytesIO()
-        workbook = xlsxwriter.Workbook(output)
-        worksheet = workbook.add_worksheet()
-
-        for num, proposal in enumerate(proposals):
-            worksheet.write(num, 0, proposal.title)
-
-        workbook.close()
-
-        output.seek(0)
-
-        response = HttpResponse(
-            output,
-            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
-        response['Content-Disposition'] = 'attachment; filename=%s' % filename
-
-        return response
-
-
 class ProposalView(AbstractProposalView):
     created_or_updated_url = 'management-proposal-detail'
     form_template = 'management/proposal-form.tmpl'

@@ -374,6 +374,9 @@ class PhysicalPerson(CreateModify):
     def __str__(self):
         return '{} {}'.format(self.first_name, self.surname)
 
+    def full_name(self):
+        return '{} {}'.format(self.first_name, self.surname)
+
     class Meta:
         unique_together = (('first_name', 'surname', 'gender'),)
 
@@ -537,6 +540,21 @@ class Proposal(CreateModify):
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
+
+    def keywords_enumeration(self):
+        keywords = self.keywords.all().order_by('name')
+
+        if keywords:
+            return ', '.join([keyword.name for keyword in keywords])
+        else:
+            return '-'
+
+    def geographical_areas_enumeration(self):
+        geographical_areas = self.geographical_areas.all().order_by('name')
+        if geographical_areas:
+            return ', '.join([geographical_area.name for geographical_area in geographical_areas])
+        else:
+            return '-'
 
     def total_budget(self):
         """
