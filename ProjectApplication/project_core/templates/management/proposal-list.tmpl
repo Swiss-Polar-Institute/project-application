@@ -57,4 +57,10 @@
             );
         });
     </script>
+    <p></p>
+    {% if call_filter %}
+        <a class="btn btn-primary" href="{% url 'management-export-proposals-for-call-excel' call=call_filter.id %}">Export as Excel</a>
+    {% else %}
+        <a class="btn btn-primary" href="{% url 'management-export-proposals-all-calls-excel' %}">Export as Excel</a>
+    {% endif %}
 {% endblock %}

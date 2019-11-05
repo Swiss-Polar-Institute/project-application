@@ -1,10 +1,14 @@
+import io
+
+import xlsxwriter
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
+from django.urls import reverse
+from django.views.generic import TemplateView, CreateView, UpdateView, DetailView, View
 
 from project_core.forms.contacts import ContactForm
 from project_core.models import BudgetCategory, PersonPosition
@@ -12,6 +16,7 @@ from project_core.views.proposal import AbstractProposalDetailView, AbstractProp
 from ..forms.call import CallForm, CallQuestionItemFormSet
 from ..models import Call
 from ..models import Proposal, TemplateQuestion
+from django.utils import timezone
 
 CALL_FORM_NAME = 'call_form'
 CALL_QUESTION_FORM_NAME = 'call_question_form'
@@ -314,6 +319,39 @@ class ProposalDetailView(AbstractProposalDetailView):
     extra_context = {'active_section': 'proposals',
                      'active_subsection': 'proposals-list',
                      'sidebar_template': 'management/_sidebar-proposals.tmpl'}
+
+
+class ProposalsExportExcel(View):
+    def get(self, request, *args, **kwargs):
+        call_id = kwargs.get('call', None)
+
+        proposals = Proposal.objects.all().order_by('title')
+
+        date = timezone.now().strftime('%Y%m%d-%H%M%S')
+        if call_id:
+            proposals = proposals.filter(call_id=call_id)
+            filename = 'proposals-{}-{}.xlsx'.format(Call.objects.get(id=call_id).short_name, date)
+        else:
+            filename = 'proposals-all-{}.xlsx'.format(date)
+
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet()
+
+        for num, proposal in enumerate(proposals):
+            worksheet.write(num, 0, proposal.title)
+
+        workbook.close()
+
+        output.seek(0)
+
+        response = HttpResponse(
+            output,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+        return response
 
 
 class ProposalView(AbstractProposalView):

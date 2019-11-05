@@ -22,6 +22,11 @@ urlpatterns = [
          name='management-proposal-update'),
     path('management/proposal/<uuid:uuid>/', management.ProposalDetailView.as_view(),
          name='management-proposal-detail'),
+    path('management/proposals/export/excel/<int:call>/', management.ProposalsExportExcel.as_view(),
+         name='management-export-proposals-for-call-excel'),
+    path('management/proposals/export/excel/', management.ProposalsExportExcel.as_view(),
+         name='management-export-proposals-all-calls-excel'),
+
     path('management/call/list', management.CallsList.as_view(), name='management-calls-list'),
     path('management/call/add/', management.CallView.as_view(), name='call-add'),
     path('management/call/<int:id>/update', management.CallView.as_view(), name='management-call-update'),
