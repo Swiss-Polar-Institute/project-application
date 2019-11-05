@@ -1,3 +1,4 @@
+import copy
 import io
 
 import xlsxwriter
@@ -14,9 +15,19 @@ class ProposalsExportExcel(View):
         self._workbook = self._worksheet = None
 
     def write_call(self, proposal, row):
-        format = self._workbook.add_format({'text_wrap': True, 'bold': True})
+        properties = {'text_wrap': True, 'bold': True}
+        background_grey_properties = copy.deepcopy(properties)
+        background_grey_properties['bg_color'] = '#d6dce5'
+
+        background_green_properties = copy.deepcopy(properties)
+        background_green_properties['bg_color'] = '#a9d18e'
+
+        format = self._workbook.add_format(properties)
         format.set_align('center')
         format.set_align('bottom')
+
+        background_grey_format = self._workbook.add_format(background_grey_properties)
+        background_green_format = self._workbook.add_format(background_green_properties)
 
         self._worksheet.set_row(row, 50)
 
@@ -26,32 +37,32 @@ class ProposalsExportExcel(View):
         self._worksheet.set_column(column, column, 15)
 
         column = 1
-        self._worksheet.write(row, column, 'Applicant title', format)
+        self._worksheet.write(row, column, 'Applicant title', background_grey_format)
         self._worksheet.write(row + 1, column, proposal.applicant.academic_title.title)
         self._worksheet.set_column(column, column, 10)
 
         column = 2
-        self._worksheet.write(row, column, 'Applicant name', format)
+        self._worksheet.write(row, column, 'Applicant name', background_grey_format)
         self._worksheet.write(row + 1, column, proposal.applicant.person.full_name())
         self._worksheet.set_column(column, column, 20)
 
         column = 3
-        self._worksheet.write(row, column, 'Institution', format)
+        self._worksheet.write(row, column, 'Institution', background_grey_format)
         self._worksheet.write(row + 1, column, ', '.join([organisation.short_name for organisation in proposal.applicant.organisations_ordered_by_name()]))
         self._worksheet.set_column(column, column, 15)
 
         column = 4
-        self._worksheet.write(row, column, 'Title of the project', format)
+        self._worksheet.write(row, column, 'Title of the project', background_green_format)
         self._worksheet.write(row + 1, column, proposal.title)
         self._worksheet.set_column(column, column, 25)
 
         column = 5
-        self._worksheet.write(row, column, 'Geographic focus', format)
+        self._worksheet.write(row, column, 'Geographic focus', background_green_format)
         self._worksheet.write(row + 1, column, ', '.join([area.name for area in proposal.geographical_areas.all().order_by('name')]))
         self._worksheet.set_column(column, column, 25)
 
         column = 6
-        self._worksheet.write(row, column, 'Keywords', format)
+        self._worksheet.write(row, column, 'Keywords', background_green_format)
         self._worksheet.write(row + 1, column, proposal.keywords_enumeration())
         self._worksheet.set_column(column, column, 30)
 
@@ -59,7 +70,6 @@ class ProposalsExportExcel(View):
         self._worksheet.write(row, column, 'Budget requested', format)
         self._worksheet.write(row + 1, column, proposal.total_budget())
         self._worksheet.set_column(column, column, 10)
-
 
     def get(self, request, *args, **kwargs):
         call_id = kwargs.get('call', None)
