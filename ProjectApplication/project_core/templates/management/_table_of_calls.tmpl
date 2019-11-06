@@ -26,6 +26,7 @@
                 <a class="btn btn-primary btn-xs" href="{% url 'management-call-detail' id=call.id %}">View</a>
                 <a class="btn btn-primary btn-xs" href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a>
                 <a class="btn btn-primary btn-xs" href="{% url 'management-proposals-list' %}?call={{ call.pk }}">List Proposals</a>
+                <a class="btn btn-primary btn-xs" href="{% url 'management-export-proposals-for-call-excel' call=call.pk%}">Excel evaluation</a>
             </td>
         </tr>
     {% endfor %}

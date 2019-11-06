@@ -225,7 +225,7 @@ class ProposalsExportExcel(View):
             self._worksheet.write(last_row+1, column, '', self._centered_border_top)
 
     def get(self, request, *args, **kwargs):
-        call_id = kwargs.get('call', None)
+        call_id = kwargs['call']
 
         proposals = Proposal.objects.all().order_by('title')
 

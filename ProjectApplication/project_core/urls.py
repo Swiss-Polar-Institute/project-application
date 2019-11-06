@@ -26,8 +26,6 @@ urlpatterns = [
          name='management-proposal-detail'),
     path('management/proposals/export/excel/<int:call>/', internal.proposal.ProposalsExportExcel.as_view(),
          name='management-export-proposals-for-call-excel'),
-    path('management/proposals/export/excel/', internal.proposal.ProposalsExportExcel.as_view(),
-         name='management-export-proposals-all-calls-excel'),
 
     path('management/call/list', management.CallsList.as_view(), name='management-calls-list'),
     path('management/call/add/', management.CallView.as_view(), name='call-add'),
