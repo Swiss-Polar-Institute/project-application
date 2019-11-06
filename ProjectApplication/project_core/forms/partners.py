@@ -8,14 +8,13 @@ from project_core.forms.utils import get_field_information
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, Role
 
 
-class RoleChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, role: Role):
-        return role.name
+class LabelAndOrderNameChoiceField(forms.ModelChoiceField):
+    def __init__(self, *args, **kwargs):
+        kwargs['queryset'] = kwargs['queryset'].order_by('name')
+        super().__init__(*args, **kwargs)
 
-
-class CareerStageChoiceField(forms.ModelChoiceField):
-    def label_from_instance(self, career_stage):
-        return career_stage.name
+    def label_from_instance(self, obj):
+        return obj.name
 
 
 class ProposalPartnerItemForm(ModelForm):
@@ -43,14 +42,11 @@ class ProposalPartnerItemForm(ModelForm):
             self.fields['person__physical_person__first_name'].initial = self.instance.person.person.first_name
             self.fields['person__physical_person__surname'].initial = self.instance.person.person.surname
             self.fields['id'] = self.instance.pk
-            initial_role = self.instance.role
 
         self.fields['person__academic_title'].label = 'Academic title'
         self.fields['person__physical_person__first_name'].label = 'First name'
         self.fields['person__physical_person__surname'].label = 'Surname'
         self.fields['person__group'].label = 'Group'
-
-        self.fields['role'] = RoleChoiceField(queryset=Role.objects.all().order_by('name'), initial=initial_role)
 
         self.helper.layout = Layout(
             Div(
@@ -135,7 +131,8 @@ class ProposalPartnerItemForm(ModelForm):
     class Meta:
         model = ProposalPartner
         fields = ['role_description', 'competences', 'career_stage', 'role', ]
-        field_classes = {'career_stage': CareerStageChoiceField}
+        field_classes = {'career_stage': LabelAndOrderNameChoiceField,
+                         'role': LabelAndOrderNameChoiceField}
 
 
 class ProposalPartnersFormSet(BaseInlineFormSet):
