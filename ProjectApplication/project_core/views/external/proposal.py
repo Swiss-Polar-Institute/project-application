@@ -36,7 +36,7 @@ class ProposalTooLate(TemplateView):
 
 
 class ProposalDetailView(AbstractProposalDetailView):
-    template = 'proposal-detail.tmpl'
+    template = 'external/proposal-detail.tmpl'
 
 
 class ProposalView(AbstractProposalView):

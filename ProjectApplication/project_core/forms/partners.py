@@ -172,7 +172,8 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
                     raise forms.ValidationError('There is a duplicated partner')
 
                 except ObjectDoesNotExist:
-                    new_set = (proposal_partner, form_data['role'], self.instance)
+                    instance_id = self.instance.id if self.instance else None
+                    new_set = (proposal_partner, form_data['role'].id, instance_id)
                     if new_set in sets_of_person_role_proposal:
                         raise forms.ValidationError('There is a duplicated partner')
 
