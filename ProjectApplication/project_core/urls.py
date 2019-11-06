@@ -4,6 +4,7 @@ from django.urls import include, path
 from django.views.i18n import JavaScriptCatalog
 
 import project_core.views.autocomplete
+import project_core.views.internal.contact
 from .views import external
 from .views import management
 from .views import internal
@@ -42,10 +43,10 @@ urlpatterns = [
          name='template-question-update'),
     path('management/templatequestions/', management.QuestionsList.as_view(), name='template-questions-list'),
 
-    path('management/contact/add', management.ContactsCreateView.as_view(), name='management-contact-add'),
-    path('management/contact/<int:pk>/', management.ContactDetailView.as_view(), name='contact-detail'),
-    path('management/contact/<int:pk>/update', management.ContactUpdateView.as_view(), name='contact-update'),
-    path('management/contacts/', management.ContactsListView.as_view(), name='management-contacts-list'),
+    path('management/contact/add', internal.contact.ContactsCreateView.as_view(), name='management-contact-add'),
+    path('management/contact/<int:pk>/', internal.contact.ContactDetailView.as_view(), name='contact-detail'),
+    path('management/contact/<int:pk>/update', internal.contact.ContactUpdateView.as_view(), name='contact-update'),
+    path('management/contacts/', internal.contact.ContactsListView.as_view(), name='management-contacts-list'),
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',
