@@ -4,11 +4,9 @@ from django.urls import include, path
 from django.views.i18n import JavaScriptCatalog
 
 import project_core.views.autocomplete
-import project_core.views.internal.contact
+
 from .views import external
 from .views import management
-from .views import internal
-
 
 urlpatterns = [
     path('', external.Homepage.as_view(), name='homepage'),
@@ -20,33 +18,36 @@ urlpatterns = [
     path('proposal/thank-you/<uuid:uuid>/', external.ProposalThankYouView.as_view(), name='proposal-thank-you'),
     path('proposal/too-late/', external.ProposalTooLate.as_view(), name='proposal-too-late'),
 
-    path('management/proposals', management.ProposalsList.as_view(), name='management-proposals-list'),
-    path('management/proposal/<uuid:uuid>/update', management.ProposalView.as_view(),
+    path('management/proposals', management.proposal.ProposalsList.as_view(), name='management-proposals-list'),
+    path('management/proposal/<uuid:uuid>/update', management.proposal.ProposalView.as_view(),
          name='management-proposal-update'),
-    path('management/proposal/<uuid:uuid>/', management.ProposalDetailView.as_view(),
+    path('management/proposal/<uuid:uuid>/', management.proposal.ProposalDetailView.as_view(),
          name='management-proposal-detail'),
-    path('management/proposals/export/excel/<int:call>/', internal.proposal.ProposalsExportExcel.as_view(),
+    path('management/proposals/export/excel/<int:call>/', management.proposal.ProposalsExportExcel.as_view(),
          name='management-export-proposals-for-call-excel'),
 
-    path('management/call/list', management.CallsList.as_view(), name='management-calls-list'),
-    path('management/call/add/', management.CallView.as_view(), name='call-add'),
-    path('management/call/<int:id>/update', management.CallView.as_view(), name='management-call-update'),
-    path('management/call/<int:id>/', management.CallDetailView.as_view(), name='management-call-detail'),
-    path('management/calls/', management.CallsList.as_view(), name='management-calls'),
-    path('management/', management.Homepage.as_view(), name='management-homepage'),
+    path('management/call/list', management.call.CallsList.as_view(), name='management-calls-list'),
+    path('management/call/add/', management.call.CallView.as_view(), name='call-add'),
+    path('management/call/<int:id>/update', management.call.CallView.as_view(),
+         name='management-call-update'),
+    path('management/call/<int:id>/', management.call.CallDetailView.as_view(),
+         name='management-call-detail'),
+    path('management/calls/', management.call.CallsList.as_view(), name='management-calls'),
+    path('management/', management.homepage.Homepage.as_view(), name='management-homepage'),
 
-    path('management/templatequestion/add', management.TemplateQuestionCreateView.as_view(),
+    path('management/templatequestion/add', management.templatequestion.TemplateQuestionCreateView.as_view(),
          name='template-question-add'),
-    path('management/templatequestion/<int:pk>/', management.TemplateQuestionDetailView.as_view(),
+    path('management/templatequestion/<int:pk>/', management.templatequestion.TemplateQuestionDetailView.as_view(),
          name='template-question-detail'),
-    path('management/templatequestion/<int:pk>/update', management.TemplateQuestionUpdateView.as_view(),
+    path('management/templatequestion/<int:pk>/update', management.templatequestion.TemplateQuestionUpdateView.as_view(),
          name='template-question-update'),
-    path('management/templatequestions/', management.QuestionsList.as_view(), name='template-questions-list'),
+    path('management/templatequestions/', management.templatequestion.TemplateQuestionList.as_view(),
+         name='template-questions-list'),
 
-    path('management/contact/add', internal.contact.ContactsCreateView.as_view(), name='management-contact-add'),
-    path('management/contact/<int:pk>/', internal.contact.ContactDetailView.as_view(), name='contact-detail'),
-    path('management/contact/<int:pk>/update', internal.contact.ContactUpdateView.as_view(), name='contact-update'),
-    path('management/contacts/', internal.contact.ContactsListView.as_view(), name='management-contacts-list'),
+    path('management/contact/add', management.contact.ContactsCreateView.as_view(), name='management-contact-add'),
+    path('management/contact/<int:pk>/', management.contact.ContactDetailView.as_view(), name='contact-detail'),
+    path('management/contact/<int:pk>/update', management.contact.ContactUpdateView.as_view(), name='contact-update'),
+    path('management/contacts/', management.contact.ContactsListView.as_view(), name='management-contacts-list'),
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',

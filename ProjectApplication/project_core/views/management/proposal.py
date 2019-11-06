@@ -5,8 +5,10 @@ import xlsxwriter
 from django.http import HttpResponse
 from django.utils import timezone
 from django.views import View
+from django.views.generic import TemplateView
 
 from project_core.models import Proposal, Call
+from project_core.views.proposal import AbstractProposalDetailView, AbstractProposalView
 
 
 class ProposalsExportExcel(View):
@@ -298,3 +300,46 @@ class ProposalsExportExcel(View):
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
 
         return response
+
+
+class ProposalsList(TemplateView):
+    template_name = 'management/proposal-list.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        call_id = self.request.GET.get('call', None)
+
+        context['proposals'] = Proposal.objects.all()
+        context['call_filter'] = None
+
+        if call_id is not None:
+            context['proposals'] = context['proposals'].filter(call_id=call_id)
+            context['call_filter'] = Call.objects.get(id=call_id)
+
+        context['active_section'] = 'proposals'
+        context['active_subsection'] = 'proposals-list'
+        context['sidebar_template'] = 'management/_sidebar-proposals.tmpl'
+
+        return context
+
+
+class ProposalDetailView(AbstractProposalDetailView):
+    template = 'management/proposal-detail.tmpl'
+
+    extra_context = {'active_section': 'proposals',
+                     'active_subsection': 'proposals-list',
+                     'sidebar_template': 'management/_sidebar-proposals.tmpl'}
+
+
+class ProposalView(AbstractProposalView):
+    created_or_updated_url = 'management-proposal-detail'
+    form_template = 'management/proposal-form.tmpl'
+
+    action_url_update = 'management-proposal-update'
+    action_url_add = 'management-proposal-add'
+
+    success_message = 'Proposal updated'
+
+    extra_context = {'active_section': 'proposals',
+                     'active_subsection': 'proposals-list',
+                     'sidebar_template': 'management/_sidebar-proposals.tmpl'}

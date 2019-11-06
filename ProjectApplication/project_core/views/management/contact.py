@@ -69,3 +69,11 @@ class ContactDetailView(DetailView):
         context['sidebar_template'] = 'management/_sidebar-contacts.tmpl'
 
         return context
+
+
+class ContactMixin:
+    fields = ['person__first_name', 'person__surname']
+
+    @property
+    def success_msg(self):
+        return NotImplemented
