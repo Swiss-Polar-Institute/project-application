@@ -22,6 +22,8 @@ class ProposalsExportExcel(View):
         grey_header_properties = dict(**basic_header_properties, bg_color='#d6dce5', top=2)
         green_header_properties = dict(**basic_header_properties, bg_color='#a9d18e', top=2)
         yellow_header_properties = dict(**basic_header_properties, bg_color='#fff2cc', top=2)
+        blue_header_properties = dict(**basic_header_properties, bg_color='#dae3f3', top=2)
+        orange_header_properties = dict(**basic_header_properties, bg_color='#f4b183', top=2)
         feedback_question_properties = dict(**basic_data_properties, bg_color='#d0cece', right=2)
         feedback_answer_properties = dict(**basic_data_properties, bg_color='#d0cece', bottom=2, right=2, italic=True)
 
@@ -29,6 +31,8 @@ class ProposalsExportExcel(View):
         grey_header_format = self._workbook.add_format(grey_header_properties)
         green_header_format = self._workbook.add_format(green_header_properties)
         yellow_header_format = self._workbook.add_format(yellow_header_properties)
+        blue_header_format = self._workbook.add_format(blue_header_properties)
+        orange_header_format = self._workbook.add_format(orange_header_properties)
         feedback_question_format = self._workbook.add_format(feedback_question_properties)
         feedback_answer_format = self._workbook.add_format(feedback_answer_properties)
 
@@ -93,15 +97,37 @@ class ProposalsExportExcel(View):
 
         # Answers from the committee
         column = 8
-        for criterion_n in range(1, 5):
-            criterion_column = column + (criterion_n - 1) * 2
-            self._worksheet.write(row, criterion_column, f'Criterion {criterion_n}: score', yellow_header_format)
-            self._worksheet.write(row + 1, criterion_column, '', data_format)
-            self._worksheet.set_column(criterion_column, criterion_column, 12)
+        total_number_criteria = 5
+        score_column_width = 12
+        for criterion_n in range(1, total_number_criteria):
+            self._worksheet.write(row, column, f'Criterion {criterion_n}: score', yellow_header_format)
+            self._worksheet.write(row + 1, column, '', data_format)
+            self._worksheet.set_column(column, column, score_column_width)
 
-            self._worksheet.write(row, criterion_column + 1, f'Criterion {criterion_n}: remarks', yellow_header_format)
-            self._worksheet.write(row + 1, criterion_column + 1, '', data_format)
-            self._worksheet.set_column(criterion_column + 1, criterion_column + 1, 35)
+            self._worksheet.write(row, column + 1, f'Criterion {criterion_n}: remarks', yellow_header_format)
+            self._worksheet.write(row + 1, column + 1, '', data_format)
+            self._worksheet.set_column(column + 1, column + 1, 35)
+
+            column += 2
+
+        self._worksheet.write(row, column, f'Total score criteria 1-{total_number_criteria}', yellow_header_format)
+        self._worksheet.write(row+1, column, '', data_format)
+        self._worksheet.set_column(column, column, score_column_width)
+
+        column += 1
+        self._worksheet.write(row, column, 'Budget proposed by reviewer', blue_header_format)
+        self._worksheet.write(row+1, column, '', data_format)
+        self._worksheet.set_column(column, column, score_column_width)
+
+        column += 1
+        self._worksheet.write(row, column, 'Budget remarks', blue_header_format)
+        self._worksheet.write(row+1, column, '', data_format)
+        self._worksheet.set_column(column, column, 30)
+
+        column += 1
+        self._worksheet.write(row, column, 'Optional additional remarks to the panel', orange_header_format)
+        self._worksheet.write(row+1, column, '', data_format)
+        self._worksheet.set_column(column, column, 50)
 
     def get(self, request, *args, **kwargs):
         call_id = kwargs.get('call', None)
