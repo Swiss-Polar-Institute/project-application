@@ -146,6 +146,7 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
                     partner.delete()
                 elif form.cleaned_data['DELETE'] is False:
                     partner = form.save(commit=False)
+                    partner.proposal = proposal
                     partner.save()
 
 
