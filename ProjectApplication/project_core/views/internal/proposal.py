@@ -285,6 +285,8 @@ class ProposalsExportExcel(View):
 
         self._write_evaluation_criteria(1, 8, self._proposal_last_column)
 
+        self._worksheet.freeze_panes(0, 6)
+
         self._workbook.close()
 
         output.seek(0)
