@@ -697,9 +697,6 @@ class Role(models.Model):
     def __str__(self):
         return '{} ({}): {}'.format(self.name, self.type, self.description)
 
-    def short(self):
-        return '{}: {}'.format(self.name, self.description)
-
     class Meta:
         unique_together = (('name', 'type'),)
 
