@@ -1,4 +1,3 @@
-import copy
 import io
 
 import xlsxwriter
@@ -15,59 +14,62 @@ class ProposalsExportExcel(View):
         self._workbook = self._worksheet = None
 
     def write_call(self, proposal, row):
-        properties = {'text_wrap': True, 'bold': True}
-        background_grey_properties = copy.deepcopy(properties)
-        background_grey_properties['bg_color'] = '#d6dce5'
+        basic_data_properties = {'text_wrap': True, 'border': 1}
+        basic_header_properties = {'text_wrap': True, 'bold': True, 'border': 1}
 
-        background_green_properties = copy.deepcopy(properties)
-        background_green_properties['bg_color'] = '#a9d18e'
+        white_header_properties = dict(**basic_header_properties, top=2)
+        grey_header_properties = dict(**basic_header_properties, bg_color='#d6dce5', top=2, align='center',
+                                      valign='bottom')
+        green_header_properties = dict(**basic_header_properties, bg_color='#a9d18e', top=2)
 
-        format = self._workbook.add_format(properties)
-        format.set_align('center')
-        format.set_align('bottom')
+        white_header = self._workbook.add_format(white_header_properties)
+        grey_header = self._workbook.add_format(grey_header_properties)
+        green_header = self._workbook.add_format(green_header_properties)
 
-        background_grey_format = self._workbook.add_format(background_grey_properties)
-        background_green_format = self._workbook.add_format(background_green_properties)
+        data_format = self._workbook.add_format(basic_data_properties)
 
         self._worksheet.set_row(row, 50)
+        self._worksheet.set_row(row + 1, 100, cell_format=data_format)
 
         column = 0
-        self._worksheet.write(row, column, 'Proposal Number', format)
+        self._worksheet.write(row, column, 'Proposal Number', white_header)
         self._worksheet.write(row + 1, column, proposal.id)
         self._worksheet.set_column(column, column, 15)
 
         column = 1
-        self._worksheet.write(row, column, 'Applicant title', background_grey_format)
+        self._worksheet.write(row, column, 'Applicant title', grey_header)
         self._worksheet.write(row + 1, column, proposal.applicant.academic_title.title)
         self._worksheet.set_column(column, column, 10)
 
         column = 2
-        self._worksheet.write(row, column, 'Applicant name', background_grey_format)
+        self._worksheet.write(row, column, 'Applicant name', grey_header)
         self._worksheet.write(row + 1, column, proposal.applicant.person.full_name())
         self._worksheet.set_column(column, column, 20)
 
         column = 3
-        self._worksheet.write(row, column, 'Institution', background_grey_format)
-        self._worksheet.write(row + 1, column, ', '.join([organisation.short_name for organisation in proposal.applicant.organisations_ordered_by_name()]))
+        self._worksheet.write(row, column, 'Institution', grey_header)
+        self._worksheet.write(row + 1, column, ', '.join(
+            [organisation.short_name for organisation in proposal.applicant.organisations_ordered_by_name()]))
         self._worksheet.set_column(column, column, 15)
 
         column = 4
-        self._worksheet.write(row, column, 'Title of the project', background_green_format)
+        self._worksheet.write(row, column, 'Title of the project', green_header)
         self._worksheet.write(row + 1, column, proposal.title)
         self._worksheet.set_column(column, column, 25)
 
         column = 5
-        self._worksheet.write(row, column, 'Geographic focus', background_green_format)
-        self._worksheet.write(row + 1, column, ', '.join([area.name for area in proposal.geographical_areas.all().order_by('name')]))
+        self._worksheet.write(row, column, 'Geographic focus', green_header)
+        self._worksheet.write(row + 1, column,
+                              ', '.join([area.name for area in proposal.geographical_areas.all().order_by('name')]))
         self._worksheet.set_column(column, column, 25)
 
         column = 6
-        self._worksheet.write(row, column, 'Keywords', background_green_format)
+        self._worksheet.write(row, column, 'Keywords', green_header)
         self._worksheet.write(row + 1, column, proposal.keywords_enumeration())
         self._worksheet.set_column(column, column, 30)
 
         column = 7
-        self._worksheet.write(row, column, 'Budget requested', format)
+        self._worksheet.write(row, column, 'Budget requested', white_header)
         self._worksheet.write(row + 1, column, proposal.total_budget())
         self._worksheet.set_column(column, column, 10)
 
@@ -96,6 +98,7 @@ class ProposalsExportExcel(View):
             self._worksheet.write(0, 0, 'All calls', cell_format)
 
         self._worksheet.write(2, 0, 'To be returned to spi-grants@epfl.ch')
+        self._worksheet.write(4, 0, 'Name of the reviewer: please fill in')
 
         for num, proposal in enumerate(proposals):
             self.write_call(proposal, 10 + (num * 7))

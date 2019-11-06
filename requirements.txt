@@ -2,7 +2,8 @@ Django==2.2.6
 django-autocomplete-light==3.4.1
 django-crispy-forms==1.7.2
 django-debug-toolbar==2.0
+gunicorn==19.9.0
 mysqlclient==1.4.4
 pytz==2019.2
 sqlparse==0.3.0
-gunicorn==19.9.0
+XlsxWriter==1.2.2
