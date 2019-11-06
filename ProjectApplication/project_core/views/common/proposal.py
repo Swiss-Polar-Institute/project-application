@@ -126,7 +126,7 @@ class AbstractProposalView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         # Optional form, depending on call.other_funding_question
-        funding_form = None
+        funding_form = proposal_partners_form = None
 
         if 'uuid' in kwargs:
             # Editing an existing proposal
@@ -156,12 +156,15 @@ class AbstractProposalView(TemplateView):
             budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
             if call.other_funding_question:
                 funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
-                                                      instance=proposal)
+                                                          instance=proposal)
+
+            if call.proposal_partner_question:
+                proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
+                                                                       instance=proposal)
+
             data_collection_form = DataCollectionForm(request.POST,
                                                       prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
-            proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
-                                                              instance=proposal)
             action = 'updated'
 
         else:
@@ -172,18 +175,25 @@ class AbstractProposalView(TemplateView):
                                        call=call,
                                        prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
+
             if call.other_funding_question:
                 funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
+
+            if call.proposal_partner_question:
+                proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME)
+
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
-            proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME)
 
             action = 'created'
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
-                             data_collection_form, proposal_partners_form]
+                             data_collection_form]
 
         if call.other_funding_question:
             forms_to_validate.append(funding_form)
+
+        if call.proposal_partner_question:
+            forms_to_validate.append(proposal_partners_form)
 
         all_valid = True
         for form in forms_to_validate:
@@ -206,7 +216,8 @@ class AbstractProposalView(TemplateView):
             questions_form.save_answers(proposal)
             budget_form.save_budgets(proposal)
 
-            proposal_partners_form.save_partners(proposal)
+            if call.proposal_partner_question:
+                proposal_partners_form.save_partners(proposal)
 
             messages.success(request, self.success_message)
 
@@ -221,8 +232,10 @@ class AbstractProposalView(TemplateView):
         if call.other_funding_question:
             context[FUNDING_FORM_NAME] = funding_form
 
+        if call.proposal_partner_question:
+            context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
+
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
-        context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
 
         context['action'] = 'Edit'
 
@@ -238,6 +251,7 @@ def call_context_for_template(call):
                'call_name': call.long_name,
                'call_introductory_message': call.introductory_message,
                'call_submission_deadline': call.submission_deadline,
-               'other_funding_question': call.other_funding_question}
+               'other_funding_question': call.other_funding_question,
+               'proposal_partner_question': call.proposal_partner_question}
 
     return context

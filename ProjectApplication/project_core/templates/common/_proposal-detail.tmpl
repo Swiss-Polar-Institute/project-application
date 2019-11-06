@@ -49,15 +49,17 @@
     <br>
 {% endfor %}
 
+{% if proposal_partner_question %}
+    <h3>Partners</h3>
+    {% include 'common/_accordion.tmpl' with prefix='partners' button_text='Partners details' template_file='common/_table-partners.tmpl' %}
+    <br>
+{% endif %}
+
 <h3>Budget requested</h3>
 <strong>Total requested budget:</strong> {{ proposal.total_budget }} CHF
 <p><strong>Maximum budget:</strong> {{ maximum_budget }} CHF</p>
 
 {% include 'common/_accordion.tmpl' with prefix='budget' button_text='Budget details' template_file='common/_table-budget.tmpl' %}
-<br>
-
-<h3>Partners</h3>
-{% include 'common/_accordion.tmpl' with prefix='partners' button_text='Partners details' template_file='common/_table-partners.tmpl' %}
 <br>
 
 {% if proposal.call.other_funding_question %}

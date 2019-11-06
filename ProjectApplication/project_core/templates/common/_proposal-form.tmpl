@@ -28,11 +28,13 @@
     <h2>Part 2: Project Description</h2>
     {% include "common/_form-dynamic_questions.tmpl" %}
 
+    {% if proposal_partner_question %}
+        <h2>Proposal partners</h2>
+        {% include 'common/_form-proposal_partners.tmpl' %}
+    {% endif %}
+
     <h2>Budget requested</h2>
     {% include "common/_form-budget.tmpl" %}
-
-    <h2>Proposal partners</h2>
-    {% include 'common/_form-proposal_partners.tmpl' %}
 
     {% if other_funding_question %}
         <h2>Other sources of funding</h2>
