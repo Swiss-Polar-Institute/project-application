@@ -410,7 +410,7 @@ class PersonPosition(CreateModify):
         organisations_list = []
 
         for organisation in self.organisations.all().order_by('long_name'):
-            organisations_list.append(organisation)
+            organisations_list.append(organisation.short_name)
 
         organisations_str = ', '.join(organisations_list)
 
