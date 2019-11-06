@@ -5,12 +5,18 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information
-from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, Role
+from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, Role, \
+    CareerStage
 
 
 class RoleChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, role: Role):
         return role.short()
+
+
+class CareerStageChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, career_stage):
+        return career_stage.name
 
 
 class ProposalPartnerItemForm(ModelForm):
@@ -130,6 +136,7 @@ class ProposalPartnerItemForm(ModelForm):
     class Meta:
         model = ProposalPartner
         fields = ['role_description', 'competences', 'career_stage', 'role', ]
+        field_classes = {'career_stage': CareerStageChoiceField}
 
 
 class ProposalPartnersFormSet(BaseInlineFormSet):
