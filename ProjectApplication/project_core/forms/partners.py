@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information
@@ -137,6 +138,45 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.form_id = 'proposal_partners_form'
+
+    def clean(self):
+        super().clean()
+
+        sets_of_person_role_proposal = set()
+
+        for form_data in self.cleaned_data:
+            # len(form_data) because the form without any values arrive here
+            if len(form_data) != 0 and form_data['id'] is None:
+                # On the ProposalPartnerItemForm.save() it will PhysicalPerson.get_or_create
+                # and PersonPosition.get_or_create .
+                # The result can be that the ProposalPartner unique_together:
+                # (person, role, proposal) might be duplicated
+                # Here we will raise a ValidationError if this is going to be the case
+
+                # Updating a partner - no problems should happen regaring ins
+                proposal_partner = None
+                try:
+                    physical_person = PhysicalPerson.objects.get(
+                        first_name=form_data['person__physical_person__first_name'],
+                        surname=form_data['person__physical_person__surname'])
+
+                    person_position = PersonPosition.objects.get(
+                        person=physical_person,
+                        academic_title=form_data['person__academic_title'],
+                        group=form_data['person__group']
+                    )
+
+                    proposal_partner = ProposalPartner.objects.get(
+                        person=person_position, role=form_data['role'], proposal=self.instance)
+
+                    raise forms.ValidationError('There is a duplicated partner')
+
+                except ObjectDoesNotExist:
+                    new_set = (proposal_partner, form_data['role'], self.instance)
+                    if new_set in sets_of_person_role_proposal:
+                        raise forms.ValidationError('There is a duplicated partner')
+
+                    sets_of_person_role_proposal.add(new_set)
 
     def save_partners(self, proposal):
         for form in self.forms:
