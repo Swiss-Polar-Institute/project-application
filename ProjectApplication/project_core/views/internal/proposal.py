@@ -21,12 +21,14 @@ class ProposalsExportExcel(View):
         white_header_properties = dict(**basic_header_properties, top=2)
         grey_header_properties = dict(**basic_header_properties, bg_color='#d6dce5', top=2)
         green_header_properties = dict(**basic_header_properties, bg_color='#a9d18e', top=2)
+        yellow_header_properties = dict(**basic_header_properties, bg_color='#fff2cc', top=2)
         feedback_question_properties = dict(**basic_data_properties, bg_color='#d0cece', right=2)
         feedback_answer_properties = dict(**basic_data_properties, bg_color='#d0cece', bottom=2, right=2, italic=True)
 
         white_header_format = self._workbook.add_format(white_header_properties)
         grey_header_format = self._workbook.add_format(grey_header_properties)
         green_header_format = self._workbook.add_format(green_header_properties)
+        yellow_header_format = self._workbook.add_format(yellow_header_properties)
         feedback_question_format = self._workbook.add_format(feedback_question_properties)
         feedback_answer_format = self._workbook.add_format(feedback_answer_properties)
 
@@ -88,6 +90,18 @@ class ProposalsExportExcel(View):
 
         self._worksheet.merge_range(f'A{row + 4}:H{row + 4}', 'Fill in here', feedback_answer_format)
         self._worksheet.set_row(row + 3, 50)
+
+        # Answers from the committee
+        column = 8
+        for criterion_n in range(1, 5):
+            criterion_column = column + (criterion_n - 1) * 2
+            self._worksheet.write(row, criterion_column, f'Criterion {criterion_n}: score', yellow_header_format)
+            self._worksheet.write(row + 1, criterion_column, '', data_format)
+            self._worksheet.set_column(criterion_column, criterion_column, 12)
+
+            self._worksheet.write(row, criterion_column + 1, f'Criterion {criterion_n}: remarks', yellow_header_format)
+            self._worksheet.write(row + 1, criterion_column + 1, '', data_format)
+            self._worksheet.set_column(criterion_column + 1, criterion_column + 1, 35)
 
     def get(self, request, *args, **kwargs):
         call_id = kwargs.get('call', None)
