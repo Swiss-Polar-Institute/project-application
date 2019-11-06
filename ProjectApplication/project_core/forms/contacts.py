@@ -1,13 +1,13 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
+from dal import autocomplete
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm
 
 from .utils import get_field_information
 from ..models import PersonPosition, PhysicalPerson, Contact
-from .proposal import OrganisationChoiceField
-from dal import autocomplete
+
 
 class ContactForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -40,11 +40,11 @@ class ContactForm(ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('group', css_class='col-12'),
+                Div('organisations', css_class='col-12'),
                 css_class='row'
             ),
             Div(
-                Div('organisations', css_class='col-12'),
+                Div('group', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -66,7 +66,7 @@ class ContactForm(ModelForm):
             # Creating a new one. Let's avoid creating duplicates and inform the user
             try:
                 physical_person = PhysicalPerson.objects.get(first_name=self.cleaned_data['person__first_name'],
-                                           surname=self.cleaned_data['person__surname'])
+                                                             surname=self.cleaned_data['person__surname'])
                 raise forms.ValidationError('Cannot create: person already exists')
 
             except ObjectDoesNotExist:

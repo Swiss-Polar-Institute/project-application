@@ -12,13 +12,13 @@
     <p></p>
     <strong>Name:</strong> {{ object.academic_title }} {{ object.person.first_name }} {{ object.person.surname }}
     <br>
-    <strong>Group:</strong> {% if object.group %}{{ object.group }}{% else %}-{% endif %}
-    <br>
     <strong>Organisations:</strong>
     {% for organisation in object.organisations_ordered_by_name %}{% if not forloop.first %}, {% endif %}
         {{ organisation }}{% empty %}
         -
     {% endfor %}
+    <br>
+    <strong>Group:</strong> {% if object.group %}{{ object.group }}{% else %}-{% endif %}
     <br>
     <strong>Email:</strong> <a href="mailto:{{ object.main_email }}">{{ object.main_email }}</a>
     <p></p>
