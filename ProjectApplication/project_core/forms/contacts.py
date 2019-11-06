@@ -6,7 +6,8 @@ from django.forms import ModelForm
 
 from .utils import get_field_information
 from ..models import PersonPosition, PhysicalPerson, Contact
-
+from .proposal import OrganisationChoiceField
+from dal import autocomplete
 
 class ContactForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -40,6 +41,10 @@ class ContactForm(ModelForm):
             ),
             Div(
                 Div('group', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('organisations', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -93,9 +98,12 @@ class ContactForm(ModelForm):
 
         if commit:
             main_email.save()
+            model.save()
+            self.save_m2m()
 
         return model
 
     class Meta:
         model = PersonPosition
-        fields = ['academic_title', 'group', 'data_policy', 'contact_newsletter']
+        fields = ['academic_title', 'group', 'data_policy', 'contact_newsletter', 'organisations']
+        widgets = {'organisations': autocomplete.ModelSelect2Multiple(url='autocomplete-organisations')}
