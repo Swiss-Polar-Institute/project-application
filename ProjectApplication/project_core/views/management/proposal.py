@@ -8,7 +8,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from project_core.models import Proposal, Call
-from project_core.views.proposal import AbstractProposalDetailView, AbstractProposalView
+from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
 
 
 class ProposalsExportExcel(View):

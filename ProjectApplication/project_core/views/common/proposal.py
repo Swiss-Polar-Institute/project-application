@@ -5,14 +5,13 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import TemplateView
 
+from project_core.forms.budget import BudgetItemFormSet
+from project_core.forms.funding import ProposalFundingItemFormSet
+from project_core.forms.partners import ProposalPartnersInlineFormSet
 from project_core.forms.proposal import ProposalForm, PersonForm, DataCollectionForm
 from project_core.forms.questions import Questions
-from project_core.forms.funding import ProposalFundingItemFormSet
-from project_core.forms.budget import BudgetItemFormSet
-from project_core.forms.partners import ProposalPartnersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus
 
-# Form names (need to match what's in the templates)
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
 QUESTIONS_FORM_NAME = 'questions_form'
@@ -231,7 +230,7 @@ class AbstractProposalView(TemplateView):
 
         messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again')
 
-        return render(request, 'proposal-form.tmpl', context)
+        return render(request, 'common/proposal-form.tmpl', context)
 
 
 def call_context_for_template(call):

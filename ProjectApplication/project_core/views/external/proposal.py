@@ -1,18 +1,10 @@
 from django.views.generic import TemplateView
 
-from project_core.views.proposal import AbstractProposalDetailView, AbstractProposalView
-from ..models import Call
-
-class Homepage(TemplateView):
-    template_name = 'homepage.tmpl'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
 
 
 class ProposalThankYouView(TemplateView):
-    template_name = 'proposal-thank_you.tmpl'
+    template_name = 'external/proposal-thank_you.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -31,7 +23,7 @@ class ProposalThankYouView(TemplateView):
 
 
 class ProposalTooLate(TemplateView):
-    template_name = 'proposal-too_late.tmpl'
+    template_name = 'external/proposal-too_late.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -39,17 +31,6 @@ class ProposalTooLate(TemplateView):
         action = self.request.GET['action']
 
         context['action'] = action
-
-        return context
-
-
-class CallsList(TemplateView):
-    template_name = 'call-list.tmpl'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['calls'] = Call.open_calls()
 
         return context
 
