@@ -15,8 +15,6 @@ class CallQuestionItemForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
-        self.fields['answer_type'].widget.attrs['disabled'] = True
-
         self.helper.layout = Layout(
             Div(
                 Div('id', css_class='col-12', hidden=True),
