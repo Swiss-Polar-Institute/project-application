@@ -8,6 +8,7 @@
             <thead>
             <tr>
                 <th>Question</th>
+                <th>Answer type</th>
                 <th>Max words</th>
                 <th>Actions</th>
             </tr>
@@ -17,6 +18,7 @@
             {% for template_question in template_questions %}
                 <tr>
                     <td>{{ template_question.question_text }}</td>
+                    <td>{{ template_question.answer_type }}</td>
                     <td>{% if template_question.answer_max_length %}
                         {{ template_question.answer_max_length }}{% endif %}</td>
                     <td><a class="btn btn-primary btn-xs"

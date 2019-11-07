@@ -169,6 +169,7 @@ class AbstractProposalView(TemplateView):
             data_collection_form = DataCollectionForm(request.POST,
                                                       prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
+
             action = 'updated'
 
         else:

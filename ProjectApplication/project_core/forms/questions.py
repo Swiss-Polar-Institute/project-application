@@ -18,7 +18,7 @@ class Questions(Form):
         if self._proposal:
             self._call = self._proposal.call
 
-        for question in self._call.callquestion_set.all().order_by('order'):
+        for question in self._call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
             answer = None
             if self._proposal:
                 try:
@@ -33,6 +33,10 @@ class Questions(Form):
             self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question_text,
                                                                              widget=forms.Textarea(),
                                                                              initial=answer,
+                                                                             help_text=question.question_description)
+
+        for question in self._call.callquestion_set.filter(answer_type=CallQuestion.FILE).order_by('order'):
+            self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
                                                                              help_text=question.question_description)
 
         self.helper = FormHelper(self)

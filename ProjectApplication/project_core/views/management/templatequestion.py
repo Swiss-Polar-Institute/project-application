@@ -21,7 +21,7 @@ class TemplateQuestionList(TemplateView):
 
 
 class TemplateQuestionMixin:
-    fields = ['question_text', 'question_description', 'answer_max_length']
+    fields = ['question_text', 'question_description', 'answer_type', 'answer_max_length']
 
     @property
     def success_msg(self):

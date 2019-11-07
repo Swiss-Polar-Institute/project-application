@@ -147,9 +147,11 @@ class AbstractQuestion(CreateModify):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     TEXT = 'Text'
+    FILE = 'File'
 
     TYPES = (
         (TEXT, 'Text'),
+        (FILE, 'File')
     )
 
     question_text = models.TextField(help_text='Question text', null=False, blank=False)
@@ -160,13 +162,18 @@ class AbstractQuestion(CreateModify):
                                    max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.PositiveIntegerField(
         help_text='Maximum number of words for a question answer', blank=True, null=True,
-        verbose_name='Answer maximum length (in words)')
+        verbose_name='Answer maximum length (used for answer type TEXT, in words)')
 
     def __str__(self):
-        if self.answer_max_length is None:
-            return '{} (no max length)'.format(self.question_text)
+        if self.answer_type == AbstractQuestion.FILE:
+            return '{} (FILE)'.format(self.question_text)
+        elif self.answer_type == AbstractQuestion.TEXT:
+            if self.answer_max_length is None:
+                return '{} (TEXT, no max words)'.format(self.question_text)
+            else:
+                return '{} (TEXT, max words {})'.format(self.question_text, self.answer_max_length)
         else:
-            return '{} (max words {})'.format(self.question_text, self.answer_max_length)
+            assert False
 
     class Meta:
         abstract = True
@@ -592,6 +599,15 @@ class ProposalQAText(CreateModify):
     class Meta:
         verbose_name_plural = 'Proposal question-answer (text)'
         unique_together = (('proposal', 'call_question'),)
+
+
+class ProposalQAFile(CreateModify):
+    proposal = models.ForeignKey(Proposal, help_text='Proposal that this file is attached to', on_delete=models.PROTECT)
+    call_question = models.ForeignKey(CallQuestion, help_text='Question from the call', on_delete=models.PROTECT)
+    file = models.FileField()
+
+    def __str__(self):
+        return 'Q: {}; A: file'.format(self.call_question)
 
 
 class BudgetItem(models.Model):
