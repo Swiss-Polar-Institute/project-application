@@ -18,7 +18,7 @@ services:
       - nginx-proxy
     links:
       - database
-    environment:
+    env_file:
       - ${PROJECT_APPLICATION_ENV_FILE}
 
   reverse-proxy:
