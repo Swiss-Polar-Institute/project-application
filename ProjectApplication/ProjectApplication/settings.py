@@ -22,8 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'shfl_mdb^frjpk8@5@fsl(qm0^u0+--m6_x28lgbil*m&#+rvq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -184,3 +182,8 @@ AWS_LOCATION = os.environ['OBJECT_STORAGE_PREFIX_LOCATION']
 
 DEMO_MANAGEMENT_USER = os.environ['DEMO_MANAGEMENT_USER']
 DEMO_MANAGEMENT_PASSWORD = os.environ['DEMO_MANAGEMENT_PASSWORD']
+
+SECRET_KEY = os.environ.get('SECRET_KEY', 'shfl_mdb^frjpk8@5@fsl(qm0^u0+--m6_x28lgbil*m&#+rvq')
+
+if 'ALLOWED_HOST_1' in os.environ:
+    ALLOWED_HOSTS.append(os.environ['ALLOWED_HOSTS_1'])
