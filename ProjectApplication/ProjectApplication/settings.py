@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 import pathlib
+import mimetypes
 
 from django.contrib.messages import constants as messages
 
@@ -169,10 +170,17 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
+mimetypes.init()
+
 LOGIN_CONTACT = 'Carles'
 
-try:
-    from local_settings import *
-    print('Imported local_settings')
-except ImportError:
-    pass
+AWS_DEFAULT_ACL = 'private'
+
+AWS_ACCESS_KEY_ID = os.environ['OBJECT_STORAGE_ACCESS_KEY_ID']
+AWS_SECRET_ACCESS_KEY = os.environ['OBJECT_STORAGE_SECRET_ACCESS_KEY']
+AWS_STORAGE_BUCKET_NAME = os.environ['OBJECT_STORAGE_BUCKET_NAME']
+AWS_S3_ENDPOINT_URL = os.environ['OBJECT_STORAGE_ENDPOINT_URL']
+AWS_LOCATION = os.environ['OBJECT_STORAGE_PREFIX_LOCATION']
+
+DEMO_MANAGEMENT_USER = os.environ['DEMO_MANAGEMENT_USER']
+DEMO_MANAGEMENT_PASSWORD = os.environ['DEMO_MANAGEMENT_PASSWORD']

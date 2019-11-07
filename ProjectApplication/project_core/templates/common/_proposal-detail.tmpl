@@ -48,6 +48,12 @@
     <div class="pre-with-newlines border p-3 bg-white rounded">{{ question_answer.answer }}</div>
     <br>
 {% endfor %}
+{% for question_file in questions_files %}
+    {{ question_file.question }}
+    <div class="border p-3 bg-white rounded">
+        <i class="fa fa-paperclip"></i> <a href="{% url 'proposal-question-answer-file' md5=question_file.file.md5 %}">{{ question_file.file.name }}</a> ({{ question_file.file.size }})
+    </div>
+{% endfor %}
 
 {% if proposal_partner_question %}
     <h3>Partners</h3>

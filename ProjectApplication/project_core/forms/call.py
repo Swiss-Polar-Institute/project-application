@@ -15,6 +15,8 @@ class CallQuestionItemForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
+        self.fields['answer_type'].widget.attrs['disabled'] = True
+
         self.helper.layout = Layout(
             Div(
                 Div('id', css_class='col-12', hidden=True),
@@ -30,6 +32,10 @@ class CallQuestionItemForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('answer_type', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div('answer_max_length', css_class='col-12'),
                 css_class='row'
             )
@@ -37,7 +43,7 @@ class CallQuestionItemForm(forms.ModelForm):
 
     class Meta:
         model = CallQuestion
-        fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length']
+        fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length', 'answer_type']
         widgets = {
             'question_text': forms.Textarea(attrs={'rows': 4}),
             'question_description': forms.Textarea(attrs={'rows': 4})

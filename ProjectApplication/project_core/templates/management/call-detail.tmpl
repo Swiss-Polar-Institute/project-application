@@ -33,7 +33,8 @@
         <div class="col-6">
             <strong>Budget categories:</strong><br>
             {% for budget_category in budget_categories_status %}
-                {% include 'common/_check-icon.tmpl' with value=budget_category.in_call %} {{ budget_category.name }}<br>
+                {% include 'common/_check-icon.tmpl' with value=budget_category.in_call %} {{ budget_category.name }}
+                <br>
             {% endfor %}
         </div>
     </div>
@@ -52,13 +53,13 @@
     <h2>Questions</h2>
     {% for question in call.callquestion_set_ordered_by_order %}
         <p>
-            <div class="row">
-                <div class="col-6">
-                    <strong>Question:</strong> {{ question.question_text }} (max words:
-                    {% if question.answer_max_length %}{{ question.answer_max_length }}{% else %}unlimited{% endif %})<br>
-                </div>
+        <div class="row">
+            <div class="col-6">
+                <strong>Question:</strong> {{ question.question_text }} ({% if question.answer_type == question.TEXT %}Text -{% if question.answer_max_length %} max words: {{ question.answer_max_length }}{% else %}unlimited{% endif %}{% elif question.answer_type == question.FILE %}File{% endif %})
+                <br>
             </div>
-            <strong>Description:</strong> {{ question.question_description }}<br>
+        </div>
+        <strong>Description:</strong> {{ question.question_description }}<br>
         </p>
     {% endfor %}
 

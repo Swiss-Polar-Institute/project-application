@@ -1,3 +1,4 @@
+import hashlib
 import uuid as uuid_lib
 
 from django.contrib.auth.models import User
@@ -7,6 +8,9 @@ from django.db import models, transaction
 from django.db.models import Max
 from django.urls import reverse
 from django.utils import timezone
+from storages.backends.s3boto3 import S3Boto3Storage
+
+from . import utils
 
 
 class CreateModify(models.Model):
@@ -147,9 +151,11 @@ class AbstractQuestion(CreateModify):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     TEXT = 'Text'
+    FILE = 'File'
 
     TYPES = (
         (TEXT, 'Text'),
+        (FILE, 'File')
     )
 
     question_text = models.TextField(help_text='Question text', null=False, blank=False)
@@ -160,13 +166,18 @@ class AbstractQuestion(CreateModify):
                                    max_length=5, choices=TYPES, default=TEXT, blank=False, null=False)
     answer_max_length = models.PositiveIntegerField(
         help_text='Maximum number of words for a question answer', blank=True, null=True,
-        verbose_name='Answer maximum length (in words)')
+        verbose_name='Answer maximum length (used for answer type TEXT, in words)')
 
     def __str__(self):
-        if self.answer_max_length is None:
-            return '{} (no max length)'.format(self.question_text)
+        if self.answer_type == AbstractQuestion.FILE:
+            return '{} (FILE)'.format(self.question_text)
+        elif self.answer_type == AbstractQuestion.TEXT:
+            if self.answer_max_length is None:
+                return '{} (TEXT, no max words)'.format(self.question_text)
+            else:
+                return '{} (TEXT, max words {})'.format(self.question_text, self.answer_max_length)
         else:
-            return '{} (max words {})'.format(self.question_text, self.answer_max_length)
+            assert False
 
     class Meta:
         abstract = True
@@ -378,7 +389,7 @@ class PhysicalPerson(CreateModify):
         return '{} {}'.format(self.first_name, self.surname)
 
     class Meta:
-        unique_together = (('first_name', 'surname', ),)
+        unique_together = (('first_name', 'surname',),)
 
 
 class PersonUid(Uid):
@@ -592,6 +603,36 @@ class ProposalQAText(CreateModify):
     class Meta:
         verbose_name_plural = 'Proposal question-answer (text)'
         unique_together = (('proposal', 'call_question'),)
+
+
+class ProposalQAFile(CreateModify):
+    proposal = models.ForeignKey(Proposal, help_text='Proposal that this file is attached to', on_delete=models.PROTECT)
+    call_question = models.ForeignKey(CallQuestion, help_text='Question from the call', on_delete=models.PROTECT)
+    file = models.FileField(storage=S3Boto3Storage(),
+                            upload_to='proposals_qa/')
+    # Using md5 so it matches (usually) ETags
+    md5 = models.CharField(db_index=True, unique=True, max_length=32)
+
+    def human_file_size(self):
+        return utils.bytes_to_human_readable(self.file.size)
+
+    def save(self, *args, **kwargs):
+        self.md5 = self.calculate_md5()
+
+        super().save(*args, **kwargs)
+
+    def calculate_md5(self):
+        # initial_position = self.file.file.file.pos()
+        # self.file.file.file.seek(0)
+
+        hash_md5 = hashlib.md5(self.file.file.file.getvalue())
+
+        # self.file.file.file.seek(initial_position)
+
+        return hash_md5.hexdigest()
+
+    def __str__(self):
+        return 'Q: {}; A: file'.format(self.call_question)
 
 
 class BudgetItem(models.Model):
