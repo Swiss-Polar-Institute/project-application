@@ -223,8 +223,8 @@ class CallCommentAdmin(admin.ModelAdmin):
 
 
 class ProposalQAFileAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'call_question', 'file', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['proposal', 'call_question', 'file', 'created_by', 'created_on', 'modified_by', 'modified_on']
+    list_display = ('proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on']
 
 
 admin.site.register(project_core.models.StepType, StepTypeAdmin)

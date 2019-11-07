@@ -52,11 +52,9 @@ class Questions(Form):
                     defaults={'answer': answer}
                 )
             elif call_question.answer_type == CallQuestion.FILE:
-                proposal_file = ProposalQAFile()
-                proposal_file.proposal = proposal
-                proposal_file.call_question = call_question
-                proposal_file.file = answer
-                proposal_file.save()
+                ProposalQAFile.objects.update_or_create(
+                    proposal=proposal, call_question=call_question,
+                    defaults={'file': answer})
 
     def clean(self):
         cleaned_data = super().clean()

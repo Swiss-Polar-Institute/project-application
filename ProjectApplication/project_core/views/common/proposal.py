@@ -1,19 +1,24 @@
+import mimetypes
+import os
+
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
+from django.views import View
 from django.views.generic import TemplateView
 
 from project_core.forms.budget import BudgetItemFormSet
+from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
 from project_core.forms.partners import ProposalPartnersInlineFormSet
-from project_core.forms.proposal import ProposalForm
-from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.person import PersonForm
+from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
-from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus
+from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -41,7 +46,7 @@ class AbstractProposalDetailView(TemplateView):
 
         context['questions_answers'] = []
 
-        for question in call.callquestion_set.all().order_by('order'):
+        for question in call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
             try:
                 answer = ProposalQAText.objects.get(proposal=proposal, call_question=question).answer
             except ObjectDoesNotExist:
@@ -51,6 +56,27 @@ class AbstractProposalDetailView(TemplateView):
 
             context['questions_answers'].append({'question': question_text,
                                                  'answer': answer})
+
+        context['questions_files'] = []
+        for question in call.callquestion_set.filter(answer_type=CallQuestion.FILE).order_by('order'):
+            try:
+                proposal_qa_file = ProposalQAFile.objects.get(proposal=proposal, call_question=question)
+                filename = os.path.basename(proposal_qa_file.file.name)
+                md5 = proposal_qa_file.md5
+                human_file_size = proposal_qa_file.human_file_size()
+
+            except ObjectDoesNotExist:
+                filename = None
+                md5 = None
+                human_file_size = None
+
+            question_text = question.question_text
+
+            context['questions_files'].append({'question': question_text,
+                                               'file': {'name': filename,
+                                                        'md5': md5,
+                                                        'size': human_file_size,
+                                                        }})
 
         return render(request, self.template, context)
 
@@ -262,3 +288,23 @@ def call_context_for_template(call):
                'proposal_partner_question': call.proposal_partner_question}
 
     return context
+
+
+class ProposalQuestionAnswerFileView(View):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        question_answer = ProposalQAFile.objects.get(md5=kwargs['md5'])
+
+        filename, file_extension = os.path.splitext(question_answer.file.name)
+
+        content_type = mimetypes.types_map.get(file_extension.lower(), 'application/octet-stream')
+
+        response = HttpResponse(
+            question_answer.file.file.file,
+            content_type=content_type
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % question_answer.file.name
+
+        return response

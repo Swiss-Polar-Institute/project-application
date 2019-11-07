@@ -17,6 +17,8 @@ services:
       - nginx-proxy
     links:
       - database
+    environment:
+      - ${PROJECT_APPLICATION_ENV_FILE}
 
   reverse-proxy:
     image: nginx:1.17
