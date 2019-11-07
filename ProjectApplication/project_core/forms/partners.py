@@ -4,17 +4,8 @@ from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
-from project_core.forms.utils import get_field_information
+from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle
-
-
-class LabelAndOrderNameChoiceField(forms.ModelChoiceField):
-    def __init__(self, *args, **kwargs):
-        kwargs['queryset'] = kwargs['queryset'].order_by('name')
-        super().__init__(*args, **kwargs)
-
-    def label_from_instance(self, obj):
-        return obj.name
 
 
 class ProposalPartnerItemForm(ModelForm):

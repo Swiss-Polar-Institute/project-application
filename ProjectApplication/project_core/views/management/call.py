@@ -1,10 +1,14 @@
 from django.contrib import messages
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory
+
+CALL_QUESTION_FORM_NAME = 'call_question_form'
+CALL_FORM_NAME = 'call_form'
 
 
 class CallsList(TemplateView):
@@ -74,6 +78,7 @@ class CallView(TemplateView):
 
         return render(request, 'management/call.tmpl', context)
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -117,7 +122,3 @@ class CallView(TemplateView):
         messages.error(request, 'Call not saved. Please correct the errors in the form and try again')
 
         return render(request, 'management/call.tmpl', context)
-
-
-CALL_QUESTION_FORM_NAME = 'call_question_form'
-CALL_FORM_NAME = 'call_form'

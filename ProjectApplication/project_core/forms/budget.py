@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from django import forms
 from django.forms import BaseFormSet, formset_factory
 
-from project_core.forms.proposal import PlainTextWidget
+from project_core.forms.utils import PlainTextWidget
 from project_core.models import BudgetCategory, ProposedBudgetItem
 
 

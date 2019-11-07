@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from dal import autocomplete
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
-from project_core.forms.proposal import OrganisationChoiceField
+from project_core.forms.utils import OrganisationChoiceField
 from project_core.models import Organisation, ProposalFundingItem, Proposal
 
 

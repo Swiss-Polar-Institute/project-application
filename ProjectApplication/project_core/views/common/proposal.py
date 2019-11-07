@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -8,7 +9,9 @@ from django.views.generic import TemplateView
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.funding import ProposalFundingItemFormSet
 from project_core.forms.partners import ProposalPartnersInlineFormSet
-from project_core.forms.proposal import ProposalForm, PersonForm, DataCollectionForm
+from project_core.forms.proposal import ProposalForm
+from project_core.forms.datacollection import DataCollectionForm
+from project_core.forms.person import PersonForm
 from project_core.forms.questions import Questions
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus
 
@@ -122,6 +125,7 @@ class AbstractProposalView(TemplateView):
 
         return render(request, self.form_template, context)
 
+    @transaction.atomic
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
