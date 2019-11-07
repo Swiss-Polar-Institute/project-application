@@ -11,6 +11,7 @@ services:
     volumes:
       - static_volume:/code/ProjectApplication/staticfiles
       - ./ProjectApplication:/code/ProjectApplication
+      - ./.git:/code/ProjectApplication/.git
     ports:
       - 8085:8085
     networks:
