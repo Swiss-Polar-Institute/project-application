@@ -11,13 +11,14 @@ services:
     volumes:
       - static_volume:/code/ProjectApplication/staticfiles
       - ./ProjectApplication:/code/ProjectApplication
+      - ./.git:/code/ProjectApplication/.git
     ports:
       - 8085:8085
     networks:
       - nginx-proxy
     links:
       - database
-    environment:
+    env_file:
       - ${PROJECT_APPLICATION_ENV_FILE}
 
   reverse-proxy:
