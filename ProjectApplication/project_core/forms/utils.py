@@ -1,8 +1,7 @@
 def get_model_information(model, field, information):
     return getattr(model._meta.get_field(field), information)
 
-
-def get_field_information(model, field):
+def get_field_information(model, field, label=None):
     kwargs = {}
 
     kwargs['help_text'] = get_model_information(model, field, 'help_text')
@@ -11,5 +10,8 @@ def get_field_information(model, field):
     max_length = get_model_information(model, field, 'max_length')
     if max_length is not None:
         kwargs['max_length'] = max_length
+
+    if label:
+        kwargs['label'] = label
 
     return kwargs

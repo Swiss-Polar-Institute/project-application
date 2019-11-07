@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information
-from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, Role
+from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle
 
 
 class LabelAndOrderNameChoiceField(forms.ModelChoiceField):
@@ -18,21 +18,17 @@ class LabelAndOrderNameChoiceField(forms.ModelChoiceField):
 
 
 class ProposalPartnerItemForm(ModelForm):
-    person__physical_person__first_name = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'))
-    person__physical_person__surname = forms.CharField(**get_field_information(PhysicalPerson, 'surname'))
-    person__academic_title = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'))
-
-    # person__physical_person__gender =
-    person__group = forms.CharField(help_text=PersonPosition._meta.get_field('group').help_text,
-                                    max_length=PersonPosition._meta.get_field('group').max_length,
-                                    required=True)
+    person__physical_person__first_name = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'),
+                                                          label='Academic title')
+    person__physical_person__surname = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
+                                                       label='First name')
+    person__academic_title = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'), label='Surname')
+    person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-
-        initial_role = None
 
         self.fields['id'] = None
 
@@ -42,11 +38,6 @@ class ProposalPartnerItemForm(ModelForm):
             self.fields['person__physical_person__first_name'].initial = self.instance.person.person.first_name
             self.fields['person__physical_person__surname'].initial = self.instance.person.person.surname
             self.fields['id'] = self.instance.pk
-
-        self.fields['person__academic_title'].label = 'Academic title'
-        self.fields['person__physical_person__first_name'].label = 'First name'
-        self.fields['person__physical_person__surname'].label = 'Surname'
-        self.fields['person__group'].label = 'Group'
 
         self.helper.layout = Layout(
             Div(
