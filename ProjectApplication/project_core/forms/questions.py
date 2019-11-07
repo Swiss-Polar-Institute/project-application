@@ -3,7 +3,7 @@ from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
 
-from project_core.models import ProposalQAText, CallQuestion
+from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion
 
 
 class Questions(Form):
@@ -44,12 +44,19 @@ class Questions(Form):
 
     def save_answers(self, proposal):
         for question, answer in self.cleaned_data.items():
-            call_question_id = int(question[len('question_'):])
+            call_question = CallQuestion.objects.get(id=int(question[len('question_'):]))
 
-            ProposalQAText.objects.update_or_create(
-                proposal=proposal, call_question_id=call_question_id,
-                defaults={'answer': answer}
-            )
+            if call_question.answer_type == CallQuestion.TEXT:
+                ProposalQAText.objects.update_or_create(
+                    proposal=proposal, call_question=call_question,
+                    defaults={'answer': answer}
+                )
+            elif call_question.answer_type == CallQuestion.FILE:
+                proposal_file = ProposalQAFile()
+                proposal_file.proposal = proposal
+                proposal_file.call_question = call_question
+                proposal_file.file = answer
+                proposal_file.save()
 
     def clean(self):
         cleaned_data = super().clean()
@@ -57,16 +64,19 @@ class Questions(Form):
         # list because otherwise dictionary size changes during execution
         # (need to check why exactly)
         for question_number in list(cleaned_data.keys()):
-            answer = cleaned_data[question_number]
             question_id = question_number[len('question_'):]
 
             call_question = CallQuestion.objects.get(id=question_id)
 
-            max_word_length = call_question.answer_max_length
-            current_words = len(answer.split())
+            if call_question.answer_type == CallQuestion.TEXT:
+                answer = cleaned_data[question_number]
 
-            if max_word_length is not None and current_words > max_word_length:
-                self.add_error(question_number,
-                               'Too long. Current: {} words, maximum: {} words'.format(current_words, max_word_length))
+                max_word_length = call_question.answer_max_length
+                current_words = len(answer.split())
+
+                if max_word_length is not None and current_words > max_word_length:
+                    self.add_error(question_number,
+                                   'Too long. Current: {} words, maximum: {} words'.format(current_words,
+                                                                                           max_word_length))
 
         return cleaned_data

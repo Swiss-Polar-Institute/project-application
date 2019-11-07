@@ -222,6 +222,11 @@ class CallCommentAdmin(admin.ModelAdmin):
     ordering = ['call', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
+class ProposalQAFileAdmin(admin.ModelAdmin):
+    list_display = ('proposal', 'call_question', 'file', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['proposal', 'call_question', 'file', 'created_by', 'created_on', 'modified_by', 'modified_on']
+
+
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
@@ -255,3 +260,4 @@ admin.site.register(project_core.models.Role, RoleAdmin)
 admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
 admin.site.register(project_core.models.ProposalComment, ProposalCommentAdmin)
 admin.site.register(project_core.models.CallComment, CallCommentAdmin)
+admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)
