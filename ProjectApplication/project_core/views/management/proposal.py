@@ -25,6 +25,7 @@ class ProposalsExportExcel(View):
         basic_header_properties = {'text_wrap': True, 'bold': True, 'border': 1, 'align': 'center', 'valign': 'bottom'}
 
         centered_properties = {'align': 'center'}
+        centered_text_wrap_properties = dict(**centered_properties, text_wrap=True)
         centered_border_left_properties = dict(**centered_properties, left=1)
         centered_border_right_properties = dict(**centered_properties, right=1)
         centered_border_bottom_properties = dict(**centered_properties, bottom=1)
@@ -62,6 +63,7 @@ class ProposalsExportExcel(View):
         self._data_format = self._workbook.add_format(basic_data_properties)
 
         self._centered = self._workbook.add_format(centered_properties)
+        self._centered_text_wrap = self._workbook.add_format(centered_text_wrap_properties)
         self._centered_border_left = self._workbook.add_format(centered_border_left_properties)
         self._centered_border_right = self._workbook.add_format(centered_border_right_properties)
         self._centered_border_bottom = self._workbook.add_format(centered_border_bottom_properties)
@@ -216,7 +218,12 @@ class ProposalsExportExcel(View):
 
         for index, row in enumerate(evaluation_criteria):
             self._worksheet.write(initial_row + index + 1, initial_column, row[0], self._centered_border_left)
-            self._worksheet.write(initial_row + index + 1, initial_column + 1, row[1], self._centered)
+            self._worksheet.write(initial_row + index + 1, initial_column + 1, row[1], self._centered_text_wrap)
+
+            if len(row[1]) > 35:
+                # This is going to be (likely) a multi-line row. Default height=15 from xlsxwriter
+                self._worksheet.set_row(initial_row + index + 1, 30)
+
             self._worksheet.write(initial_row + index + 1, initial_column + 2, row[2], self._small_italics)
             self._worksheet.write(initial_row + index + 1, border_right_column, '', self._centered_border_right)
 
