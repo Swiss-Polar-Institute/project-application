@@ -1,18 +1,22 @@
-<table class="table table-striped table-sm">
-    <thead>
+{% if proposal.proposalfundingitem_set.all %}
+    <table class="table table-striped table-sm">
+        <thead>
         <tr>
             <th>Organisation</th>
             <th>Funding status</th>
             <th>Amount (CHF)</th>
         </tr>
-    </thead>
-    <tbody>
-    {% for proposal_funding_item in proposal.proposalfundingitem_set.all %}
-        <tr>
-            <td>{{ proposal_funding_item.organisation.long_name }}</td>
-            <td>{{ proposal_funding_item.funding_status }}</td>
-            <td>{{ proposal_funding_item.amount }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        {% for proposal_funding_item in proposal.proposalfundingitem_set.all %}
+            <tr>
+                <td>{{ proposal_funding_item.organisation.long_name }}</td>
+                <td>{{ proposal_funding_item.funding_status }}</td>
+                <td>{{ proposal_funding_item.amount }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    No funding for this proposal
+{% endif %}
