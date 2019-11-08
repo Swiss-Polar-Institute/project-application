@@ -66,5 +66,3 @@ class ProposalForm(ModelForm):
                    'provisional_start_date': DatePickerWidget,
                    'provisional_end_date': DatePickerWidget
                    }
-
-

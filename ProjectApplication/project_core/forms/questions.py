@@ -1,5 +1,4 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
@@ -40,12 +39,13 @@ class Questions(Form):
             answer = None
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
-            except ObjectDoesNotExist:
-                pass
+                self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
+                                                                                 help_text=question.question_description,
+                                                                                 initial=file)
 
-            self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
-                                                                             help_text=question.question_description,
-                                                                             initial=file)
+            except ObjectDoesNotExist:
+                self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
+                                                                                 help_text=question.question_description)
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

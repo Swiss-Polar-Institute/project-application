@@ -51,9 +51,13 @@
 {% for question_file in questions_files %}
     {{ question_file.question }}
     <div class="border p-3 bg-white rounded">
-        <i class="fa fa-paperclip"></i> <a
-            href="{% url 'proposal-question-answer-file' md5=question_file.file.md5 %}">{{ question_file.file.name }}</a>
-        ({{ question_file.file.size }})
+        {% if qusetion_file.file %}
+            {% include 'common/_answer_type-icon.tmpl' with type='File' %} <a
+                href="{% url 'proposal-question-answer-file' md5=question_file.file.md5 %}">{{ question_file.file.name }}</a>
+            ({{ question_file.file.size }})
+        {% else %}
+            Not attached
+        {% endif %}
     </div>
     <br>
 {% endfor %}
