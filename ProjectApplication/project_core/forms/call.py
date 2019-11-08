@@ -5,7 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
 
-from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory
+from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory, FundingInstrument
 from ..widgets import DateTimePickerWidget
 
 
@@ -91,6 +91,8 @@ class CallForm(forms.ModelForm):
                                                                            help_text=self.Meta.help_texts[
                                                                                'template_questions'],
                                                                            label=self.Meta.labels['template_questions'])
+
+        self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

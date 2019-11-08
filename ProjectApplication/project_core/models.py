@@ -69,6 +69,9 @@ class FundingInstrument(CreateModify):
     def __str__(self):
         return '{}'.format(self.long_name)
 
+    def get_absolute_url(self):
+        return reverse('funding-instrument-detail', args=[str(self.pk)])
+
 
 class Call(CreateModify):
     """Description of call."""

@@ -12,7 +12,22 @@
                 Create call
             </a>
         </li>
-        <li><hr></li>
+        <li>
+            <hr>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'funding-instruments-list' %}active{% endif %}"
+                href="{% url 'funding-instruments-list' %}">List funding
+                instruments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'funding-instrument-add' %}active{% endif %}"
+                href="{% url 'funding-instrument-add' %}">Create funding
+                instrument</a>
+        </li>
+        <li>
+            <hr>
+        </li>
         <li class="nav-item">
             <a class="nav-link {% if active == 'template-questions-list' %}active{% endif %}"
                href="{% url 'template-questions-list' %}">List template questions</a>

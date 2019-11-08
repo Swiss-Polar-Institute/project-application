@@ -1,0 +1,13 @@
+{% extends 'management/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+{% block subtitle %}Funding instrument{% endblock %}
+
+{% block contents %}
+    {% if form.instance.id %}
+        <h1>Editing funding instrument</h1>
+    {% else %}
+        <h1>Creating funding instrument</h1>
+    {% endif %}
+
+    {% crispy form %}
+{% endblock %}

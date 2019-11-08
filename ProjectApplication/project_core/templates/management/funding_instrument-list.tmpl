@@ -1,0 +1,51 @@
+{% extends 'management/_base_with_menus.tmpl' %}
+{% block subtitle %}Funding instruments list{% endblock %}
+
+{% block contents %}
+    <h1>Funding instruments</h1>
+    {% if funding_instruments %}
+        <style>
+            /** The buttons "Edit" and "View" in the Actions column should always be in the same line */
+            #list-of-funding-instruments td:nth-child(4) {
+                white-space: nowrap;
+            }
+        </style>
+
+        <table id="list-of-funding-instruments" class="table table-stripped table-sm table-hover display">
+            <thead>
+            <tr>
+                <th>Long name</th>
+                <th>Short name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for funding_instrument in funding_instruments %}
+                <tr>
+                    <td>{{ funding_instrument.long_name }}</td>
+                    <td>{% if funding_instrument.short_name %}{{ funding_instrument.short_name }}{% else %}
+                        -{% endif %}</td>
+                    <td>{{ funding_instrument.description }}</td>
+                    <td><a class="btn btn-primary btn-xs"
+                           href="{% url 'funding-instrument-update' pk=funding_instrument.id %}">Edit</a>
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'funding-instrument-detail' pk=funding_instrument.id %}">View</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        No funding instruments entered in the system
+    {% endif %}
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('table.display').DataTable({
+                    "pageLength": 100
+                }
+            );
+        });
+    </script>
+{% endblock %}

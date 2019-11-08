@@ -17,7 +17,7 @@ class TemplateQuestionList(TemplateView):
         context['active_subsection'] = 'template-questions-list'
         context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
 
-        return render(request, 'management/templatequestion-list.tmpl', context)
+        return render(request, 'management/template_question-list.tmpl', context)
 
 
 class TemplateQuestionMixin:
@@ -38,7 +38,7 @@ class AddCrispySubmitButtonMixin:
 
 
 class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
-    template_name = 'management/templatequestion-form.tmpl'
+    template_name = 'management/template_question-form.tmpl'
     model = TemplateQuestion
     success_message = 'Template question created'
 
@@ -53,7 +53,7 @@ class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMix
 
 
 class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
-    template_name = 'management/templatequestion-form.tmpl'
+    template_name = 'management/template_question-form.tmpl'
     model = TemplateQuestion
     success_message = 'Template question updated'
 
@@ -68,7 +68,7 @@ class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMix
 
 
 class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
-    template_name = 'management/templatequestion-detail.tmpl'
+    template_name = 'management/template_question-detail.tmpl'
     model = TemplateQuestion
 
     def get_context_data(self, **kwargs):
