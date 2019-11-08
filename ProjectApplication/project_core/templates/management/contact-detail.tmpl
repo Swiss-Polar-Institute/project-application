@@ -18,7 +18,7 @@
         -
     {% endfor %}
     <br>
-    <strong>Group:</strong> {% if object.group %}{{ object.group }}{% else %}-{% endif %}
+    <strong>Group:</strong> {% include 'common/_value-or-dash.tmpl' with value=object.group %}
     <br>
     <strong>Email:</strong> <a href="mailto:{{ object.main_email }}">{{ object.main_email }}</a>
     <p></p>
