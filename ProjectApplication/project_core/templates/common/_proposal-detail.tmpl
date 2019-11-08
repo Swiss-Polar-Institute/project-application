@@ -51,8 +51,11 @@
 {% for question_file in questions_files %}
     {{ question_file.question }}
     <div class="border p-3 bg-white rounded">
-        <i class="fa fa-paperclip"></i> <a href="{% url 'proposal-question-answer-file' md5=question_file.file.md5 %}">{{ question_file.file.name }}</a> ({{ question_file.file.size }})
+        <i class="fa fa-paperclip"></i> <a
+            href="{% url 'proposal-question-answer-file' md5=question_file.file.md5 %}">{{ question_file.file.name }}</a>
+        ({{ question_file.file.size }})
     </div>
+    <br>
 {% endfor %}
 
 {% if proposal_partner_question %}
@@ -70,12 +73,9 @@
 
 {% if proposal.call.other_funding_question %}
     <h3>Other sources of funding</h3>
-
     {% include 'common/_accordion.tmpl' with prefix='funding' button_text='Funding details' template_file='common/_table-funding.tmpl' %}
     <br>
 {% endif %}
-
-
 
 <h3>Data agreement</h3>
 <strong>Agreed to data
@@ -86,3 +86,4 @@
 <hr>
 <strong>Proposal created:</strong> {{ proposal.created_on }}<br>
 <strong>Proposal last modified:</strong> {{ proposal.modified_on }}
+<p></p>
