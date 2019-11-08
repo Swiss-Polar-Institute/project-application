@@ -105,14 +105,24 @@ div.selector-filter {
 
 /** Sidebar colors. For the navbar the default ones are used,
     for the side bar it needs to be specified */
-.sidebar .nav-link {
-  font-weight: 500;
-  color: #007bff;
+/*.sidebar .nav-link {*/
+/*  font-weight: 500;*/
+/*  color: #007bff;*/
+/*}*/
+
+.sidebar {
+    padding: 0;
+    height: 100vh;
+}
+
+.sidebar hr {
+    margin: 0;
 }
 
 .sidebar .nav-link.active {
     color: #333;
 }
+
 
 /** Sadly Bootstrap4 doesn't have extra-small buttons. See:
     https://stackoverflow.com/a/50931961/9294284 from
