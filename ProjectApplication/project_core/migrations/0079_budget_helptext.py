@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('project_core', '0077_add_question_files_for_proposals'),
+        ('project_core', '0078_proposal_qa_files_have_md5_field'),
     ]
 
     operations = [
