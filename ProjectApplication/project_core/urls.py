@@ -3,27 +3,25 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from django.views.i18n import JavaScriptCatalog
 
-import project_core.views.common.autocomplete
-import project_core.views.common.proposal
-import project_core.views.external.call
-import project_core.views.external.proposal
+from .views import common
+from .views import external
 from .views import management
 
 urlpatterns = [
-    path('', project_core.views.external.homepage.Homepage.as_view(), name='homepage'),
+    path('', external.homepage.Homepage.as_view(), name='homepage'),
     path('admin/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-jsi18n'),
-    path('calls/', project_core.views.external.call.CallsList.as_view(), name='calls-list'),
-    path('proposal/add/', project_core.views.external.proposal.ProposalView.as_view(), name='proposal-add'),
-    path('proposal/<uuid:uuid>/update', project_core.views.external.proposal.ProposalView.as_view(),
+    path('calls/', external.call.CallsList.as_view(), name='calls-list'),
+    path('proposal/add/', external.proposal.ProposalView.as_view(), name='proposal-add'),
+    path('proposal/<uuid:uuid>/update', external.proposal.ProposalView.as_view(),
          name='proposal-update'),
-    path('proposal/<uuid:uuid>/', project_core.views.external.proposal.ProposalDetailView.as_view(),
+    path('proposal/<uuid:uuid>/', external.proposal.ProposalDetailView.as_view(),
          name='proposal-detail'),
-    path('proposal/thank-you/<uuid:uuid>/', project_core.views.external.proposal.ProposalThankYouView.as_view(),
+    path('proposal/thank-you/<uuid:uuid>/', external.proposal.ProposalThankYouView.as_view(),
          name='proposal-thank-you'),
-    path('proposal/too-late/', project_core.views.external.proposal.ProposalTooLate.as_view(),
+    path('proposal/too-late/', external.proposal.ProposalTooLate.as_view(),
          name='proposal-too-late'),
-    path('proposal/questionanswer/file/<str:md5>',
-         project_core.views.common.proposal.ProposalQuestionAnswerFileView.as_view(),
+    path('proposal/question_answer/file/<str:md5>',
+         common.proposal.ProposalQuestionAnswerFileView.as_view(),
          name='proposal-question-answer-file'),
 
     path('management/proposals', management.proposal.ProposalsList.as_view(), name='management-proposals-list'),
@@ -75,9 +73,9 @@ urlpatterns = [
                                                      'demo_management_password': settings.DEMO_MANAGEMENT_PASSWORD})),
     path('accounts/', include('django.contrib.auth.urls')),
 
-    path('autocomplete/organisations/', project_core.views.common.autocomplete.OrganisationsAutocomplete.as_view(),
+    path('autocomplete/organisations/', common.autocomplete.OrganisationsAutocomplete.as_view(),
          name='autocomplete-organisations'),
     path('autocomplete/keywords/',
-         project_core.views.common.autocomplete.KeywordsAutocomplete.as_view(create_field='name'),
+         common.autocomplete.KeywordsAutocomplete.as_view(create_field='name'),
          name='autocomplete-keywords')
 ]
