@@ -36,7 +36,6 @@ class Questions(Form):
                                                                              help_text=question.question_description)
 
         for question in self._call.callquestion_set.filter(answer_type=CallQuestion.FILE).order_by('order'):
-            answer = None
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
                 self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
