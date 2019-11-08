@@ -10,10 +10,10 @@ from project_core.models import ProposalPartner, Proposal, PersonPosition, Physi
 
 class ProposalPartnerItemForm(ModelForm):
     person__physical_person__first_name = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'),
-                                                          label='Academic title')
+                                                          label='First name')
     person__physical_person__surname = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
-                                                       label='First name')
-    person__academic_title = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'), label='Surname')
+                                                       label='Surname')
+    person__academic_title = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'), label='Academic title')
     person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab'))
 
     def __init__(self, *args, **kwargs):
