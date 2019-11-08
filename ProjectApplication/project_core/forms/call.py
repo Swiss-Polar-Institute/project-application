@@ -1,12 +1,12 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from ..widgets import DateTimePickerWidget
 
 from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory
+from ..widgets import DateTimePickerWidget
 
 
 class CallQuestionItemForm(forms.ModelForm):
@@ -15,33 +15,36 @@ class CallQuestionItemForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
-        self.helper.layout = Layout(
-            Div(
-                Div('id', css_class='col-12', hidden=True),
-                Div('order', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('question_text', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('question_description', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('answer_type', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
+        divs = []
+
+        divs.append(Div(
+            Div('id', css_class='col-12', hidden=True),
+            Div('order', css_class='col-12'),
+            css_class='row')
+        )
+
+        divs.append(Div(
+            Div('question_text', css_class='col-12'),
+            css_class='row')
+        )
+
+        divs.append(Div(
+            Div('question_description', css_class='col-12'),
+            css_class='row')
+        )
+
+        if self.instance.answer_type == CallQuestion.TEXT:
+            divs.append(Div(
                 Div('answer_max_length', css_class='col-12'),
                 css_class='row'
             )
-        )
+            )
+
+        self.helper.layout = Div(*divs)
 
     class Meta:
         model = CallQuestion
-        fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length', 'answer_type']
+        fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length', ]
         widgets = {
             'question_text': forms.Textarea(attrs={'rows': 4}),
             'question_description': forms.Textarea(attrs={'rows': 4})
@@ -82,8 +85,11 @@ class CallForm(forms.ModelForm):
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
                                                                            queryset=TemplateQuestion.objects.all(),
                                                                            required=False,
-                                                                           widget=FilteredSelectMultiple(is_stacked=True, verbose_name='questions'),
-                                                                           help_text=self.Meta.help_texts['template_questions'],
+                                                                           widget=FilteredSelectMultiple(
+                                                                               is_stacked=True,
+                                                                               verbose_name='questions'),
+                                                                           help_text=self.Meta.help_texts[
+                                                                               'template_questions'],
                                                                            label=self.Meta.labels['template_questions'])
 
         self.helper = FormHelper(self)
@@ -174,8 +180,10 @@ class CallForm(forms.ModelForm):
 
     class Meta:
         model = Call
-        fields = ['funding_instrument', 'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date',
-                  'submission_deadline', 'budget_categories', 'budget_maximum', 'other_funding_question', 'proposal_partner_question', ]
+        fields = ['funding_instrument', 'long_name', 'short_name', 'description', 'introductory_message',
+                  'call_open_date',
+                  'submission_deadline', 'budget_categories', 'budget_maximum', 'other_funding_question',
+                  'proposal_partner_question', ]
 
         field_classes = {
             'call_open_date': forms.SplitDateTimeField,

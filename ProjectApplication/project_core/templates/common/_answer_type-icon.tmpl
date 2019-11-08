@@ -1,0 +1,7 @@
+{% if type|lower == "text" %}
+    <i class="fa fa-font"></i>
+{% elif type|lower == "file" %}
+    <i class="fa fa-paperclip"></i>
+{% else %}
+    ??
+{% endif %}

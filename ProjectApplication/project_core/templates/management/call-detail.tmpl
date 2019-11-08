@@ -52,15 +52,13 @@
     <br>
     <h2>Questions</h2>
     {% for question in call.callquestion_set_ordered_by_order %}
-        <p>
-        <div class="row">
-            <div class="col-6">
-                <strong>Question:</strong> {{ question.question_text }} ({% if question.answer_type == question.TEXT %}Text -{% if question.answer_max_length %} max words: {{ question.answer_max_length }}{% else %}unlimited{% endif %}{% elif question.answer_type == question.FILE %}File{% endif %})
-                <br>
-            </div>
-        </div>
+        <strong>Answer type:</strong> {% include 'common/_answer_type-icon.tmpl' with type=question.answer_type %}<br>
+        <strong>Question:</strong> {{ question.question_text }}
+        {% if question.answer_type == question.TEXT %}(max words: {% if question.answer_max_length %}
+            {{ question.answer_max_length }}{% else %}unlimited{% endif %}){% endif %}
+        <br>
         <strong>Description:</strong> {{ question.question_description }}<br>
-        </p>
+        <p></p>
     {% endfor %}
 
     <p></p>

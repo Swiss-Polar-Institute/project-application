@@ -9,6 +9,8 @@
         {% endif %}
 
         <h4>Question {{ forloop.counter }}</h4>
+        Answer type:
+        {% include  'common/_answer_type-icon.tmpl' with type=form.instance.answer_type %}
         {% crispy form %}
     {% endfor %}
 {% else %}
