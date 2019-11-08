@@ -61,9 +61,9 @@ class PersonForm(Form):
         self.helper.layout = Layout(
             Div(
                 Div('academic_title', css_class='col-2'),
-                Div('gender', css_class='col-2'),
                 Div('first_name', css_class='col-4'),
                 Div('surname', css_class='col-4'),
+                Div('gender', css_class='col-2'),
                 css_class='row'
             ),
             Div(
