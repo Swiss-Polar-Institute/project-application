@@ -11,6 +11,6 @@
 
     <p></p>
     <p><strong>Long name:</strong><br>{{ object.long_name }}</p>
-    <p><strong>Short name:</strong><br>{{ object.short_name }}</p>
+    <p><strong>Short name:</strong><br>{% if object.short_name %}{{ object.short_name }}{% else %}-{% endif %}</p>
     <p><strong>Description:</strong><br>{{ object.description }}</p>
 {% endblock %}

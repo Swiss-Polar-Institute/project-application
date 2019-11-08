@@ -12,7 +12,7 @@
     <br>
     <strong>Long Name:</strong> {{ call.long_name }}
     <br>
-    <strong>Short Name:</strong> {{ call.short_name }}
+    <strong>Short Name:</strong> {% if call.short_name %}{{ call.short_name }}{% else %}-{% endif %}
     <br>
     <strong>Description:</strong> {{ call.description }}
     <br>
