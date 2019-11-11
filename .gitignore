@@ -56,6 +56,7 @@ coverage.xml
 local_settings.py
 ProjectApplication/staticfiles/
 db.sqlite3
+ProjectApplication/project_core/fixtures/
 
 # Flask stuff:
 instance/

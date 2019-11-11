@@ -4,32 +4,35 @@ from django.utils.datastructures import MultiValueDict
 from ..forms.call import CallForm
 
 
-def dict_to_multivalue_dict(d):
-    multi_value_dict = MultiValueDict()
+def values_as_list(d):
+    result = dict()
 
     for key, value in d.items():
-        multi_value_dict[key] = [value]
+        result[key] = [value]
 
-    return multi_value_dict
+    return result
 
 
 class CallFormTest(TestCase):
+    fixtures = ['basic.json', ]
+
     def test_deadline(self):
-        call_data = MultiValueDict(
-            {'call_open_date_0': ['2020-01-01'],
-             'call_open_date_1': ['10:00'],
-             'submission_deadline_0': ['2020-01-31'],
-             'submission_deadline_1': ['12:00'],
-             'long_name': ['GreenLAnd Circumnavigation Expedition'],
-             'description': ['Cool, cold'],
-             'budget_maximum': [100_000],
-             'budget_categories': [1, 3, 5]
+        call_data = values_as_list(
+            {'call_open_date_0': '2020-01-01',
+             'call_open_date_1': '10:00',
+             'submission_deadline_0': '2020-01-31',
+             'submission_deadline_1': '12:00',
+             'long_name': 'GreenLAnd Circumnavigation Expedition 2',
+             'description': 'Cool, cold',
+             'budget_maximum': '100000',
              }
         )
 
-        # call_data = dict_to_multivalue_dict(call_data)
-        # call_data['budget_categories'] = [1, 4, 5]
+        call_data = MultiValueDict(call_data)
+
+        call_data.setlist('budget_categories', ['2', '3'])
+
         call_form = CallForm(data=call_data)
         # self.assertTrue(call_form.is_valid())
-        call_form.is_valid()
-        print('test')
+        print(call_form.errors)
+        self.assertTrue(call_form.is_valid())
