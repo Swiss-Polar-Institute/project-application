@@ -67,17 +67,14 @@ CallQuestionItemFormSet = inlineformset_factory(
 
 class CallForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        # print(type(args[0]))
+        # print(args[0].getlist('call_form-budget_categories'))
         super().__init__(*args, **kwargs)
 
         if self.instance.pk:
-            # template_ids_used = CallQuestion.objects.filter(call=self.instance).values_list('question', flat=True)
-            # questions_qs = TemplateQuestion.objects.exclude(id__in=template_ids_used)
-            budget_categories_qs = self.instance.budget_categories.all()
-            # used_questions = self.instance.call
             questions = self.instance.callquestion_set.all().values_list('template_question', flat=True)
             used_questions = TemplateQuestion.objects.filter(id__in=questions)
         else:
-            budget_categories_qs = []
             used_questions = []
 
         self.fields['budget_categories'].queryset = BudgetCategory.all_ordered()
