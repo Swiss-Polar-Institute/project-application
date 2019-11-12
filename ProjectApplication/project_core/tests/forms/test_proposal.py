@@ -3,7 +3,8 @@ from datetime import datetime
 from django.test import TestCase
 
 from project_core.forms.proposal import ProposalForm
-from project_core.models import CallQuestion, Call, GeographicalArea, Keyword
+from project_core.models import CallQuestion, Call, GeographicalArea, Keyword, ProposalStatus, PersonPosition, \
+    PhysicalPerson, PersonTitle
 from project_core.tests import database_population
 from project_core.tests import utils
 
@@ -32,5 +33,18 @@ class CallFormTest(TestCase):
         proposal_form = ProposalForm(call=Call.objects.get(long_name='GreenLAnd Circumnavigation Expedition'),
                                      data=data)
 
-        print('Errors:', proposal_form.errors)
         self.assertTrue(proposal_form.is_valid())
+
+        proposal = proposal_form.save(commit=False)
+        proposal.applicant = create_person_position()
+        proposal.proposal_status, created = ProposalStatus.objects.get_or_create(name='Submitted')
+        proposal.save()
+
+
+def create_person_position():
+    physical_person, created = PhysicalPerson.objects.get_or_create(first_name='John', surname='Doe')
+    academic_title, created = PersonTitle.objects.get_or_create(title='Mr')
+    person_position, created = PersonPosition.objects.get_or_create(person=physical_person,
+                                                                    academic_title=academic_title, data_policy=True,
+                                                                    contact_newsletter=True)
+    return person_position
