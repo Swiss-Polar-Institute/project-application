@@ -1,15 +1,14 @@
 from django.test import TestCase
 
 from project_core.forms.call import CallForm
-from project_core.models import BudgetCategory, TemplateQuestion
 from project_core.tests import database_population
 from project_core.tests.utils import dict_to_multivalue_dict
 
 
 class CallFormTest(TestCase):
     def setUp(self):
-        database_population.create_budget_categories()
-        database_population.create_template_questions()
+        self._budget_categories = database_population.create_budget_categories()
+        self._template_questions = database_population.create_template_questions()
 
     def test_call(self):
         call_data = dict_to_multivalue_dict(
@@ -24,8 +23,7 @@ class CallFormTest(TestCase):
         )
 
         call_data.setlist('budget_categories',
-                          [BudgetCategory.objects.get(name='Travel').id,
-                           BudgetCategory.objects.get(name='Data processing').id])
+                          [self._budget_categories[0].id, self._budget_categories[1].id])
 
         call_form = CallForm(data=call_data)
         self.assertTrue(call_form.is_valid())
@@ -45,13 +43,9 @@ class CallFormTest(TestCase):
              }
         )
 
-        call_data.setlist('budget_categories',
-                          [BudgetCategory.objects.get(name='Travel').id,
-                           BudgetCategory.objects.get(name='Data processing').id])
+        call_data.setlist('budget_categories', [self._budget_categories[0], self._budget_categories[1]])
 
-        call_data.setlist('template_questions', [
-            TemplateQuestion.objects.get(
-                question_text='Explain which methods of transport are needed to go to the location')])
+        call_data.setlist('template_questions', [self._template_questions[0]])
 
         call_form = CallForm(data=call_data)
         self.assertFalse(call_form.is_valid())

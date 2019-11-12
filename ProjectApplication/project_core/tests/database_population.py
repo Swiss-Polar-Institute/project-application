@@ -17,9 +17,11 @@ def create_call():
 
 
 def create_geographical_areas():
-    GeographicalArea.objects.get_or_create(name='Antarctic', definition='Very south')
-    GeographicalArea.objects.get_or_create(name='Arctic', definition='Very north')
-    GeographicalArea.objects.get_or_create(name='High peaks', definition='Very high')
+    antarctic, created = GeographicalArea.objects.get_or_create(name='Antarctic', definition='Very south')
+    arctic, created = GeographicalArea.objects.get_or_create(name='Arctic', definition='Very north')
+    high_peak, created = GeographicalArea.objects.get_or_create(name='High peaks', definition='Very high')
+
+    return antarctic, arctic, high_peak
 
 
 def create_keywords():
@@ -27,31 +29,47 @@ def create_keywords():
 
     keyword_uuid, created = KeywordUid.objects.get_or_create(uid='test-2040242', source=source)
 
-    Keyword.objects.get_or_create(name='Algae', uid=keyword_uuid)
-    Keyword.objects.get_or_create(name='Birds', uid=keyword_uuid)
+    algae, created = Keyword.objects.get_or_create(name='Algae', uid=keyword_uuid)
+    birds, created = Keyword.objects.get_or_create(name='Birds', uid=keyword_uuid)
+
+    return algae, birds
+
 
 def create_proposal_status():
-    ProposalStatus.objects.get_or_create(name='Submitted')
+    proposal_status, created = ProposalStatus.objects.get_or_create(name='Submitted')
+
+    return proposal_status
+
 
 def create_budget_categories():
-    BudgetCategory.objects.get_or_create(name='Travel',
-                                         defaults={'description': 'Funds needed to reach the destination'})
+    travel, created = BudgetCategory.objects.get_or_create(name='Travel',
+                                                           defaults={
+                                                               'description': 'Funds needed to reach the destination'})
 
-    BudgetCategory.objects.get_or_create(name='Data processing',
-                                         defaults={'description': 'Funds needed to process data'})
+    data_processing, created = BudgetCategory.objects.get_or_create(name='Data processing',
+                                                                    defaults={
+                                                                        'description': 'Funds needed to process data'})
 
-    BudgetCategory.objects.get_or_create(name='Equipment / consumables', defaults={
+    equipment_consumables, created = BudgetCategory.objects.get_or_create(name='Equipment / consumables', defaults={
         'description': 'Budget required for equipment or other consumables that would be needed for the proposed work'})
+
+    return travel, data_processing, equipment_consumables
 
 
 def create_template_questions():
-    template_question, created = TemplateQuestion.objects.get_or_create(
+    template_question1, created = TemplateQuestion.objects.get_or_create(
         question_text='Explain which methods of transport are needed to go to the location',
         question_description='Explain it detailed',
         answer_type=TemplateQuestion.TEXT,
         answer_max_length=500)
 
-    return [template_question]
+    template_question2, created = TemplateQuestion.objects.get_or_create(
+        question_text='Explain how to do science',
+        question_description='In very short',
+        answer_type=TemplateQuestion.TEXT,
+        answer_max_length=50)
+
+    return template_question1, template_question2
 
 
 def create_management_user():
@@ -61,19 +79,32 @@ def create_management_user():
     return user
 
 
-def create_person_title():
-    PersonTitle.objects.get_or_create(title='Mr')
+def create_person_titles():
+    person_title_mr, created = PersonTitle.objects.get_or_create(title='Mr')
+
+    return person_title_mr,
 
 
-def create_gender():
-    Gender.objects.get_or_create(name='Man')
+def create_genders():
+    gender, created = Gender.objects.get_or_create(name='Man')
+
+    return gender,
 
 
-def create_organisation():
+def create_organisations():
     country, created = Country.objects.get_or_create(name='Switzerland')
     source, created = Source.objects.get_or_create(source='Somewhere in the brain')
 
-    organisation_uid, created = OrganisationUid.objects.get_or_create(source=source,
-                                                                      uid='646a6e1c-2378-46d9-af42-a3710c5aee89')
-    organisation, created = Organisation.objects.get_or_create(long_name='EEPPFFLL', short_name='EPFL', country=country,
-                                                               uid=organisation_uid)
+    organisation1_uid, created = OrganisationUid.objects.get_or_create(source=source,
+                                                                       uid='646a6e1c-2378-46d9-af42-a3710c5aee89')
+    organisation1, created = Organisation.objects.get_or_create(long_name='École Polytechnique Fédérale de Lausanne',
+                                                                short_name='EPFL', country=country,
+                                                                uid=organisation1_uid)
+
+    organisation2_uid, created = OrganisationUid.objects.get_or_create(source=source,
+                                                                       uid='646a6e1c-2378-46d9-af42-a3710c5aee89')
+    organisation2, created = Organisation.objects.get_or_create(long_name='Swiss Polar Foundation',
+                                                                short_name='SPF', country=country,
+                                                                uid=organisation2_uid)
+
+    return organisation1, organisation2

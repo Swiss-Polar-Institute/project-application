@@ -5,30 +5,29 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
-from project_core.models import Call, BudgetCategory, PersonTitle, Gender, Organisation, GeographicalArea, Keyword, \
+from project_core.models import BudgetCategory, PersonTitle, Gender, Organisation, GeographicalArea, Keyword, \
     Proposal
 from project_core.tests import database_population
 
 
 class ProposalFormTest(TestCase):
     def setUp(self):
-        database_population.create_call()
-        database_population.create_budget_categories()
-        database_population.create_person_title()
-        database_population.create_gender()
-        database_population.create_organisation()
-        database_population.create_geographical_areas()
-        database_population.create_keywords()
+        self._call = database_population.create_call()
+        self._budget_categories = database_population.create_budget_categories()
+        self._person_titles = database_population.create_person_titles()
+        self._genders = database_population.create_genders()
+        self._organisations = database_population.create_organisations()
+        self._geographical_areas = database_population.create_geographical_areas()
+        self._keywords = database_population.create_keywords()
         database_population.create_proposal_status()
 
     def test_proposal_get(self):
         c = Client()
 
-        call = Call.objects.get(long_name='GreenLAnd Circumnavigation Expedition')
-        call.proposal_partner_question = True
-        call.save()
+        self._call.proposal_partner_question = True
+        self._call.save()
 
-        response = c.get(reverse('proposal-add') + '?call={}'.format(call.id))
+        response = c.get(reverse('proposal-add') + '?call={}'.format(self._call.id))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Call name:')
         self.assertContains(response, 'GreenLAnd Circumnavigation Expedition')
@@ -37,11 +36,10 @@ class ProposalFormTest(TestCase):
     def test_proposal_no_partners_get(self):
         c = Client()
 
-        call = Call.objects.get(long_name='GreenLAnd Circumnavigation Expedition')
-        call.proposal_partner_question = False
-        call.save()
+        self._call.proposal_partner_question = False
+        self._call.save()
 
-        response = c.get(reverse('proposal-add') + '?call={}'.format(call.id))
+        response = c.get(reverse('proposal-add') + '?call={}'.format(self._call.id))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Call name:')
@@ -51,19 +49,18 @@ class ProposalFormTest(TestCase):
     def test_proposal_new_post(self):
         c = Client()
 
-        call = Call.objects.get(long_name='GreenLAnd Circumnavigation Expedition')
-        call.proposal_partner_question = False
-        call.save()
+        self._call.proposal_partner_question = False
+        self._call.save()
 
         data = MultiValueDict({
-            'person_form-academic_title': [PersonTitle.objects.get(title='Mr').id], 'person_form-first_name': ['John'],
+            'person_form-academic_title': [self._person_titles[0].id], 'person_form-first_name': ['John'],
             'person_form-surname': ['Doe'],
-            'person_form-gender': [Gender.objects.get(name='Man').id], 'person_form-email': ['test@example.com'],
-            'person_form-organisations': [Organisation.objects.get(short_name='EPFL').id],
-            'person_form-group': ['A new group'], 'proposal_form-call_id': [call.id],
+            'person_form-gender': [self._genders[0].id], 'person_form-email': ['test@example.com'],
+            'person_form-organisations': [self._organisations[0].id],
+            'person_form-group': ['A new group'], 'proposal_form-call_id': [self._call.id],
             'proposal_form-title': ['Collect algae'],
-            'proposal_form-geographical_areas': [GeographicalArea.objects.get(name='Antarctic').id],
-            'proposal_form-keywords': [Keyword.objects.get(name='Birds').id],
+            'proposal_form-geographical_areas': [self._geographical_areas[0].id],
+            'proposal_form-keywords': [self._keywords[0].id],
             'proposal_form-provisional_start_date': ['2019-11-12'],
             'proposal_form-provisional_end_date': ['2019-11-13'],
             'proposal_form-duration_months': ['1'], 'questions_form-question_1': ['Cool'],
@@ -82,7 +79,7 @@ class ProposalFormTest(TestCase):
             'budget_form-MAX_NUM_FORMS': ['1000'], 'budget_form-0-id': [''], 'budget_form-1-id': [''],
             'budget_form-2-id': [''], 'budget_form-3-id': [''], 'budget_form-4-id': [''], 'budget_form-5-id': [''],
             'budget_form-6-id': [''], 'budget_form-7-id': [''],
-            'budget_form-0-category': [BudgetCategory.objects.get(name='Travel').id],
+            'budget_form-0-category': [self._budget_categories[0].id],
             'budget_form-0-details': ['DNA sampling'], 'budget_form-0-amount': ['10000'],
             'funding_form-TOTAL_FORMS': ['1'],
             'funding_form-INITIAL_FORMS': ['0'], 'funding_form-MIN_NUM_FORMS': ['0'],
@@ -103,3 +100,6 @@ class ProposalFormTest(TestCase):
 
         proposal = Proposal.objects.get(uuid=uuid)
         self.assertEqual(proposal.title, 'Collect algae')
+
+        self._call.proposal_partner_question = True
+        self._call.save()

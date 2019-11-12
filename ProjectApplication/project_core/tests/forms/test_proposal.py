@@ -11,33 +11,34 @@ from project_core.tests import utils
 
 class CallFormTest(TestCase):
     def setUp(self):
-        call = database_population.create_call()
+        self._call = database_population.create_call()
         template_questions = database_population.create_template_questions()
-        CallQuestion.objects.get_or_create(call=call, template_question=template_questions[0], order=10)
+        CallQuestion.objects.get_or_create(call=self._call, template_question=template_questions[0], order=10)
 
-        database_population.create_geographical_areas()
-        database_population.create_keywords()
+        self._geographical_areas = database_population.create_geographical_areas()
+        self._keywords = database_population.create_keywords()
+        self._proposal_status_submitted = database_population.create_proposal_status()
 
     def test_proposal_form(self):
         data = {'title': 'Collect algae around Greenland',
                 'provisional_start_date': datetime(2021, 7, 30),
                 'provisional_end_date': datetime(2021, 9, 15),
                 'duration_months': '3',
-                'call_id': Call.objects.get(long_name='GreenLAnd Circumnavigation Expedition').id}
+                'call_id': self._call.id}
 
         data = utils.dict_to_multivalue_dict(data)
-        data.setlist('geographical_areas', [GeographicalArea.objects.get(name='Antarctic').id])
+        data.setlist('geographical_areas', [self._geographical_areas[0]])
 
-        data.setlist('keywords', [Keyword.objects.get(name='Birds').id])
+        data.setlist('keywords', [self._keywords[0]])
 
-        proposal_form = ProposalForm(call=Call.objects.get(long_name='GreenLAnd Circumnavigation Expedition'),
+        proposal_form = ProposalForm(call=self._call,
                                      data=data)
 
         self.assertTrue(proposal_form.is_valid())
 
         proposal = proposal_form.save(commit=False)
         proposal.applicant = create_person_position()
-        proposal.proposal_status, created = ProposalStatus.objects.get_or_create(name='Submitted')
+        proposal.proposal_status = self._proposal_status_submitted
         proposal.save()
 
 
