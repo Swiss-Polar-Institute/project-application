@@ -1,7 +1,9 @@
 from datetime import datetime
+
 from django.contrib.auth.models import User
 
-from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source
+from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
+    PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus
 
 
 def create_call():
@@ -28,6 +30,8 @@ def create_keywords():
     Keyword.objects.get_or_create(name='Algae', uid=keyword_uuid)
     Keyword.objects.get_or_create(name='Birds', uid=keyword_uuid)
 
+def create_proposal_status():
+    ProposalStatus.objects.get_or_create(name='Submitted')
 
 def create_budget_categories():
     BudgetCategory.objects.get_or_create(name='Travel',
@@ -55,3 +59,21 @@ def create_management_user():
     user.save()
 
     return user
+
+
+def create_person_title():
+    PersonTitle.objects.get_or_create(title='Mr')
+
+
+def create_gender():
+    Gender.objects.get_or_create(name='Man')
+
+
+def create_organisation():
+    country, created = Country.objects.get_or_create(name='Switzerland')
+    source, created = Source.objects.get_or_create(source='Somewhere in the brain')
+
+    organisation_uid, created = OrganisationUid.objects.get_or_create(source=source,
+                                                                      uid='646a6e1c-2378-46d9-af42-a3710c5aee89')
+    organisation, created = Organisation.objects.get_or_create(long_name='EEPPFFLL', short_name='EPFL', country=country,
+                                                               uid=organisation_uid)
