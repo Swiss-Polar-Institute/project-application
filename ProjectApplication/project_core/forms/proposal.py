@@ -1,12 +1,11 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div
+from dal import autocomplete
 from django import forms
 from django.forms import ModelForm
-from crispy_forms.layout import Layout, Div
-from ..widgets import DatePickerWidget
 
 from ..models import Proposal
-
-from crispy_forms.helper import FormHelper
-from dal import autocomplete
+from ..widgets import DatePickerWidget
 
 
 class ProposalForm(ModelForm):
@@ -59,7 +58,7 @@ class ProposalForm(ModelForm):
     class Meta:
         model = Proposal
         fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'provisional_start_date',
-                  'provisional_start_date', 'provisional_end_date', 'duration_months']
+                  'provisional_end_date', 'duration_months']
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': forms.CheckboxSelectMultiple,
