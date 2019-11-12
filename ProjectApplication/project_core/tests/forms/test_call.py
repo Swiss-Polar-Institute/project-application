@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.utils.datastructures import MultiValueDict
 
 from project_core.forms.call import CallForm
+from project_core.models import BudgetCategory
 
 
 def values_as_list(d):
@@ -14,7 +15,15 @@ def values_as_list(d):
 
 
 class CallFormTest(TestCase):
-    fixtures = ['basic.json', ]
+    def setUp(self):
+        BudgetCategory.objects.get_or_create(name='Travel',
+                                             defaults={'description': 'Funds needed to reach the destination'})
+
+        BudgetCategory.objects.get_or_create(name='Data processing',
+                                             defaults={'description': 'Funds needed to process data'})
+
+        BudgetCategory.objects.get_or_create(name='Equipment / consumables', defaults={
+            'description': 'Budget required for equipment or other consumables that would be needed for the proposed work'})
 
     def test_call(self):
         call_data = values_as_list(
@@ -30,7 +39,9 @@ class CallFormTest(TestCase):
 
         call_data = MultiValueDict(call_data)
 
-        call_data.setlist('budget_categories', ['2', '3'])
+        call_data.setlist('budget_categories',
+                          [BudgetCategory.objects.get(name='Travel').id,
+                           BudgetCategory.objects.get(name='Data processing').id])
 
         call_form = CallForm(data=call_data)
         self.assertTrue(call_form.is_valid())
@@ -49,7 +60,9 @@ class CallFormTest(TestCase):
 
         call_data = MultiValueDict(call_data)
 
-        call_data.setlist('budget_categories', ['2', '3'])
+        call_data.setlist('budget_categories',
+                          [BudgetCategory.objects.get(name='Travel').id,
+                           BudgetCategory.objects.get(name='Data processing').id])
 
         call_form = CallForm(data=call_data)
         self.assertFalse(call_form.is_valid())
