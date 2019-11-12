@@ -1,12 +1,12 @@
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
-
 from project_core.tests import database_population
+
 
 class CallFormTest(TestCase):
     def setUp(self):
-        pass
+        database_population.create_management_user()
 
     def test_homepage_redirects(self):
         c = Client()
@@ -16,8 +16,6 @@ class CallFormTest(TestCase):
         self.assertEqual(response.url, '{}?next={}'.format(reverse('accounts-login'), reverse('management-homepage')))
 
     def test_homepage(self):
-        user = database_population.create_management_user()
-
         c = Client()
 
         login = c.login(username='unittest', password='12345')
