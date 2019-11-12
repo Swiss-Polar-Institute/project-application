@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.contrib.auth.models import User
 
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source
 
@@ -47,3 +48,10 @@ def create_template_questions():
         answer_max_length=500)
 
     return [template_question]
+
+
+def create_management_user():
+    user = User.objects.create_user(username='unittest', password='12345')
+    user.save()
+
+    return user

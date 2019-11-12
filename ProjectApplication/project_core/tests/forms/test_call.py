@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.utils.datastructures import MultiValueDict
 
 from project_core.forms.call import CallForm
 from project_core.models import BudgetCategory, TemplateQuestion
