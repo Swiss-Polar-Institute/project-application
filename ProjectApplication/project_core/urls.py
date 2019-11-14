@@ -20,7 +20,7 @@ urlpatterns = [
          name='proposal-thank-you'),
     path('proposal/too-late/', external.proposal.ProposalTooLate.as_view(),
          name='proposal-too-late'),
-    path('proposal/question_answer/file/<str:md5>',
+    path('proposal/question_answer/file/<int:proposal_qa_file_id>/<str:md5>',
          common.proposal.ProposalQuestionAnswerFileView.as_view(),
          name='proposal-question-answer-file'),
 

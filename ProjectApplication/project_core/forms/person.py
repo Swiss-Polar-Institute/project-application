@@ -84,7 +84,9 @@ class PersonForm(Form):
         physical_person, created = PhysicalPerson.objects.get_or_create(
             first_name=self.cleaned_data['first_name'],
             surname=self.cleaned_data['surname'],
-            gender=self.cleaned_data['gender']
+            defaults={
+                'gender': self.cleaned_data['gender']
+            }
         )
 
         if self.person_position:

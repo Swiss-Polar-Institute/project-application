@@ -64,15 +64,18 @@ class AbstractProposalDetailView(TemplateView):
                 filename = os.path.basename(proposal_qa_file.file.name)
                 md5 = proposal_qa_file.md5
                 human_file_size = proposal_qa_file.human_file_size()
+                proposal_qa_file_id = proposal_qa_file.id
 
             except ObjectDoesNotExist:
                 filename = None
                 md5 = None
                 human_file_size = None
+                proposal_qa_file_id = None
 
             question_text = question.question_text
 
             context['questions_files'].append({'question': question_text,
+                                               'proposal_qa_file_id': proposal_qa_file_id,
                                                'file': {'name': filename,
                                                         'md5': md5,
                                                         'size': human_file_size,
@@ -295,7 +298,7 @@ class ProposalQuestionAnswerFileView(View):
         super().__init__(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        question_answer = ProposalQAFile.objects.get(md5=kwargs['md5'])
+        question_answer = ProposalQAFile.objects.get(id=kwargs['proposal_qa_file_id'], md5=kwargs['md5'])
 
         filename, file_extension = os.path.splitext(question_answer.file.name)
 
@@ -305,6 +308,6 @@ class ProposalQuestionAnswerFileView(View):
             question_answer.file.file.file,
             content_type=content_type
         )
-        response['Content-Disposition'] = 'attachment; filename=%s' % question_answer.file.name
+        response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(question_answer.file.name)
 
         return response

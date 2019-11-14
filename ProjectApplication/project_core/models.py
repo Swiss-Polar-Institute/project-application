@@ -1,4 +1,5 @@
 import hashlib
+import io
 import uuid as uuid_lib
 
 from django.contrib.auth.models import User
@@ -614,7 +615,7 @@ class ProposalQAFile(CreateModify):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to='proposals_qa/')
     # Using md5 so it matches (usually) ETags
-    md5 = models.CharField(db_index=True, unique=True, max_length=32)
+    md5 = models.CharField(db_index=True, max_length=32)
 
     def human_file_size(self):
         return utils.bytes_to_human_readable(self.file.size)
@@ -628,7 +629,14 @@ class ProposalQAFile(CreateModify):
         # initial_position = self.file.file.file.pos()
         # self.file.file.file.seek(0)
 
-        hash_md5 = hashlib.md5(self.file.file.file.getvalue())
+        if type(self.file.file.file) == io.BytesIO:
+            file_contents = self.file.file.file.getvalue()
+        else:
+            # This is horrible. It happens when the file is updated
+            # (at least in our flow)
+            file_contents = self.file.file.file._file.getvalue()
+
+        hash_md5 = hashlib.md5(file_contents)
 
         # self.file.file.file.seek(initial_position)
 
