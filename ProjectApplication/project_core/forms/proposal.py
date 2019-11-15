@@ -36,7 +36,7 @@ class ProposalForm(ModelForm):
             )
         )
 
-        if self._user.is_staff:
+        if self._user and self._user.is_staff:
             self.fields['proposal_status'] = forms.ModelChoiceField(ProposalStatus.objects.all().order_by('name'),
                                                                     initial=self.instance.proposal_status)
             divs.append(
