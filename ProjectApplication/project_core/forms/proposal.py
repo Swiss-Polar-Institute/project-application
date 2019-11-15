@@ -13,6 +13,7 @@ class ProposalForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
+        self._user = kwargs.pop('user', None)
 
         super().__init__(*args, **kwargs)
 
@@ -26,20 +27,38 @@ class ProposalForm(ModelForm):
 
         self.fields['duration_months'].widget.attrs['min'] = 0
 
-        self.helper.layout = Layout(
+        divs = []
+        divs.append(
             Div(
                 Div('call_id', css_class='col-12', hidden='true'),
                 Div('title', css_class='col-12'),
                 css_class='row'
-            ),
+            )
+        )
+
+        if self._user.is_staff:
+            divs.append(
+                Div(
+                    Div('proposal_status', css_class='col-12'),
+                    css_class='row'
+                )
+            )
+
+        divs.append(
             Div(
                 Div('geographical_areas', css_class='col-12'),
                 css_class='row'
-            ),
+            )
+        )
+
+        divs.append(
             Div(
                 Div('keywords', css_class='col-12'),
                 css_class='row'
-            ),
+            )
+        )
+
+        divs.append(
             Div(
                 Div('provisional_start_date', css_class='col-4'),
                 Div('provisional_end_date', css_class='col-4'),
@@ -47,6 +66,8 @@ class ProposalForm(ModelForm):
                 css_class='row'
             )
         )
+
+        self.helper.layout = Layout(*divs)
 
     def save(self, commit=True):
         self.instance.call_id = self.cleaned_data['call_id']
@@ -58,7 +79,7 @@ class ProposalForm(ModelForm):
     class Meta:
         model = Proposal
         fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'provisional_start_date',
-                  'provisional_end_date', 'duration_months']
+                  'provisional_end_date', 'duration_months', 'proposal_status']
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': forms.CheckboxSelectMultiple,
