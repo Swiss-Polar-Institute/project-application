@@ -6,9 +6,9 @@
         proposal</a>
 {% endif %}
 <h2>{{ proposal.title }}</h2>
-
-<p><strong>Call:</strong> {{ call_name }}</p>
-
+<strong>Status:</strong> {{ proposal.proposal_status.name }}<br>
+<strong>Call:</strong> {{ call_name }}
+<p></p>
 <h3>Applicant</h3>
 {% with applicant=proposal.applicant %}
     {{ applicant.academic_title }} {{ applicant.person.first_name }} {{ applicant.person.surname }}

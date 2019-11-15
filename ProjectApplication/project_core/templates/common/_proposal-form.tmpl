@@ -1,17 +1,26 @@
 {% load crispy_forms_tags %}
 
-{% include "common/_messages-box.tmpl" %}
+{% include 'common/_messages-box.tmpl' %}
 
 <h1>{{ action }} proposal</h1>
+
+{% if proposal_status == 'In progress' %}
+    <div class="card">
+        <div class="card-body"><i class="fas fa-info-circle"></i> This proposal is a draft and will not be evaluated. You need
+            to click on Submit before the deadline before you've finished
+        </div>
+    </div>
+{% endif %}
 
 <p><strong>Call name:</strong> {{ call_name }}</p>
 
 <p><strong>Deadline for
-    application:</strong> {{ call_submission_deadline|date:"D d M Y" }} {{ call_submission_deadline|time:"H:i" }} Swiss
+    application:</strong> {{ call_submission_deadline|date:'D d M Y' }} {{ call_submission_deadline|time:'H:i' }} Swiss
     time
 
-<p><strong>Please complete all mandatory fields and press submit. Following submission of your proposal, you will be
-    given a link which will allow editing of your proposal until the application deadline.</strong></p>
+<p><strong>Please complete all mandatory fields and press "Save Draft" or "Submit". You will be given a link which will
+    allow editing of your proposal until the application
+    deadline.</strong></p>
 
 <div class="introductory-message shadow p-3 mb-5 bg-white rounded">{{ call_introductory_message }}</div>
 
@@ -26,7 +35,7 @@
     {% crispy proposal_form %}
 
     <h2>Part 2: Project Description</h2>
-    {% include "common/_form-dynamic_questions.tmpl" %}
+    {% include 'common/_form-dynamic_questions.tmpl' %}
 
     {% if proposal_partner_question %}
         <h2>Proposal partners</h2>
@@ -34,18 +43,20 @@
     {% endif %}
 
     <h2>Budget requested</h2>
-    {% include "common/_form-budget.tmpl" %}
+    {% include 'common/_form-budget.tmpl' %}
 
     {% if other_funding_question %}
         <h2>Other sources of funding</h2>
-        {% include "common/_form-funding_organisations.tmpl" %}
+        {% include 'common/_form-funding_organisations.tmpl' %}
     {% endif %}
 
     {% crispy data_collection_form %}
 
-    {% include "common/_submit-button.tmpl" %}
+    {% include 'common/_submit-button.tmpl' with value='Save Draft' name='save_draft' %}
+    {% include 'common/_submit-button.tmpl' with value='Submit' name='submit' %}
 
     <p>
-        After submission, you will be able to edit this proposal until the application deadline.
+        After "Save Draft" or "Submit you will be able to edit the proposal until the application deadline.<br>
+        Drafts are not evaluated by the panel.
     </p>
 </form>

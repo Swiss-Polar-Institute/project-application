@@ -120,6 +120,8 @@ class AbstractProposalView(TemplateView):
 
             context['action'] = 'Edit'
 
+            context['proposal_status'] = proposal.proposal_status.name
+
         else:
             call_pk = context['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
@@ -237,12 +239,19 @@ class AbstractProposalView(TemplateView):
             all_valid = all_valid and is_valid
 
         if all_valid:
+            if 'save_draft' in request.POST:
+                proposal_status_name = 'In progress'
+            elif 'submit' in request.POST:
+                proposal_status_name = 'Submitted'
+            else:
+                assert False
+
             applicant = person_form.save_person()
             data_collection_form.update(applicant)
 
             proposal = proposal_form.save(commit=False)
             proposal.applicant = applicant
-            proposal.proposal_status = ProposalStatus.objects.get(name='Submitted')
+            proposal.proposal_status = ProposalStatus.objects.get(name=proposal_status_name)
             proposal.save()
             proposal_form.save(commit=True)
 
@@ -288,7 +297,8 @@ def call_context_for_template(call):
                'call_introductory_message': call.introductory_message,
                'call_submission_deadline': call.submission_deadline,
                'other_funding_question': call.other_funding_question,
-               'proposal_partner_question': call.proposal_partner_question}
+               'proposal_partner_question': call.proposal_partner_question
+               }
 
     return context
 
