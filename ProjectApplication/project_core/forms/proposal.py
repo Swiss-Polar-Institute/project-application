@@ -4,7 +4,7 @@ from dal import autocomplete
 from django import forms
 from django.forms import ModelForm
 
-from ..models import Proposal
+from ..models import Proposal, ProposalStatus
 from ..widgets import DatePickerWidget
 
 
@@ -37,6 +37,8 @@ class ProposalForm(ModelForm):
         )
 
         if self._user.is_staff:
+            self.fields['proposal_status'] = forms.ModelChoiceField(ProposalStatus.objects.all().order_by('name'),
+                                                                    initial=self.instance.proposal_status)
             divs.append(
                 Div(
                     Div('proposal_status', css_class='col-12'),
@@ -72,6 +74,9 @@ class ProposalForm(ModelForm):
     def save(self, commit=True):
         self.instance.call_id = self.cleaned_data['call_id']
 
+        if 'proposal_status' in self.cleaned_data:
+            self.instance.proposal_status = self.cleaned_data['proposal_status']
+
         model = super().save(commit)
 
         return model
@@ -79,7 +84,7 @@ class ProposalForm(ModelForm):
     class Meta:
         model = Proposal
         fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'provisional_start_date',
-                  'provisional_end_date', 'duration_months', 'proposal_status']
+                  'provisional_end_date', 'duration_months', ]
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': forms.CheckboxSelectMultiple,
