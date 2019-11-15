@@ -4,7 +4,7 @@
 {% block contents %}
     <br>
     {% include 'common/_messages-box.tmpl' %}
-    <a class="float-sm-right btn btn-primary" href="{% url 'management-call-update' id=call.id %}">Edit call</a>
+    <a class="float-sm-right btn btn-primary d-print-none" href="{% url 'management-call-update' id=call.id %}">Edit call</a>
     <h1>Call details</h1>
     <strong>Funding instrument:</strong>
     {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding instrument
