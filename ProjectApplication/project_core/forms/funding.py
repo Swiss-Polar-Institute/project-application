@@ -9,7 +9,6 @@ from project_core.models import Organisation, ProposalFundingItem, Proposal
 class ProposalFundingItemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
         self.fields['organisation'] = OrganisationChoiceField(queryset=Organisation.objects.all(),
                                                               widget=autocomplete.ModelSelect2(
                                                                   url='autocomplete-organisations'))
@@ -23,6 +22,7 @@ class ProposalFundingItemForm(ModelForm):
         model = ProposalFundingItem
         fields = ['organisation', 'funding_status', 'amount', 'proposal', ]
         labels = {'amount': 'Amount (CHF)'}
+        localized_fields = ('amount',)
 
 
 class ProposalFundingFormSet(BaseInlineFormSet):

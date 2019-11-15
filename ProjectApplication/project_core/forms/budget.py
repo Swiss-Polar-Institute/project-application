@@ -14,7 +14,7 @@ class BudgetItemForm(forms.Form):
 
     category = forms.CharField(widget=PlainTextWidget())
     details = forms.CharField(required=False)
-    amount = forms.DecimalField(required=False, label='Amount (CHF)')
+    amount = forms.DecimalField(required=False, label='Amount (CHF)', localize=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
