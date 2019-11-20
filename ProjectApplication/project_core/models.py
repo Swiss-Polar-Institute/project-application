@@ -354,7 +354,7 @@ class Organisation(CreateModify):
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based',
                                 on_delete=models.PROTECT)
-    uid = models.ForeignKey(OrganisationUid, help_text='UID of a country', on_delete=models.PROTECT)
+    uid = models.ForeignKey(OrganisationUid, help_text='UID of an organisation', on_delete=models.PROTECT)
 
     def abbreviated_name(self):
         if self.short_name is not None:
