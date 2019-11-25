@@ -1,5 +1,8 @@
+import decimal
+
 from crispy_forms.helper import FormHelper
 from django import forms
+from django.contrib.humanize.templatetags.humanize import number_format
 from django.forms import BaseFormSet, formset_factory
 
 from project_core.forms.utils import PlainTextWidget
@@ -11,7 +14,7 @@ class BudgetItemForm(forms.Form):
 
     category = forms.CharField(widget=PlainTextWidget())
     details = forms.CharField(required=False)
-    amount = forms.DecimalField(required=False, label='Amount (CHF)')
+    amount = forms.DecimalField(required=False, label='Amount (CHF)', localize=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -74,7 +77,8 @@ class BudgetFormSet(BaseFormSet):
         if proposal:
             initial_budget = []
 
-            for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal).order_by('category__order', 'category__name'):
+            for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal).order_by('category__order',
+                                                                                                      'category__name'):
                 initial_budget.append({'id': proposed_item_budget.id, 'category': proposed_item_budget.category,
                                        'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details})
 
@@ -89,7 +93,7 @@ class BudgetFormSet(BaseFormSet):
     def clean(self):
         super().clean()
 
-        budget_amount = 0
+        budget_amount = decimal.Decimal('0.00')
         maximum_budget = self._call.budget_maximum
 
         if not self.is_valid():
@@ -105,8 +109,9 @@ class BudgetFormSet(BaseFormSet):
 
         if budget_amount > maximum_budget:
             raise forms.ValidationError(
-                'Maximum budget for this call is {} total budget for your proposal {}'.format(maximum_budget,
-                                                                                              budget_amount))
+                'Maximum budget for this call is {} CHF total budget for your proposal {} CHF'.format(
+                    number_format(maximum_budget),
+                    number_format(budget_amount)))
 
     def save_budgets(self, proposal):
         for form in self.forms:

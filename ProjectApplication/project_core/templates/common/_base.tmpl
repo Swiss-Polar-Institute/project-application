@@ -32,6 +32,9 @@
     <!-- Font awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
 
+    <!-- Cookie alert css -->
+    <link rel="stylesheet" type="text/css" href="{% static 'external/bootstrap-cookies-alert/cookiealert.css' %}">
+
     <!--
     <link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}"/>
@@ -44,5 +47,6 @@
 <body{% block body_attributes %}{% endblock %}>
 {% block body_contents %}
 {% endblock %}
+{% include 'common/_cookiesalert.tmpl' %}
 </body>
 </html>

@@ -2,13 +2,13 @@
 {% include "common/_messages-box.tmpl" %}
 
 {% if edit_button %}
-    <a class="float-sm-right btn btn-primary" href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit
+    <a class="float-sm-right btn btn-primary d-print-none" href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit
         proposal</a>
 {% endif %}
 <h2>{{ proposal.title }}</h2>
-
-<p><strong>Call:</strong> {{ call_name }}</p>
-
+<strong>Status:</strong> {{ proposal.proposal_status.name }}<br>
+<strong>Call:</strong> {{ call_name }}
+<p></p>
 <h3>Applicant</h3>
 {% with applicant=proposal.applicant %}
     {{ applicant.academic_title }} {{ applicant.person.first_name }} {{ applicant.person.surname }}

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.http import HttpResponse
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -103,7 +104,7 @@ class AbstractProposalView(TemplateView):
             proposal: Proposal = Proposal.objects.get(uuid=proposal_uuid)
             call = proposal.call
 
-            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
+            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal, user=request.user)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
             questions_form = Questions(proposal=proposal,
                                        prefix=QUESTIONS_FORM_NAME)
@@ -120,11 +121,13 @@ class AbstractProposalView(TemplateView):
 
             context['action'] = 'Edit'
 
+            context['proposal_status'] = proposal.proposal_status.name
+
         else:
             call_pk = context['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
 
-            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
+            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, user=request.user)
             person_form = PersonForm(prefix=PERSON_FORM_NAME)
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)
@@ -181,7 +184,7 @@ class AbstractProposalView(TemplateView):
 
         if proposal:
             # Editing an existing proposal
-            proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
+            proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME, user=request.user)
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
@@ -204,7 +207,7 @@ class AbstractProposalView(TemplateView):
 
         else:
             # Creating a new proposal
-            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
+            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME, user=request.user)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
@@ -237,12 +240,27 @@ class AbstractProposalView(TemplateView):
             all_valid = all_valid and is_valid
 
         if all_valid:
+            proposal = proposal_form.save(commit=False)
+
             applicant = person_form.save_person()
             data_collection_form.update(applicant)
 
-            proposal = proposal_form.save(commit=False)
             proposal.applicant = applicant
-            proposal.proposal_status = ProposalStatus.objects.get(name='Submitted')
+
+            if 'save_draft' in request.POST:
+                proposal.proposal_status = ProposalStatus.objects.get(name='In progress')
+            elif 'submit' in request.POST:
+                proposal.proposal_status = ProposalStatus.objects.get(name='Submitted')
+            elif 'save_changes' in request.POST:
+                pass
+            else:
+                assert False
+
+            if proposal.proposal_status != ProposalStatus.objects.get(name='In progress') and \
+                    proposal.proposal_status != ProposalStatus.objects.get(name='Submitted') and \
+                    not request.user.is_staff:
+                return HttpResponseForbidden()
+
             proposal.save()
             proposal_form.save(commit=True)
 
@@ -288,7 +306,8 @@ def call_context_for_template(call):
                'call_introductory_message': call.introductory_message,
                'call_submission_deadline': call.submission_deadline,
                'other_funding_question': call.other_funding_question,
-               'proposal_partner_question': call.proposal_partner_question}
+               'proposal_partner_question': call.proposal_partner_question
+               }
 
     return context
 
