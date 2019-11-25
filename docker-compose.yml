@@ -30,6 +30,8 @@ services:
     environment:
       - NGINX_PORT=1235
       - VIRTUAL_HOST=${PROJECTS_STAGING_DOMAIN}
+      - LETSENCRYPT_HOST=${PROJECTS_STAGING_DOMAIN}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - static_volume:/code/ProjectApplication/staticfiles
