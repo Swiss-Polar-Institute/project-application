@@ -20,6 +20,11 @@ services:
       - database
     env_file:
       - ${PROJECT_APPLICATION_ENV_FILE}
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: project-application.django
 
   reverse-proxy:
     image: nginx:1.17
@@ -39,6 +44,11 @@ services:
       - project-application
     networks:
       - nginx-proxy
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: project-application.nginx
 
   database:
     image: mariadb:10.4
@@ -53,6 +63,11 @@ services:
       - "3306"
     networks:
       - nginx-proxy
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: project-application.mariadb
 
 volumes:
   static_volume: {}
