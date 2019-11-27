@@ -34,6 +34,7 @@ class CreateModify(models.Model):
         abstract = True
 
 
+
 class BudgetCategory(models.Model):
     """Details of budget categories"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -515,6 +516,12 @@ class GeographicalArea(CreateModify):
         return '{}'.format(self.name)
 
 
+class ExternalProject(CreateModify):
+    title = models.CharField(help_text='Title of the project', max_length=500, blank=False, null=False)
+    leader = models.ForeignKey(PersonPosition, help_text='Leader of this project',
+                               blank=True, null=True, on_delete=models.PROTECT)
+
+
 class Proposal(CreateModify):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
@@ -556,6 +563,8 @@ class Proposal(CreateModify):
     eligibility_comment = models.TextField(help_text='Comments regarding eligibility of proposal', blank=True,
                                            null=True)
     call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
+
+    overarching_project = models.ForeignKey(ExternalProject, null=True, blank=True, on_delete=models.PROTECT)
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
@@ -817,9 +826,3 @@ class CallComment(Comment):
 
     class Meta:
         unique_together = (('call', 'created_on', 'created_by'),)
-
-
-class ExternalProject(CreateModify):
-    title = models.CharField(help_text='Title of the project', max_length=500, blank=False, null=False)
-    leader = models.ForeignKey(PersonPosition, help_text='Leader of this project',
-                               blank=True, null=True, on_delete=models.PROTECT)

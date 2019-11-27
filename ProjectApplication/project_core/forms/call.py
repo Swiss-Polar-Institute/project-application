@@ -134,6 +134,10 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('project_overarching_question', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 HTML('<h2 class="col-12">Questions</h2>'),
                 css_class='row'
             ),
@@ -182,7 +186,7 @@ class CallForm(forms.ModelForm):
         fields = ['funding_instrument', 'long_name', 'short_name', 'description', 'introductory_message',
                   'call_open_date',
                   'submission_deadline', 'budget_categories', 'budget_maximum', 'other_funding_question',
-                  'proposal_partner_question', ]
+                  'proposal_partner_question', 'project_overarching_question', ]
 
         field_classes = {
             'call_open_date': forms.SplitDateTimeField,
@@ -204,7 +208,8 @@ class CallForm(forms.ModelForm):
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
                       'template_questions': 'Select the questions that you would like to add to this call',
                       'other_funding_question': 'Tick this box if you would like the call to ask about other funding that will contribute to the proposal',
-                      'proposal_partner_question': 'Tick this box if you would like the call to ask about proposal partners'}
+                      'proposal_partner_question': 'Tick this box if you would like the call to ask about proposal partners',
+                      'project_overarching_question': 'Tick this box if you would like the call to ask the overarching question'}
 
         labels = {
             'budget_maximum': 'Budget maximum (CHF)',

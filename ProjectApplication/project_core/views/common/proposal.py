@@ -18,6 +18,7 @@ from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
 from project_core.forms.partners import ProposalPartnersInlineFormSet
 from project_core.forms.person import PersonForm
+from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
@@ -29,6 +30,7 @@ BUDGET_FORM_NAME = 'budget_form'
 FUNDING_FORM_NAME = 'funding_form'
 DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
+PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
 
 
 class AbstractProposalDetailView(TemplateView):
@@ -117,6 +119,8 @@ class AbstractProposalView(TemplateView):
                                                                    instance=proposal)
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
+            overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME,
+                                                      instance=proposal.overarching_project)
 
             context['proposal_action_url'] = reverse(self.action_url_update, kwargs={'uuid': proposal.uuid})
 
@@ -140,6 +144,7 @@ class AbstractProposalView(TemplateView):
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
             proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME)
+            overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
 
             context['proposal_action_url'] = reverse(self.action_url_add)
@@ -155,6 +160,7 @@ class AbstractProposalView(TemplateView):
         context[FUNDING_FORM_NAME] = funding_form
         context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
+        context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
 
         return render(request, self.form_template, context)
 
@@ -163,7 +169,7 @@ class AbstractProposalView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         # Optional form, depending on call.other_funding_question
-        funding_form = proposal_partners_form = None
+        funding_form = proposal_partners_form = proposal_project_overarching_form = None
 
         if 'uuid' in kwargs:
             # Editing an existing proposal
@@ -200,6 +206,11 @@ class AbstractProposalView(TemplateView):
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        instance=proposal)
 
+            if call.project_overarching_question:
+                proposal_project_overarching_form = ProjectOverarchingForm(request.POST,
+                                                                           prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME,
+                                                                           instance=proposal.overarching_project)
+
             data_collection_form = DataCollectionForm(request.POST,
                                                       prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
@@ -222,6 +233,10 @@ class AbstractProposalView(TemplateView):
             if call.proposal_partner_question:
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME)
 
+            if call.project_overarching_question:
+                proposal_project_overarching_form = ProjectOverarchingForm(request.POST,
+                                                                           prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
+
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
             action = 'created'
@@ -234,6 +249,9 @@ class AbstractProposalView(TemplateView):
 
         if call.proposal_partner_question:
             forms_to_validate.append(proposal_partners_form)
+
+        if call.project_overarching_question:
+            forms_to_validate.append(proposal_project_overarching_form)
 
         all_valid = True
         for form in forms_to_validate:
@@ -262,11 +280,16 @@ class AbstractProposalView(TemplateView):
                     not request.user.is_staff:
                 return HttpResponseForbidden()
 
+            if call.project_overarching_question:
+                project_overarching = proposal_project_overarching_form.save()
+                proposal.overarching_project = project_overarching
+
             proposal.save()
             proposal_form.save(commit=True)
 
             if call.other_funding_question:
                 funding_form.save_fundings(proposal)
+
 
             if not questions_form.save_answers(proposal):
                 # The current only reason to fail is that the file cannot be saved
@@ -295,6 +318,9 @@ class AbstractProposalView(TemplateView):
         if call.proposal_partner_question:
             context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
 
+        if call.project_overarching_question:
+            context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = proposal_project_overarching_form
+
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
 
         context['action'] = 'Edit'
@@ -312,6 +338,7 @@ def call_context_for_template(call):
                'call_introductory_message': call.introductory_message,
                'call_submission_deadline': call.submission_deadline,
                'other_funding_question': call.other_funding_question,
+               'project_overarching_question': call.project_overarching_question,
                'proposal_partner_question': call.proposal_partner_question
                }
 

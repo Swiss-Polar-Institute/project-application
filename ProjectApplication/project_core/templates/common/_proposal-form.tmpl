@@ -51,6 +51,11 @@
         {% include 'common/_form-funding_organisations.tmpl' %}
     {% endif %}
 
+    {% if project_overarching_question %}
+        <h2>Project overarching</h2>
+        {% include 'common/_form-project_overarching.tmpl' %}
+    {% endif %}
+
     {% crispy data_collection_form %}
 
     {% if user.is_staff %}
@@ -60,8 +65,8 @@
         {% include 'common/_submit-button.tmpl' with value='Submit' name='submit' %}
 
         <p>
-            After "Save Draft" or "Submit you will be able to edit the proposal until the application deadline.<br>
-            Drafts are not evaluated by the panel.
+            After saving the draft you will be able to edit the proposal until the application deadline.<br>
+            Drafts won't be evaluated. Please make sure to submit the final version before the close of the call or the application deadline.
         </p>
     {% endif %}
     <p></p>

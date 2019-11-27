@@ -100,7 +100,7 @@ class ProposalPartnerItemForm(ModelForm):
             person_position, created = PersonPosition.objects.get_or_create(
                 person=physical_person,
                 academic_title=person__academic_title,
-                group=person__group
+                group=person__group,
             )
 
             proposal_partner.person = person_position
