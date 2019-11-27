@@ -112,8 +112,8 @@ class PersonUidAdmin(admin.ModelAdmin):
 
 
 class PersonPositionAdmin(admin.ModelAdmin):
-    list_display = ('person', 'academic_title', 'organisations_list', 'group', 'data_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['person', 'academic_title', 'group', 'data_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = ('person', 'academic_title', 'career_stage', 'organisations_list', 'group', 'data_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['person', 'academic_title', 'career_stage', 'group', 'data_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
     def organisations_list(self, obj):
         organisations = obj.organisations.all()
@@ -208,8 +208,8 @@ class RoleAdmin(admin.ModelAdmin):
 
 
 class ProposalPartnerAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'person', 'career_stage', 'role', 'role_description', 'competences')
-    ordering = ['proposal', 'person', 'career_stage', 'role', ]
+    list_display = ('proposal', 'person', 'role', 'role_description', 'competences')
+    ordering = ['proposal', 'person', 'role', ]
 
 
 class ProposalCommentAdmin(admin.ModelAdmin):

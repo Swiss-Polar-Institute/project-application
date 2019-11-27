@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
 
 from project_core.forms.utils import OrganisationMultipleChoiceField
-from project_core.models import PersonTitle, Gender, Organisation, PhysicalPerson, PersonPosition, Contact
+from project_core.models import PersonTitle, Gender, Organisation, PhysicalPerson, PersonPosition, Contact, CareerStage
 
 
 class PersonForm(Form):
@@ -15,7 +15,7 @@ class PersonForm(Form):
         super().__init__(*args, **kwargs)
 
         first_name_initial = surname_initial = organisations_initial = group_initial = \
-            academic_title_initial = email_initial = gender_initial = None
+            academic_title_initial = email_initial = gender_initial = career_stage_initial = None
 
         if self.person_position:
             first_name_initial = self.person_position.person.first_name
@@ -23,6 +23,7 @@ class PersonForm(Form):
             organisations_initial = self.person_position.organisations.all()
             group_initial = self.person_position.group
             academic_title_initial = self.person_position.academic_title
+            career_stage_initial = self.person_position.career_stage
             gender_initial = self.person_position.person.gender
             email_initial = self.person_position.main_email()
 
@@ -33,6 +34,10 @@ class PersonForm(Form):
         self.fields['gender'] = forms.ModelChoiceField(queryset=Gender.objects.all(),
                                                        help_text='Select from list',
                                                        initial=gender_initial)
+
+        self.fields['career_stage'] = forms.ModelChoiceField(queryset=CareerStage.objects.all(),
+                                                             help_text='Select from list',
+                                                             initial=career_stage_initial)
 
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,
                                                     label='First name(s)')
@@ -67,6 +72,10 @@ class PersonForm(Form):
                 css_class='row'
             ),
             Div(
+                Div('career_stage', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div('email', css_class='col-12'),
                 css_class='row'
             ),
@@ -97,6 +106,7 @@ class PersonForm(Form):
         person_position.person = physical_person
         person_position.academic_title = self.cleaned_data['academic_title']
         person_position.group = self.cleaned_data['group']
+        person_position.career_stage = self.cleaned_data['career_stage']
 
         person_position.save()
 

@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
-from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle
+from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
 
 
 class ProposalPartnerItemForm(ModelForm):
@@ -14,6 +14,7 @@ class ProposalPartnerItemForm(ModelForm):
     person__physical_person__surname = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
                                                        label='Surname')
     person__academic_title = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'), label='Academic title')
+    person__career_stage = forms.ModelChoiceField(CareerStage.objects.all().order_by('name'), label='Career stage')
     person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab'))
 
     def __init__(self, *args, **kwargs):
@@ -25,6 +26,7 @@ class ProposalPartnerItemForm(ModelForm):
 
         if self.instance.pk:
             self.fields['person__group'].initial = self.instance.person.group
+            self.fields['person__career_stage'].initial = self.instance.person.career_stage
             self.fields['person__academic_title'].initial = self.instance.person.academic_title
             self.fields['person__physical_person__first_name'].initial = self.instance.person.person.first_name
             self.fields['person__physical_person__surname'].initial = self.instance.person.person.surname
@@ -34,16 +36,13 @@ class ProposalPartnerItemForm(ModelForm):
             Div(
                 Div('id', hidden=True),
                 Div('person__academic_title', css_class='col-2'),
-                Div('person__physical_person__first_name', css_class='col-5'),
-                Div('person__physical_person__surname', css_class='col-5'),
+                Div('person__physical_person__first_name', css_class='col-4'),
+                Div('person__physical_person__surname', css_class='col-4'),
+                Div('person__career_stage', css_class='col-2'),
                 css_class='row'
             ),
             Div(
                 Div('person__group', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('career_stage', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -69,6 +68,7 @@ class ProposalPartnerItemForm(ModelForm):
 
         person__group = self.cleaned_data['person__group']
         person__academic_title = self.cleaned_data['person__academic_title']
+        person__career_stage = self.cleaned_data['person__career_stage']
 
         person__physical_person__first_name = self.cleaned_data['person__physical_person__first_name']
         person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
@@ -80,6 +80,7 @@ class ProposalPartnerItemForm(ModelForm):
 
             person.group = person__group
             person.academic_title = person__academic_title
+            person.career_stage = person__career_stage
             person.save()
 
             person__physical_person = self.instance.person.person
@@ -101,6 +102,7 @@ class ProposalPartnerItemForm(ModelForm):
                 person=physical_person,
                 academic_title=person__academic_title,
                 group=person__group,
+                career_stage=person__career_stage
             )
 
             proposal_partner.person = person_position
@@ -112,9 +114,8 @@ class ProposalPartnerItemForm(ModelForm):
 
     class Meta:
         model = ProposalPartner
-        fields = ['role_description', 'competences', 'career_stage', 'role', ]
-        field_classes = {'career_stage': LabelAndOrderNameChoiceField,
-                         'role': LabelAndOrderNameChoiceField}
+        fields = ['role_description', 'competences', 'role', ]
+        field_classes = {'role': LabelAndOrderNameChoiceField}
 
 
 class ProposalPartnersFormSet(BaseInlineFormSet):
@@ -130,39 +131,15 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
         sets_of_person_role_proposal = set()
 
         for form_data in self.cleaned_data:
-            # len(form_data) because the form without any values arrive here
-            if len(form_data) != 0 and form_data['id'] is None:
-                # On the ProposalPartnerItemForm.save() it will PhysicalPerson.get_or_create
-                # and PersonPosition.get_or_create .
-                # The result can be that the ProposalPartner unique_together:
-                # (person, role, proposal) might be duplicated
-                # Here we will raise a ValidationError if this is going to be the case
+            if not form_data:
+                continue
 
-                # Updating a partner - no problems should happen regaring ins
-                proposal_partner = None
-                try:
-                    physical_person = PhysicalPerson.objects.get(
-                        first_name=form_data['person__physical_person__first_name'],
-                        surname=form_data['person__physical_person__surname'])
+            partner = (form_data['person__physical_person__first_name'], form_data['person__physical_person__surname'])
 
-                    person_position = PersonPosition.objects.get(
-                        person=physical_person,
-                        academic_title=form_data['person__academic_title'],
-                        group=form_data['person__group']
-                    )
+            if partner in sets_of_person_role_proposal:
+                raise forms.ValidationError('There is a duplicated partner')
 
-                    proposal_partner = ProposalPartner.objects.get(
-                        person=person_position, role=form_data['role'], proposal=self.instance)
-
-                    raise forms.ValidationError('There is a duplicated partner')
-
-                except ObjectDoesNotExist:
-                    instance_id = self.instance.id if self.instance else None
-                    new_set = (proposal_partner, form_data['role'].id, instance_id)
-                    if new_set in sets_of_person_role_proposal:
-                        raise forms.ValidationError('There is a duplicated partner')
-
-                    sets_of_person_role_proposal.add(new_set)
+            sets_of_person_role_proposal.add(partner)
 
     def save_partners(self, proposal):
         for form in self.forms:
