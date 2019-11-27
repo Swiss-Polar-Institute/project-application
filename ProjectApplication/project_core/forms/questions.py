@@ -52,6 +52,8 @@ class Questions(Form):
         self.helper.form_tag = False
 
     def save_answers(self, proposal):
+        all_good = True
+
         for question, answer in self.cleaned_data.items():
             call_question = CallQuestion.objects.get(id=int(question[len('question_'):]))
 
@@ -66,11 +68,11 @@ class Questions(Form):
                         proposal=proposal, call_question=call_question,
                         defaults={'file': answer})
                 except EndpointConnectionError:
-                    return False
+                    all_good = False
                 except botocore.exceptions.ClientError:
-                    return False
+                    all_good = False
 
-        return True
+        return all_good
 
     def clean(self):
         cleaned_data = super().clean()
