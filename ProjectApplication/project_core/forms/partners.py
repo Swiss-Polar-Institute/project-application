@@ -131,40 +131,15 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
         sets_of_person_role_proposal = set()
 
         for form_data in self.cleaned_data:
-            # len(form_data) because the form without any values arrive here
-            if len(form_data) != 0 and form_data['id'] is None:
-                # On the ProposalPartnerItemForm.save() it will PhysicalPerson.get_or_create
-                # and PersonPosition.get_or_create .
-                # The result can be that the ProposalPartner unique_together:
-                # (person, role, proposal) might be duplicated
-                # Here we will raise a ValidationError if this is going to be the case
+            if not form_data:
+                continue
 
-                # Updating a partner - no problems should happen regaring ins
-                proposal_partner = None
-                try:
-                    physical_person = PhysicalPerson.objects.get(
-                        first_name=form_data['person__physical_person__first_name'],
-                        surname=form_data['person__physical_person__surname'])
+            partner = (form_data['person__physical_person__first_name'], form_data['person__physical_person__surname'])
 
-                    person_position = PersonPosition.objects.get(
-                        person=physical_person,
-                        academic_title=form_data['person__academic_title'],
-                        group=form_data['person__group'],
-                        career_stage=form_data['person__career_stage']
-                    )
+            if partner in sets_of_person_role_proposal:
+                raise forms.ValidationError('There is a duplicated partner')
 
-                    proposal_partner = ProposalPartner.objects.get(
-                        person=person_position, role=form_data['role'], proposal=self.instance)
-
-                    raise forms.ValidationError('There is a duplicated partner')
-
-                except ObjectDoesNotExist:
-                    instance_id = self.instance.id if self.instance else None
-                    new_set = (proposal_partner, form_data['role'].id, instance_id)
-                    if new_set in sets_of_person_role_proposal:
-                        raise forms.ValidationError('There is a duplicated partner')
-
-                    sets_of_person_role_proposal.add(new_set)
+            sets_of_person_role_proposal.add(partner)
 
     def save_partners(self, proposal):
         for form in self.forms:
