@@ -22,7 +22,7 @@ class DataCollectionForm(Form):
                                                                   'held securely by the SPI and EPFL according '
                                                                   'to the <a href="https://cipd.epfl.ch/en/privacy-policy/">EPFL Privacy Policy</a>. '
                                                                   'Anonymised statistics will also be produced about the proposal applications. '
-                                                                  'If your proposal is successful, your data will also be used '
+                                                                  'If your proposal is selected for funding, your data will also be used '
                                                                   'for the administration of your project and may also contribute as '
                                                                   'scientific metadata for the project.',
                                                         label='I agree to my personal data being saved by SPI for administration of my proposal')
