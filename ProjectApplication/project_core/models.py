@@ -409,6 +409,16 @@ class PersonUid(Uid):
         return '{} {}: {}'.format(self.person, self.source, self.uid)
 
 
+class CareerStage(models.Model):
+    """Stage of a person within their career."""
+    name = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False, unique=True)
+    description = models.CharField(help_text='Description of the career stage', max_length=100, null=False,
+                                   blank=False)
+
+    def __str__(self):
+        return '{}: {}'.format(self.name, self.description)
+
+
 class PersonPosition(CreateModify):
     """Information about a person that may change as they move through their career."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -416,6 +426,8 @@ class PersonPosition(CreateModify):
     person = models.ForeignKey(PhysicalPerson, help_text='A unique physical person', on_delete=models.PROTECT)
     academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False,
                                        on_delete=models.PROTECT)
+    career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career',
+                                     on_delete=models.PROTECT)
     organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works',
                              max_length=200, blank=True, null=True)
@@ -725,15 +737,6 @@ class ProposalFundingItem(FundingItem):
         unique_together = (('organisation', 'funding_status', 'proposal', 'amount'),)
 
 
-class CareerStage(models.Model):
-    """Stage of a person within their career."""
-    name = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False, unique=True)
-    description = models.CharField(help_text='Description of the career stage', max_length=100, null=False, blank=False)
-
-    def __str__(self):
-        return '{}: {}'.format(self.name, self.description)
-
-
 class Role(models.Model):
     """Role a person can take in a variety of different circumstances."""
     PROPOSAL = 'Proposal'
@@ -765,8 +768,6 @@ class Partner(models.Model):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     person = models.ForeignKey(PersonPosition, help_text='Person that is a partner', on_delete=models.PROTECT)
-    career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career',
-                                     on_delete=models.PROTECT)
     role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT)
     role_description = models.TextField(help_text="Description of the partner's role", null=False,
                                         blank=False)

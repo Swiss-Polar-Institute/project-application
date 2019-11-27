@@ -43,10 +43,6 @@ class ProposalPartnerItemForm(ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('career_stage', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
                 Div('role', css_class='col-12'),
                 css_class='row'
             ),
@@ -112,9 +108,8 @@ class ProposalPartnerItemForm(ModelForm):
 
     class Meta:
         model = ProposalPartner
-        fields = ['role_description', 'competences', 'career_stage', 'role', ]
-        field_classes = {'career_stage': LabelAndOrderNameChoiceField,
-                         'role': LabelAndOrderNameChoiceField}
+        fields = ['role_description', 'competences', 'role', ]
+        field_classes = {'role': LabelAndOrderNameChoiceField}
 
 
 class ProposalPartnersFormSet(BaseInlineFormSet):
