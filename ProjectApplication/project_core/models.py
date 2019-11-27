@@ -411,6 +411,8 @@ class PersonUid(Uid):
 
 class CareerStage(models.Model):
     """Stage of a person within their career."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     name = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False, unique=True)
     description = models.CharField(help_text='Description of the career stage', max_length=100, null=False,
                                    blank=False)
