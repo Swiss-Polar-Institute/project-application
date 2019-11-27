@@ -97,6 +97,9 @@ class Call(CreateModify):
                                          blank=False, null=False)
     other_funding_question = models.BooleanField(help_text='True if the Other Funding question is enabled')
     proposal_partner_question = models.BooleanField(help_text='True if the Proposal Partner question is enabled')
+    project_overarching_question = models.BooleanField(
+        help_text='True if the question for the overarching project is displayed',
+        default=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -814,3 +817,9 @@ class CallComment(Comment):
 
     class Meta:
         unique_together = (('call', 'created_on', 'created_by'),)
+
+
+class ExternalProject(CreateModify):
+    title = models.CharField(help_text='Title of the project', max_length=500, blank=False, null=False)
+    leader = models.ForeignKey(PersonPosition, help_text='Leader of this project',
+                               blank=True, null=True, on_delete=models.PROTECT)
