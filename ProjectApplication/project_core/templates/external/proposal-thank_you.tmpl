@@ -5,6 +5,7 @@
 {% block body_contents %}
     <div class="container" role="main">
         {% include "external/_logo.tmpl" %} <H1>Proposal {{ action }}</H1>
+        {% include "common/_messages-box.tmpl" %}
 
         <p>Proposal identifier: {{ uuid }}</p>
 

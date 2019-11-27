@@ -1,3 +1,4 @@
+from botocore.exceptions import EndpointConnectionError
 from crispy_forms.helper import FormHelper
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
@@ -59,9 +60,14 @@ class Questions(Form):
                     defaults={'answer': answer}
                 )
             elif call_question.answer_type == CallQuestion.FILE:
-                ProposalQAFile.objects.update_or_create(
-                    proposal=proposal, call_question=call_question,
-                    defaults={'file': answer})
+                try:
+                    ProposalQAFile.objects.update_or_create(
+                        proposal=proposal, call_question=call_question,
+                        defaults={'file': answer})
+                except EndpointConnectionError:
+                    return False
+
+        return True
 
     def clean(self):
         cleaned_data = super().clean()

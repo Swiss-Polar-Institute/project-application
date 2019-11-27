@@ -2,6 +2,7 @@ import hashlib
 import io
 import uuid as uuid_lib
 
+from botocore.exceptions import EndpointConnectionError
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.core.validators import validate_email
@@ -618,7 +619,10 @@ class ProposalQAFile(CreateModify):
     md5 = models.CharField(db_index=True, max_length=32)
 
     def human_file_size(self):
-        return utils.bytes_to_human_readable(self.file.size)
+        try:
+            return utils.bytes_to_human_readable(self.file.size)
+        except EndpointConnectionError:
+            return 'Unknown'
 
     def save(self, *args, **kwargs):
         self.md5 = self.calculate_md5()

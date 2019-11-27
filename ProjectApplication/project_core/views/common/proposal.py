@@ -1,6 +1,7 @@
 import mimetypes
 import os
 
+from botocore.exceptions import EndpointConnectionError
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
@@ -267,7 +268,12 @@ class AbstractProposalView(TemplateView):
             if call.other_funding_question:
                 funding_form.save_fundings(proposal)
 
-            questions_form.save_answers(proposal)
+            if not questions_form.save_answers(proposal):
+                # The current only reason to fail is that the file cannot be saved
+                # because of problems with the S3 storage
+                messages.error(request,
+                               'File attachments could not be saved - please try edit your proposal or contact SPI')
+
             budget_form.save_budgets(proposal)
 
             if call.proposal_partner_question:
@@ -323,10 +329,13 @@ class ProposalQuestionAnswerFileView(View):
 
         content_type = mimetypes.types_map.get(file_extension.lower(), 'application/octet-stream')
 
-        response = HttpResponse(
-            question_answer.file.file.file,
-            content_type=content_type
-        )
-        response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(question_answer.file.name)
+        try:
+            response = HttpResponse(
+                question_answer.file.file.file,
+                content_type=content_type
+            )
+            response['Content-Disposition'] = 'attachment; filename=%s' % os.path.basename(question_answer.file.name)
+        except EndpointConnectionError:
+            response = HttpResponse(content='Error: cannot connect to S3', content_type='text/plain')
 
         return response

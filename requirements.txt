@@ -1,8 +1,9 @@
 boto3==1.10.12
 botocore==1.13.12
+coverage==4.5.4
 Django==2.2.6
 django-autocomplete-light==3.4.1
-django-crispy-forms==1.8.0
+django-crispy-forms==1.8.1
 django-debug-toolbar==2.0
 django-storages==1.7.2
 docutils==0.15.2
