@@ -272,7 +272,7 @@ class AbstractProposalView(TemplateView):
                 # The current only reason to fail is that the file cannot be saved
                 # because of problems with the S3 storage
                 messages.error(request,
-                               'File attachments could not be saved - please try edit your proposal or contact SPI')
+                               'File attachments could not be saved - please try editing your proposal or contact SPI if this error reoccurs')
 
             budget_form.save_budgets(proposal)
 
