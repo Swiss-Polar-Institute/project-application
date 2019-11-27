@@ -1,3 +1,4 @@
+import botocore
 from botocore.exceptions import EndpointConnectionError
 from crispy_forms.helper import FormHelper
 from django import forms
@@ -65,6 +66,8 @@ class Questions(Form):
                         proposal=proposal, call_question=call_question,
                         defaults={'file': answer})
                 except EndpointConnectionError:
+                    return False
+                except botocore.exceptions.ClientError:
                     return False
 
         return True
