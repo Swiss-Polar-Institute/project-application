@@ -764,10 +764,10 @@ class Partner(models.Model):
     person = models.ForeignKey(PersonPosition, help_text='Person that is a partner', on_delete=models.PROTECT)
     career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career',
                                      on_delete=models.PROTECT)
-    role = models.ForeignKey(Role, help_text='Role of the person', on_delete=models.PROTECT)
-    role_description = models.TextField(help_text='Description of what the person will be doing', null=False,
+    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT)
+    role_description = models.TextField(help_text="Description of the partner's role", null=False,
                                         blank=False)
-    competences = models.TextField(help_text='Description of the competences of the person', null=False, blank=False)
+    competences = models.TextField(help_text="Description of the partner's key competences", null=False, blank=False)
 
     class Meta:
         abstract = True
