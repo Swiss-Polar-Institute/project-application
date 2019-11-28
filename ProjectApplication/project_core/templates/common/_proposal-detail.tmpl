@@ -2,7 +2,8 @@
 {% include "common/_messages-box.tmpl" %}
 
 {% if edit_button %}
-    <a class="float-sm-right btn btn-primary d-print-none" href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit
+    <a class="float-sm-right btn btn-primary d-print-none"
+       href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit
         proposal</a>
 {% endif %}
 <h2>{{ proposal.title }}</h2>
@@ -52,9 +53,13 @@
     {{ question_file.question }}
     <div class="border p-3 bg-white rounded">
         {% if question_file.file %}
-            {% include 'common/_answer_type-icon.tmpl' with type='File' %} <a
-                href="{% url 'proposal-question-answer-file' proposal_qa_file_id=question_file.proposal_qa_file_id md5=question_file.file.md5 %}">{{ question_file.file.name }}</a>
-            ({{ question_file.file.size }})
+            {% if question_file.proposal.qa_file_id and question_file.file.md5 %}
+                {% include 'common/_answer_type-icon.tmpl' with type='File' %} <a
+                    href="{% url 'proposal-question-answer-file' proposal_qa_file_id=question_file.proposal_qa_file_id md5=question_file.file.md5 %}">{{ question_file.file.name }}</a>
+                ({{ question_file.file.size }})
+            {% else %}
+                    File information missing in the database
+            {% endif %}
         {% else %}
             Not attached
         {% endif %}
