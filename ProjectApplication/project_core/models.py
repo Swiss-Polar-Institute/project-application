@@ -440,7 +440,7 @@ class PersonPosition(CreateModify):
                                        on_delete=models.PROTECT)
     career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career',
                                      on_delete=models.PROTECT)
-    organisations = models.ManyToManyField(Organisation, help_text='Organisation(s) represented by the person')
+    organisation_names = models.ManyToManyField(OrganisationName, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works',
                              max_length=200, blank=True, null=True)
     data_policy = models.BooleanField(
@@ -452,8 +452,8 @@ class PersonPosition(CreateModify):
     def __str__(self):
         organisations_list = []
 
-        for organisation in self.organisations.all().order_by('long_name'):
-            organisations_list.append(organisation.short_name)
+        for organisation_name in self.organisation_names.all().order_by('long_name'):
+            organisations_list.append(organisation_name.name)
 
         organisations_str = ', '.join(organisations_list)
 
@@ -476,7 +476,7 @@ class PersonPosition(CreateModify):
             return None
 
     def organisations_ordered_by_name(self):
-        return self.organisations.all().order_by('long_name')
+        return self.organisation_names.all().order_by('long_name')
 
     class Meta:
         verbose_name_plural = 'People from organisation(s)'
@@ -731,8 +731,8 @@ class FundingItem(models.Model):
     """Specific item of funding"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    organisation = models.ForeignKey(Organisation, help_text='Name of organisation from which the funding is sourced',
-                                     blank=False, null=False, on_delete=models.PROTECT)
+    organisation_name = models.ForeignKey(OrganisationName, help_text='Name of organisation from which the funding is sourced',
+                                          blank=False, null=False, on_delete=models.PROTECT)
     funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding item', blank=False, null=False,
                                        on_delete=models.PROTECT)
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10,
@@ -742,7 +742,7 @@ class FundingItem(models.Model):
         abstract = True
 
     def __str__(self):
-        return '{} - {}: {}'.format(self.organisation, self.funding_status, self.amount)
+        return '{} - {}: {}'.format(self.organisation_name, self.funding_status, self.amount)
 
 
 class ProposalFundingItem(FundingItem):
@@ -754,7 +754,7 @@ class ProposalFundingItem(FundingItem):
                                  on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('organisation', 'funding_status', 'proposal', 'amount'),)
+        unique_together = (('organisation_name', 'funding_status', 'proposal', 'amount'),)
 
 
 class Role(models.Model):

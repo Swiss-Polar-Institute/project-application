@@ -105,5 +105,5 @@ class ContactForm(ModelForm):
 
     class Meta:
         model = PersonPosition
-        fields = ['academic_title', 'group', 'data_policy', 'contact_newsletter', 'organisations']
-        widgets = {'organisations': autocomplete.ModelSelect2Multiple(url='autocomplete-organisations')}
+        fields = ['academic_title', 'group', 'data_policy', 'contact_newsletter', 'organisation_names']
+        widgets = {'organisation_names': autocomplete.ModelSelect2Multiple(url='autocomplete-organisations')}

@@ -20,7 +20,7 @@ class PersonForm(Form):
         if self.person_position:
             first_name_initial = self.person_position.person.first_name
             surname_initial = self.person_position.person.surname
-            organisations_initial = self.person_position.organisations.all()
+            organisations_initial = self.person_position.organisation_names.all()
             group_initial = self.person_position.group
             academic_title_initial = self.person_position.academic_title
             career_stage_initial = self.person_position.career_stage
@@ -48,12 +48,12 @@ class PersonForm(Form):
         self.fields['email'] = forms.CharField(initial=email_initial,
                                                )
 
-        self.fields['organisations'] = OrganisationMultipleChoiceField(queryset=Organisation.objects.all(),
-                                                                       widget=autocomplete.ModelSelect2Multiple(
+        self.fields['organisation_names'] = OrganisationMultipleChoiceField(queryset=Organisation.objects.all(),
+                                                                            widget=autocomplete.ModelSelect2Multiple(
                                                                            url='autocomplete-organisations'),
-                                                                       initial=organisations_initial,
-                                                                       help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal',
-                                                                       label='Organisation(s)', )
+                                                                            initial=organisations_initial,
+                                                                            help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal. If it is not available type the name and click on "Create"',
+                                                                            label='Organisation(s)', )
 
         self.fields['group'] = forms.CharField(initial=group_initial,
                                                help_text='Please type the names of the working group(s) or laboratories to which you are affiliated for the purposes of this proposal',
@@ -80,7 +80,7 @@ class PersonForm(Form):
                 css_class='row'
             ),
             Div(
-                Div('organisations', css_class='col-12'),
+                Div('organisation_names', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -110,7 +110,7 @@ class PersonForm(Form):
 
         person_position.save()
 
-        person_position.organisations.set(self.cleaned_data['organisations'])
+        person_position.organisation_names.set(self.cleaned_data['organisation_names'])
 
         try:
             email_contact = person_position.contact_set.get(method=Contact.EMAIL)

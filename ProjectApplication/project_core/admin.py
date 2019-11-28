@@ -182,8 +182,8 @@ class FundingStatusAdmin(admin.ModelAdmin):
 
 
 class ProposalFundingItemAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'organisation', 'funding_status', 'amount')
-    ordering = ['proposal', 'organisation', 'funding_status', 'amount', ]
+    list_display = ('proposal', 'organisation_name', 'funding_status', 'amount')
+    ordering = ['proposal', 'organisation_name', 'funding_status', 'amount', ]
 
 
 class CallQuestionAdmin(admin.ModelAdmin):

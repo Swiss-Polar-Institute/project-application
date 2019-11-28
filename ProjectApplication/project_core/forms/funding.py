@@ -9,8 +9,8 @@ from project_core.models import Organisation, ProposalFundingItem, Proposal
 class ProposalFundingItemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['organisation'] = OrganisationChoiceField(queryset=Organisation.objects.all(),
-                                                              widget=autocomplete.ModelSelect2(
+        self.fields['organisation_name'] = OrganisationChoiceField(queryset=Organisation.objects.all(),
+                                                                   widget=autocomplete.ModelSelect2(
                                                                   url='autocomplete-organisations'))
 
         self.fields['amount'].widget.attrs['min'] = 0
@@ -20,7 +20,7 @@ class ProposalFundingItemForm(ModelForm):
 
     class Meta:
         model = ProposalFundingItem
-        fields = ['organisation', 'funding_status', 'amount', 'proposal', ]
+        fields = ['organisation_name', 'funding_status', 'amount', 'proposal', ]
         labels = {'amount': 'Amount (CHF)'}
         localized_fields = ('amount',)
 
