@@ -8,9 +8,15 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 <script>
-    $(function() {
+    $(function () {
         $('#funding_form_table tbody tr').formset({
             prefix: 'funding_form'
         })
     })
 </script>
+
+<style>
+    #funding_form_table .asteriskField {
+        display: none;
+    }
+</style>
