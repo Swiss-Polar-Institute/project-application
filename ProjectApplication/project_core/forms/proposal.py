@@ -37,8 +37,11 @@ class ProposalForm(ModelForm):
         )
 
         if self._user and self._user.is_staff:
-            self.fields['proposal_status'] = forms.ModelChoiceField(ProposalStatus.objects.all().order_by('name'),
-                                                                    initial=self.instance.proposal_status)
+            self.fields['proposal_status'] = forms.ModelChoiceField(ProposalStatus.objects.all().order_by('name'))
+
+            if self.instance.id:
+                self.fields['proposal_status'].initial = self.instance.proposal_status
+
             divs.append(
                 Div(
                     Div('proposal_status', css_class='col-12'),

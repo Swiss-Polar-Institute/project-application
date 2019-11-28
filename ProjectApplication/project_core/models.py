@@ -34,7 +34,6 @@ class CreateModify(models.Model):
         abstract = True
 
 
-
 class BudgetCategory(models.Model):
     """Details of budget categories"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -372,6 +371,16 @@ class Organisation(CreateModify):
 
     class Meta:
         unique_together = (('long_name', 'country'),)
+
+
+class OrganisationName(CreateModify):
+    """This is used by the dropdown box to the users. Users can add organisation names and will not be associated
+    with the organisation until SPI creates the organisation and links it. It's an easy way to allow users to enter
+    organisations without details and without having what seems to not exist: a full list of organisations. """
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+    name = models.CharField(help_text='A name that the organisation is known for', max_length=100, blank=False,
+                            null=False, unique=True)
+    organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
 
 
 class Gender(CreateModify):

@@ -1,19 +1,24 @@
 from dal import autocomplete
 
-from project_core.models import Organisation, Source, KeywordUid, Keyword
+from project_core.models import OrganisationName, Source, KeywordUid, Keyword
 
 
 class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
     def get_result_label(self, result):
-        return result.long_name
+        return result.name
 
     def get_queryset(self):
-        qs = Organisation.objects.all()
+        qs = OrganisationName.objects.all()
 
         if self.q:
-            qs = qs.filter(long_name__icontains=self.q)
+            qs = qs.filter(name__icontains=self.q)
 
         return qs
+
+    def has_add_permission(self, *args, **kwargs):
+        # By default only authenticated users with permissions to add in the model
+        # have the option to create keywords. We allow any user to create keywords
+        return True
 
 
 class KeywordsAutocomplete(autocomplete.Select2QuerySetView):

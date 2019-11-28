@@ -91,6 +91,11 @@ class OrganisationAdmin(admin.ModelAdmin):
     ordering = ['long_name', 'short_name', 'city', 'country', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
+class OrganisationNameAdmin(admin.ModelAdmin):
+    list_display = ('name', 'organisation')
+    ordering = ['name']
+
+
 class SourceAdmin(admin.ModelAdmin):
     list_display = ('source', 'created_by', 'created_on', 'modified_by', 'modified_on', )
     ordering = ['source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
@@ -240,6 +245,7 @@ admin.site.register(project_core.models.CountryUid, CountryUidAdmin)
 admin.site.register(project_core.models.Country, CountryAdmin)
 admin.site.register(project_core.models.OrganisationUid, OrganisationUidAdmin)
 admin.site.register(project_core.models.Organisation, OrganisationAdmin)
+admin.site.register(project_core.models.OrganisationName, OrganisationNameAdmin)
 admin.site.register(project_core.models.Source, SourceAdmin)
 admin.site.register(project_core.models.PersonUid, PersonUidAdmin)
 admin.site.register(project_core.models.Gender, GenderAdmin)

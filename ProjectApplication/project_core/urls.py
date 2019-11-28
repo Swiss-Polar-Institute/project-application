@@ -74,7 +74,7 @@ urlpatterns = [
          name='accounts-login'),
     path('accounts/', include('django.contrib.auth.urls')),
 
-    path('autocomplete/organisations/', common.autocomplete.OrganisationsAutocomplete.as_view(),
+    path('autocomplete/organisations/', common.autocomplete.OrganisationsAutocomplete.as_view(create_field='name'),
          name='autocomplete-organisations'),
     path('autocomplete/keywords/',
          common.autocomplete.KeywordsAutocomplete.as_view(create_field='name'),
