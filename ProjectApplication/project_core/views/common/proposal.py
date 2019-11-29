@@ -267,7 +267,7 @@ class AbstractProposalView(TemplateView):
             proposal.applicant = applicant
 
             if 'save_draft' in request.POST:
-                proposal.proposal_status = ProposalStatus.objects.get(name='In progress')
+                proposal.proposal_status = ProposalStatus.objects.get(name='Draft')
             elif 'submit' in request.POST:
                 proposal.proposal_status = ProposalStatus.objects.get(name='Submitted')
             elif 'save_changes' in request.POST:
@@ -275,7 +275,7 @@ class AbstractProposalView(TemplateView):
             else:
                 assert False
 
-            if proposal.proposal_status != ProposalStatus.objects.get(name='In progress') and \
+            if proposal.proposal_status != ProposalStatus.objects.get(name='Draft') and \
                     proposal.proposal_status != ProposalStatus.objects.get(name='Submitted') and \
                     not request.user.is_staff:
                 return HttpResponseForbidden()
