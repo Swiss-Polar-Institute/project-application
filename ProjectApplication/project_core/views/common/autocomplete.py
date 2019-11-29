@@ -22,6 +22,13 @@ class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
         # have the option to create keywords. We allow any user to create keywords
         return True
 
+    def create_object(self, text):
+        d = {self.create_field: text}
+
+        return self.get_queryset().get_or_create(
+            **d,
+            defaults={'created_by': User.objects.get(username=settings.LOGGED_OUT_USERNAME)})[0]
+
 
 class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
     def create_object(self, text):

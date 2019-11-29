@@ -94,8 +94,9 @@ class OrganisationAdmin(admin.ModelAdmin):
 
 
 class OrganisationNameAdmin(admin.ModelAdmin):
-    list_display = ('name', 'organisation')
+    list_display = ('name', 'organisation', 'created_by', 'created_on', 'modified_by', 'modified_on')
     ordering = ['name']
+    search_fields = ('name', )
 
 
 class SourceAdmin(admin.ModelAdmin):
