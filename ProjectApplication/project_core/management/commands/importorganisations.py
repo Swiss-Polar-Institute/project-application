@@ -3,30 +3,36 @@
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from .createorganisationnames import CreateOrganisationNames
+from django.contrib.auth.models import User
 
-from project_core.models import Organisation, Country, Source, OrganisationUid
+from project_core.models import Organisation, Country, Source, OrganisationUid, OrganisationName
 import csv
 
 
 class Command(BaseCommand):
-    help = 'Adds vocabulary list to the organisation table'
+    help = 'Adds vocabulary list to the organisation and organisationname tables'
 
     def add_arguments(self, parser):
         parser.add_argument('filename', type=str)
-        parser.add_argument('source', type=str)
 
     def handle(self, *args, **options):
         print(options['filename'])
-        self.import_data_from_csv(options['filename'], options['source'])
+        self.import_data_from_csv(options['filename'])
 
-    def import_data_from_csv(self, filename, source_name):
+    def import_data_from_csv(self, filename):
         with open(filename) as csvfile:
             reader = csv.DictReader(csvfile)
 
-            source, created = Source.objects.get_or_create(source=source_name)
-            organisation_uid, created = OrganisationUid.objects.get_or_create(uid=None, source=source)
+            user = User.objects.get(username='admin')
 
             for row in reader:
+                source, created = Source.objects.get_or_create(source=row['source'],
+                                                               defaults={'description': row['source_url'],
+                                                                         'created_by': user})
+                organisationuid, created = OrganisationUid.objects.get_or_create(uid=row['uid'],
+                                                                                 source=source,
+                                                                                 defaults={'created_by': user})
                 organisation = Organisation()
                 organisation.long_name = row['long_name']
                 organisation.short_name = row['short_name']
@@ -34,5 +40,9 @@ class Command(BaseCommand):
                 organisation.city = row['city']
                 organisation.postal_code = row['postal_code']
                 organisation.country = Country.objects.get(name=row['country'])
-                organisation.uid = organisation_uid
+                organisation.uid = organisationuid
+                organisation.created_by = user
                 organisation.save()
+
+        createorganisationnames = CreateOrganisationNames()
+        createorganisationnames.create()
