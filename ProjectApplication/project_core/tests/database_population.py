@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
-    PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus
+    PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName
 
 
 def create_call():
@@ -35,10 +35,17 @@ def create_keywords():
     return algae, birds
 
 
-def create_proposal_status():
-    proposal_status, created = ProposalStatus.objects.get_or_create(name='Submitted')
+def create_career_stages():
+    career, created = CareerStage.objects.get_or_create(name='PhD More than 5 years')
 
-    return proposal_status
+    return career,
+
+
+def create_proposal_status():
+    proposal_status_submitted, created = ProposalStatus.objects.get_or_create(name='Submitted')
+    proposal_status_draft, created = ProposalStatus.objects.get_or_create(name='In progress')
+
+    return proposal_status_submitted, proposal_status_draft
 
 
 def create_budget_categories():
@@ -108,3 +115,11 @@ def create_organisations():
                                                                 uid=organisation2_uid)
 
     return organisation1, organisation2
+
+
+def create_organisation_names():
+    organisation1, created = OrganisationName.objects.get_or_create(name='EPFL')
+    organisation2, created = OrganisationName.objects.get_or_create(name='SPF')
+
+    return organisation1, organisation2
+

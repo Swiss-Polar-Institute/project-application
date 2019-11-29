@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from project_core.forms.proposal import ProposalForm
 from project_core.models import CallQuestion, Call, GeographicalArea, Keyword, ProposalStatus, PersonPosition, \
-    PhysicalPerson, PersonTitle
+    PhysicalPerson, PersonTitle, CareerStage
 from project_core.tests import database_population
 from project_core.tests import utils
 
@@ -17,7 +17,7 @@ class CallFormTest(TestCase):
 
         self._geographical_areas = database_population.create_geographical_areas()
         self._keywords = database_population.create_keywords()
-        self._proposal_status_submitted = database_population.create_proposal_status()
+        self._proposal_status_submitted = database_population.create_proposal_status()[0]
 
     def test_proposal_form(self):
         data = {'title': 'Collect algae around Greenland',
@@ -45,7 +45,9 @@ class CallFormTest(TestCase):
 def create_person_position():
     physical_person, created = PhysicalPerson.objects.get_or_create(first_name='John', surname='Doe')
     academic_title, created = PersonTitle.objects.get_or_create(title='Mr')
+    career_stage, created = CareerStage.objects.get_or_create(name='Post PhD')
     person_position, created = PersonPosition.objects.get_or_create(person=physical_person,
                                                                     academic_title=academic_title, data_policy=True,
-                                                                    contact_newsletter=True)
+                                                                    contact_newsletter=True,
+                                                                    career_stage=career_stage)
     return person_position

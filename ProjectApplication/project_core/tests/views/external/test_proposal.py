@@ -16,8 +16,10 @@ class ProposalFormTest(TestCase):
         self._person_titles = database_population.create_person_titles()
         self._genders = database_population.create_genders()
         self._organisations = database_population.create_organisations()
+        self._organisation_names = database_population.create_organisation_names()
         self._geographical_areas = database_population.create_geographical_areas()
         self._keywords = database_population.create_keywords()
+        self._career_stages = database_population.create_career_stages()
         database_population.create_proposal_status()
 
     def _proposal_post_data(self):
@@ -25,9 +27,12 @@ class ProposalFormTest(TestCase):
             {
                 'person_form-academic_title': [self._person_titles[0].id], 'person_form-first_name': ['John'],
                 'person_form-surname': ['Doe'],
-                'person_form-gender': [self._genders[0].id], 'person_form-email': ['test@example.com'],
-                'person_form-organisations': [self._organisations[0].id],
-                'person_form-group': ['A new group'], 'proposal_form-call_id': [self._call.id],
+                'person_form-gender': [self._genders[0].id],
+                'person_form-email': ['test@example.com'],
+                'person_form-organisation_names': [self._organisation_names[0].id],
+                'person_form-group': ['A new group'],
+                'person_form-career_stage': [self._career_stages[0].id],
+                'proposal_form-call_id': [self._call.id],
                 'proposal_form-title': ['Replace this title!'],
                 'proposal_form-geographical_areas': [self._geographical_areas[0].id],
                 'proposal_form-keywords': [self._keywords[0].id],
