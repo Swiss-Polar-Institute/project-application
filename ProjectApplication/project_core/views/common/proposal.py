@@ -277,7 +277,7 @@ class AbstractProposalView(TemplateView):
 
             if proposal.proposal_status != ProposalStatus.objects.get(name='Draft') and \
                     proposal.proposal_status != ProposalStatus.objects.get(name='Submitted') and \
-                    not request.user.is_staff:
+                    not request.user.groups.filter(name='management').exists():
                 return HttpResponseForbidden()
 
             if call.project_overarching_question:
