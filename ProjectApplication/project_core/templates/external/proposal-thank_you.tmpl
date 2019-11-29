@@ -4,22 +4,50 @@
 
 {% block body_contents %}
     <div class="container" role="main">
-        {% include "external/_logo.tmpl" %} <H1>Proposal {{ action }}</H1>
+        {% include "external/_logo.tmpl" %}
+        <H1>{% if proposal.status_is_draft %}Proposal draft saved
+        {% elif proposal.status_is_submitted %}Proposal submitted
+        {% endif %}</H1>
+
         {% include "common/_messages-box.tmpl" %}
 
         {% if proposal.status_is_draft %}
-            Draft
+           <br>
+        <div class="alert alert-warning" role="alert"><H5><strong>Please copy and retain this link to be able to
+            edit and submit your proposal.</strong>
+            <br>
+            Ensure you
+            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                make any final changes and submit</a> your proposal before the call deadline.</H5>
+            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
+            </div>
+            <p>Proposal identifier: {{ proposal.uuid }}
+            <br>Proposal status: {{ proposal.proposal_status.name }}</p>
+            <br>
+        <H4>Thank you for saving a <strong>draft</strong> of your proposal.</H4>
+
         {% elif proposal.status_is_submitted %}
-            Submitted
+            <br>
+        <div class="alert alert-success" role="alert"><H5><strong>Please copy and retain this link</strong>.
+            You will need it to
+            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                view or edit</a> your proposal.
+            <br>
+            You can still edit your proposal until the call deadline.
+           </H5>
+            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
+            </div>
+            <p>Proposal identifier: {{ proposal.uuid }}
+            <br>Proposal status: {{ proposal.proposal_status.name }}</p>
+            <br>
+            <H4>Thank you for submitting your proposal.</H4>
+
         {% else %}
-            <!-- Status is not draft either submitted? -->
+            <!-- Status is not draft or submitted? -->
         {% endif %}
 
-        <p>Proposal identifier: {{ proposal.uuid }}</p>
-        <p>Proposal status: {{ proposal.proposal_status }}</p>
 
-        <p>You can access and edit your proposal using this link: <a href="{% url 'proposal-update' uuid=uuid %}">View proposal</a></p>
-
-        <p>Thank you for submitting your proposal.</p>
     </div>
 {% endblock %}
