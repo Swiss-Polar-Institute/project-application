@@ -11,6 +11,7 @@ from django.db.models import Max
 from django.urls import reverse
 from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
+from django.conf import settings
 
 from . import utils
 
@@ -624,6 +625,12 @@ class Proposal(CreateModify):
 
     def get_absolute_url(self):
         return reverse('proposal-update', kwargs={'uuid': self.uuid})
+
+    def status_is_draft(self):
+        return self.proposal_status.name == settings.PROPOSAL_STATUS_DRAFT
+
+    def status_is_submitted(self):
+        return self.proposal_status.name == settings.PROPOSAL_STATUS_SUBMITTED
 
     class Meta:
         unique_together = (('title', 'applicant', 'call'),)

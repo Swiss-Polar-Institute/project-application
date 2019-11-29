@@ -4,7 +4,7 @@
 
 <h1>{{ action }} proposal</h1>
 
-{% if proposal_status == 'Draft' %}
+{% if proposal_status_is_draft %}
         <div class="alert alert-secondary" role="alert"><i class="fas fa-info-circle"></i> This proposal is a draft and will not be evaluated.
             Click on Submit before the application deadline to ensure your proposal is evaluated.
         </div>

@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
+from project_core.models import Proposal
 
 
 class ProposalThankYouView(TemplateView):
@@ -9,15 +10,7 @@ class ProposalThankYouView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        action = self.request.GET['action']
-
-        if action in ('created', 'updated'):
-            context['action'] = action
-        else:
-            # should not happen
-            context['action'] = ''
-
-        context['uuid'] = kwargs['uuid']
+        context['proposal'] = Proposal.objects.get(uuid=kwargs['uuid'])
 
         return context
 

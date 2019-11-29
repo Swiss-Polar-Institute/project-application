@@ -126,7 +126,7 @@ class AbstractProposalView(TemplateView):
 
             context['action'] = 'Edit'
 
-            context['proposal_status'] = proposal.proposal_status.name
+            context['proposal_status_is_draft'] = proposal.status_is_draft()
 
         else:
             call_pk = context['call_pk'] = request.GET.get('call')
@@ -215,8 +215,6 @@ class AbstractProposalView(TemplateView):
                                                       prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
 
-            action = 'updated'
-
         else:
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME, user=request.user)
@@ -238,8 +236,6 @@ class AbstractProposalView(TemplateView):
                                                                            prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
 
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
-
-            action = 'created'
 
         forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
                              data_collection_form]
@@ -305,7 +301,8 @@ class AbstractProposalView(TemplateView):
             messages.success(request, self.success_message)
 
             return redirect(
-                reverse(self.created_or_updated_url, kwargs={'uuid': proposal.uuid}) + '?action={}'.format(action))
+                reverse(self.created_or_updated_url, kwargs={'uuid': proposal.uuid})
+            )
 
         context[PERSON_FORM_NAME] = person_form
         context[PROPOSAL_FORM_NAME] = proposal_form

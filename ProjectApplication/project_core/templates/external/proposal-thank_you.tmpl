@@ -7,7 +7,16 @@
         {% include "external/_logo.tmpl" %} <H1>Proposal {{ action }}</H1>
         {% include "common/_messages-box.tmpl" %}
 
-        <p>Proposal identifier: {{ uuid }}</p>
+        {% if proposal.status_is_draft %}
+            Draft
+        {% elif proposal.status_is_submitted %}
+            Submitted
+        {% else %}
+            <!-- Status is not draft either submitted? -->
+        {% endif %}
+
+        <p>Proposal identifier: {{ proposal.uuid }}</p>
+        <p>Proposal status: {{ proposal.proposal_status }}</p>
 
         <p>You can access and edit your proposal using this link: <a href="{% url 'proposal-update' uuid=uuid %}">View proposal</a></p>
 
