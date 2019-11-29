@@ -476,7 +476,7 @@ class PersonPosition(CreateModify):
             return None
 
     def organisations_ordered_by_name(self):
-        return self.organisation_names.all().order_by('long_name')
+        return self.organisation_names.all().order_by('name')
 
     class Meta:
         verbose_name_plural = 'People from organisation(s)'

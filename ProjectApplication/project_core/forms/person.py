@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
 
 from project_core.forms.utils import OrganisationMultipleChoiceField
-from project_core.models import PersonTitle, Gender, Organisation, PhysicalPerson, PersonPosition, Contact, CareerStage
+from project_core.models import PersonTitle, Gender, Organisation, PhysicalPerson, PersonPosition, Contact, CareerStage, OrganisationName
 
 
 class PersonForm(Form):
@@ -48,9 +48,9 @@ class PersonForm(Form):
         self.fields['email'] = forms.CharField(initial=email_initial,
                                                )
 
-        self.fields['organisation_names'] = OrganisationMultipleChoiceField(queryset=Organisation.objects.all(),
+        self.fields['organisation_names'] = OrganisationMultipleChoiceField(queryset=OrganisationName.objects.all(),
                                                                             widget=autocomplete.ModelSelect2Multiple(
-                                                                           url='autocomplete-organisations'),
+                                                                           url='autocomplete-organisation-names'),
                                                                             initial=organisations_initial,
                                                                             help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal. If it is not available type the name and click on "Create"',
                                                                             label='Organisation(s)', )

@@ -40,7 +40,7 @@ class ContactForm(ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('organisations', css_class='col-12'),
+                Div('organisation_names', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -106,4 +106,4 @@ class ContactForm(ModelForm):
     class Meta:
         model = PersonPosition
         fields = ['academic_title', 'group', 'data_policy', 'contact_newsletter', 'organisation_names']
-        widgets = {'organisation_names': autocomplete.ModelSelect2Multiple(url='autocomplete-organisations')}
+        widgets = {'organisation_names': autocomplete.ModelSelect2Multiple(url='autocomplete-organisation-names')}

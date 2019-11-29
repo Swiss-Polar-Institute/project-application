@@ -53,5 +53,5 @@ class OrganisationChoiceField(ModelChoiceField):
 
 
 class OrganisationMultipleChoiceField(ModelMultipleChoiceField):
-    def label_from_instance(self, organisation):
-        return organisation.long_name
+    def label_from_instance(self, organisation_name):
+        return organisation_name.name
