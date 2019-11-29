@@ -53,6 +53,8 @@ class KeywordAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['name', 'description', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
     readonly_fields = ('created_on', 'modified_on', )
+    search_fields = ('name', 'description',)
+    raw_id_fields = ('uid',)
 
 
 class KeywordUidAdmin(admin.ModelAdmin):
