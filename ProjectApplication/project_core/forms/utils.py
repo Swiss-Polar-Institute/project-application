@@ -47,11 +47,11 @@ class LabelAndOrderNameChoiceField(forms.ModelChoiceField):
         return obj.name
 
 
-class OrganisationChoiceField(ModelChoiceField):
+class OrganisationNameChoiceField(ModelChoiceField):
     def label_from_instance(self, organisation):
-        return organisation.long_name
+        return organisation.name
 
 
-class OrganisationMultipleChoiceField(ModelMultipleChoiceField):
+class OrganisationNameMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, organisation_name):
         return organisation_name.name

@@ -2,15 +2,15 @@ from crispy_forms.helper import FormHelper
 from dal import autocomplete
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
-from project_core.forms.utils import OrganisationChoiceField
+from project_core.forms.utils import OrganisationNameChoiceField
 from project_core.models import OrganisationName, ProposalFundingItem, Proposal
 
 
 class ProposalFundingItemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['organisation_name'] = OrganisationChoiceField(queryset=OrganisationName.objects.all(),
-                                                                   widget=autocomplete.ModelSelect2(
+        self.fields['organisation_name'] = OrganisationNameChoiceField(queryset=OrganisationName.objects.all(),
+                                                                       widget=autocomplete.ModelSelect2(
                                                                        url='autocomplete-organisation-names'))
 
         self.fields['amount'].widget.attrs['min'] = 0
