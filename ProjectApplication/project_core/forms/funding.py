@@ -11,7 +11,7 @@ class ProposalFundingItemForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['organisation_name'] = OrganisationChoiceField(queryset=OrganisationName.objects.all(),
                                                                    widget=autocomplete.ModelSelect2(
-                                                                  url='autocomplete-organisation-names'))
+                                                                       url='autocomplete-organisation-names'))
 
         self.fields['amount'].widget.attrs['min'] = 0
 
