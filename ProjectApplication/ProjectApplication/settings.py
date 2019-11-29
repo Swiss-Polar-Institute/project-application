@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import mimetypes
 import os
 import pathlib
-import mimetypes
 
 from django.contrib.messages import constants as messages
 
@@ -94,10 +94,10 @@ def secrets_file(file_name, optional_path=None):
 
     raise FileNotFoundError("Configuration for {} doesn't exist".format(file_name))
 
+
 FORMAT_MODULE_PATH = [
     'spiformat.formats'
 ]
-
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
