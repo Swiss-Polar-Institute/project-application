@@ -353,10 +353,10 @@ class Organisation(CreateModify):
                                  null=False)
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50,
                                   blank=True, null=True)
-    street = models.CharField(help_text='Street address of the organisation', max_length=500, blank=False, null=False)
+    street = models.CharField(help_text='Street address of the organisation', max_length=500, blank=True, null=True)
     city = models.CharField(help_text='City in which the organisation is based', max_length=100, blank=False,
                             null=False)
-    postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=False, null=False)
+    postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=True, null=True)
     country = models.ForeignKey(Country, help_text='Country in which the organisation is based',
                                 on_delete=models.PROTECT)
     uid = models.ForeignKey(OrganisationUid, help_text='UID of an organisation', on_delete=models.PROTECT)

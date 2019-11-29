@@ -20,6 +20,9 @@ class CreateOrganisationNames:
 
     def create(self):
         for organisation in Organisation.objects.all():
-            organisation_name, created = OrganisationName.objects.get_or_create(name=organisation.long_name)
+            name = organisation.long_name
+            if organisation.short_name:
+                name += ' - ' + organisation.short_name
+            organisation_name, created = OrganisationName.objects.get_or_create(name=name)
             organisation_name.organisation = organisation
             organisation_name.save()
