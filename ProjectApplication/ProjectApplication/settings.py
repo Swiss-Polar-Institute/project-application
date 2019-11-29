@@ -193,5 +193,7 @@ DEMO_MANAGEMENT_PASSWORD = os.environ['DEMO_MANAGEMENT_PASSWORD']
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'shfl_mdb^frjpk8@5@fsl(qm0^u0+--m6_x28lgbil*m&#+rvq')
 
+LOGGED_OUT_USERNAME = 'loggedout'
+
 if 'ALLOWED_HOST_1' in os.environ:
     ALLOWED_HOSTS.append(os.environ['ALLOWED_HOST_1'])

@@ -3,13 +3,13 @@ from dal import autocomplete
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import OrganisationChoiceField
-from project_core.models import Organisation, ProposalFundingItem, Proposal
+from project_core.models import OrganisationName, ProposalFundingItem, Proposal
 
 
 class ProposalFundingItemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['organisation_name'] = OrganisationChoiceField(queryset=Organisation.objects.all(),
+        self.fields['organisation_name'] = OrganisationChoiceField(queryset=OrganisationName.objects.all(),
                                                                    widget=autocomplete.ModelSelect2(
                                                                   url='autocomplete-organisation-names'))
 
