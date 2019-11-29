@@ -6,11 +6,42 @@
     <h1>Homepage</h1>
     <p>
         Here there will be the latest news, coming up deadlines, search tools. This is not done yet.
-    </p>
-
     <p>
-        Meanwhile you can explore the Calls and Proposals using the navigation bar above and the options that appear on the left hand side.
+        Meanwhile we are adding a changelog of what has been done recently or is to be done next.
     </p>
+    <h2>Version deployed on 29/11/2019</h2>
+
+    We have implemented some of these things after talking with Basil, Danièle and Laurence. Please let us know if it's not what you expected.
+    <ul>
+        <li>New organisation list available</li>
+        <li>Now an applicant can create organisation names (an organisation can have multiple names). This allows
+            applicants to enter organisations that are not in the system, and it will also allow us to create reports
+            (the management part to link organisation names and organisations is not done yet, it will be done after
+            the release for the Polar Access Fund).
+        </li>
+        <li>Improved texts after the application Submission or Save Draft</li>
+        <li>For the budget: thousands separator as ' is accepted (and displayed)</li>
+        <li>"<strong>*</strong>" are not displayed in the Funding organisations table column names (it was confusing because
+            it's not a mandatory field)
+        </li>
+        <li>Better error handling for files (if the object storage is not available it saves the application and shows a
+            message to the user regarding the file)
+        <li>Added overarching project for calls such as Polar Access Fund</li>
+        <li>High-altitude typo corrected</li>
+        <li>When creating a call, data policy changed to privacy policy</li>
+
+        <li>Known bug: if an applicant attaches a file into a proposal and the proposal cannot be validated (e.g. wrong
+            dates, missing fields, etc): the applicant might need to attach the file again
+        </li>
+        <li>Known bug: (thanks Basil!) it's not possible to create a call using Microsoft Edge
+        </li>
+        <li>Known important missing feature: add organisation to the proposal partners</li>
+    </ul>
+
+    Also see the
+    <a href="https://github.com/Swiss-Polar-Institute/project-application/milestone/1">issues to be fixed before the
+        Polar Access Fund release</a> and the
+    <a href="https://github.com/Swiss-Polar-Institute/project-application/issues">full list of issues.</a>
 
     <div class="fixed-bottom">
         <span class="text-muted"><small>Version: {% version_date %}</small></span>

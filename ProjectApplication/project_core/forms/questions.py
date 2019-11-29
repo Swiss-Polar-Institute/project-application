@@ -45,8 +45,17 @@ class Questions(Form):
                                                                                  initial=file)
 
             except ObjectDoesNotExist:
-                self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
-                                                                                 help_text=question.question_description)
+                question_label = 'question_{}'.format(question.pk)
+
+                question_label_with_prefix = kwargs['prefix'] + '-' + question_label
+
+                if question_label_with_prefix in self.files:
+                    self.fields[question_label] = forms.FileField(label=question.question_text,
+                                                                  help_text=question.question_description,
+                                                                  initial=self.files[question_label_with_prefix])
+                else:
+                    self.fields[question_label] = forms.FileField(label=question.question_text,
+                                                                  help_text=question.question_description)
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
