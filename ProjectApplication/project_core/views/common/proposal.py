@@ -193,7 +193,8 @@ class AbstractProposalView(TemplateView):
 
         if proposal:
             # Editing an existing proposal
-            proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME, user=request.user)
+            proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME,
+                                         in_management=in_management(request))
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
@@ -219,7 +220,8 @@ class AbstractProposalView(TemplateView):
 
         else:
             # Creating a new proposal
-            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME, user=request.user)
+            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME,
+                                         in_management=in_management(request))
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,

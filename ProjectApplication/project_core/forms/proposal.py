@@ -7,8 +7,6 @@ from django.forms import ModelForm
 from ..models import Proposal, ProposalStatus
 from ..widgets import DatePickerWidget
 
-from ..templatetags.in_management import in_management
-
 
 class ProposalForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput())
