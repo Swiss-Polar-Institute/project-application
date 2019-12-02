@@ -1,12 +1,11 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
-from dal import autocomplete
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
 
-from project_core.forms.utils import OrganisationNameMultipleChoiceField
-from project_core.models import PersonTitle, Gender, Organisation, PhysicalPerson, PersonPosition, Contact, CareerStage, OrganisationName
+from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
+from .utils import organisations_name_autocomplete
 
 
 class PersonForm(Form):
@@ -48,12 +47,8 @@ class PersonForm(Form):
         self.fields['email'] = forms.CharField(initial=email_initial,
                                                )
 
-        self.fields['organisation_names'] = OrganisationNameMultipleChoiceField(queryset=OrganisationName.objects.all(),
-                                                                                widget=autocomplete.ModelSelect2Multiple(
-                                                                           url='autocomplete-organisation-names'),
-                                                                                initial=organisations_initial,
-                                                                                help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal. If it is not available type the name and click on "Create"',
-                                                                                label='Organisation(s)', )
+        self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
+                                                                            help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
 
         self.fields['group'] = forms.CharField(initial=group_initial,
                                                help_text='Please type the names of the working group(s) or laboratories to which you are affiliated for the purposes of this proposal',

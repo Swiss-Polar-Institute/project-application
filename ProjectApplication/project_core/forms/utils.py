@@ -1,5 +1,8 @@
+from dal import autocomplete
 from django import forms
 from django.forms import ModelChoiceField, ModelMultipleChoiceField
+
+from ..models import OrganisationName
 
 
 def get_model_information(model, field, information):
@@ -55,3 +58,12 @@ class OrganisationNameChoiceField(ModelChoiceField):
 class OrganisationNameMultipleChoiceField(ModelMultipleChoiceField):
     def label_from_instance(self, organisation_name):
         return organisation_name.name
+
+
+def organisations_name_autocomplete(initial, help_text):
+    return OrganisationNameMultipleChoiceField(queryset=OrganisationName.objects.all(),
+                                               widget=autocomplete.ModelSelect2Multiple(
+                                                   url='autocomplete-organisation-names'),
+                                               initial=initial,
+                                               help_text=help_text + ' If it is not available type the name and click on "Create"',
+                                               label='Organisation(s)', )

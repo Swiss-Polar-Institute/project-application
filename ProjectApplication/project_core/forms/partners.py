@@ -1,11 +1,11 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
+from .utils import organisations_name_autocomplete
 
 
 class ProposalPartnerItemForm(ModelForm):
@@ -24,6 +24,8 @@ class ProposalPartnerItemForm(ModelForm):
 
         self.fields['id'] = None
 
+        person__organisations_initial = None
+
         if self.instance.pk:
             self.fields['person__group'].initial = self.instance.person.group
             self.fields['person__career_stage'].initial = self.instance.person.career_stage
@@ -31,6 +33,10 @@ class ProposalPartnerItemForm(ModelForm):
             self.fields['person__physical_person__first_name'].initial = self.instance.person.person.first_name
             self.fields['person__physical_person__surname'].initial = self.instance.person.person.surname
             self.fields['id'] = self.instance.pk
+            person__organisations_initial = self.instance.person.organisation_names.all()
+
+        self.fields['person__organisations'] = organisations_name_autocomplete(initial=person__organisations_initial,
+                                                                               help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
 
         self.helper.layout = Layout(
             Div(
@@ -39,6 +45,10 @@ class ProposalPartnerItemForm(ModelForm):
                 Div('person__physical_person__first_name', css_class='col-4'),
                 Div('person__physical_person__surname', css_class='col-4'),
                 Div('person__career_stage', css_class='col-2'),
+                css_class='row'
+            ),
+            Div(
+                Div('person__organisations', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -126,6 +136,10 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
         self.helper.form_id = 'proposal_partners_form'
 
     def clean(self):
+        if self.errors:
+            # If the inner-forms have errors self.cleaned_data is not assigned (or not valid at all)
+            return
+
         super().clean()
 
         sets_of_person_role_proposal = set()
