@@ -4,7 +4,8 @@
 {% block contents %}
     <br>
     {% include 'common/_messages-box.tmpl' %}
-    <a class="float-sm-right btn btn-primary d-print-none" href="{% url 'management-call-update' id=call.id %}">Edit call</a>
+    <a class="float-sm-right btn btn-primary d-print-none" href="{% url 'management-call-update' id=call.id %}">Edit
+        call</a>
     <h1>Call details</h1>
     <strong>Funding instrument:</strong>
     {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding instrument
@@ -21,10 +22,12 @@
     <br>
     <div class="row">
         <div class="col-6">
-            <strong>Call Open Date:</strong> {{ call.call_open_date }}
+            <strong>Call Open
+                Date:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call.call_open_date %}
         </div>
         <div class="col-6">
-            <strong>Call Submission deadline:</strong> {{ call.submission_deadline }}
+            <strong>Call Submission
+                deadline:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call.submission_deadline %}
         </div>
     </div>
     <br>

@@ -5,16 +5,16 @@
 <h1>{{ action }} proposal</h1>
 
 {% if proposal_status_is_draft %}
-        <div class="alert alert-secondary" role="alert"><i class="fas fa-info-circle"></i> This proposal is a draft and will not be evaluated.
-            Click on Submit before the application deadline to ensure your proposal is evaluated.
-        </div>
+    <div class="alert alert-secondary" role="alert"><i class="fas fa-info-circle"></i> This proposal is a draft and will
+        not be evaluated.
+        Click on Submit before the application deadline to ensure your proposal is evaluated.
+    </div>
 {% endif %}
 
 <p><strong>Call name:</strong> {{ call_name }}</p>
 
 <p><strong>Deadline for
-    application:</strong> {{ call_submission_deadline|date:'D d M Y' }} {{ call_submission_deadline|time:'H:i' }} Swiss
-    time
+    application:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call_submission_deadline %}
 
 <p><strong>Please complete all mandatory fields and press "Save Draft" or "Submit". You will be given a link which will
     allow editing of your proposal until the application
@@ -63,7 +63,8 @@
 
         <p>
             After saving the draft you will be able to edit the proposal until the application deadline.<br>
-            Drafts won't be evaluated. Please make sure to submit the final version before the close of the call or the application deadline.
+            Drafts won't be evaluated. Please make sure to submit the final version before the close of the call or the
+            application deadline.
         </p>
     {% endif %}
     <p></p>
