@@ -25,7 +25,7 @@ class ContactForm(ModelForm):
         self.fields['person__surname'] = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
                                                          initial=person__surname)
 
-        self.fields['data_policy'].disabled = True
+        self.fields['privacy_policy'].disabled = True
         self.fields['contact_newsletter'].disabled = True
 
         self.fields['email'] = forms.EmailField(initial=main_email)
@@ -52,7 +52,7 @@ class ContactForm(ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('data_policy', css_class='col-6'),
+                Div('privacy_policy', css_class='col-6'),
                 Div('contact_newsletter', css_class='col-6'),
                 css_class='row'
             )
@@ -105,5 +105,5 @@ class ContactForm(ModelForm):
 
     class Meta:
         model = PersonPosition
-        fields = ['academic_title', 'group', 'data_policy', 'contact_newsletter', 'organisation_names']
+        fields = ['academic_title', 'group', 'privacy_policy', 'contact_newsletter', 'organisation_names']
         widgets = {'organisation_names': autocomplete.ModelSelect2Multiple(url='autocomplete-organisation-names')}

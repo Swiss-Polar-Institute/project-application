@@ -120,8 +120,8 @@ class PersonUidAdmin(admin.ModelAdmin):
 
 
 class PersonPositionAdmin(admin.ModelAdmin):
-    list_display = ('person', 'academic_title', 'career_stage', 'organisations_list', 'group', 'data_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['person', 'academic_title', 'career_stage', 'group', 'data_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = ('person', 'academic_title', 'career_stage', 'organisations_list', 'group', 'privacy_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['person', 'academic_title', 'career_stage', 'group', 'privacy_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
     def organisations_list(self, obj):
         organisations = obj.organisations.all()

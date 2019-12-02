@@ -47,7 +47,7 @@ def create_person_position():
     academic_title, created = PersonTitle.objects.get_or_create(title='Mr')
     career_stage, created = CareerStage.objects.get_or_create(name='Post PhD')
     person_position, created = PersonPosition.objects.get_or_create(person=physical_person,
-                                                                    academic_title=academic_title, data_policy=True,
+                                                                    academic_title=academic_title, privacy_policy=True,
                                                                     contact_newsletter=True,
                                                                     career_stage=career_stage)
     return person_position

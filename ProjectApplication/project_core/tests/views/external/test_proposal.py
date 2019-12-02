@@ -65,7 +65,7 @@ class ProposalFormTest(TestCase):
                 'funding_form-__prefix__-DELETE': [''], 'funding_form-0-organisation': ['25'],
                 'funding_form-0-funding_status': ['1'], 'funding_form-0-amount': ['5000'],
                 'funding_form-0-proposal': [''],
-                'funding_form-0-id': [''], 'funding_form-0-DELETE': [''], 'data_collection_form-data_policy': ['on'],
+                'funding_form-0-id': [''], 'funding_form-0-DELETE': [''], 'data_collection_form-privacy_policy': ['on'],
                 'data_collection_form-contact_newsletter': ['on'], 'submit': ['Submit']
             }
         )

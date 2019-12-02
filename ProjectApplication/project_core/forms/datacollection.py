@@ -9,14 +9,14 @@ class DataCollectionForm(Form):
 
         super().__init__(*args, **kwargs)
 
-        data_policy_initial = contact_newsletter_initial = None
+        privacy_policy_initial = contact_newsletter_initial = None
 
         if person_position:
-            data_policy_initial = person_position.data_policy
+            privacy_policy_initial = person_position.privacy_policy
             contact_newsletter_initial = person_position.contact_newsletter
 
-        self.fields['data_policy'] = forms.BooleanField(initial=data_policy_initial,
-                                                        help_text='By ticking this box you agree to the Swiss Polar Insitute (SPI) storing your '
+        self.fields['privacy_policy'] = forms.BooleanField(initial=privacy_policy_initial,
+                                                           help_text='By ticking this box you agree to the Swiss Polar Insitute (SPI) storing your '
                                                                   'personal data for the purpose of administering your '
                                                                   'proposal. The data you provide here will be kept private and '
                                                                   'held securely by the SPI and EPFL according '
@@ -25,7 +25,7 @@ class DataCollectionForm(Form):
                                                                   'If your proposal is selected for funding, your data will also be used '
                                                                   'for the administration of your project and may also contribute as '
                                                                   'scientific metadata for the project.',
-                                                        label='I agree to my personal data being saved by SPI for administration of my proposal')
+                                                           label='I agree to my personal data being saved by SPI for administration of my proposal')
 
         self.fields['contact_newsletter'] = forms.BooleanField(initial=contact_newsletter_initial,
                                                                help_text='By ticking this box you agree to being contacted '
@@ -38,6 +38,6 @@ class DataCollectionForm(Form):
         self.helper.form_tag = False
 
     def update(self, person_position):
-        person_position.data_policy = self.cleaned_data['data_policy']
+        person_position.privacy_policy = self.cleaned_data['privacy_policy']
         person_position.contact_newsletter = self.cleaned_data['contact_newsletter']
         person_position.save()
