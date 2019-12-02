@@ -12,35 +12,35 @@
         {% include "common/_messages-box.tmpl" %}
 
         {% if proposal.status_is_draft %}
-           <br>
-        <div class="alert alert-warning" role="alert"><H5><strong>Please copy and retain this link to be able to
-            edit and submit your proposal.</strong>
             <br>
-            Ensure you
-            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
-                make any final changes and submit</a> your proposal before the call deadline.</H5>
-            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
-                {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
+            <div class="alert alert-warning" role="alert"><h5><strong>Please copy and retain this link to be able to
+                edit and submit your proposal.</strong>
+                <br>
+                Ensure you
+                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                    make any final changes and submit</a> your proposal before the call deadline.
+                {% include 'common/_submitted_cannot_modify_text.tmpl' %}
+            </h5>
+                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                    {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
             </div>
             <p>Proposal identifier: {{ proposal.uuid }}
-            <br>Proposal status: {{ proposal.proposal_status.name }}</p>
+                <br>Proposal status: {{ proposal.proposal_status.name }}</p>
             <br>
-        <H4>Thank you for saving a <strong>draft</strong> of your proposal.</H4>
+            <H4>Thank you for saving a <strong>draft</strong> of your proposal.</H4>
 
         {% elif proposal.status_is_submitted %}
             <br>
-        <div class="alert alert-success" role="alert"><H5><strong>Please copy and retain this link</strong>.
-            You will need it to
-            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
-                view or edit</a> your proposal.
-            <br>
-            You can still edit your proposal until the call deadline.
-           </H5>
-            <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
-                {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
+            <div class="alert alert-success" role="alert"><h5><strong>Please copy and retain this link</strong>.
+                You will need it to
+                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                    view</a> your proposal.
+            </h5>
+                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                    {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
             </div>
             <p>Proposal identifier: {{ proposal.uuid }}
-            <br>Proposal status: {{ proposal.proposal_status.name }}</p>
+                <br>Proposal status: {{ proposal.proposal_status.name }}</p>
             <br>
             <H4>Thank you for submitting your proposal.</H4>
 

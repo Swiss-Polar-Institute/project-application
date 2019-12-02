@@ -89,6 +89,18 @@ class AbstractProposalDetailView(TemplateView):
         return render(request, self.template, context)
 
 
+def action_is_save_draft(post_vars):
+    return 'save_draft' in post_vars
+
+
+def action_is_submit(post_vars):
+    return 'submit' in post_vars
+
+
+def action_is_save(post_vars):
+    return 'save_changes' in post_vars
+
+
 class AbstractProposalView(TemplateView):
     created_or_updated_url = ''
     form_template = ''
@@ -180,14 +192,27 @@ class AbstractProposalView(TemplateView):
             call = proposal.call
 
             if not request.user.groups.filter(name='management').exists():
+                proposal_status = proposal.proposal_status
+                proposal_status_draft = ProposalStatus.objects.get(name='Draft')
+
                 if timezone.now() > call.submission_deadline:
-                    messages.error(request, 'Submission deadline is in the past')
+                    if action_is_submit(request.POST) and proposal_status == proposal_status_draft:
+                        messages.error(request,
+                                       'The submission deadline has now passed. Your proposal cannot be submitted.')
+                    elif action_is_submit(request.POST) and proposal_status != proposal_status_draft:
+                        messages.error(request,
+                                       'The submission deadline has now passed. Your submitted proposal can no longer be modified.')
+                    else:
+                        # The user pressed 'Save Draft'
+                        messages.error(request,
+                                       'The submission deadline has now passed. You cannot modify this proposal.')
+
                     return redirect(reverse('proposal-cannot-modify'))
 
-                if proposal.proposal_status != ProposalStatus.objects.get(name='Draft'):
+                if proposal_status != proposal_status_draft:
+                    # This is a user trying to modify a submitted proposal
                     messages.error(request,
-                                   'Cannot edit because the current proposal status is {}. Only drafts can be editted'.format(
-                                       proposal.proposal_status.name))
+                                   'Your proposal has already been submitted. It can no longer be edited.')
                     return redirect(reverse('proposal-cannot-modify'))
 
         else:
@@ -195,7 +220,9 @@ class AbstractProposalView(TemplateView):
             call = Call.objects.get(id=int(request.POST['proposal_form-call_id']))
 
             if timezone.now() > call.submission_deadline:
-                return redirect(reverse('proposal-too-late') + '?action={}'.format('edited'))
+                messages.error(request,
+                               'The submission deadline has now passed. Your proposal can no longer be submitted.')
+                return redirect(reverse('proposal-cannot-modify'))
 
             proposal = None
 
@@ -275,13 +302,13 @@ class AbstractProposalView(TemplateView):
             proposal.applicant = applicant
 
             proposal_is_draft_or_submitted = False
-            if 'save_draft' in request.POST:
+            if action_is_save_draft(request.POST):
                 proposal.proposal_status = ProposalStatus.objects.get(name='Draft')
                 proposal_is_draft_or_submitted = True
-            elif 'submit' in request.POST:
+            elif action_is_submit(request.POST):
                 proposal.proposal_status = ProposalStatus.objects.get(name='Submitted')
                 proposal_is_draft_or_submitted = True
-            elif 'save_changes' in request.POST:
+            elif action_is_submit(request.POST):
                 pass
             else:
                 assert False
