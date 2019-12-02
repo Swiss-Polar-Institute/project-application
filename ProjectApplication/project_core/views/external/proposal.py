@@ -15,16 +15,11 @@ class ProposalThankYouView(TemplateView):
         return context
 
 
-class ProposalTooLate(TemplateView):
-    template_name = 'external/proposal-too_late.tmpl'
+class ProposalCannotModify(TemplateView):
+    template_name = 'external/proposal-cannot_modify.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        action = self.request.GET['action']
-
-        context['action'] = action
-
         return context
 
 

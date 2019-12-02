@@ -179,8 +179,16 @@ class AbstractProposalView(TemplateView):
             proposal = Proposal.objects.get(uuid=proposal_uuid)
             call = proposal.call
 
-            if timezone.now() > call.submission_deadline:
-                return redirect(reverse('proposal-too-late') + '?action={}'.format('edited'))
+            if not request.user.groups.filter(name='management').exists():
+                if timezone.now() > call.submission_deadline:
+                    messages.error(request, 'Submission deadline is in the past')
+                    return redirect(reverse('proposal-cannot-modify'))
+
+                if proposal.proposal_status != ProposalStatus.objects.get(name='Draft'):
+                    messages.error(request,
+                                   'Cannot edit because the current proposal status is {}. Only drafts can be editted'.format(
+                                       proposal.proposal_status.name))
+                    return redirect(reverse('proposal-cannot-modify'))
 
         else:
             # New proposal
