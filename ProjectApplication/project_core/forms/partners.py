@@ -79,6 +79,7 @@ class ProposalPartnerItemForm(ModelForm):
         person__group = self.cleaned_data['person__group']
         person__academic_title = self.cleaned_data['person__academic_title']
         person__career_stage = self.cleaned_data['person__career_stage']
+        person__organisation_names = self.cleaned_data['person__organisations']
 
         person__physical_person__first_name = self.cleaned_data['person__physical_person__first_name']
         person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
@@ -91,6 +92,7 @@ class ProposalPartnerItemForm(ModelForm):
             person.group = person__group
             person.academic_title = person__academic_title
             person.career_stage = person__career_stage
+            person.organisation_names = person__organisation_names
             person.save()
 
             person__physical_person = self.instance.person.person
@@ -112,8 +114,10 @@ class ProposalPartnerItemForm(ModelForm):
                 person=physical_person,
                 academic_title=person__academic_title,
                 group=person__group,
-                career_stage=person__career_stage
+                career_stage=person__career_stage,
             )
+
+            person_position.organisation_names.set(person__organisation_names)
 
             proposal_partner.person = person_position
 
