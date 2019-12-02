@@ -7,13 +7,15 @@ from django.forms import ModelForm
 from ..models import Proposal, ProposalStatus
 from ..widgets import DatePickerWidget
 
+from ..templatetags.in_management import in_management
+
 
 class ProposalForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput())
 
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
-        self._user = kwargs.pop('user', None)
+        self._in_management = kwargs.pop('in_management', False)
 
         super().__init__(*args, **kwargs)
 
@@ -36,7 +38,7 @@ class ProposalForm(ModelForm):
             )
         )
 
-        if self._user and self._user.groups.filter(name='management').exists():
+        if self._in_management:
             self.fields['proposal_status'] = forms.ModelChoiceField(ProposalStatus.objects.all().order_by('name'))
 
             if self.instance.id:

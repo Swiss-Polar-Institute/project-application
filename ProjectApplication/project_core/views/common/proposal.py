@@ -22,6 +22,7 @@ from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
+from ...templatetags.in_management import in_management
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -107,7 +108,8 @@ class AbstractProposalView(TemplateView):
             proposal: Proposal = Proposal.objects.get(uuid=proposal_uuid)
             call = proposal.call
 
-            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal, user=request.user)
+            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal,
+                                         in_management=in_management(request))
             person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
             questions_form = Questions(proposal=proposal,
                                        prefix=QUESTIONS_FORM_NAME)
@@ -132,7 +134,7 @@ class AbstractProposalView(TemplateView):
             call_pk = context['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
 
-            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, user=request.user)
+            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, in_management=in_management(request))
             person_form = PersonForm(prefix=PERSON_FORM_NAME)
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)

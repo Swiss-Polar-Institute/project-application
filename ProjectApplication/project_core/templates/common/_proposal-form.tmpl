@@ -1,5 +1,5 @@
 {% load crispy_forms_tags %}
-{% load user_is_management %}
+{% load in_management %}
 
 {% include 'common/_messages-box.tmpl' %}
 
@@ -56,7 +56,7 @@
 
     {% crispy data_collection_form %}
 
-    {% if user|user_is_management %}
+    {% if request|in_management %}
         {% include 'common/_submit-button.tmpl' with value='Save' name='save_changes' %}
     {% else %}
         {% include 'common/_submit-button.tmpl' with value='Save Draft' name='save_draft' %}
