@@ -55,6 +55,12 @@ class ProposalForm(ModelForm):
                 css_class='row'
             )
         )
+        divs.append(
+            Div(
+                Div('location', css_class='col-12'),
+                css_class='row'
+            )
+        )
 
         divs.append(
             Div(
@@ -86,7 +92,7 @@ class ProposalForm(ModelForm):
 
     class Meta:
         model = Proposal
-        fields = ['call_id', 'title', 'geographical_areas', 'keywords', 'provisional_start_date',
+        fields = ['call_id', 'title', 'geographical_areas', 'location', 'keywords', 'provisional_start_date',
                   'provisional_end_date', 'duration_months', ]
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),

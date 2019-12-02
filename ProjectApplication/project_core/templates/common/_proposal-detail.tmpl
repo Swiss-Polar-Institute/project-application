@@ -30,6 +30,7 @@
     {{ area }}{% if not forloop.last %}, {% endif %}
 {% endfor %}
 <br>
+<strong>Location:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.location %}
 
 <div class="row">
     <div class="col-4">

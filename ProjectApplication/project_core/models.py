@@ -453,7 +453,7 @@ class PersonPosition(CreateModify):
     def __str__(self):
         organisations_list = []
 
-        for organisation_name in self.organisation_names.all().order_by('long_name'):
+        for organisation_name in self.organisation_names.all().order_by('name'):
             organisations_list.append(organisation_name.name)
 
         organisations_str = ', '.join(organisations_list)

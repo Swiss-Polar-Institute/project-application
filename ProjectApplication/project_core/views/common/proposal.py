@@ -262,19 +262,20 @@ class AbstractProposalView(TemplateView):
 
             proposal.applicant = applicant
 
+            proposal_is_draft_or_submitted = False
             if 'save_draft' in request.POST:
                 proposal.proposal_status = ProposalStatus.objects.get(name='Draft')
+                proposal_is_draft_or_submitted = True
             elif 'submit' in request.POST:
                 proposal.proposal_status = ProposalStatus.objects.get(name='Submitted')
+                proposal_is_draft_or_submitted = True
             elif 'save_changes' in request.POST:
                 pass
             else:
                 assert False
 
-            if proposal.proposal_status != ProposalStatus.objects.get(name='Draft') and \
-                    proposal.proposal_status != ProposalStatus.objects.get(name='Submitted') and \
-                    not request.user.groups.filter(name='management').exists():
-                return HttpResponseForbidden()
+            if not proposal_is_draft_or_submitted and not request.user.groups.filter(name='management').exists():
+                return HttpResponseForbidden('Insufficient permissions to save the proposal with the selected status')
 
             if call.project_overarching_question:
                 project_overarching = proposal_project_overarching_form.save()
@@ -285,7 +286,6 @@ class AbstractProposalView(TemplateView):
 
             if call.other_funding_question:
                 funding_form.save_fundings(proposal)
-
 
             if not questions_form.save_answers(proposal):
                 # The current only reason to fail is that the file cannot be saved
