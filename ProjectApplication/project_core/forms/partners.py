@@ -92,7 +92,7 @@ class ProposalPartnerItemForm(ModelForm):
             person.group = person__group
             person.academic_title = person__academic_title
             person.career_stage = person__career_stage
-            person.organisation_names = person__organisation_names
+            person.organisation_names.set(person__organisation_names)
             person.save()
 
             person__physical_person = self.instance.person.person
