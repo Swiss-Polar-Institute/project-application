@@ -33,6 +33,11 @@
     <h2>Proposal</h2>
     {% crispy proposal_form %}
 
+    {% if overarching_project_question %}
+        <h2>Overarching project</h2>
+        {% include 'common/_form-project_overarching.tmpl' %}
+    {% endif %}
+
     <h2>Part 2: Project Description</h2>
     {% include 'common/_form-dynamic_questions.tmpl' %}
 
@@ -49,10 +54,6 @@
         {% include 'common/_form-funding_organisations.tmpl' %}
     {% endif %}
 
-    {% if overarching_project_question %}
-        <h2>Overarching project</h2>
-        {% include 'common/_form-project_overarching.tmpl' %}
-    {% endif %}
 
     {% crispy data_collection_form %}
 
