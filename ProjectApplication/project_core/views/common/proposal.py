@@ -374,7 +374,7 @@ def call_context_for_template(call):
                'call_introductory_message': call.introductory_message,
                'call_submission_deadline': call.submission_deadline,
                'other_funding_question': call.other_funding_question,
-               'project_overarching_question': call.project_overarching_question,
+               'overarching_project_question': call.project_overarching_question,
                'proposal_partner_question': call.proposal_partner_question
                }
 

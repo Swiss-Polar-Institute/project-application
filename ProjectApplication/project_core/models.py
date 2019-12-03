@@ -98,7 +98,7 @@ class Call(CreateModify):
                                          blank=False, null=False)
     other_funding_question = models.BooleanField(help_text='True if the Other Funding question is enabled')
     proposal_partner_question = models.BooleanField(help_text='True if the Proposal Partner question is enabled')
-    project_overarching_question = models.BooleanField(
+    overarching_project_question = models.BooleanField(
         help_text='True if the question for the overarching project is displayed',
         default=False)
 
