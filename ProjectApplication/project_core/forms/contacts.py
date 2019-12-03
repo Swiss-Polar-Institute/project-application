@@ -28,7 +28,7 @@ class ContactForm(ModelForm):
         self.fields['privacy_policy'].disabled = True
         self.fields['contact_newsletter'].disabled = True
 
-        self.fields['email'] = forms.EmailField(initial=main_email)
+        self.fields['email'] = forms.EmailField(initial=main_email, required=False)
 
         self.helper = FormHelper(self)
 
@@ -88,16 +88,19 @@ class ContactForm(ModelForm):
             model.person.save()
             model.save()
 
-        main_email = self.instance.main_email_model()
-        if main_email:
-            main_email.entry = self.cleaned_data['email']
-        else:
-            main_email, created = Contact.objects.get_or_create(person_position=model,
-                                                                entry=self.cleaned_data['email'],
-                                                                method=Contact.EMAIL)
+        if self.cleaned_data['email']:
+            main_email = self.instance.main_email_model()
+            if main_email:
+                main_email.entry = self.cleaned_data['email']
+            else:
+                main_email, created = Contact.objects.get_or_create(person_position=model,
+                                                                    entry=self.cleaned_data['email'],
+                                                                    method=Contact.EMAIL)
+
+            if commit:
+                main_email.save()
 
         if commit:
-            main_email.save()
             model.save()
             self.save_m2m()
 
