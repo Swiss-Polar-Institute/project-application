@@ -33,11 +33,11 @@
             <br>
             <div class="alert alert-success" role="alert"><h5><strong>Please copy and retain this link</strong>.
                 You will need it to
-                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-detail' uuid=uuid %}">
                     view</a> your proposal.
             </h5>
-                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
-                    {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
+                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-detail' uuid=uuid %}">
+                    {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-detail' uuid=uuid %}</a></p>
             </div>
             <p>Proposal identifier: {{ proposal.uuid }}
                 <br>Proposal status: {{ proposal.proposal_status.name }}</p>
