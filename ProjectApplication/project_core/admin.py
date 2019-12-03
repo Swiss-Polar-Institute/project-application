@@ -124,9 +124,9 @@ class PersonPositionAdmin(admin.ModelAdmin):
     ordering = ['person', 'academic_title', 'career_stage', 'group', 'privacy_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
     def organisations_list(self, obj):
-        organisations = obj.organisations.all()
+        organisation_names = obj.organisation_names.all()
 
-        return ', '.join([str(organisation) for organisation in organisations])
+        return ', '.join([str(organisation_name.name) for organisation_name in organisation_names])
 
 
 class ContactAdmin(admin.ModelAdmin):
