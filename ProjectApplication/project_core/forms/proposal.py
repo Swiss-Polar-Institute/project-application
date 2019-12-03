@@ -101,4 +101,7 @@ class ProposalForm(ModelForm):
                    'provisional_end_date': DatePickerWidget
                    }
 
-        help_texts = {'geographical_areas': 'Select all of the geographical areas covered by this proposal'}
+        help_texts = {'geographical_areas': 'Select all options describing the geographical focus of this proposal'}
+
+        labels = {'location': 'Precise region',
+                  'geographical_areas': 'Geographical focus'}

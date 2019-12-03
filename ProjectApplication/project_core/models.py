@@ -567,7 +567,7 @@ class Proposal(CreateModify):
                                       blank=False)
     geographical_areas = models.ManyToManyField(GeographicalArea,
                                                 help_text='Geographical area(s) covered by the proposal')
-    location = models.CharField(help_text='More precise location of where proposal would take place (not coordinates)',
+    location = models.CharField(help_text='Name of more precise location of where proposal would take place (not coordinates)',
                                 max_length=200, blank=True, null=True)  # Consider having this as another text question
     provisional_start_date = models.DateField(
         help_text='Approximate date on which the proposed project is expected to start',
