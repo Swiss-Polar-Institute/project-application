@@ -68,5 +68,5 @@ def organisations_name_autocomplete(initial, help_text):
                                                widget=autocomplete.ModelSelect2Multiple(
                                                    url='autocomplete-organisation-names'),
                                                initial=initial,
-                                               help_text=help_text + ' If it is not available type the name and click on "Create"',
+                                               help_text=help_text + ' If they are not available type the name and click on "Create".',
                                                label='Organisation(s)', )

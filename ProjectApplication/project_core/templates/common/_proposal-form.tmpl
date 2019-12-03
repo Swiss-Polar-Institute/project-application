@@ -30,7 +30,7 @@
     <h3>Applicant</h3>
     {% crispy person_form %}
 
-    <h2>Proposal</h2>
+    <h2>Proposed field trip</h2>
     {% crispy proposal_form %}
 
     {% if overarching_project_question %}
@@ -38,7 +38,7 @@
         {% include 'common/_form-project_overarching.tmpl' %}
     {% endif %}
 
-    <h2>Part 2: Project Description</h2>
+    <h2>Part 2: Proposed field trip description</h2>
     {% include 'common/_form-dynamic_questions.tmpl' %}
 
     {% if proposal_partner_question %}

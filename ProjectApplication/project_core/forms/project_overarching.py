@@ -3,7 +3,7 @@ from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.forms import ModelForm
 
-from project_core.forms.utils import get_field_information
+from project_core.forms.utils import get_field_information, organisations_name_autocomplete
 from project_core.models import ExternalProject
 from project_core.models import PersonPosition, PhysicalPerson, PersonTitle
 
@@ -22,9 +22,10 @@ class PersonPositionMixin:
         self.fields['person__academic_title'] = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'),
                                                                        label='Academic title',
                                                                        help_text='Select from list',)
+        self.fields['person__organisations'] = organisations_name_autocomplete(initial=None, help_text='Please select the organisation(s) to which the supervisor belongs.')
         self.fields['person__group'] = forms.CharField(
             **get_field_information(PersonPosition, 'group', label='Group / lab',
-                                    help_text='Please type the names of the working group(s) or laboratories to which the overarching project supervisor belongs'))
+                                    help_text='Please type the names of the working group(s) or laboratories to which the overarching project supervisor belongs.'))
 
     def _set_person(self, person):
         if person:
@@ -32,17 +33,20 @@ class PersonPositionMixin:
             self.fields['person__academic_title'].initial = person.academic_title
             self.fields['person__physical_person__first_name'].initial = person.person.first_name
             self.fields['person__physical_person__surname'].initial = person.person.surname
+            self.fields['person__organisations'].initial = person.organisation_names.all()
 
     def _save_person(self, person_position):
         person__group = self.cleaned_data['person__group']
         person__academic_title = self.cleaned_data['person__academic_title']
         person__physical_person__first_name = self.cleaned_data['person__physical_person__first_name']
         person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
+        person__organisations = self.cleaned_data['person__organisations']
 
         if person_position:
             # Needs to update and existing partner
             person_position.group = person__group
             person_position.academic_title = person__academic_title
+            person_position.organisation_names.set(person__organisations)
             person_position.save()
 
             person__physical_person = person_position.person
@@ -63,8 +67,10 @@ class PersonPositionMixin:
             person_position, created = PersonPosition.objects.get_or_create(
                 person=physical_person,
                 academic_title=person__academic_title,
-                group=person__group,
+                group=person__group
             )
+
+            person_position.organisation_names.set(person__organisations)
 
             return person_position
 
@@ -78,6 +84,10 @@ class PersonPositionMixin:
                 Div('person__academic_title', css_class='col-2'),
                 Div('person__physical_person__first_name', css_class='col-5'),
                 Div('person__physical_person__surname', css_class='col-5'),
+                css_class='row'
+            ),
+            Div(
+                Div('person__organisations', css_class='col-12'),
                 css_class='row'
             ),
             Div(
