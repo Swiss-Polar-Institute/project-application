@@ -576,7 +576,7 @@ class Proposal(CreateModify):
         help_text='Approximate date on which the proposed project is expected to end',
         blank=False, null=False)
     duration_months = models.DecimalField(
-        help_text='Period of time expected that the proposed project will last in months',
+        help_text='Expected duration of the proposed project in months',
         decimal_places=1, max_digits=5, validators=[MinValueValidator(0)], blank=False, null=False)
     applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal', blank=False, null=False,
                                   on_delete=models.PROTECT)
