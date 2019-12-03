@@ -443,7 +443,7 @@ class PersonPosition(CreateModify):
     academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', blank=False, null=False,
                                        on_delete=models.PROTECT)
     career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career',
-                                     on_delete=models.PROTECT)
+                                     on_delete=models.PROTECT, blank=True, null=True)
     organisation_names = models.ManyToManyField(OrganisationName, help_text='Organisation(s) represented by the person')
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works',
                              max_length=200, blank=True, null=True)
