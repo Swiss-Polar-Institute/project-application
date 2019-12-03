@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='call',
-            name='overarching_project_question',
+            name='project_overarching_question',
             field=models.BooleanField(default=False, help_text='True if the question for the overarching project is displayed'),
         ),
     ]
