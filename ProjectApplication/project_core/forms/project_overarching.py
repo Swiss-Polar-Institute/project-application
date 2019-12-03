@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
+from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.forms import ModelForm
 
@@ -14,15 +14,17 @@ class PersonPositionMixin:
 
     def _add_person_fields(self):
         self.fields['person__physical_person__first_name'] = forms.CharField(
-            **get_field_information(PhysicalPerson, 'first_name'),
-            label='First name')
+            **get_field_information(PhysicalPerson, 'first_name', help_text=''),
+            label='First name(s)')
         self.fields['person__physical_person__surname'] = forms.CharField(
-            **get_field_information(PhysicalPerson, 'surname'),
-            label='Surname')
+            **get_field_information(PhysicalPerson, 'surname', help_text=''),
+            label='Surname(s)')
         self.fields['person__academic_title'] = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'),
-                                                                       label='Academic title')
+                                                                       label='Academic title',
+                                                                       help_text='Select from list',)
         self.fields['person__group'] = forms.CharField(
-            **get_field_information(PersonPosition, 'group', label='Group / lab'))
+            **get_field_information(PersonPosition, 'group', label='Group / lab',
+                                    help_text='Please type the names of the working group(s) or laboratories to which the overarching project supervisor belongs'))
 
     def _set_person(self, person):
         if person:
@@ -66,8 +68,12 @@ class PersonPositionMixin:
 
             return person_position
 
-    def _person_layout(self):
+    def _person_layout(self, description):
         return [
+            Div(
+                Div(
+                    HTML(description), css_class='col-12'),
+                css_class='row'),
             Div(
                 Div('person__academic_title', css_class='col-2'),
                 Div('person__physical_person__first_name', css_class='col-5'),
@@ -101,7 +107,7 @@ class ProjectOverarchingForm(ModelForm, PersonPositionMixin):
                 Div('id', hidden=True),
                 Div('title')
             ),
-            *self._person_layout()
+            *self._person_layout('Please add the details of the overarching project supervisor.')
         )
 
     def save(self, commit=True):
