@@ -6,7 +6,7 @@ from django.forms import ModelForm
 from django.utils.safestring import mark_safe
 
 from ..models import Proposal, ProposalStatus
-from ..widgets import DatePickerWidget
+from ..widgets import XDSoftDateTimePickerInput
 
 
 class ProposalForm(ModelForm):
@@ -120,8 +120,8 @@ class ProposalForm(ModelForm):
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': forms.CheckboxSelectMultiple,
-                   'start_date': DatePickerWidget,
-                   'end_date': DatePickerWidget
+                   'start_date': XDSoftDateTimePickerInput,
+                   'end_date': XDSoftDateTimePickerInput
                    }
 
         help_texts = {'geographical_areas': 'Select all options describing the geographical focus of this proposal',

@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory, FundingInstrument
 from ..widgets import DateTimePickerWidget
+from ..widgets import XDSoftDateTimePickerInput
 
 
 class CallQuestionItemForm(forms.ModelForm):
@@ -199,8 +200,8 @@ class CallForm(forms.ModelForm):
         }
 
         widgets = {
-            'call_open_date': DateTimePickerWidget,
-            'submission_deadline': DateTimePickerWidget,
+            'call_open_date': XDSoftDateTimePickerInput,
+            'submission_deadline': XDSoftDateTimePickerInput,
             'budget_categories': forms.CheckboxSelectMultiple
         }
 

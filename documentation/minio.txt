@@ -1,0 +1,1 @@
+docker run -p 9000:9000 --name minio1 -d -e "MINIO_ACCESS_KEY=minio" -e "MINIO_SECRET_KEY=minio123" -v ~/minio:/data minio/minio server /data
