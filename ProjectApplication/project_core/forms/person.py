@@ -44,8 +44,7 @@ class PersonForm(Form):
         self.fields['surname'] = forms.CharField(initial=surname_initial,
                                                  label='Surname(s)')
 
-        self.fields['email'] = forms.CharField(initial=email_initial,
-                                               )
+        self.fields['email'] = forms.EmailField(initial=email_initial)
 
         self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
                                                                             help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')

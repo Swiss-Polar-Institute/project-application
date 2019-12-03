@@ -469,7 +469,7 @@ class PersonPosition(CreateModify):
         if email:
             return email.entry
         else:
-            return '-'
+            return None
 
     def main_email_model(self):
         emails = self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')

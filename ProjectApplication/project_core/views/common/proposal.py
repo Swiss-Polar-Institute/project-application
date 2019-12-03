@@ -308,7 +308,7 @@ class AbstractProposalView(TemplateView):
             elif action_is_submit(request.POST):
                 proposal.proposal_status = ProposalStatus.objects.get(name='Submitted')
                 proposal_is_draft_or_submitted = True
-            elif action_is_submit(request.POST):
+            elif action_is_save(request.POST):
                 pass
             else:
                 assert False
