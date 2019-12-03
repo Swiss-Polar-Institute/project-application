@@ -67,7 +67,7 @@ class ContactForm(ModelForm):
             try:
                 physical_person = PhysicalPerson.objects.get(first_name=self.cleaned_data['person__first_name'],
                                                              surname=self.cleaned_data['person__surname'])
-                raise forms.ValidationError('Cannot create: person already exists')
+                raise forms.ValidationError('Cannot create this contact: person already exists')
 
             except ObjectDoesNotExist:
                 pass
