@@ -244,7 +244,7 @@ class AbstractProposalView(TemplateView):
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        instance=proposal)
 
-            if call.project_overarching_question:
+            if call.overarching_project_question:
                 proposal_project_overarching_form = ProjectOverarchingForm(request.POST,
                                                                            prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME,
                                                                            instance=proposal.overarching_project)
@@ -270,7 +270,7 @@ class AbstractProposalView(TemplateView):
             if call.proposal_partner_question:
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME)
 
-            if call.project_overarching_question:
+            if call.overarching_project_question:
                 proposal_project_overarching_form = ProjectOverarchingForm(request.POST,
                                                                            prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
 
@@ -285,7 +285,7 @@ class AbstractProposalView(TemplateView):
         if call.proposal_partner_question:
             forms_to_validate.append(proposal_partners_form)
 
-        if call.project_overarching_question:
+        if call.overarching_project_question:
             forms_to_validate.append(proposal_project_overarching_form)
 
         all_valid = True
@@ -316,7 +316,7 @@ class AbstractProposalView(TemplateView):
             if not proposal_is_draft_or_submitted and not request.user.groups.filter(name='management').exists():
                 return HttpResponseForbidden('Insufficient permissions to save the proposal with the selected status')
 
-            if call.project_overarching_question:
+            if call.overarching_project_question:
                 project_overarching = proposal_project_overarching_form.save()
                 proposal.overarching_project = project_overarching
 
@@ -354,7 +354,7 @@ class AbstractProposalView(TemplateView):
         if call.proposal_partner_question:
             context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
 
-        if call.project_overarching_question:
+        if call.overarching_project_question:
             context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = proposal_project_overarching_form
 
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
@@ -374,7 +374,7 @@ def call_context_for_template(call):
                'call_introductory_message': call.introductory_message,
                'call_submission_deadline': call.submission_deadline,
                'other_funding_question': call.other_funding_question,
-               'overarching_project_question': call.project_overarching_question,
+               'overarching_project_question': call.overarching_project_question,
                'proposal_partner_question': call.proposal_partner_question
                }
 
