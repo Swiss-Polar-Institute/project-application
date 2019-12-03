@@ -20,7 +20,7 @@
     <br>
     <strong>Group:</strong> {% include 'common/_value-or-dash.tmpl' with value=object.group %}
     <br>
-    <strong>Email:</strong> <a href="mailto:{{ object.main_email }}">{{ object.main_email }}</a>
+    <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=object.main_email %}
     <p></p>
     <div class="row">
         <div class="col-6">

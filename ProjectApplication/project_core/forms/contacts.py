@@ -88,17 +88,17 @@ class ContactForm(ModelForm):
             model.person.save()
             model.save()
 
-        if self.cleaned_data['email']:
-            main_email = self.instance.main_email_model()
-            if main_email:
+        main_email = self.instance.main_email_model()
+        if main_email:
+            if self.cleaned_data['email']:
                 main_email.entry = self.cleaned_data['email']
-            else:
-                main_email, created = Contact.objects.get_or_create(person_position=model,
-                                                                    entry=self.cleaned_data['email'],
-                                                                    method=Contact.EMAIL)
-
-            if commit:
                 main_email.save()
+            else:
+                main_email.delete()
+        elif self.cleaned_data['email']:
+            main_email, created = Contact.objects.get_or_create(person_position=model,
+                                                                entry=self.cleaned_data['email'],
+                                                                method=Contact.EMAIL)
 
         if commit:
             model.save()
