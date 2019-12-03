@@ -383,6 +383,9 @@ class OrganisationName(CreateModify):
                             null=False, unique=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return '{}'.format(self.name)
+
 
 class Gender(CreateModify):
     """Gender with which a person identifies."""
