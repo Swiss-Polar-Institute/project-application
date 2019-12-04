@@ -27,15 +27,12 @@ class PersonForm(Form):
             email_initial = self.person_position.main_email()
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
-                                                               help_text='Select from list',
                                                                initial=academic_title_initial)
 
         self.fields['gender'] = forms.ModelChoiceField(queryset=Gender.objects.all(),
-                                                       help_text='Select from list',
                                                        initial=gender_initial)
 
         self.fields['career_stage'] = forms.ModelChoiceField(queryset=CareerStage.objects.all(),
-                                                             help_text='Select from list',
                                                              initial=career_stage_initial)
 
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,

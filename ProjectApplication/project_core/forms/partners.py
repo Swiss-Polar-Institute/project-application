@@ -131,6 +131,7 @@ class ProposalPartnerItemForm(ModelForm):
         model = ProposalPartner
         fields = ['role_description', 'competences', 'role', ]
         field_classes = {'role': LabelAndOrderNameChoiceField}
+        help_texts = {'role': 'Select the role of the partner in the proposed project'}
 
 
 class ProposalPartnersFormSet(BaseInlineFormSet):
