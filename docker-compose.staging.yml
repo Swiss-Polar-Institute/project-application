@@ -1,0 +1,53 @@
+version: '3.6'
+
+services:
+  project-application:
+    secrets:
+      - project_application_mysql.conf
+    env_file:
+      - ${PROJECT_APPLICATION_STAGING_ENV_FILE}
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: project-application-staging.django
+
+  reverse-proxy:
+    secrets:
+      - project_application_htpasswd
+    environment:
+      - VIRTUAL_HOST=${PROJECT_APPLICATION_STAGING_DOMAINS}
+      - LETSENCRYPT_HOST=${PROJECT_APPLICATION_STAGING_DOMAINS}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: project-application-staging.nginx
+
+  database:
+    environment:
+      - MYSQL_DATABASE=projects
+      - MYSQL_USER=${PROJECT_APPLICATION_STAGING_DB_USER}
+      - MYSQL_PASSWORD=${PROJECT_APPLICATION_STAGING_DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${PROJECT_APPLICATION_STAGING_ROOT_PASSWORD}
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: project-application-application.mariadb
+
+volumes:
+  static_volume: {}
+  database:
+
+secrets:
+  project_application_mysql.conf:
+    file: ${PROJECT_APPLICATION_STAGING_MYSQL_CONF_PATH}
+  project_application_htpasswd:
+    file: ${PROJECT_APPLICATION_STAGING_HTPASSWD}
+
+networks:
+  nginx-proxy:
+    external:
+      name: nginx-proxy

@@ -12,8 +12,8 @@ services:
       - static_volume:/code/ProjectApplication/staticfiles
       - ./ProjectApplication:/code/ProjectApplication
       - ./.git:/code/ProjectApplication/.git
-    ports:
-      - 8085:8085
+    expose:
+      - 8085
     networks:
       - nginx-proxy
     links:
@@ -34,8 +34,8 @@ services:
       - "1235"
     environment:
       - NGINX_PORT=1235
-      - VIRTUAL_HOST=${PROJECTS_STAGING_DOMAIN}
-      - LETSENCRYPT_HOST=${PROJECTS_STAGING_DOMAIN}
+      - VIRTUAL_HOST=${PROJECT_APPLICATION_DOMAINS}
+      - LETSENCRYPT_HOST=${PROJECT_APPLICATION_DOMAINS}
       - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
