@@ -572,7 +572,7 @@ class Proposal(CreateModify):
                                                 help_text='Geographical area(s) covered by the proposal')
     location = models.CharField(help_text='Name of more precise location of where proposal would take place (not coordinates)',
                                 max_length=200, blank=True, null=True)  # Consider having this as another text question
-    provisional_start_date = models.DateField(
+    start_date = models.DateField(
         help_text='Approximate date on which the proposed project is expected to start',
         blank=False, null=False)
     provisional_end_date = models.DateField(
