@@ -104,7 +104,7 @@ class ProposalForm(ModelForm):
         help_texts = {'geographical_areas': 'Select all options describing the geographical focus of this proposal',
                       'title': 'Name of the proposed field trip',
                       'location': 'Name of more precise location of where the proposed field trip would take place (not coordinates)',
-                      'keywords': 'Keywords that describe the proposed field trip',
+                      'keywords': 'Please select / add at least 5 keywords that describe the proposed field trip',
                       'start_date': 'Date on which the field trip to be funded by SPI, is expected to start',
                       'end_date': 'Date on which the field trip to be funded by SPI, is expected to end',
                       'duration_months': 'Expected duration of the field trip in months'}

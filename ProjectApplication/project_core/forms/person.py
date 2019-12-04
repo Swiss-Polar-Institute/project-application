@@ -63,10 +63,6 @@ class PersonForm(Form):
                 css_class='row'
             ),
             Div(
-                Div('career_stage', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
                 Div('email', css_class='col-12'),
                 css_class='row'
             ),
@@ -77,7 +73,11 @@ class PersonForm(Form):
             Div(
                 Div('group', css_class='col-12'),
                 css_class='row'
-            )
+            ),
+            Div(
+                Div('career_stage', css_class='col-12'),
+                css_class='row'
+            ),
         )
 
     def save_person(self):
