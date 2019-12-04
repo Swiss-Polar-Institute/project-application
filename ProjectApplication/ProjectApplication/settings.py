@@ -197,5 +197,23 @@ LOGGED_OUT_USERNAME = 'loggedout'
 PROPOSAL_STATUS_DRAFT = 'Draft'
 PROPOSAL_STATUS_SUBMITTED = 'Submitted'
 
-if 'ALLOWED_HOST_1' in os.environ:
-    ALLOWED_HOSTS.append(os.environ['ALLOWED_HOST_1'])
+i = 1
+while f'ALLOWED_HOST_{i}' in os.environ:
+    ALLOWED_HOSTS.append(os.environ[f'ALLOWED_HOST_{i}'])
+    i += 1
+
+ADMINS = []
+i = 1
+while f'ADMIN_{i}' in os.environ:
+    name_email = os.environ[f'ADMIN_{i}']
+    ADMINS.append(name_email.split(','))
+    i += 1
+
+DEFAULT_FROM_EMAIL = os.environ['FROM_EMAIL']
+EMAIL_HOST = os.environ['EMAIL_HOST']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_SUBJECT_PREFIX = os.environ['EMAIL_SUBJECT_PREFIX']
+EMAIL_USE_TLS = True
+
+DEBUG = os.environ['DEBUG'] == '1'
