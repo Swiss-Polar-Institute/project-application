@@ -50,7 +50,7 @@ class PersonForm(Form):
                                                                             help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
 
         self.fields['group'] = forms.CharField(initial=group_initial,
-                                               help_text='Please type the names of the working group(s) or laboratories to which you are affiliated for the purposes of this proposal',
+                                               help_text='Please type the names of the group(s) or laboratories to which you are affiliated for the purposes of this proposal',
                                                label='Group / lab',
                                                required=False)
 

@@ -9,13 +9,14 @@ from .utils import organisations_name_autocomplete
 
 
 class ProposalPartnerItemForm(ModelForm):
-    person__physical_person__first_name = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'),
-                                                          label='First name')
-    person__physical_person__surname = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
-                                                       label='Surname')
+    person__physical_person__first_name = forms.CharField(**get_field_information(PhysicalPerson, 'first_name', help_text=''),
+                                                          label='First name(s)')
+    person__physical_person__surname = forms.CharField(**get_field_information(PhysicalPerson, 'surname', help_text=''),
+                                                       label='Surname(s)')
     person__academic_title = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'), label='Academic title')
     person__career_stage = forms.ModelChoiceField(CareerStage.objects.all().order_by('name'), label='Career stage')
-    person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab'))
+    person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab',
+                                                            help_text='Please type the names of the group(s) or laboratories to which the partner belongs for the purposes of this proposal'))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -36,7 +37,7 @@ class ProposalPartnerItemForm(ModelForm):
             person__organisations_initial = self.instance.person.organisation_names.all()
 
         self.fields['person__organisations'] = organisations_name_autocomplete(initial=person__organisations_initial,
-                                                                               help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
+                                                                               help_text='Please select the organisation(s) to which the partner is affiliated for the purposes of this proposal.')
 
         self.helper.layout = Layout(
             Div(
