@@ -432,7 +432,7 @@ class CareerStage(models.Model):
                                    blank=False)
 
     def __str__(self):
-        return '{}: {}'.format(self.name, self.description)
+        return '{}'.format(self.name)
 
 
 class PersonPosition(CreateModify):
