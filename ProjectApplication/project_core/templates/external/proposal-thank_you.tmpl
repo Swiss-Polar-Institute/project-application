@@ -14,7 +14,7 @@
         {% if proposal.status_is_draft %}
             <br>
             <div class="alert alert-warning" role="alert"><h5><strong>Please copy and retain this link to be able to
-                edit and submit your proposal.</strong>
+                edit and submit your proposal.</strong><br>
                 <br>
                 Ensure you
                 <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
@@ -24,10 +24,10 @@
                 <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
                     {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
             </div>
-            <p>Proposal identifier: {{ proposal.uuid }}
-                <br>Proposal status: {{ proposal.proposal_status.name }}</p>
             <br>
-            <H4>Thank you for saving a <strong>draft</strong> of your proposal.</H4>
+            <H5>Thank you for saving a <strong>draft</strong> of your proposal.
+                The SPI team remains at your disposal for questions at {% include 'common/_email_link_or_dash.tmpl' with email='spi-grants@epfl.ch' %}</H5>
+            <br>
 
         {% elif proposal.status_is_submitted %}
             <br>
@@ -39,10 +39,8 @@
                 <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-detail' uuid=uuid %}">
                     {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-detail' uuid=uuid %}</a></p>
             </div>
-            <p>Proposal identifier: {{ proposal.uuid }}
-                <br>Proposal status: {{ proposal.proposal_status.name }}</p>
             <br>
-            <H4>Thank you for submitting your proposal.</H4>
+            <H5>Thank you for submitting your proposal. The SPI team remains at your disposal for questions at {% include 'common/_email_link_or_dash.tmpl' with email='spi-grants@epfl.ch' %}</H5>
 
         {% else %}
             <!-- Status is not draft or submitted? -->
