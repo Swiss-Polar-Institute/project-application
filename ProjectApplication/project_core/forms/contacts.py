@@ -57,7 +57,7 @@ class ContactForm(ModelForm):
                 css_class='row'
             )
         )
-        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.add_input(Submit('submit', 'Save'))
 
     def clean(self):
         super().clean()
