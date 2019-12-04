@@ -91,15 +91,20 @@ class PersonForm(Form):
 
         if self.person_position:
             person_position = self.person_position
+            person_position.person = physical_person
+            person_position.academic_title = self.cleaned_data['academic_title']
+            person_position.group = self.cleaned_data['group']
+            person_position.career_stage = self.cleaned_data['career_stage']
+
+            person_position.save()
+
         else:
-            person_position = PersonPosition()
-
-        person_position.person = physical_person
-        person_position.academic_title = self.cleaned_data['academic_title']
-        person_position.group = self.cleaned_data['group']
-        person_position.career_stage = self.cleaned_data['career_stage']
-
-        person_position.save()
+            person_position, created = PersonPosition.objects.get_or_create(person=physical_person,
+                                                                            academic_title=self.cleaned_data[
+                                                                                'academic_title'],
+                                                                            group=self.cleaned_data['group'],
+                                                                            career_stage=self.cleaned_data[
+                                                                                'career_stage'])
 
         person_position.organisation_names.set(self.cleaned_data['organisation_names'])
 
