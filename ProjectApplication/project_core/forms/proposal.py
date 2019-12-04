@@ -71,8 +71,8 @@ class ProposalForm(ModelForm):
 
         divs.append(
             Div(
-                Div('provisional_start_date', css_class='col-4'),
-                Div('provisional_end_date', css_class='col-4'),
+                Div('start_date', css_class='col-4'),
+                Div('end_date', css_class='col-4'),
                 Div('duration_months', css_class='col-4'),
                 css_class='row'
             )
@@ -92,21 +92,21 @@ class ProposalForm(ModelForm):
 
     class Meta:
         model = Proposal
-        fields = ['call_id', 'title', 'geographical_areas', 'location', 'keywords', 'provisional_start_date',
-                  'provisional_end_date', 'duration_months', ]
+        fields = ['call_id', 'title', 'geographical_areas', 'location', 'keywords', 'start_date',
+                  'end_date', 'duration_months', ]
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': forms.CheckboxSelectMultiple,
-                   'provisional_start_date': DatePickerWidget,
-                   'provisional_end_date': DatePickerWidget
+                   'start_date': DatePickerWidget,
+                   'end_date': DatePickerWidget
                    }
 
         help_texts = {'geographical_areas': 'Select all options describing the geographical focus of this proposal',
                       'title': 'Name of the proposed field trip',
                       'location': 'Name of more precise location of where the proposed field trip would take place (not coordinates)',
                       'keywords': 'Keywords that describe the proposed field trip',
-                      'provisional_start_date': 'Approximate date on which the proposed field trip is expected to start',
-                      'provisional_end_date': 'Approximate date on which the proposed field trip is expected to end',
+                      'start_date': 'Approximate date on which the proposed field trip is expected to start',
+                      'end_date': 'Approximate date on which the proposed field trip is expected to end',
                       'duration_months': 'Expected duration of the proposed field trip in months'}
 
         labels = {'location': 'Precise region',

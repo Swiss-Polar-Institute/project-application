@@ -572,10 +572,10 @@ class Proposal(CreateModify):
                                                 help_text='Geographical area(s) covered by the proposal')
     location = models.CharField(help_text='Name of more precise location of where proposal would take place (not coordinates)',
                                 max_length=200, blank=True, null=True)  # Consider having this as another text question
-    provisional_start_date = models.DateField(
+    start_date = models.DateField(
         help_text='Approximate date on which the proposed project is expected to start',
         blank=False, null=False)
-    provisional_end_date = models.DateField(
+    end_date = models.DateField(
         help_text='Approximate date on which the proposed project is expected to end',
         blank=False, null=False)
     duration_months = models.DecimalField(
@@ -743,7 +743,7 @@ class FundingItem(models.Model):
 
     organisation_name = models.ForeignKey(OrganisationName, help_text='Name of organisation from which the funding is sourced',
                                           blank=False, null=False, on_delete=models.PROTECT)
-    funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding item', blank=False, null=False,
+    funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding', blank=False, null=False,
                                        on_delete=models.PROTECT)
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10,
                                  validators=[MinValueValidator(0)], blank=False, null=False)

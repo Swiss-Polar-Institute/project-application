@@ -21,8 +21,9 @@ class ProposalFundingItemForm(ModelForm):
     class Meta:
         model = ProposalFundingItem
         fields = ['organisation_name', 'funding_status', 'amount', 'proposal', ]
-        labels = {'amount': 'Amount (CHF)'}
+        labels = {'amount': 'Total (CHF)'}
         localized_fields = ('amount',)
+        help_texts = {'amount': ''}
 
 
 class ProposalFundingFormSet(BaseInlineFormSet):

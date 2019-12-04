@@ -20,12 +20,11 @@ class PersonPositionMixin:
             **get_field_information(PhysicalPerson, 'surname', help_text=''),
             label='Surname(s)')
         self.fields['person__academic_title'] = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'),
-                                                                       label='Academic title',
-                                                                       help_text='Select from list',)
+                                                                       label='Academic title',)
         self.fields['person__organisations'] = organisations_name_autocomplete(initial=None, help_text='Please select the organisation(s) to which the supervisor belongs.')
         self.fields['person__group'] = forms.CharField(
             **get_field_information(PersonPosition, 'group', label='Group / lab',
-                                    help_text='Please type the names of the working group(s) or laboratories to which the overarching project supervisor belongs.'))
+                                    help_text='Please type the names of the group(s) or laboratories to which the overarching project supervisor belongs.'))
 
     def _set_person(self, person):
         if person:
