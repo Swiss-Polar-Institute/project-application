@@ -19,13 +19,13 @@ class DataCollectionForm(Form):
                                                            help_text='By ticking this box you agree to the Swiss Polar Insitute (SPI) storing your '
                                                                   'personal data for the purpose of administering your '
                                                                   'proposal. The data you provide here will be kept private and '
-                                                                  'held securely by the SPI and EPFL according '
+                                                                  'held securely by the SPI according '
                                                                   'to the <a href="https://cipd.epfl.ch/en/privacy-policy/">EPFL Privacy Policy</a>. '
-                                                                  'Anonymised statistics will also be produced about the proposal applications. '
+                                                                  'Anonymised statistics will be produced about the proposal applications. '
                                                                   'If your proposal is selected for funding, your data will also be used '
-                                                                  'for the administration of your project and may also contribute as '
+                                                                  'for the administration of your project and may contribute to '
                                                                   'scientific metadata for the project.',
-                                                           label='I agree to my personal data being saved by SPI for administration of my proposal')
+                                                           label='I agree to my personal data being saved by SPI for the administration of my proposal')
 
         self.fields['contact_newsletter'] = forms.BooleanField(initial=contact_newsletter_initial,
                                                                help_text='By ticking this box you agree to being contacted '
