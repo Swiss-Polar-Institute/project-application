@@ -105,9 +105,9 @@ class ProposalForm(ModelForm):
                       'title': 'Name of the proposed field trip',
                       'location': 'Name of more precise location of where the proposed field trip would take place (not coordinates)',
                       'keywords': 'Keywords that describe the proposed field trip',
-                      'start_date': 'Approximate date on which the proposed field trip is expected to start',
-                      'end_date': 'Approximate date on which the proposed field trip is expected to end',
-                      'duration_months': 'Expected duration of the proposed field trip in months'}
+                      'start_date': 'Date on which the field trip to be funded by SPI, is expected to start',
+                      'end_date': 'Date on which the field trip to be funded by SPI, is expected to end',
+                      'duration_months': 'Expected duration of the field trip in months'}
 
         labels = {'location': 'Precise region',
                   'geographical_areas': 'Geographical focus'}
