@@ -22,7 +22,7 @@ class CallFormTest(TestCase):
     def test_proposal_form(self):
         data = {'title': 'Collect algae around Greenland',
                 'start_date': datetime(2021, 7, 30),
-                'provisional_end_date': datetime(2021, 9, 15),
+                'end_date': datetime(2021, 9, 15),
                 'duration_months': '3',
                 'call_id': self._call.id}
 

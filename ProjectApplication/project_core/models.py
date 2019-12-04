@@ -575,7 +575,7 @@ class Proposal(CreateModify):
     start_date = models.DateField(
         help_text='Approximate date on which the proposed project is expected to start',
         blank=False, null=False)
-    provisional_end_date = models.DateField(
+    end_date = models.DateField(
         help_text='Approximate date on which the proposed project is expected to end',
         blank=False, null=False)
     duration_months = models.DecimalField(

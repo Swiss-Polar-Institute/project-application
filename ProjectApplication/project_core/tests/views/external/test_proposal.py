@@ -37,7 +37,7 @@ class ProposalFormTest(TestCase):
                 'proposal_form-geographical_areas': [self._geographical_areas[0].id],
                 'proposal_form-keywords': [self._keywords[0].id],
                 'proposal_form-start_date': ['2019-11-12'],
-                'proposal_form-provisional_end_date': ['2019-11-13'],
+                'proposal_form-end_date': ['2019-11-13'],
                 'proposal_form-duration_months': ['1'], 'questions_form-question_1': ['Cool'],
                 'questions_form-question_2': ['Cold'], 'questions_form-question_3': ['Interesting'],
                 'questions_form-question_4': ['Eye opening'], 'questions_form-question_5': ['Many'],
