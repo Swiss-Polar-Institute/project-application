@@ -743,7 +743,7 @@ class FundingItem(models.Model):
 
     organisation_name = models.ForeignKey(OrganisationName, help_text='Name of organisation from which the funding is sourced',
                                           blank=False, null=False, on_delete=models.PROTECT)
-    funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding item', blank=False, null=False,
+    funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding', blank=False, null=False,
                                        on_delete=models.PROTECT)
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10,
                                  validators=[MinValueValidator(0)], blank=False, null=False)
