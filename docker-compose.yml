@@ -1,0 +1,56 @@
+version: '3.6'
+
+services:
+  project-application:
+    image: project-application
+    build:
+      dockerfile: Dockerfile
+      context: ./
+    secrets:
+      - project_application_mysql.conf
+    volumes:
+      - static_volume:/code/ProjectApplication/staticfiles
+      - ./ProjectApplication:/code/ProjectApplication
+      - ./.git:/code/ProjectApplication/.git
+    expose:
+      - 8085
+    networks:
+      - nginx-proxy
+    links:
+      - database
+
+  reverse-proxy:
+    image: nginx:1.17
+    secrets:
+      - project_application_htpasswd
+    expose:
+      - "1235"
+    environment:
+      - NGINX_PORT=1235
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL}
+    volumes:
+      - static_volume:/code/ProjectApplication/staticfiles
+    links:
+      - project-application
+    networks:
+      - nginx-proxy
+
+  database:
+    image: mariadb:10.4
+    environment:
+      - MYSQL_DATABASE:projects
+    volumes:
+      - database:/var/lib/mysql
+    expose:
+      - "3306"
+    networks:
+      - nginx-proxy
+
+volumes:
+  static_volume: {}
+  database:
+
+networks:
+  nginx-proxy:
+    external:
+      name: nginx-proxy
