@@ -13,8 +13,9 @@ class BudgetItemForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
     category = forms.CharField(widget=PlainTextWidget())
-    details = forms.CharField(required=False)
-    amount = forms.DecimalField(required=False, label='Total (CHF)', localize=True)
+    details = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 4}))
+    amount = forms.DecimalField(required=False, label='Total (CHF)', localize=True,
+                                widget=forms.TextInput(attrs={'size': '5'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
