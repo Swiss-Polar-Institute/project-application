@@ -65,6 +65,7 @@
             {{ question.answer_max_length }}{% else %}unlimited{% endif %}){% endif %}
         <br>
         <strong>Description:</strong> {{ question.question_description }}<br>
+        <strong>Answer required:</strong> {% include 'common/_check-icon.tmpl' with value=question.answer_required %}
         <p></p>
     {% endfor %}
 

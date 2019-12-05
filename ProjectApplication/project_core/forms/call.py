@@ -40,11 +40,16 @@ class CallQuestionItemForm(forms.ModelForm):
             )
             )
 
+        divs.append(Div(
+            Div('answer_required', css_class='col-12'),
+            css_class='row')
+        )
+
         self.helper.layout = Div(*divs)
 
     class Meta:
         model = CallQuestion
-        fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length', ]
+        fields = ['id', 'order', 'question_text', 'question_description', 'answer_max_length', 'answer_required', ]
         widgets = {
             'question_text': forms.Textarea(attrs={'rows': 4}),
             'question_description': forms.Textarea(attrs={'rows': 4})

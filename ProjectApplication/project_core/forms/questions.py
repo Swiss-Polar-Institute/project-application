@@ -35,14 +35,16 @@ class Questions(Form):
             self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question_text,
                                                                              widget=forms.Textarea(),
                                                                              initial=answer,
-                                                                             help_text=question.question_description)
+                                                                             help_text=question.question_description,
+                                                                             required=question.answer_required)
 
         for question in self._call.callquestion_set.filter(answer_type=CallQuestion.FILE).order_by('order'):
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
                 self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
                                                                                  help_text=question.question_description,
-                                                                                 initial=file)
+                                                                                 initial=file,
+                                                                                 required=question.answer_required)
 
             except ObjectDoesNotExist:
                 question_label = 'question_{}'.format(question.pk)
@@ -52,10 +54,12 @@ class Questions(Form):
                 if question_label_with_prefix in self.files:
                     self.fields[question_label] = forms.FileField(label=question.question_text,
                                                                   help_text=question.question_description,
-                                                                  initial=self.files[question_label_with_prefix])
+                                                                  initial=self.files[question_label_with_prefix],
+                                                                  required=question.answer_required)
                 else:
                     self.fields[question_label] = forms.FileField(label=question.question_text,
-                                                                  help_text=question.question_description)
+                                                                  help_text=question.question_description,
+                                                                  required=question.answer_required)
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -72,14 +76,28 @@ class Questions(Form):
                     defaults={'answer': answer}
                 )
             elif call_question.answer_type == CallQuestion.FILE:
-                try:
-                    ProposalQAFile.objects.update_or_create(
-                        proposal=proposal, call_question=call_question,
-                        defaults={'file': answer})
-                except EndpointConnectionError:
-                    all_good = False
-                except botocore.exceptions.ClientError:
-                    all_good = False
+                if not answer:
+                    # Probably the user had uploaded an optional File,
+                    # then editting the draft the user clicked on "Clear"
+                    # now we should delete this file
+                    file_to_delete = None
+                    try:
+                        file_to_delete = ProposalQAFile.objects.get(proposal=proposal, call_question=call_question)
+                    except ObjectDoesNotExist:
+                        pass
+
+                    if file_to_delete:
+                        file_to_delete.delete()
+
+                else:
+                    try:
+                        ProposalQAFile.objects.update_or_create(
+                            proposal=proposal, call_question=call_question,
+                            defaults={'file': answer})
+                    except EndpointConnectionError:
+                        all_good = False
+                    except botocore.exceptions.ClientError:
+                        all_good = False
 
         return all_good
 

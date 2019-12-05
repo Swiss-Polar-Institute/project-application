@@ -3,6 +3,7 @@ import io
 import uuid as uuid_lib
 
 from botocore.exceptions import EndpointConnectionError
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator
 from django.core.validators import validate_email
@@ -11,7 +12,6 @@ from django.db.models import Max
 from django.urls import reverse
 from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
-from django.conf import settings
 
 from . import utils
 
@@ -176,15 +176,17 @@ class AbstractQuestion(CreateModify):
     answer_max_length = models.PositiveIntegerField(
         help_text='Maximum number of words for a question answer', blank=True, null=True,
         verbose_name='Answer maximum length (used for answer type TEXT, in words)')
+    answer_required = models.BooleanField(default=True, blank=False, null=False)
 
     def __str__(self):
         if self.answer_type == AbstractQuestion.FILE:
-            return '{} (FILE)'.format(self.question_text)
+            return '{} (FILE, required: {})'.format(self.question_text, self.answer_required)
         elif self.answer_type == AbstractQuestion.TEXT:
             if self.answer_max_length is None:
-                return '{} (TEXT, no max words)'.format(self.question_text)
+                return '{} (TEXT, no max words, required: {})'.format(self.question_text, self.answer_required)
             else:
-                return '{} (TEXT, max words {})'.format(self.question_text, self.answer_max_length)
+                return '{} (TEXT, max words {}, required: {})'.format(self.question_text, self.answer_max_length,
+                                                                      self.answer_required)
         else:
             assert False
 
@@ -219,6 +221,7 @@ class CallQuestion(AbstractQuestion):
         call_question.question_description = template_question.question_description
         call_question.answer_type = template_question.answer_type
         call_question.answer_max_length = template_question.answer_max_length
+        call_question.answer_required = template_question.answer_required
         call_question.template_question = template_question
 
         return call_question
@@ -403,7 +406,8 @@ class PhysicalPerson(CreateModify):
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
-    phd_date = models.CharField(help_text='Date (mm/yyyy) on which PhD awarded or expected', max_length=20, blank=True, null=True)
+    phd_date = models.CharField(help_text='Date (mm/yyyy) on which PhD awarded or expected', max_length=20, blank=True,
+                                null=True)
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.surname)
@@ -571,8 +575,9 @@ class Proposal(CreateModify):
                                       blank=False)
     geographical_areas = models.ManyToManyField(GeographicalArea,
                                                 help_text='Geographical area(s) covered by the proposal')
-    location = models.CharField(help_text='Name of more precise location of where proposal would take place (not coordinates)',
-                                max_length=200, blank=True, null=True)  # Consider having this as another text question
+    location = models.CharField(
+        help_text='Name of more precise location of where proposal would take place (not coordinates)',
+        max_length=200, blank=True, null=True)  # Consider having this as another text question
     start_date = models.DateField(
         help_text='Approximate date on which the proposed project is expected to start',
         blank=False, null=False)
@@ -671,11 +676,15 @@ class ProposalQAFile(CreateModify):
             return 'Unknown'
 
     def save(self, *args, **kwargs):
-        self.md5 = self.calculate_md5()
+        if self.file:
+            self.md5 = self._calculate_md5()
+        else:
+            # Actually if there is no file this should not be called
+            self.md5 = None
 
         super().save(*args, **kwargs)
 
-    def calculate_md5(self):
+    def _calculate_md5(self):
         # initial_position = self.file.file.file.pos()
         # self.file.file.file.seek(0)
 
@@ -684,7 +693,7 @@ class ProposalQAFile(CreateModify):
         else:
             # This is horrible. It happens when the file is updated
             # (at least in our flow)
-            file_contents = self.file.file.file._file.getvalue()
+            file_contents = self.file.file.read()
 
         hash_md5 = hashlib.md5(file_contents)
 
@@ -742,7 +751,8 @@ class FundingItem(models.Model):
     """Specific item of funding"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
-    organisation_name = models.ForeignKey(OrganisationName, help_text='Name of organisation from which the funding is sourced',
+    organisation_name = models.ForeignKey(OrganisationName,
+                                          help_text='Name of organisation from which the funding is sourced',
                                           blank=False, null=False, on_delete=models.PROTECT)
     funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding', blank=False, null=False,
                                        on_delete=models.PROTECT)

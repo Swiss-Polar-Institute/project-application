@@ -10,6 +10,7 @@
                 <th>Question</th>
                 <th>Answer type</th>
                 <th>Max words</th>
+                <th>Optional</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -21,6 +22,7 @@
                     <td>{{ template_question.answer_type }}</td>
                     <td>{% if template_question.answer_max_length %}
                         {{ template_question.answer_max_length }}{% endif %}</td>
+                    <td>{% include 'common/_check-icon.tmpl' with value=template_question.answer_required %}</td>
                     <td><a class="btn btn-primary btn-xs"
                            href="{% url 'template-question-update' pk=template_question.id %}">Edit</a>
                     <a class="btn btn-primary btn-xs"

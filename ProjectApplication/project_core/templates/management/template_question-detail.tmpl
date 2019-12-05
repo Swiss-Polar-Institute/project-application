@@ -16,4 +16,5 @@
     <p><strong>Question max words:</strong><br>{% if object.answer_max_length %}
         {{ object.answer_max_length }} {% else %}
         Unlimited {% endif %}</p>
+    <p><strong>Answer is required:</strong> {% include 'common/_check-icon.tmpl' with value=object.answer_required %}</p>
 {% endblock %}
