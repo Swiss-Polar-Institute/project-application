@@ -5,7 +5,7 @@ import uuid as uuid_lib
 from botocore.exceptions import EndpointConnectionError
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.core.validators import validate_email
 from django.db import models, transaction
 from django.db.models import Max
@@ -407,7 +407,9 @@ class PhysicalPerson(CreateModify):
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
     phd_date = models.CharField(help_text='Date (mm/yyyy) on which PhD awarded or expected', max_length=20, blank=True,
-                                null=True)
+                                null=True, validators=[RegexValidator(regex='^[0-9]{2}/[0-9]{4}$',
+                                                                      message='Format is mm/yyyy',
+                                                                      code='Invalid format')])
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.surname)
