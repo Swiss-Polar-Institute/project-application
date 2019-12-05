@@ -14,7 +14,7 @@ class PersonForm(Form):
         super().__init__(*args, **kwargs)
 
         first_name_initial = surname_initial = organisations_initial = group_initial = \
-            academic_title_initial = email_initial = gender_initial = career_stage_initial = None
+            academic_title_initial = email_initial = gender_initial = career_stage_initial = phd_date_initial = None
 
         if self.person_position:
             first_name_initial = self.person_position.person.first_name
@@ -25,6 +25,7 @@ class PersonForm(Form):
             career_stage_initial = self.person_position.career_stage
             gender_initial = self.person_position.person.gender
             email_initial = self.person_position.main_email()
+            phd_date_initial = self.person_position.person.phd_date
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                initial=academic_title_initial)
@@ -42,6 +43,11 @@ class PersonForm(Form):
                                                  label='Surname(s)')
 
         self.fields['email'] = forms.EmailField(initial=email_initial)
+
+        self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
+                                                  label='Date of PhD',
+                                                  help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm/yyyy).',
+                                                  required=False)
 
         self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
                                                                             help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
@@ -75,7 +81,8 @@ class PersonForm(Form):
                 css_class='row'
             ),
             Div(
-                Div('career_stage', css_class='col-12'),
+                Div('career_stage', css_class='col-8'),
+                Div('phd_date', css_class='col-4'),
                 css_class='row'
             ),
         )
