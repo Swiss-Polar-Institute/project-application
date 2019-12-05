@@ -21,7 +21,15 @@
         {{ organisation }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
     <br>
-    <strong>Group / lab:</strong> {{ applicant.group }}
+    <strong>Group / lab:</strong> {{ applicant.group }}<br>
+    <div class="row">
+        <div class="col-8">
+            <strong>Career stage:</strong> {{ applicant.career_stage }}
+        </div>
+        <div class="col-4">
+            <strong>Date of PhD:</strong> {% include 'common/_value-or-dash.tmpl' with value=applicant.phd_date %}
+        </div>
+    </div>
 {% endwith %}
 <p></p>
 <h3>Proposal details</h3>
@@ -47,22 +55,20 @@
 <h3>Project description</h3>
 {% for question_answer in questions_answers %}
     {{ question_answer.question }}<br>
-    <div class="pre-with-newlines border p-3 bg-white rounded">{{ question_answer.answer }}</div>
+    {#    @formatter:off#}
+    <div class="pre-with-newlines border p-3 bg-white rounded">{% if question_answer.answer %}{{ question_answer.answer }}{% else %}This question has not been answered{% endif %}</div>
+    {#    @formatter:on#}
     <br>
 {% endfor %}
 {% for question_file in questions_files %}
     {{ question_file.question }}
     <div class="border p-3 bg-white rounded">
-        {% if question_file.file %}
-            {% if question_file.proposal_qa_file_id and question_file.file.md5 %}
-                {% include 'common/_answer_type-icon.tmpl' with type='File' %} <a
-                    href="{% url 'proposal-question-answer-file' proposal_qa_file_id=question_file.proposal_qa_file_id md5=question_file.file.md5 %}">{{ question_file.file.name }}</a>
-                ({{ question_file.file.size }})
-            {% else %}
-                    File information missing in the database
-            {% endif %}
+        {% if question_file.proposal_qa_file_id and question_file.file.md5 %}
+            {% include 'common/_answer_type-icon.tmpl' with type='File' %} <a
+                href="{% url 'proposal-question-answer-file' proposal_qa_file_id=question_file.proposal_qa_file_id md5=question_file.file.md5 %}">{{ question_file.file.name }}</a>
+            ({{ question_file.file.size }})
         {% else %}
-            Not attached
+            File not attached
         {% endif %}
     </div>
     <br>
@@ -91,7 +97,7 @@
     <h3>Overarching project</h3>
     {% include 'common/_project_overarching.tmpl' with overarching_project=proposal.overarching_project %}
 {% endif %}
-
+<p></p>
 <h3>Data agreement</h3>
 <strong>Agreed to data
     policy:</strong> {% include 'common/_check-icon.tmpl' with value=proposal.applicant.privacy_policy %}<br>
