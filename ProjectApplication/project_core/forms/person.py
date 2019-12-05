@@ -81,13 +81,22 @@ class PersonForm(Form):
         )
 
     def save_person(self):
-        physical_person, created = PhysicalPerson.objects.get_or_create(
-            first_name=self.cleaned_data['first_name'],
-            surname=self.cleaned_data['surname'],
-            defaults={
-                'gender': self.cleaned_data['gender']
-            }
-        )
+        if self.person_position and self.person_position.person:
+            physical_person = self.person_position.person
+        else:
+            physical_person, created = PhysicalPerson.objects.get_or_create(
+                first_name=self.cleaned_data['first_name'],
+                surname=self.cleaned_data['surname'],
+                defaults={
+                    'gender': self.cleaned_data['gender']
+                }
+            )
+
+        # Any new gender changes the previously assigned gender
+        physical_person.first_name = self.cleaned_data['first_name']
+        physical_person.surname = self.cleaned_data['surname']
+        physical_person.gender = self.cleaned_data['gender']
+        physical_person.save()
 
         if self.person_position:
             person_position = self.person_position
