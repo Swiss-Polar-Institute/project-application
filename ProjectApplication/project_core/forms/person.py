@@ -2,6 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import RegexValidator
 from django.forms import Form
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
@@ -47,7 +48,10 @@ class PersonForm(Form):
         self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
                                                   label='Date of PhD',
                                                   help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm/yyyy).',
-                                                  required=False)
+                                                  required=False,
+                                                  validators=[RegexValidator(regex='^[0-9]{2}/[0-9]{4}$',
+                                                                             message='Format is mm/yyyy',
+                                                                             code='Invalid format')])
 
         self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
                                                                             help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
@@ -103,6 +107,7 @@ class PersonForm(Form):
         physical_person.first_name = self.cleaned_data['first_name']
         physical_person.surname = self.cleaned_data['surname']
         physical_person.gender = self.cleaned_data['gender']
+        physical_person.phd_date = self.cleaned_data['phd_date']
         physical_person.save()
 
         if self.person_position:
