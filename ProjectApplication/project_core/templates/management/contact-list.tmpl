@@ -20,8 +20,8 @@
                     <td>{{ contact.person.first_name }}</td>
                     <td>{{ contact.person.surname }}</td>
                     <td>{% include 'common/_email_link_or_dash.tmpl' with email=contact.main_email %}
-                    <td><a class="btn btn-primary btn-xs"
-                           href="{% url 'contact-update' pk=contact.id %}">Edit</a>
+                    <td>{#<a class="btn btn-primary btn-xs"#}
+                           {#href="{% url 'contact-update' pk=contact.id %}">Edit</a>#}
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'contact-detail' pk=contact.id %}">View</a>
                     </td>
