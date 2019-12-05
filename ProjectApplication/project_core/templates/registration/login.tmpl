@@ -22,11 +22,6 @@
             {% endif %}
         {% endif %}
 
-        <p>
-            Example login details:<br>
-            <strong>Username:</strong> {{ demo_management_user }}<br>
-            <strong>Password:</strong> {{ demo_management_password }}
-        </p>
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
             <table>

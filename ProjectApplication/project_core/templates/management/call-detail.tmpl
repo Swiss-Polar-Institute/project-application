@@ -15,7 +15,8 @@
     <br>
     <strong>Short Name:</strong> {% include 'common/_value-or-dash.tmpl' with value=call.short_name %}
     <br>
-    <strong>Description:</strong> {{ call.description }}
+    <strong>Description:</strong>
+    <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.description }}</div>
     <br>
     <strong>Introductory message:</strong>
     <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.introductory_message }}</div>
