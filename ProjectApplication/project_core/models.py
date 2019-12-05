@@ -403,6 +403,7 @@ class PhysicalPerson(CreateModify):
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
+    phd_date = models.CharField(help_text='Date (mm/yyyy) on which PhD awarded or expected', max_length=20, blank=True, null=True)
 
     def __str__(self):
         return '{} {}'.format(self.first_name, self.surname)
