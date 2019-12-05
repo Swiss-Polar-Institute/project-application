@@ -110,8 +110,8 @@ class GenderAdmin(admin.ModelAdmin):
 
 
 class PhysicalPersonAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'surname', 'gender', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['first_name', 'surname', 'gender', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = ('first_name', 'surname', 'gender', 'phd_date', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    ordering = ['first_name', 'surname', 'gender', 'phd_date', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class PersonUidAdmin(admin.ModelAdmin):
