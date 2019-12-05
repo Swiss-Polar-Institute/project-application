@@ -14,15 +14,16 @@
         {% if proposal.status_is_draft %}
             <br>
             <div class="alert alert-warning" role="alert"><h5><strong>Please copy and retain this link to be able to
-                edit and submit your proposal.</strong><br>
-                <br>
-                Ensure you
+                edit and submit your proposal.</strong></h5>
+                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
+                    {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a>
+                <br><br>
+                <h5>Ensure you
                 <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
                     make any final changes and submit</a> your proposal before the call deadline.
                 {% include 'common/_submitted_cannot_modify_text.tmpl' %}
             </h5>
-                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
-                    {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a></p>
+
             </div>
             <br>
             <H5>Thank you for saving a <strong>draft</strong> of your proposal.
