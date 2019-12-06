@@ -138,3 +138,7 @@ div.selector-filter {
 .title {
     font-size: 1.5em;
 }
+
+.text-large {
+font-size: 130%;
+}
