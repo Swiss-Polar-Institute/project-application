@@ -90,7 +90,9 @@ class Questions(Form):
                         file_to_delete.delete()
 
                 else:
-                    answer.name = f'{self._call.id}-{proposal.id}-{answer.name}'
+                    if '/' not in answer.name:
+                        answer.name = f'{self._call.id}-{proposal.id}-{answer.name}'
+                        
                     try:
                         ProposalQAFile.objects.update_or_create(
                             proposal=proposal, call_question=call_question,
