@@ -1,2 +1,6 @@
 <strong>Title:</strong> {{ overarching_project.title }}<br>
 <strong>Leader:</strong> {{ overarching_project.leader.academic_title }} {{ overarching_project.leader.person.first_name }} {{ overarching_project.leader.person.surname }}
+<br>
+<strong>Organisations:</strong> {% include 'common/_organisations-list.tmpl' with organisations=overarching_project.leader.organisations_ordered_by_name %}
+<br>
+<strong>Group / lab:</strong> {{ overarching_project.leader.group }}

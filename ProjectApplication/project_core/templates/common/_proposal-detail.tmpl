@@ -17,9 +17,7 @@
     <strong>Email:</strong> {{ email }}
     <br>
     <strong>Organisations:</strong>
-    {% for organisation in applicant.organisations_ordered_by_name %}
-        {{ organisation }}{% if not forloop.last %}, {% endif %}
-    {% endfor %}
+    {% include 'common/_organisations-list.tmpl' with organisations=applicant.organisations_ordered_by_name%}
     <br>
     <strong>Group / lab:</strong> {{ applicant.group }}<br>
     <div class="row">
