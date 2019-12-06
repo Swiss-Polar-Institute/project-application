@@ -110,7 +110,7 @@ class BudgetFormSet(BaseFormSet):
 
         if budget_amount > maximum_budget:
             raise forms.ValidationError(
-                'Maximum budget for this call is {} CHF total budget for your proposal {} CHF'.format(
+                'Maximum allowed budget for this call is {} CHF. Your total proposed budget is {} CHF'.format(
                     number_format(maximum_budget),
                     number_format(budget_amount)))
 

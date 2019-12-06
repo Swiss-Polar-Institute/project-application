@@ -383,7 +383,7 @@ class AbstractProposalView(TemplateView):
         person_position = person_form.get_person_position()
         if not person_position:
             # Cannot be duplicated because it's going to create a new person_position
-            return
+            return True
 
         try:
             Proposal.objects.get(title=proposal_title,
