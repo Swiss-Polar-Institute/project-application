@@ -3,8 +3,6 @@
 
 {% include 'common/_messages-box.tmpl' %}
 
-<h1>{{ action }} proposal</h1>
-
 {% if proposal_status_is_draft %}
     <div class="alert alert-secondary" role="alert"><i class="fas fa-info-circle"></i> This proposal is a draft and will
         not be evaluated.
@@ -12,18 +10,19 @@
     </div>
 {% endif %}
 
-<p><strong>Call name:</strong> {{ call_name }}</p>
+<p class="text-large"><strong>Call name:</strong> {{ call_name }}</p>
 
-<p><strong>Deadline for
+<p class="text-large"><strong>Deadline for
     application:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call_submission_deadline %}
 
-<p><strong>Please complete all mandatory fields and press "Save Draft" or "Submit".</strong></p>
+<p class="text-large"><strong>Please complete all mandatory fields and press "Save Draft" or "Submit".</strong></p>
 
 <div class="introductory-message shadow p-3 mb-5 bg-white rounded">{{ call_introductory_message }}</div>
 
 <form action="{{ proposal_action_url }}" enctype="multipart/form-data" method="post">
     {% csrf_token %}
-
+    
+    <h1>Application form</h1>
     <h2>Part 1: General Information</h2>
     <h3>Applicant</h3>
     {% crispy person_form %}
@@ -62,8 +61,8 @@
         {% include 'common/_submit-button.tmpl' with value='Submit' name='submit' %}
 
         <p>
-            After saving the draft you will be able to edit the proposal until the call deadline. Drafts will not be evaluated. <br>
-            Please make sure to submit the final version before the call deadline.
+            After saving your draft proposal you will be able to edit the proposal until the call deadline. Unsubmitted drafts will not be evaluated. <br>
+            Please make sure to submit the final version of your proposal before the call deadline.
             {% include 'common/_submitted_cannot_modify_text.tmpl' %}
         </p>
     {% endif %}
