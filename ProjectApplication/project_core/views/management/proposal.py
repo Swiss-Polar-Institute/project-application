@@ -101,7 +101,7 @@ class ProposalsExportExcel(View):
         column = 3
         self._worksheet.write(row, column, 'Institution', self._grey_header_format)
         self._worksheet.write(row + 1, column, ', '.join(
-            [organisation.short_name for organisation in proposal.applicant.organisations_ordered_by_name()]),
+            [organisation.name for organisation in proposal.applicant.organisations_ordered_by_name()]),
                               self._data_format)
         self._worksheet.set_column(column, column, 15)
 
@@ -229,9 +229,9 @@ class ProposalsExportExcel(View):
 
             last_row += 1
 
-        for column in range(initial_column, border_right_column+1):
-            self._worksheet.write(initial_row-1, column, '', self._centered_border_bottom)
-            self._worksheet.write(last_row+1, column, '', self._centered_border_top)
+        for column in range(initial_column, border_right_column + 1):
+            self._worksheet.write(initial_row - 1, column, '', self._centered_border_bottom)
+            self._worksheet.write(last_row + 1, column, '', self._centered_border_top)
 
     def get(self, request, *args, **kwargs):
         call_id = kwargs['call']
@@ -243,7 +243,7 @@ class ProposalsExportExcel(View):
         if call_id:
             call = Call.objects.get(id=call_id)
             proposals = proposals.filter(call_id=call_id)
-            filename = 'proposals-{}-{}.xlsx'.format(call.short_name, date)
+            filename = 'proposals-{}-{}.xlsx'.format(call.short_name.replace(' ', '_'), date)
         else:
             filename = 'proposals-all-{}.xlsx'.format(date)
 
