@@ -385,15 +385,15 @@ class AbstractProposalView(TemplateView):
             # Cannot be duplicated because it's going to create a new person_position
             return True
 
-        try:
-            Proposal.objects.get(title=proposal_title,
-                                 applicant=person_position,
-                                 call_id=call_id)
+        proposals = Proposal.objects.filter(title=proposal_title,
+                                            applicant=person_position,
+                                            call_id=call_id).exclude(id=proposal_form.instance.id)
 
+        if proposals.exists():
             proposal_form.raise_duplicated_title()
             return False
-        except ObjectDoesNotExist:
-            return True
+
+        return True
 
 
 def call_context_for_template(call):
