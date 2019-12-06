@@ -298,6 +298,10 @@ class AbstractProposalView(TemplateView):
             is_valid = form.is_valid()
             all_valid = all_valid and is_valid
 
+        valid_title_applicant = self._validate_project_title_applicant(proposal_form, person_form)
+
+        all_valid = all_valid and valid_title_applicant
+
         if all_valid:
             proposal = proposal_form.save(commit=False)
 
@@ -371,6 +375,25 @@ class AbstractProposalView(TemplateView):
         messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again')
 
         return render(request, 'common/proposal-form.tmpl', context)
+
+    def _validate_project_title_applicant(self, proposal_form, person_form):
+        proposal_title = proposal_form.cleaned_data['title']
+        call_id = proposal_form.cleaned_data['call_id']
+
+        person_position = person_form.get_person_position()
+        if not person_position:
+            # Cannot be duplicated because it's going to create a new person_position
+            return
+
+        try:
+            Proposal.objects.get(title=proposal_title,
+                                 applicant=person_position,
+                                 call_id=call_id)
+
+            proposal_form.raise_duplicated_title()
+            return False
+        except ObjectDoesNotExist:
+            return True
 
 
 def call_context_for_template(call):

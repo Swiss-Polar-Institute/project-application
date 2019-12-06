@@ -91,6 +91,26 @@ class PersonForm(Form):
             ),
         )
 
+    def get_person_position(self):
+        """ Matches and returns the person_position from the database. """
+        try:
+            physical_person = PhysicalPerson.objects.get(
+                first_name=self.cleaned_data['first_name'],
+                surname=self.cleaned_data['surname'],
+            )
+
+            person_position = PersonPosition.objects.get(
+                person=physical_person,
+                academic_title=self.cleaned_data['academic_title'],
+                group=self.cleaned_data['group'],
+                career_stage=self.cleaned_data['career_stage']
+            )
+
+        except ObjectDoesNotExist:
+            return None
+
+        return person_position
+
     def save_person(self):
         if self.person_position and self.person_position.person:
             physical_person = self.person_position.person
