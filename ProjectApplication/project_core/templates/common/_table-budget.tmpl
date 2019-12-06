@@ -10,9 +10,10 @@
     {% for proposed_budget_item in proposal.proposedbudgetitem_set.all %}
         <tr>
             <td>{{ proposed_budget_item.category }}</td>
-            <td>{{ proposed_budget_item.details }}</td>
+            <td><div class="pre-with-newlines border p-3 bg-white rounded">{{ proposed_budget_item.details }}</div></td>
             <td>{% if proposed_budget_item.amount %}{{ proposed_budget_item.amount }}{% endif %}</td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
+
