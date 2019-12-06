@@ -86,10 +86,19 @@ class AbstractProposalDetailView(TemplateView):
                                                         'size': human_file_size,
                                                         }})
 
-        if request.user.groups.filter(name='management').exists() and proposal.status_is_draft():
-            context[
-                'link_to_edit_or_display'] = '(<a href="{}"><i class="fas fa-link"></i> Link to draft proposal</a>)'.format(
-                reverse('proposal-update', kwargs={'uuid': proposal.uuid}))
+        if request.user.groups.filter(name='management').exists():
+            href = description = None
+
+            if proposal.status_is_draft():
+                href = reverse('proposal-update', kwargs={'uuid': proposal.uuid})
+                description = 'Link to draft proposal'
+            elif proposal.status_is_submitted():
+                href = reverse('proposal-detail', kwargs={'uuid': proposal.uuid})
+                description = 'Link to view proposal'
+
+            if href and description:
+                context[
+                    'link_to_edit_or_display'] = f'(<a href="{href}"><i class="fas fa-link"></i> {description}</a>)'
 
         return render(request, self.template, context)
 
