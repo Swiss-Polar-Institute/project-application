@@ -47,7 +47,7 @@ class PersonForm(Form):
 
         self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
                                                   label='Date of PhD',
-                                                  help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm/yyyy).',
+                                                  help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format yyyy-mm).',
                                                   required=False,
                                                   validators=[RegexValidator(regex='^[0-9]{4}-[0-9]{2}$',
                                                                              message='Format is yyyy-mm',
