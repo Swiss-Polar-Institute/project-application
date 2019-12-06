@@ -406,9 +406,9 @@ class PhysicalPerson(CreateModify):
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
-    phd_date = models.CharField(help_text='Date (mm/yyyy) on which PhD awarded or expected', max_length=20, blank=True,
-                                null=True, validators=[RegexValidator(regex='^[0-9]{2}/[0-9]{4}$',
-                                                                      message='Format is mm/yyyy',
+    phd_date = models.CharField(help_text='Date (yyyy-mm) on which PhD awarded or expected', max_length=20, blank=True,
+                                null=True, validators=[RegexValidator(regex='^[0-9]{4}-[0-9]{2}$',
+                                                                      message='Format is yyyy-mm',
                                                                       code='Invalid format')])
 
     def __str__(self):

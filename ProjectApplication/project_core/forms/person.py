@@ -49,8 +49,8 @@ class PersonForm(Form):
                                                   label='Date of PhD',
                                                   help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm/yyyy).',
                                                   required=False,
-                                                  validators=[RegexValidator(regex='^[0-9]{2}/[0-9]{4}$',
-                                                                             message='Format is mm/yyyy',
+                                                  validators=[RegexValidator(regex='^[0-9]{4}-[0-9]{2}$',
+                                                                             message='Format is yyyy-mm',
                                                                              code='Invalid format')])
 
         self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
