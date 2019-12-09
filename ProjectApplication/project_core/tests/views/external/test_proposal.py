@@ -35,7 +35,7 @@ class ProposalFormTest(TestCase):
                 'proposal_form-call_id': [self._call.id],
                 'proposal_form-title': ['Replace this title!'],
                 'proposal_form-geographical_areas': [self._geographical_areas[0].id],
-                'proposal_form-keywords': [keyword.id for keyword in self._keywords],
+                'proposal_form-keywords': [[str(keyword.id) for keyword in self._keywords]],
                 'proposal_form-start_date': ['2019-11-12'],
                 'proposal_form-end_date': ['2019-11-13'],
                 'proposal_form-duration_months': ['1'], 'questions_form-question_1': ['Cool'],
@@ -106,7 +106,7 @@ class ProposalFormTest(TestCase):
 
         response = c.post(reverse('proposal-add'), data=data)
         self.assertEqual(response.status_code, 302)
-        reg_exp = '/proposal/thank-you/([0-9a-z-]+)/\?action=created'
+        reg_exp = '/proposal/thank-you/([0-9a-z-]+)/'
         self.assertRegex(response.url, reg_exp)
         m = re.search(reg_exp, response.url)
         uuid = m.group(1)
@@ -126,5 +126,5 @@ class ProposalFormTest(TestCase):
         data['proposal_form-title'] = ['Too late?']
 
         response = c.post(reverse('proposal-add'), data=data)
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/proposal/too-late/?action=edited')
+        self.assertEqual(302, response.status_code)
+        self.assertEqual('/proposal/cannot-modify/', response.url)
