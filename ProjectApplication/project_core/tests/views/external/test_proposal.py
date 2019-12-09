@@ -35,7 +35,7 @@ class ProposalFormTest(TestCase):
                 'proposal_form-call_id': [self._call.id],
                 'proposal_form-title': ['Replace this title!'],
                 'proposal_form-geographical_areas': [self._geographical_areas[0].id],
-                'proposal_form-keywords': [self._keywords[0].id],
+                'proposal_form-keywords': [keyword.id for keyword in self._keywords],
                 'proposal_form-start_date': ['2019-11-12'],
                 'proposal_form-end_date': ['2019-11-13'],
                 'proposal_form-duration_months': ['1'], 'questions_form-question_1': ['Cool'],
