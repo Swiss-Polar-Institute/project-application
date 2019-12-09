@@ -92,7 +92,6 @@ class Questions(Form):
                 else:
                     if '/' not in answer.name:
                         answer.name = f'{self._call.id}-{proposal.id}-{answer.name}'
-                        
                     try:
                         ProposalQAFile.objects.update_or_create(
                             proposal=proposal, call_question=call_question,
