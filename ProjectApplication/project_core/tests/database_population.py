@@ -31,8 +31,11 @@ def create_keywords():
 
     algae, created = Keyword.objects.get_or_create(name='Algae', uid=keyword_uuid)
     birds, created = Keyword.objects.get_or_create(name='Birds', uid=keyword_uuid)
+    penguins, created = Keyword.objects.get_or_create(name='Penguins', uid=keyword_uuid)
+    ice, created = Keyword.objects.get_or_create(name='Ice', uid=keyword_uuid)
+    micro_plastics, created = Keyword.objects.get_or_create(name='Micro-plastics', uid=keyword_uuid)
 
-    return algae, birds
+    return algae, birds, penguins, ice, micro_plastics
 
 
 def create_career_stages():

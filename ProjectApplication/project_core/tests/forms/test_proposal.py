@@ -29,11 +29,12 @@ class CallFormTest(TestCase):
         data = utils.dict_to_multivalue_dict(data)
         data.setlist('geographical_areas', [self._geographical_areas[0]])
 
-        data.setlist('keywords', [self._keywords[0]])
+        data.setlist('keywords', self._keywords)
 
         proposal_form = ProposalForm(call=self._call,
                                      data=data)
 
+        proposal_form.is_valid()
         self.assertTrue(proposal_form.is_valid())
 
         proposal = proposal_form.save(commit=False)
