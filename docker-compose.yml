@@ -38,7 +38,7 @@ services:
   database:
     image: mariadb:10.4
     environment:
-      - MYSQL_DATABASE:projects
+      - MYSQL_DATABASE=projects
     volumes:
       - database:/var/lib/mysql
     expose:

@@ -1,0 +1,6 @@
+version: '3.6'
+
+services:
+  reverse-proxy:
+    ports:
+        - "1235:1235"
