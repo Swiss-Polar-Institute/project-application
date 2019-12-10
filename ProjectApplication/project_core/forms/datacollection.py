@@ -32,7 +32,7 @@ class DataCollectionForm(Form):
                                                                   'news and future opportunities from SPI. '
                                                                   'Your contact details will not be used for other purposes.',
                                                                required=False,
-                                                               label='I would like to receive SPI news and future opportunities')
+                                                               label='I would like to receive news about SPI and future opportunities')
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
