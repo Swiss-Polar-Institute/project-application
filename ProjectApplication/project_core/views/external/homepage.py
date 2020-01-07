@@ -1,4 +1,7 @@
 from django.views.generic import TemplateView
+import logging
+
+# logger = logging.getLogger('project_core')
 
 
 class Homepage(TemplateView):
@@ -6,4 +9,5 @@ class Homepage(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        # logger.warning('NOTIFY: loading homepage')
         return context

@@ -75,6 +75,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ProjectApplication.wsgi.application'
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'project_core': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': True,
+        },
+    },
+}
 
 def secrets_file(file_name, optional_path=None):
     """ First try optional_path, then $HOME/.file_name, then /run/secrets/file_name, else raises an exception"""
