@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-import logging
+# import logging
 
 # logger = logging.getLogger('project_core')
 
