@@ -26,11 +26,12 @@ def send_email_proposal_received(uuid, request):
 
             subject = 'Swiss Polar Institute - Proposal draft saved'
             body = textwrap.dedent(f'''\
-                Your proposal: {proposal.title} for the call {proposal.call.long_name} is saved.
+                Your proposal: {proposal.title} for the call {proposal.call.long_name} has been saved.
                 
-                To Edit it go to: {edit_url}
+                To edit it go to: {edit_url}
+                Please note that when saving future drafts you will not receive another email confirmation.
                 
-                Please remember to submit it before the Call deadline: {call_deadline}.
+                Please remember to submit your proposal before the call deadline: {call_deadline}.
                 
                 ''')
 
@@ -44,12 +45,10 @@ def send_email_proposal_received(uuid, request):
             subject = 'Swiss Polar Institute - Proposal submitted'
             view_url = request.build_absolute_uri(reverse('proposal-detail', kwargs={'uuid': uuid}))
             body = textwrap.dedent(f'''\
-                Thanks for submitting your proposal: {proposal.title} for the call {proposal.call.long_name}
+                Thank you for submitting your proposal: {proposal.title} for the call {proposal.call.long_name}
                 
-                You can see it on: {view_url}
-                
-                We will get in touch soon.
-                
+                You can view your submitted proposal here: {view_url}
+                                
                 ''')
 
             body += footer
