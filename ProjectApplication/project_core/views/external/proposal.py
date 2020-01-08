@@ -32,8 +32,9 @@ def send_email_proposal_received(uuid, request):
                 
                 Please remember to submit it before the Call deadline: {call_deadline}.
                 
-                {footer}
                 ''')
+
+            body += footer
 
             send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipient_list)
             proposal.draft_saved_mail_sent = True
@@ -49,8 +50,10 @@ def send_email_proposal_received(uuid, request):
                 
                 We will get in touch soon.
                 
-                {footer}''')
+                ''')
 
+            body += footer
+            
             send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipient_list)
             proposal.submitted_mail_sent = True
             proposal.save()
