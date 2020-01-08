@@ -145,11 +145,16 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
 
 
 class ProposalAdmin(admin.ModelAdmin):
-    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
+    list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
                     'end_date', 'duration_months', 'applicant', 'proposal_status', 'eligibility', 'eligibility_comment',
-                    'qas_list', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['title', 'start_date', 'end_date', 'duration_months', 'applicant',
-                'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+                    'qas_list', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on',
+                    'draft_saved_mail_sent', 'submitted_mail_sent', )
+    ordering = ['title', 'uuid', 'start_date', 'end_date', 'duration_months', 'applicant',
+                'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on',
+                'draft_saved_mail_sent', 'submitted_mail_sent', ]
+
+    # Search at the moment only works without '-'
+    search_fields = ('title', 'uuid', )
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()

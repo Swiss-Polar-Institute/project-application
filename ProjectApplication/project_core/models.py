@@ -601,6 +601,12 @@ class Proposal(CreateModify):
 
     overarching_project = models.ForeignKey(ExternalProject, null=True, blank=True, on_delete=models.PROTECT)
 
+    draft_saved_mail_sent = models.BooleanField(default=False,
+                                                help_text='True if the email informing the applicant that the draft has been saved has already been sent (usually is sent only once)')
+
+    submitted_mail_sent = models.BooleanField(default=False,
+                                              help_text='True if the email informing the applicant that the proposal has been submitted has been sent')
+
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
 
