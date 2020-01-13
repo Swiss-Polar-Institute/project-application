@@ -194,11 +194,6 @@ class CallForm(forms.ModelForm):
                   'submission_deadline', 'budget_categories', 'budget_maximum', 'other_funding_question',
                   'proposal_partner_question', 'overarching_project_question', ]
 
-        field_classes = {
-            'call_open_date': forms.SplitDateTimeField,
-            'submission_deadline': forms.SplitDateTimeField,
-        }
-
         widgets = {
             'call_open_date': XDSoftYearMonthDayHourMinutePickerInput,
             'submission_deadline': XDSoftYearMonthDayHourMinutePickerInput,
