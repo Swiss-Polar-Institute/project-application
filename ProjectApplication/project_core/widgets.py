@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import DateTimeInput
+from django.forms import DateTimeInput, DateInput
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -19,9 +19,14 @@ class XDSoftYearMonthDayHourMinutePickerInput(DateTimeInput):
     template_name = 'widgets/xdsoft_year_month_day_hour_minute_picker.tmpl'
 
 
-class XDSoftYearMonthDayPickerInput(DateTimeInput):
+class XDSoftYearMonthDayPickerInput(DateInput):
+    def __init__(self, *args, **kwargs):
+        if 'format' not in kwargs:
+            kwargs['format'] = '%Y-%m-%d'
+        super().__init__(*args, **kwargs)
+
     template_name = 'widgets/xdsoft_year_month_day_picker.tmpl'
 
 
-class XDSoftYearMonthPickerInput(DateTimeInput):
+class XDSoftYearMonthPickerInput(DateInput):
     template_name = 'widgets/xdsoft_year_month_picker.tmpl'
