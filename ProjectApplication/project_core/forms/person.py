@@ -7,6 +7,7 @@ from django.forms import Form
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
 from .utils import organisations_name_autocomplete
+from ..widgets import XDSoftYearMonthPickerInput
 
 
 class PersonForm(Form):
@@ -49,6 +50,7 @@ class PersonForm(Form):
                                                   label='Date of PhD',
                                                   help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format yyyy-mm).',
                                                   required=False,
+                                                  widget=XDSoftYearMonthPickerInput,
                                                   validators=[RegexValidator(regex='^[0-9]{4}-[0-9]{2}$',
                                                                              message='Format is yyyy-mm',
                                                                              code='Invalid format')])

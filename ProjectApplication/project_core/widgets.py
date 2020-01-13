@@ -15,5 +15,13 @@ class DatePickerWidget(forms.DateInput):
         super().__init__(*args, **kwargs, attrs={'type': 'date'})
 
 
-class XDSoftDateTimePickerInput(DateTimeInput):
-    template_name = 'widgets/xdsoft_datetimepicker.tmpl'
+class XDSoftYearMonthDayHourMinutePickerInput(DateTimeInput):
+    template_name = 'widgets/xdsoft_year_month_day_hour_minute_picker.tmpl'
+
+
+class XDSoftYearMonthDayPickerInput(DateTimeInput):
+    template_name = 'widgets/xdsoft_year_month_day_picker.tmpl'
+
+
+class XDSoftYearMonthPickerInput(DateTimeInput):
+    template_name = 'widgets/xdsoft_year_month_picker.tmpl'
