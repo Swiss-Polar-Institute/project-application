@@ -423,8 +423,10 @@ class PhysicalPerson(CreateModify):
             return None
 
         year, month = self.phd_date.split('-')
-        result = f'{calendar.month_abbr[int(month)]}. {year}'
-        return result
+        if month < 1 or month > 12:
+            return f'{month}-{year}'
+
+        return f'{calendar.month_abbr[int(month)]}. {year}'
 
     class Meta:
         unique_together = (('first_name', 'surname',),)
