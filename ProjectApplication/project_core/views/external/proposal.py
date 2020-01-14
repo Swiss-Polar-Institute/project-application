@@ -17,7 +17,7 @@ def send_email_proposal_received(uuid, display_url, update_url):
 
         footer = textwrap.dedent('''\
             Thank you for your interest. The SPI team remains at your disposal for questions at spi-grants@epfl.ch
-            Please note that this email is sent from a non-monitored email address.
+            Please note that this email is sent from an unmonitored email address.
             ''')
 
         if proposal.status_is_draft() and not proposal.draft_saved_mail_sent:
