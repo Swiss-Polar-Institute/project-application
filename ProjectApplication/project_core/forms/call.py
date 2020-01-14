@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory, FundingInstrument
 from ..widgets import DateTimePickerWidget
+from ..utils_fields import set_format_date_field, set_format_date_time_field
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput
 
 
@@ -97,11 +98,8 @@ class CallForm(forms.ModelForm):
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
 
-        self.fields['call_open_date'].input_formats = ['%d-%m-%Y %H:%M']
-        self.fields['call_open_date'].widget.format = '%d-%m-%Y %H:%M'
-
-        self.fields['submission_deadline'].input_formats = ['%d-%m-%Y %H:%M']
-        self.fields['submission_deadline'].widget.format = '%d-%m-%Y %H:%M'
+        set_format_date_time_field(self.fields['call_open_date'])
+        set_format_date_time_field(self.fields['submission_deadline'])
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

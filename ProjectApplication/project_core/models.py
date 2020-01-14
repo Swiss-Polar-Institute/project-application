@@ -14,6 +14,7 @@ from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
+import calendar
 
 
 class CreateModify(models.Model):
@@ -416,6 +417,14 @@ class PhysicalPerson(CreateModify):
 
     def full_name(self):
         return '{} {}'.format(self.first_name, self.surname)
+
+    def phd_date_formatted(self):
+        if self.phd_date is None:
+            return None
+
+        year, month = self.phd_date.split('-')
+        result = f'{calendar.month_abbr[int(month)]}. {year}'
+        return result
 
     class Meta:
         unique_together = (('first_name', 'surname',),)

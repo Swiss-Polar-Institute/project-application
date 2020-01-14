@@ -25,7 +25,7 @@
             <strong>Career stage:</strong> {{ applicant.career_stage }}
         </div>
         <div class="col-4">
-            <strong>Date of PhD:</strong> {% include 'common/_value-or-dash.tmpl' with value=applicant.person.phd_date %}
+            <strong>Date of PhD:</strong> {% include 'common/_value-or-dash.tmpl' with value=applicant.person.phd_date_formatted %}
         </div>
     </div>
 {% endwith %}
