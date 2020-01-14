@@ -9,7 +9,7 @@ from project_core.models import Proposal
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
 
 
-def send_email_proposal_received(uuid, request):
+def send_email_proposal_received(uuid, display_url, update_url):
     proposal = Proposal.objects.get(uuid=uuid)
 
     if not proposal.draft_saved_mail_sent or not proposal.submitted_mail_sent:
@@ -21,14 +21,13 @@ def send_email_proposal_received(uuid, request):
             ''')
 
         if proposal.status_is_draft() and not proposal.draft_saved_mail_sent:
-            edit_url = request.build_absolute_uri(reverse('proposal-update', kwargs={'uuid': uuid}))
             call_deadline = proposal.call.submission_deadline.strftime('%A %d %B %Y at %H:%M Swiss time')
 
             subject = 'Swiss Polar Institute - Proposal draft saved'
             body = textwrap.dedent(f'''\
                 Your proposal: "{proposal.title}" for the call {proposal.call.long_name} has been saved.
                 
-                To edit it go to: {edit_url} .
+                To edit it go to: {update_url} .
                 Please note that when saving future drafts you will not receive another email confirmation.
                 
                 Please remember to submit your proposal before the call deadline: {call_deadline}.
@@ -43,16 +42,15 @@ def send_email_proposal_received(uuid, request):
 
         if proposal.status_is_submitted() and not proposal.submitted_mail_sent:
             subject = 'Swiss Polar Institute - Proposal submitted'
-            view_url = request.build_absolute_uri(reverse('proposal-detail', kwargs={'uuid': uuid}))
             body = textwrap.dedent(f'''\
                 Thank you for submitting your proposal: "{proposal.title}" for the call {proposal.call.long_name}.
                 
-                You can view your submitted proposal here: {view_url} .
+                You can view your submitted proposal here: {display_url} .
                                 
                 ''')
 
             body += footer
-            
+
             send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, recipient_list)
             proposal.submitted_mail_sent = True
             proposal.save()
@@ -64,9 +62,17 @@ class ProposalThankYouView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        uuid = kwargs['uuid']
+
         context['proposal'] = Proposal.objects.get(uuid=kwargs['uuid'])
 
-        send_email_proposal_received(kwargs['uuid'], self.request)
+        context['display_url'] = display_url = self.request.build_absolute_uri(
+            reverse('proposal-detail', kwargs={'uuid': uuid}))
+
+        context['update_url'] = update_url = self.request.build_absolute_uri(
+            reverse('proposal-update', kwargs={'uuid': uuid}))
+
+        send_email_proposal_received(uuid, display_url, update_url)
 
         return context
 

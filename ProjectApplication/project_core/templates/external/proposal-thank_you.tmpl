@@ -5,9 +5,9 @@
 {% block body_contents %}
     <div class="container" role="main">
         {% include 'common/_logo.tmpl' %}
-        <H1>{% if proposal.status_is_draft %}Proposal draft saved
+        <h1>{% if proposal.status_is_draft %}Proposal draft saved
         {% elif proposal.status_is_submitted %}Proposal submitted
-        {% endif %}</H1>
+        {% endif %}</h1>
 
         {% include 'common/_messages-box.tmpl' %}
 
@@ -15,33 +15,31 @@
             <br>
             <div class="alert alert-warning" role="alert"><h5><strong>Please copy and retain this link to be able to
                 edit and submit your proposal.</strong></h5>
-                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
-                    {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}</a>
+                <a href="{{ update_url }}">{{ update_url }}</a>
                 <br><br>
                 <h5>Ensure you
-                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-update' uuid=uuid %}">
-                    make any final changes and submit</a> your proposal before the call deadline.
-                {% include 'common/_submitted_cannot_modify_text.tmpl' %}
-            </h5>
+                    <a href="{{ update_url }}">
+                        make any final changes and submit</a> your proposal before the call deadline.
+                    {% include 'common/_submitted_cannot_modify_text.tmpl' %}
+                </h5>
 
             </div>
             <br>
             <H5>Thank you for saving a <strong>draft</strong> of your proposal.
-                The SPI team remains at your disposal for questions at {% include 'common/_email_link_or_dash.tmpl' with email='spi-grants@epfl.ch' %}</H5>
+                The SPI team remains at your disposal for questions
+                at {% include 'common/_email_link_or_dash.tmpl' with email='spi-grants@epfl.ch' %}</H5>
             <br>
 
         {% elif proposal.status_is_submitted %}
             <br>
             <div class="alert alert-success" role="alert"><h5><strong>Please copy and retain this link</strong>.
-                You will need it to
-                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-detail' uuid=uuid %}">
-                    view</a> your proposal.
+                You will need it to <a href="{{ display_url }}">view</a> your proposal.
             </h5>
-                <a href="{{ request.scheme }}://{{ request.get_host }}{% url 'proposal-detail' uuid=uuid %}">
-                    {{ request.scheme }}://{{ request.get_host }}{% url 'proposal-detail' uuid=uuid %}</a></p>
+                <a href="{{ display_url }}">{{ display_url }}</a></p>
             </div>
             <br>
-            <H5>Thank you for submitting your proposal. The SPI team remains at your disposal for questions at {% include 'common/_email_link_or_dash.tmpl' with email='spi-grants@epfl.ch' %}</H5>
+            <H5>Thank you for submitting your proposal. The SPI team remains at your disposal for questions
+                at {% include 'common/_email_link_or_dash.tmpl' with email='spi-grants@epfl.ch' %}</H5>
 
         {% else %}
             <!-- Status is not draft or submitted? -->

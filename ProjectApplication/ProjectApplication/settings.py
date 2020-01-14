@@ -93,6 +93,10 @@ LOGGING = {
     },
 }
 
+# https://docs.djangoproject.com/en/3.0/ref/settings/#secure-proxy-ssl-header
+# Make sure that nginx is doing what's described in the link above
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 def secrets_file(file_name, optional_path=None):
     """ First try optional_path, then $HOME/.file_name, then /run/secrets/file_name, else raises an exception"""
 
