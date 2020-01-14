@@ -12,6 +12,7 @@ from ..widgets import XDSoftYearMonthDayPickerInput
 class ProposalForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput())
 
+
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
         self._in_management = kwargs.pop('in_management', False)
@@ -24,6 +25,9 @@ class ProposalForm(ModelForm):
             self.fields['call_id'].initial = self.instance.call.id
         else:
             self.fields['call_id'].initial = self._call.id
+
+        self.fields['start_date'].input_formats = ['%d-%m-%Y']
+        self.fields['end_date'].input_formats = ['%d-%m-%Y']
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

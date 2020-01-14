@@ -97,6 +97,9 @@ class CallForm(forms.ModelForm):
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
 
+        self.fields['call_open_date'].input_formats = ['%d-%m-%Y %H:%M']
+        self.fields['submission_deadline'].input_formats = ['%d-%m-%Y %H:%M']
+
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
