@@ -66,7 +66,8 @@ class PersonPositionMixin:
             person_position, created = PersonPosition.objects.get_or_create(
                 person=physical_person,
                 academic_title=person__academic_title,
-                group=person__group
+                group=person__group,
+                career_stage=None
             )
 
             person_position.organisation_names.set(person__organisations)
