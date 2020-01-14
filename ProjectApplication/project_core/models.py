@@ -423,6 +423,7 @@ class PhysicalPerson(CreateModify):
             return None
 
         year, month = self.phd_date.split('-')
+        month = int(month)
         if month < 1 or month > 12:
             return f'{month}-{year}'
 
