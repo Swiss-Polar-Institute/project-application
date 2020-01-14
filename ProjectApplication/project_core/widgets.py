@@ -22,7 +22,7 @@ class XDSoftYearMonthDayHourMinutePickerInput(DateTimeInput):
 class XDSoftYearMonthDayPickerInput(DateInput):
     def __init__(self, *args, **kwargs):
         if 'format' not in kwargs:
-            kwargs['format'] = '%Y-%m-%d'
+            kwargs['format'] = '%d-%m-%Y'
         super().__init__(*args, **kwargs)
 
     template_name = 'widgets/xdsoft_year_month_day_picker.tmpl'

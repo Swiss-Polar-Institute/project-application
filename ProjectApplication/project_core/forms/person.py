@@ -27,7 +27,11 @@ class PersonForm(Form):
             career_stage_initial = self.person_position.career_stage
             gender_initial = self.person_position.person.gender
             email_initial = self.person_position.main_email()
-            phd_date_initial = self.person_position.person.phd_date
+
+            if self.person_position.person.phd_date:
+                # In the database is always saved as yyyy-mm (validator in the model) but it's visualized as mm-yyyy
+                phd_date_parts = self.person_position.person.phd_date.split('-')
+                phd_date_initial = f'{phd_date_parts[1]}-{phd_date_parts[0]}'
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                initial=academic_title_initial)
@@ -48,11 +52,11 @@ class PersonForm(Form):
 
         self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
                                                   label='Date of PhD',
-                                                  help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format yyyy-mm).',
+                                                  help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm-yyyy).',
                                                   required=False,
                                                   widget=XDSoftYearMonthPickerInput,
-                                                  validators=[RegexValidator(regex='^[0-9]{4}-[0-9]{2}$',
-                                                                             message='Format is yyyy-mm',
+                                                  validators=[RegexValidator(regex='^[0-9]{2}-[0-9]{4}$',
+                                                                             message='Format is mm-yyyy',
                                                                              code='Invalid format')])
 
         self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
@@ -112,6 +116,18 @@ class PersonForm(Form):
             return None
 
         return person_position
+
+    def clean_phd_date(self):
+        if 'phd_date' not in self.cleaned_data:
+            return None
+
+        # It has the correct format mm-yyyy because the field has a validator
+        # In the DB it's always yyyy-mm because the model has this validator (consistent with general mysql date format)
+        month, year = self.cleaned_data['phd_date'].split('-')
+        return f'{month}-{year}'
+
+    def clean(self):
+        super().clean()
 
     def save_person(self):
         if self.person_position and self.person_position.person:
