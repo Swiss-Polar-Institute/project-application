@@ -2,7 +2,7 @@ import hashlib
 import io
 import uuid as uuid_lib
 
-from botocore.exceptions import EndpointConnectionError
+from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, RegexValidator
@@ -693,7 +693,9 @@ class ProposalQAFile(CreateModify):
         try:
             return utils.bytes_to_human_readable(self.file.size)
         except EndpointConnectionError:
-            return 'Unknown'
+            return 'Unknown -EndpointConnectionError'
+        except ClientError:
+            return 'Unknown -ClientError'
 
     def save(self, *args, **kwargs):
         if self.file:
