@@ -19,8 +19,11 @@
     <ul>
         <li>Fixed PhD date not appearing on the proposal view</li>
         <li>Fixed problem that would have avoided to create a proposal if there are to proposals with the same applicant
-            name and two different career stages also appears as Overarching Project supervisor. The problem happened
-            for the current call or all the calls of SPI in the future
+            name and two different career stages: if an Overarching Project supervisor appeared as well it didn't work.
+            This would have been a problem now or in the future (when is more likely that this would have happened)
+        </li>
+        <li>
+            Fixed PhD not being updated if the Applicant was also the Overall Project Supervisor
         </li>
     </ul>
 
@@ -31,7 +34,7 @@
         </li>
         <li>Send mail notifications on Draft Saved or Draft Submitted to the applicant email address</li>
         <li>Added possibility of alerting via email to Carles/Jen/John on certain events. At the moment this is not
-            used
+            used but the infrastructure is ready
         </li>
     </ul>
 
