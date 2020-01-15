@@ -245,7 +245,7 @@ while f'ADMIN_{i}' in os.environ:
     ADMINS.append(name_email.split(','))
     i += 1
 
-DEFAULT_FROM_EMAIL = os.environ['FROM_EMAIL']
+DEFAULT_FROM_EMAIL = SERVER_EMAIL = os.environ['FROM_EMAIL']
 EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']

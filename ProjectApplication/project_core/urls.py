@@ -6,6 +6,7 @@ from django.views.i18n import JavaScriptCatalog
 from .views import common
 from .views import external
 from .views import management
+from django.views.defaults import server_error
 
 urlpatterns = [
     path('', external.homepage.Homepage.as_view(), name='homepage'),
@@ -78,5 +79,7 @@ urlpatterns = [
          name='autocomplete-organisation-names'),
     path('autocomplete/keywords/',
          common.autocomplete.KeywordsAutocomplete.as_view(create_field='name'),
-         name='autocomplete-keywords')
+         name='autocomplete-keywords'),
+
+    path('raises500/', server_error),
 ]
