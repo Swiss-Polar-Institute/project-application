@@ -5,7 +5,6 @@ from django import forms
 from django.forms import ModelForm
 from django.utils.safestring import mark_safe
 
-from project_core.utils_fields import set_format_date_field
 from ..models import Proposal, ProposalStatus
 from ..widgets import XDSoftYearMonthDayPickerInput
 
@@ -27,8 +26,8 @@ class ProposalForm(ModelForm):
         else:
             self.fields['call_id'].initial = self._call.id
 
-        set_format_date_field(self.fields['start_date'])
-        set_format_date_field(self.fields['end_date'])
+        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
+        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

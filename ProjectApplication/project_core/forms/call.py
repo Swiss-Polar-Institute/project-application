@@ -6,8 +6,6 @@ from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
 
 from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory, FundingInstrument
-from ..widgets import DateTimePickerWidget
-from ..utils_fields import set_format_date_field, set_format_date_time_field
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput
 
 
@@ -98,8 +96,8 @@ class CallForm(forms.ModelForm):
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
 
-        set_format_date_time_field(self.fields['call_open_date'])
-        set_format_date_time_field(self.fields['submission_deadline'])
+        XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['call_open_date'])
+        XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['submission_deadline'])
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
