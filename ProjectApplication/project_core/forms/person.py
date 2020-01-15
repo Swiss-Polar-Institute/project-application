@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, ValidationError
 from django.forms import Form
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
@@ -124,6 +124,11 @@ class PersonForm(Form):
         # It has the correct format mm-yyyy because the field has a validator
         # In the DB it's always yyyy-mm because the model has this validator (consistent with general mysql date format)
         month, year = self.cleaned_data['phd_date'].split('-')
+
+        month_int = int(month)
+        if month_int < 1 or month_int > 12:
+            raise ValidationError(f'Invalid month: {month}', code='invalid', params={'value': month})
+
         return f'{year}-{month}'
 
     def clean(self):
