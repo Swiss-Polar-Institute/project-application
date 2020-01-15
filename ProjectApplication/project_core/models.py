@@ -15,6 +15,9 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
 import calendar
+import logging
+
+logger = logging.getLogger('project_core')
 
 
 class CreateModify(models.Model):
@@ -693,8 +696,10 @@ class ProposalQAFile(CreateModify):
         try:
             return utils.bytes_to_human_readable(self.file.size)
         except EndpointConnectionError:
+            logger.warning(f'NOTIFY: ProposalQAFile {self.id} EndpointConnectionError')
             return 'Unknown -EndpointConnectionError'
         except ClientError:
+            logger.warning(f'NOTIFY: ProposalQAFile {self.id} ClientError')
             return 'Unknown -ClientError'
 
     def save(self, *args, **kwargs):
