@@ -46,14 +46,23 @@ class PersonPositionMixin:
             person_position.group = person__group
             person_position.academic_title = person__academic_title
             person_position.organisation_names.set(person__organisations)
-            person_position.save()
+            # Updates only the fields that might have been updated. See below the explanation for
+            # person__physical_person.save(update_fields)
+
+            # Note that organisation_names is saved (even not in update_fields) since it's a many-to-many
+            person_position.save(update_fields=['group', 'academic_title'])
 
             person__physical_person = person_position.person
             assert person__physical_person
 
             person__physical_person.first_name = person__physical_person__first_name
             person__physical_person.surname = person__physical_person__surname
-            person__physical_person.save()
+
+            # update_fields is required because only first_name and surname can have changed from this form
+            # The problem that this solve is that: if the applicant is the same as the overarching project supervisor
+            # and the applicant was updating the PhD date of the applicant: the PhD date was updated twice in the database:
+            # the new PhD date and then when saving the overarching project it was reverting to the previous date
+            person__physical_person.save(update_fields=['first_name', 'surname'])
 
             return person_position
 
@@ -105,12 +114,8 @@ class ProjectOverarchingForm(ModelForm, PersonPositionMixin):
         self.helper.form_tag = False
         self._add_person_fields()
 
-        # self.fields['id'] = None
-        # self.fields['id'].widget = forms.HiddenInput()
-
         if self.instance:
             self._set_person(self.instance.leader)
-            # self.fields['id'] = self.instance.pk
 
         self.helper.layout = Layout(
             Div(
