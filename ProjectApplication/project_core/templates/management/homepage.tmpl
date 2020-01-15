@@ -18,9 +18,9 @@
     Fixes:
     <ul>
         <li>Fixed "Date of PhD" not appearing on the proposal view</li>
-        <li>Fixed problem that would have avoided to create a proposal if there are to proposals with the same applicant
-            name and two different career stages: if an Overarching Project supervisor appeared as well it didn't work.
-            This would have been a problem now or in the future (when is more likely that this would have happened)
+        <li>Fixed problem that would have prevented a user creating proposal if there were two proposals with the same applicant
+            name and two different career stages: if an Overarching Project supervisor appeared, it also didn't work.
+            This would have been a problem now or in the future (when it is more likely that this would have happened)
         </li>
         <li>
             Fixed "Date of PhD" not being updated if the Applicant was also the Overall Project Supervisor
@@ -29,15 +29,14 @@
 
     Improvements:
     <ul>
-        <li>Date/date time picker widgets to select a date: using a Javascript widget: it works the same in all the
+        <li>Date/date time picker widgets to select a date: using a Javascript widget. This works the same in all
             browsers and operating systems
         </li>
         <li>Send mail notifications on Draft Saved or Draft Submitted to the applicant email address</li>
-        <li>Added possibility of alerting via email to Carles/Jen/John on certain events. At the moment this is not
-            used but the infrastructure is ready
+        <li>Added email alerts to Carles/Jen/John when certain events happen.
         </li>
         <li>Improves "Date of PhD" month validator. "Date of PhD" is not of a date type because it doesn't include
-            the day (it's saved as string) so it needs special manual validation instead of the standard out of the box
+            the day (it's saved as a string) so it needs special manual validation instead of the standard out of the box
             system validation for dates
         </li>
     </ul>
