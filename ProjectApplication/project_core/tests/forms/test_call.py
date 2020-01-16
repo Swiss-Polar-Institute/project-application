@@ -12,10 +12,8 @@ class CallFormTest(TestCase):
 
     def test_call(self):
         call_data = dict_to_multivalue_dict(
-            {'call_open_date_0': '2020-01-01',
-             'call_open_date_1': '10:00',
-             'submission_deadline_0': '2020-01-31',
-             'submission_deadline_1': '12:00',
+            {'call_open_date': '01-01-2020 10:00',
+             'submission_deadline': '31-01-2020 12:00',
              'long_name': 'GreenLAnd Circumnavigation Expedition 2',
              'description': 'Cool, cold',
              'budget_maximum': '100000',
@@ -33,10 +31,8 @@ class CallFormTest(TestCase):
 
     def test_deadline_too_early(self):
         call_data = dict_to_multivalue_dict(
-            {'call_open_date_0': '2022-01-15',
-             'call_open_date_1': '10:00',
-             'submission_deadline_0': '2022-01-01',
-             'submission_deadline_1': '12:00',
+            {'call_open_date': '15-01-2022 10:00',
+             'submission_deadline': '01-01-2022 12:00',
              'long_name': 'GreenLAnd Circumnavigation Expedition 2',
              'description': 'Cool, cold',
              'budget_maximum': '100000',
