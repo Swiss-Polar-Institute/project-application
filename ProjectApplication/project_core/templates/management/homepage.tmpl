@@ -12,14 +12,13 @@
 
     <h2>Version deployed on staging on 15/01/2020</h2>
     <p>
-        (this version will be deployed on production at a later stage when having been tested and we have an email
-        notification for the scientists)
+        (this version will be deployed on production when it has been tested)
     </p>
     Fixes:
     <ul>
         <li>Fixed "Date of PhD" not appearing on the proposal view</li>
         <li>Fixed problem that would have prevented an applicant creating a proposal if there were previously two
-            proposals with the same applicant's name with two different career stages and now this name is an
+            proposals with the same applicant name with two different career stages and now this name is an
             Overarching project supervisor
         </li>
         <li>
@@ -29,15 +28,29 @@
 
     Improvements:
     <ul>
-        <li>Date/date time picker widgets to select a date: using a Javascript widget. This works the same in all
-            browsers and operating systems
+        <li>Date/date time picker widgets to select a date: using a Javascript widget instead of the browser's native
+            widget. This works the same across all browsers (previously we had problems on Safari, Internet Explorer)
+            and different operating
+            systems. As well as being more intuitive now, it also gives us more control on how it looks
         </li>
-        <li>Send mail notifications on Draft Saved or Draft Submitted to the applicant email address</li>
-        <li>Added email alerts to Carles/Jen (John to be added) when certain events happen
+        <li>Send mail notifications on Draft Saved or Draft Submitted to the applicant email address (thanks John for
+            helping to create the <a href="mailto:spi-notifications@epfl.ch">spi-notifications@epfl.ch</a> email
+            address)
+        </li>
+        <li>Added email alerts to Carles/Jen (John to be added) when certain events happen. For example if a file
+            attachment
+            should be available on the object storage but it's not currently accessible
         </li>
         <li>Improves "Date of PhD" month validator. "Date of PhD" is not of a date type because it doesn't include
-            the day (it's saved as a string) so it needs special manual validation instead of the standard out of the
-            box system validation for dates. All done now
+            the day (it's saved as a string) so it needs special validation instead of the standard from the system. All
+            done now.
+        </li>
+        <li>
+            We've written <a
+                href="https://c4science.ch/w/swiss_polar_institute_data_and_it_infrastructure_and_applictions/spi_projects_application/">internal
+            documentation</a> on different topics about the application and <a
+                href="https://c4science.ch/w/swiss_polar_institute_data_and_it_infrastructure_and_applictions/">server
+            setup</a> (please follow links to see the full documentation; ask Jen or Carles if you can't access it)
         </li>
     </ul>
 
