@@ -121,6 +121,9 @@ class PersonForm(Form):
         if 'phd_date' not in self.cleaned_data:
             return None
 
+        if self.cleaned_data['phd_date'] == '':
+            return None
+
         # It has the correct format mm-yyyy because the field has a validator
         # In the DB it's always yyyy-mm because the model has this validator (consistent with general mysql date format)
         month, year = self.cleaned_data['phd_date'].split('-')
