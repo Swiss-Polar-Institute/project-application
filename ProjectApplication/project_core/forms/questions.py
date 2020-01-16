@@ -6,7 +6,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
 
 from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion
+import logging
 
+logger = logging.getLogger('project_core')
 
 class Questions(Form):
     def __init__(self, *args, **kwargs):
@@ -98,8 +100,10 @@ class Questions(Form):
                             defaults={'file': answer})
                     except EndpointConnectionError:
                         all_good = False
+                        logger.warning(f'NOTIFY: Saving file for question failed (proposal: {proposal.id} call_question: {call_question.id}) -EndpointConnectionError')
                     except botocore.exceptions.ClientError:
                         all_good = False
+                        logger.warning(f'NOTIFY: Saving file for question failed (proposal: {proposal.id} call_question: {call_question.id}) -ClientError')
 
         return all_good
 
