@@ -72,8 +72,6 @@ CallQuestionItemFormSet = inlineformset_factory(
 
 class CallForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        # print(type(args[0]))
-        # print(args[0].getlist('call_form-budget_categories'))
         super().__init__(*args, **kwargs)
 
         if self.instance.pk:

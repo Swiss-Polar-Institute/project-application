@@ -1,5 +1,7 @@
+import calendar
 import hashlib
 import io
+import logging
 import uuid as uuid_lib
 
 from botocore.exceptions import EndpointConnectionError, ClientError
@@ -14,8 +16,6 @@ from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
-import calendar
-import logging
 
 logger = logging.getLogger('project_core')
 
@@ -66,7 +66,8 @@ class FundingInstrument(CreateModify):
     """Details of a funding instrument. This is the highest level of something to which a call can be attributed.
     For example, an exploratory Grant is the funding instrument, and the annual round of applications would come as part
     of a call."""
-    long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False)
+    long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False,
+                                 unique=True)
     short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60,
                                   blank=True, null=True)
     description = models.TextField(

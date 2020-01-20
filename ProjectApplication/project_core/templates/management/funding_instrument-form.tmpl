@@ -9,5 +9,10 @@
         <h1>Creating funding instrument</h1>
     {% endif %}
 
-    {% crispy form %}
+    <form method="post" action="{{ action_url }}">
+        {% csrf_token %}
+        {% crispy form %}
+
+        {% include 'common/_submit-button.tmpl' %}
+    </form>
 {% endblock %}
