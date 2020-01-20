@@ -5,6 +5,7 @@ from project_core.models import CreateModify, FundingInstrument, Call
 
 class TemplateVariableName(CreateModify):
     name = models.CharField(help_text='{{ name }} in the text where this gets replaced', max_length=200)
+    default = models.CharField(help_text="Default value if a Call doesn't override it", max_length=200)
     description = models.CharField(help_text='Definition of a variable', max_length=200)
 
     def __str__(self):

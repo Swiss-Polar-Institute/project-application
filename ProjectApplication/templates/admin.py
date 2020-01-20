@@ -4,8 +4,8 @@ import templates.models
 
 
 class TemplateVariableNameAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', )
-    ordering = ['name', 'description', ]
+    list_display = ('name', 'default', 'description', )
+    ordering = ['name', 'default', 'description', ]
 
 
 class FundingInstrumentVariableTemplateAdmin(admin.ModelAdmin):
