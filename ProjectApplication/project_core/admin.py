@@ -3,9 +3,6 @@ from django.contrib import admin
 import project_core.models
 
 
-# Register your models here.
-
-
 class StepTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
     ordering = ['name', 'description', ]

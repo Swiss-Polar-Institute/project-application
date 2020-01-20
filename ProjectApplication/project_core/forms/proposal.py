@@ -29,6 +29,11 @@ class ProposalForm(ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
 
+        new_text = FundingInstrumentText.objects.get(funding_instrument=self._call.funding_instrument,
+                                                     description=ReplacebeableText.objects.get(anchor='start_date'))
+
+        self.fields['start_date'].help_text = self.fields['start_date'].help_text.replace('{{precise_region_help_text}}', new_text)
+
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
@@ -132,7 +137,7 @@ class ProposalForm(ModelForm):
                       'title': 'Name of the proposed field trip',
                       'location': 'Name of more precise location of where the proposed field trip would take place (not coordinates)',
                       'keywords': 'Please select / add at least 5 keywords that describe the proposed field trip',
-                      'start_date': "Date on which the field trip to be funded by SPI, is expected to start. \
+                      'start_date': "Date on which the {{precise_region_help_text}} to be funded by SPI, is expected to start. \
                                     If a calendar doesn't appear when clicking on this field, please enter the date in the format dd-mm-yyyy. If all else fails, please use another browser, such as Firefox.",
                       'end_date': "Date on which the field trip to be funded by SPI, is expected to end. \
                                     If a calendar doesn't appear when clicking on this field, please enter the date in the format dd-mm-yyyy. If all else fails, please use another browser, such as Firefox.",
