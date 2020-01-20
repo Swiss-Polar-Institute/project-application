@@ -8,6 +8,7 @@
     {% else %}
         <h1>Creating funding instrument</h1>
     {% endif %}
+    {% include 'common/_messages-box.tmpl' %}
 
     <form method="post" action="{{ action_url }}">
         {% csrf_token %}

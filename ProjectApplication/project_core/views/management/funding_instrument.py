@@ -90,8 +90,6 @@ class FundingInstrumentUpdateView(TemplateView):
             messages.success(request, 'Funding instrument has been saved')
             return redirect(reverse('funding-instrument-detail', kwargs={'pk': funding_instrument.pk}))
 
-        context = super().get_context_data(**kwargs)
-
         context['form'] = funding_instrument_form
         context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
 
