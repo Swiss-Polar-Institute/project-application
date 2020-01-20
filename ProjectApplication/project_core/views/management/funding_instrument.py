@@ -64,7 +64,7 @@ class FundingInstrumentUpdateView(TemplateView):
         assert 'pk' in kwargs
 
         funding_instrument = FundingInstrument.objects.get(pk=kwargs['pk'])
-        context['form'] = FundingInstrumentForm(instance=funding_instrument, prefix=FUNDING_INSTRUMENT_FORM_NAME)
+        context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(instance=funding_instrument, prefix=FUNDING_INSTRUMENT_FORM_NAME)
 
         context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
         context['active_section'] = 'calls'
@@ -90,7 +90,7 @@ class FundingInstrumentUpdateView(TemplateView):
             messages.success(request, 'Funding instrument has been saved')
             return redirect(reverse('funding-instrument-detail', kwargs={'pk': funding_instrument.pk}))
 
-        context['form'] = funding_instrument_form
+        context[FUNDING_INSTRUMENT_FORM_NAME] = funding_instrument_form
         context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
 
         context['active_section'] = 'calls'

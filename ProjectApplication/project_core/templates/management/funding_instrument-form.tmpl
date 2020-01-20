@@ -12,7 +12,10 @@
 
     <form method="post" action="{{ action_url }}">
         {% csrf_token %}
-        {% crispy form %}
+        {% crispy funding_instrument_form %}
+
+        <h2>Template variables</h2>
+        {% crispy template_variables_form %}
 
         {% include 'common/_submit-button.tmpl' %}
     </form>
