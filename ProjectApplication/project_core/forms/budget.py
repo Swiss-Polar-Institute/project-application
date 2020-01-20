@@ -55,17 +55,23 @@ class BudgetItemForm(forms.Form):
 
         budget_amount = 0
 
-        amount = cleaned_data['amount'] or 0
-        details = cleaned_data['details'] or ''
         category = BudgetCategory.objects.get(id=cleaned_data['category'])
+
+        if 'amount' not in cleaned_data:
+            self.add_error('amount', 'Please write a number (do not use thousands separator if you have a problem) {}'.format(category))
+            amount = 0
+        else:
+            amount = cleaned_data['amount']
+
+        details = cleaned_data['details'] or ''
 
         budget_amount += amount
 
         if amount > 0 and details == '':
-            self.add_error('details', 'Please fill in details'.format(category))
+            self.add_error('details', 'Please fill in details {}'.format(category))
 
         if amount < 0:
-            self.add_error('amount', 'Cannot be negative'.format(category))
+            self.add_error('amount', 'Cannot be negative {}'.format(category))
 
         return cleaned_data
 
