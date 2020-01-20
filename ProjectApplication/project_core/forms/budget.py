@@ -61,7 +61,7 @@ class BudgetItemForm(forms.Form):
             self.add_error('amount', 'Please write a number (do not use thousands separator if you have a problem) {}'.format(category))
             amount = 0
         else:
-            amount = cleaned_data['amount']
+            amount = cleaned_data['amount'] or 0
 
         details = cleaned_data['details'] or ''
 
