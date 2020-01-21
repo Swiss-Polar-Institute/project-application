@@ -6,7 +6,7 @@
         </tr>
     </thead>
     <tbody>
-    {% for template_variable in fundinginstrument.fundinginstrumentvariabletemplate_set.all %}
+    {% for template_variable in template_variables %}
         <tr>
             <td>{{ template_variable.name }}</td>
             <td>{{ template_variable.value }}</td>

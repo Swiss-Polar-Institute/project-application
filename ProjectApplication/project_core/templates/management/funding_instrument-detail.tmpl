@@ -6,7 +6,8 @@
     <br>
     {% include 'common/_messages-box.tmpl' %}
 
-    <a class="float-sm-right btn btn-primary" href="{% url 'funding-instrument-update' pk=object.id %}">Edit funding instrument</a>
+    <a class="float-sm-right btn btn-primary" href="{% url 'funding-instrument-update' pk=object.id %}">Edit funding
+        instrument</a>
     <h1>Funding instrument details</h1>
 
     <p></p>
@@ -15,5 +16,5 @@
     <p><strong>Description:</strong><br>{{ object.description }}</p>
 
     <h1>Templates variables</h1>
-    {% include '_table-template_variables.tmpl' %}
+    {% include '_table-template_variables.tmpl' with template_variables=fundinginstrument.fundinginstrumentvariabletemplate_set.all %}
 {% endblock %}

@@ -70,5 +70,7 @@
         <p></p>
     {% endfor %}
 
+    {% include '_table-template_variables.tmpl' with template_variables=call.callvariabletemplate_set.all %}
+
     <p></p>
 {% endblock %}

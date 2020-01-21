@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory
+from templates.utils import copy_template_variables_from_funding_instrument_to_call
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -82,6 +83,8 @@ class CallView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        new_call = False
+
         if 'id' in kwargs:
             call = Call.objects.get(id=kwargs['id'])
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
@@ -94,6 +97,7 @@ class CallView(TemplateView):
 
         else:
             # creates a call
+            new_call = True
             call_form = CallForm(request.POST, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, prefix=CALL_QUESTION_FORM_NAME)
             context['call_action_url'] = reverse('call-add')
@@ -105,6 +109,9 @@ class CallView(TemplateView):
         if call_form.is_valid() and call_question_form.is_valid():
             call = call_form.save()
             call_question_form.save()
+
+            if new_call:
+                copy_template_variables_from_funding_instrument_to_call(call)
 
             messages.success(request, 'Call has been saved')
             return redirect(reverse('management-call-detail', kwargs={'id': call.id}) + '?action={}'.format(action))
