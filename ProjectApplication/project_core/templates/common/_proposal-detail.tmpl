@@ -31,12 +31,15 @@
 {% endwith %}
 <p></p>
 <h3>Proposal details</h3>
-<strong>Geographical areas:</strong>
+<strong>Geographical focus:</strong>
 {% for area in proposal.geographical_areas.all %}
     {{ area }}{% if not forloop.last %}, {% endif %}
 {% endfor %}
 <br>
-<strong>Location:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.location %}
+<strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.location %}
+<br>
+<strong>Keywords:</strong> {% for keyword in proposal.keywords.all %}{{ keyword }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
 
 <div class="row">
     <div class="col-4">
@@ -97,7 +100,7 @@
 {% endif %}
 <p></p>
 <h3>Data agreement</h3>
-<strong>Agreed to data
+<strong>Agreed to privacy
     policy:</strong> {% include 'common/_check-icon.tmpl' with value=proposal.applicant.privacy_policy %}<br>
 <strong>Agreed to contact
     newsletter:</strong> {% include 'common/_check-icon.tmpl' with value=proposal.applicant.contact_newsletter %}

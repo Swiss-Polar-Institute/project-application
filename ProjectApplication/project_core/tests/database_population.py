@@ -3,7 +3,8 @@ from datetime import datetime
 from django.contrib.auth.models import User
 
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
-    PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName
+    PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
+    Proposal, PersonPosition, PhysicalPerson
 
 
 def create_call():
@@ -126,3 +127,43 @@ def create_organisation_names():
 
     return organisation1, organisation2
 
+
+def create_physical_person():
+    physical_person, _ = PhysicalPerson.objects.get_or_create(first_name='John',
+                                                              surname='Smith',
+                                                              )
+
+    return physical_person
+
+
+def create_academic_title():
+    academic_title, _ = PersonTitle.objects.get_or_create(title='Mr')
+    return academic_title
+
+
+def create_person_position():
+    physical_person = create_physical_person()
+    academic_title = create_academic_title()
+
+    person_position, _ = PersonPosition.objects.get_or_create(person=physical_person,
+                                                              academic_title=academic_title)
+
+    return person_position
+
+
+def create_proposal():
+    applicant = create_person_position()
+    call = create_call()
+
+    proposal_status_draft = create_proposal_status()[1]
+
+    proposal, _ = Proposal.objects.get_or_create(title='A test proposal',
+                                              start_date='2010-12-10',
+                                              end_date='2011-11-11',
+                                              duration_months=2,
+                                              applicant=applicant,
+                                              proposal_status=proposal_status_draft,
+                                              eligibility=Proposal.ELIGIBILITYNOTCHECKED,
+                                              call=call)
+
+    return proposal
