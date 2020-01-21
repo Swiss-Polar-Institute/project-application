@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 
 {% block contents %}
-    <H1>{{ call_action }} call</H1>
+    <h1>{{ call_action }} call</h1>
 
     {% include 'common/_messages-box.tmpl' %}
 
@@ -12,6 +12,11 @@
         {% crispy call_form %}
 
         {% include 'management/_form_call_question.tmpl' %}
+
+        {% if call_action != 'Create' %}
+            <h1>Template variables</h1>
+            {% include 'template_variables-form.tmpl' %}
+        {% endif %}
 
         {% include 'common/_submit-button.tmpl' %}
         <p></p>

@@ -9,6 +9,7 @@ from django.views.generic import TemplateView, CreateView, DetailView
 from project_core.forms.funding_instrument import FundingInstrumentForm
 from project_core.models import FundingInstrument
 from templates.forms.template_variables import TemplateVariableItemFormSet
+from templates.forms.template_variables import TemplateVariableItemFormSet
 
 FUNDING_INSTRUMENT_FORM_NAME = 'funding_instrument_form'
 TEMPLATE_VARIABLES_FORM_NAME = 'template_variables_form'

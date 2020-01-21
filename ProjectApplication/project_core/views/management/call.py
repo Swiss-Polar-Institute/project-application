@@ -7,6 +7,8 @@ from django.views.generic import TemplateView
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory
 from templates.utils import copy_template_variables_from_funding_instrument_to_call
+from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
+from templates.forms.template_variables import TemplateVariableItemFormSet
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -63,6 +65,7 @@ class CallView(TemplateView):
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
+            context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(call=call, prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('management-call-update', kwargs={'id': call_id})
             context['call_action'] = 'Edit'
             context['active_subsection'] = 'calls-list'
@@ -70,6 +73,7 @@ class CallView(TemplateView):
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(prefix=CALL_QUESTION_FORM_NAME)
+            context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('call-add')
             context['call_action'] = 'Create'
             context['active_subsection'] = 'call-add'
@@ -89,29 +93,42 @@ class CallView(TemplateView):
             call = Call.objects.get(id=kwargs['id'])
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, instance=call, prefix=CALL_QUESTION_FORM_NAME)
+            template_variables_form = TemplateVariableItemFormSet(request.POST, call=call, prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
             context['call_action_url'] = reverse('management-call-update', kwargs={'id': call.id})
             call_action = 'Edit'
             action = 'updated'
             active_subsection = 'calls-list'
 
+            to_validate = [call_form, call_question_form, template_variables_form]
+
         else:
             # creates a call
             new_call = True
             call_form = CallForm(request.POST, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, prefix=CALL_QUESTION_FORM_NAME)
+
             context['call_action_url'] = reverse('call-add')
             context['call_action'] = 'Create'
             call_action = 'Create'
             action = 'created'
             active_subsection = 'call-add'
 
-        if call_form.is_valid() and call_question_form.is_valid():
+            to_validate = [call_form, call_question_form]
+
+        all_valid = True
+        for form in to_validate:
+            valid_form = form.is_valid()
+            all_valid = all_valid and valid_form
+
+        if all_valid:
             call = call_form.save()
             call_question_form.save()
 
             if new_call:
                 copy_template_variables_from_funding_instrument_to_call(call)
+            else:
+                template_variables_form.save_into_call(call)
 
             messages.success(request, 'Call has been saved')
             return redirect(reverse('management-call-detail', kwargs={'id': call.id}) + '?action={}'.format(action))
