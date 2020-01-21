@@ -15,8 +15,9 @@
         {% crispy funding_instrument_form %}
 
         <h2>Template variables</h2>
-        {% crispy template_variables_form %}
+        {% include 'template_variables-form.tmpl' %}
 
         {% include 'common/_submit-button.tmpl' %}
     </form>
+    <br>
 {% endblock %}

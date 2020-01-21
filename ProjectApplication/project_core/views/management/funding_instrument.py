@@ -8,8 +8,10 @@ from django.views.generic import TemplateView, CreateView, DetailView
 
 from project_core.forms.funding_instrument import FundingInstrumentForm
 from project_core.models import FundingInstrument
+from templates.forms.template_variables import TemplateVariableItemFormSet
 
 FUNDING_INSTRUMENT_FORM_NAME = 'funding_instrument_form'
+TEMPLATE_VARIABLES_FORM_NAME = 'template_variables_form'
 
 
 class FundingInstrumentList(TemplateView):
@@ -64,7 +66,10 @@ class FundingInstrumentUpdateView(TemplateView):
         assert 'pk' in kwargs
 
         funding_instrument = FundingInstrument.objects.get(pk=kwargs['pk'])
-        context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(instance=funding_instrument, prefix=FUNDING_INSTRUMENT_FORM_NAME)
+        context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(instance=funding_instrument,
+                                                                      prefix=FUNDING_INSTRUMENT_FORM_NAME)
+        context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(funding_instrument=funding_instrument,
+                                                                            prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
         context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
         context['active_section'] = 'calls'
@@ -81,26 +86,33 @@ class FundingInstrumentUpdateView(TemplateView):
             funding_instrument_form = FundingInstrumentForm(request.POST, instance=funding_instrument,
                                                             prefix=FUNDING_INSTRUMENT_FORM_NAME)
 
+
+
         else:
             funding_instrument_form = FundingInstrumentForm(request.POST, prefix=FUNDING_INSTRUMENT_FORM_NAME)
 
-        if funding_instrument_form.is_valid():
+        template_variables_form = TemplateVariableItemFormSet(request.POST, prefix=TEMPLATE_VARIABLES_FORM_NAME)
+
+        if funding_instrument_form.is_valid() and template_variables_form.is_valid():
             funding_instrument = funding_instrument_form.save()
+
+            template_variables_form.save_into_funding_instrument(funding_instrument)
 
             messages.success(request, 'Funding instrument has been saved')
             return redirect(reverse('funding-instrument-detail', kwargs={'pk': funding_instrument.pk}))
 
         context[FUNDING_INSTRUMENT_FORM_NAME] = funding_instrument_form
+        context[TEMPLATE_VARIABLES_FORM_NAME] = template_variables_form
+
         context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'funding-instruments-list'
         context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
 
-        messages.error(request, 'Funding Instrument not saved. Please correct the errors inthe form and try again')
+        messages.error(request, 'Funding Instrument not saved. Please correct the errors in the form and try again')
 
         return render(request, 'management/funding_instrument-form.tmpl', context)
-
 
 
 # class FundingInstrumentUpdateView(FundingInstrumentMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):

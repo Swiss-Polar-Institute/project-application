@@ -126,3 +126,6 @@ class BudgetFormSet(BaseFormSet):
 
 
 BudgetItemFormSet = formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=0)
+
+# It's used like:
+# budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)

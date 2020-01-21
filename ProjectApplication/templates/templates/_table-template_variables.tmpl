@@ -1,0 +1,17 @@
+<table class="table table-striped table-sm">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for template_variable in fundinginstrument.fundinginstrumentvariabletemplate_set.all %}
+        <tr>
+            <td>{{ template_variable.name }}</td>
+            <td>{{ template_variable.value }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
