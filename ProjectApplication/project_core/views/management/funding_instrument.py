@@ -44,39 +44,33 @@ class AddCrispySubmitButtonMixin:
         return form
 
 
-class FundingInstrumentCreateView(FundingInstrumentMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
-    template_name = 'management/funding_instrument-form.tmpl'
-    model = FundingInstrument
-    success_message = 'Funding instrument created'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'funding-instrument-add'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
-
-        return context
-
-
-class FundingInstrumentUpdateView(TemplateView):
+class FundingInstrumentView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        assert 'pk' in kwargs
+        if 'pk' in kwargs:
+            funding_instrument = FundingInstrument.objects.get(pk=kwargs['pk'])
+            context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(instance=funding_instrument,
+                                                                          prefix=FUNDING_INSTRUMENT_FORM_NAME)
+            context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(funding_instrument=funding_instrument,
+                                                                                prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
-        funding_instrument = FundingInstrument.objects.get(pk=kwargs['pk'])
-        context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(instance=funding_instrument,
-                                                                      prefix=FUNDING_INSTRUMENT_FORM_NAME)
-        context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(funding_instrument=funding_instrument,
-                                                                            prefix=TEMPLATE_VARIABLES_FORM_NAME)
+            context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
+            context['active_section'] = 'calls'
+            context['active_subsection'] = 'funding-instruments-list'
+            context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
 
-        context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'funding-instruments-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+            return render(request, 'management/funding_instrument-form.tmpl', context)
 
-        return render(request, 'management/funding_instrument-form.tmpl', context)
+        else:
+            context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(prefix=FUNDING_INSTRUMENT_FORM_NAME)
+            context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(prefix=TEMPLATE_VARIABLES_FORM_NAME)
+
+            context['active_section'] = 'calls'
+            context['active_subsection'] = 'funding-instrument-add'
+            context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+
+            return render(request, 'management/funding_instrument-form.tmpl', context)
 
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)

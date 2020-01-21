@@ -29,11 +29,6 @@ class ProposalForm(ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
 
-        new_text = FundingInstrumentText.objects.get(funding_instrument=self._call.funding_instrument,
-                                                     description=ReplacebeableText.objects.get(anchor='start_date'))
-
-        self.fields['start_date'].help_text = self.fields['start_date'].help_text.replace('{{precise_region_help_text}}', new_text)
-
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 

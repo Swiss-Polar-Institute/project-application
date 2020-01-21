@@ -64,7 +64,7 @@ class TemplateVariableFormSet(BaseFormSet):
                     name=template_variable)
                 existing_value = funding_instrument_value.value
             except ObjectDoesNotExist:
-                existing_value = None
+                existing_value = template_variable.default
 
             initial_templates.append({'id': template_variable.id,
                                       'template_variable': template_variable,
