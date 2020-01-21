@@ -1,5 +1,7 @@
+import calendar
 import hashlib
 import io
+import logging
 import uuid as uuid_lib
 
 from botocore.exceptions import EndpointConnectionError, ClientError
@@ -14,8 +16,6 @@ from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
-import calendar
-import logging
 
 logger = logging.getLogger('project_core')
 
