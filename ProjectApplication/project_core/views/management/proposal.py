@@ -25,15 +25,21 @@ class ProposalsExportCsvSummary(View):
 
         writer = csv.writer(response)
 
-        writer.writerow(['Academic Title', 'First Name', 'Surname', 'Institutions', 'Proposal Title', 'Keywords',
-                         'Requested Amount (CHF)', 'Geographic Focus'])
+        headers = ['Academic Title', 'First Name', 'Surname', 'Institutions', 'Proposal Title', 'Keywords',
+                         'Requested Amount (CHF)', 'Geographic Focus']
 
         proposals = Proposal.objects.all()
 
         if call_id is not None:
+            # We are filtering by a specific Call: we are exporting proposals for only call_id
             proposals.filter(call_id=call_id)
+        else:
+            # We are adding the Call Name: we are exporting proposals for all the calls
+            headers = ['Call Name'] + headers
 
-        for proposal in proposals:
+        writer.writerow(headers)
+
+        for proposal in proposals.order_by('id'):
             academic_title = proposal.applicant.academic_title
             first_name = proposal.applicant.person.first_name
             surname = proposal.applicant.person.surname
@@ -45,8 +51,14 @@ class ProposalsExportCsvSummary(View):
             requested_amount = proposal.total_budget()
             geographic_focus = proposal.geographical_areas_enumeration()
 
-            writer.writerow([academic_title, first_name, surname, institutions, title, keywords, requested_amount,
-                             geographic_focus])
+            row = [academic_title, first_name, surname, institutions, title, keywords, requested_amount,
+                             geographic_focus]
+
+            if call_id is None:
+                # We are adding the Call name: we are exporting proposals for different calls
+                row = [proposal.call.long_name] + row
+
+            writer.writerow(row)
 
         return response
 
