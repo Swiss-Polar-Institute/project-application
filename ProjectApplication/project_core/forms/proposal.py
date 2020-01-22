@@ -7,11 +7,10 @@ from django.utils.safestring import mark_safe
 
 from ..models import Proposal, ProposalStatus
 from ..widgets import XDSoftYearMonthDayPickerInput
-
+from templates.utils import apply_templates
 
 class ProposalForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput())
-
 
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
@@ -33,6 +32,8 @@ class ProposalForm(ModelForm):
         self.helper.form_tag = False
 
         self.fields['duration_months'].widget.attrs['min'] = 0
+
+        apply_templates(self.fields, self._call)
 
         divs = []
         divs.append(
@@ -129,7 +130,7 @@ class ProposalForm(ModelForm):
                    }
 
         help_texts = {'geographical_areas': 'Select all options describing the geographical focus of this proposal',
-                      'title': 'Name of the proposed field trip',
+                      'title': 'Name of the proposed {{ activity }}',
                       'location': 'Name of more precise location of where the proposed field trip would take place (not coordinates)',
                       'keywords': 'Please select / add at least 5 keywords that describe the proposed field trip',
                       'start_date': "Date on which the {{precise_region_help_text}} to be funded by SPI, is expected to start. \

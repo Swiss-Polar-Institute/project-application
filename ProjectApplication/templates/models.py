@@ -9,7 +9,7 @@ class TemplateVariableName(CreateModify):
     description = models.CharField(help_text='Definition of a variable', max_length=200)
 
     def __str__(self):
-        return f'{self.name}'
+        return f'{self.name}-{self.default}'
 
 
 class AbstractVariableTemplate(CreateModify):

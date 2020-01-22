@@ -27,7 +27,7 @@
     <h3>Applicant</h3>
     {% crispy person_form %}
 
-    <h2>Proposed field trip</h2>
+    <h2>Proposed {{ activity }}</h2>
     {% crispy proposal_form %}
 
     {% if overarching_project_question %}
