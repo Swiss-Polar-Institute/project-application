@@ -1,3 +1,4 @@
+import csv
 import io
 import textwrap
 
@@ -9,6 +10,56 @@ from django.views.generic import TemplateView
 
 from project_core.models import Proposal, Call
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
+
+
+class ProposalsExportCsvSummary(View):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        call_id = kwargs.get('call', None)
+        response = HttpResponse(content_type='text/csv')
+
+        filename = create_file_name('proposal-summary-{}-{}.csv', call_id)
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        writer = csv.writer(response)
+
+        writer.writerow(['Academic Title', 'First Name', 'Surname', 'Institutions', 'Proposal Title', 'Keywords',
+                         'Requested Amount (CHF)', 'Geographic Focus'])
+
+        proposals = Proposal.objects.all()
+
+        if call_id is not None:
+            proposals.filter(call_id=call_id)
+
+        for proposal in proposals:
+            academic_title = proposal.applicant.academic_title
+            first_name = proposal.applicant.person.first_name
+            surname = proposal.applicant.person.surname
+
+            institutions = ', '.join(proposal.applicant.organisations_ordered_by_name_str())
+            title = proposal.title
+
+            keywords = proposal.keywords_enumeration()
+            requested_amount = proposal.total_budget()
+            geographic_focus = proposal.geographical_areas_enumeration()
+
+            writer.writerow([academic_title, first_name, surname, institutions, title, keywords, requested_amount,
+                             geographic_focus])
+
+        return response
+
+
+def create_file_name(name_specification, call_id):
+    if call_id is None:
+        call_short_name = 'all'
+    else:
+        call_short_name = Call.objects.get(id=call_id).short_name
+
+    date = timezone.now().strftime('%Y%m%d-%H%M%S')
+    filename = name_specification.format(call_short_name.replace(' ', '_'), date)
+    return filename
 
 
 class ProposalsExportExcel(View):
@@ -241,9 +292,7 @@ class ProposalsExportExcel(View):
         date = timezone.now().strftime('%Y%m%d-%H%M%S')
         call = None
         if call_id:
-            call = Call.objects.get(id=call_id)
-            proposals = proposals.filter(call_id=call_id)
-            filename = 'proposals-{}-{}.xlsx'.format(call.short_name.replace(' ', '_'), date)
+            filename = create_file_name('proposals-{}-{}.xlsx', call_id)
         else:
             filename = 'proposals-all-{}.xlsx'.format(date)
 

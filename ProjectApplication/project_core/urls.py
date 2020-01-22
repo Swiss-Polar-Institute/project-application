@@ -34,6 +34,10 @@ urlpatterns = [
          name='management-proposal-detail'),
     path('management/proposals/export/excel/<int:call>/', management.proposal.ProposalsExportExcel.as_view(),
          name='management-export-proposals-for-call-excel'),
+    path('management/proposals/export/csv/summary/<int:call>/', management.proposal.ProposalsExportCsvSummary.as_view(),
+         name='management-export-proposals-csv-summary-call'),
+    path('management/proposals/export/csv/summary/', management.proposal.ProposalsExportCsvSummary.as_view(),
+         name='management-export-proposals-csv-summary-all'),
 
     path('management/call/list', management.call.CallsList.as_view(), name='management-calls-list'),
     path('management/call/add/', management.call.CallView.as_view(), name='call-add'),
