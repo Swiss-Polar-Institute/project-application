@@ -6,9 +6,9 @@ from django.views.generic import TemplateView
 
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory
-from templates.utils import copy_template_variables_from_funding_instrument_to_call
+from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
-from templates.forms.template_variables import TemplateVariableItemFormSet
+from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'

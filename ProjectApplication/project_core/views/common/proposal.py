@@ -23,7 +23,7 @@ from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
 from ...templatetags.in_management import in_management
-from templates.utils import get_template_value
+from variable_templates.utils import get_template_value
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -191,8 +191,7 @@ class AbstractProposalView(TemplateView):
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
 
-        context['activity'] =
-        context['activity'] = 'Party'
+        context['activity'] = get_template_value('activity', call)
 
         return render(request, self.form_template, context)
 

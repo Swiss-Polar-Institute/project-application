@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 
 from ..models import Proposal, ProposalStatus
 from ..widgets import XDSoftYearMonthDayPickerInput
-from templates.utils import apply_templates
+from variable_templates.utils import apply_templates
 
 class ProposalForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput())

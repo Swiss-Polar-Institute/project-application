@@ -8,6 +8,7 @@ from django.utils.datastructures import MultiValueDict
 from project_core.models import Proposal
 from project_core.tests import database_population
 from datetime import datetime
+from variable_templates.tests import database_population as database_population_variable_templates
 
 class ProposalFormTest(TestCase):
     def setUp(self):
@@ -21,6 +22,7 @@ class ProposalFormTest(TestCase):
         self._keywords = database_population.create_keywords()
         self._career_stages = database_population.create_career_stages()
         database_population.create_proposal_status()
+        database_population_variable_templates.create_default_variables()
 
     def _proposal_post_data(self):
         return MultiValueDict(

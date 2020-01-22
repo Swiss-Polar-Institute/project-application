@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-import templates.models
+import variable_templates.models
 
 
 class TemplateVariableNameAdmin(admin.ModelAdmin):
@@ -18,6 +18,6 @@ class CallVariableTemplateAdmin(admin.ModelAdmin):
     ordering = ['name', 'value']
 
 
-admin.site.register(templates.models.TemplateVariableName, TemplateVariableNameAdmin)
-admin.site.register(templates.models.FundingInstrumentVariableTemplate, FundingInstrumentVariableTemplateAdmin)
-admin.site.register(templates.models.CallVariableTemplate, CallVariableTemplateAdmin)
+admin.site.register(variable_templates.models.TemplateVariableName, TemplateVariableNameAdmin)
+admin.site.register(variable_templates.models.FundingInstrumentVariableTemplate, FundingInstrumentVariableTemplateAdmin)
+admin.site.register(variable_templates.models.CallVariableTemplate, CallVariableTemplateAdmin)

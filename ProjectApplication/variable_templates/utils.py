@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from project_core.models import Call
-from templates.models import CallVariableTemplate, TemplateVariableName
+from variable_templates.models import CallVariableTemplate, TemplateVariableName
 from django.core.exceptions import ObjectDoesNotExist
 
 
@@ -32,19 +32,22 @@ def apply_templates(fields: OrderedDict, call):
                 field[1].help_text = field[1].help_text.replace(f'{{{{ {template_name} }}}}',
                                                                 template_name_values[template_name])
 
-def get_template_value(name, call):
-    value = None
 
+def get_template_value(name, call):
+    # Returns the template value of the template name for call or the default
     try:
-        template_variable_name = TemplateVariableName.objects.get(name=name)
-        value = template_variable_name.default
+        template_variable_name = CallVariableTemplate.objects.get(call=call, name__name=name)
+        value = template_variable_name.value
+        return value
+
     except ObjectDoesNotExist:
         pass
 
     try:
-    template_variable_name
+        template_variable_name = TemplateVariableName.objects.get(name=name)
+        value = template_variable_name.default
+        return value
+    except ObjectDoesNotExist:
+        pass
 
-
-    assert value is not None
-
-    return value
+    assert False
