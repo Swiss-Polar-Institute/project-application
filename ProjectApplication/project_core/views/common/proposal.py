@@ -190,6 +190,10 @@ class AbstractProposalView(TemplateView):
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
 
+        if timezone.now() > call.submission_deadline:
+            messages.warning(request,
+                             'New proposals for this call cannot be accepted because the submission deadline has now passed.')
+
         return render(request, self.form_template, context)
 
     @transaction.atomic
