@@ -88,6 +88,7 @@ class CallView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         new_call = False
+        template_variables_form = None # avoids warning referenced without initialization
 
         if 'id' in kwargs:
             call = Call.objects.get(id=kwargs['id'])

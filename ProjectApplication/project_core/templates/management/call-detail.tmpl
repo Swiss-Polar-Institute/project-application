@@ -68,9 +68,17 @@
         <strong>Description:</strong> {{ question.question_description }}<br>
         <strong>Answer required:</strong> {% include 'common/_check-icon.tmpl' with value=question.answer_required %}
         <p></p>
+    {% empty %}
+        No questions for this call
     {% endfor %}
+    <p>
+    </p>
 
-    {% include '_table-template_variables.tmpl' with template_variables=call.callvariabletemplate_set.all %}
-
+    <h2>Template variables</h2>
+    {% if call.callvariabletemplate_set.all %}
+        {% include '_table-template_variables.tmpl' with template_variables=call.callvariabletemplate_set.all %}
+    {% else %}
+        No template variables in this call
+    {% endif %}
     <p></p>
 {% endblock %}

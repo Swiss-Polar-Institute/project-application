@@ -15,6 +15,6 @@
     <p><strong>Short name:</strong><br>{% include 'common/_value-or-dash.tmpl' with value=object.short_name %}</p>
     <p><strong>Description:</strong><br>{{ object.description }}</p>
 
-    <h1>Templates variables</h1>
+    <h1>Template variables</h1>
     {% include '_table-template_variables.tmpl' with template_variables=fundinginstrument.fundinginstrumentvariabletemplate_set.all %}
 {% endblock %}
