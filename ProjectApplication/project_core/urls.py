@@ -18,7 +18,7 @@ urlpatterns = [
     path('proposal/<uuid:uuid>/', external.proposal.ProposalDetailView.as_view(),
          name='proposal-detail'),
     path('review/proposal/<uuid:uuid>/', external.proposal.ProposalDetailView.as_view(),
-         name='proposal-detail'),
+         name='review-proposal-detail'),
     path('proposal/thank-you/<uuid:uuid>/', external.proposal.ProposalThankYouView.as_view(),
          name='proposal-thank-you'),
     path('proposal/cannot-modify/', external.proposal.ProposalCannotModify.as_view(),
