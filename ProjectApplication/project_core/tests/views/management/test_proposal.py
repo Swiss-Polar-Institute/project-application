@@ -1,10 +1,18 @@
 from django.test import TestCase
-from ....models import Call
+
+from ... import database_population
+from ....views.management import proposal
 
 
 class CallFormTest(TestCase):
     def setUp(self):
-        pass
+        self._call = database_population.create_call()
 
     def test_create_file_name(self):
-        call = Call(long_name='Polar Access Fund 2020', short_name='PAF2020')
+        filename = proposal.create_file_name('this-is-{}-something-{}.csv', self._call.id)
+        self.assertRegex(filename, '^this-is-GreenLAnd_Circumnavigation_Expedition-something-[0-9]{8}-[0-9]{6}\.csv$')
+
+        self._call.short_name = 'GLACE'
+        self._call.save()
+        filename = proposal.create_file_name('this-is-{}-something-{}.csv', self._call.id)
+        self.assertRegex(filename, '^this-is-GLACE-[0-9]{8}-[0-9]{6}\.csv$')
