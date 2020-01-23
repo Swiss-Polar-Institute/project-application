@@ -1,12 +1,12 @@
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.urls import include, path
+from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
 
 from .views import common
 from .views import external
 from .views import management
-from django.views.defaults import server_error
 
 urlpatterns = [
     path('', external.homepage.Homepage.as_view(), name='homepage'),
@@ -17,6 +17,8 @@ urlpatterns = [
          name='proposal-update'),
     path('proposal/<uuid:uuid>/', external.proposal.ProposalDetailView.as_view(),
          name='proposal-detail'),
+    path('review/proposal/<uuid:uuid>/', external.proposal.ProposalDetailView.as_view(),
+         name='review-proposal-detail'),
     path('proposal/thank-you/<uuid:uuid>/', external.proposal.ProposalThankYouView.as_view(),
          name='proposal-thank-you'),
     path('proposal/cannot-modify/', external.proposal.ProposalCannotModify.as_view(),
@@ -32,6 +34,10 @@ urlpatterns = [
          name='management-proposal-detail'),
     path('management/proposals/export/excel/<int:call>/', management.proposal.ProposalsExportExcel.as_view(),
          name='management-export-proposals-for-call-excel'),
+    path('management/proposals/export/csv/summary/<int:call>/', management.proposal.ProposalsExportCsvSummary.as_view(),
+         name='management-export-proposals-csv-summary-call'),
+    path('management/proposals/export/csv/summary/', management.proposal.ProposalsExportCsvSummary.as_view(),
+         name='management-export-proposals-csv-summary-all'),
 
     path('management/call/list', management.call.CallsList.as_view(), name='management-calls-list'),
     path('management/call/add/', management.call.CallView.as_view(), name='call-add'),

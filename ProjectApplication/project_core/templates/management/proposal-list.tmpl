@@ -41,7 +41,7 @@
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'management-proposal-detail' uuid=proposal.uuid %}">View</a>
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'proposal-detail' uuid=proposal.uuid %}">Link</a>
+                           href="{% url 'review-proposal-detail' uuid=proposal.uuid %}">Review Link</a>
 
                     </td>
                 </tr>
@@ -51,6 +51,17 @@
     {% else %}
         No submitted proposals in the system
     {% endif %}
+    <p>
+        {% if call_filter %}
+            <a class="btn btn-primary btn-sm"
+               href="{% url 'management-export-proposals-csv-summary-call' call=call_filter.id %}">Export as CSV</a>
+        {% else %}
+            <a class="btn btn-primary btn-sm"
+               href="{% url 'management-export-proposals-csv-summary-all' %}">Export as CSV</a>
+        {% endif %}
+    </p>
+
+
     <script type="text/javascript" class="init">
         $(document).ready(function () {
             $('table.display').DataTable({
