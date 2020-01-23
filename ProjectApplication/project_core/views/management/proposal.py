@@ -53,7 +53,6 @@ class ProposalsExportCsvSummary(View):
             keywords = proposal.keywords_enumeration()
             requested_amount = proposal.total_budget()
             geographic_focus = proposal.geographical_areas_enumeration()
-            review_link = self.request.build_absolute_uri(reverse('review-proposal-detail', kwargs={'uuid': proposal.uuid}))
 
             row = [academic_title, first_name, surname, institutions, title, keywords, requested_amount,
                              geographic_focus]
