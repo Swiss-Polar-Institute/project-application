@@ -1,6 +1,7 @@
 import csv
 import io
 import textwrap
+from django.urls import reverse
 
 import xlsxwriter
 from django.http import HttpResponse
@@ -65,12 +66,16 @@ class ProposalsExportCsvSummary(View):
 
 def create_file_name(name_specification, call_id):
     if call_id is None:
-        call_short_name = 'all'
+        call_name = 'all'
     else:
-        call_short_name = Call.objects.get(id=call_id).short_name
+        call = Call.objects.get(id=call_id)
+        if call.short_name:
+            call_name = call.short_name
+        else:
+            call_name = call.long_name
 
     date = timezone.now().strftime('%Y%m%d-%H%M%S')
-    filename = name_specification.format(call_short_name.replace(' ', '_'), date)
+    filename = name_specification.format(call_name.replace(' ', '_'), date)
     return filename
 
 
@@ -145,10 +150,10 @@ class ProposalsExportExcel(View):
     def _write_call(self, proposal, row, total_number_criteria):
         self._worksheet.set_row(row, 50)
         self._worksheet.set_row(row + 1, 100)
-
         column = 0
+        url = self.request.build_absolute_uri(reverse('proposal-detail', kwargs={'uuid': proposal.uuid}))
         self._worksheet.write(row, column, 'Proposal Number', self._white_header_format)
-        self._worksheet.write(row + 1, column, proposal.id, self._data_format)
+        self._worksheet.write_url(row + 1, column, url, string=str(proposal.id))
         self._worksheet.set_column(column, column, 15)
 
         column = 1
