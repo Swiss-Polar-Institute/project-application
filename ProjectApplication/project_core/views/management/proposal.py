@@ -154,7 +154,7 @@ class ProposalsExportExcel(View):
         self._worksheet.set_row(row, 50)
         self._worksheet.set_row(row + 1, 100)
         column = 0
-        url = self.request.build_absolute_uri(reverse('proposal-detail', kwargs={'uuid': proposal.uuid}))
+        url = self.request.build_absolute_uri(reverse('review-proposal-detail', kwargs={'uuid': proposal.uuid}))
         self._worksheet.write(row, column, 'Proposal Number', self._white_header_format)
         self._worksheet.write_url(row + 1, column, url, string=str(proposal.id))
         self._worksheet.set_column(column, column, 15)
