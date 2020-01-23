@@ -29,7 +29,7 @@ class ProposalsExportCsvSummary(View):
         writer = csv.writer(response)
 
         headers = ['Academic Title', 'First Name', 'Surname', 'Institutions', 'Proposal Title', 'Keywords',
-                         'Requested Amount (CHF)', 'Geographic Focus', 'Review Link']
+                         'Requested Amount (CHF)', 'Geographic Focus']
 
         proposals = Proposal.objects.all()
 
@@ -56,7 +56,7 @@ class ProposalsExportCsvSummary(View):
             review_link = self.request.build_absolute_uri(reverse('review-proposal-detail', kwargs={'uuid': proposal.uuid}))
 
             row = [academic_title, first_name, surname, institutions, title, keywords, requested_amount,
-                             geographic_focus, review_link]
+                             geographic_focus]
 
             if call_id is None:
                 # We are adding the Call name: we are exporting proposals for different calls
