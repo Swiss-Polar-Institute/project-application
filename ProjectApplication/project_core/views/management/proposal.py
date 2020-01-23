@@ -1,3 +1,4 @@
+import codecs
 import csv
 import io
 import textwrap
@@ -24,6 +25,7 @@ class ProposalsExportCsvSummary(View):
         filename = create_file_name('proposal-summary-{}-{}.csv', call_id)
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
+        response.write(codecs.BOM_UTF8)
         writer = csv.writer(response)
 
         headers = ['Academic Title', 'First Name', 'Surname', 'Institutions', 'Proposal Title', 'Keywords',
