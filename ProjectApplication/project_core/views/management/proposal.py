@@ -311,6 +311,7 @@ class ProposalsExportExcel(View):
         if call_id:
             call = Call.objects.get(id=call_id)
             filename = create_file_name('proposals-{}-{}.xlsx', call_id)
+            proposals = proposals.filter(call=call)
         else:
             filename = 'proposals-all-{}.xlsx'.format(date)
 

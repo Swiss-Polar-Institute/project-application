@@ -97,6 +97,7 @@ LOGGING = {
 # Make sure that nginx is doing what's described in the link above
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+
 def secrets_file(file_name, optional_path=None):
     """ First try optional_path, then $HOME/.file_name, then /run/secrets/file_name, else raises an exception"""
 
@@ -207,7 +208,6 @@ AWS_ACCESS_KEY_ID = os.environ['OBJECT_STORAGE_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = os.environ['OBJECT_STORAGE_SECRET_ACCESS_KEY']
 
 AWS_LOCATION = os.environ['OBJECT_STORAGE_PREFIX_LOCATION']
-
 
 if 'OBJECT_STORAGE_ENDPOINT_URL' in os.environ:
     AWS_S3_ENDPOINT_URL = os.environ['OBJECT_STORAGE_ENDPOINT_URL']
