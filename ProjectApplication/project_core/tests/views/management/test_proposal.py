@@ -1,7 +1,8 @@
 from django.test import TestCase
-from ....models import Call
-from ....views.management import proposal
+
 from ... import database_population
+from ....views.management import proposal
+
 
 class CallFormTest(TestCase):
     def setUp(self):
