@@ -185,7 +185,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # ]
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/management/'
+LOGIN_REDIRECT_URL = '/logged/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 

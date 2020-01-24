@@ -7,7 +7,7 @@
     <div class="container" role="main">
         {% include 'common/_logo.tmpl' %}
         <p>
-        <H1>Management login</H1>
+        <h1>Login</h1>
         <p>
             {% if form.errors %}
                 <p>Your username and password didn't match. Please try again.</p>
@@ -18,7 +18,7 @@
                 <p>Your account doesn't have access to this page. To proceed,
                     please login with an account that has access.</p>
             {% else %}
-                <p>Please login to enter the management area.</p>
+                <p>Please login to access the page you require.</p>
             {% endif %}
         {% endif %}
 
