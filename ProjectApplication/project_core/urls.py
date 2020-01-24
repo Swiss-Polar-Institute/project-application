@@ -68,10 +68,10 @@ urlpatterns = [
     path('logged/funding_instruments/', logged.funding_instrument.FundingInstrumentList.as_view(),
          name='funding-instruments-list'),
 
-    path('logged/contact/add', logged.contact.ContactsCreateView.as_view(), name='logged-contact-add'),
-    path('logged/contact/<int:pk>/', logged.contact.ContactDetailView.as_view(), name='contact-detail'),
-    path('logged/contact/<int:pk>/update', logged.contact.ContactUpdateView.as_view(), name='contact-update'),
-    path('logged/contacts/', logged.contact.ContactsListView.as_view(), name='logged-contacts-list'),
+    path('logged/person_position/add', logged.person_position.PersonPositionCreateView.as_view(), name='logged-person-position-add'),
+    path('logged/person_position/<int:pk>/', logged.person_position.PersonPositionDetailView.as_view(), name='person-position-detail'),
+    path('logged/person_position/<int:pk>/update', logged.person_position.PersonPositionUpdateView.as_view(), name='person-position-update'),
+    path('logged/person_position/', logged.person_position.PersonPositionsListView.as_view(), name='person-position-list'),
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',

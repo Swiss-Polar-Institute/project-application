@@ -1,5 +1,5 @@
 from . import call
-from . import contact
+from . import person_position
 from . import funding_instrument
 from . import homepage
 from . import proposal

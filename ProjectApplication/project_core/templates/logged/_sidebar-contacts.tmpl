@@ -3,12 +3,12 @@
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link {% if active == 'contacts-list' %}active{% endif %}"
-               href="{% url 'logged-contacts-list' %}">
+               href="{% url 'person-position-list' %}">
                 List people
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}" href="{% url 'logged-contact-add' %}">
+            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}" href="{% url 'logged-person-position-add' %}">
                 Create person
             </a>
         </li>

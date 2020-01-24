@@ -7,7 +7,7 @@ from project_core.forms.contacts import ContactForm
 from project_core.models import PersonPosition
 
 
-class ContactsListView(TemplateView):
+class PersonPositionsListView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -20,7 +20,7 @@ class ContactsListView(TemplateView):
         return render(request, 'logged/contact-list.tmpl', context)
 
 
-class ContactUpdateView(UpdateView):
+class PersonPositionUpdateView(UpdateView):
     template_name = 'logged/contact-form.tmpl'
     model = PersonPosition
     form_class = ContactForm
@@ -35,10 +35,10 @@ class ContactUpdateView(UpdateView):
         return context
 
     def get_success_url(self, **kwargs):
-        return reverse('contact-detail', kwargs={'pk': self.object.pk})
+        return reverse('person-position-detail', kwargs={'pk': self.object.pk})
 
 
-class ContactsCreateView(SuccessMessageMixin, CreateView):
+class PersonPositionCreateView(SuccessMessageMixin, CreateView):
     template_name = 'logged/contact-form.tmpl'
     model = PersonPosition
     success_message = 'Contact created'
@@ -54,10 +54,10 @@ class ContactsCreateView(SuccessMessageMixin, CreateView):
         return context
 
     def get_success_url(self, **kwargs):
-        return reverse('contact-detail', kwargs={'pk': self.object.pk})
+        return reverse('person-position-detail', kwargs={'pk': self.object.pk})
 
 
-class ContactDetailView(DetailView):
+class PersonPositionDetailView(DetailView):
     template_name = 'logged/contact-detail.tmpl'
     model = PersonPosition
 
@@ -71,7 +71,7 @@ class ContactDetailView(DetailView):
         return context
 
 
-class ContactMixin:
+class PersonPositionMixin:
     fields = ['person__first_name', 'person__surname']
 
     @property

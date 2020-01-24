@@ -22,7 +22,7 @@
             </li>
             {% if request|user_is_management %}
                 <li class="nav-item {% if active == 'contacts' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'logged-contacts-list' %}">People</a>
+                    <a class="nav-link" href="{% url 'person-position-list' %}">People</a>
                 </li>
             {% endif %}
             {% if request|user_is_management %}
