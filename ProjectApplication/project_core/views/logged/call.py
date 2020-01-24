@@ -62,7 +62,7 @@ class CallView(TemplateView):
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
-            context['call_action_url'] = reverse('management-call-update', kwargs={'id': call_id})
+            context['call_action_url'] = reverse('logged-call-update', kwargs={'id': call_id})
             context['call_action'] = 'Edit'
             context['active_subsection'] = 'calls-list'
 
@@ -87,7 +87,7 @@ class CallView(TemplateView):
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, instance=call, prefix=CALL_QUESTION_FORM_NAME)
 
-            context['call_action_url'] = reverse('management-call-update', kwargs={'id': call.id})
+            context['call_action_url'] = reverse('logged-call-update', kwargs={'id': call.id})
             call_action = 'Edit'
             action = 'updated'
             active_subsection = 'calls-list'
@@ -107,7 +107,7 @@ class CallView(TemplateView):
             call_question_form.save()
 
             messages.success(request, 'Call has been saved')
-            return redirect(reverse('management-call-detail', kwargs={'id': call.id}) + '?action={}'.format(action))
+            return redirect(reverse('logged-call-detail', kwargs={'id': call.id}) + '?action={}'.format(action))
 
         context = super().get_context_data(**kwargs)
 

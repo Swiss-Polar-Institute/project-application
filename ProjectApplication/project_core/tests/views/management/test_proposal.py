@@ -28,6 +28,6 @@ class ManagementProposalTest(TestCase):
         self.assertTrue(login)
 
         response = c.get(
-            reverse('management-export-proposals-csv-summary-call', args=[str(self._proposal.call.id)]))
+            reverse('logged-export-proposals-csv-summary-call', args=[str(self._proposal.call.id)]))
 
         self.assertContains(response, 'A test proposal')
