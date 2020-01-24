@@ -200,7 +200,7 @@ MESSAGE_TAGS = {
 
 mimetypes.init()
 
-LOGIN_CONTACT = 'Carles'
+LOGIN_CONTACT = 'SPI'
 
 AWS_DEFAULT_ACL = 'private'
 
