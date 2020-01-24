@@ -1,4 +1,4 @@
-{% extends 'management/_base_with_menus.tmpl' %}
+{% extends 'logged/_base_with_menus.tmpl' %}
 {% block subtitle %}Calls List{% endblock %}
 
 {% block contents %}
@@ -21,7 +21,7 @@
         <div class="tab-pane fade show active" id="open" role="tabpanel">
             <h1>Open calls</h1>
             {% if open_calls %}
-                {% include 'management/_table_of_calls.tmpl' with calls=open_calls table_id='open_calls' %}
+                {% include 'logged/_table_of_calls.tmpl' with calls=open_calls table_id='open_calls' %}
             {% else %}
                 No open calls at the moment.
             {% endif %}
@@ -29,7 +29,7 @@
         <div class="tab-pane fade active" id="future" role="tabpanel">
             <h1>Future calls</h1>
             {% if future_calls %}
-                {% include 'management/_table_of_calls.tmpl' with calls=future_calls table_id='future_calls' %}
+                {% include 'logged/_table_of_calls.tmpl' with calls=future_calls table_id='future_calls' %}
             {% else %}
                 No future calls at the moment.
             {% endif %}
@@ -37,7 +37,7 @@
         <div class="tab-pane fade active" id="closed" role="tabpanel">
             <h1>Closed calls</h1>
             {% if closed_calls %}
-                {% include 'management/_table_of_calls.tmpl' with calls=closed_calls table_id='closed_calls' %}
+                {% include 'logged/_table_of_calls.tmpl' with calls=closed_calls table_id='closed_calls' %}
             {% else %}
                 No past calls at the moment.
             {% endif %}

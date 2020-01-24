@@ -1,10 +1,10 @@
-{% extends 'management/_base_with_menus.tmpl' %}
+{% extends 'logged/_base_with_menus.tmpl' %}
 {% block subtitle %}Proposal list{% endblock %}
 
 {% block contents %}
     <h1>List of proposals</h1>
     {% if call_filter %}
-        For call: <a href="{% url 'management-call-detail' id=call_filter.id %}">{{ call_filter.long_name }}</a>
+        For call: <a href="{% url 'logged-call-detail' id=call_filter.id %}">{{ call_filter.long_name }}</a>
     {% else %}
         All calls
     {% endif %}
@@ -36,10 +36,10 @@
                     <td>{{ proposal.proposal_status.name }}</td>
                     <td>
                         <!-- <a class="btn btn-primary btn-xs"
-                           href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit</a>
+                           href="{% url 'logged-proposal-update' uuid=proposal.uuid %}">Edit</a>
                        -->
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'management-proposal-detail' uuid=proposal.uuid %}">View</a>
+                           href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}">View</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -51,10 +51,10 @@
     <p>
         {% if call_filter %}
             <a class="btn btn-primary btn-sm"
-               href="{% url 'management-export-proposals-csv-summary-call' call=call_filter.id %}">Export as CSV</a>
+               href="{% url 'logged-export-proposals-csv-summary-call' call=call_filter.id %}">Export as CSV</a>
         {% else %}
             <a class="btn btn-primary btn-sm"
-               href="{% url 'management-export-proposals-csv-summary-all' %}">Export as CSV</a>
+               href="{% url 'logged-export-proposals-csv-summary-all' %}">Export as CSV</a>
         {% endif %}
     </p>
 

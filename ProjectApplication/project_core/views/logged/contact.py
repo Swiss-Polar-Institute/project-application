@@ -15,13 +15,13 @@ class ContactsListView(TemplateView):
 
         context['active_section'] = 'contacts'
         context['active_subsection'] = 'contacts-list'
-        context['sidebar_template'] = 'management/_sidebar-contacts.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-contacts.tmpl'
 
-        return render(request, 'management/contact-list.tmpl', context)
+        return render(request, 'logged/contact-list.tmpl', context)
 
 
 class ContactUpdateView(UpdateView):
-    template_name = 'management/contact-form.tmpl'
+    template_name = 'logged/contact-form.tmpl'
     model = PersonPosition
     form_class = ContactForm
 
@@ -30,7 +30,7 @@ class ContactUpdateView(UpdateView):
 
         context['active_section'] = 'contacts'
         context['active_subsection'] = 'contacts-list'
-        context['sidebar_template'] = 'management/_sidebar-contacts.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-contacts.tmpl'
 
         return context
 
@@ -39,7 +39,7 @@ class ContactUpdateView(UpdateView):
 
 
 class ContactsCreateView(SuccessMessageMixin, CreateView):
-    template_name = 'management/contact-form.tmpl'
+    template_name = 'logged/contact-form.tmpl'
     model = PersonPosition
     success_message = 'Contact created'
     form_class = ContactForm
@@ -49,7 +49,7 @@ class ContactsCreateView(SuccessMessageMixin, CreateView):
 
         context['active_section'] = 'contacts'
         context['active_subsection'] = 'contacts-add'
-        context['sidebar_template'] = 'management/_sidebar-contacts.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-contacts.tmpl'
 
         return context
 
@@ -58,7 +58,7 @@ class ContactsCreateView(SuccessMessageMixin, CreateView):
 
 
 class ContactDetailView(DetailView):
-    template_name = 'management/contact-detail.tmpl'
+    template_name = 'logged/contact-detail.tmpl'
     model = PersonPosition
 
     def get_context_data(self, **kwargs):
@@ -66,7 +66,7 @@ class ContactDetailView(DetailView):
 
         context['active_section'] = 'contacts'
         context['active_subsection'] = 'contacts-list'
-        context['sidebar_template'] = 'management/_sidebar-contacts.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-contacts.tmpl'
 
         return context
 

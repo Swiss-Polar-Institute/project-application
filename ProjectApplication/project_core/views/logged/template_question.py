@@ -15,9 +15,9 @@ class TemplateQuestionList(TemplateView):
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'template-questions-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
-        return render(request, 'management/template_question-list.tmpl', context)
+        return render(request, 'logged/template_question-list.tmpl', context)
 
 
 class TemplateQuestionMixin:
@@ -38,7 +38,7 @@ class AddCrispySubmitButtonMixin:
 
 
 class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
-    template_name = 'management/template_question-form.tmpl'
+    template_name = 'logged/template_question-form.tmpl'
     model = TemplateQuestion
     success_message = 'Template question created'
 
@@ -47,13 +47,13 @@ class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMix
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'template-questions-add'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         return context
 
 
 class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
-    template_name = 'management/template_question-form.tmpl'
+    template_name = 'logged/template_question-form.tmpl'
     model = TemplateQuestion
     success_message = 'Template question updated'
 
@@ -62,13 +62,13 @@ class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMix
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'template-questions-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         return context
 
 
 class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
-    template_name = 'management/template_question-detail.tmpl'
+    template_name = 'logged/template_question-detail.tmpl'
     model = TemplateQuestion
 
     def get_context_data(self, **kwargs):
@@ -76,6 +76,6 @@ class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'template-questions-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         return context

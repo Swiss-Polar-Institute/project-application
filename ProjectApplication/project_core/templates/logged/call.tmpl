@@ -1,4 +1,4 @@
-{% extends 'management/_base_with_menus.tmpl' %}
+{% extends 'logged/_base_with_menus.tmpl' %}
 {% block subtitle %}Call{% endblock %}
 {% load crispy_forms_tags %}
 
@@ -11,7 +11,7 @@
         {% csrf_token %}
         {% crispy call_form %}
 
-        {% include 'management/_form_call_question.tmpl' %}
+        {% include 'logged/_form_call_question.tmpl' %}
 
         {% include 'common/_submit-button.tmpl' %}
         <p></p>

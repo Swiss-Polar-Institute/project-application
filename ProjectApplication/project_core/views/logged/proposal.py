@@ -380,7 +380,7 @@ class ProposalsExportExcel(View):
 
 
 class ProposalsList(TemplateView):
-    template_name = 'management/proposal-list.tmpl'
+    template_name = 'logged/proposal-list.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -395,28 +395,28 @@ class ProposalsList(TemplateView):
 
         context['active_section'] = 'proposals'
         context['active_subsection'] = 'proposals-list'
-        context['sidebar_template'] = 'management/_sidebar-proposals.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-proposals.tmpl'
 
         return context
 
 
 class ProposalDetailView(AbstractProposalDetailView):
-    template = 'management/proposal-detail.tmpl'
+    template = 'logged/proposal-detail.tmpl'
 
     extra_context = {'active_section': 'proposals',
                      'active_subsection': 'proposals-list',
-                     'sidebar_template': 'management/_sidebar-proposals.tmpl'}
+                     'sidebar_template': 'logged/_sidebar-proposals.tmpl'}
 
 
 class ProposalView(AbstractProposalView):
-    created_or_updated_url = 'management-proposal-detail'
-    form_template = 'management/proposal-form.tmpl'
+    created_or_updated_url = 'logged-proposal-detail'
+    form_template = 'logged/proposal-form.tmpl'
 
-    action_url_update = 'management-proposal-update'
-    action_url_add = 'management-proposal-add'
+    action_url_update = 'logged-proposal-update'
+    action_url_add = 'logged-proposal-add'
 
     success_message = 'Proposal updated'
 
     extra_context = {'active_section': 'proposals',
                      'active_subsection': 'proposals-list',
-                     'sidebar_template': 'management/_sidebar-proposals.tmpl'}
+                     'sidebar_template': 'logged/_sidebar-proposals.tmpl'}

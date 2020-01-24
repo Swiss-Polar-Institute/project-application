@@ -1,9 +1,9 @@
-{% extends 'management/_sidebar-base.tmpl' %}
+{% extends 'logged/_sidebar-base.tmpl' %}
 {% block sidebar_contents %}
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link {% if active == 'calls-list' %}active{% endif %}"
-               href="{% url 'management-calls-list' %}">
+               href="{% url 'logged-calls-list' %}">
                 List calls
             </a>
         </li>

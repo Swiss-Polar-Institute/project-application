@@ -1,12 +1,12 @@
-{% extends 'management/_sidebar-base.tmpl' %}
+{% extends 'logged/_sidebar-base.tmpl' %}
 {% block sidebar_contents %}
     <nav class="col-md-1 d-none d-md-block bg-light sidebar">
         <div class="sidebar-sticky">
             <ul class="nav flex-column">
                 <li class="nav-item">
-                    <a class="nav-link {% if active == 'home' %}active{% endif %}"
-                       href="{% url 'management-homepage' %}">
-                        Home
+                    <a class="nav-link {% if active == 'proposals-list' %}active{% endif %}"
+                       href="{% url 'logged-proposals-list' %}">
+                        List proposals
                     </a>
                 </li>
             </ul>

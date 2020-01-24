@@ -10,10 +10,10 @@ class Homepage(TemplateView):
         context = super().get_context_data(**kwargs)
 
         if user_is_reviewer(request):
-            return HttpResponseRedirect(reverse('management-proposals-list'))
+            return HttpResponseRedirect(reverse('logged-proposals-list'))
 
         context['active_section'] = 'home'
         context['active_subsection'] = 'home'
-        context['sidebar_template'] = 'management/_sidebar-homepage.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-homepage.tmpl'
 
-        return render(request, 'management/homepage.tmpl', context)
+        return render(request, 'logged/homepage.tmpl', context)

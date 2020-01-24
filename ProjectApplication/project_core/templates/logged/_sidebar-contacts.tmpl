@@ -1,14 +1,14 @@
-{% extends 'management/_sidebar-base.tmpl' %}
+{% extends 'logged/_sidebar-base.tmpl' %}
 {% block sidebar_contents %}
     <ul class="nav flex-column">
         <li class="nav-item">
             <a class="nav-link {% if active == 'contacts-list' %}active{% endif %}"
-               href="{% url 'management-contacts-list' %}">
+               href="{% url 'logged-contacts-list' %}">
                 List contacts
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}" href="{% url 'management-contact-add' %}">
+            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}" href="{% url 'logged-contact-add' %}">
                 Create contact
             </a>
         </li>

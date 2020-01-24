@@ -9,20 +9,20 @@
         <ul class="navbar-nav mr-auto justify-content-center d-flex flex-fill">
             {% if request|user_is_management %}
                 <li class="nav-item {% if active == 'home' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'management-homepage' %}">Home</a>
+                    <a class="nav-link" href="{% url 'logged-homepage' %}">Home</a>
                 </li>
             {% endif %}
             {% if request|user_is_management %}
                 <li class="nav-item {% if active == 'calls' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'management-calls-list' %}">Calls</a>
+                    <a class="nav-link" href="{% url 'logged-calls-list' %}">Calls</a>
                 </li>
             {% endif %}
             <li class="nav-item {% if active == 'proposals' %}active{% endif %}">
-                <a class="nav-link" href="{% url 'management-proposals-list' %}">Proposals</a>
+                <a class="nav-link" href="{% url 'logged-proposals-list' %}">Proposals</a>
             </li>
             {% if request|user_is_management %}
                 <li class="nav-item {% if active == 'contacts' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'management-contacts-list' %}">Contacts</a>
+                    <a class="nav-link" href="{% url 'logged-contacts-list' %}">Contacts</a>
                 </li>
             {% endif %}
             {% if request|user_is_management %}

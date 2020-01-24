@@ -86,7 +86,7 @@ class AbstractProposalDetailView(TemplateView):
                                                         'size': human_file_size,
                                                         }})
 
-        if request.user.groups.filter(name='management').exists():
+        if request.user.groups.filter(name='logged').exists():
             href = description = None
 
             if proposal.status_is_draft():
@@ -209,7 +209,7 @@ class AbstractProposalView(TemplateView):
             proposal = Proposal.objects.get(uuid=proposal_uuid)
             call = proposal.call
 
-            if not request.user.groups.filter(name='management').exists():
+            if not request.user.groups.filter(name='anagement').exists():
                 proposal_status = proposal.proposal_status
                 proposal_status_draft = ProposalStatus.objects.get(name='Draft')
 
@@ -335,7 +335,7 @@ class AbstractProposalView(TemplateView):
             else:
                 assert False
 
-            if not proposal_is_draft_or_submitted and not request.user.groups.filter(name='management').exists():
+            if not proposal_is_draft_or_submitted and not request.user.groups.filter(name='logged').exists():
                 return HttpResponseForbidden('Insufficient permissions to save the proposal with the selected status')
 
             if call.overarching_project_question:

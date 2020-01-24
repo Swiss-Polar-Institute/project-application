@@ -15,9 +15,9 @@ class FundingInstrumentList(TemplateView):
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'funding-instruments-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
-        return render(request, 'management/funding_instrument-list.tmpl', context)
+        return render(request, 'logged/funding_instrument-list.tmpl', context)
 
 
 class FundingInstrumentMixin:
@@ -38,7 +38,7 @@ class AddCrispySubmitButtonMixin:
 
 
 class FundingInstrumentCreateView(FundingInstrumentMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
-    template_name = 'management/funding_instrument-form.tmpl'
+    template_name = 'logged/funding_instrument-form.tmpl'
     model = FundingInstrument
     success_message = 'Funding instrument created'
 
@@ -47,13 +47,13 @@ class FundingInstrumentCreateView(FundingInstrumentMixin, AddCrispySubmitButtonM
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'funding-instrument-add'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         return context
 
 
 class FundingInstrumentUpdateView(FundingInstrumentMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
-    template_name = 'management/funding_instrument-form.tmpl'
+    template_name = 'logged/funding_instrument-form.tmpl'
     model = FundingInstrument
     success_message = 'Funding instrument updated'
 
@@ -62,13 +62,13 @@ class FundingInstrumentUpdateView(FundingInstrumentMixin, AddCrispySubmitButtonM
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'funding-instruments-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         return context
 
 
 class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
-    template_name = 'management/funding_instrument-detail.tmpl'
+    template_name = 'logged/funding_instrument-detail.tmpl'
     model = FundingInstrument
 
     def get_context_data(self, **kwargs):
@@ -76,6 +76,6 @@ class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'funding-instruments-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         return context
