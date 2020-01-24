@@ -11,7 +11,7 @@ class ContactsListView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['contacts'] = PersonPosition.objects.all()
+        context['contacts'] = PersonPosition.objects.filter(privacy_policy=True)
 
         context['active_section'] = 'contacts'
         context['active_subsection'] = 'contacts-list'

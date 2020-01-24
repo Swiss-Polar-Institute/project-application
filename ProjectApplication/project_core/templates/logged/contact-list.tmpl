@@ -2,7 +2,7 @@
 {% block subtitle %}Contact list{% endblock %}
 
 {% block contents %}
-    <h1>Contacts</h1>
+    <h1>People</h1>
     {% if contacts %}
         <table class="table table-stripped table-sm table-hover display">
             <thead>
@@ -10,6 +10,8 @@
                 <th>First name</th>
                 <th>Surname</th>
                 <th>Email</th>
+                <th>Privacy Policy</th>
+                <th>Contact newsletter</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -19,7 +21,10 @@
                 <tr>
                     <td>{{ contact.person.first_name }}</td>
                     <td>{{ contact.person.surname }}</td>
-                    <td>{% include 'common/_email_link_or_dash.tmpl' with email=contact.main_email %}
+                    <td>{% include 'common/_email_link_or_dash.tmpl' with email=contact.main_email %}</td>
+                    <td>{% include 'common/_check-icon.tmpl' with value=contact.privacy_policy %}</td>
+                    <td>{% include 'common/_check-icon.tmpl' with value=contact.contact_newsletter %}</td>
+
                     <td>{#<a class="btn btn-primary btn-xs"#}
                            {#href="{% url 'contact-update' pk=contact.id %}">Edit</a>#}
                         <a class="btn btn-primary btn-xs"
