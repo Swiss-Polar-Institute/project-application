@@ -186,7 +186,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # ]
 
 # Redirect to home URL after login (Default redirects to /accounts/profile/)
-LOGIN_REDIRECT_URL = '/management/'
+LOGIN_REDIRECT_URL = '/logged/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
@@ -201,7 +201,7 @@ MESSAGE_TAGS = {
 
 mimetypes.init()
 
-LOGIN_CONTACT = 'Carles'
+LOGIN_CONTACT = 'SPI'
 
 AWS_DEFAULT_ACL = 'private'
 

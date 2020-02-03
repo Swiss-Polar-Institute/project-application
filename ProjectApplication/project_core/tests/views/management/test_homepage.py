@@ -11,9 +11,9 @@ class CallFormTest(TestCase):
     def test_homepage_redirects(self):
         c = Client()
 
-        response = c.get(reverse('management-homepage'))
+        response = c.get(reverse('logged-homepage'))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '{}?next={}'.format(reverse('accounts-login'), reverse('management-homepage')))
+        self.assertEqual(response.url, '{}?next={}'.format(reverse('accounts-login'), reverse('logged-homepage')))
 
     def test_homepage(self):
         c = Client()
@@ -21,7 +21,7 @@ class CallFormTest(TestCase):
         login = c.login(username='unittest', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('management-homepage'))
+        response = c.get(reverse('logged-homepage'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Homepage')
         self.assertContains(response, 'User:')

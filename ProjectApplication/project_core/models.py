@@ -857,7 +857,7 @@ class Partner(models.Model):
         abstract = True
 
     def __str__(self):
-        return '{} ({}) - {}'.format(self.person, self.career_stage, self.role)
+        return '{} - {}'.format(self.person, self.role)
 
 
 class ProposalPartner(Partner):

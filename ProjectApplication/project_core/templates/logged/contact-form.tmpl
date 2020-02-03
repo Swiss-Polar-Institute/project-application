@@ -1,0 +1,14 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+{% block subtitle %}Contact{% endblock %}
+
+{% block contents %}
+    {% if form.instance.id %}
+        <h1>Editing person</h1>
+    {% else %}
+        <h1>Creating person</h1>
+    {% endif %}
+
+    {% include 'common/_messages-box.tmpl' %}
+    {% crispy form %}
+{% endblock %}

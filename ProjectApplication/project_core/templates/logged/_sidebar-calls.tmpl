@@ -1,0 +1,40 @@
+{% extends 'logged/_sidebar-base.tmpl' %}
+{% block sidebar_contents %}
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'calls-list' %}active{% endif %}"
+               href="{% url 'logged-calls-list' %}">
+                List calls
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'call-add' %}active{% endif %}" href="{% url 'call-add' %}">
+                Create call
+            </a>
+        </li>
+        <li>
+            <hr>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'funding-instruments-list' %}active{% endif %}"
+                href="{% url 'funding-instruments-list' %}">List funding
+                instruments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'funding-instrument-add' %}active{% endif %}"
+                href="{% url 'funding-instrument-add' %}">Create funding
+                instrument</a>
+        </li>
+        <li>
+            <hr>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'template-questions-list' %}active{% endif %}"
+               href="{% url 'template-questions-list' %}">List template questions</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'template-questions-add' %}active{% endif %}"
+               href="{% url 'template-question-add' %}">Create template question</a>
+        </li>
+    </ul>
+{% endblock %}

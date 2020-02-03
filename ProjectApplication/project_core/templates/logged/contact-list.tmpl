@@ -1,0 +1,48 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% block subtitle %}Contact list{% endblock %}
+
+{% block contents %}
+    <h1>People</h1>
+    {% if contacts %}
+        <table class="table table-stripped table-sm table-hover display">
+            <thead>
+            <tr>
+                <th>First name</th>
+                <th>Surname</th>
+                <th>Email</th>
+                <th>Privacy Policy</th>
+                <th>Contact newsletter</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for contact in contacts %}
+                <tr>
+                    <td>{{ contact.person.first_name }}</td>
+                    <td>{{ contact.person.surname }}</td>
+                    <td>{% include 'common/_email_link_or_dash.tmpl' with email=contact.main_email %}</td>
+                    <td>{% include 'common/_check-icon.tmpl' with value=contact.privacy_policy %}</td>
+                    <td>{% include 'common/_check-icon.tmpl' with value=contact.contact_newsletter %}</td>
+
+                    <td>{#<a class="btn btn-primary btn-xs"#}
+                           {#href="{% url 'contact-update' pk=contact.id %}">Edit</a>#}
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'person-position-detail' pk=contact.id %}">View</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        No contacts in the system
+    {% endif %}
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('table.display').DataTable({
+                    "pageLength": 100
+                }
+            );
+        });
+    </script>
+{% endblock %}

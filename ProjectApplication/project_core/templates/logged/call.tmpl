@@ -1,0 +1,24 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% block subtitle %}Call{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <h1>{{ call_action }} call</h1>
+
+    {% include 'common/_messages-box.tmpl' %}
+
+    <form method="post" action="{{ call_action_url }}">
+        {% csrf_token %}
+        {% crispy call_form %}
+
+        {% include 'logged/_form_call_question.tmpl' %}
+
+        {% if call_action != 'Create' %}
+            <h1>Template variables</h1>
+            {% include 'template_variables-form.tmpl' %}
+        {% endif %}
+
+        {% include 'common/_submit-button.tmpl' %}
+        <p></p>
+    </form>
+{% endblock %}

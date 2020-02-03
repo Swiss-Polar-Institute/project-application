@@ -1,0 +1,47 @@
+{% load user_is_management %}
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        {% include 'common/_logo.tmpl' %}
+
+        <ul class="navbar-nav mr-auto justify-content-center d-flex flex-fill">
+            {% if request|user_is_management %}
+                <li class="nav-item {% if active == 'home' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'logged-homepage' %}">Home</a>
+                </li>
+            {% endif %}
+            {% if request|user_is_management %}
+                <li class="nav-item {% if active == 'calls' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'logged-calls-list' %}">Calls</a>
+                </li>
+            {% endif %}
+            <li class="nav-item {% if active == 'proposals' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'logged-proposals-list' %}">Proposals</a>
+            </li>
+            {% if request|user_is_management %}
+                <li class="nav-item {% if active == 'contacts' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'person-position-list' %}">People</a>
+                </li>
+            {% endif %}
+            {% if request|user_is_management %}
+                <li>
+                    <a class="nav-link disabled" href="#">Projects</a>
+                </li>
+            {% endif %}
+        </ul>
+
+        <nav class="navbar">
+            <span class="navbar-text">
+                User: {{ request.user.username }}
+            </span>
+        </nav>
+
+        <ul class="navbar-nav justify-content-right">
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}?next={{ request.path }}">Log out</a>
+            </li>
+        </ul>
+    </div>
+</nav>

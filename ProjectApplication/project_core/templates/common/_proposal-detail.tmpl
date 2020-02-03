@@ -3,7 +3,7 @@
 
 {% if edit_button %}
     <a class="float-sm-right btn btn-primary d-print-none"
-       href="{% url 'management-proposal-update' uuid=proposal.uuid %}">Edit
+       href="{% url 'logged-proposal-update' uuid=proposal.uuid %}">Edit
         proposal</a>
 {% endif %}
 <h2>{{ proposal.title }}</h2>

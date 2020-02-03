@@ -1,0 +1,20 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% block subtitle %}Template question{% endblock %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <br>
+    {% include 'common/_messages-box.tmpl' %}
+
+    <a class="float-sm-right btn btn-primary" href="{% url 'template-question-update' pk=object.id %}">Edit question</a>
+    <h1>Template question details</h1>
+
+    <p></p>
+    <p><strong>Question:</strong><br>{{ object.question_text }}</p>
+    <p><strong>Question description:</strong><br>{{ object.question_description }}</p>
+    <p><strong>Answer type:</strong><br>{{ object.answer_type }}</p>
+    <p><strong>Question max words:</strong><br>{% if object.answer_max_length %}
+        {{ object.answer_max_length }} {% else %}
+        Unlimited {% endif %}</p>
+    <p><strong>Answer is required:</strong> {% include 'common/_check-icon.tmpl' with value=object.answer_required %}</p>
+{% endblock %}
