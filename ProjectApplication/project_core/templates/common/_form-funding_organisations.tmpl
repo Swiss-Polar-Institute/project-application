@@ -10,7 +10,15 @@
 <script>
     $(function () {
         $('#funding_form_table tbody tr').formset({
-            prefix: 'funding_form'
+            prefix: 'funding_form',
+            added: (function (row) {
+                /*
+                alert('test');
+                $(row.find('.data-autocomplete-light-function')).each(function () {
+                    $(this).trigger('autocompleteLightInitialize');
+                })
+                */
+            })
         })
     })
 </script>
