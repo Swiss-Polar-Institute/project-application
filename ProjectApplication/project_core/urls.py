@@ -59,7 +59,6 @@ urlpatterns = [
          name='template-questions-list'),
 
     path('logged/funding_instrument/add', logged.funding_instrument.FundingInstrumentView.as_view(),
-    path('management/funding_instrument/add', management.funding_instrument.FundingInstrumentView.as_view(),
          name='funding-instrument-add'),
     path('logged/funding_instrument/<int:pk>/', logged.funding_instrument.FundingInstrumentDetailView.as_view(),
          name='funding-instrument-detail'),

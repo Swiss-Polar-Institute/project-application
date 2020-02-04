@@ -15,7 +15,7 @@ CALL_FORM_NAME = 'call_form'
 
 
 class CallsList(TemplateView):
-    template_name = 'management/call-list.tmpl'
+    template_name = 'logged/call-list.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -26,7 +26,7 @@ class CallsList(TemplateView):
 
         context['active_section'] = 'calls'
         context['active_subsection'] = 'calls-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         return context
 
@@ -40,7 +40,7 @@ class CallDetailView(TemplateView):
         context['call'] = call
         context['active_section'] = 'calls'
         context['active_subsection'] = 'calls-list'
-        context['sidebar_template'] = 'management/_sidebar-calls.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         call_budget_categories_names = list(call.budget_categories.all().values_list('name', flat=True))
 
@@ -52,7 +52,7 @@ class CallDetailView(TemplateView):
                                              'name': budget_category_name})
 
         context['budget_categories_status'] = budget_categories_status
-        return render(request, 'management/call-detail.tmpl', context)
+        return render(request, 'logged/call-detail.tmpl', context)
 
 
 class CallView(TemplateView):

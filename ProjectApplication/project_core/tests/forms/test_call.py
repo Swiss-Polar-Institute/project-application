@@ -1,3 +1,5 @@
+import datetime
+
 from django.test import TestCase
 
 from project_core.forms.call import CallForm
@@ -13,7 +15,7 @@ class CallFormTest(TestCase):
     def test_call(self):
         call_data = dict_to_multivalue_dict(
             {'call_open_date': '01-01-2020 10:00',
-             'submission_deadline': '31-01-2020 12:00',
+             'submission_deadline': (datetime.datetime.now() + datetime.timedelta(days=10)).strftime('%d-%m-%Y 12:00'),
              'long_name': 'GreenLAnd Circumnavigation Expedition 2',
              'description': 'Cool, cold',
              'budget_maximum': '100000',
