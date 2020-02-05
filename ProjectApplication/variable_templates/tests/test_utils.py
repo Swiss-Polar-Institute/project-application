@@ -18,7 +18,7 @@ class UtilsTest(TestCase):
         database_population.create_default_variables()
 
     def test_get_template_value(self):
-        utils.get_template_value('activity', self._call)
+        utils.get_template_value_for_call('activity', self._call)
 
     def test_apply_templates_funding_from_funding_instrument(self):
         template = TemplateVariableName.objects.get(name='activity')

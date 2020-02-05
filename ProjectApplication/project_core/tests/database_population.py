@@ -7,7 +7,7 @@ from project_core.models import BudgetCategory, Call, TemplateQuestion, Geograph
     Proposal, PersonPosition, PhysicalPerson, FundingInstrument
 
 
-def create_call(funding_instrument):
+def create_call(funding_instrument=None):
     call, created = Call.objects.get_or_create(long_name='GreenLAnd Circumnavigation Expedition',
                                                call_open_date=datetime(2019, 1, 1),
                                                submission_deadline=datetime(2025, 1, 31),

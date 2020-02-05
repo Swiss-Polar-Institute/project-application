@@ -9,6 +9,7 @@ from django.views.generic import TemplateView, CreateView, DetailView
 from project_core.forms.funding_instrument import FundingInstrumentForm
 from project_core.models import FundingInstrument
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
+from variable_templates.utils import get_template_variables_for_funding_instrument
 
 FUNDING_INSTRUMENT_FORM_NAME = 'funding_instrument_form'
 TEMPLATE_VARIABLES_FORM_NAME = 'template_variables_form'
@@ -134,5 +135,6 @@ class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
         context['active_section'] = 'calls'
         context['active_subsection'] = 'funding-instruments-list'
         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context['template_variables'] = get_template_variables_for_funding_instrument(kwargs['object'])
 
         return context
