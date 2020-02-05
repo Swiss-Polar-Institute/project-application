@@ -51,6 +51,9 @@ def apply_templates(fields: OrderedDict, call):
 
     for field in fields.items():
         for template_name in template_name_values.keys():
+            if field[1] is None:
+                continue
+
             if field[1].label:
                 field[1].label = field[1].label.replace(f'{{{{ {template_name} }}}}',
                                                         template_name_values[template_name])

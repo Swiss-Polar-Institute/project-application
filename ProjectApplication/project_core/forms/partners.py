@@ -2,6 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
+from variable_templates.utils import apply_templates
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
@@ -19,6 +20,7 @@ class ProposalPartnerItemForm(ModelForm):
                                                             help_text='Please type the names of the group(s) or laboratories to which the partner belongs for the purposes of this proposal'))
 
     def __init__(self, *args, **kwargs):
+        call = kwargs.pop('call')
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -38,6 +40,7 @@ class ProposalPartnerItemForm(ModelForm):
 
         self.fields['person__organisations'] = organisations_name_autocomplete(initial=person__organisations_initial,
                                                                                help_text='Please select the organisation(s) to which the partner is affiliated for the purposes of this proposal.')
+        apply_templates(self.fields, call)
 
         self.helper.layout = Layout(
             Div(
@@ -131,7 +134,7 @@ class ProposalPartnerItemForm(ModelForm):
         model = ProposalPartner
         fields = ['role_description', 'competences', 'role', ]
         field_classes = {'role': LabelAndOrderNameChoiceField}
-        help_texts = {'role': 'Select the role of the partner in the proposed project'}
+        help_texts = {'role': 'Select the role of the partner in the proposed {{ activity }}'}
 
 
 class ProposalPartnersFormSet(BaseInlineFormSet):

@@ -2,7 +2,7 @@
 {% load in_management %}
 
 {% include 'common/_messages-box.tmpl' %}
-
+<br>
 {% if proposal_status_is_draft %}
     <div class="alert alert-secondary" role="alert"><i class="fas fa-info-circle"></i> This proposal is a draft and will
         not be evaluated.
@@ -35,7 +35,7 @@
         {% include 'common/_form-project_overarching.tmpl' %}
     {% endif %}
 
-    <h2>Part 2: Proposed {{ activity }} trip description</h2>
+    <h2>Part 2: Proposed {{ activity }} description</h2>
     {% include 'common/_form-dynamic_questions.tmpl' %}
 
     {% if proposal_partner_question %}

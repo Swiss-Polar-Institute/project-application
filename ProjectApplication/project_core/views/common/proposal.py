@@ -22,8 +22,8 @@ from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
-from ...templatetags.in_management import in_management
 from variable_templates.utils import get_template_value_for_call
+from ...templatetags.in_management import in_management
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -145,7 +145,8 @@ class AbstractProposalView(TemplateView):
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
                                                       instance=proposal)
             proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME,
-                                                                   instance=proposal)
+                                                                   instance=proposal,
+                                                                   form_kwargs={'call': call})
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
             overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME,
@@ -172,7 +173,8 @@ class AbstractProposalView(TemplateView):
 
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
-            proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME)
+            proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME,
+                                                                   form_kwargs={'call': call})
             overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
 

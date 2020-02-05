@@ -140,6 +140,7 @@ class CallView(TemplateView):
         context['call_action'] = call_action
         context[CALL_FORM_NAME] = call_form
         context[CALL_QUESTION_FORM_NAME] = call_question_form
+        context[TEMPLATE_VARIABLES_FORM_NAME] = template_variables_form
 
         context['active_section'] = 'calls'
         context['active_subsection'] = active_subsection
