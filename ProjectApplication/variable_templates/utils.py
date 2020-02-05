@@ -6,6 +6,16 @@ from project_core.models import Call
 from variable_templates.models import CallVariableTemplate, TemplateVariableName, FundingInstrumentVariableTemplate
 
 
+def get_template_variables(call: Call):
+    template_variables = []
+
+    for template_variable in TemplateVariableName.objects.all():
+        template_variables.append(
+            {'name': template_variable.name, 'value': get_template_value(template_variable.name, call)})
+
+    return template_variables
+
+
 def copy_template_variables_from_funding_instrument_to_call(call: Call):
     for template_variable in call.funding_instrument.fundinginstrumentvariabletemplate_set.all():
         call_template_variable = CallVariableTemplate(call=call,

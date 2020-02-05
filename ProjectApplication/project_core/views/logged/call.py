@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory
-from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call
+from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, get_template_variables
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 
@@ -41,6 +41,7 @@ class CallDetailView(TemplateView):
         context['active_section'] = 'calls'
         context['active_subsection'] = 'calls-list'
         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context['template_variables'] = get_template_variables(call)
 
         call_budget_categories_names = list(call.budget_categories.all().values_list('name', flat=True))
 

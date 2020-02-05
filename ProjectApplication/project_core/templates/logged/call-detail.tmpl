@@ -75,8 +75,8 @@
     </p>
 
     <h2>Template variables</h2>
-    {% if call.callvariabletemplate_set.all %}
-        {% include '_table-template_variables.tmpl' with template_variables=call.callvariabletemplate_set.all %}
+    {% if template_variables %}
+        {% include '_table-template_variables.tmpl' with template_variables=template_variables %}
     {% else %}
         No template variables in this call
     {% endif %}
