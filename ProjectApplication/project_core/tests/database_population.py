@@ -4,18 +4,23 @@ from django.contrib.auth.models import User
 
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
-    Proposal, PersonPosition, PhysicalPerson
+    Proposal, PersonPosition, PhysicalPerson, FundingInstrument
 
 
-def create_call():
+def create_call(funding_instrument):
     call, created = Call.objects.get_or_create(long_name='GreenLAnd Circumnavigation Expedition',
                                                call_open_date=datetime(2019, 1, 1),
                                                submission_deadline=datetime(2025, 1, 31),
                                                budget_maximum=100_000, other_funding_question=False,
-                                               proposal_partner_question=True)
+                                               proposal_partner_question=True,
+                                               funding_instrument=funding_instrument)
 
     return call
 
+def create_funding_instrument():
+    funding_instrument, created = FundingInstrument.objects.get_or_create(long_name='Big Expeditions')
+
+    return funding_instrument
 
 def create_geographical_areas():
     antarctic, created = GeographicalArea.objects.get_or_create(name='Antarctic', definition='Very south')

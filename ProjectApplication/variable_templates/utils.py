@@ -1,8 +1,9 @@
 from collections import OrderedDict
 
-from project_core.models import Call
-from variable_templates.models import CallVariableTemplate, TemplateVariableName
 from django.core.exceptions import ObjectDoesNotExist
+
+from project_core.models import Call
+from variable_templates.models import CallVariableTemplate, TemplateVariableName, FundingInstrumentVariableTemplate
 
 
 def copy_template_variables_from_funding_instrument_to_call(call: Call):
@@ -19,6 +20,10 @@ def apply_templates(fields: OrderedDict, call):
 
     for template_name_value in TemplateVariableName.objects.all():
         template_name_values[template_name_value.name] = template_name_value.default
+
+    for template_name_value in FundingInstrumentVariableTemplate.objects.filter(
+            funding_instrument=call.funding_instrument):
+        template_name_values[template_name_value.name.name] = template_name_value.value
 
     for template_name_value in CallVariableTemplate.objects.filter(call=call).all():
         template_name_values[template_name_value.name.name] = template_name_value.value
