@@ -1,3 +1,5 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div
 from django import forms
 
 
@@ -9,3 +11,14 @@ class EligibilityDecisionForm(forms.Form):
         self.fields['eligible'] = forms.ChoiceField(choices=YES_NO_CHOICES, widget=forms.RadioSelect)
         self.fields['comment'] = forms.CharField(label='Comment', max_length=1000,
                                                  widget=forms.Textarea(attrs={'rows': 4}))
+
+        self.helper = FormHelper(self)
+
+        self.helper.layout = Layout(
+            Div(
+                Div('eligible')
+            ),
+            Div(
+                Div('comment')
+            )
+        )

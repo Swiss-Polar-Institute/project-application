@@ -1,2 +1,27 @@
 {% load crispy_forms_tags %}
 {% crispy eligibility_decision_form %}
+
+<script>
+    $(document).ready(function () {
+        $('#id_ELIGIBILITY_DECISION-eligible_1').change(function () {
+            if (this.checked) {
+                $('#div_id_ELIGIBILITY_DECISION-comment .asteriskField').hide()
+                // $('#div_id_ELIGIBILITY_DECISION-comment').fadeOut('fast');
+            }
+        });
+
+
+        $('#id_ELIGIBILITY_DECISION-eligible_2').change(function () {
+            if (this.checked) {
+                $('#div_id_ELIGIBILITY_DECISION-comment .asteriskField').show()
+                // $('#div_id_ELIGIBILITY_DECISION-comment').fadeIn('fast');
+            }
+        });
+    });
+</script>
+
+<style>
+    #div_id_ELIGIBILITY_DECISION-comment .asteriskField {
+        display: none;
+    }
+</style>
