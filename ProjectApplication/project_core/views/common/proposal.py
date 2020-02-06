@@ -38,7 +38,7 @@ PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
 class AbstractProposalDetailView(TemplateView):
     template = ''
 
-    def get(self, request, *args, **kwargs):
+    def prepare_context(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
         proposal = Proposal.objects.get(uuid=kwargs['uuid'])
@@ -101,8 +101,11 @@ class AbstractProposalDetailView(TemplateView):
                 context[
                     'link_to_edit_or_display'] = f'(<a href="{href}"><i class="fas fa-link"></i> {description}</a>)'
 
-        return render(request, self.template, context)
+        return context
 
+    def get(self, request, *args, **kwargs):
+        context = self.prepare_context(request, *args, **kwargs)
+        return render(request, 'logged/proposal-detail.tmpl', context)
 
 def action_is_save_draft(post_vars):
     return 'save_draft' in post_vars

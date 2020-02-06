@@ -2,20 +2,27 @@
 {% crispy eligibility_decision_form %}
 
 <script>
+    function commentIsRequired(required) {
+        if (required) {
+            $('#div_id_ELIGIBILITY_DECISION-comment .asteriskField').show()
+            $("#id_ELIGIBILITY_DECISION-comment").attr('required', true);
+        } else {
+            $('#div_id_ELIGIBILITY_DECISION-comment .asteriskField').hide()
+            $("#id_ELIGIBILITY_DECISION-comment").attr('required', false);
+        }
+    }
+
     $(document).ready(function () {
+        var required = $('#id_ELIGIBILITY_DECISION-eligible_2').prop('checked');
+        commentIsRequired(required);
+
         $('#id_ELIGIBILITY_DECISION-eligible_1').change(function () {
-            if (this.checked) {
-                $('#div_id_ELIGIBILITY_DECISION-comment .asteriskField').hide()
-                $("#id_ELIGIBILITY_DECISION-comment").attr('required', false);
-            }
+            commentIsRequired(!this.checked);
         });
 
 
         $('#id_ELIGIBILITY_DECISION-eligible_2').change(function () {
-            if (this.checked) {
-                $('#div_id_ELIGIBILITY_DECISION-comment .asteriskField').show()
-                $("#id_ELIGIBILITY_DECISION-comment").attr('required', true);
-            }
+            commentIsRequired(this.checked);
         });
     });
 </script>

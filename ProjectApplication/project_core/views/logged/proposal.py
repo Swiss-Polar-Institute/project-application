@@ -4,13 +4,13 @@ import io
 import textwrap
 
 import xlsxwriter
+from django.contrib import messages
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
-from django.contrib import messages
 
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.models import Proposal, Call
@@ -407,12 +407,27 @@ class ProposalsList(TemplateView):
 
 class ProposalEligibilityUpdate(AbstractProposalDetailView):
     def post(self, request, *args, **kwargs):
+        context = self.prepare_context(request, *args, **kwargs)
+
         proposal_uuid = kwargs['uuid']
 
-        messages.warning(request,
-                         'TODO: needs to save (before this) and update the message accordingly')
+        eligibility_decision_form = EligibilityDecisionForm(request.POST, prefix=ELIGIBILITY_DECISION_NAME,
+                                                            proposal_uuid=proposal_uuid)
 
-        return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal_uuid}))
+        if eligibility_decision_form.is_valid():
+            eligibility_decision_form.save_eligibility()
+
+            messages.success(request, 'Eligibility saved')
+            return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal_uuid}))
+
+        else:
+            context['eligibility_decision_form'] = eligibility_decision_form
+
+            context.update({'active_section': 'proposals',
+                            'active_subsection': 'proposals-list',
+                            'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+
+            return render(request, 'logged/proposal-detail.tmpl', context)
 
 
 class ProposalDetailView(AbstractProposalDetailView):
