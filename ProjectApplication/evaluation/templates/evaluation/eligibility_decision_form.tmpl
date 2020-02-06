@@ -6,7 +6,7 @@
         $('#id_ELIGIBILITY_DECISION-eligible_1').change(function () {
             if (this.checked) {
                 $('#div_id_ELIGIBILITY_DECISION-comment .asteriskField').hide()
-                // $('#div_id_ELIGIBILITY_DECISION-comment').fadeOut('fast');
+                $("#id_ELIGIBILITY_DECISION-comment").attr('required', false);
             }
         });
 
@@ -14,14 +14,8 @@
         $('#id_ELIGIBILITY_DECISION-eligible_2').change(function () {
             if (this.checked) {
                 $('#div_id_ELIGIBILITY_DECISION-comment .asteriskField').show()
-                // $('#div_id_ELIGIBILITY_DECISION-comment').fadeIn('fast');
+                $("#id_ELIGIBILITY_DECISION-comment").attr('required', true);
             }
         });
     });
 </script>
-
-<style>
-    #div_id_ELIGIBILITY_DECISION-comment .asteriskField {
-        display: none;
-    }
-</style>

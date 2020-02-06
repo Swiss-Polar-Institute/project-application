@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
+from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 
 
@@ -13,7 +13,7 @@ class EligibilityDecisionForm(forms.Form):
                                                  widget=forms.Textarea(attrs={'rows': 4}))
 
         self.helper = FormHelper(self)
-
+        self.helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
         self.helper.layout = Layout(
             Div(
                 Div('eligible')
