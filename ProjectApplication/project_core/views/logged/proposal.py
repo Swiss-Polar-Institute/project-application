@@ -2,16 +2,19 @@ import codecs
 import csv
 import io
 import textwrap
-from django.urls import reverse
 
 import xlsxwriter
 from django.http import HttpResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
+from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.models import Proposal, Call
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
+
+ELIGIBILITY_DECISION_NAME = 'ELIGIBILITY_DECISION'
 
 
 class ProposalsExportCsvSummary(View):
@@ -29,7 +32,7 @@ class ProposalsExportCsvSummary(View):
         writer = csv.writer(response)
 
         headers = ['Academic Title', 'First Name', 'Surname', 'Institutions', 'Proposal Title', 'Keywords',
-                         'Requested Amount (CHF)', 'Geographic Focus']
+                   'Requested Amount (CHF)', 'Geographic Focus']
 
         proposals = Proposal.objects.all()
 
@@ -55,7 +58,7 @@ class ProposalsExportCsvSummary(View):
             geographic_focus = proposal.geographical_areas_enumeration()
 
             row = [academic_title, first_name, surname, institutions, title, keywords, requested_amount,
-                             geographic_focus]
+                   geographic_focus]
 
             if call_id is None:
                 # We are adding the Call name: we are exporting proposals for different calls
@@ -401,6 +404,11 @@ class ProposalsList(TemplateView):
 
 
 class ProposalDetailView(AbstractProposalDetailView):
+    def get(self, request, *args, **kwargs):
+        self.extra_context['eligibility_decision_form'] = EligibilityDecisionForm(prefix=ELIGIBILITY_DECISION_NAME)
+
+        return super().get(request, *args, **kwargs)
+
     template = 'logged/proposal-detail.tmpl'
 
     extra_context = {'active_section': 'proposals',

@@ -1,6 +1,17 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
 {% block subtitle %}Proposal{% endblock %}
 
 {% block contents %}
-    {% include 'common/_proposal-detail.tmpl' with edit_button=0 %}
+    <div class="container-fluid">
+    <div class="row">
+        <div class="col-10">
+            {% include 'common/_proposal-detail.tmpl' with edit_button=0 %}
+        </div>
+        <div class="col-2">
+            <p>
+                {% include 'evaluation/eligibility_decision_form.tmpl' %}
+            </p>
+        </div>
+    </div>
 {% endblock %}
