@@ -5,10 +5,12 @@ import textwrap
 
 import xlsxwriter
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
+from django.contrib import messages
 
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.models import Proposal, Call
@@ -403,9 +405,20 @@ class ProposalsList(TemplateView):
         return context
 
 
+class ProposalEligibilityUpdate(AbstractProposalDetailView):
+    def post(self, request, *args, **kwargs):
+        proposal_uuid = kwargs['uuid']
+
+        messages.warning(request,
+                         'TODO: needs to save (before this) and update the message accordingly')
+
+        return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal_uuid}))
+
+
 class ProposalDetailView(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
-        self.extra_context['eligibility_decision_form'] = EligibilityDecisionForm(prefix=ELIGIBILITY_DECISION_NAME)
+        self.extra_context['eligibility_decision_form'] = EligibilityDecisionForm(prefix=ELIGIBILITY_DECISION_NAME,
+                                                                                  proposal_uuid=kwargs['uuid'])
 
         return super().get(request, *args, **kwargs)
 

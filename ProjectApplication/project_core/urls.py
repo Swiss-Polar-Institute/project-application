@@ -3,7 +3,6 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
-
 from .views import common
 from .views import external
 from .views import logged
@@ -32,6 +31,9 @@ urlpatterns = [
          name='logged-proposal-update'),
     path('logged/proposal/<uuid:uuid>/', logged.proposal.ProposalDetailView.as_view(),
          name='logged-proposal-detail'),
+    path('logged/proposal/<uuid:uuid>/eligibility', logged.proposal.ProposalEligibilityUpdate.as_view(),
+         name='logged-proposal-eligibility-update'),
+
     path('logged/proposals/export/excel/<int:call>/', logged.proposal.ProposalsExportExcel.as_view(),
          name='logged-export-proposals-for-call-excel'),
     path('logged/proposals/export/csv/summary/<int:call>/', logged.proposal.ProposalsExportCsvSummary.as_view(),
