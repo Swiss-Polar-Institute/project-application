@@ -117,7 +117,7 @@ class AbstractProposalDetailView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
-        return render(request, 'logged/proposal-detail.tmpl', context)
+        return render(request, self.template, context)
 
 
 def action_is_save_draft(post_vars):
