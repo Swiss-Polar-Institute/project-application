@@ -1,10 +1,8 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
-from django.urls import reverse
 
 from ..models import ProposalComment
-from project_core.models import Proposal
 
 
 class CommentForm(forms.Form):
@@ -14,8 +12,9 @@ class CommentForm(forms.Form):
 
         super().__init__(*args, **kwargs)
 
-        self.fields['text'] = forms.CharField(label='Add comment', max_length=10000, help_text='Write the comment (max length: 10000 chars)',
-                                                 widget=forms.Textarea(attrs={'rows': 4}))
+        self.fields['text'] = forms.CharField(label='Add comment', max_length=10000,
+                                              help_text='Write the comment (max length: 10000 characters)',
+                                              widget=forms.Textarea(attrs={'rows': 4}))
 
         self.helper = FormHelper(self)
         self.helper.form_action = form_action
