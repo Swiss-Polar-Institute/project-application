@@ -12,11 +12,13 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
+from comments.forms.comment import CommentForm
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.models import Proposal, Call
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
 
-ELIGIBILITY_DECISION_NAME = 'ELIGIBILITY_DECISION'
+ELIGIBILITY_DECISION_FORM_NAME = 'eligibility_decision_form'
+COMMENT_FORM_NAME = 'comment_form'
 
 
 class ProposalsExportCsvSummary(View):
@@ -411,7 +413,7 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
         proposal_uuid = kwargs['uuid']
 
-        eligibility_decision_form = EligibilityDecisionForm(request.POST, prefix=ELIGIBILITY_DECISION_NAME,
+        eligibility_decision_form = EligibilityDecisionForm(request.POST, prefix=ELIGIBILITY_DECISION_FORM_NAME,
                                                             proposal_uuid=proposal_uuid)
 
         if eligibility_decision_form.is_valid():
@@ -421,7 +423,34 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
             return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal_uuid}))
 
         else:
-            context['eligibility_decision_form'] = eligibility_decision_form
+            context[ELIGIBILITY_DECISION_FORM_NAME] = eligibility_decision_form
+
+            context.update({'active_section': 'proposals',
+                            'active_subsection': 'proposals-list',
+                            'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+
+            return render(request, 'logged/proposal-detail.tmpl', context)
+
+
+class ProposalCommentAdd(AbstractProposalDetailView):
+    def post(self, request, *args, **kwargs):
+        context = self.prepare_context(request, *args, **kwargs)
+
+        proposal_uuid = kwargs['uuid']
+
+        proposal_comment_form = CommentForm(request.POST, form_action=reverse('logged-proposal-comment-add',
+                                                                              kwargs={'uuid': proposal_uuid}),
+                                            prefix=ELIGIBILITY_DECISION_FORM_NAME)
+
+        if proposal_comment_form.is_valid():
+            proposal = Proposal.objects.get(uuid=proposal_uuid)
+            proposal_comment_form.save_into_proposal(proposal, request.user)
+
+            messages.success(request, 'Comment saved')
+            return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
+
+        else:
+            context[COMMENT_FORM_NAME] = proposal_comment_form
 
             context.update({'active_section': 'proposals',
                             'active_subsection': 'proposals-list',
@@ -432,9 +461,6 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
 class ProposalDetailView(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
-        self.extra_context['eligibility_decision_form'] = EligibilityDecisionForm(prefix=ELIGIBILITY_DECISION_NAME,
-                                                                                  proposal_uuid=kwargs['uuid'])
-
         return super().get(request, *args, **kwargs)
 
     template = 'logged/proposal-detail.tmpl'

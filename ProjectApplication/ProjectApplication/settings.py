@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'project_core',
     'variable_templates',
-    'evaluation'
+    'evaluation',
+    'comments'
 ]
 
 MIDDLEWARE = [

@@ -33,6 +33,8 @@ urlpatterns = [
          name='logged-proposal-detail'),
     path('logged/proposal/<uuid:uuid>/eligibility', logged.proposal.ProposalEligibilityUpdate.as_view(),
          name='logged-proposal-eligibility-update'),
+    path('logged/proposal/<uuid:uuid>/comment', logged.proposal.ProposalCommentAdd.as_view(),
+         name='logged-proposal-comment-add'),
 
     path('logged/proposals/export/excel/<int:call>/', logged.proposal.ProposalsExportExcel.as_view(),
          name='logged-export-proposals-for-call-excel'),

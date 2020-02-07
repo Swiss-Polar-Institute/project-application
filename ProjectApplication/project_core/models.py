@@ -870,31 +870,3 @@ class ProposalPartner(Partner):
     class Meta:
         unique_together = (('person', 'role', 'proposal'),)
 
-
-class Comment(CreateModify):
-    """Comments can be made by a user about an aspect of something contained in the database"""
-    text = models.TextField(help_text='Text of a comment', null=False, blank=False)
-
-    class Meta:
-        abstract = True
-        unique_together = (('created_on', 'created_by'),)
-
-    def __str__(self):
-        return '{} by {} at {}'.format(self.text, self.created_on, self.created_by)
-
-
-class ProposalComment(Comment):
-    """Comments made about a proposal"""
-    proposal = models.ForeignKey(Proposal, help_text='Proposal about which the comment was made',
-                                 on_delete=models.PROTECT)
-
-    class Meta:
-        unique_together = (('proposal', 'created_on', 'created_by'),)
-
-
-class CallComment(Comment):
-    """Comments made about a call"""
-    call = models.ForeignKey(Call, help_text='Call about which the comment was made', on_delete=models.PROTECT)
-
-    class Meta:
-        unique_together = (('call', 'created_on', 'created_by'),)

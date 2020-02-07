@@ -222,16 +222,6 @@ class ProposalPartnerAdmin(admin.ModelAdmin):
     ordering = ['proposal', 'person', 'role', ]
 
 
-class ProposalCommentAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['proposal', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
-
-
-class CallCommentAdmin(admin.ModelAdmin):
-    list_display = ('call', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['call', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
-
-
 class ProposalQAFileAdmin(admin.ModelAdmin):
     list_display = ('proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on', )
     ordering = ['proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on']
@@ -269,6 +259,4 @@ admin.site.register(project_core.models.ProposalQAText, ProposalQATextAdmin)
 admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
 admin.site.register(project_core.models.Role, RoleAdmin)
 admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
-admin.site.register(project_core.models.ProposalComment, ProposalCommentAdmin)
-admin.site.register(project_core.models.CallComment, CallCommentAdmin)
 admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)

@@ -13,6 +13,8 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
+from comments.forms.comment import CommentForm
+from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
@@ -25,6 +27,7 @@ from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, 
 from variable_templates.utils import get_template_value_for_call
 from ...templatetags.in_management import in_management
 
+ELIGIBILITY_DECISION_FORM_NAME = 'eligibility_decision_form'
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
 QUESTIONS_FORM_NAME = 'questions_form'
@@ -33,6 +36,7 @@ FUNDING_FORM_NAME = 'funding_form'
 DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
 PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
+COMMENT_FORM_NAME = 'comment_form'
 
 
 class AbstractProposalDetailView(TemplateView):
@@ -51,6 +55,9 @@ class AbstractProposalDetailView(TemplateView):
         context['email'] = proposal.applicant.main_email()
 
         context['questions_answers'] = []
+
+        context[ELIGIBILITY_DECISION_FORM_NAME] = EligibilityDecisionForm(prefix=ELIGIBILITY_DECISION_FORM_NAME,
+                                                                          proposal_uuid=proposal.uuid)
 
         for question in call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
             try:
@@ -101,11 +108,17 @@ class AbstractProposalDetailView(TemplateView):
                 context[
                     'link_to_edit_or_display'] = f'(<a href="{href}"><i class="fas fa-link"></i> {description}</a>)'
 
+        context['comments'] = proposal.proposalcomment_set.all().order_by('created_on')
+        context[COMMENT_FORM_NAME] = CommentForm(form_action=reverse('logged-proposal-comment-add',
+                                                                     kwargs={'uuid': proposal.uuid}),
+                                                 prefix=ELIGIBILITY_DECISION_FORM_NAME)
+
         return context
 
     def get(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
         return render(request, 'logged/proposal-detail.tmpl', context)
+
 
 def action_is_save_draft(post_vars):
     return 'save_draft' in post_vars

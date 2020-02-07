@@ -28,7 +28,7 @@ class EligibilityDecisionForm(forms.Form):
 
         self.helper = FormHelper(self)
         self.helper.form_action = reverse('logged-proposal-eligibility-update', kwargs={'uuid': self._proposal_uuid})
-        self.helper.add_input(Submit('submit', 'Submit', css_class='btn-primary'))
+        self.helper.add_input(Submit('submit', 'Save eligibility', css_class='btn-primary'))
         self.helper.layout = Layout(
             Div(
                 Div('eligible')
