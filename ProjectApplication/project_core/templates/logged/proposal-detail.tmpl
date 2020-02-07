@@ -8,7 +8,9 @@
         <div class="col-10">
             {% include 'common/_proposal-detail.tmpl' with edit_button=0 %}
             <hr>
-            {% include 'comments/_comments.tmpl' %}
+            <h2>SPI Comments</h2>
+            {% include 'common/_accordion.tmpl' with prefix='comments' button_text='Comments' template_file='comments/_comments.tmpl' %}
+            <br>
         </div>
         <div class="col-2">
             <p>
