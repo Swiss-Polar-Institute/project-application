@@ -1,3 +1,4 @@
+{% load user_is_management %}
 <br>
 {% include 'common/_messages-box.tmpl' %}
 
@@ -8,7 +9,12 @@
 {% endif %}
 <h2>{{ proposal.title }}</h2>
 <strong>Status:</strong> {{ proposal.proposal_status.name }} {{ link_to_edit_or_display|safe }}<br>
-<strong>Call:</strong> {{ call_name }}
+<strong>Call:</strong>
+{% if request|user_is_management %}
+    <a href="{% url 'logged-call-detail' id=proposal.call.id %}">{{ call_name }}</a>
+{% else %}
+    {{ call_name }}
+{% endif %}
 <p></p>
 <h3>Applicant</h3>
 {% with applicant=proposal.applicant %}
