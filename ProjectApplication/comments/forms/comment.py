@@ -14,7 +14,7 @@ class CommentForm(forms.Form):
 
         super().__init__(*args, **kwargs)
 
-        self.fields['text'] = forms.CharField(label='Add comment', max_length=1000, help_text='Write the comment',
+        self.fields['text'] = forms.CharField(label='Add comment', max_length=10000, help_text='Write the comment (max length: 10000 chars)',
                                                  widget=forms.Textarea(attrs={'rows': 4}))
 
         self.helper = FormHelper(self)

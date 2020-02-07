@@ -42,7 +42,7 @@ class EligibilityDecisionForm(forms.Form):
         super().clean()
 
         if 'eligible' in self.cleaned_data and 'comment' in self.cleaned_data:
-            if self.cleaned_data['eligible'] is False and not self.cleaned_data['comment']:
+            if self.cleaned_data['eligible'] == 'False' and not self.cleaned_data['comment']:
                 raise forms.ValidationError({'comment': 'Comment is mandatory if the proposal is not eligible'})
 
     def save_eligibility(self):
