@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 
-from ..models import ProposalComment, ProposalCommentType
+from ..models import ProposalComment, ProposalCommentCategory
 
 
 class CommentForm(forms.Form):
@@ -12,8 +12,8 @@ class CommentForm(forms.Form):
 
         super().__init__(*args, **kwargs)
 
-        self.fields['type'] = forms.ModelChoiceField(label='Type', queryset=ProposalCommentType.objects.all(),
-                                                             help_text='Select type of comment')
+        self.fields['category'] = forms.ModelChoiceField(label='Type', queryset=ProposalCommentCategory.objects.all(),
+                                                     help_text='Select type of comment')
         self.fields['text'] = forms.CharField(label='Text', max_length=10000,
                                               help_text='Write the comment (max length: 10000 characters)',
                                               widget=forms.Textarea(attrs={'rows': 4}))
@@ -24,7 +24,7 @@ class CommentForm(forms.Form):
 
         self.helper.layout = Layout(
             Div(
-                Div('type', css_class='col-12'),
+                Div('category', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -38,6 +38,6 @@ class CommentForm(forms.Form):
         proposal_comment.proposal = proposal
         proposal_comment.text = self.cleaned_data['text']
         proposal_comment.created_by = user
-        proposal_comment.comment_type = self.cleaned_data['type']
+        proposal_comment.category = self.cleaned_data['category']
 
         proposal_comment.save()
