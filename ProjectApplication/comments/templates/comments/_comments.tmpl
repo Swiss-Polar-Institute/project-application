@@ -2,9 +2,11 @@
 
 {% for comment in comments %}
     {{ comment.created_by.first_name }} {{ comment.created_by.last_name }} on {{ comment.created_on|date:"Y-m-d" }} at
-    {{ comment.created_on|date:"H:i" }}
+    {{ comment.created_on|date:"H:i" }}<br>
+    <span class="badge badge-secondary">{{ comment.comment_type }}</span>
     <div class="pre-with-newlines p-1 border bg-white rounded">{{ comment.text }}</div>
     <p></p>
 {% endfor %}
 
+<h2>Add new comment</h2>
 {% crispy comment_form %}
