@@ -26,3 +26,13 @@ class CallComment(AbstractComment):
 
     class Meta:
         unique_together = (('call', 'created_on', 'created_by'),)
+
+
+class CommentType(CreateModify):
+    comment_type = models.CharField(max_length=100, help_text='Type of comment', unique=True)
+
+    def __str__(self):
+        return self.comment_type
+
+class ProposalCommentType(CreateModify):
+    comment_type = models.ForeignKey(CommentType, on_delete=models.PROTECT)
