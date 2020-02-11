@@ -1,4 +1,5 @@
 from django.db import models
+from storages.backends.s3boto3 import S3Boto3Storage
 
 from project_core.models import CreateModify, Proposal, Call
 
@@ -14,13 +15,23 @@ class Category(CreateModify):
 
 
 class ProposalCommentCategory(CreateModify):
-    comment_category = models.OneToOneField(Category, on_delete=models.PROTECT)
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.comment_category.category
+        return self.category.category
 
     class Meta:
         verbose_name_plural = 'Proposal Comment Categories'
+
+
+class ProposalAttachmentCategory(CreateModify):
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.category.category
+
+    class Meta:
+        verbose_name_plural = 'Proposal Attachment Categories'
 
 
 class AbstractComment(CreateModify):
@@ -34,7 +45,7 @@ class AbstractComment(CreateModify):
 
 class ProposalComment(AbstractComment):
     proposal = models.ForeignKey(Proposal, help_text='Proposal that this comment refers to',
-                                 on_delete=models.PROTECT, )
+                                 on_delete=models.PROTECT)
     category = models.ForeignKey(ProposalCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
@@ -48,3 +59,20 @@ class CallComment(AbstractComment):
 
     class Meta:
         unique_together = (('call', 'created_on', 'created_by'),)
+
+
+class AbstractAttachment(CreateModify):
+    file = models.FileField(storage=S3Boto3Storage(),
+                            upload_to='attachments/')
+
+    comment_text = models.TextField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class ProposalAttachment(AbstractAttachment):
+    proposal = models.ForeignKey(Proposal, help_text='Proposal that this attachments belongs to',
+                                 on_delete=models.PROTECT)
+    category = models.ForeignKey(ProposalAttachmentCategory, help_text='Type of attachment',
+                                 on_delete=models.PROTECT)

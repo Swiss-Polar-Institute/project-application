@@ -19,11 +19,22 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ProposalCommentCategoryAdmin(admin.ModelAdmin):
-    list_display = ('comment_category', )
-    ordering = ['comment_category', ]
+    list_display = ('category',)
+    ordering = ['category', ]
+
+
+class ProposalAttachmentCategoryAdmin(admin.ModelAdmin):
+    list_display = ('category',)
+    ordering = ['category', ]
+
+
+class ProposalAttachmentAdmin(admin.ModelAdmin):
+    list_display = ('proposal', 'file')
 
 
 admin.site.register(comments.models.ProposalComment, ProposalCommentAdmin)
 admin.site.register(comments.models.CallComment, CallCommentAdmin)
 admin.site.register(comments.models.Category, CategoryAdmin)
 admin.site.register(comments.models.ProposalCommentCategory, ProposalCommentCategoryAdmin)
+admin.site.register(comments.models.ProposalAttachmentCategory, ProposalAttachmentCategoryAdmin)
+admin.site.register(comments.models.ProposalAttachment, ProposalAttachmentAdmin)

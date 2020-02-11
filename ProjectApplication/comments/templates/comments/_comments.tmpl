@@ -1,10 +1,7 @@
 {% load crispy_forms_tags %}
 
 {% for comment in comments %}
-    {{ comment.created_by.first_name }} {{ comment.created_by.last_name }} on {{ comment.created_on|date:"Y-m-d" }} at
-    {{ comment.created_on|date:"H:i" }}<br>
-    <span class="badge badge-secondary">{{ comment.category }}</span>
-    <div class="pre-with-newlines p-1 border bg-white rounded">{{ comment.text }}</div>
+    {% include 'comments/_comment.tmpl' with value=comment %}
     <p></p>
 {% endfor %}
 

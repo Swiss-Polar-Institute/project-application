@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
+from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.models import Proposal, Call
@@ -19,6 +20,7 @@ from project_core.views.common.proposal import AbstractProposalDetailView, Abstr
 
 ELIGIBILITY_DECISION_FORM_NAME = 'eligibility_decision_form'
 COMMENT_FORM_NAME = 'comment_form'
+ATTACHMENT_FORM_NAME = 'attachment_form'
 
 
 class ProposalsExportCsvSummary(View):
@@ -437,26 +439,51 @@ class ProposalCommentAdd(AbstractProposalDetailView):
         context = self.prepare_context(request, *args, **kwargs)
 
         proposal_uuid = kwargs['uuid']
+        proposal = Proposal.objects.get(uuid=proposal_uuid)
 
-        proposal_comment_form = CommentForm(request.POST, form_action=reverse('logged-proposal-comment-add',
-                                                                              kwargs={'uuid': proposal_uuid}),
-                                            prefix=ELIGIBILITY_DECISION_FORM_NAME)
+        if 'comment_form_submit' in request.POST:
+            proposal_comment_form = CommentForm(request.POST, form_action=reverse('logged-proposal-comment-add',
+                                                                                  kwargs={'uuid': proposal_uuid}),
+                                                prefix=COMMENT_FORM_NAME)
+            proposal_attachment_form = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
+                                                                          kwargs={'uuid': proposal_uuid}),
+                                                      prefix=ATTACHMENT_FORM_NAME)
 
-        if proposal_comment_form.is_valid():
-            proposal = Proposal.objects.get(uuid=proposal_uuid)
-            proposal_comment_form.save_into_proposal(proposal, request.user)
+            if proposal_comment_form.is_valid():
+                proposal_comment_form.save_into_proposal(proposal, request.user)
 
-            messages.success(request, 'Comment saved')
-            return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
+                messages.success(request, 'Comment saved')
+                return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
+            else:
+                context[COMMENT_FORM_NAME] = proposal_comment_form
+
+        elif 'attachment_form_submit' in request.POST:
+            proposal_comment_form = CommentForm(form_action=reverse('logged-proposal-comment-add',
+                                                                    kwargs={'uuid': proposal_uuid}),
+                                                prefix=COMMENT_FORM_NAME)
+
+            proposal_attachment_form = AttachmentForm(request.POST, request.FILES,
+                                                      form_action=reverse('logged-proposal-comment-add',
+                                                                          kwargs={'uuid': proposal_uuid}),
+                                                      prefix=ATTACHMENT_FORM_NAME)
+
+            if proposal_attachment_form.is_valid():
+                proposal_attachment_form.save_into_proposal(proposal, request.user)
+
+                messages.success(request, 'Attachment saved')
+                return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
 
         else:
-            context[COMMENT_FORM_NAME] = proposal_comment_form
+            assert False
 
-            context.update({'active_section': 'proposals',
-                            'active_subsection': 'proposals-list',
-                            'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+        context[ATTACHMENT_FORM_NAME] = proposal_attachment_form
+        context[COMMENT_FORM_NAME] = proposal_comment_form
 
-            return render(request, 'logged/proposal-detail.tmpl', context)
+        context.update({'active_section': 'proposals',
+                        'active_subsection': 'proposals-list',
+                        'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+
+        return render(request, 'logged/proposal-detail.tmpl', context)
 
 
 class ProposalDetailView(AbstractProposalDetailView):

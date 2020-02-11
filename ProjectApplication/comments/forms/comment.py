@@ -12,15 +12,15 @@ class CommentForm(forms.Form):
 
         super().__init__(*args, **kwargs)
 
-        self.fields['category'] = forms.ModelChoiceField(label='Type', queryset=ProposalCommentCategory.objects.all(),
-                                                     help_text='Select type of comment')
+        self.fields['category'] = forms.ModelChoiceField(label='Category', queryset=ProposalCommentCategory.objects.all(),
+                                                     help_text='Select category of comment')
         self.fields['text'] = forms.CharField(label='Text', max_length=10000,
                                               help_text='Write the comment (max length: 10000 characters)',
                                               widget=forms.Textarea(attrs={'rows': 4}))
 
         self.helper = FormHelper(self)
         self.helper.form_action = form_action
-        self.helper.add_input(Submit('submit', 'Save comment', css_class='btn-primary'))
+        self.helper.add_input(Submit('comment_form_submit', 'Save comment', css_class='btn-primary'))
 
         self.helper.layout = Layout(
             Div(

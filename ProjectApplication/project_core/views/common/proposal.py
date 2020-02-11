@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
+from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.forms.budget import BudgetItemFormSet
@@ -37,6 +38,7 @@ DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
 PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
 COMMENT_FORM_NAME = 'comment_form'
+ATTACHMENT_FORM_NAME = 'attachment_form'
 
 
 class AbstractProposalDetailView(TemplateView):
@@ -108,10 +110,15 @@ class AbstractProposalDetailView(TemplateView):
                 context[
                     'link_to_edit_or_display'] = f'(<a href="{href}"><i class="fas fa-link"></i> {description}</a>)'
 
+        context['attachments'] = proposal.proposalattachment_set.all().order_by('created_on')
+
         context['comments'] = proposal.proposalcomment_set.all().order_by('created_on')
         context[COMMENT_FORM_NAME] = CommentForm(form_action=reverse('logged-proposal-comment-add',
                                                                      kwargs={'uuid': proposal.uuid}),
-                                                 prefix=ELIGIBILITY_DECISION_FORM_NAME)
+                                                 prefix=COMMENT_FORM_NAME)
+        context[ATTACHMENT_FORM_NAME] = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
+                                                                           kwargs={'uuid': proposal.uuid}),
+                                                       prefix=ATTACHMENT_FORM_NAME)
 
         return context
 

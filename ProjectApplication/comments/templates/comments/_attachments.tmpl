@@ -1,0 +1,11 @@
+{% load crispy_forms_tags %}
+
+{% for attachment in attachments %}
+    {% include 'comments/_comment.tmpl' with value=attachment %}
+    <br>
+    <a href="{{ attachment.file.url }}">{{ attachment.file.name }}</a>
+    <p></p>
+{% endfor %}
+
+<h2>Attach file</h2>
+{% crispy attachment_form %}
