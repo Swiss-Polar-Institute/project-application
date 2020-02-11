@@ -468,10 +468,11 @@ class ProposalCommentAdd(AbstractProposalDetailView):
                                                       prefix=ATTACHMENT_FORM_NAME)
 
             if proposal_attachment_form.is_valid():
-                proposal_attachment_form.save_into_proposal(proposal, request.user)
-
-                messages.success(request, 'Attachment saved')
-                return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
+                if proposal_attachment_form.save_into_proposal(proposal, request.user):
+                    messages.success(request, 'Attachment saved')
+                    return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
+                else:
+                    messages.error(request, 'Error saving attachment. Try again please.')
 
         else:
             assert False

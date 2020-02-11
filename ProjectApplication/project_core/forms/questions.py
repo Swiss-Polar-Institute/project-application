@@ -1,3 +1,5 @@
+import logging
+
 import botocore
 from botocore.exceptions import EndpointConnectionError
 from crispy_forms.helper import FormHelper
@@ -6,7 +8,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
 
 from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion
-import logging
 
 logger = logging.getLogger('project_core')
 

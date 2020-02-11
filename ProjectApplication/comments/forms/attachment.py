@@ -1,8 +1,13 @@
+import logging
+import botocore
+from botocore.exceptions import EndpointConnectionError
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 
 from ..models import ProposalAttachment, ProposalAttachmentCategory
+
+logger = logging.getLogger('comments')
 
 
 class AttachmentForm(forms.Form):
@@ -51,4 +56,17 @@ class AttachmentForm(forms.Form):
         proposal_attachment.category = self.cleaned_data['category']
         proposal_attachment.file = self.cleaned_data['file']
 
-        proposal_attachment.save()
+        all_good = True
+        try:
+            proposal_attachment.save()
+        except EndpointConnectionError:
+            all_good = False
+            logger.warning(
+                f'NOTIFY: Saving attachment to proposal failed (proposal: {proposal.id} User: {user}) -EndpointConnectionError')
+        except botocore.exceptions.ClientError:
+            all_good = False
+            logger.warning(
+                f'NOTIFY: Saving file for question failed (proposal: {proposal.id}  User: {user} -ClientError')
+
+        return all_good
+
