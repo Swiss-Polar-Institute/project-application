@@ -2,16 +2,23 @@
     <div class="card">
         <div class="card-header">
             <h5 class="mb-0">
-                <button class="btn btn-link" data-toggle="collapse" data-target="#{{ prefix }}">
-                    {{ button_text }}
+                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#{{ prefix }}">
+                    {% if button_text_collapsed and button_text_not_collapsed %}
+                        <span class="if-collapsed">{{ button_text_collapsed }}</span>
+                        <span class="if-not-collapsed">{{ button_text_not_collapsed }}</span>
+                    {% else %}
+                        {{ button_text }}
+                    {% endif %}
                 </button>
             </h5>
         </div>
 
         <div id="{{ prefix }}" class="collapse hidden d-print-block"
              data-parent="#{{ prefix }}Accordion">
-            <div class="card-body">
-                {% include template_file %}
+            <div class="well">
+                <div class="card-body">
+                    {% include template_file %}
+                </div>
             </div>
         </div>
     </div>
