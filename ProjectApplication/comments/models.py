@@ -34,6 +34,16 @@ class ProposalAttachmentCategory(CreateModify):
         verbose_name_plural = 'Proposal Attachment Categories'
 
 
+class CallAttachmentCategory(CreateModify):
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.category.category
+
+    class Meta:
+        verbose_name_plural = 'Call Attachment Categories'
+
+
 class AbstractComment(CreateModify):
     text = models.TextField(help_text='Comment text', null=False,
                             blank=False)
@@ -61,18 +71,20 @@ class CallComment(AbstractComment):
         unique_together = (('call', 'created_on', 'created_by'),)
 
 
-class AbstractAttachment(CreateModify):
+class ProposalAttachment(CreateModify):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to='attachments/proposals/')
 
-    text = models.TextField(null=True, blank=True)
-
-    class Meta:
-        abstract = True
-
-
-class ProposalAttachment(AbstractAttachment):
     proposal = models.ForeignKey(Proposal, help_text='Proposal that this attachments belongs to',
                                  on_delete=models.PROTECT)
-    category = models.ForeignKey(ProposalAttachmentCategory, help_text='Type of attachment',
+    category = models.ForeignKey(ProposalAttachmentCategory, help_text='Category of the attachment',
+                                 on_delete=models.PROTECT)
+
+
+class CallAttachment(CreateModify):
+    file = models.FileField(storage=S3Boto3Storage(),
+                            upload_to='attachments/calls/')
+    call = models.ForeignKey(Call, help_text='Call that this attachment belongs to',
+                             on_delete=models.PROTECT)
+    category = models.ForeignKey(CallAttachmentCategory, help_text='Category of the attachment',
                                  on_delete=models.PROTECT)
