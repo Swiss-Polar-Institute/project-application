@@ -2,7 +2,6 @@
 
 {% for attachment in attachments %}
     {% include 'comments/_comment.tmpl' with value=attachment %}
-    <br>
     <a href="{{ attachment.file.url }}">{{ attachment.file.name }}</a>
     <p></p>
 {% endfor %}

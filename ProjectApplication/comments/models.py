@@ -63,9 +63,9 @@ class CallComment(AbstractComment):
 
 class AbstractAttachment(CreateModify):
     file = models.FileField(storage=S3Boto3Storage(),
-                            upload_to='attachments/')
+                            upload_to='attachments/proposals/')
 
-    comment_text = models.TextField(null=True, blank=True)
+    text = models.TextField(null=True, blank=True)
 
     class Meta:
         abstract = True

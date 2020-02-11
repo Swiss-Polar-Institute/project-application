@@ -51,9 +51,15 @@ class AttachmentForm(forms.Form):
         proposal_attachment = ProposalAttachment()
 
         proposal_attachment.proposal = proposal
-        proposal_attachment.comment_text = self.cleaned_data['text']
+        proposal_attachment.text = self.cleaned_data['text']
         proposal_attachment.created_by = user
         proposal_attachment.category = self.cleaned_data['category']
+
+        file = self.cleaned_data['file']
+
+        if not file.name.startswith('/'):
+            file.name = f'{proposal.id}-{file.name}'
+
         proposal_attachment.file = self.cleaned_data['file']
 
         all_good = True
