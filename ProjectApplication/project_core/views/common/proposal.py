@@ -15,6 +15,7 @@ from django.views.generic import TemplateView
 
 from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
+from comments.models import ProposalAttachmentCategory
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
@@ -38,7 +39,6 @@ DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
 PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
 COMMENT_FORM_NAME = 'comment_form'
-ATTACHMENT_FORM_NAME = 'attachment_form'
 
 
 class AbstractProposalDetailView(TemplateView):
@@ -116,9 +116,11 @@ class AbstractProposalDetailView(TemplateView):
         context[COMMENT_FORM_NAME] = CommentForm(form_action=reverse('logged-proposal-comment-add',
                                                                      kwargs={'uuid': proposal.uuid}),
                                                  prefix=COMMENT_FORM_NAME)
-        context[ATTACHMENT_FORM_NAME] = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                           kwargs={'uuid': proposal.uuid}),
-                                                       prefix=ATTACHMENT_FORM_NAME)
+        context[AttachmentForm.ATTACHMENT_FORM_NAME] = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
+                                                                                          kwargs={
+                                                                                              'uuid': proposal.uuid}),
+                                                                      category_queryset=ProposalAttachmentCategory.objects.all(),
+                                                                      prefix=AttachmentForm.ATTACHMENT_FORM_NAME)
 
         return context
 

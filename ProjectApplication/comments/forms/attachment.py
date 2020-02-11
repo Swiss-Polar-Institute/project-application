@@ -1,24 +1,28 @@
 import logging
+
 import botocore
 from botocore.exceptions import EndpointConnectionError
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 
-from ..models import ProposalAttachment, ProposalAttachmentCategory
+from ..models import ProposalAttachment, ProposalAttachmentCategory, CallAttachment
 
 logger = logging.getLogger('comments')
 
 
 class AttachmentForm(forms.Form):
+    ATTACHMENT_FORM_NAME = 'attachment_form'
+
     # Note that Comments are not editable, so initial is always empty, always a new comment
     def __init__(self, *args, **kwargs):
         form_action = kwargs.pop('form_action')
+        category_queryset =  kwargs.pop('category_queryset')
 
         super().__init__(*args, **kwargs)
 
         self.fields['category'] = forms.ModelChoiceField(label='Category',
-                                                         queryset=ProposalAttachmentCategory.objects.all(),
+                                                         queryset=category_queryset,
                                                          help_text='Select category of comment')
 
         self.fields['file'] = forms.FileField(label='Attachment', help_text='File to attach')
@@ -76,3 +80,31 @@ class AttachmentForm(forms.Form):
 
         return all_good
 
+    def save_into_call(self, call, user):
+        call_attachment = CallAttachment()
+
+        call_attachment.call = call
+        call_attachment.text = self.cleaned_data['text']
+        call_attachment.created_by = user
+        call_attachment.category = self.cleaned_data['category']
+
+        file = self.cleaned_data['file']
+
+        if not file.name.startswith('/'):
+            file.name = f'{call.id}-{file.name}'
+
+        call_attachment.file = self.cleaned_data['file']
+
+        all_good = True
+        try:
+            call_attachment.save()
+        except EndpointConnectionError:
+            all_good = False
+            logger.warning(
+                f'NOTIFY: Saving attachment to call failed (proposal: {call.id} User: {user}) -EndpointConnectionError')
+        except botocore.exceptions.ClientError:
+            all_good = False
+            logger.warning(
+                f'NOTIFY: Saving file for question failed (proposal: {call.id}  User: {user} -ClientError')
+
+        return all_good

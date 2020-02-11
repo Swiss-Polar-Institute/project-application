@@ -4,11 +4,14 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 
+from comments.forms.attachment import AttachmentForm
+from comments.models import CallAttachmentCategory
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory
-from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, get_template_variables_for_call
-from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
+from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
+    get_template_variables_for_call
+from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -31,8 +34,8 @@ class CallsList(TemplateView):
         return context
 
 
-class CallDetailView(TemplateView):
-    def get(self, request, *args, **kwargs):
+class AbstractCallView(TemplateView):
+    def prepare_context(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
         call = Call.objects.get(id=kwargs['id'])
@@ -53,6 +56,53 @@ class CallDetailView(TemplateView):
                                              'name': budget_category_name})
 
         context['budget_categories_status'] = budget_categories_status
+
+        context[AttachmentForm.ATTACHMENT_FORM_NAME] = AttachmentForm(form_action=reverse('logged-call-comment-add',
+                                                                                          kwargs={'id': call.id}),
+                                                                      category_queryset=CallAttachmentCategory.objects.all(),
+                                                                      prefix=AttachmentForm.ATTACHMENT_FORM_NAME)
+
+        context['attachments'] = call.callattachment_set.all().order_by('created_on')
+
+        return context
+
+
+class CallDetailView(AbstractCallView):
+    def get(self, request, *args, **kwargs):
+        context = self.prepare_context(request, *args, **kwargs)
+
+        return render(request, 'logged/call-detail.tmpl', context)
+
+
+class CallCommentAdd(AbstractCallView):
+    def post(self, request, *args, **kwargs):
+        context = self.prepare_context(request, *args, **kwargs)
+
+        call_id = kwargs['id']
+        call = Call.objects.get(id=call_id)
+
+        call_attachment_form = AttachmentForm(request.POST, request.FILES,
+                                              form_action=reverse('logged-call-comment-add',
+                                                                  kwargs={'id': call_id}),
+                                              category_queryset=CallAttachmentCategory.objects.all(),
+                                              prefix=AttachmentForm.ATTACHMENT_FORM_NAME)
+
+        if call_attachment_form.is_valid():
+            if call_attachment_form.save_into_call(call, request.user):
+                messages.success(request, 'Attachment saved')
+                return redirect(reverse('logged-call-detail', kwargs={'id': call.id}))
+            else:
+                messages.error(request, 'Error saving attachment. Try again please.')
+        else:
+            context[AttachmentForm.ATTACHMENT_FORM_NAME] = call_attachment_form
+            messages.warning(request, 'Error saving the attachment, please review the attachment')
+
+        context[AttachmentForm.ATTACHMENT_FORM_NAME] = call_attachment_form
+
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'calls-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+
         return render(request, 'logged/call-detail.tmpl', context)
 
 
@@ -66,7 +116,8 @@ class CallView(TemplateView):
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
-            context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(call=call, prefix=TEMPLATE_VARIABLES_FORM_NAME)
+            context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(call=call,
+                                                                                prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('logged-call-update', kwargs={'id': call_id})
             context['call_action'] = 'Edit'
             context['active_subsection'] = 'calls-list'
@@ -89,13 +140,14 @@ class CallView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         new_call = False
-        template_variables_form = None # avoids warning referenced without initialization
+        template_variables_form = None  # avoids warning referenced without initialization
 
         if 'id' in kwargs:
             call = Call.objects.get(id=kwargs['id'])
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, instance=call, prefix=CALL_QUESTION_FORM_NAME)
-            template_variables_form = TemplateVariableItemFormSet(request.POST, call=call, prefix=TEMPLATE_VARIABLES_FORM_NAME)
+            template_variables_form = TemplateVariableItemFormSet(request.POST, call=call,
+                                                                  prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
             context['call_action_url'] = reverse('logged-call-update', kwargs={'id': call.id})
             call_action = 'Edit'

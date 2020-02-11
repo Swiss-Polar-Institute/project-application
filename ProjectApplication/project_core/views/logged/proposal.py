@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
+from comments.models import ProposalAttachmentCategory
 from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
 from evaluation.forms.eligibility import EligibilityDecisionForm
@@ -447,6 +448,7 @@ class ProposalCommentAdd(AbstractProposalDetailView):
                                                 prefix=COMMENT_FORM_NAME)
             proposal_attachment_form = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
                                                                           kwargs={'uuid': proposal_uuid}),
+                                                      category_queryset=ProposalAttachmentCategory.objects.all(),
                                                       prefix=ATTACHMENT_FORM_NAME)
 
             if proposal_comment_form.is_valid():
@@ -465,6 +467,7 @@ class ProposalCommentAdd(AbstractProposalDetailView):
             proposal_attachment_form = AttachmentForm(request.POST, request.FILES,
                                                       form_action=reverse('logged-proposal-comment-add',
                                                                           kwargs={'uuid': proposal_uuid}),
+                                                      category_queryset=ProposalAttachmentCategory.objects.all(),
                                                       prefix=ATTACHMENT_FORM_NAME)
 
             if proposal_attachment_form.is_valid():
