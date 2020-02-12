@@ -6,6 +6,7 @@ from ..models import ProposalComment, ProposalCommentCategory
 
 
 class CommentForm(forms.Form):
+    FORM_NAME = 'comment_form'
     # Note that Comments are not editable, so initial is always empty, always a new comment
     def __init__(self, *args, **kwargs):
         form_action = kwargs.pop('form_action')

@@ -116,11 +116,11 @@ class AbstractProposalDetailView(TemplateView):
         context[COMMENT_FORM_NAME] = CommentForm(form_action=reverse('logged-proposal-comment-add',
                                                                      kwargs={'uuid': proposal.uuid}),
                                                  prefix=COMMENT_FORM_NAME)
-        context[AttachmentForm.ATTACHMENT_FORM_NAME] = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                                          kwargs={
+        context[AttachmentForm.FORM_NAME] = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
+                                                                               kwargs={
                                                                                               'uuid': proposal.uuid}),
-                                                                      category_queryset=ProposalAttachmentCategory.objects.all(),
-                                                                      prefix=AttachmentForm.ATTACHMENT_FORM_NAME)
+                                                           category_queryset=ProposalAttachmentCategory.objects.all(),
+                                                           prefix=AttachmentForm.FORM_NAME)
 
         return context
 

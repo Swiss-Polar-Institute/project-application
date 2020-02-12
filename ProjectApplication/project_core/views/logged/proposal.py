@@ -20,8 +20,6 @@ from project_core.models import Proposal, Call
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
 
 ELIGIBILITY_DECISION_FORM_NAME = 'eligibility_decision_form'
-COMMENT_FORM_NAME = 'comment_form'
-ATTACHMENT_FORM_NAME = 'attachment_form'
 
 
 class ProposalsExportCsvSummary(View):
@@ -445,11 +443,11 @@ class ProposalCommentAdd(AbstractProposalDetailView):
         if 'comment_form_submit' in request.POST:
             proposal_comment_form = CommentForm(request.POST, form_action=reverse('logged-proposal-comment-add',
                                                                                   kwargs={'uuid': proposal_uuid}),
-                                                prefix=COMMENT_FORM_NAME)
+                                                prefix=CommentForm.FORM_NAME)
             proposal_attachment_form = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
                                                                           kwargs={'uuid': proposal_uuid}),
                                                       category_queryset=ProposalAttachmentCategory.objects.all(),
-                                                      prefix=ATTACHMENT_FORM_NAME)
+                                                      prefix=AttachmentForm.FORM_NAME)
 
             if proposal_comment_form.is_valid():
                 proposal_comment_form.save_into_proposal(proposal, request.user)
@@ -457,18 +455,18 @@ class ProposalCommentAdd(AbstractProposalDetailView):
                 messages.success(request, 'Comment saved')
                 return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
             else:
-                context[COMMENT_FORM_NAME] = proposal_comment_form
+                context[CommentForm.FORM_NAME] = proposal_comment_form
 
         elif 'attachment_form_submit' in request.POST:
             proposal_comment_form = CommentForm(form_action=reverse('logged-proposal-comment-add',
                                                                     kwargs={'uuid': proposal_uuid}),
-                                                prefix=COMMENT_FORM_NAME)
+                                                prefix=CommentForm.FORM_NAME)
 
             proposal_attachment_form = AttachmentForm(request.POST, request.FILES,
                                                       form_action=reverse('logged-proposal-comment-add',
                                                                           kwargs={'uuid': proposal_uuid}),
                                                       category_queryset=ProposalAttachmentCategory.objects.all(),
-                                                      prefix=ATTACHMENT_FORM_NAME)
+                                                      prefix=AttachmentForm.FORM_NAME)
 
             if proposal_attachment_form.is_valid():
                 if proposal_attachment_form.save_into_proposal(proposal, request.user):

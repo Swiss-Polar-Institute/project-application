@@ -12,7 +12,7 @@ logger = logging.getLogger('comments')
 
 
 class AttachmentForm(forms.Form):
-    ATTACHMENT_FORM_NAME = 'attachment_form'
+    FORM_NAME = 'attachment_form'
 
     # Note that Comments are not editable, so initial is always empty, always a new comment
     def __init__(self, *args, **kwargs):

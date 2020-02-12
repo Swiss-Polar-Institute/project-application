@@ -57,10 +57,10 @@ class AbstractCallView(TemplateView):
 
         context['budget_categories_status'] = budget_categories_status
 
-        context[AttachmentForm.ATTACHMENT_FORM_NAME] = AttachmentForm(form_action=reverse('logged-call-comment-add',
-                                                                                          kwargs={'id': call.id}),
-                                                                      category_queryset=CallAttachmentCategory.objects.all(),
-                                                                      prefix=AttachmentForm.ATTACHMENT_FORM_NAME)
+        context[AttachmentForm.FORM_NAME] = AttachmentForm(form_action=reverse('logged-call-comment-add',
+                                                                               kwargs={'id': call.id}),
+                                                           category_queryset=CallAttachmentCategory.objects.all(),
+                                                           prefix=AttachmentForm.FORM_NAME)
 
         context['attachments'] = call.callattachment_set.all().order_by('created_on')
 
@@ -85,7 +85,7 @@ class CallCommentAdd(AbstractCallView):
                                               form_action=reverse('logged-call-comment-add',
                                                                   kwargs={'id': call_id}),
                                               category_queryset=CallAttachmentCategory.objects.all(),
-                                              prefix=AttachmentForm.ATTACHMENT_FORM_NAME)
+                                              prefix=AttachmentForm.FORM_NAME)
 
         if call_attachment_form.is_valid():
             if call_attachment_form.save_into_call(call, request.user):
@@ -94,10 +94,10 @@ class CallCommentAdd(AbstractCallView):
             else:
                 messages.error(request, 'Error saving attachment. Try again please.')
         else:
-            context[AttachmentForm.ATTACHMENT_FORM_NAME] = call_attachment_form
+            context[AttachmentForm.FORM_NAME] = call_attachment_form
             messages.warning(request, 'Error saving the attachment, please review the attachment')
 
-        context[AttachmentForm.ATTACHMENT_FORM_NAME] = call_attachment_form
+        context[AttachmentForm.FORM_NAME] = call_attachment_form
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'calls-list',
