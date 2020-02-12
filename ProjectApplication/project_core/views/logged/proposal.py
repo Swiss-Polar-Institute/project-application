@@ -12,9 +12,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
-from comments.forms.attachment import AttachmentForm
-from comments.forms.comment import CommentForm
-from comments.models import ProposalAttachmentCategory, ProposalCommentCategory
+from comments.utils import process_comment_attachment
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.models import Proposal, Call
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
@@ -431,53 +429,6 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
                             'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
 
             return render(request, 'logged/proposal-detail.tmpl', context)
-
-
-def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, parent):
-    if 'comment_form_submit' in request.POST:
-        proposal_comment_form = CommentForm(request.POST, form_action=reverse(submit_viewname,
-                                                                              kwargs={'id': parent.id}),
-                                            prefix=CommentForm.FORM_NAME,
-                                            category_queryset=parent.comment_object().category_queryset())
-        proposal_attachment_form = AttachmentForm(form_action=reverse(submit_viewname,
-                                                                      kwargs={'id': parent.id}),
-                                                  category_queryset=parent.attachment_object().category_queryset(),
-                                                  prefix=AttachmentForm.FORM_NAME)
-
-        if proposal_comment_form.is_valid():
-            proposal_comment_form.save(parent, request.user)
-
-            messages.success(request, 'Comment saved')
-            return redirect(reverse(submit_viewname, kwargs={'id': parent.id}))
-        else:
-            context[CommentForm.FORM_NAME] = proposal_comment_form
-
-    elif 'attachment_form_submit' in request.POST:
-        proposal_comment_form = CommentForm(form_action=reverse(submit_viewname_repost,
-                                                                kwargs={'id': parent.id}),
-                                            prefix=CommentForm.FORM_NAME,
-                                            category_queryset=parent.comment_object().category_queryset())
-
-        proposal_attachment_form = AttachmentForm(request.POST, request.FILES,
-                                                  form_action=reverse(submit_viewname_repost,
-                                                                      kwargs={'id': parent.id}),
-                                                  category_queryset=parent.attachment_object().category_queryset(),
-                                                  prefix=AttachmentForm.FORM_NAME)
-
-        if proposal_attachment_form.is_valid():
-            if proposal_attachment_form.save(parent, request.user):
-                messages.success(request, 'Attachment saved')
-                return redirect(reverse(submit_viewname, kwargs={'uuid': parent.uuid}))
-            else:
-                messages.error(request, 'Error saving attachment. Try again please.')
-
-    else:
-        assert False
-
-    context[AttachmentForm.FORM_NAME] = proposal_attachment_form
-    context[CommentForm.FORM_NAME] = proposal_comment_form
-
-    return render(request, 'logged/proposal-detail.tmpl', context)
 
 
 class ProposalCommentAdd(AbstractProposalDetailView):

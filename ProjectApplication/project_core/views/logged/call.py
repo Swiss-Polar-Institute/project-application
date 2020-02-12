@@ -12,7 +12,7 @@ from variable_templates.forms.template_variables import TemplateVariableItemForm
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
-from .proposal import process_comment_attachment
+from comments.utils import process_comment_attachment
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
