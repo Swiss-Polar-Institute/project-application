@@ -15,7 +15,7 @@ from django.views.generic import TemplateView
 
 from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
-from comments.models import ProposalAttachmentCategory
+from comments.models import ProposalAttachmentCategory, ProposalComment, ProposalCommentCategory
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
@@ -38,7 +38,6 @@ FUNDING_FORM_NAME = 'funding_form'
 DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
 PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
-COMMENT_FORM_NAME = 'comment_form'
 
 
 class AbstractProposalDetailView(TemplateView):
@@ -47,7 +46,14 @@ class AbstractProposalDetailView(TemplateView):
     def prepare_context(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+        if 'uuid' in kwargs:
+            # Public requests are based on 'uuid'
+            proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+        elif 'id' in kwargs:
+            # Logged requests (for the comments specially) are based on 'id'
+            proposal = Proposal.objects.get(id=kwargs['id'])
+        else:
+            assert False
         call = proposal.call
 
         context.update(call_context_for_template(call))
@@ -113,12 +119,13 @@ class AbstractProposalDetailView(TemplateView):
         context['attachments'] = proposal.proposalattachment_set.all().order_by('created_on')
 
         context['comments'] = proposal.proposalcomment_set.all().order_by('created_on')
-        context[COMMENT_FORM_NAME] = CommentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                     kwargs={'uuid': proposal.uuid}),
-                                                 prefix=COMMENT_FORM_NAME)
+        context[CommentForm.FORM_NAME] = CommentForm(form_action=reverse('logged-proposal-comment-add',
+                                                                         kwargs={'id': proposal.id}),
+                                                     prefix=CommentForm.FORM_NAME,
+                                                     category_queryset=ProposalCommentCategory.objects.all())
         context[AttachmentForm.FORM_NAME] = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
                                                                                kwargs={
-                                                                                              'uuid': proposal.uuid}),
+                                                                                   'id': proposal.id}),
                                                            category_queryset=ProposalAttachmentCategory.objects.all(),
                                                            prefix=AttachmentForm.FORM_NAME)
 

@@ -12,9 +12,9 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
-from comments.models import ProposalAttachmentCategory
 from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
+from comments.models import ProposalAttachmentCategory, ProposalCommentCategory
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.models import Proposal, Call
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
@@ -437,15 +437,16 @@ class ProposalCommentAdd(AbstractProposalDetailView):
     def post(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
-        proposal_uuid = kwargs['uuid']
-        proposal = Proposal.objects.get(uuid=proposal_uuid)
+        proposal_id = kwargs['id']
+        proposal = Proposal.objects.get(id=proposal_id)
 
         if 'comment_form_submit' in request.POST:
             proposal_comment_form = CommentForm(request.POST, form_action=reverse('logged-proposal-comment-add',
-                                                                                  kwargs={'uuid': proposal_uuid}),
-                                                prefix=CommentForm.FORM_NAME)
+                                                                                  kwargs={'id': proposal_id}),
+                                                prefix=CommentForm.FORM_NAME,
+                                                category_queryset=ProposalCommentCategory.objects.all())
             proposal_attachment_form = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                          kwargs={'uuid': proposal_uuid}),
+                                                                          kwargs={'id': proposal_id}),
                                                       category_queryset=ProposalAttachmentCategory.objects.all(),
                                                       prefix=AttachmentForm.FORM_NAME)
 
@@ -459,12 +460,13 @@ class ProposalCommentAdd(AbstractProposalDetailView):
 
         elif 'attachment_form_submit' in request.POST:
             proposal_comment_form = CommentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                    kwargs={'uuid': proposal_uuid}),
-                                                prefix=CommentForm.FORM_NAME)
+                                                                    kwargs={'id': proposal_id}),
+                                                prefix=CommentForm.FORM_NAME,
+                                                category_queryset=ProposalCommentCategory.objects.all())
 
             proposal_attachment_form = AttachmentForm(request.POST, request.FILES,
                                                       form_action=reverse('logged-proposal-comment-add',
-                                                                          kwargs={'uuid': proposal_uuid}),
+                                                                          kwargs={'id': proposal_id}),
                                                       category_queryset=ProposalAttachmentCategory.objects.all(),
                                                       prefix=AttachmentForm.FORM_NAME)
 
@@ -478,8 +480,8 @@ class ProposalCommentAdd(AbstractProposalDetailView):
         else:
             assert False
 
-        context[ATTACHMENT_FORM_NAME] = proposal_attachment_form
-        context[COMMENT_FORM_NAME] = proposal_comment_form
+        context[AttachmentForm.FORM_NAME] = proposal_attachment_form
+        context[CommentForm.FORM_NAME] = proposal_comment_form
 
         context.update({'active_section': 'proposals',
                         'active_subsection': 'proposals-list',
