@@ -72,10 +72,6 @@ class ProposalAttachment(CreateModify):
         self.proposal = parent
 
     @staticmethod
-    def directory():
-        return 'proposals'
-
-    @staticmethod
     def category_queryset():
         return ProposalAttachmentCategory.objects.all()
 
@@ -114,10 +110,6 @@ class CallAttachment(CreateModify):
 
     def set_parent(self, parent):
         self.call = parent
-
-    @staticmethod
-    def directory():
-        return 'calls'
 
     @staticmethod
     def category_queryset():

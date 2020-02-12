@@ -63,7 +63,7 @@ class AttachmentForm(forms.Form):
         file = self.cleaned_data['file']
 
         if not file.name.startswith('/'):
-            file.name = f'{attachment.directory()}/{parent.id}-{file.name}'
+            file.name = f'{parent.id}-{file.name}'
 
         attachment.file = self.cleaned_data['file']
 

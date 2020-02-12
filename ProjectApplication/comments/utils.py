@@ -18,7 +18,7 @@ def adds_comment_attachment_forms(context, submit_viewname, parent_id, comment_c
                                                        prefix=AttachmentForm.FORM_NAME)
 
 
-def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, parent):
+def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, form_with_errors_template, parent):
     if 'comment_form_submit' in request.POST:
         proposal_comment_form = CommentForm(request.POST, form_action=reverse(submit_viewname,
                                                                               kwargs={'id': parent.id}),
@@ -52,7 +52,7 @@ def process_comment_attachment(request, context, submit_viewname, submit_viewnam
         if proposal_attachment_form.is_valid():
             if proposal_attachment_form.save(parent, request.user):
                 messages.success(request, 'Attachment saved')
-                return redirect(reverse(submit_viewname, kwargs={'uuid': parent.uuid}))
+                return redirect(reverse(submit_viewname, kwargs={'id': parent.id}))
             else:
                 messages.error(request, 'Error saving attachment. Try again please.')
 
@@ -62,4 +62,4 @@ def process_comment_attachment(request, context, submit_viewname, submit_viewnam
     context[AttachmentForm.FORM_NAME] = proposal_attachment_form
     context[CommentForm.FORM_NAME] = proposal_comment_form
 
-    return render(request, 'logged/proposal-detail.tmpl', context)
+    return render(request, form_with_errors_template, context)

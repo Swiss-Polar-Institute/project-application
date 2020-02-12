@@ -87,6 +87,7 @@ class CallCommentAdd(AbstractCallView):
 
         result = process_comment_attachment(request, context, 'logged-call-detail',
                                             'logged-call-comment-add',
+                                            'logged/call-detail.tmpl',
                                             call)
 
         return result

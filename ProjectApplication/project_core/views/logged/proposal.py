@@ -442,6 +442,7 @@ class ProposalCommentAdd(AbstractProposalDetailView):
         proposal = Proposal.objects.get(id=kwargs['id'])
 
         result = process_comment_attachment(request, context, 'logged-proposal-detail', 'logged-proposal-comment-add',
+                                            'logged/proposal-detailed.tmpl',
                                             proposal)
 
         return result
