@@ -12,6 +12,7 @@ from variable_templates.forms.template_variables import TemplateVariableItemForm
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
+from .proposal import process_comment_attachment
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -78,32 +79,17 @@ class CallCommentAdd(AbstractCallView):
     def post(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
-        call_id = kwargs['id']
-        call = Call.objects.get(id=call_id)
-
-        call_attachment_form = AttachmentForm(request.POST, request.FILES,
-                                              form_action=reverse('logged-call-comment-add',
-                                                                  kwargs={'id': call_id}),
-                                              category_queryset=CallAttachmentCategory.objects.all(),
-                                              prefix=AttachmentForm.FORM_NAME)
-
-        if call_attachment_form.is_valid():
-            if call_attachment_form.save_into_call(call, request.user):
-                messages.success(request, 'Attachment saved')
-                return redirect(reverse('logged-call-detail', kwargs={'id': call.id}))
-            else:
-                messages.error(request, 'Error saving attachment. Try again please.')
-        else:
-            context[AttachmentForm.FORM_NAME] = call_attachment_form
-            messages.warning(request, 'Error saving the attachment, please review the attachment')
-
-        context[AttachmentForm.FORM_NAME] = call_attachment_form
-
         context.update({'active_section': 'calls',
                         'active_subsection': 'calls-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        return render(request, 'logged/call-detail.tmpl', context)
+        call = Call.objects.get(id=kwargs['id'])
+
+        result = process_comment_attachment(request, context, 'logged-call-detail',
+                                            'logged-call-comment-add',
+                                            call)
+
+        return result
 
 
 class CallView(TemplateView):

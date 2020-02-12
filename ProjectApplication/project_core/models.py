@@ -132,6 +132,16 @@ class Call(CreateModify):
     def callquestion_set_ordered_by_order(self):
         return self.callquestion_set.all().order_by('order')
 
+    @staticmethod
+    def attachment_object():
+        from comments.models import CallAttachment
+        return CallAttachment
+
+    @staticmethod
+    def comment_object():
+        from comments.models import CallComment
+        return CallComment
+
 
 class StepType(models.Model):
     """Notable steps during the process"""
@@ -676,10 +686,16 @@ class Proposal(CreateModify):
     def status_is_submitted(self):
         return self.proposal_status.name == settings.PROPOSAL_STATUS_SUBMITTED
 
-    def attachment_object(self):
+    @staticmethod
+    def attachment_object():
         from comments.models import ProposalAttachment
         return ProposalAttachment
 
+    @staticmethod
+    def comment_object():
+        from comments.models import ProposalComment
+        return ProposalComment
+        return ProposalComment
 
     class Meta:
         unique_together = (('title', 'applicant', 'call'),)
@@ -874,4 +890,3 @@ class ProposalPartner(Partner):
 
     class Meta:
         unique_together = (('person', 'role', 'proposal'),)
-

@@ -438,10 +438,10 @@ def process_comment_attachment(request, context, submit_viewname, submit_viewnam
         proposal_comment_form = CommentForm(request.POST, form_action=reverse(submit_viewname,
                                                                               kwargs={'id': parent.id}),
                                             prefix=CommentForm.FORM_NAME,
-                                            category_queryset=ProposalCommentCategory.objects.all())
+                                            category_queryset=parent.comment_object().category_queryset())
         proposal_attachment_form = AttachmentForm(form_action=reverse(submit_viewname,
                                                                       kwargs={'id': parent.id}),
-                                                  category_queryset=ProposalAttachmentCategory.objects.all(),
+                                                  category_queryset=parent.attachment_object().category_queryset(),
                                                   prefix=AttachmentForm.FORM_NAME)
 
         if proposal_comment_form.is_valid():
@@ -456,12 +456,12 @@ def process_comment_attachment(request, context, submit_viewname, submit_viewnam
         proposal_comment_form = CommentForm(form_action=reverse(submit_viewname_repost,
                                                                 kwargs={'id': parent.id}),
                                             prefix=CommentForm.FORM_NAME,
-                                            category_queryset=ProposalCommentCategory.objects.all())
+                                            category_queryset=parent.comment_object().category_queryset())
 
         proposal_attachment_form = AttachmentForm(request.POST, request.FILES,
                                                   form_action=reverse(submit_viewname_repost,
                                                                       kwargs={'id': parent.id}),
-                                                  category_queryset=ProposalAttachmentCategory.objects.all(),
+                                                  category_queryset=parent.attachment_object().category_queryset(),
                                                   prefix=AttachmentForm.FORM_NAME)
 
         if proposal_attachment_form.is_valid():
