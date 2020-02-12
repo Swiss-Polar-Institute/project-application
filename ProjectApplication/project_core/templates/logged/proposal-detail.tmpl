@@ -8,12 +8,7 @@
         <div class="col-10">
             {% include 'common/_proposal-detail.tmpl' with edit_button=0 %}
             <hr>
-            <h2>Comments</h2>
-            {% include 'common/_accordion.tmpl' with prefix='comments' button_text_collapsed='View Comments' button_text_not_collapsed='Hide Comments' template_file='comments/_comments.tmpl' %}
-            <br>
-            <h2>Attachments</h2>
-            {% include 'common/_accordion.tmpl' with prefix='files' button_text_collapsed='View Attachments' button_text_not_collapsed='Hide Attachments' template_file='comments/_attachments.tmpl' %}
-            <br>
+            {% include 'comments/_comments-attachments.tmpl' %}
         </div>
         <div class="col-2">
             <p>

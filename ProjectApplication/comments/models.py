@@ -41,6 +41,9 @@ class ProposalComment(AbstractComment):
     category = models.ForeignKey(ProposalCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
+    def set_parent(self, parent):
+        self.proposal = parent
+
     @staticmethod
     def category_queryset():
         return ProposalCommentCategory.objects.all()
@@ -77,14 +80,29 @@ class ProposalAttachment(CreateModify):
 
 
 # Call
+class CallCommentCategory(CreateModify):
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.category.category
+
+    class Meta:
+        verbose_name_plural = 'Call Comment Categories'
+
+
 class CallComment(AbstractComment):
     """Comments made about a call"""
     call = models.ForeignKey(Call, help_text='Call about which the comment was made', on_delete=models.PROTECT)
 
+    category = models.ForeignKey(CallCommentCategory, help_text='Type of comment',
+                                 on_delete=models.PROTECT)
+
+    def set_parent(self, parent):
+        self.call = parent
+
     @staticmethod
     def category_queryset():
-        # TODO change it to CallCommentCategory
-        return CallAttachmentCategory.objects.all()
+        return CallCommentCategory.objects.all()
 
     class Meta:
         unique_together = (('call', 'created_on', 'created_by'),)

@@ -5,14 +5,14 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from comments.forms.attachment import AttachmentForm
-from comments.models import CallAttachmentCategory
+from comments.models import CallAttachmentCategory, CallCommentCategory
+from comments.utils import process_comment_attachment, adds_comment_attachment_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
-from comments.utils import process_comment_attachment
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -58,10 +58,10 @@ class AbstractCallView(TemplateView):
 
         context['budget_categories_status'] = budget_categories_status
 
-        context[AttachmentForm.FORM_NAME] = AttachmentForm(form_action=reverse('logged-call-comment-add',
-                                                                               kwargs={'id': call.id}),
-                                                           category_queryset=CallAttachmentCategory.objects.all(),
-                                                           prefix=AttachmentForm.FORM_NAME)
+        adds_comment_attachment_forms(context, 'logged-call-comment-add', call.id, CallCommentCategory.objects.all(),
+                                      CallAttachmentCategory.objects.all())
+
+        context['comments'] = call.callcomment_set.all().order_by('created_on')
 
         context['attachments'] = call.callattachment_set.all().order_by('created_on')
 

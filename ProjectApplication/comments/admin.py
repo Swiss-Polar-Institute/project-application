@@ -40,6 +40,11 @@ class CallAttachmentCategoryAdmin(admin.ModelAdmin):
     list_display = ('category', 'created_by', 'created_on',)
 
 
+class CallCommentCategoryAdmin(admin.ModelAdmin):
+    list_display = ('category', 'created_by', 'created_on',)
+    ordering = ['category', ]
+
+
 admin.site.register(comments.models.ProposalComment, ProposalCommentAdmin)
 admin.site.register(comments.models.CallComment, CallCommentAdmin)
 admin.site.register(comments.models.Category, CategoryAdmin)
@@ -48,3 +53,4 @@ admin.site.register(comments.models.ProposalAttachmentCategory, ProposalAttachme
 admin.site.register(comments.models.ProposalAttachment, ProposalAttachmentAdmin)
 admin.site.register(comments.models.CallAttachment, CallAttachmentAdmin)
 admin.site.register(comments.models.CallAttachmentCategory, CallAttachmentCategoryAdmin)
+admin.site.register(comments.models.CallCommentCategory, CallCommentCategoryAdmin)

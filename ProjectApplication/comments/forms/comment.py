@@ -37,13 +37,11 @@ class CommentForm(forms.Form):
         )
 
     def save(self, parent, user):
-        if isinstance(parent, Proposal):
-            proposal_comment = ProposalComment()
-            proposal_comment.proposal = parent
-            proposal_comment.text = self.cleaned_data['text']
-            proposal_comment.created_by = user
-            proposal_comment.category = self.cleaned_data['category']
+        comment = parent.comment_object()()
 
-            proposal_comment.save()
-        else:
-            assert False
+        comment.set_parent(parent)
+        comment.text = self.cleaned_data['text']
+        comment.created_by = user
+        comment.category = self.cleaned_data['category']
+
+        comment.save()
