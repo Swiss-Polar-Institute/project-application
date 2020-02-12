@@ -676,6 +676,11 @@ class Proposal(CreateModify):
     def status_is_submitted(self):
         return self.proposal_status.name == settings.PROPOSAL_STATUS_SUBMITTED
 
+    def attachment_object(self):
+        from comments.models import ProposalAttachment
+        return ProposalAttachment
+
+
     class Meta:
         unique_together = (('title', 'applicant', 'call'),)
 

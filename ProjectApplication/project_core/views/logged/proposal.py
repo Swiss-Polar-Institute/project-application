@@ -433,65 +433,80 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
             return render(request, 'logged/proposal-detail.tmpl', context)
 
 
+def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, parent):
+    if 'comment_form_submit' in request.POST:
+        proposal_comment_form = CommentForm(request.POST, form_action=reverse(submit_viewname,
+                                                                              kwargs={'id': parent.id}),
+                                            prefix=CommentForm.FORM_NAME,
+                                            category_queryset=ProposalCommentCategory.objects.all())
+        proposal_attachment_form = AttachmentForm(form_action=reverse(submit_viewname,
+                                                                      kwargs={'id': parent.id}),
+                                                  category_queryset=ProposalAttachmentCategory.objects.all(),
+                                                  prefix=AttachmentForm.FORM_NAME)
+
+        if proposal_comment_form.is_valid():
+            proposal_comment_form.save(parent, request.user)
+
+            messages.success(request, 'Comment saved')
+            return redirect(reverse(submit_viewname, kwargs={'id': parent.id}))
+        else:
+            context[CommentForm.FORM_NAME] = proposal_comment_form
+
+    elif 'attachment_form_submit' in request.POST:
+        proposal_comment_form = CommentForm(form_action=reverse(submit_viewname_repost,
+                                                                kwargs={'id': parent.id}),
+                                            prefix=CommentForm.FORM_NAME,
+                                            category_queryset=ProposalCommentCategory.objects.all())
+
+        proposal_attachment_form = AttachmentForm(request.POST, request.FILES,
+                                                  form_action=reverse(submit_viewname_repost,
+                                                                      kwargs={'id': parent.id}),
+                                                  category_queryset=ProposalAttachmentCategory.objects.all(),
+                                                  prefix=AttachmentForm.FORM_NAME)
+
+        if proposal_attachment_form.is_valid():
+            if proposal_attachment_form.save(parent, request.user):
+                messages.success(request, 'Attachment saved')
+                return redirect(reverse(submit_viewname, kwargs={'uuid': parent.uuid}))
+            else:
+                messages.error(request, 'Error saving attachment. Try again please.')
+
+    else:
+        assert False
+
+    context[AttachmentForm.FORM_NAME] = proposal_attachment_form
+    context[CommentForm.FORM_NAME] = proposal_comment_form
+
+    return render(request, 'logged/proposal-detail.tmpl', context)
+
+
 class ProposalCommentAdd(AbstractProposalDetailView):
     def post(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
-
-        proposal_id = kwargs['id']
-        proposal = Proposal.objects.get(id=proposal_id)
-
-        if 'comment_form_submit' in request.POST:
-            proposal_comment_form = CommentForm(request.POST, form_action=reverse('logged-proposal-comment-add',
-                                                                                  kwargs={'id': proposal_id}),
-                                                prefix=CommentForm.FORM_NAME,
-                                                category_queryset=ProposalCommentCategory.objects.all())
-            proposal_attachment_form = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                          kwargs={'id': proposal_id}),
-                                                      category_queryset=ProposalAttachmentCategory.objects.all(),
-                                                      prefix=AttachmentForm.FORM_NAME)
-
-            if proposal_comment_form.is_valid():
-                proposal_comment_form.save_into_proposal(proposal, request.user)
-
-                messages.success(request, 'Comment saved')
-                return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
-            else:
-                context[CommentForm.FORM_NAME] = proposal_comment_form
-
-        elif 'attachment_form_submit' in request.POST:
-            proposal_comment_form = CommentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                    kwargs={'id': proposal_id}),
-                                                prefix=CommentForm.FORM_NAME,
-                                                category_queryset=ProposalCommentCategory.objects.all())
-
-            proposal_attachment_form = AttachmentForm(request.POST, request.FILES,
-                                                      form_action=reverse('logged-proposal-comment-add',
-                                                                          kwargs={'id': proposal_id}),
-                                                      category_queryset=ProposalAttachmentCategory.objects.all(),
-                                                      prefix=AttachmentForm.FORM_NAME)
-
-            if proposal_attachment_form.is_valid():
-                if proposal_attachment_form.save_into_proposal(proposal, request.user):
-                    messages.success(request, 'Attachment saved')
-                    return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
-                else:
-                    messages.error(request, 'Error saving attachment. Try again please.')
-
-        else:
-            assert False
-
-        context[AttachmentForm.FORM_NAME] = proposal_attachment_form
-        context[CommentForm.FORM_NAME] = proposal_comment_form
 
         context.update({'active_section': 'proposals',
                         'active_subsection': 'proposals-list',
                         'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
 
-        return render(request, 'logged/proposal-detail.tmpl', context)
+        proposal = Proposal.objects.get(id=kwargs['id'])
+
+        result = process_comment_attachment(request, context, 'logged-proposal-detail', 'logged-proposal-comment-add',
+                                            proposal)
+
+        return result
 
 
 class ProposalDetailView(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
+        if 'id' in kwargs:
+            # When coming from adding comments/attachments it contains the 'id' but the
+            # other system relies on the 'uuid'.
+            # Adaptor here to avoid at all costs that the public page can use 'id' to refer to proposals
+            # (even though the urls.py doesn't allow it...)
+            proposal = Proposal.objects.get(id=kwargs['id'])
+            del kwargs['id']
+            kwargs['uuid'] = proposal.uuid
+
         return super().get(request, *args, **kwargs)
 
     template = 'logged/proposal-detail.tmpl'

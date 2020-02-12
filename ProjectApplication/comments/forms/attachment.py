@@ -51,60 +51,32 @@ class AttachmentForm(forms.Form):
             )
         )
 
-    def save_into_proposal(self, proposal, user):
-        proposal_attachment = ProposalAttachment()
+    def save(self, parent, user):
+        attachment = parent.attachment_object()()
 
-        proposal_attachment.proposal = proposal
-        proposal_attachment.text = self.cleaned_data['text']
-        proposal_attachment.created_by = user
-        proposal_attachment.category = self.cleaned_data['category']
+        attachment.set_parent(parent)
 
-        file = self.cleaned_data['file']
-
-        if not file.name.startswith('/'):
-            file.name = f'{proposal.id}-{file.name}'
-
-        proposal_attachment.file = self.cleaned_data['file']
-
-        all_good = True
-        try:
-            proposal_attachment.save()
-        except EndpointConnectionError:
-            all_good = False
-            logger.warning(
-                f'NOTIFY: Saving attachment to proposal failed (proposal: {proposal.id} User: {user}) -EndpointConnectionError')
-        except botocore.exceptions.ClientError:
-            all_good = False
-            logger.warning(
-                f'NOTIFY: Saving file for question failed (proposal: {proposal.id}  User: {user} -ClientError')
-
-        return all_good
-
-    def save_into_call(self, call, user):
-        call_attachment = CallAttachment()
-
-        call_attachment.call = call
-        call_attachment.text = self.cleaned_data['text']
-        call_attachment.created_by = user
-        call_attachment.category = self.cleaned_data['category']
+        attachment.text = self.cleaned_data['text']
+        attachment.created_by = user
+        attachment.category = self.cleaned_data['category']
 
         file = self.cleaned_data['file']
 
         if not file.name.startswith('/'):
-            file.name = f'{call.id}-{file.name}'
+            file.name = f'{attachment.directory()}/{parent.id}-{file.name}'
 
-        call_attachment.file = self.cleaned_data['file']
+        attachment.file = self.cleaned_data['file']
 
         all_good = True
         try:
-            call_attachment.save()
+            attachment.save()
         except EndpointConnectionError:
             all_good = False
             logger.warning(
-                f'NOTIFY: Saving attachment to call failed (proposal: {call.id} User: {user}) -EndpointConnectionError')
+                f'NOTIFY: Saving attachment failed (parent {type(parent)}: {parent.id} User: {user}) -EndpointConnectionError')
         except botocore.exceptions.ClientError:
             all_good = False
             logger.warning(
-                f'NOTIFY: Saving file for question failed (proposal: {call.id}  User: {user} -ClientError')
+                f'NOTIFY: Saving attachment failed (parent: {type(parent)} {parent.id}  User: {user} -ClientError')
 
         return all_good

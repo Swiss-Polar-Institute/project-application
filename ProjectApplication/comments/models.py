@@ -64,6 +64,13 @@ class ProposalAttachment(CreateModify):
     category = models.ForeignKey(ProposalAttachmentCategory, help_text='Category of the attachment',
                                  on_delete=models.PROTECT)
 
+    def set_parent(self, parent):
+        self.proposal = parent
+
+    @staticmethod
+    def directory():
+        return 'proposals'
+
 
 # Call
 class CallComment(AbstractComment):

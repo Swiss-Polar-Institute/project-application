@@ -31,6 +31,8 @@ urlpatterns = [
          name='logged-proposal-update'),
     path('logged/proposal/<uuid:uuid>/', logged.proposal.ProposalDetailView.as_view(),
          name='logged-proposal-detail'),
+    path('logged/proposal/<int:id>/', logged.proposal.ProposalDetailView.as_view(),
+         name='logged-proposal-detail'),
     path('logged/proposal/<uuid:uuid>/eligibility', logged.proposal.ProposalEligibilityUpdate.as_view(),
          name='logged-proposal-eligibility-update'),
     path('logged/proposal/<int:id>/comment/add', logged.proposal.ProposalCommentAdd.as_view(),

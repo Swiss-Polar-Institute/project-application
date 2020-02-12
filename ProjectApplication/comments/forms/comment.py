@@ -2,6 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 
+from project_core.models import Proposal
 from ..models import ProposalComment, ProposalCommentCategory
 
 
@@ -35,11 +36,14 @@ class CommentForm(forms.Form):
             )
         )
 
-    def save_into_proposal(self, proposal, user):
-        proposal_comment = ProposalComment()
-        proposal_comment.proposal = proposal
-        proposal_comment.text = self.cleaned_data['text']
-        proposal_comment.created_by = user
-        proposal_comment.category = self.cleaned_data['category']
+    def save(self, parent, user):
+        if isinstance(parent, Proposal):
+            proposal_comment = ProposalComment()
+            proposal_comment.proposal = parent
+            proposal_comment.text = self.cleaned_data['text']
+            proposal_comment.created_by = user
+            proposal_comment.category = self.cleaned_data['category']
 
-        proposal_comment.save()
+            proposal_comment.save()
+        else:
+            assert False
