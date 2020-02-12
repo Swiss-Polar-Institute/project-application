@@ -6,16 +6,20 @@ from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
 
 
-def adds_comment_attachment_forms(context, submit_viewname, parent_id, comment_category_queryset, attachment_category_queryset):
+def adds_comment_attachment_forms(context, submit_viewname, parent):
     context[CommentForm.FORM_NAME] = CommentForm(form_action=reverse(submit_viewname,
-                                                                     kwargs={'id': parent_id}),
-                                                 category_queryset=comment_category_queryset,
+                                                                     kwargs={'id': parent.id}),
+                                                 category_queryset=parent.comment_object().category_queryset(),
                                                  prefix=CommentForm.FORM_NAME)
 
     context[AttachmentForm.FORM_NAME] = AttachmentForm(form_action=reverse(submit_viewname,
-                                                                           kwargs={'id': parent_id}),
-                                                       category_queryset=attachment_category_queryset,
+                                                                           kwargs={'id': parent.id}),
+                                                       category_queryset=parent.attachment_object().category_queryset(),
                                                        prefix=AttachmentForm.FORM_NAME)
+
+    context['comments'] = parent.comments()
+
+    context['attachments'] = parent.attachments()
 
 
 def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, form_with_errors_template, parent):

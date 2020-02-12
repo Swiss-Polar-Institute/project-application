@@ -137,6 +137,12 @@ class Call(CreateModify):
         from comments.models import CallAttachment
         return CallAttachment
 
+    def attachments(self):
+        return self.callattachment_set.all().order_by('created_on')
+
+    def comments(self):
+        return self.callcomment_set.all().order_by('created_on')
+
     @staticmethod
     def comment_object():
         from comments.models import CallComment
@@ -686,6 +692,12 @@ class Proposal(CreateModify):
     def status_is_submitted(self):
         return self.proposal_status.name == settings.PROPOSAL_STATUS_SUBMITTED
 
+    def attachments(self):
+        return self.proposalattachment_set.all().order_by('created_on')
+
+    def comments(self):
+        return self.proposalcomment_set.all().order_by('created_on')
+
     @staticmethod
     def attachment_object():
         from comments.models import ProposalAttachment
@@ -694,7 +706,6 @@ class Proposal(CreateModify):
     @staticmethod
     def comment_object():
         from comments.models import ProposalComment
-        return ProposalComment
         return ProposalComment
 
     class Meta:

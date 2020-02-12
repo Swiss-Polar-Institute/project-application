@@ -115,12 +115,7 @@ class AbstractProposalDetailView(TemplateView):
                 context[
                     'link_to_edit_or_display'] = f'(<a href="{href}"><i class="fas fa-link"></i> {description}</a>)'
 
-        context['attachments'] = proposal.proposalattachment_set.all().order_by('created_on')
-
-        context['comments'] = proposal.proposalcomment_set.all().order_by('created_on')
-
-        adds_comment_attachment_forms(context, 'logged-proposal-comment-add', proposal.id,
-                                      ProposalCommentCategory.objects.all(), ProposalAttachmentCategory.objects.all())
+        adds_comment_attachment_forms(context, 'logged-proposal-comment-add', proposal)
 
         return context
 

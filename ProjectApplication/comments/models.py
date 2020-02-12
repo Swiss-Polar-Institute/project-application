@@ -24,6 +24,14 @@ class AbstractComment(CreateModify):
         abstract = True
 
 
+class AbstractAttachment(CreateModify):
+    text = models.TextField(help_text='Comment of the attachment', null=True, blank=True)
+
+    class Meta:
+        unique_together = (('created_on', 'created_by'),)
+        abstract = True
+
+
 # Proposal
 class ProposalCommentCategory(CreateModify):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
@@ -62,7 +70,7 @@ class ProposalAttachmentCategory(CreateModify):
         verbose_name_plural = 'Proposal Attachment Categories'
 
 
-class ProposalAttachment(CreateModify):
+class ProposalAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to='attachments/proposals/')
 
@@ -118,7 +126,7 @@ class CallAttachmentCategory(CreateModify):
         verbose_name_plural = 'Call Attachment Categories'
 
 
-class CallAttachment(CreateModify):
+class CallAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to='attachments/calls/')
     call = models.ForeignKey(Call, help_text='Call that this attachment belongs to',

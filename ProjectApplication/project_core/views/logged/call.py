@@ -58,12 +58,7 @@ class AbstractCallView(TemplateView):
 
         context['budget_categories_status'] = budget_categories_status
 
-        adds_comment_attachment_forms(context, 'logged-call-comment-add', call.id, CallCommentCategory.objects.all(),
-                                      CallAttachmentCategory.objects.all())
-
-        context['comments'] = call.callcomment_set.all().order_by('created_on')
-
-        context['attachments'] = call.callattachment_set.all().order_by('created_on')
+        adds_comment_attachment_forms(context, 'logged-call-comment-add', call)
 
         return context
 
