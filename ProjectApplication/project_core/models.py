@@ -901,3 +901,13 @@ class ProposalPartner(Partner):
 
     class Meta:
         unique_together = (('person', 'role', 'proposal'),)
+
+
+class Colour(models.Model):
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    name = models.CharField(max_length=64, help_text='Name of the colour', unique=True)
+    hex_code = models.CharField(max_length=7, help_text='Hex code, e.g. FF0000 for red', unique=True)
+
+    def html_hex_color(self):
+        return f'#~{self.hex_code}'

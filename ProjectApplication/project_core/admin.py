@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.forms import ModelForm, TextInput
 
 import project_core.models
 
@@ -9,25 +10,27 @@ class StepTypeAdmin(admin.ModelAdmin):
 
 
 class StepAdmin(admin.ModelAdmin):
-    list_display = ('call', 'step_type', 'date', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('call', 'step_type', 'date', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['call', 'step_type', 'date', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class BudgetCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'order', )
+    list_display = ('name', 'description', 'order',)
     ordering = ['name', 'order', ]
 
 
 class FundingInstrumentAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'description', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('long_name', 'short_name', 'description', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['long_name', 'short_name', 'description', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class CallAdmin(admin.ModelAdmin):
     list_display = (
-    'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline',
-    'budget_categories_list', 'budget_maximum', 'call_questions_list', 'other_funding_question', 'proposal_partner_question', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+        'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline',
+        'budget_categories_list', 'budget_maximum', 'call_questions_list', 'other_funding_question',
+        'proposal_partner_question', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum', 'created_by',
+                'created_on', 'modified_by', 'modified_on', ]
 
     def budget_categories_list(self, obj):
         budget_categories = obj.budget_categories.all()
@@ -49,15 +52,15 @@ class CallAdmin(admin.ModelAdmin):
 class KeywordAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['name', 'description', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
-    readonly_fields = ('created_on', 'modified_on', )
+    readonly_fields = ('created_on', 'modified_on',)
     search_fields = ('name', 'description',)
     raw_id_fields = ('uid',)
 
 
 class KeywordUidAdmin(admin.ModelAdmin):
-    list_display = ('uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
-    readonly_fields = ('created_on', 'modified_on', )
+    readonly_fields = ('created_on', 'modified_on',)
 
 
 class ProposalStatusAdmin(admin.ModelAdmin):
@@ -71,8 +74,8 @@ class PersonTitleAdmin(admin.ModelAdmin):
 
 
 class CountryUidAdmin(admin.ModelAdmin):
-    list_display = ('uid', 'source','created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['uid', 'source','created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = ('uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class CountryAdmin(admin.ModelAdmin):
@@ -81,44 +84,53 @@ class CountryAdmin(admin.ModelAdmin):
 
 
 class OrganisationUidAdmin(admin.ModelAdmin):
-    list_display = ('uid', 'source','created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',]
+    list_display = ('uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class OrganisationAdmin(admin.ModelAdmin):
-    list_display = ('long_name', 'short_name', 'street', 'city', 'postal_code', 'country', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['long_name', 'short_name', 'city', 'country', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = (
+        'long_name', 'short_name', 'street', 'city', 'postal_code', 'country', 'uid', 'created_by', 'created_on',
+        'modified_by', 'modified_on',)
+    ordering = ['long_name', 'short_name', 'city', 'country', 'uid', 'created_by', 'created_on', 'modified_by',
+                'modified_on', ]
 
 
 class OrganisationNameAdmin(admin.ModelAdmin):
     list_display = ('name', 'organisation', 'created_by', 'created_on', 'modified_by', 'modified_on')
     ordering = ['name']
-    search_fields = ('name', )
+    search_fields = ('name',)
 
 
 class SourceAdmin(admin.ModelAdmin):
-    list_display = ('source', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class GenderAdmin(admin.ModelAdmin):
-    list_display = ('name', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('name', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['name', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class PhysicalPersonAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'surname', 'gender', 'phd_date', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['first_name', 'surname', 'gender', 'phd_date', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = (
+        'first_name', 'surname', 'gender', 'phd_date', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['first_name', 'surname', 'gender', 'phd_date', 'created_by', 'created_on', 'modified_by',
+                'modified_on', ]
 
 
 class PersonUidAdmin(admin.ModelAdmin):
-    list_display = ('person', 'uid', 'source', )
+    list_display = ('person', 'uid', 'source',)
     ordering = ['person', 'uid', 'source', ]
 
 
 class PersonPositionAdmin(admin.ModelAdmin):
-    list_display = ('person', 'academic_title', 'career_stage', 'organisations_list', 'group', 'privacy_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['person', 'academic_title', 'career_stage', 'group', 'privacy_policy', 'contact_newsletter', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = (
+        'person', 'academic_title', 'career_stage', 'organisations_list', 'group', 'privacy_policy',
+        'contact_newsletter',
+        'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['person', 'academic_title', 'career_stage', 'group', 'privacy_policy', 'contact_newsletter',
+                'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
     def organisations_list(self, obj):
         organisation_names = obj.organisation_names.all()
@@ -127,17 +139,17 @@ class PersonPositionAdmin(admin.ModelAdmin):
 
 
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ('person_position', 'method', 'entry', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('person_position', 'method', 'entry', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['person_position', 'method', 'entry', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class GeographicalAreaUidAdmin(admin.ModelAdmin):
-    list_display = ('uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['uid', 'source', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
 class GeographicalAreaAdmin(admin.ModelAdmin):
-    list_display = ('name', 'definition', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('name', 'definition', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['name', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
@@ -145,13 +157,14 @@ class ProposalAdmin(admin.ModelAdmin):
     list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
                     'end_date', 'duration_months', 'applicant', 'proposal_status', 'eligibility', 'eligibility_comment',
                     'qas_list', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on',
-                    'draft_saved_mail_sent', 'submitted_mail_sent', )
+                    'draft_saved_mail_sent', 'submitted_mail_sent',)
     ordering = ['title', 'uuid', 'start_date', 'end_date', 'duration_months', 'applicant',
-                'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on',
+                'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'created_by', 'created_on',
+                'modified_by', 'modified_on',
                 'draft_saved_mail_sent', 'submitted_mail_sent', ]
 
     # Search at the moment only works without '-'
-    search_fields = ('title', 'uuid', )
+    search_fields = ('title', 'uuid',)
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
@@ -193,17 +206,22 @@ class ProposalFundingItemAdmin(admin.ModelAdmin):
 
 class CallQuestionAdmin(admin.ModelAdmin):
     list_display = (
-    'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'order', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+        'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'order', 'created_by',
+        'created_on', 'modified_by', 'modified_on',)
+    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_by', 'created_on',
+                'modified_by', 'modified_on', ]
 
 
 class TemplateQuestionAdmin(admin.ModelAdmin):
-    list_display = ('question_text', 'question_description', 'answer_type', 'answer_max_length', 'created_by', 'created_on', 'modified_by', 'modified_on', )
-    ordering = ['question_text', 'answer_type', 'answer_max_length', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = (
+        'question_text', 'question_description', 'answer_type', 'answer_max_length', 'created_by', 'created_on',
+        'modified_by', 'modified_on',)
+    ordering = ['question_text', 'answer_type', 'answer_max_length', 'created_by', 'created_on', 'modified_by',
+                'modified_on', ]
 
 
 class ProposalQATextAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'call_question', 'answer', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = ('proposal', 'call_question', 'answer', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['proposal', 'call_question', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
@@ -223,8 +241,24 @@ class ProposalPartnerAdmin(admin.ModelAdmin):
 
 
 class ProposalQAFileAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on', )
+    list_display = (
+        'proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on']
+
+
+class ColourForm(ModelForm):
+    class Meta:
+        model = project_core.models.Colour
+        fields = '__all__'
+        widgets = {
+            'hex_code': TextInput(attrs={'type': 'color'}),
+        }
+
+
+class ColourAdmin(admin.ModelAdmin):
+    list_display = ('name', 'hex_code')
+    ordering = ['name', 'hex_code']
+    form = ColourForm
 
 
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
@@ -260,3 +294,4 @@ admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
 admin.site.register(project_core.models.Role, RoleAdmin)
 admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
 admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)
+admin.site.register(project_core.models.Colour, ColourAdmin)
