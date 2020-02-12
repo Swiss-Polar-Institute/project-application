@@ -1,6 +1,5 @@
-{{ value.created_by.first_name }} {{ value.created_by.last_name }} on {{ value.created_on|date:"Y-m-d" }} at
+<span class="badge" style="color:black; background-color: {{ value.category.category.color }};">{{ value.category }}</span></span> {{ value.created_by.first_name }} {{ value.created_by.last_name }} on {{ value.created_on|date:"Y-m-d" }} at
 {{ value.created_on|date:"H:i" }}<br>
-<span class="badge badge-secondary">{{ value.category }}</span>
 
 {% if value.text %}
     <div class="pre-with-newlines p-1 border bg-white rounded">{{ value.text }}</div>

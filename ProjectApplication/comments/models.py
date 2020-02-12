@@ -7,7 +7,7 @@ from project_core.models import CreateModify, Proposal, Call, Colour
 # Models used by Proposal, Call...
 class Category(CreateModify):
     category = models.CharField(max_length=100, help_text='Type of comment or attachment', unique=True)
-    color = models.ForeignKey(Colour, on_delete=models.PROTECT, null=True, blank=True)
+    colour = models.ForeignKey(Colour, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.category

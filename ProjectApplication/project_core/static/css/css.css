@@ -16,6 +16,7 @@
 .select2-selection__choice {
     margin-top: 8px !important;
 }
+
 .select2-container .select2-selection--single {
     height: 45px !important;
     border: 1px solid #ced4da !important;
@@ -38,7 +39,7 @@
     in date+time pickers
     */
 .invalid-feedback {
-  display: block;
+    display: block;
 }
 
 /** For the form validation errors: crispy forms form uses:
@@ -129,10 +130,10 @@ div.selector-filter {
     https://stackoverflow.com/questions/33911049/btn-xs-no-longer-a-valid-option-in-bootstrap-4
     */
 .btn-group-xs > .btn, .btn-xs {
-  padding: .25rem .4rem;
-  font-size: .875rem;
-  line-height: .5;
-  border-radius: .2rem;
+    padding: .25rem .4rem;
+    font-size: .875rem;
+    line-height: .5;
+    border-radius: .2rem;
 }
 
 .title {
@@ -140,13 +141,20 @@ div.selector-filter {
 }
 
 .text-large {
-font-size: 120%;
+    font-size: 120%;
 }
 
 /** This is for the Bootstrap accordion: to show/hide different text based on the state of the accordion */
 [data-toggle="collapse"].collapsed .if-not-collapsed {
-  display: none;
+    display: none;
 }
+
 [data-toggle="collapse"]:not(.collapsed) .if-collapsed {
-  display: none;
+    display: none;
+}
+
+
+.carles {
+    background-color: #ff0000;
+    color: white;
 }

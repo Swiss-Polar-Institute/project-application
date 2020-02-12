@@ -911,3 +911,6 @@ class Colour(models.Model):
 
     def html_hex_color(self):
         return f'#~{self.hex_code}'
+
+    def __str__(self):
+        return self.name
