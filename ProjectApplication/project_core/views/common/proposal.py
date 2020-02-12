@@ -13,9 +13,8 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
-from comments.forms.attachment import AttachmentForm
-from comments.forms.comment import CommentForm
-from comments.models import ProposalAttachmentCategory, ProposalComment, ProposalCommentCategory
+from comments.models import ProposalAttachmentCategory, ProposalCommentCategory
+from comments.utils import adds_comment_attachment_forms
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
@@ -119,15 +118,9 @@ class AbstractProposalDetailView(TemplateView):
         context['attachments'] = proposal.proposalattachment_set.all().order_by('created_on')
 
         context['comments'] = proposal.proposalcomment_set.all().order_by('created_on')
-        context[CommentForm.FORM_NAME] = CommentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                         kwargs={'id': proposal.id}),
-                                                     prefix=CommentForm.FORM_NAME,
-                                                     category_queryset=ProposalCommentCategory.objects.all())
-        context[AttachmentForm.FORM_NAME] = AttachmentForm(form_action=reverse('logged-proposal-comment-add',
-                                                                               kwargs={
-                                                                                   'id': proposal.id}),
-                                                           category_queryset=ProposalAttachmentCategory.objects.all(),
-                                                           prefix=AttachmentForm.FORM_NAME)
+
+        adds_comment_attachment_forms(context, 'logged-proposal-comment-add', proposal.id,
+                                      ProposalCommentCategory.objects.all(), ProposalAttachmentCategory.objects.all())
 
         return context
 
