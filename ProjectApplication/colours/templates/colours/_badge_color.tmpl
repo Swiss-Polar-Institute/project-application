@@ -1,6 +1,6 @@
 {% if colour %}
     <span class="badge"
-          style="color:{{ colour.text }}; background-color: {{ colour.background }};">{{ text }}</span>
+          style="color:{{ colour.text.hex_code }}; background-color: {{ colour.background.hex_code }};">{{ text }}</span>
 {% else %}
     <span class="badge badge-secondary">{{ text }}</span>
 {% endif %}
