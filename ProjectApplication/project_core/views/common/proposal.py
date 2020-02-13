@@ -13,7 +13,6 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
-from comments.models import ProposalAttachmentCategory, ProposalCommentCategory
 from comments.utils import adds_comment_attachment_forms
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.forms.budget import BudgetItemFormSet
@@ -285,7 +284,8 @@ class AbstractProposalView(TemplateView):
 
             if call.proposal_partner_question:
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
-                                                                       instance=proposal)
+                                                                       instance=proposal,
+                                                                       form_kwargs={'call': proposal.call})
 
             if call.overarching_project_question:
                 proposal_project_overarching_form = ProjectOverarchingForm(request.POST,
@@ -311,7 +311,8 @@ class AbstractProposalView(TemplateView):
                 funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
 
             if call.proposal_partner_question:
-                proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME)
+                proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
+                                                                       form_kwargs={'call': call})
 
             if call.overarching_project_question:
                 proposal_project_overarching_form = ProjectOverarchingForm(request.POST,
