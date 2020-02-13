@@ -5,6 +5,8 @@
     function commentIsRequired(required) {
         if (required) {
             $('#div_id_eligibility_decision_form-comment .asteriskField').show();
+
+            // This might not be working but Django on the server side is checking it (and giving a good error)
             $("#id_eligibility_decision-comment").attr('required', true);
         } else {
             $('#div_id_eligibility_decision_form-comment .asteriskField').hide();
