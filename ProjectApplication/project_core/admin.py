@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.forms import ModelForm, TextInput
 
 import project_core.models
 
@@ -246,21 +245,6 @@ class ProposalQAFileAdmin(admin.ModelAdmin):
     ordering = ['proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on']
 
 
-class ColourForm(ModelForm):
-    class Meta:
-        model = project_core.models.Colour
-        fields = '__all__'
-        widgets = {
-            'hex_code': TextInput(attrs={'type': 'color'}),
-        }
-
-
-class ColourAdmin(admin.ModelAdmin):
-    list_display = ('name', 'hex_code')
-    ordering = ['name', 'hex_code']
-    form = ColourForm
-
-
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
@@ -294,4 +278,3 @@ admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
 admin.site.register(project_core.models.Role, RoleAdmin)
 admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
 admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)
-admin.site.register(project_core.models.Colour, ColourAdmin)

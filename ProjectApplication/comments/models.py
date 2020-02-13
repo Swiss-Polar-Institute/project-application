@@ -1,13 +1,14 @@
 from django.db import models
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from project_core.models import CreateModify, Proposal, Call, Colour
+from project_core.models import CreateModify, Proposal, Call
+from colours.models import ColourPair
 
 
 # Models used by Proposal, Call...
 class Category(CreateModify):
     category = models.CharField(max_length=100, help_text='Type of comment or attachment', unique=True)
-    colour = models.ForeignKey(Colour, on_delete=models.PROTECT, null=True, blank=True)
+    colour = models.ForeignKey(ColourPair, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
         return self.category

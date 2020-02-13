@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'project_core',
     'variable_templates',
     'evaluation',
-    'comments'
+    'comments',
+    'colours'
 ]
 
 MIDDLEWARE = [
