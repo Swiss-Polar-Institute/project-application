@@ -24,6 +24,7 @@
                 <th>Title</th>
                 <th>Applicant</th>
                 <th>Status</th>
+                <th>Eligibile</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -34,6 +35,12 @@
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
                     <td>{{ proposal.proposal_status.name }}</td>
+                    <td>{% if proposal.eligibility == proposal.ELIGIBILITYNOTCHECKED %}
+                        -
+                    {% else %}
+                        {% include 'common/_check-icon.tmpl' with value=proposal.is_eligible %}
+                    {% endif %}
+                    </td>
                     <td>
                         <!-- <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-proposal-update' uuid=proposal.uuid %}">Edit</a>

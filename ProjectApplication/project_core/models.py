@@ -692,6 +692,9 @@ class Proposal(CreateModify):
     def status_is_submitted(self):
         return self.proposal_status.name == settings.PROPOSAL_STATUS_SUBMITTED
 
+    def is_eligible(self):
+        return self.eligibility == Proposal.ELIGIBLE
+
     def attachments(self):
         return self.proposalattachment_set.all().order_by('created_on')
 
