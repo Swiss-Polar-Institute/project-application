@@ -63,10 +63,10 @@ class UtilsTest(TestCase):
         comment_text = ''
 
         response = client.post(url,
-                               {'comment_form_submit': '1',
-                                f'{CommentForm.FORM_NAME}-category': self._proposal_comment_category.id,
-                                f'{CommentForm.FORM_NAME}-text': comment_text}
-                               , follow=True)
+                               data={'comment_form_submit': '1',
+                                     f'{CommentForm.FORM_NAME}-category': self._proposal_comment_category.id,
+                                     f'{CommentForm.FORM_NAME}-text': comment_text}
+                               )
 
         self.assertEqual(ProposalComment.objects.all().count(), 0)
 
