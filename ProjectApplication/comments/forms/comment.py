@@ -16,7 +16,7 @@ class CommentForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         self.fields['category'] = forms.ModelChoiceField(label='Category', queryset=comment_category,
-                                                     help_text='Select category of comment',)
+                                                     help_text='Select category of comment', )
         self.fields['text'] = forms.CharField(label='Text', max_length=10000,
                                               help_text='Write the comment (max length: 10000 characters)',
                                               widget=forms.Textarea(attrs={'rows': 4}))

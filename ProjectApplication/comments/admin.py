@@ -14,8 +14,8 @@ class CallCommentAdmin(admin.ModelAdmin):
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('category', 'colour', 'created_by', 'created_on',)
-    ordering = ['category']
+    list_display = ('name', 'colour', 'created_by', 'created_on',)
+    ordering = ['name']
 
 
 class ProposalCommentCategoryAdmin(admin.ModelAdmin):

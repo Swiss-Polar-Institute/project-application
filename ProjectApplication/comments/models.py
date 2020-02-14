@@ -7,11 +7,11 @@ from colours.models import ColourPair
 
 # Models used by Proposal, Call...
 class Category(CreateModify):
-    category = models.CharField(max_length=100, help_text='Type of comment or attachment', unique=True)
+    name = models.CharField(max_length=100, help_text='Type of comment or attachment', unique=True)
     colour = models.ForeignKey(ColourPair, on_delete=models.PROTECT, null=True, blank=True)
 
     def __str__(self):
-        return self.category
+        return self.name
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -39,7 +39,7 @@ class ProposalCommentCategory(CreateModify):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.category.category
+        return self.category.name
 
     class Meta:
         verbose_name_plural = 'Proposal Comment Categories'
@@ -66,7 +66,7 @@ class ProposalAttachmentCategory(CreateModify):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.category.category
+        return self.category.name
 
     class Meta:
         verbose_name_plural = 'Proposal Attachment Categories'
@@ -94,7 +94,7 @@ class CallCommentCategory(CreateModify):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.category.category
+        return self.category.name
 
     class Meta:
         verbose_name_plural = 'Call Comment Categories'
@@ -122,7 +122,7 @@ class CallAttachmentCategory(CreateModify):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):
-        return self.category.category
+        return self.category.name
 
     class Meta:
         verbose_name_plural = 'Call Attachment Categories'
