@@ -13,7 +13,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
-from comments.utils import adds_comment_attachment_forms
+from comments.utils import add_comment_attachment_forms
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
@@ -114,7 +114,7 @@ class AbstractProposalDetailView(TemplateView):
                 context[
                     'link_to_edit_or_display'] = f'(<a href="{href}"><i class="fas fa-link"></i> {description}</a>)'
 
-        adds_comment_attachment_forms(context, 'logged-proposal-comment-add', proposal)
+        add_comment_attachment_forms(context, 'logged-proposal-comment-add', proposal)
 
         return context
 

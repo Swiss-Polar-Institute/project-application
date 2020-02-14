@@ -1,5 +1,7 @@
 from django.test import TestCase
 
+# dependencies of project_core could be removed - but this way is doing integration test
+# as well. This can be refactored
 from project_core.tests import database_population
 from ...forms.comment import CommentForm
 from ...models import ProposalCommentCategory, Category, ProposalComment
@@ -19,12 +21,13 @@ class CommentFormTest(TestCase):
     def test_comment_save(self):
         self.assertEqual(ProposalComment.objects.all().count(), 0)
 
-        post = {'category': self._proposal_comment_category.id,
-                'text': 'This is a comment'}
+        post = {f'{CommentForm.FORM_NAME}-category': self._proposal_comment_category.id,
+                f'{CommentForm.FORM_NAME}-text': 'This is a comment'}
 
         comment_form = CommentForm(post,
                                    category_queryset=ProposalCommentCategory.objects.all(),
-                                   form_action='this-is-the-form-action')
+                                   form_action='this-is-the-form-action',
+                                   prefix=CommentForm.FORM_NAME)
         comment_form.is_valid()
         comment_form.save(self._proposal, None)
 

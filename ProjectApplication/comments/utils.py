@@ -6,7 +6,7 @@ from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
 
 
-def adds_comment_attachment_forms(context, submit_viewname, parent):
+def add_comment_attachment_forms(context, submit_viewname, parent):
     context[CommentForm.FORM_NAME] = CommentForm(form_action=reverse(submit_viewname,
                                                                      kwargs={'id': parent.id}),
                                                  category_queryset=parent.comment_object().category_queryset(),
@@ -22,7 +22,8 @@ def adds_comment_attachment_forms(context, submit_viewname, parent):
     context['attachments'] = parent.attachments()
 
 
-def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, form_with_errors_template, parent):
+def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, form_with_errors_template,
+                               parent):
     if 'comment_form_submit' in request.POST:
         proposal_comment_form = CommentForm(request.POST, form_action=reverse(submit_viewname,
                                                                               kwargs={'id': parent.id}),
@@ -35,11 +36,11 @@ def process_comment_attachment(request, context, submit_viewname, submit_viewnam
 
         if proposal_comment_form.is_valid():
             proposal_comment_form.save(parent, request.user)
-
             messages.success(request, 'Comment saved')
             return redirect(reverse(submit_viewname, kwargs={'id': parent.id}))
         else:
-            context[CommentForm.FORM_NAME] = proposal_comment_form
+            messages.error(request, 'Error saving the comment. Check the information in the comments section.')
+
 
     elif 'attachment_form_submit' in request.POST:
         proposal_comment_form = CommentForm(form_action=reverse(submit_viewname_repost,

@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from comments.forms.attachment import AttachmentForm
 from comments.models import CallAttachmentCategory, CallCommentCategory
-from comments.utils import process_comment_attachment, adds_comment_attachment_forms
+from comments.utils import process_comment_attachment, add_comment_attachment_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
@@ -58,7 +58,7 @@ class AbstractCallView(TemplateView):
 
         context['budget_categories_status'] = budget_categories_status
 
-        adds_comment_attachment_forms(context, 'logged-call-comment-add', call)
+        add_comment_attachment_forms(context, 'logged-call-comment-add', call)
 
         return context
 
