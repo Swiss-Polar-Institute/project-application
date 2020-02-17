@@ -5,8 +5,9 @@
     <h1>List of proposals</h1>
     {% if call_filter %}
         For call: <a href="{% url 'logged-call-detail' id=call_filter.id %}">{{ call_filter.long_name }}</a>
-    {% elif reviewer_filter %}
-        For reviewer: {{ reviewer_filter }}
+    {% elif reviewer %}
+        For reviewer: {{ reviewer }}<br>
+        Calls with access: {% for call in reviewer_calls_access %}{{ call.long_name }}{% endfor %}
     {% else %}
         All calls
     {% endif %}

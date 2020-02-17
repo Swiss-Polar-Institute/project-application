@@ -404,8 +404,9 @@ class ProposalsList(TemplateView):
             context['proposals'] = context['proposals'].objects.filter(call=call)
 
         if user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
-            context['reviewer_filter'] = self.request.user
+            context['reviewer'] = self.request.user
             context['proposals'] = Reviewer.filter_proposals(context['proposals'], self.request.user)
+            context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
 
         context['active_section'] = 'proposals'
         context['active_subsection'] = 'proposals-list'
