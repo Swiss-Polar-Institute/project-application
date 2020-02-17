@@ -255,4 +255,7 @@ EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_SUBJECT_PREFIX = os.environ['EMAIL_SUBJECT_PREFIX']
 EMAIL_USE_TLS = True
 
+REVIEWER_GROUP_NAME = 'reviewer'
+MANAGEMENT_GROUP_NAME = 'management'
+
 DEBUG = os.environ['DEBUG'] == '1'

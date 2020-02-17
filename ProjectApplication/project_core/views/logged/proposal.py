@@ -12,11 +12,12 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
+from ProjectApplication import settings
 from comments.utils import process_comment_attachment
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.models import Reviewer
 from project_core.models import Proposal, Call
-from project_core.templatetags.user_is_reviewer import request_is_reviewer, user_is_reviewer
+from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
 
 ELIGIBILITY_DECISION_FORM_NAME = 'eligibility_decision_form'
@@ -402,7 +403,7 @@ class ProposalsList(TemplateView):
             call = context['call_filter'] = Call.objects.get(id=call_id)
             context['proposals'] = context['proposals'].objects.filter(call=call)
 
-        if user_is_reviewer(self.request.user):
+        if user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
             context['reviewer_filter'] = self.request.user
             context['proposals'] = Reviewer.filter_proposals(context['proposals'], self.request.user)
 
