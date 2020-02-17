@@ -5,6 +5,8 @@
     <h1>List of proposals</h1>
     {% if call_filter %}
         For call: <a href="{% url 'logged-call-detail' id=call_filter.id %}">{{ call_filter.long_name }}</a>
+    {% elif reviewer_filter %}
+        For reviewer: {{ reviewer_filter }}
     {% else %}
         All calls
     {% endif %}
@@ -53,7 +55,7 @@
             </tbody>
         </table>
     {% else %}
-        No submitted proposals in the system
+        No proposals to be displayed
     {% endif %}
     <p>
         {% if call_filter %}

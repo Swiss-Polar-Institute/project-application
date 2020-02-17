@@ -14,7 +14,9 @@ from django.views.generic import TemplateView
 
 from comments.utils import process_comment_attachment
 from evaluation.forms.eligibility import EligibilityDecisionForm
+from evaluation.models import Reviewer
 from project_core.models import Proposal, Call
+from project_core.templatetags.user_is_reviewer import request_is_reviewer, user_is_reviewer
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
 
 ELIGIBILITY_DECISION_FORM_NAME = 'eligibility_decision_form'
@@ -45,6 +47,8 @@ class ProposalsExportCsvSummary(View):
         else:
             # We are adding the Call Name: we are exporting proposals for all the calls
             headers = ['Call Name'] + headers
+
+        proposals = Reviewer.filter_proposals(proposals, self.request.user)
 
         writer.writerow(headers)
 
@@ -393,11 +397,14 @@ class ProposalsList(TemplateView):
         call_id = self.request.GET.get('call', None)
 
         context['proposals'] = Proposal.objects.all()
-        context['call_filter'] = None
 
-        if call_id is not None:
-            context['proposals'] = context['proposals'].filter(call_id=call_id)
-            context['call_filter'] = Call.objects.get(id=call_id)
+        if call_id:
+            call = context['call_filter'] = Call.objects.get(id=call_id)
+            context['proposals'] = context['proposals'].objects.filter(call=call)
+
+        if user_is_reviewer(self.request.user):
+            context['reviewer_filter'] = self.request.user
+            context['proposals'] = Reviewer.filter_proposals(context['proposals'], self.request.user)
 
         context['active_section'] = 'proposals'
         context['active_subsection'] = 'proposals-list'

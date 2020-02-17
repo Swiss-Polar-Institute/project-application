@@ -10,7 +10,7 @@
 <h2>{{ proposal.title }}</h2>
 <strong>Status:</strong> {{ proposal.proposal_status.name }} {{ link_to_edit_or_display|safe }}<br>
 <strong>Call:</strong>
-{% if request|user_is_management %}
+{% if request|request_is_management %}
     <a href="{% url 'logged-call-detail' id=proposal.call.id %}">{{ call_name }}</a>
 {% else %}
     {{ call_name }}

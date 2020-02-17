@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from colours.forms import ColourForm
-from colours.models import Colour, ColourPair
+from .forms import ColourForm
+from .models import Colour, ColourPair
 
 
 class ColourAdmin(admin.ModelAdmin):
