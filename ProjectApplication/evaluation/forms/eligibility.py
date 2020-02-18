@@ -10,6 +10,7 @@ from project_core.utils import user_is_in_group_name
 
 
 class EligibilityDecisionForm(forms.Form):
+    FORM_NAME = 'eligibility_decision_form'
     def __init__(self, *args, **kwargs):
         self._proposal_uuid = kwargs.pop('proposal_uuid')
         super().__init__(*args, **kwargs)

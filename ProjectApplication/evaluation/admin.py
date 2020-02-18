@@ -1,6 +1,12 @@
 from django.contrib import admin
 
-from .models import Reviewer
+from .models import Reviewer, ProposalEvaluation
+
+
+class ProposalEvaluationAdmin(admin.ModelAdmin):
+    list_display = (
+        'proposal', 'final_mark', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant', 'panel_recommendation',
+        'board_decision', 'decision_date')
 
 
 class ReviewerAdmin(admin.ModelAdmin):
@@ -12,3 +18,4 @@ class ReviewerAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Reviewer, ReviewerAdmin)
+admin.site.register(ProposalEvaluation, ProposalEvaluationAdmin)

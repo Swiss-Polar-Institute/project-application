@@ -16,7 +16,11 @@
         <div class="col-2">
             {% if request|request_is_management %}
                 <p>
-                    {% include 'evaluation/eligibility_decision_form.tmpl' %}
+                    {% include 'evaluation/_eligibility_decision-form.tmpl' %}
+                </p>
+                <hr>
+                <p>
+                    {% include 'evaluation/_proposal_evaluation-form.tmpl' %}
                 </p>
             {% endif %}
         </div>

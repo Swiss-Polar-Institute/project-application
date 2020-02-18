@@ -15,12 +15,11 @@ from django.views.generic import TemplateView
 from ProjectApplication import settings
 from comments.utils import process_comment_attachment
 from evaluation.forms.eligibility import EligibilityDecisionForm
+from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import Reviewer
 from project_core.models import Proposal, Call
 from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
-
-ELIGIBILITY_DECISION_FORM_NAME = 'eligibility_decision_form'
 
 
 class ProposalsExportCsvSummary(View):
@@ -415,23 +414,49 @@ class ProposalsList(TemplateView):
         return context
 
 
+class ProposalEvaluationUpdate(AbstractProposalDetailView):
+    def post(self, request, *args, **kwargs):
+        context = self.prepare_context(request, *args, **kwargs)
+
+        proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+
+        proposal_evaluation_form = ProposalEvaluationForm(request.POST, prefix=ProposalEvaluationForm.FORM_NAME,
+                                                          proposal=proposal)
+
+        if proposal_evaluation_form.is_valid():
+            proposal_evaluation_form.save(user=request.user)
+
+            messages.success(request, 'Evaluation form saved')
+            return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
+        else:
+            messages.warning(request, 'Evaluation not saved. Verify errors in the form')
+            context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
+
+            context.update({'active_section': 'proposals',
+                            'active_subsection': 'proposals-list',
+                            'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+
+            return render(request, 'logged/proposal-detail.tmpl', context)
+
+
 class ProposalEligibilityUpdate(AbstractProposalDetailView):
     def post(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
         proposal_uuid = kwargs['uuid']
 
-        eligibility_decision_form = EligibilityDecisionForm(request.POST, prefix=ELIGIBILITY_DECISION_FORM_NAME,
+        eligibility_decision_form = EligibilityDecisionForm(request.POST, prefix=EligibilityDecisionForm.FORM_NAME,
                                                             proposal_uuid=proposal_uuid)
 
         if eligibility_decision_form.is_valid():
-            eligibility_decision_form.save_eligibility()
+            eligibility_decision_form.save_eligibility(request.user)
 
             messages.success(request, 'Eligibility saved')
             return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal_uuid}))
 
         else:
-            context[ELIGIBILITY_DECISION_FORM_NAME] = eligibility_decision_form
+            messages.warning(request, 'Eligibility not saved. Verify errors in the form')
+            context[EligibilityDecisionForm.FORM_NAME] = eligibility_decision_form
 
             context.update({'active_section': 'proposals',
                             'active_subsection': 'proposals-list',

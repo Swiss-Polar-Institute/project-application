@@ -15,6 +15,7 @@ from django.views.generic import TemplateView
 
 from comments.utils import add_comment_attachment_forms
 from evaluation.forms.eligibility import EligibilityDecisionForm
+from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
@@ -27,7 +28,6 @@ from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, 
 from variable_templates.utils import get_template_value_for_call
 from ...templatetags.in_management import in_management
 
-ELIGIBILITY_DECISION_FORM_NAME = 'eligibility_decision_form'
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
 QUESTIONS_FORM_NAME = 'questions_form'
@@ -62,8 +62,10 @@ class AbstractProposalDetailView(TemplateView):
 
         context['questions_answers'] = []
 
-        context[ELIGIBILITY_DECISION_FORM_NAME] = EligibilityDecisionForm(prefix=ELIGIBILITY_DECISION_FORM_NAME,
-                                                                          proposal_uuid=proposal.uuid)
+        context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
+                                                                             proposal_uuid=proposal.uuid)
+        context[ProposalEvaluationForm.FORM_NAME] = ProposalEvaluationForm(prefix=ProposalEvaluationForm.FORM_NAME,
+                                                                           proposal=proposal)
 
         for question in call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
             try:
