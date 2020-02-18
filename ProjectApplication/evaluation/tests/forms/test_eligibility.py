@@ -1,5 +1,7 @@
+from django.contrib.auth.models import User, Group
 from django.test import TestCase
 
+from ProjectApplication import settings
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from project_core.models import Proposal
 from project_core.tests.database_population import create_proposal
@@ -7,7 +9,11 @@ from project_core.tests.database_population import create_proposal
 
 class BudgetItemFormTest(TestCase):
     def setUp(self):
-        pass
+        self._user = User.objects.create_user('TestUser', 'test@example.com', 'password')
+        group, _ = Group.objects.get_or_create(name=settings.MANAGEMENT_GROUP_NAME)
+
+        group.user_set.add(self._user)
+        group.save()
 
     def test_eligibility(self):
         proposal = create_proposal()
@@ -23,7 +29,7 @@ class BudgetItemFormTest(TestCase):
         eligibility_decision = EligibilityDecisionForm(data=data, proposal_uuid=proposal.uuid)
 
         self.assertTrue(eligibility_decision.is_valid())
-        eligibility_decision.save_eligibility()
+        eligibility_decision.save_eligibility(self._user)
 
         proposal.refresh_from_db()
         self.assertEqual(proposal.eligibility, Proposal.ELIGIBLE)
@@ -56,7 +62,7 @@ class BudgetItemFormTest(TestCase):
 
         self.assertTrue(eligibility_decision.is_valid())
 
-        eligibility_decision.save_eligibility()
+        eligibility_decision.save_eligibility(self._user)
 
         proposal.refresh_from_db()
 

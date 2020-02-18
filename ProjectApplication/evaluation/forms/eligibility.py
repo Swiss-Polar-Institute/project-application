@@ -1,9 +1,12 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
+from ProjectApplication import settings
 from project_core.models import Proposal
+from project_core.utils import user_is_in_group_name
 
 
 class EligibilityDecisionForm(forms.Form):
@@ -45,7 +48,10 @@ class EligibilityDecisionForm(forms.Form):
             if self.cleaned_data['eligible'] == 'False' and not self.cleaned_data['comment']:
                 raise forms.ValidationError({'comment': 'Comment is mandatory if the proposal is not eligible'})
 
-    def save_eligibility(self):
+    def save_eligibility(self, user):
+        if not user_is_in_group_name(user, settings.MANAGEMENT_GROUP_NAME):
+            raise PermissionDenied()
+
         eligible = self.cleaned_data['eligible']
         comment = self.cleaned_data.get('comment', None)
 

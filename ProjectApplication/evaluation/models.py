@@ -20,4 +20,6 @@ class Reviewer(models.Model):
     def filter_proposals(proposals, user):
         if user_is_in_group_name(user, settings.REVIEWER_GROUP_NAME):
             reviewer = Reviewer.objects.get(user=user)
-            return proposals.filter(call__in=reviewer.calls.all())
+            proposals = proposals.filter(call__in=reviewer.calls.all())
+
+        return proposals

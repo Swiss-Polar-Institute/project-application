@@ -131,4 +131,4 @@ class ProposalFormTest(TestCase):
         self.assertEqual(302, response.status_code)
         self.assertEqual('/proposal/cannot-modify/', response.url)
 
-        self.assertIn('deadline has now passed', list(response.context['messages'])[0].message)
+        self.assertIn('deadline has now passed', response.cookies['messages'].value)
