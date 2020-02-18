@@ -1,10 +1,8 @@
 {% include "django/forms/widgets/input.html" %}
 
 <script>
-    var $j = jQuery.noConflict();
-
-    $j(function () {
-        $j("input[name='{{ widget.name }}']").datetimepicker(
+    $(function () {
+        $("input[name='{{ widget.name }}']").datetimepicker(
             {
                 timepicker: true,
                 format: 'd-m-Y H:i'
