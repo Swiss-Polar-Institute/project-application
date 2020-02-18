@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import PermissionDenied
 from django.test import TestCase
 
 from ProjectApplication import settings
@@ -34,6 +35,22 @@ class BudgetItemFormTest(TestCase):
         proposal.refresh_from_db()
         self.assertEqual(proposal.eligibility, Proposal.ELIGIBLE)
         self.assertEqual(proposal.eligibility_comment, comment)
+
+    def test_permission_denied(self):
+        user_not_in_management = User.objects.create_user('TestUserNotInManagement',
+                                                          'test_not_in_management@example.com', 'password')
+        proposal = create_proposal()
+        comment = 'This is a test'
+
+        data = {'comment': comment,
+                'eligible': 'True'
+                }
+
+        eligibility_decision = EligibilityDecisionForm(data=data, proposal_uuid=proposal.uuid)
+
+        self.assertTrue(eligibility_decision.is_valid())
+
+        self.assertRaises(PermissionDenied, eligibility_decision.save_eligibility, user_not_in_management)
 
     def test_not_eligible_missing_comment(self):
         proposal = create_proposal()
