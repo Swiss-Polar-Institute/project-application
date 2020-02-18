@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 
 from ProjectApplication import settings
-from project_core.models import Call
+from project_core.models import Call, Proposal
 from project_core.utils import user_is_in_group_name
 
 
@@ -19,7 +20,12 @@ class Reviewer(models.Model):
     @staticmethod
     def filter_proposals(proposals, user):
         if user_is_in_group_name(user, settings.REVIEWER_GROUP_NAME):
-            reviewer = Reviewer.objects.get(user=user)
+            try:
+                reviewer = Reviewer.objects.get(user=user)
+            except ObjectDoesNotExist:
+                proposals = Proposal.objects.none()
+                return proposals
+
             proposals = proposals.filter(call__in=reviewer.calls.all())
 
         return proposals

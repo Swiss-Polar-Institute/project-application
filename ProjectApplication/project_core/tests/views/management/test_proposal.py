@@ -2,6 +2,7 @@ from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
 
+from evaluation.models import Reviewer
 from ... import database_population
 from ....views.logged import proposal
 
@@ -10,7 +11,8 @@ class ManagementProposalTest(TestCase):
     def setUp(self):
         self._call = database_population.create_call()
         self._proposal = database_population.create_proposal()
-        database_population.create_management_user()
+        self._management_user = database_population.create_management_user()
+        self._reviewer_user = database_population.create_reviewer_user()
 
     def test_create_file_name(self):
         filename = proposal.create_file_name('this-is-{}-something-{}.csv', self._call.id)
@@ -24,7 +26,39 @@ class ManagementProposalTest(TestCase):
     def test_proposals_export_csv_summary(self):
         c = Client()
 
-        login = c.login(username='unittest', password='12345')
+        login = c.login(username='unittest_management', password='12345')
+        self.assertTrue(login)
+
+        response = c.get(
+            reverse('logged-export-proposals-csv-summary-call', args=[str(self._proposal.call.id)]))
+
+        self.assertContains(response, 'A test proposal')
+
+    def test_proposals_export_csv_summary_reviewer_no_access(self):
+        c = Client()
+
+        reviewer = Reviewer(user=self._reviewer_user)
+        reviewer.save()
+        reviewer.calls.remove(self._proposal.call)
+        reviewer.save()
+
+        login = c.login(username='unittest_reviewer', password='12345')
+        self.assertTrue(login)
+
+        response = c.get(
+            reverse('logged-export-proposals-csv-summary-call', args=[str(self._proposal.call.id)]))
+
+        self.assertNotContains(response, 'A test proposal')
+
+    def test_proposals_export_csv_summary_reviewer_access(self):
+        c = Client()
+
+        reviewer = Reviewer(user=self._reviewer_user)
+        reviewer.save()
+        reviewer.calls.add(self._proposal.call)
+        reviewer.save()
+
+        login = c.login(username='unittest_reviewer', password='12345')
         self.assertTrue(login)
 
         response = c.get(

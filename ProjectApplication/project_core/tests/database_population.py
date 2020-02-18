@@ -1,7 +1,8 @@
 from datetime import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
+from ProjectApplication import settings
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
     Proposal, PersonPosition, PhysicalPerson, FundingInstrument
@@ -17,10 +18,12 @@ def create_call(funding_instrument=None):
 
     return call
 
+
 def create_funding_instrument():
     funding_instrument, created = FundingInstrument.objects.get_or_create(long_name='Big Expeditions')
 
     return funding_instrument
+
 
 def create_geographical_areas():
     antarctic, created = GeographicalArea.objects.get_or_create(name='Antarctic', definition='Very south')
@@ -89,8 +92,21 @@ def create_template_questions():
 
 
 def create_management_user():
-    user = User.objects.create_user(username='unittest', password='12345')
-    user.save()
+    user = User.objects.create_user(username='unittest_management', password='12345')
+    group, _ = Group.objects.get_or_create(name=settings.MANAGEMENT_GROUP_NAME)
+
+    group.user_set.add(user)
+    group.save()
+
+    return user
+
+
+def create_reviewer_user():
+    user = User.objects.create_user(username='unittest_reviewer', password='12345')
+    group, _ = Group.objects.get_or_create(name=settings.REVIEWER_GROUP_NAME)
+
+    group.user_set.add(user)
+    group.save()
 
     return user
 
@@ -163,12 +179,12 @@ def create_proposal():
     proposal_status_draft = create_proposal_status()[1]
 
     proposal, _ = Proposal.objects.get_or_create(title='A test proposal',
-                                              start_date='2010-12-10',
-                                              end_date='2011-11-11',
-                                              duration_months=2,
-                                              applicant=applicant,
-                                              proposal_status=proposal_status_draft,
-                                              eligibility=Proposal.ELIGIBILITYNOTCHECKED,
-                                              call=call)
+                                                 start_date='2010-12-10',
+                                                 end_date='2011-11-11',
+                                                 duration_months=2,
+                                                 applicant=applicant,
+                                                 proposal_status=proposal_status_draft,
+                                                 eligibility=Proposal.ELIGIBILITYNOTCHECKED,
+                                                 call=call)
 
     return proposal

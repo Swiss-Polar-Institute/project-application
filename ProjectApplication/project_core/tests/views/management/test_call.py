@@ -13,7 +13,7 @@ class CallList(TestCase):
     def test_list_calls(self):
         c = Client()
 
-        login = c.login(username='unittest', password='12345')
+        login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
         response = c.get(reverse('logged-calls-list'))
@@ -23,7 +23,7 @@ class CallList(TestCase):
     def test_call_view(self):
         c = Client()
 
-        login = c.login(username='unittest', password='12345')
+        login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
         response = c.get(reverse('logged-call-detail', kwargs={'id': self._call.id}))

@@ -18,11 +18,11 @@ class CallFormTest(TestCase):
     def test_homepage(self):
         c = Client()
 
-        login = c.login(username='unittest', password='12345')
+        login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
         response = c.get(reverse('logged-homepage'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Homepage')
         self.assertContains(response, 'User:')
-        self.assertContains(response, 'unittest')
+        self.assertContains(response, 'unittest_management')
