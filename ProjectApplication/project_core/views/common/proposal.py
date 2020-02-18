@@ -62,11 +62,6 @@ class AbstractProposalDetailView(TemplateView):
 
         context['questions_answers'] = []
 
-        context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
-                                                                             proposal_uuid=proposal.uuid)
-        context[ProposalEvaluationForm.FORM_NAME] = ProposalEvaluationForm(prefix=ProposalEvaluationForm.FORM_NAME,
-                                                                           proposal=proposal)
-
         for question in call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
             try:
                 answer = ProposalQAText.objects.get(proposal=proposal, call_question=question).answer

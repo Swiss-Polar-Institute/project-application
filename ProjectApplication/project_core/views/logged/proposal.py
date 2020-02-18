@@ -492,8 +492,20 @@ class ProposalDetailView(AbstractProposalDetailView):
             proposal = Proposal.objects.get(id=kwargs['id'])
             del kwargs['id']
             kwargs['uuid'] = proposal.uuid
+        elif 'uuid' in kwargs:
+            # The normal proposal view from admin for example
+            proposal = Proposal.objects.get(uuid=kwargs['uuid'])
 
-        return super().get(request, *args, **kwargs)
+        context = self.prepare_context(request, *args, **kwargs)
+
+        context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
+                                                                             proposal_uuid=proposal.uuid)
+
+        context[ProposalEvaluationForm.FORM_NAME] = ProposalEvaluationForm(prefix=ProposalEvaluationForm.FORM_NAME,
+                                                                           proposal=proposal)
+
+        return render(request, self.template, context)
+
 
     template = 'logged/proposal-detail.tmpl'
 
