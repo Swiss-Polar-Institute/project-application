@@ -1,5 +1,4 @@
 from django import template
-from django.core.exceptions import ObjectDoesNotExist
 
 from ProjectApplication import settings
 from project_core.utils import user_is_in_group_name

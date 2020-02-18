@@ -1,12 +1,7 @@
-{% load user_is_management %}
+{% load request_is_management %}
 <br>
 {% include 'common/_messages-box.tmpl' %}
 
-{% if edit_button %}
-    <a class="float-sm-right btn btn-primary d-print-none"
-       href="{% url 'logged-proposal-update' uuid=proposal.uuid %}">Edit
-        proposal</a>
-{% endif %}
 <h2>{{ proposal.title }}</h2>
 <strong>Status:</strong> {{ proposal.proposal_status.name }} {{ link_to_edit_or_display|safe }}<br>
 <strong>Call:</strong>

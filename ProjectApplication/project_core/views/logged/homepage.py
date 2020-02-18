@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import TemplateView
-from project_core.templatetags.user_is_reviewer import request_is_reviewer
+from project_core.templatetags.request_is_reviewer import request_is_reviewer
 from django.http import HttpResponseRedirect
 
 
