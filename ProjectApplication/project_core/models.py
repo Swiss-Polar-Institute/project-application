@@ -904,3 +904,43 @@ class ProposalPartner(Partner):
 
     class Meta:
         unique_together = (('person', 'role', 'proposal'),)
+
+
+class Project(CreateModify):
+    """Proposal that has been funded is now a project. Otherwise another project that has been accepted."""
+
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    title = models.CharField(help_text='Title of the project', max_length=500, blank=False, null=False)
+    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project',
+                                      blank=False)
+    geographical_areas = models.ManyToManyField(GeographicalArea,
+                                                help_text='Geographical area(s) covered by the project')
+    location = models.CharField(
+        help_text='Name of more precise location of where the project would take place (not coordinates)',
+        max_length=200, blank=True, null=True)
+    start_date = models.DateField(
+        help_text='Date on which the project is expected to start',
+        blank=False, null=False)
+    end_date = models.DateField(
+        help_text='Date on which the project is expected to end',
+        blank=False, null=False)
+    duration_months = models.DecimalField(
+        help_text='Duration of the project in months',
+        decimal_places=1, max_digits=5, validators=[MinValueValidator(0)], blank=False, null=False)
+    applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the project', blank=False, null=False,
+                                  on_delete=models.PROTECT) # maybe rename this to principal investigator
+    call = models.ForeignKey(Call, help_text='Call to which the project belongs', blank=False, null=False, on_delete=models.PROTECT)
+    proposal = models.ForeignKey(Proposal, help_text='Proposal from which the project originates', blank=True, null=True, on_delete=models.PROTECT)
+    overarching_project = models.ForeignKey(ExternalProject, help_text='Overarching project to which this project contributes', blank=True, null=True, on_delete=models.PROTECT)
+
+
+class ProjectPartner(Partner):
+    """Partner that is part of a project."""
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    project = models.ForeignKey(Project, help_text='Project on which the partner is collaborating',
+                                 on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = (('person', 'role', 'project]'),)
