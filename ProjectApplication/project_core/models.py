@@ -934,6 +934,28 @@ class Project(CreateModify):
     proposal = models.ForeignKey(Proposal, help_text='Proposal from which the project originates', blank=True, null=True, on_delete=models.PROTECT)
     overarching_project = models.ForeignKey(ExternalProject, help_text='Overarching project to which this project contributes', blank=True, null=True, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return '{} - {}'.format(self.title, self.principal_investigator)
+
+    def keywords_enumeration(self):
+        keywords = self.keywords.all().order_by('name')
+
+        if keywords:
+            return ', '.join([keyword.name for keyword in keywords])
+        else:
+            return '-'
+
+    def geographical_areas_enumeration(self):
+        geographical_areas = self.geographical_areas.all().order_by('name')
+        if geographical_areas:
+            return ', '.join([geographical_area.name for geographical_area in geographical_areas])
+        else:
+            return '-'
+
+    class Meta:
+        unique_together = (('title', 'principal_investigator', 'call'),)
+
+
 
 class ProjectPartner(Partner):
     """Partner that is part of a project."""
