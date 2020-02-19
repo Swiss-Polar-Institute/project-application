@@ -1,4 +1,5 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
+{% load request_is_management %}
 {% block subtitle %}Proposal list{% endblock %}
 
 {% block contents %}
@@ -51,7 +52,7 @@
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}">View</a>
 
-                        {% if proposal.is_eligible %}
+                        {% if proposal.is_eligible and request|request_is_management %}
                             <a class="btn btn-primary btn-xs"
                                href="{% url 'logged-proposal-evaluation-update'  uuid=proposal.uuid %}">Evaluate</a>
                         {% endif %}

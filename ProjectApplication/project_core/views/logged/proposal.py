@@ -5,6 +5,7 @@ import textwrap
 
 import xlsxwriter
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -416,6 +417,9 @@ class ProposalsList(TemplateView):
 
 class ProposalEvaluationDetail(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
+        if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
+            raise PermissionDenied()
+
         context = self.prepare_context(request, *args, **kwargs)
 
         proposal = Proposal.objects.get(uuid=kwargs['uuid'])
@@ -434,6 +438,9 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
 
 class ProposalEvaluationUpdate(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
+        if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
+            raise PermissionDenied()
+
         context = self.prepare_context(request, *args, **kwargs)
 
         proposal = Proposal.objects.get(uuid=kwargs['uuid'])
@@ -450,6 +457,9 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
         return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
     def post(self, request, *args, **kwargs):
+        if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
+            raise PermissionDenied()
+
         context = self.prepare_context(request, *args, **kwargs)
 
         proposal = Proposal.objects.get(uuid=kwargs['uuid'])
@@ -475,6 +485,9 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
 
 class ProposalEligibilityUpdate(AbstractProposalDetailView):
     def post(self, request, *args, **kwargs):
+        if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
+            raise PermissionDenied()
+
         context = self.prepare_context(request, *args, **kwargs)
 
         proposal_uuid = kwargs['uuid']

@@ -15,8 +15,6 @@ from django.views.generic import TemplateView
 
 from ProjectApplication import settings
 from comments.utils import add_comment_attachment_forms
-from evaluation.forms.eligibility import EligibilityDecisionForm
-from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
@@ -359,7 +357,8 @@ class AbstractProposalView(TemplateView):
             else:
                 assert False
 
-            if not proposal_is_draft_or_submitted and not request.user.groups.filter(name=settings.MANAGEMENT_GROUP_NAME).exists():
+            if not proposal_is_draft_or_submitted and not request.user.groups.filter(
+                    name=settings.MANAGEMENT_GROUP_NAME).exists():
                 return HttpResponseForbidden('Insufficient permissions to save the proposal with the selected status')
 
             if call.overarching_project_question:
