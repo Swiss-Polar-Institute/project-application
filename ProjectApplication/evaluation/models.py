@@ -27,7 +27,7 @@ class Reviewer(models.Model):
                 proposals = Proposal.objects.none()
                 return proposals
 
-            proposals = proposals.filter(call__in=reviewer.calls.all())
+            proposals = proposals.filter(call__in=reviewer.calls.all()).filter(eligibility=Proposal.ELIGIBLE)
 
         return proposals
 
