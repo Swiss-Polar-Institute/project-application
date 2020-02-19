@@ -461,7 +461,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
             proposal_evaluation_form.save(user=request.user)
 
             messages.success(request, 'Evaluation form saved')
-            return redirect(reverse('logged/proposal-detail-evaluation-detail.tmpl', kwargs={'uuid': proposal.uuid}))
+            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'uuid': proposal.uuid}))
         else:
             messages.warning(request, 'Evaluation not saved. Verify errors in the form')
             context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form

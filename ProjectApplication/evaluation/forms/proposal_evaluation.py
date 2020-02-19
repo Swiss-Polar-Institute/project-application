@@ -25,7 +25,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper(self)
-        self.helper.form_action = reverse('logged-proposal-evaluation', kwargs={'uuid': self._proposal.uuid})
+        self.helper.form_action = reverse('logged-proposal-evaluation-update', kwargs={'uuid': self._proposal.uuid})
         self.helper.add_input(Submit('submit', 'Save evaluation', css_class='btn-primary'))
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])

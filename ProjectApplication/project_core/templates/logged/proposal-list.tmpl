@@ -50,6 +50,11 @@
                        -->
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}">View</a>
+
+                        {% if proposal.is_eligible %}
+                            <a class="btn btn-primary btn-xs"
+                               href="{% url 'logged-proposal-evaluation-update'  uuid=proposal.uuid %}">Evaluate</a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
