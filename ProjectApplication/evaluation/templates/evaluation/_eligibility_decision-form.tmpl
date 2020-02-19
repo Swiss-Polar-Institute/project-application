@@ -1,21 +1,39 @@
 {% load crispy_forms_tags %}
-{% crispy eligibility_decision_form %}
+
+<div id="eligibility_detail">
+    Eligible: {% if proposal.eligibility == proposal.ELIGIBILITYNOTCHECKED %}
+    -
+{% else %}
+    {% include 'common/_check-icon.tmpl' with value=proposal.is_eligible %}
+{% endif %}
+    <br>
+    Comment:
+    <div class="pre-with-newlines border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=proposal.eligibility_comment %}</div>
+    <br>
+    <button id="edit_button" type="button" class="btn btn-primary">Edit Eligibility</button>
+</div>
+<div id="eligibility_form" style="display:none">
+    {% crispy eligibility_decision_form %}
+</div>
 
 <script>
     function commentIsRequired(required) {
         if (required) {
             $('#div_id_eligibility_decision_form-comment .asteriskField').show();
-
-            // This might not be working but Django on the server side is checking it (and giving a good error)
-            $("#id_eligibility_decision-comment").attr('required', true);
         } else {
             $('#div_id_eligibility_decision_form-comment .asteriskField').hide();
-            $("#id_eligibility_decision-comment").attr('required', false);
         }
+        $("#id_eligibility_decision_form-comment").attr('required', required);
     }
 
     $(document).ready(function () {
+        $('#edit_button').click(function () {
+            $('#eligibility_detail').hide();
+            $('#eligibility_form').show();
+        });
+
         var required = $('#id_eligibility_decision_form-eligible_2').prop('checked');
+
         commentIsRequired(required);
 
         $('#id_eligibility_decision_form-eligible_1').change(function () {

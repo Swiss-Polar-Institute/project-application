@@ -11,14 +11,16 @@ from project_core.utils import user_is_in_group_name
 
 class EligibilityDecisionForm(forms.Form):
     FORM_NAME = 'eligibility_decision_form'
+
     def __init__(self, *args, **kwargs):
         self._proposal_uuid = kwargs.pop('proposal_uuid')
         super().__init__(*args, **kwargs)
 
         YES_NO_CHOICES = [(True, 'Yes'), (False, 'No')]
         self.fields['eligible'] = forms.ChoiceField(choices=YES_NO_CHOICES, widget=forms.RadioSelect)
-        self.fields['comment'] = forms.CharField(label='Comment<span class="asteriskField">*</span>', required=False, max_length=1000,
-                                                 help_text='Maximum length 1000 characters',
+        self.fields['comment'] = forms.CharField(label='Comment<span class="asteriskField">*</span>', required=False,
+                                                 max_length=1000,
+                                                 help_text='Maximum length 1000 characters. Required if proposal is not eligible.',
                                                  widget=forms.Textarea(attrs={'rows': 4}))
 
         proposal = Proposal.objects.get(uuid=self._proposal_uuid)
@@ -31,6 +33,7 @@ class EligibilityDecisionForm(forms.Form):
         self.fields['comment'].initial = proposal.eligibility_comment
 
         self.helper = FormHelper(self)
+        self.helper.form_id = 'eligibility_form'
         self.helper.form_action = reverse('logged-proposal-eligibility-update', kwargs={'uuid': self._proposal_uuid})
         self.helper.add_input(Submit('submit', 'Save eligibility', css_class='btn-primary'))
         self.helper.layout = Layout(
