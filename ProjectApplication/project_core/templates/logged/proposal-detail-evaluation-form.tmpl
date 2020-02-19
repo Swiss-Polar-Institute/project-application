@@ -1,0 +1,20 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+{% load request_is_management %}
+{% block subtitle %}Proposal{% endblock %}
+
+{% block contents %}
+    <div class="container-fluid">
+        <br>
+        <div class="row">
+            <div class="col-10">
+                {% include 'common/_proposal_basic_information-detail.tmpl' %}
+                <p>
+                </p>
+                <hr>
+                <h2>Evaluation</h2>
+                {% include 'evaluation/_proposal_evaluation-form.tmpl' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

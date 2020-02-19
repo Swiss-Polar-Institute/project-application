@@ -1,0 +1,43 @@
+{% load request_is_management %}
+
+<h2>{{ proposal.title }}</h2>
+<strong>Status:</strong> {{ proposal.proposal_status.name }} {{ link_to_edit_or_display|safe }}<br>
+<strong>Call:</strong>
+{% if request|request_is_management %}
+    <a href="{% url 'logged-call-detail' id=proposal.call.id %}">{{ call_name }}</a>
+{% else %}
+    {{ call_name }}
+{% endif %}
+<p></p>
+<h3>Applicant</h3>
+{% with applicant=proposal.applicant %}
+    {{ applicant.academic_title }} {{ applicant.person.first_name }} {{ applicant.person.surname }} (Gender:
+    {% include 'common/_value-or-dash.tmpl' with value=applicant.person.gender %})
+    <br>
+    <strong>Email:</strong> <a href="mailto:{{ email }}">{{ email }}</a>
+    <br>
+    <strong>Organisations:</strong>
+    {% include 'common/_organisations-list.tmpl' with organisations=applicant.organisations_ordered_by_name %}
+    <br>
+    <strong>Group / lab:</strong> {{ applicant.group }}<br>
+    <div class="row">
+        <div class="col-8">
+            <strong>Career stage:</strong> {{ applicant.career_stage }}
+        </div>
+        <div class="col-4">
+            <strong>Date of
+                PhD:</strong> {% include 'common/_value-or-dash.tmpl' with value=applicant.person.phd_date_formatted %}
+        </div>
+    </div>
+{% endwith %}
+<p></p>
+<h3>Proposal details</h3>
+<strong>Geographical focus:</strong>
+{% for area in proposal.geographical_areas.all %}
+    {{ area }}{% if not forloop.last %}, {% endif %}
+{% endfor %}
+<br>
+<strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.location %}
+<br>
+<strong>Keywords:</strong> {% for keyword in proposal.keywords.all %}{{ keyword }}{% if not forloop.last %}, {% endif %}
+{% endfor %}

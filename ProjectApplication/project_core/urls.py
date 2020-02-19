@@ -3,6 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
+
 from .views import common
 from .views import external
 from .views import logged
@@ -35,8 +36,10 @@ urlpatterns = [
          name='logged-proposal-detail'),
     path('logged/proposal/<uuid:uuid>/eligibility', logged.proposal.ProposalEligibilityUpdate.as_view(),
          name='logged-proposal-eligibility-update'),
+    path('logged/proposal/<uuid:uuid>/evaluation/detail', logged.proposal.ProposalEvaluationDetail.as_view(),
+         name='logged-proposal-evaluation'),
     path('logged/proposal/<uuid:uuid>/evaluation', logged.proposal.ProposalEvaluationUpdate.as_view(),
-         name='logged-proposal-evaluation-update'),
+         name='logged-proposal-evaluation'),
     path('logged/proposal/<int:id>/comment/add', logged.proposal.ProposalCommentAdd.as_view(),
          name='logged-proposal-comment-add'),
     path('logged/proposals/export/excel/<int:call>/', logged.proposal.ProposalsExportExcel.as_view(),
@@ -45,7 +48,6 @@ urlpatterns = [
          name='logged-export-proposals-csv-summary-call'),
     path('logged/proposals/export/csv/summary/', logged.proposal.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
-
     path('logged/call/list', logged.call.CallsList.as_view(), name='logged-calls-list'),
     path('logged/call/add/', logged.call.CallView.as_view(), name='call-add'),
     path('logged/call/<int:id>/update', logged.call.CallView.as_view(),
@@ -77,10 +79,14 @@ urlpatterns = [
     path('logged/funding_instruments/', logged.funding_instrument.FundingInstrumentList.as_view(),
          name='funding-instruments-list'),
 
-    path('logged/person_position/add', logged.person_position.PersonPositionCreateView.as_view(), name='logged-person-position-add'),
-    path('logged/person_position/<int:pk>/', logged.person_position.PersonPositionDetailView.as_view(), name='person-position-detail'),
-    path('logged/person_position/<int:pk>/update', logged.person_position.PersonPositionUpdateView.as_view(), name='person-position-update'),
-    path('logged/person_position/', logged.person_position.PersonPositionsListView.as_view(), name='person-position-list'),
+    path('logged/person_position/add', logged.person_position.PersonPositionCreateView.as_view(),
+         name='logged-person-position-add'),
+    path('logged/person_position/<int:pk>/', logged.person_position.PersonPositionDetailView.as_view(),
+         name='person-position-detail'),
+    path('logged/person_position/<int:pk>/update', logged.person_position.PersonPositionUpdateView.as_view(),
+         name='person-position-update'),
+    path('logged/person_position/', logged.person_position.PersonPositionsListView.as_view(),
+         name='person-position-list'),
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',

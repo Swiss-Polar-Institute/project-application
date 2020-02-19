@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from ProjectApplication import settings
-from project_core.models import Call, Proposal
+from project_core.models import Call, Proposal, CreateModify
 from project_core.utils import user_is_in_group_name
 
 
@@ -32,7 +32,7 @@ class Reviewer(models.Model):
         return proposals
 
 
-class ProposalEvaluation(models.Model):
+class ProposalEvaluation(CreateModify):
     PANEL_RECOMENDATION_FUND = 'Fund'
     PANEL_RECOMENDATION_RESERVE = 'Reserve'
     PANEL_RECOMENDATION_DO_NOT_FUND = 'NotFund'
@@ -69,3 +69,11 @@ class ProposalEvaluation(models.Model):
     panel_recommendation = models.CharField(choices=PANEL_RECOMENDATION, max_length=7)
     board_decision = models.CharField(choices=BOARD_DECISION, max_length=7)
     decision_date = models.DateField(blank=True, null=True)
+
+
+class CallEvaluation(CreateModify):
+    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
+    call = models.OneToOneField(Call, on_delete=models.PROTECT)
+
+    panel_date = models.DateField()

@@ -414,7 +414,41 @@ class ProposalsList(TemplateView):
         return context
 
 
+class ProposalEvaluationDetail(AbstractProposalDetailView):
+    def get(self, request, *args, **kwargs):
+        context = self.prepare_context(request, *args, **kwargs)
+
+        proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+
+        proposal_evaluation_form = ProposalEvaluationForm(prefix=ProposalEvaluationForm.FORM_NAME,
+                                                          proposal=proposal)
+
+        context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
+
+        context.update({'active_section': 'proposals',
+                        'active_subsection': 'proposals-list',
+                        'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+
+        return render(request, 'logged/proposal-detail-evaluation-detail.tmpl', context)
+
+
 class ProposalEvaluationUpdate(AbstractProposalDetailView):
+    def get(self, request, *args, **kwargs):
+        context = self.prepare_context(request, *args, **kwargs)
+
+        proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+
+        proposal_evaluation_form = ProposalEvaluationForm(prefix=ProposalEvaluationForm.FORM_NAME,
+                                                          proposal=proposal)
+
+        context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
+
+        context.update({'active_section': 'proposals',
+                        'active_subsection': 'proposals-list',
+                        'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+
+        return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
+
     def post(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
@@ -427,7 +461,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
             proposal_evaluation_form.save(user=request.user)
 
             messages.success(request, 'Evaluation form saved')
-            return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
+            return redirect(reverse('logged/proposal-detail-evaluation-detail.tmpl', kwargs={'uuid': proposal.uuid}))
         else:
             messages.warning(request, 'Evaluation not saved. Verify errors in the form')
             context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
@@ -436,7 +470,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
                             'active_subsection': 'proposals-list',
                             'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
 
-            return render(request, 'logged/proposal-detail.tmpl', context)
+            return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
 
 class ProposalEligibilityUpdate(AbstractProposalDetailView):
@@ -505,7 +539,6 @@ class ProposalDetailView(AbstractProposalDetailView):
                                                                            proposal=proposal)
 
         return render(request, self.template, context)
-
 
     template = 'logged/proposal-detail.tmpl'
 

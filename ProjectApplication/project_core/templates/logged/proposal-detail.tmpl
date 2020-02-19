@@ -5,26 +5,21 @@
 
 {% block contents %}
     <div class="container-fluid">
-    <div class="row">
-        <div class="col-10">
-            {% include 'common/_proposal-detail.tmpl' %}
-            {% if request|request_is_management %}
-                <hr>
-                {% include 'comments/_comments-attachments.tmpl' %}
-            {% endif %}
-        </div>
-        <div class="col-2">
-            {% if request|request_is_management %}
-                <p>
-                    {% include 'evaluation/_eligibility_decision-form.tmpl' %}
-                </p>
-                {% if proposal.is_eligible %}
+        <div class="row">
+            <div class="col-10">
+                {% include 'common/_proposal-detail.tmpl' %}
+                {% if request|request_is_management %}
                     <hr>
+                    {% include 'comments/_comments-attachments.tmpl' %}
+                {% endif %}
+            </div>
+            <div class="col-2">
+                {% if request|request_is_management %}
                     <p>
-                        {% include 'evaluation/_proposal_evaluation-form.tmpl' %}
+                        {% include 'evaluation/_eligibility_decision-form.tmpl' %}
                     </p>
                 {% endif %}
-            {% endif %}
+            </div>
         </div>
     </div>
 {% endblock %}
