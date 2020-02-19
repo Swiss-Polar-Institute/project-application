@@ -965,4 +965,4 @@ class ProjectPartner(Partner):
                                  on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('person', 'role', 'project]'),)
+        unique_together = (('person', 'role', 'project'),)
