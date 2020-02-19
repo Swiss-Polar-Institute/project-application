@@ -248,9 +248,9 @@ class ProposalQAFileAdmin(admin.ModelAdmin):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
                     'end_date', 'duration_months', 'principal_investigator', 'call', 'proposal', 'overarching_project',
-                    'status', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+                    'allocated_budget', 'status', 'created_by', 'created_on', 'modified_by', 'modified_on',)
     ordering = ['title', 'uuid', 'location', 'start_date', 'end_date', 'duration_months', 'principal_investigator',
-                'call', 'proposal', 'status', ]
+                'call', 'proposal', 'allocated_budget', 'status', ]
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
@@ -261,6 +261,7 @@ class ProjectAdmin(admin.ModelAdmin):
         geographical_areas = obj.geographical_areas.all()
 
         return ", ".join([geographical_area.name for geographical_area in geographical_areas])
+
 
 class ProjectPartnerAdmin(admin.ModelAdmin):
     list_display = ('project', 'person', 'role', 'role_description', 'competences')

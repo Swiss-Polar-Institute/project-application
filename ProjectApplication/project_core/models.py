@@ -942,6 +942,8 @@ class Project(CreateModify):
     call = models.ForeignKey(Call, help_text='Call to which the project belongs', blank=False, null=False, on_delete=models.PROTECT)
     proposal = models.ForeignKey(Proposal, help_text='Proposal from which the project originates', blank=True, null=True, on_delete=models.PROTECT)
     overarching_project = models.ForeignKey(ExternalProject, help_text='Overarching project to which this project contributes', blank=True, null=True, on_delete=models.PROTECT)
+    allocated_budget = models.DecimalField(help_text='Budget allocated to project', decimal_places=2, max_digits=10,
+                                 validators=[MinValueValidator(0)], blank=False, null=True)
     status = models.CharField(help_text='Status of a project', max_length=30, default='ONGOING', choices=STATUS, blank=False, null=False)
 
     def __str__(self):
