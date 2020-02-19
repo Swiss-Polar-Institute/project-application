@@ -36,6 +36,7 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
+                Div('id', hidden=True),
                 Div('final_mark', css_class='col-6'),
                 Div('allocated_budget', css_class='col-6'),
                 css_class='row'
