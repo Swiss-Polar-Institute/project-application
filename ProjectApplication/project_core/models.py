@@ -911,6 +911,7 @@ class Project(CreateModify):
 
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
+    uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
     title = models.CharField(help_text='Title of the project', max_length=500, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project',
                                       blank=False)

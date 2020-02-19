@@ -246,10 +246,11 @@ class ProposalQAFileAdmin(admin.ModelAdmin):
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
+    list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
                     'end_date', 'duration_months', 'principal_investigator', 'call', 'proposal', 'overarching_project',
                     'created_by', 'created_on', 'modified_by', 'modified_on',)
-    ordering = ['title', 'start_date', 'end_date', 'principal_investigator', 'call', 'proposal', ]
+    ordering = ['title', 'uuid', 'location', 'start_date', 'end_date', 'duration_months', 'principal_investigator',
+                'call', 'proposal', ]
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
