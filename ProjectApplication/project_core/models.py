@@ -956,7 +956,6 @@ class Project(CreateModify):
         unique_together = (('title', 'principal_investigator', 'call'),)
 
 
-
 class ProjectPartner(Partner):
     """Partner that is part of a project."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion

@@ -245,6 +245,27 @@ class ProposalQAFileAdmin(admin.ModelAdmin):
     ordering = ['proposal', 'call_question', 'file', 'md5', 'created_by', 'created_on', 'modified_by', 'modified_on']
 
 
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('title', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
+                    'end_date', 'duration_months', 'principal_investigator', 'call', 'proposal', 'overarching_project',
+                    'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['title', 'start_date', 'end_date', 'principal_investigator', 'call', 'proposal', ]
+
+    def keywords_list(self, obj):
+        keywords = obj.keywords.all()
+
+        return ", ".join([keyword.name for keyword in keywords])
+
+    def geographical_area_list(self, obj):
+        geographical_areas = obj.geographical_areas.all()
+
+        return ", ".join([geographical_area.name for geographical_area in geographical_areas])
+
+class ProjectPartnerAdmin(admin.ModelAdmin):
+    list_display = ('project', 'person', 'role', 'role_description', 'competences')
+    ordering = ['project', 'person', 'role', ]
+
+
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
@@ -278,3 +299,5 @@ admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
 admin.site.register(project_core.models.Role, RoleAdmin)
 admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
 admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)
+admin.site.register(project_core.models.Project, ProjectAdmin)
+admin.site.register(project_core.models.ProjectPartner, ProjectPartnerAdmin)
