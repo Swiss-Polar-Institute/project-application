@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.views import View
 from django.views.generic import TemplateView
 
+from ProjectApplication import settings
 from comments.utils import add_comment_attachment_forms
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
@@ -358,7 +359,7 @@ class AbstractProposalView(TemplateView):
             else:
                 assert False
 
-            if not proposal_is_draft_or_submitted and not request.user.groups.filter(name='logged').exists():
+            if not proposal_is_draft_or_submitted and not request.user.groups.filter(name=settings.MANAGEMENT_GROUP_NAME).exists():
                 return HttpResponseForbidden('Insufficient permissions to save the proposal with the selected status')
 
             if call.overarching_project_question:

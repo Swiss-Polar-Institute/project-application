@@ -6,7 +6,7 @@ from django.forms import ModelForm
 from django.utils.safestring import mark_safe
 
 from variable_templates.utils import apply_templates
-from ..models import Proposal, ProposalStatus
+from ..models import Proposal, ProposalStatus, Call
 from ..widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -23,8 +23,10 @@ class ProposalForm(ModelForm):
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
+            call = self.instance.call
         else:
             self.fields['call_id'].initial = self._call.id
+            call = Call.objects.get(id=self._call.id)
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
@@ -34,7 +36,7 @@ class ProposalForm(ModelForm):
 
         self.fields['duration_months'].widget.attrs['min'] = 0
 
-        apply_templates(self.fields, self._call)
+        apply_templates(self.fields, call)
 
         divs = []
         divs.append(

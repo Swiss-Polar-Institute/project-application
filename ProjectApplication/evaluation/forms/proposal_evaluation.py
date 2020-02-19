@@ -3,6 +3,7 @@ from crispy_forms.layout import Submit, Layout, Div
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
+from django.utils.formats import number_format
 
 from project_core.models import Proposal
 from project_core.widgets import XDSoftYearMonthDayPickerInput
@@ -31,7 +32,7 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
         self.fields['proposal'].initial = self._proposal
-        requested_budget = Proposal.objects.get(id=self.initial['proposal']).total_budget()
+        requested_budget = number_format(Proposal.objects.get(id=self.initial['proposal']).total_budget())
         self.fields['allocated_budget'].help_text = f'Requested: {requested_budget}'
 
         self.helper.layout = Layout(
