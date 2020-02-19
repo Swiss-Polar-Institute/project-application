@@ -33,7 +33,10 @@ class ProposalEvaluationForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
         self.fields['proposal'].initial = self._proposal
         requested_budget = number_format(Proposal.objects.get(id=self.initial['proposal']).total_budget())
+
+        self.fields['allocated_budget'] = forms.DecimalField(localize=True)
         self.fields['allocated_budget'].help_text = f'Requested: {requested_budget}'
+
 
         self.helper.layout = Layout(
             Div(
@@ -79,5 +82,6 @@ class ProposalEvaluationForm(forms.ModelForm):
                   'board_decision', 'decision_date']
         widgets = {
             'proposal': forms.HiddenInput,
-            'decision_date': XDSoftYearMonthDayPickerInput
+            'decision_date': XDSoftYearMonthDayPickerInput,
         }
+
