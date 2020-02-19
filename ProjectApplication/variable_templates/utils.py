@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import Field
 
 from project_core.models import Call, FundingInstrument
 from variable_templates.models import CallVariableTemplate, TemplateVariableName, FundingInstrumentVariableTemplate
@@ -52,6 +53,13 @@ def apply_templates(fields: OrderedDict, call):
     for field in fields.items():
         for template_name in template_name_values.keys():
             if field[1] is None:
+                continue
+
+            if not issubclass(type(field[1]), Field):
+                # Check opening a proposal with a ProposalPartnerItemForm
+                # It does: self.fields['id'] = self.instance.pk
+                # And then here it expects a field (with .label, .help_text)
+                # but an int is received
                 continue
 
             if field[1].label:

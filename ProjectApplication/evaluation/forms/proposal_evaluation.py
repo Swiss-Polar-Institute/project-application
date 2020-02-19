@@ -1,9 +1,10 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Submit, Layout, Div
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 
+from project_core.models import Proposal
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from ..models import ProposalEvaluation
 
@@ -30,6 +31,30 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
         self.fields['proposal'].initial = self._proposal
+        requested_budget = Proposal.objects.get(id=self.initial['proposal']).total_budget()
+        self.fields['allocated_budget'].help_text = f'Requested: {requested_budget}'
+
+        self.helper.layout = Layout(
+            Div(
+                Div('final_mark', css_class='col-6'),
+                Div('allocated_budget', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                Div('panel_remarks', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('feedback_to_applicant', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('panel_recommendation', css_class='col-4'),
+                Div('board_decision', css_class='col-4'),
+                Div('decision_date', css_class='col-4'),
+                css_class='row'
+            ),
+        )
 
     def clean(self):
         # TODO: Check proposal is eligible - else this should not be displayed anyway
@@ -44,7 +69,8 @@ class ProposalEvaluationForm(forms.ModelForm):
     class Meta:
         model = ProposalEvaluation
 
-        fields = ['proposal', 'final_mark', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant', 'panel_recommendation',
+        fields = ['proposal', 'final_mark', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant',
+                  'panel_recommendation',
                   'board_decision', 'decision_date']
         widgets = {
             'proposal': forms.HiddenInput,
