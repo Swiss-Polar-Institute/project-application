@@ -928,7 +928,7 @@ class Project(CreateModify):
     duration_months = models.DecimalField(
         help_text='Duration of the project in months',
         decimal_places=1, max_digits=5, validators=[MinValueValidator(0)], blank=False, null=False)
-    applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the project', blank=False, null=False,
+    principal_investigator = models.ForeignKey(PersonPosition, help_text='Main applicant of the project', blank=False, null=False,
                                   on_delete=models.PROTECT) # maybe rename this to principal investigator
     call = models.ForeignKey(Call, help_text='Call to which the project belongs', blank=False, null=False, on_delete=models.PROTECT)
     proposal = models.ForeignKey(Proposal, help_text='Proposal from which the project originates', blank=True, null=True, on_delete=models.PROTECT)
