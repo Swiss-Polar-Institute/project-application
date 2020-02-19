@@ -911,6 +911,14 @@ class Project(CreateModify):
 
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
+    ONGOING = 'Ongoing'
+    COMPLETED = 'Completed'
+
+    STATUS = (
+        (ONGOING, 'Ongoing'),
+        (COMPLETED, 'Completed'),
+    )
+
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
     title = models.CharField(help_text='Title of the project', max_length=500, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project',
@@ -934,6 +942,7 @@ class Project(CreateModify):
     call = models.ForeignKey(Call, help_text='Call to which the project belongs', blank=False, null=False, on_delete=models.PROTECT)
     proposal = models.ForeignKey(Proposal, help_text='Proposal from which the project originates', blank=True, null=True, on_delete=models.PROTECT)
     overarching_project = models.ForeignKey(ExternalProject, help_text='Overarching project to which this project contributes', blank=True, null=True, on_delete=models.PROTECT)
+    status = models.CharField(help_text='Status of a project', max_length=30, default='ONGOING', choices=STATUS, blank=False, null=False)
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.principal_investigator)
