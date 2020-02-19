@@ -8,7 +8,9 @@
         <br>
         <div class="row">
             <div class="col-10">
-                {% include 'common/_proposal_basic_information-detail.tmpl' %}
+                <div class="shadow-none p-2 mb-5 bg-light rounded">
+                    {% include 'common/_proposal_basic_information-detail.tmpl' %}
+                </div>
                 <p>
                 </p>
                 <hr>
@@ -16,7 +18,8 @@
                 {% include 'evaluation/_proposal_evaluation-detail.tmpl' %}
             </div>
             <div class="col-1">
-                <a class="btn btn-primary" href="{% url 'logged-proposal-evaluation-update' uuid=proposal.uuid %}" role="button">Edit&nbsp;Evaluation</a>
+                <a class="btn btn-primary" href="{% url 'logged-proposal-evaluation-update' uuid=proposal.uuid %}"
+                   role="button">Edit&nbsp;Evaluation</a>
             </div>
         </div>
     </div>
