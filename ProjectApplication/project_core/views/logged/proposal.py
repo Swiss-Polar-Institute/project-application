@@ -401,7 +401,7 @@ class ProposalsList(TemplateView):
 
         if call_id:
             call = context['call_filter'] = Call.objects.get(id=call_id)
-            context['proposals'] = context['proposals'].objects.filter(call=call)
+            context['proposals'] = context['proposals'].filter(call=call)
 
         if user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
             context['reviewer'] = self.request.user
