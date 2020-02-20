@@ -32,7 +32,7 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
         self.fields['proposal'].initial = self._proposal
-        requested_budget = number_format(Proposal.objects.get(id=self.initial['proposal']).total_budget())
+        requested_budget = number_format(self._proposal.total_budget())
 
         self.fields['allocated_budget'] = forms.DecimalField(localize=True)
         self.fields['allocated_budget'].help_text = f'Requested: {requested_budget}'
