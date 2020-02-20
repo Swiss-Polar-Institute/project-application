@@ -5,8 +5,11 @@
 
 {% block contents %}
     <div class="container-fluid">
+        <br>
+        {% include 'common/_messages-box.tmpl' %}
         <div class="row">
             <div class="col-10">
+
                 {% include 'common/_proposal-detail.tmpl' %}
                 {% if request|request_is_management %}
                     <hr>
