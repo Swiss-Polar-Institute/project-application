@@ -9,7 +9,10 @@
     {% crispy eligibility_decision_form %}
 </div>
 <br>
-{% include 'common/_accordion.tmpl' with prefix='eligibility_history' padding='p-1' button_text_collapsed='View History' button_text_not_collapsed='Hide History' template_file='evaluation/_eligibility_history.tmpl' %}
+
+{% if eligibility_history %}
+    {% include 'common/_accordion.tmpl' with prefix='eligibility_history' padding='p-1' button_text_collapsed='View History' button_text_not_collapsed='Hide History' template_file='evaluation/_eligibility_history.tmpl' %}
+{% endif %}
 
 <script>
     function commentIsRequired(required) {

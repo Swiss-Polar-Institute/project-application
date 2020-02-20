@@ -480,24 +480,26 @@ class ProposalDetailView(AbstractProposalDetailView):
                                                                              proposal_uuid=proposal.uuid)
 
         current = proposal.history.first()
-        proposal_previous = current.prev_record
 
-        eligibility_history = []
-        eligibility_history.append(current)
-
-        while proposal_previous:
-            delta = current.diff_against(proposal_previous)
-            eligibility_changed = False
-            for change in delta.changes:
-                eligibility_changed = eligibility_changed or change.field in ('eligibility', 'eligibility_comment')
-
-            if eligibility_changed:
-                eligibility_history.append(proposal_previous)
-
-            current = proposal_previous
+        if current:
             proposal_previous = current.prev_record
 
-        context['eligibility_history'] = eligibility_history
+            eligibility_history = []
+            eligibility_history.append(current)
+
+            while proposal_previous:
+                delta = current.diff_against(proposal_previous)
+                eligibility_changed = False
+                for change in delta.changes:
+                    eligibility_changed = eligibility_changed or change.field in ('eligibility', 'eligibility_comment')
+
+                if eligibility_changed:
+                    eligibility_history.append(proposal_previous)
+
+                current = proposal_previous
+                proposal_previous = current.prev_record
+
+            context['eligibility_history'] = eligibility_history
 
         return render(request, self.template, context)
 
