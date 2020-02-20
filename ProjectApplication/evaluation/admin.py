@@ -1,12 +1,14 @@
 from django.contrib import admin
 
 from .models import Reviewer, ProposalEvaluation
+from simple_history.admin import SimpleHistoryAdmin
 
 
-class ProposalEvaluationAdmin(admin.ModelAdmin):
+class ProposalEvaluationAdmin(SimpleHistoryAdmin):
     list_display = (
         'proposal', 'final_mark', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant', 'panel_recommendation',
         'board_decision', 'decision_date')
+    history_list_display = ['allocated_budget', 'panel_remarks', ]
 
 
 class ReviewerAdmin(admin.ModelAdmin):

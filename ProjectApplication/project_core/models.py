@@ -14,6 +14,7 @@ from django.db.models import Max
 from django.urls import reverse
 from django.utils import timezone
 from storages.backends.s3boto3 import S3Boto3Storage
+from simple_history.models import HistoricalRecords
 
 from . import utils
 
@@ -649,6 +650,8 @@ class Proposal(CreateModify):
 
     submitted_mail_sent = models.BooleanField(default=False,
                                               help_text='True if the email informing the applicant that the proposal has been submitted has been sent')
+
+    history = HistoricalRecords()
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)

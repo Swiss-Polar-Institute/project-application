@@ -1,7 +1,6 @@
 from django.urls import path
 
 import evaluation.views
-import project_core.views.logged
 
 urlpatterns = [
     path('logged/proposal/<uuid:uuid>/evaluation',

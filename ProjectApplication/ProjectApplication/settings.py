@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'simple_history',
     'project_core',
     'variable_templates',
     'evaluation',
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'project_core.middleware.login.LoginRequiredFormanagementMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware'
 ]
 
 ROOT_URLCONF = 'ProjectApplication.urls'

@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from ProjectApplication import settings
 from project_core.models import Call, Proposal, CreateModify
@@ -69,6 +70,10 @@ class ProposalEvaluation(CreateModify):
     panel_recommendation = models.CharField(choices=PANEL_RECOMENDATION, max_length=7)
     board_decision = models.CharField(choices=BOARD_DECISION, max_length=7)
     decision_date = models.DateField(blank=True, null=True)
+    history = HistoricalRecords()
+
+    def __str__(self):
+        return f'{self.proposal} Mark: {self.final_mark} Recommendation: {self.panel_recommendation}-{self.board_decision}'
 
 
 class CallEvaluation(CreateModify):
