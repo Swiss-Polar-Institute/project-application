@@ -21,6 +21,11 @@
                     <p>
                         {% include 'evaluation/_eligibility_decision-form.tmpl' %}
                     </p>
+                    {% if proposal.is_eligible %}
+                        <a class="btn btn-primary"
+                           href="{% url 'logged-proposal-evaluation-detail' uuid=proposal.uuid %}"
+                           role="button">View Evaluation</a>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

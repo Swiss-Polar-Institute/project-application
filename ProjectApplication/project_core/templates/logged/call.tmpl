@@ -3,22 +3,33 @@
 {% load crispy_forms_tags %}
 
 {% block contents %}
-    <h1>{{ call_action }} call</h1>
+    <div class="container-fluid">
+        <br>
+        {% include 'common/_messages-box.tmpl' %}
 
-    {% include 'common/_messages-box.tmpl' %}
+        <div class="row">
+            <div class="row-10">
+                <h1>{{ call_action }} call</h1>
 
-    <form method="post" action="{{ call_action_url }}">
-        {% csrf_token %}
-        {% crispy call_form %}
 
-        {% include 'logged/_form_call_question.tmpl' %}
+                <form method="post" action="{{ call_action_url }}">
+                    {% csrf_token %}
+                    {% crispy call_form %}
 
-        {% if call_action != 'Create' %}
-            <h1>Template variables</h1>
-            {% include 'variable_templates/_template_variables-form.tmpl' %}
-        {% endif %}
+                    {% include 'logged/_form_call_question.tmpl' %}
 
-        {% include 'common/_submit-button.tmpl' %}
-        <p></p>
-    </form>
+                    {% if call_action != 'Create' %}
+                        <h1>Template variables</h1>
+                        {% include 'variable_templates/_template_variables-form.tmpl' %}
+                    {% endif %}
+
+                    {% include 'common/_submit-button.tmpl' with value='Save Call' %}
+                    <p></p>
+                </form>
+            </div>
+            <div class="col-2">
+
+            </div>
+        </div>
+    </div>
 {% endblock %}

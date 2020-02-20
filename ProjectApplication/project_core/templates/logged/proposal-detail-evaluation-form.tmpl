@@ -19,6 +19,10 @@
                 <h2>Evaluation</h2>
                 {% include 'evaluation/_proposal_evaluation-form.tmpl' %}
             </div>
+            <div class="col-2">
+                <a class="btn btn-primary" href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}"
+                   role="button">View&nbsp;Proposal</a>
+            </div>
         </div>
     </div>
 {% endblock %}

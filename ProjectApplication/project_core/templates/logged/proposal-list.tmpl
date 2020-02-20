@@ -16,7 +16,7 @@
     {% if proposals %}
         <style>
             /** The buttons "Edit" and "View" in the Actions column should always be in the same line */
-            #list-of-proposals td:nth-child(5) {
+            #list-of-proposals td:nth-child(6) {
                 white-space: nowrap;
             }
         </style>
@@ -47,7 +47,6 @@
                        -->
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}">View</a>
-
                         {% if proposal.is_eligible and request|request_is_management %}
                             <a class="btn btn-primary btn-xs"
                                href="{% url 'logged-proposal-evaluation-update'  uuid=proposal.uuid %}">Evaluate</a>
