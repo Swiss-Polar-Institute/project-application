@@ -1,0 +1,6 @@
+{% load eligibility %}
+{% if eligibility|is_eligibility_not_set %}
+    -
+{% else %}
+    {% include 'common/_check-icon.tmpl' with value=eligibility|is_eligibility_eligible %}
+{% endif %}

@@ -17,14 +17,6 @@
                 {% if request|request_is_management %}
                     <p>
                         {% include 'evaluation/_eligibility_decision-form.tmpl' %}
-                        {% for change in eligibility_history %}
-                            <strong>What:</strong> {{ change.description }}<br>
-                            <strong>Now:</strong> {{ change.now }}<br>
-                            <strong>Previous:</strong> {{ change.previous }}<br>
-                            <strong>Who:</strong> {{ change.history_user }}<br>
-                            <strong>Date:</strong> {{ change.history_date }}<br>
-                            <hr>
-                        {% endfor %}
                     </p>
                 {% endif %}
             </div>

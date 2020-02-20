@@ -479,36 +479,23 @@ class ProposalDetailView(AbstractProposalDetailView):
         context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
                                                                              proposal_uuid=proposal.uuid)
 
-        eligibility_history = []
-
         current = proposal.history.first()
         proposal_previous = current.prev_record
 
+        eligibility_history = []
+        eligibility_history.append(current)
+
         while proposal_previous:
             delta = current.diff_against(proposal_previous)
-
+            eligibility_changed = False
             for change in delta.changes:
-                if change.field in ('eligibility', 'eligibility_comment'):
-                    eligibility_history.append(
-                        {'description': f'{change.field} changed',
-                         'previous': change.old,
-                         'now': change.new,
-                         'history_user': current.history_user,
-                         'history_date': current.history_date
-                         }
-                    )
+                eligibility_changed = eligibility_changed or change.field in ('eligibility', 'eligibility_comment')
+
+            if eligibility_changed:
+                eligibility_history.append(proposal_previous)
 
             current = proposal_previous
             proposal_previous = current.prev_record
-
-        # for change in proposal.history.all().order_by('history_date'):
-        #     eligibility_history.append(
-        #         {'eligibility': change.eligibility,
-        #          'eligibility_comment': change.eligibility_comment,
-        #          'history_user': change.history_user,
-        #          'history_date': change.history_date
-        #          }
-        #     )
 
         context['eligibility_history'] = eligibility_history
 

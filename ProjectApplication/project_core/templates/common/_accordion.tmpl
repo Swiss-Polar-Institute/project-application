@@ -1,6 +1,6 @@
 <div id="{{ prefix }}Accordion">
     <div class="card">
-        <div class="card-header">
+        <div class="card-header {{ padding }}">
             <h5 class="mb-0">
                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#{{ prefix }}">
                     {% if button_text_collapsed and button_text_not_collapsed %}
@@ -16,7 +16,7 @@
         <div id="{{ prefix }}" class="collapse hidden d-print-block"
              data-parent="#{{ prefix }}Accordion">
             <div class="well">
-                <div class="card-body">
+                <div class="card-body {{ padding }}">
                     {% include template_file %}
                 </div>
             </div>

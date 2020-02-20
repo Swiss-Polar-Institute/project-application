@@ -1,0 +1,11 @@
+<strong>Current:</strong><br>
+{% for proposal_past in eligibility_history %}
+    {% if forloop.counter0 == 1 %}
+        <strong>Previous:</strong><br>
+    {% endif %}
+
+    {% include 'evaluation/_eligibility-detail.tmpl' with proposal=proposal_past %}
+    <strong>Who: </strong> {{ proposal_past.history_user }}<br>
+    <strong>Date: </strong> {{ proposal_past.history_date|date:"m-d-Y H:i:s"}}<br>
+    <hr>
+{% endfor %}

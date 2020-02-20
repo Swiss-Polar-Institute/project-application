@@ -1,22 +1,15 @@
 {% load crispy_forms_tags %}
 
 <div id="eligibility_detail">
-    Eligible: {% if proposal.eligibility == proposal.ELIGIBILITYNOTCHECKED %}
-    -
-{% else %}
-    {% include 'common/_check-icon.tmpl' with value=proposal.is_eligible %}
-{% endif %}
-    <br>
-    Comment:
-    <div class="pre-with-newlines border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=proposal.eligibility_comment %}</div>
+    {% include 'evaluation/_eligibility-detail.tmpl' with proposal=proposal %}
     <br>
     <button id="edit_button" type="button" class="btn btn-primary">Edit Eligibility</button>
 </div>
 <div id="eligibility_form" style="display:none">
     {% crispy eligibility_decision_form %}
 </div>
-
-
+<br>
+{% include 'common/_accordion.tmpl' with prefix='eligibility_history' padding='p-1' button_text_collapsed='View History' button_text_not_collapsed='Hide History' template_file='evaluation/_eligibility_history.tmpl' %}
 
 <script>
     function commentIsRequired(required) {

@@ -1,0 +1,4 @@
+Eligible: {% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}
+<br>
+Comment:
+<div class="pre-with-newlines border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=proposal.eligibility_comment %}</div>
