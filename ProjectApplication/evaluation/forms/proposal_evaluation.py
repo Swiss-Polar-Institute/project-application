@@ -1,11 +1,10 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit, Layout, Div
+from crispy_forms.layout import Layout, Div
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.urls import reverse
 from django.utils.formats import number_format
 
-from project_core.models import Proposal
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from ..models import ProposalEvaluation
 
@@ -28,7 +27,7 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
         self.helper.form_action = reverse('logged-proposal-evaluation-update', kwargs={'uuid': self._proposal.uuid})
-        self.helper.add_input(Submit('submit', 'Save evaluation', css_class='btn-primary'))
+        self.helper.form_tag = False
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
         self.fields['proposal'].initial = self._proposal
@@ -36,7 +35,6 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         self.fields['allocated_budget'] = forms.DecimalField(localize=True)
         self.fields['allocated_budget'].help_text = f'Requested: {requested_budget}'
-
 
         self.helper.layout = Layout(
             Div(
@@ -84,4 +82,3 @@ class ProposalEvaluationForm(forms.ModelForm):
             'proposal': forms.HiddenInput,
             'decision_date': XDSoftYearMonthDayPickerInput,
         }
-

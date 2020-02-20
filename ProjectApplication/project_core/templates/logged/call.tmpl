@@ -24,6 +24,8 @@
                     {% endif %}
 
                     {% include 'common/_submit-button.tmpl' with value='Save Call' %}
+                    <a class="btn btn-danger" href="{% url 'logged-call-detail' id=id %}"
+                       role="button">Cancel Edit</a>
                     <p></p>
                 </form>
             </div>
