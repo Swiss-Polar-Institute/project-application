@@ -28,7 +28,7 @@ class TemplateQuestionMixin:
         return NotImplemented
 
 
-class AddCrispySubmitButtonMixin:
+class CrispyNoFormTag:
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.helper = FormHelper()
@@ -37,7 +37,7 @@ class AddCrispySubmitButtonMixin:
         return form
 
 
-class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, CreateView):
+class TemplateQuestionCreateView(TemplateQuestionMixin, CrispyNoFormTag, SuccessMessageMixin, CreateView):
     template_name = 'logged/template_question-form.tmpl'
     model = TemplateQuestion
     success_message = 'Template question created'
@@ -52,7 +52,7 @@ class TemplateQuestionCreateView(TemplateQuestionMixin, AddCrispySubmitButtonMix
         return context
 
 
-class TemplateQuestionUpdateView(TemplateQuestionMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
+class TemplateQuestionUpdateView(TemplateQuestionMixin, CrispyNoFormTag, SuccessMessageMixin, UpdateView):
     template_name = 'logged/template_question-form.tmpl'
     model = TemplateQuestion
     success_message = 'Template question updated'
