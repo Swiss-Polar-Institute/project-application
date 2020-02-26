@@ -4,13 +4,18 @@ from django.urls import reverse
 
 from evaluation.models import Reviewer
 from ... import database_population
+from ....models import Proposal
 from ....views.logged import proposal
 
 
 class ManagementProposalTest(TestCase):
     def setUp(self):
         self._call = database_population.create_call()
+
         self._proposal = database_population.create_proposal()
+        self._proposal.eligibility = Proposal.ELIGIBLE
+        self._proposal.save()
+
         self._management_user = database_population.create_management_user()
         self._reviewer_user = database_population.create_reviewer_user()
 
