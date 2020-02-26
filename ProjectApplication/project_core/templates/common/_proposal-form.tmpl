@@ -20,8 +20,6 @@
 <div class="introductory-message shadow p-3 mb-5 bg-white rounded">{{ call_introductory_message }}</div>
 
 <form action="{{ proposal_action_url }}" enctype="multipart/form-data" method="post">
-    {% csrf_token %}
-
     <h1>Application form</h1>
     <h2>Part 1: General Information</h2>
     <h3>Applicant</h3>

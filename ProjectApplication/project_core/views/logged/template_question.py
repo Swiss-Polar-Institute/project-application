@@ -32,7 +32,7 @@ class AddCrispySubmitButtonMixin:
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.helper = FormHelper()
-        form.helper.add_input(Submit('submit', 'Submit'))
+        form.helper.form_tag = False
 
         return form
 

@@ -9,5 +9,14 @@
         <h1>Creating template question</h1>
     {% endif %}
 
-    {% crispy form %}
+    <form method="post" action="{{ action_url }}">
+        {% crispy form %}
+        {% include 'common/_submit-button.tmpl' %}
+        {% if form.instance.id %}
+            <a class="btn btn-danger" href="{% url 'template-question-detail' pk=form.instance.id %}">Cancel Edit</a>
+        {% else %}
+            <a class="btn btn-danger" href="{% url 'template-questions-list' %}">Cancel Edit</a>
+        {% endif %}
+    </form>
+    <br>
 {% endblock %}

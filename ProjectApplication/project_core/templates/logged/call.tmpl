@@ -13,7 +13,6 @@
 
 
                 <form method="post" action="{{ call_action_url }}">
-                    {% csrf_token %}
                     {% crispy call_form %}
 
                     {% include 'logged/_form_call_question.tmpl' %}

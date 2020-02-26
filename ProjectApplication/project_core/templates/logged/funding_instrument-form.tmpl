@@ -11,7 +11,6 @@
     {% include 'common/_messages-box.tmpl' %}
 
     <form method="post" action="{{ action_url }}">
-        {% csrf_token %}
         {% crispy funding_instrument_form %}
 
         <h2>Template variables</h2>
