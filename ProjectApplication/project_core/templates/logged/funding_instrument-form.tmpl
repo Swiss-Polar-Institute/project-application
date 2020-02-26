@@ -3,7 +3,7 @@
 {% block subtitle %}Funding instrument{% endblock %}
 
 {% block contents %}
-    {% if form.instance.id %}
+    {% if pk %}
         <h1>Editing funding instrument</h1>
     {% else %}
         <h1>Creating funding instrument</h1>
@@ -19,8 +19,8 @@
 
         {% include 'common/_submit-button.tmpl' %}
 
-        {% if form.instance.id %}
-            <a class="btn btn-danger" href="{% url 'funding-instrument-detail' pk=id %}"
+        {% if pk %}
+            <a class="btn btn-danger" href="{% url 'funding-instrument-detail' pk=pk %}"
                role="button">Cancel Edit</a>
         {% else %}
             <a class="btn btn-danger" href="{% url 'funding-instruments-list' %}"
