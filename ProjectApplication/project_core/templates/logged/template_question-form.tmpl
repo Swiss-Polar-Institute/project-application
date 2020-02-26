@@ -11,7 +11,7 @@
 
     <form method="post" action="{{ action_url }}">
         {% crispy form %}
-        {% include 'common/_submit-button.tmpl' %}
+        {% include 'common/_submit-button.tmpl' with value='Save Template Question' %}
         {% if form.instance.id %}
             <a class="btn btn-danger" href="{% url 'template-question-detail' pk=form.instance.id %}">Cancel Edit</a>
         {% else %}

@@ -16,7 +16,7 @@
         <h2>Template variables</h2>
         {% include 'variable_templates/_template_variables-form.tmpl' %}
 
-        {% include 'common/_submit-button.tmpl' %}
+        {% include 'common/_submit-button.tmpl' with value='Save Funding Instrument' %}
 
         {% if pk %}
             <a class="btn btn-danger" href="{% url 'funding-instrument-detail' pk=pk %}"
