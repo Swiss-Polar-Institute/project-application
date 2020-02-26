@@ -45,7 +45,7 @@ urlpatterns = [
     path('logged/proposals/export/csv/summary/', logged.proposal.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
     path('logged/call/list', logged.call.CallsList.as_view(), name='logged-calls-list'),
-    path('logged/call/add/', logged.call.CallView.as_view(), name='call-add'),
+    path('logged/call/add/', logged.call.CallView.as_view(), name='logged-call-add'),
     path('logged/call/<int:id>/update', logged.call.CallView.as_view(),
          name='logged-call-update'),
     path('logged/call/<int:id>/comment/add', logged.call.CallCommentAdd.as_view(),

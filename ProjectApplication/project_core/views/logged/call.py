@@ -108,7 +108,7 @@ class CallView(TemplateView):
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(prefix=CALL_QUESTION_FORM_NAME)
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(prefix=TEMPLATE_VARIABLES_FORM_NAME)
-            context['call_action_url'] = reverse('call-add')
+            context['call_action_url'] = reverse('logged-call-add')
             context['call_action'] = 'Create'
             context['active_subsection'] = 'call-add'
 
@@ -144,7 +144,7 @@ class CallView(TemplateView):
             call_form = CallForm(request.POST, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, prefix=CALL_QUESTION_FORM_NAME)
 
-            context['call_action_url'] = reverse('call-add')
+            context['call_action_url'] = reverse('logged-call-add')
             context['call_action'] = 'Create'
             call_action = 'Create'
             action = 'created'

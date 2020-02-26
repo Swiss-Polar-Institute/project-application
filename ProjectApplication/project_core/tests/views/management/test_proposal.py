@@ -70,3 +70,13 @@ class ManagementProposalTest(TestCase):
             reverse('logged-export-proposals-csv-summary-call', args=[str(self._proposal.call.id)]))
 
         self.assertContains(response, 'A test proposal')
+
+    def test_load_logged_proposal_list(self):
+        c = Client()
+
+        login = c.login(username='unittest_management', password='12345')
+        self.assertTrue(login)
+
+        response = c.get(reverse('logged-proposals-list'))
+
+        self.assertEqual(response.status_code, 200)
