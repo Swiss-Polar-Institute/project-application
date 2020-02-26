@@ -18,6 +18,14 @@
         {% include 'variable_templates/_template_variables-form.tmpl' %}
 
         {% include 'common/_submit-button.tmpl' %}
+
+        {% if form.instance.id %}
+            <a class="btn btn-danger" href="{% url 'funding-instrument-detail' pk=id %}"
+               role="button">Cancel Edit</a>
+        {% else %}
+            <a class="btn btn-danger" href="{% url 'funding-instruments-list' %}"
+               role="button">Cancel Edit</a>
+        {% endif %}
     </form>
     <br>
 {% endblock %}

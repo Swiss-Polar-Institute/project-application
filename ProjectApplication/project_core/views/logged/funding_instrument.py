@@ -1,10 +1,9 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import TemplateView, DetailView
 
 from project_core.forms.funding_instrument import FundingInstrumentForm
 from project_core.models import FundingInstrument
@@ -61,8 +60,6 @@ class FundingInstrumentView(TemplateView):
             context['active_subsection'] = 'funding-instruments-list'
             context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
-            return render(request, 'logged/funding_instrument-form.tmpl', context)
-
         else:
             context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(prefix=FUNDING_INSTRUMENT_FORM_NAME)
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(prefix=TEMPLATE_VARIABLES_FORM_NAME)
@@ -71,7 +68,7 @@ class FundingInstrumentView(TemplateView):
             context['active_subsection'] = 'funding-instrument-add'
             context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
-            return render(request, 'logged/funding_instrument-form.tmpl', context)
+        return render(request, 'logged/funding_instrument-form.tmpl', context)
 
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
