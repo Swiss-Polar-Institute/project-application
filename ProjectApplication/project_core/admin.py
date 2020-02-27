@@ -1,7 +1,29 @@
 from django.contrib import admin
+from django.utils.html import escape
+from django.utils.safestring import mark_safe
 from simple_history.admin import SimpleHistoryAdmin
 
 import project_core.models
+
+
+# Not an admin but to add history fields on admin
+# To use it just add:
+# history_list_display = ['history_field_changes']
+# And inherit of SimpleHistoryAdminFieldChanges
+
+class SimpleHistoryAdminFieldChanges:
+    def history_field_changes(self, obj):
+        description_changes = ''
+
+        if obj.prev_record:
+            delta = obj.diff_against(obj.prev_record)
+
+            for field in delta.changed_fields:
+                previous_value = escape(getattr(delta.old_record, field))
+                new_value = escape(getattr(delta.new_record, field))
+                description_changes += f'Field: {field} Prev: {previous_value} Current: {new_value}<br>'
+
+        return mark_safe(description_changes)
 
 
 class StepTypeAdmin(admin.ModelAdmin):
@@ -19,18 +41,23 @@ class BudgetCategoryAdmin(admin.ModelAdmin):
     ordering = ['name', 'order', ]
 
 
-class FundingInstrumentAdmin(admin.ModelAdmin):
+class FundingInstrumentAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = ('long_name', 'short_name', 'description', 'created_on', 'modified_on',)
     ordering = ['long_name', 'short_name', 'description', 'created_on', 'modified_on', ]
+    history_list_display = ['history_field_changes']
 
 
-class CallAdmin(admin.ModelAdmin):
+class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline',
         'budget_categories_list', 'budget_maximum', 'call_questions_list', 'other_funding_question',
         'proposal_partner_question', 'created_on', 'modified_on',)
     ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',
                 'created_on', 'modified_on', ]
+
+    history_list_display = ['history_field_changes']
+
+    readonly_fields = ('created_on', 'modified_on',)
 
     def budget_categories_list(self, obj):
         budget_categories = obj.budget_categories.all()
@@ -112,11 +139,12 @@ class GenderAdmin(admin.ModelAdmin):
     ordering = ['name', 'created_on', 'modified_on', ]
 
 
-class PhysicalPersonAdmin(admin.ModelAdmin):
+class PhysicalPersonAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'first_name', 'surname', 'gender', 'phd_date', 'created_on', 'modified_on',)
     ordering = ['first_name', 'surname', 'gender', 'phd_date', 'created_on',
                 'modified_on', ]
+    history_list_display = ['history_field_changes']
 
 
 class PersonUidAdmin(admin.ModelAdmin):
@@ -124,13 +152,14 @@ class PersonUidAdmin(admin.ModelAdmin):
     ordering = ['person', 'uid', 'source', ]
 
 
-class PersonPositionAdmin(admin.ModelAdmin):
+class PersonPositionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'person', 'academic_title', 'career_stage', 'organisations_list', 'group', 'privacy_policy',
         'contact_newsletter',
         'created_on', 'modified_on',)
     ordering = ['person', 'academic_title', 'career_stage', 'group', 'privacy_policy', 'contact_newsletter',
                 'created_on', 'modified_on', ]
+    history_list_display = ['history_field_changes']
 
     def organisations_list(self, obj):
         organisation_names = obj.organisation_names.all()
@@ -138,9 +167,10 @@ class PersonPositionAdmin(admin.ModelAdmin):
         return ', '.join([str(organisation_name.name) for organisation_name in organisation_names])
 
 
-class ContactAdmin(admin.ModelAdmin):
+class ContactAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = ('person_position', 'method', 'entry', 'created_on', 'modified_on',)
     ordering = ['person_position', 'method', 'entry', 'created_on', 'modified_on', ]
+    history_list_display = ['history_field_changes']
 
 
 class GeographicalAreaUidAdmin(admin.ModelAdmin):
@@ -153,7 +183,7 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
     ordering = ['name', 'uid', 'created_on', 'modified_on', ]
 
 
-class ProposalAdmin(SimpleHistoryAdmin):
+class ProposalAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
                     'end_date', 'duration_months', 'applicant', 'proposal_status', 'eligibility', 'eligibility_comment',
                     'qas_list', 'call', 'created_on', 'modified_on',
@@ -161,6 +191,8 @@ class ProposalAdmin(SimpleHistoryAdmin):
     ordering = ['title', 'uuid', 'start_date', 'end_date', 'duration_months', 'applicant',
                 'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'created_on',
                 'modified_on', 'draft_saved_mail_sent', 'submitted_mail_sent', ]
+
+    history_list_display = ['history_field_changes']
 
     # Search at the moment only works without '-'
     search_fields = ('title', 'uuid',)
@@ -203,20 +235,22 @@ class ProposalFundingItemAdmin(admin.ModelAdmin):
     ordering = ['proposal', 'organisation_name', 'funding_status', 'amount', ]
 
 
-class CallQuestionAdmin(admin.ModelAdmin):
+class CallQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'order',
         'created_on', 'modified_on',)
     ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_on',
                 'modified_on', ]
+    history_list_display = ['history_field_changes']
 
 
-class TemplateQuestionAdmin(admin.ModelAdmin):
+class TemplateQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'question_text', 'question_description', 'answer_type', 'answer_max_length', 'created_on',
         'modified_on',)
     ordering = ['question_text', 'answer_type', 'answer_max_length', 'created_on',
                 'modified_on', ]
+    history_list_display = ['history_field_changes']
 
 
 class ProposalQATextAdmin(admin.ModelAdmin):

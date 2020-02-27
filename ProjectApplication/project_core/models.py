@@ -13,8 +13,8 @@ from django.db import models, transaction
 from django.db.models import Max
 from django.urls import reverse
 from django.utils import timezone
-from storages.backends.s3boto3 import S3Boto3Storage
 from simple_history.models import HistoricalRecords
+from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
 
@@ -69,6 +69,8 @@ class FundingInstrument(CreateModifyOn):
         help_text='Description of the funding instrument that can be used to distinguish it from others', blank=False,
         null=False)
 
+    history = HistoricalRecords()
+
     def __str__(self):
         return '{}'.format(self.long_name)
 
@@ -101,6 +103,8 @@ class Call(CreateModifyOn):
     overarching_project_question = models.BooleanField(
         help_text='True if the question for the overarching project is displayed',
         default=False)
+
+    history = HistoricalRecords()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -193,6 +197,8 @@ class AbstractQuestion(CreateModifyOn):
         help_text='Maximum number of words for a question answer', blank=True, null=True,
         verbose_name='Answer maximum length (used for answer type TEXT, in words)')
     answer_required = models.BooleanField(default=True, blank=False, null=False)
+
+    history = HistoricalRecords(inherit=True)
 
     def __str__(self):
         if self.answer_type == AbstractQuestion.FILE:
@@ -427,6 +433,8 @@ class PhysicalPerson(CreateModifyOn):
                                                                       message='Format is yyyy-mm',
                                                                       code='Invalid format')])
 
+    historical = HistoricalRecords()
+
     def __str__(self):
         return '{} {}'.format(self.first_name, self.surname)
 
@@ -486,6 +494,8 @@ class PersonPosition(CreateModifyOn):
         blank=False, null=False)
     contact_newsletter = models.BooleanField(help_text='Agree or disagree to being contacted by email with newsletter',
                                              default=False, blank=False, null=False)
+
+    historical = HistoricalRecords()
 
     def __str__(self):
         organisations_list = []
@@ -551,6 +561,8 @@ class Contact(CreateModifyOn):
                              blank=False, null=False)
     method = models.CharField(help_text='Type of contact method', max_length=30, choices=METHOD, blank=False,
                               null=False)
+
+    history = HistoricalRecords()
 
     def clean(self):
         if self.method == Contact.EMAIL:
