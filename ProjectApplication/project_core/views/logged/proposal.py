@@ -463,10 +463,11 @@ class ProposalCommentAdd(AbstractProposalDetailView):
 def get_eligibility_history(proposal):
     current = proposal.history.first()
 
+    eligibility_history = []
+
     if current:
         proposal_previous = current.prev_record
 
-        eligibility_history = []
         eligibility_history.append(current)
 
         while proposal_previous:
