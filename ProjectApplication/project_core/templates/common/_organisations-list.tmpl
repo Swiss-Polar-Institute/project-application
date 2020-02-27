@@ -1,3 +1,5 @@
 {% for organisation in organisations %}
     {{ organisation }}{% if not forloop.last %}, {% endif %}
+{% empty %}
+    -
 {% endfor %}
