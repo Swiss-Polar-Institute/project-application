@@ -460,6 +460,30 @@ class ProposalCommentAdd(AbstractProposalDetailView):
         return result
 
 
+def get_eligibility_history(proposal):
+    current = proposal.history.first()
+
+    if current:
+        proposal_previous = current.prev_record
+
+        eligibility_history = []
+        eligibility_history.append(current)
+
+        while proposal_previous:
+            delta = current.diff_against(proposal_previous)
+            eligibility_changed = False
+            for change in delta.changes:
+                eligibility_changed = eligibility_changed or change.field in ('eligibility', 'eligibility_comment')
+
+            if eligibility_changed:
+                eligibility_history.append(proposal_previous)
+
+            current = proposal_previous
+            proposal_previous = current.prev_record
+
+    return eligibility_history
+
+
 class ProposalDetailView(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
         if 'id' in kwargs:
@@ -479,27 +503,7 @@ class ProposalDetailView(AbstractProposalDetailView):
         context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
                                                                              proposal_uuid=proposal.uuid)
 
-        current = proposal.history.first()
-
-        if current:
-            proposal_previous = current.prev_record
-
-            eligibility_history = []
-            eligibility_history.append(current)
-
-            while proposal_previous:
-                delta = current.diff_against(proposal_previous)
-                eligibility_changed = False
-                for change in delta.changes:
-                    eligibility_changed = eligibility_changed or change.field in ('eligibility', 'eligibility_comment')
-
-                if eligibility_changed:
-                    eligibility_history.append(proposal_previous)
-
-                current = proposal_previous
-                proposal_previous = current.prev_record
-
-            context['eligibility_history'] = eligibility_history
+        context['eligibility_history'] = get_eligibility_history(proposal)
 
         return render(request, self.template, context)
 
