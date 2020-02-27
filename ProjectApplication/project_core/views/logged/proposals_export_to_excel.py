@@ -237,6 +237,7 @@ class ProposalsExportExcel(View):
     def get(self, request, *args, **kwargs):
         call_id = kwargs['call']
 
+        # Proposals get filter later based on call_id being None (all of them) or not
         proposals = Proposal.objects.all().order_by('title')
         proposals = Reviewer.filter_proposals(proposals, self.request.user)
 
