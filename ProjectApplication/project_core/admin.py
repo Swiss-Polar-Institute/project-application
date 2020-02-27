@@ -1,4 +1,5 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 import project_core.models
 
@@ -152,7 +153,7 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
     ordering = ['name', 'uid', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
 
 
-class ProposalAdmin(admin.ModelAdmin):
+class ProposalAdmin(SimpleHistoryAdmin):
     list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
                     'end_date', 'duration_months', 'applicant', 'proposal_status', 'eligibility', 'eligibility_comment',
                     'qas_list', 'call', 'created_by', 'created_on', 'modified_by', 'modified_on',
