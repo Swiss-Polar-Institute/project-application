@@ -80,3 +80,13 @@ class ManagementProposalTest(TestCase):
         response = c.get(reverse('logged-proposals-list'))
 
         self.assertEqual(response.status_code, 200)
+
+    def test_export_to_excel(self):
+        c = Client()
+
+        login = c.login(username='unittest_management', password='12345')
+        self.assertTrue(login)
+
+        response = c.get(reverse('logged-export-proposals-for-call-excel', kwargs={'call': self._call.id}))
+
+        self.assertEqual(response.status_code, 200)

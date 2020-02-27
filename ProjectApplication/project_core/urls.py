@@ -4,6 +4,8 @@ from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
 
+import project_core.views.logged.proposals_export_to_csv_summary
+import project_core.views.logged.proposals_export_to_excel
 from .views import common
 from .views import external
 from .views import logged
@@ -38,11 +40,11 @@ urlpatterns = [
          name='logged-proposal-eligibility-update'),
     path('logged/proposal/<int:id>/comment/add', logged.proposal.ProposalCommentAdd.as_view(),
          name='logged-proposal-comment-add'),
-    path('logged/proposals/export/excel/<int:call>/', logged.proposal.ProposalsExportExcel.as_view(),
+    path('logged/proposals/export/excel/<int:call>/', project_core.views.logged.proposals_export_to_excel.ProposalsExportExcel.as_view(),
          name='logged-export-proposals-for-call-excel'),
-    path('logged/proposals/export/csv/summary/<int:call>/', logged.proposal.ProposalsExportCsvSummary.as_view(),
+    path('logged/proposals/export/csv/summary/<int:call>/', project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-call'),
-    path('logged/proposals/export/csv/summary/', logged.proposal.ProposalsExportCsvSummary.as_view(),
+    path('logged/proposals/export/csv/summary/', project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
     path('logged/call/list', logged.call.CallsList.as_view(), name='logged-calls-list'),
     path('logged/call/add/', logged.call.CallView.as_view(), name='logged-call-add'),
