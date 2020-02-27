@@ -21,20 +21,14 @@ from . import utils
 logger = logging.getLogger('project_core')
 
 
-class CreateModify(models.Model):
+class CreateModifyOn(models.Model):
     """Details of data creation and modification: including date, time and user."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     created_on = models.DateTimeField(help_text='Date and time at which the entry was created', auto_now_add=True,
                                       blank=False, null=False)
-    created_by = models.ForeignKey(User, help_text='User by which the entry was created',
-                                   related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
-                                   on_delete=models.PROTECT)
     modified_on = models.DateTimeField(help_text='Date and time at which the entry was modified', auto_now=True,
                                        blank=True, null=True)
-    modified_by = models.ForeignKey(User, help_text='User by which the entry was modified',
-                                    related_name="%(app_label)s_%(class)s_modified_by_related", blank=True, null=True,
-                                    on_delete=models.PROTECT)
 
     class Meta:
         abstract = True
@@ -63,7 +57,7 @@ class BudgetCategory(models.Model):
         verbose_name_plural = 'Budget categories'
 
 
-class FundingInstrument(CreateModify):
+class FundingInstrument(CreateModifyOn):
     """Details of a funding instrument. This is the highest level of something to which a call can be attributed.
     For example, an exploratory Grant is the funding instrument, and the annual round of applications would come as part
     of a call."""
@@ -82,7 +76,7 @@ class FundingInstrument(CreateModify):
         return reverse('funding-instrument-detail', args=[str(self.pk)])
 
 
-class Call(CreateModify):
+class Call(CreateModifyOn):
     """Description of call."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -161,7 +155,7 @@ class StepType(models.Model):
         return '{}'.format(self.name)
 
 
-class Step(CreateModify):
+class Step(CreateModifyOn):
     """Dates of notable steps that are used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -177,7 +171,7 @@ class Step(CreateModify):
         return '{} - {}'.format(self.step_type, self.date)
 
 
-class AbstractQuestion(CreateModify):
+class AbstractQuestion(CreateModifyOn):
     """Questions and details relating to their answers that can be used throughout the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -263,7 +257,7 @@ class CallQuestion(AbstractQuestion):
         unique_together = (('call', 'template_question'), ('call', 'order'),)
 
 
-class Source(CreateModify):
+class Source(CreateModifyOn):
     """Source from where a UID or other item originates."""
     source = models.CharField(help_text='Source from which a UID or item may originate', max_length=200, blank=False,
                               null=False)
@@ -274,7 +268,7 @@ class Source(CreateModify):
         return '{}'.format(self.source)
 
 
-class Uid(CreateModify):
+class Uid(CreateModifyOn):
     """Uid used to distinguish unique items in vocabulary lists"""
     uid = models.CharField(help_text='Unique identifier', max_length=150, blank=False, null=True)
     source = models.ForeignKey(Source, help_text='Source of the UID', on_delete=models.PROTECT)
@@ -295,7 +289,7 @@ class KeywordUid(Uid):
         return '{}-{}'.format(self.uid, self.source)
 
 
-class Keyword(CreateModify):
+class Keyword(CreateModifyOn):
     """Set of keywords used to describe the topic of a project, proposal, mission etc. """
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -347,7 +341,7 @@ class CountryUid(Uid):
         return '{}-{}'.format(self.uid, self.source)
 
 
-class Country(CreateModify):
+class Country(CreateModifyOn):
     """Countries"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -370,7 +364,7 @@ class OrganisationUid(Uid):
         return '{}-{}'.format(self.uid, self.source)
 
 
-class Organisation(CreateModify):
+class Organisation(CreateModifyOn):
     """Details of an organisation - could be scientific, institution, funding etc."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -399,7 +393,7 @@ class Organisation(CreateModify):
         unique_together = (('long_name', 'country'),)
 
 
-class OrganisationName(CreateModify):
+class OrganisationName(CreateModifyOn):
     """This is used by the dropdown box to the users. Users can add organisation names and will not be associated
     with the organisation until SPI creates the organisation and links it. It's an easy way to allow users to enter
     organisations without details and without having what seems to not exist: a full list of organisations. """
@@ -412,7 +406,7 @@ class OrganisationName(CreateModify):
         return '{}'.format(self.name)
 
 
-class Gender(CreateModify):
+class Gender(CreateModifyOn):
     """Gender with which a person identifies."""
     name = models.CharField(help_text='Name of gender', max_length=20, blank=False, null=False, unique=True)
 
@@ -420,7 +414,7 @@ class Gender(CreateModify):
         return '{}'.format(self.name)
 
 
-class PhysicalPerson(CreateModify):
+class PhysicalPerson(CreateModifyOn):
     """Information about a unique person."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -475,7 +469,7 @@ class CareerStage(models.Model):
         return '{}'.format(self.name)
 
 
-class PersonPosition(CreateModify):
+class PersonPosition(CreateModifyOn):
     """Information about a person that may change as they move through their career."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -537,7 +531,7 @@ class PersonPosition(CreateModify):
         verbose_name_plural = 'People from organisation(s)'
 
 
-class Contact(CreateModify):
+class Contact(CreateModifyOn):
     """Contact details of a person"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -579,7 +573,7 @@ class GeographicalAreaUid(Uid):
         return '{}-{}'.format(self.uid, self.source)
 
 
-class GeographicalArea(CreateModify):
+class GeographicalArea(CreateModifyOn):
     """Geographical area (exact coverage of this not yet determined)"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -594,13 +588,13 @@ class GeographicalArea(CreateModify):
         return '{}'.format(self.name)
 
 
-class ExternalProject(CreateModify):
+class ExternalProject(CreateModifyOn):
     title = models.CharField(help_text='Title of the project', max_length=500, blank=False, null=False)
     leader = models.ForeignKey(PersonPosition, help_text='Leader of this project',
                                blank=True, null=True, on_delete=models.PROTECT)
 
 
-class Proposal(CreateModify):
+class Proposal(CreateModifyOn):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
     ELIGIBLE = 'Eligible'
@@ -718,7 +712,7 @@ class Proposal(CreateModify):
         unique_together = (('title', 'applicant', 'call'),)
 
 
-class ProposalQAText(CreateModify):
+class ProposalQAText(CreateModifyOn):
     """Questions assigned to a proposal and their respective answers"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
@@ -734,7 +728,7 @@ class ProposalQAText(CreateModify):
         unique_together = (('proposal', 'call_question'),)
 
 
-class ProposalQAFile(CreateModify):
+class ProposalQAFile(CreateModifyOn):
     proposal = models.ForeignKey(Proposal, help_text='Proposal that this file is attached to', on_delete=models.PROTECT)
     call_question = models.ForeignKey(CallQuestion, help_text='Question from the call', on_delete=models.PROTECT)
     file = models.FileField(storage=S3Boto3Storage(),

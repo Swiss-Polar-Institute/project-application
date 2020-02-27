@@ -4,44 +4,44 @@ import comments.models
 
 
 class ProposalCommentAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'text', 'created_by', 'created_on',)
-    ordering = ['proposal', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = ('proposal', 'text', 'created_on',)
+    ordering = ['proposal', 'text', 'created_on', 'modified_on', ]
 
 
 class CallCommentAdmin(admin.ModelAdmin):
-    list_display = ('call', 'text', 'created_by', 'created_on',)
-    ordering = ['call', 'text', 'created_by', 'created_on', 'modified_by', 'modified_on', ]
+    list_display = ('call', 'text', 'created_on',)
+    ordering = ['call', 'text', 'created_on', 'modified_on', ]
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'colour', 'created_by', 'created_on',)
+    list_display = ('name', 'colour', 'created_on',)
     ordering = ['name']
 
 
 class ProposalCommentCategoryAdmin(admin.ModelAdmin):
-    list_display = ('category', 'created_by', 'created_on',)
+    list_display = ('category', 'created_on',)
     ordering = ['category', ]
 
 
 class ProposalAttachmentCategoryAdmin(admin.ModelAdmin):
-    list_display = ('category', 'created_by', 'created_on',)
+    list_display = ('category', 'created_on',)
     ordering = ['category', ]
 
 
 class ProposalAttachmentAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'file', 'created_by', 'created_on',)
+    list_display = ('proposal', 'file', 'created_on',)
 
 
 class CallAttachmentAdmin(admin.ModelAdmin):
-    list_display = ('call', 'file', 'created_by', 'created_on',)
+    list_display = ('call', 'file', 'created_on',)
 
 
 class CallAttachmentCategoryAdmin(admin.ModelAdmin):
-    list_display = ('category', 'created_by', 'created_on',)
+    list_display = ('category', 'created_on',)
 
 
 class CallCommentCategoryAdmin(admin.ModelAdmin):
-    list_display = ('category', 'created_by', 'created_on',)
+    list_display = ('category', 'created_on',)
     ordering = ['category', ]
 
 

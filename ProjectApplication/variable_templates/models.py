@@ -1,9 +1,9 @@
 from django.db import models
 
-from project_core.models import CreateModify, FundingInstrument, Call
+from project_core.models import CreateModifyOn, FundingInstrument, Call
 
 
-class TemplateVariableName(CreateModify):
+class TemplateVariableName(CreateModifyOn):
     name = models.CharField(help_text='{{ name }} in the text where this gets replaced', max_length=200)
     default = models.CharField(help_text="Default value if a Call doesn't override it", max_length=200)
     description = models.CharField(help_text='Definition of a variable', max_length=200)
@@ -12,7 +12,7 @@ class TemplateVariableName(CreateModify):
         return f'{self.name}-{self.default}'
 
 
-class AbstractVariableTemplate(CreateModify):
+class AbstractVariableTemplate(CreateModifyOn):
     name = models.ForeignKey(TemplateVariableName, blank=False, null=False, on_delete=models.PROTECT)
     value = models.CharField(help_text='Value for the variable in this funding instrument', max_length=200)
 

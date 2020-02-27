@@ -1,12 +1,13 @@
+from django.contrib.auth.models import User
 from django.db import models
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from project_core.models import CreateModify, Proposal, Call
 from colours.models import ColourPair
+from project_core.models import CreateModifyOn, Proposal, Call
 
 
 # Models used by Proposal, Call...
-class Category(CreateModify):
+class Category(CreateModifyOn):
     name = models.CharField(max_length=100, help_text='Type of comment or attachment', unique=True)
     colour = models.ForeignKey(ColourPair, on_delete=models.PROTECT, null=True, blank=True)
 
@@ -17,17 +18,22 @@ class Category(CreateModify):
         verbose_name_plural = 'Categories'
 
 
-class AbstractComment(CreateModify):
+class AbstractComment(CreateModifyOn):
     text = models.TextField(help_text='Comment text', null=False,
                             blank=False)
+    created_by = models.ForeignKey(User, help_text='User by which the entry was created',
+                                   related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
+                                   on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('created_on', 'created_by'),)
         abstract = True
 
 
-class AbstractAttachment(CreateModify):
+class AbstractAttachment(CreateModifyOn):
     text = models.TextField(help_text='Comment of the attachment', null=True, blank=True)
+    created_by = models.ForeignKey(User, help_text='User by which the entry was created',
+                                   related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
+                                   on_delete=models.PROTECT)
 
     class Meta:
         unique_together = (('created_on', 'created_by'),)
@@ -35,7 +41,7 @@ class AbstractAttachment(CreateModify):
 
 
 # Proposal
-class ProposalCommentCategory(CreateModify):
+class ProposalCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -50,6 +56,9 @@ class ProposalComment(AbstractComment):
                                  on_delete=models.PROTECT)
     category = models.ForeignKey(ProposalCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
+    created_by = models.ForeignKey(User, help_text='User by which the entry was created',
+                                   related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
+                                   on_delete=models.PROTECT)
 
     def set_parent(self, parent):
         self.proposal = parent
@@ -62,7 +71,7 @@ class ProposalComment(AbstractComment):
         unique_together = (('proposal', 'created_on', 'created_by'),)
 
 
-class ProposalAttachmentCategory(CreateModify):
+class ProposalAttachmentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -90,7 +99,7 @@ class ProposalAttachment(AbstractAttachment):
 
 
 # Call
-class CallCommentCategory(CreateModify):
+class CallCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -118,7 +127,7 @@ class CallComment(AbstractComment):
         unique_together = (('call', 'created_on', 'created_by'),)
 
 
-class CallAttachmentCategory(CreateModify):
+class CallAttachmentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
     def __str__(self):

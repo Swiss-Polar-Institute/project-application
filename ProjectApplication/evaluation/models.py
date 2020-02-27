@@ -5,7 +5,7 @@ from django.db import models
 from simple_history.models import HistoricalRecords
 
 from ProjectApplication import settings
-from project_core.models import Call, Proposal, CreateModify
+from project_core.models import Call, Proposal, CreateModifyOn
 from project_core.utils import user_is_in_group_name
 
 
@@ -33,7 +33,7 @@ class Reviewer(models.Model):
         return proposals
 
 
-class ProposalEvaluation(CreateModify):
+class ProposalEvaluation(CreateModifyOn):
     PANEL_RECOMENDATION_FUND = 'Fund'
     PANEL_RECOMENDATION_RESERVE = 'Reserve'
     PANEL_RECOMENDATION_DO_NOT_FUND = 'NotFund'
@@ -76,7 +76,7 @@ class ProposalEvaluation(CreateModify):
         return f'{self.proposal} Mark: {self.final_mark} Recommendation: {self.panel_recommendation}-{self.board_decision}'
 
 
-class CallEvaluation(CreateModify):
+class CallEvaluation(CreateModifyOn):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.OneToOneField(Call, on_delete=models.PROTECT)
