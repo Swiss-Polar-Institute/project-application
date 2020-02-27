@@ -1,7 +1,9 @@
 from django.db import models
 
+from project_core.models import CreateModifyOn
 
-class Colour(models.Model):
+
+class Colour(CreateModifyOn):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(max_length=64, help_text='Name of the colour', unique=True)
@@ -11,7 +13,7 @@ class Colour(models.Model):
         return self.name
 
 
-class ColourPair(models.Model):
+class ColourPair(CreateModifyOn):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     description = models.CharField(max_length=128,
