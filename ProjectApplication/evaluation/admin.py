@@ -1,14 +1,16 @@
 from django.contrib import admin
-
-from .models import Reviewer, ProposalEvaluation
 from simple_history.admin import SimpleHistoryAdmin
 
+from project_core.admin import SimpleHistoryAdminFieldChanges
+from .models import Reviewer, ProposalEvaluation
 
-class ProposalEvaluationAdmin(SimpleHistoryAdmin):
+
+class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'proposal', 'final_mark', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant', 'panel_recommendation',
-        'board_decision', 'decision_date')
+        'board_decision', 'decision_date', 'created_on', 'modified_on')
     history_list_display = ['allocated_budget', 'panel_remarks', ]
+    readonly_fields = ('created_on', 'modified_on',)
 
 
 class ReviewerAdmin(admin.ModelAdmin):
