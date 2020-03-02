@@ -69,6 +69,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'project_core.processors.navbar_background.background',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -261,3 +262,4 @@ REVIEWER_GROUP_NAME = 'reviewer'
 MANAGEMENT_GROUP_NAME = 'management'
 
 DEBUG = os.environ['DEBUG'] == '1'
+NAVBAR_BACKGROUND_COLOR = os.getenv('NAVBAR_BACKGROUND_COLOR', 'bg-primary')
