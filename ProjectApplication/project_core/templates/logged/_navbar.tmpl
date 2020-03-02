@@ -21,13 +21,13 @@
                 <a class="nav-link" href="{% url 'logged-proposals-list' %}">Proposals</a>
             </li>
             {% if request|request_is_management %}
-                <li class="nav-item {% if active == 'contacts' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'person-position-list' %}">People</a>
+                <li>
+                    <a class="nav-link disabled" href="#">Projects</a>
                 </li>
             {% endif %}
             {% if request|request_is_management %}
-                <li>
-                    <a class="nav-link disabled" href="#">Projects</a>
+                <li class="nav-item {% if active == 'contacts' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'person-position-list' %}">People</a>
                 </li>
             {% endif %}
         </ul>
