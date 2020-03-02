@@ -24,7 +24,6 @@
             <td>
                 <a class="btn btn-primary btn-xs" href="{% url 'logged-call-update' id=call.id %}">Edit</a>
                 <a class="btn btn-primary btn-xs" href="{% url 'logged-call-detail' id=call.id %}">View</a>
-                <a class="btn btn-primary btn-xs" href="{% url 'proposal-add' %}?call={{ call.pk }}">Create Proposal</a>
                 <a class="btn btn-primary btn-xs" href="{% url 'logged-proposals-list' %}?call={{ call.pk }}">List Proposals</a>
                 {% if call.number_of_proposals > 0 %}
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-export-proposals-for-call-excel' call=call.pk%}">Excel evaluation</a>
