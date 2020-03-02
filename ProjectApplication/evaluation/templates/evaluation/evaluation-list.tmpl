@@ -1,0 +1,13 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% block subtitle %}Evaluation List{% endblock %}
+
+{% block contents %}
+    <br>
+    {% include 'common/_messages-box.tmpl' %}
+    <h1>Calls to evaluate</h1>
+    {% if calls %}
+        {% include 'logged/_table_of_calls.tmpl' with calls=calls table_id='calls' %}
+    {% else %}
+        No closed calls at the moment.
+    {% endif %}
+{% endblock %}

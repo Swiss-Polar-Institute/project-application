@@ -39,17 +39,8 @@
             {% if closed_calls %}
                 {% include 'logged/_table_of_calls.tmpl' with calls=closed_calls table_id='closed_calls' %}
             {% else %}
-                No past calls at the moment.
+                No closed calls at the moment.
             {% endif %}
         </div>
     </div>
-    <script type="text/javascript" class="init">
-
-        $(document).ready(function () {
-            $('table.display').DataTable({
-                    "pageLength": 100
-                }
-            );
-        });
-    </script>
 {% endblock %}

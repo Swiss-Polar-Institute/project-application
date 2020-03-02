@@ -1,0 +1,11 @@
+{% extends 'logged/_sidebar-base.tmpl' %}
+{% block sidebar_contents %}
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'evaluation-list' %}active{% endif %}"
+               href="{% url 'logged-evaluation-list' %}">
+                Evaluation list
+            </a>
+        </li>
+    </ul>
+{% endblock %}

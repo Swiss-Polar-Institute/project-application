@@ -2,10 +2,11 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views.generic import TemplateView
 
 from ProjectApplication import settings
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
-from project_core.models import Proposal
+from project_core.models import Proposal, Call
 from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 
@@ -32,6 +33,19 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
         update_context(context, kwargs['uuid'])
 
         return render(request, 'logged/proposal-detail-evaluation-detail.tmpl', context)
+
+
+class ProposalEvaluationList(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['calls'] = Call.closed_calls()
+
+        context['active_section'] = 'evaluation'
+        context['active_subsection'] = 'evaluation-list'
+        context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
+
+        return render(request, 'evaluation/evaluation-list.tmpl', context)
 
 
 class ProposalEvaluationUpdate(AbstractProposalDetailView):
