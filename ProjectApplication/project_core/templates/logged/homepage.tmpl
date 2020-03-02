@@ -10,21 +10,27 @@
         Meanwhile below is a changelog of what has been done recently or is to be done next.
     </p>
 
-    <h2>Version deployed on 26/02/2020 and 27/02/2020 (Staging only)</h2>
-    Mostly backend improvements:
+    <h2>Version deployed on 02/03/2020 (Staging only)</h2>
+    Visual changes:
+    <ul>
+        <li>Makes the navigation bar on staging grey. This is to differenciate easily staging and live</li>
+        <li>Fixes presentation of Open/Future/Closed calls (sometimes Closed and Future sections appeared on the screen
+            at the same time)
+        </li>
+        <li>Adds "Cancel Edit" to Funding Instrument pages</li>
+    </ul>
+
+    Backend improvements:
     <ul>
         <li>Fixes "Create Call" - it was broken since some changes last week. Added unit test to prevent this happening
             again (and for other parts of the system as well)
         </li>
-        <li>Adds "Cancel Edit" to Funding Instrument pages</li>
         <li>Keep track of who, when and what information is changed. E.g. if a management user makes a change on the
             Call it's easier now for John, Carles or Jen to see what changed and when. If wanted this tracking can be
             exposed to management
         </li>
         <li>Simplifies database for fields that are superseded by the previous change</li>
-        <li>Updates Bootstrap from v4.3.1 to v4.4.1. Hopefully it fixes a glitch when changing from open to closed
-            calls. Also updated Popper.
-        </li>
+        <li>Updates Bootstrap (internal library) from v4.3.1 to v4.4.1</li>
     </ul>
 
     <h2>Version deployed on 19/02/2020 (Staging only)</h2>
