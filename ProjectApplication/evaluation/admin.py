@@ -7,7 +7,7 @@ from .models import Reviewer, ProposalEvaluation
 
 class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
-        'proposal', 'final_mark', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant', 'panel_recommendation',
+        'proposal', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant', 'panel_recommendation',
         'board_decision', 'decision_date', 'created_on', 'modified_on')
     readonly_fields = ('created_on', 'modified_on',)
     history_list_display = ['history_field_changes']

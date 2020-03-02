@@ -60,8 +60,6 @@ class ProposalEvaluation(CreateModifyOn):
 
     proposal = models.OneToOneField(Proposal, on_delete=models.PROTECT)
 
-    final_mark = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(10)])
-
     allocated_budget = models.DecimalField(help_text='Allocated budget', decimal_places=2, max_digits=10,
                                            validators=[MinValueValidator(0)], blank=True, null=True)
 
@@ -73,7 +71,7 @@ class ProposalEvaluation(CreateModifyOn):
     history = HistoricalRecords()
 
     def __str__(self):
-        return f'{self.proposal} Mark: {self.final_mark} Recommendation: {self.panel_recommendation}-{self.board_decision}'
+        return f'{self.proposal} Recommendation: {self.panel_recommendation}-{self.board_decision}'
 
 
 class CallEvaluation(CreateModifyOn):
