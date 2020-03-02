@@ -34,14 +34,14 @@ class Reviewer(models.Model):
 
 
 class ProposalEvaluation(CreateModifyOn):
-    PANEL_RECOMENDATION_FUND = 'Fund'
-    PANEL_RECOMENDATION_RESERVE = 'Reserve'
-    PANEL_RECOMENDATION_DO_NOT_FUND = 'NotFund'
+    PANEL_RECOMMENDATION_FUND = 'Fund'
+    PANEL_RECOMMENDATION_RESERVE = 'Reserve'
+    PANEL_RECOMMENDATION_DO_NOT_FUND = 'NotFund'
 
-    PANEL_RECOMENDATION = (
-        (PANEL_RECOMENDATION_FUND, 'Fund'),
-        (PANEL_RECOMENDATION_RESERVE, 'Reserve'),
-        (PANEL_RECOMENDATION_DO_NOT_FUND, 'Do not fund'),
+    PANEL_RECOMMENDATION = (
+        (PANEL_RECOMMENDATION_FUND, 'Fund'),
+        (PANEL_RECOMMENDATION_RESERVE, 'Reserve'),
+        (PANEL_RECOMMENDATION_DO_NOT_FUND, 'Do not fund'),
     )
 
     BOARD_DECISION_FUND = 'Fund'
@@ -67,7 +67,7 @@ class ProposalEvaluation(CreateModifyOn):
 
     panel_remarks = models.TextField(blank=True, null=True)
     feedback_to_applicant = models.TextField(blank=True, null=True)
-    panel_recommendation = models.CharField(choices=PANEL_RECOMENDATION, max_length=7)
+    panel_recommendation = models.CharField(choices=PANEL_RECOMMENDATION, max_length=7)
     board_decision = models.CharField(choices=BOARD_DECISION, max_length=7)
     decision_date = models.DateField(blank=True, null=True)
     history = HistoricalRecords()
