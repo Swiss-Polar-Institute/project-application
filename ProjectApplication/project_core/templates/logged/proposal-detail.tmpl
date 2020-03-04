@@ -19,7 +19,11 @@
             <div class="col-2">
                 {% if request|request_is_management %}
                     <p>
-                        {% include 'evaluation/_eligibility_decision-form.tmpl' %}
+                        {% if proposal.can_eligibility_be_changed %}
+                            {% include 'evaluation/_eligibility_decision-form.tmpl' %}
+                        {% else %}
+                            <div class="border p-1 bg-white rounded">{{ proposal.reason_eligibility_cannot_be_changed }}</div>
+                        {% endif %}
                     </p>
                     {% if proposal.can_be_evaluated %}
                         <a class="btn btn-primary"

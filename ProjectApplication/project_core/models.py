@@ -723,6 +723,14 @@ class Proposal(CreateModifyOn):
         from comments.models import ProposalComment
         return ProposalComment
 
+    def can_eligibility_be_changed(self):
+        return self.status_is_submitted()
+
+    def reason_eligibility_cannot_be_changed(self):
+        if not self.status_is_submitted():
+            return 'Proposal status needs to be submitted in order to choose eligibility'
+
+        assert False
 
     class Meta:
         unique_together = (('title', 'applicant', 'call'),)
