@@ -13,6 +13,14 @@
                       action="{{ call_evaluation_form.helper.form_action }}">
                     {% crispy call_evaluation_form %}
                     {% include 'common/_submit-button.tmpl' with value="Save Call Evaluation" %}
+                    {% if call.callevaluation %}
+                        <a class="btn btn-danger"
+                           href="{% url 'logged-call-evaluation-detail' id=call.callevaluation.id %}">Cancel
+                            Edit</a>
+                    {% else %}
+                        <a class="btn btn-danger"
+                           href="{% url 'logged-call-evaluation-add' %}?call={{ call.id }}">Cancel Edit</a>
+                    {% endif %}
                 </form>
             </div>
             <div class="col-2">
