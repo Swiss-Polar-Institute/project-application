@@ -24,6 +24,11 @@ class CallsList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['view_button'] = True
+        context['edit_button'] = True
+        context['proposal_list_button'] = True
+        context['evaluation_spreadsheet_button'] = False
+
         context['open_calls'] = Call.open_calls()
         context['closed_calls'] = Call.closed_calls()
         context['future_calls'] = Call.future_calls()

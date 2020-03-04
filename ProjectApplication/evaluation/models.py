@@ -1,8 +1,11 @@
+import os
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.db import models
 from simple_history.models import HistoricalRecords
+from storages.backends.s3boto3 import S3Boto3Storage
 
 from ProjectApplication import settings
 from project_core.models import Call, Proposal, CreateModifyOn
@@ -74,9 +77,24 @@ class ProposalEvaluation(CreateModifyOn):
         return f'{self.proposal} Recommendation: {self.panel_recommendation}-{self.board_decision}'
 
 
+def call_evaluation_sheet_rename(instance, filename):
+    upload_to = 'call_evaluation'
+
+    filename = f'{instance.call.id}-{filename}'
+
+    return os.path.join(upload_to, filename)
+
+
 class CallEvaluation(CreateModifyOn):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.OneToOneField(Call, on_delete=models.PROTECT)
 
     panel_date = models.DateField()
+
+    evaluation_sheet = models.FileField(storage=S3Boto3Storage(),
+                                        upload_to=call_evaluation_sheet_rename,
+                                        blank=True, null=True)
+
+    def __str__(self):
+        return f'CallEvaluation {self.id} for call: {self.call.id}'

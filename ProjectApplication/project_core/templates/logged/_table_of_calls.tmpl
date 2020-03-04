@@ -22,13 +22,31 @@
             <td>{{ call.number_of_proposals }}</td>
             <td>{% include 'common/_date_time.tmpl' with value=call.submission_deadline %}</td>
             <td>
-                <a class="btn btn-primary btn-xs" href="{% url 'logged-call-update' id=call.id %}">Edit</a>
-                <a class="btn btn-primary btn-xs" href="{% url 'logged-call-detail' id=call.id %}">View</a>
-                <a class="btn btn-primary btn-xs" href="{% url 'logged-proposals-list' %}?call={{ call.pk }}">List
-                    Proposals</a>
-                {% if call.number_of_proposals > 0 %}
-                    <a class="btn btn-primary btn-xs"
-                       href="{% url 'logged-export-proposals-for-call-excel' call=call.pk %}">Excel evaluation</a>
+                {% if view_button %}
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-detail' id=call.id %}">View</a>
+                {% endif %}
+                {% if edit_button %}
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-update' id=call.id %}">Edit</a>
+                {% endif %}
+                {% if proposal_list_button %}
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-proposals-list' %}?call={{ call.pk }}">List
+                        Proposals</a>
+                {% endif %}
+                {% if evaluate_button %}
+                    {% if call.callevaluation %}
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'logged-call-evaluation-update' id=call.callevaluation.id %}">Edit call evaluation</a>
+                    {% else %}
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'logged-call-evaluation-add' %}?call={{ call.pk }}">Create call
+                            evaluation</a>
+                    {% endif %}
+                {% endif %}
+                {% if evaluation_spreadsheet_button %}
+                    {% if call.number_of_proposals > 0 %}
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'logged-export-proposals-for-call-excel' call=call.pk %}">Excel evaluation</a>
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>

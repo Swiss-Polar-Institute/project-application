@@ -65,8 +65,8 @@ class ProposalEvaluationForm(forms.ModelForm):
         )
 
     def clean(self):
+        super().clean()
         # TODO: Check proposal is eligible - else this should not be displayed anyway
-        pass
 
     def save(self, *args, **kwargs):
         user = kwargs.pop('user')

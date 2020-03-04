@@ -2,7 +2,7 @@ from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
 from project_core.admin import SimpleHistoryAdminFieldChanges
-from .models import Reviewer, ProposalEvaluation
+from .models import Reviewer, ProposalEvaluation, CallEvaluation
 
 
 class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
@@ -21,5 +21,10 @@ class ReviewerAdmin(admin.ModelAdmin):
         return ', '.join([str(call) for call in obj.calls.all()])
 
 
+class CallEvaluationAdmin(admin.ModelAdmin):
+    list_display = ('call', 'panel_date', 'evaluation_sheet')
+
+
 admin.site.register(Reviewer, ReviewerAdmin)
 admin.site.register(ProposalEvaluation, ProposalEvaluationAdmin)
+admin.site.register(CallEvaluation, CallEvaluationAdmin)

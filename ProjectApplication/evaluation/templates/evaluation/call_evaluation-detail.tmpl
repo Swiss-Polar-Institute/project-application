@@ -1,0 +1,28 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load filename_from_path %}
+{% load crispy_forms_tags %}
+{% block subtitle %}Call Evaluation{% endblock %}
+
+{% block contents %}
+    <div class="container-fluid">
+        <br>
+        {% include 'common/_messages-box.tmpl' %}
+        <div class="row">
+            <div class="col-10">
+                <h1>Call Evaluation for: {{ call_evaluation.call.long_name }}</h1>
+                <br>
+                <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
+
+                <strong>Evaluation sheet:</strong> {% if call_evaluation.evaluation_sheet %}<a
+                    href="{{ call_evaluation.evaluation_sheet.url }}">{{ call_evaluation.evaluation_sheet.file.name|filename_from_path }}</a>
+                {% else %}
+                    -
+                {% endif %}
+            </div>
+            <div class="col-2">
+                <a class="btn btn-primary d-print-none"
+                   href="{% url 'logged-call-evaluation-update' id=call_evaluation.id %}">Edit Evaluation</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

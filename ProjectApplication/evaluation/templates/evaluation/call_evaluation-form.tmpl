@@ -1,0 +1,26 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+{% block subtitle %}Call Evaluation{% endblock %}
+
+{% block contents %}
+    <div class="container-fluid">
+        <br>
+        {% include 'common/_messages-box.tmpl' %}
+        <div class="row">
+            <div class="col-10">
+                <h1>Call evaluation for: {{ call.long_name }}</h1>
+                <form method="post" enctype="multipart/form-data"
+                      action="{{ call_evaluation_form.helper.form_action }}">
+                    {% crispy call_evaluation_form %}
+                    {% include 'common/_submit-button.tmpl' with value="Save Call Evaluation" %}
+                </form>
+            </div>
+            <div class="col-2">
+                {% if call.callevaluation %}
+                    <a class="btn btn-primary d-print-none"
+                       href="{% url 'logged-call-evaluation-detail' id=call.callevaluation.id %}">View Evaluation</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
