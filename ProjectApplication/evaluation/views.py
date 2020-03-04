@@ -5,9 +5,10 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from ProjectApplication import settings
+from comments.utils import add_comment_attachment_forms, process_comment_attachment
 from evaluation.forms.call_evaluation import CallEvaluationForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
-from evaluation.models import CallEvaluation
+from evaluation.models import CallEvaluation, ProposalEvaluation
 from project_core.models import Proposal, Call
 from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
@@ -31,8 +32,14 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
         if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
             raise PermissionDenied()
 
-        context = self.prepare_context(request, *args, **kwargs)
-        update_context(context, kwargs['uuid'])
+        proposal_evaluation_id = kwargs['id']
+        proposal_evaluation = ProposalEvaluation.objects.get(id=proposal_evaluation_id)
+        proposal_id = proposal_evaluation.proposal.id
+
+        context = self.prepare_context(request, *args, **{'id': proposal_id})
+        update_context(context, proposal_evaluation.proposal.uuid)
+
+        add_comment_attachment_forms(context, 'logged-proposal-evaluation-comment-add', proposal_evaluation)
 
         return render(request, 'logged/proposal-detail-evaluation-detail.tmpl', context)
 
@@ -74,7 +81,8 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
 
         proposal = Proposal.objects.get(uuid=kwargs['uuid'])
 
-        proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES, prefix=ProposalEvaluationForm.FORM_NAME,
+        proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES,
+                                                          prefix=ProposalEvaluationForm.FORM_NAME,
                                                           proposal=proposal)
 
         if proposal_evaluation_form.is_valid():
@@ -162,3 +170,23 @@ class CallEvaluationDetail(TemplateView):
         context['call_evaluation'] = CallEvaluation.objects.get(id=kwargs['id'])
 
         return render(request, 'evaluation/call_evaluation-detail.tmpl', context)
+
+
+class ProposalCommentAdd(TemplateView):
+    def post(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'logged/_sidebar-evaluation.tmpl'})
+
+        proposal_evaluation = ProposalEvaluation.objects.get(id=kwargs['id'])
+
+        # context['proposal'] = proposal_evaluation.proposal
+
+        result = process_comment_attachment(request, context, 'logged-proposal-evaluation-detail',
+                                            'logged-proposal-evaluation-comment-add',
+                                            'logged/proposal-evaluation-detail.tmpl',
+                                            proposal_evaluation)
+
+        return result

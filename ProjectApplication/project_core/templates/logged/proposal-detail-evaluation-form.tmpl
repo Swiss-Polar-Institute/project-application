@@ -21,6 +21,10 @@
                 <br>
             </div>
             <div class="col-2">
+                <p>
+                    <a class="btn btn-primary" href="{% url 'logged-proposal-evaluation-detail' uuid=proposal.uuid %}"
+                       role="button">View&nbsp;Evaluation</a>
+                </p>
                 <a class="btn btn-primary" href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}"
                    role="button">View&nbsp;Proposal</a>
             </div>

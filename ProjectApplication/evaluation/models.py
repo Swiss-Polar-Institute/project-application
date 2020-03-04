@@ -76,6 +76,22 @@ class ProposalEvaluation(CreateModifyOn):
     def __str__(self):
         return f'{self.proposal} Recommendation: {self.panel_recommendation}-{self.board_decision}'
 
+    @staticmethod
+    def comment_object():
+        from comments.models import ProposalEvaluationComment
+        return ProposalEvaluationComment
+
+    @staticmethod
+    def attachment_object():
+        from comments.models import ProposalEvaluationAttachment
+        return ProposalEvaluationAttachment
+
+    def attachments(self):
+        return self.proposalevaluationattachment_set.all().order_by('created_on')
+
+    def comments(self):
+        return self.proposalevaluationcomment_set.all().order_by('created_on')
+
 
 def call_evaluation_sheet_rename(instance, filename):
     upload_to = 'call_evaluation'

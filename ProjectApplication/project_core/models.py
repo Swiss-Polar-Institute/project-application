@@ -723,6 +723,7 @@ class Proposal(CreateModifyOn):
         from comments.models import ProposalComment
         return ProposalComment
 
+
     class Meta:
         unique_together = (('title', 'applicant', 'call'),)
 
