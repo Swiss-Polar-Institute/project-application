@@ -7,15 +7,17 @@ from comments.forms.comment import CommentForm
 
 
 def add_comment_attachment_forms(context, submit_viewname, parent):
-    context[CommentForm.FORM_NAME] = CommentForm(form_action=reverse(submit_viewname,
-                                                                     kwargs={'id': parent.id}),
-                                                 category_queryset=parent.comment_object().category_queryset(),
-                                                 prefix=CommentForm.FORM_NAME)
+    if parent.comment_object():
+        context[CommentForm.FORM_NAME] = CommentForm(form_action=reverse(submit_viewname,
+                                                                         kwargs={'id': parent.id}),
+                                                     category_queryset=parent.comment_object().category_queryset(),
+                                                     prefix=CommentForm.FORM_NAME)
 
-    context[AttachmentForm.FORM_NAME] = AttachmentForm(form_action=reverse(submit_viewname,
-                                                                           kwargs={'id': parent.id}),
-                                                       category_queryset=parent.attachment_object().category_queryset(),
-                                                       prefix=AttachmentForm.FORM_NAME)
+    if parent.attachment_object():
+        context[AttachmentForm.FORM_NAME] = AttachmentForm(form_action=reverse(submit_viewname,
+                                                                               kwargs={'id': parent.id}),
+                                                           category_queryset=parent.attachment_object().category_queryset(),
+                                                           prefix=AttachmentForm.FORM_NAME)
 
     context['comments'] = parent.comments()
 
@@ -29,10 +31,12 @@ def process_comment_attachment(request, context, submit_viewname, submit_viewnam
                                                                               kwargs={'id': parent.id}),
                                             prefix=CommentForm.FORM_NAME,
                                             category_queryset=parent.comment_object().category_queryset())
-        proposal_attachment_form = AttachmentForm(form_action=reverse(submit_viewname,
-                                                                      kwargs={'id': parent.id}),
-                                                  category_queryset=parent.attachment_object().category_queryset(),
-                                                  prefix=AttachmentForm.FORM_NAME)
+
+        if parent.attachment_object():
+            proposal_attachment_form = AttachmentForm(form_action=reverse(submit_viewname,
+                                                                          kwargs={'id': parent.id}),
+                                                      category_queryset=parent.attachment_object().category_queryset(),
+                                                      prefix=AttachmentForm.FORM_NAME)
 
         if proposal_comment_form.is_valid():
             proposal_comment_form.save(parent, request.user)

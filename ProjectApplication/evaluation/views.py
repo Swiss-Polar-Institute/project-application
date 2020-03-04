@@ -174,9 +174,30 @@ class CallEvaluationDetail(TemplateView):
         context['active_subsection'] = 'evaluation-list'
         context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
 
-        context['call_evaluation'] = CallEvaluation.objects.get(id=kwargs['id'])
+        call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
+        context['call_evaluation'] = call_evaluation
+
+        add_comment_attachment_forms(context, 'logged-call-evaluation-comment-add', call_evaluation)
 
         return render(request, 'evaluation/call_evaluation-detail.tmpl', context)
+
+
+class CallCommentAdd(TemplateView):
+    def post(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'logged/_sidebar-evaluation.tmpl'})
+
+        call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
+
+        result = process_comment_attachment(request, context, 'logged-call-evaluation-detail',
+                                            'logged-proposal-call-comment-add',
+                                            'logged/call-evaluation-detail.tmpl',
+                                            call_evaluation)
+
+        return result
 
 
 class ProposalCommentAdd(TemplateView):
@@ -188,8 +209,6 @@ class ProposalCommentAdd(TemplateView):
                         'sidebar_template': 'logged/_sidebar-evaluation.tmpl'})
 
         proposal_evaluation = ProposalEvaluation.objects.get(id=kwargs['id'])
-
-        # context['proposal'] = proposal_evaluation.proposal
 
         result = process_comment_attachment(request, context, 'logged-proposal-evaluation-detail',
                                             'logged-proposal-evaluation-comment-add',

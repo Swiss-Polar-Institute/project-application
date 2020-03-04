@@ -112,5 +112,20 @@ class CallEvaluation(CreateModifyOn):
                                         upload_to=call_evaluation_sheet_rename,
                                         blank=True, null=True)
 
+    @staticmethod
+    def comment_object():
+        from comments.models import CallEvaluationComment
+        return CallEvaluationComment
+
+    @staticmethod
+    def attachment_object():
+        return None
+
+    def comments(self):
+        return self.callevaluationcomment_set.all().order_by('created_on')
+
+    def attachments(self):
+        return None
+
     def __str__(self):
         return f'CallEvaluation {self.id} for call: {self.call.id}'

@@ -62,6 +62,15 @@ class ProposalEvaluationCommentAdmin(admin.ModelAdmin):
     ordering = ('proposal_evaluation', 'text', 'created_on')
 
 
+class CallEvaluationCommentCategoryAdmin(admin.ModelAdmin):
+    list_display = ('category', 'created_on',)
+
+
+class CallEvaluationCommentAdmin(admin.ModelAdmin):
+    list_display = ('call_evaluation', 'text', 'created_on')
+    ordering = ('call_evaluation', 'text', 'created_on')
+
+
 admin.site.register(comments.models.Category, CategoryAdmin)
 
 admin.site.register(comments.models.ProposalCommentCategory, ProposalCommentCategoryAdmin)
@@ -74,8 +83,10 @@ admin.site.register(comments.models.CallComment, CallCommentAdmin)
 admin.site.register(comments.models.CallAttachmentCategory, CallAttachmentCategoryAdmin)
 admin.site.register(comments.models.CallAttachment, CallAttachmentAdmin)
 
-
 admin.site.register(comments.models.ProposalEvaluationCommentCategory, ProposalEvaluationCommentCategoryAdmin)
 admin.site.register(comments.models.ProposalEvaluationComment, ProposalEvaluationCommentAdmin)
 admin.site.register(comments.models.ProposalEvaluationAttachmentCategory, ProposalEvaluationAttachmentCategoryAdmin)
 admin.site.register(comments.models.ProposalEvaluationAttachment, ProposalEvaluationAttachmentAdmin)
+
+admin.site.register(comments.models.CallEvaluationCommentCategory, CallEvaluationCommentCategoryAdmin)
+admin.site.register(comments.models.CallEvaluationComment, CallEvaluationCommentAdmin)
