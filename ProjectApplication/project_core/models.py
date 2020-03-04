@@ -710,6 +710,9 @@ class Proposal(CreateModifyOn):
     def comments(self):
         return self.proposalcomment_set.all().order_by('created_on')
 
+    def can_be_evaluated(self):
+        return self.is_eligible() and self.call.callevaluation
+
     @staticmethod
     def attachment_object():
         from comments.models import ProposalAttachment
