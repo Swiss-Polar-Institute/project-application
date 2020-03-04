@@ -732,6 +732,15 @@ class Proposal(CreateModifyOn):
 
         assert False
 
+    def can_create_evaluation(self):
+        return self.status_is_submitted() and self.call.callevaluation
+
+    def reason_cannot_create_evaluation(self):
+        if not self.status_is_submitted():
+            return 'Proposal status needs to be submitted'
+        elif not self.call.callevaluation:
+            return 'Call Evaluation needs to be created'
+
     class Meta:
         unique_together = (('title', 'applicant', 'call'),)
 

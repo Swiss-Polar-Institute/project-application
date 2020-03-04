@@ -138,6 +138,8 @@ class ProposalDetailView(AbstractProposalDetailView):
         elif 'uuid' in kwargs:
             # The normal proposal view from admin for example
             proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+        else:
+            assert False
 
         context = self.prepare_context(request, *args, **kwargs)
 

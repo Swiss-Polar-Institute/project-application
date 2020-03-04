@@ -26,9 +26,15 @@
                         {% endif %}
                     </p>
                     {% if proposal.can_be_evaluated %}
-                        <a class="btn btn-primary"
-                           href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
-                           role="button">View Evaluation</a>
+                        {% if proposal.proposalevaluation %}
+                            <a class="btn btn-primary"
+                               href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
+                               role="button">View Evaluation</a>
+                        {% else %}
+                            <a class="btn btn-primary"
+                               href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
+                               role="button">Create Evaluation</a>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </div>

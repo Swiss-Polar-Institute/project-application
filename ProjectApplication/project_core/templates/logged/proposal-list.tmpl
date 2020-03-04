@@ -53,9 +53,13 @@
                                    href="{% url 'logged-proposal-evaluation-update' id=proposal.proposalevaluation.id %}">Edit
                                     Evaluation</a>
                             {% else %}
-                                <a class="btn btn-primary btn-xs"
-                                   href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}">Create
-                                    Evaluation</a>
+                                {% if proposal.can_create_evaluation %}
+                                    <a class="btn btn-primary btn-xs"
+                                       href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}">Create
+                                        Evaluation</a>
+                                {% else %}
+                                    <!-- TODO <div class="border p-1 bg-white rounded">{{ proposal.reason_cannot_create_evaluation }}</div> -->
+                                {% endif %}
                             {% endif %}
                         {% endif %}
                     </td>
