@@ -3,6 +3,6 @@
 <form method="post" action="{{ proposal_evaluation_form.helper.form_action }}">
     {% crispy proposal_evaluation_form %}
     {% include 'common/_submit-button.tmpl' with value="Save Evaluation" %}
-    <a class="btn btn-danger" href="{% url 'logged-proposal-evaluation-detail' uuid=proposal.uuid %}"
+    <a class="btn btn-danger" href="{% url 'logged-proposal-evaluation-detail' id=proposal.id %}"
        role="button">Cancel Edit</a>
 </form>

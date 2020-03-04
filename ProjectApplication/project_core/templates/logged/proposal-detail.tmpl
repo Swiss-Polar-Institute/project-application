@@ -23,7 +23,7 @@
                     </p>
                     {% if proposal.can_be_evaluated %}
                         <a class="btn btn-primary"
-                           href="{% url 'logged-proposal-evaluation-detail' uuid=proposal.uuid %}"
+                           href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
                            role="button">View Evaluation</a>
                     {% endif %}
                 {% endif %}

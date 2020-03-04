@@ -5,6 +5,7 @@
 
 {% block contents %}
     <div class="container-fluid">
+        <br>
         {% include 'common/_messages-box.tmpl' %}
 
         <br>
@@ -22,8 +23,11 @@
             </div>
             <div class="col-2">
                 <p>
-                    <a class="btn btn-primary" href="{% url 'logged-proposal-evaluation-detail' uuid=proposal.uuid %}"
-                       role="button">View&nbsp;Evaluation</a>
+                    {% if proposal.proposalevaluation %}
+                        <a class="btn btn-primary"
+                           href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
+                           role="button">View&nbsp;Evaluation</a>
+                    {% endif %}
                 </p>
                 <a class="btn btn-primary" href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}"
                    role="button">View&nbsp;Proposal</a>

@@ -48,8 +48,15 @@
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}">View</a>
                         {% if proposal.can_be_evaluated and request|request_is_management %}
-                            <a class="btn btn-primary btn-xs"
-                               href="{% url 'logged-proposal-evaluation-update'  uuid=proposal.uuid %}">Evaluate</a>
+                            {% if proposal.proposalevaluation %}
+                                <a class="btn btn-primary btn-xs"
+                                   href="{% url 'logged-proposal-evaluation-update' id=proposal.proposalevaluation.id %}">Edit
+                                    Evaluation</a>
+                            {% else %}
+                                <a class="btn btn-primary btn-xs"
+                                   href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}">Create
+                                    Evaluation</a>
+                            {% endif %}
                         {% endif %}
                     </td>
                 </tr>

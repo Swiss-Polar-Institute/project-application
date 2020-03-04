@@ -14,9 +14,7 @@ from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 
 
-def update_context(context, proposal_uuid):
-    proposal = Proposal.objects.get(uuid=proposal_uuid)
-
+def add_proposal_evaluation_form(context, proposal):
     proposal_evaluation_form = ProposalEvaluationForm(prefix=ProposalEvaluationForm.FORM_NAME,
                                                       proposal=proposal)
 
@@ -34,10 +32,9 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
 
         proposal_evaluation_id = kwargs['id']
         proposal_evaluation = ProposalEvaluation.objects.get(id=proposal_evaluation_id)
-        proposal_id = proposal_evaluation.proposal.id
 
-        context = self.prepare_context(request, *args, **{'id': proposal_id})
-        update_context(context, proposal_evaluation.proposal.uuid)
+        context = self.prepare_context(request, *args, **{'id': proposal_evaluation.proposal.id})
+        add_proposal_evaluation_form(context, proposal_evaluation.proposal)
 
         add_comment_attachment_forms(context, 'logged-proposal-evaluation-comment-add', proposal_evaluation)
 
@@ -68,8 +65,18 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
         if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
             raise PermissionDenied()
 
-        context = self.prepare_context(request, *args, **kwargs)
-        update_context(context, kwargs['uuid'])
+        if 'id' in kwargs:
+            proposal_evaluation = ProposalEvaluation.objects.get(id=kwargs['id'])
+            proposal = proposal_evaluation.proposal
+        elif 'proposal' in request.GET:
+            proposal_id = request.GET['proposal']
+            proposal = Proposal.objects.get(id=proposal_id)
+        else:
+            assert False
+
+        context = self.prepare_context(request, *args, **{'id': proposal.id})
+
+        add_proposal_evaluation_form(context, proposal)
 
         return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
@@ -79,7 +86,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
 
         context = self.prepare_context(request, *args, **kwargs)
 
-        proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+        proposal = Proposal.objects.get(id=kwargs['id'])
 
         proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES,
                                                           prefix=ProposalEvaluationForm.FORM_NAME,
@@ -89,7 +96,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
             proposal_evaluation_form.save(user=request.user)
 
             messages.success(request, 'Evaluation saved')
-            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'uuid': proposal.uuid}))
+            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'id': proposal.proposalevaluation.id}))
         else:
             messages.warning(request, 'Evaluation not saved. Verify errors in the form')
             context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
