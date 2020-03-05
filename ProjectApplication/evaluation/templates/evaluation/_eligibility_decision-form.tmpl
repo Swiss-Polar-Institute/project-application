@@ -6,12 +6,7 @@
     <button id="edit_button" type="button" class="btn btn-primary">Edit Eligibility</button>
 </div>
 <div id="eligibility_form" style="display:none">
-    <form method="post" action="{{ eligibility_decision_form.helper.form_action }}">
-        {% crispy eligibility_decision_form %}
-        <p>{% include 'common/_submit-button.tmpl' with value="Save Eligibility" %}</p>
-        <a class="btn btn-danger" href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}"
-           role="button">Cancel Edit</a>
-    </form>
+    {% crispy eligibility_decision_form %}
 </div>
 <br>
 

@@ -1,10 +1,12 @@
+from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
+from crispy_forms.layout import Layout, Div, Submit, HTML
 from django import forms
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
 from ProjectApplication import settings
+from project_core.forms.utils import cancel_edit_button
 from project_core.models import Proposal
 from project_core.utils import user_is_in_group_name
 
@@ -33,7 +35,6 @@ class EligibilityDecisionForm(forms.Form):
         self.fields['comment'].initial = proposal.eligibility_comment
 
         self.helper = FormHelper(self)
-        self.helper.form_tag = False
         self.helper.form_id = 'eligibility_form'
         self.helper.form_action = reverse('logged-proposal-eligibility-update', kwargs={'uuid': self._proposal_uuid})
 
@@ -43,6 +44,11 @@ class EligibilityDecisionForm(forms.Form):
             ),
             Div(
                 Div('comment')
+            ),
+            FormActions(
+                Submit('save', 'Save Evaluation'),
+                HTML('<p></p>'),
+                cancel_edit_button(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
             )
         )
 
