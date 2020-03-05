@@ -8,20 +8,8 @@
         {% include 'common/_messages-box.tmpl' %}
         <div class="row">
             <div class="col-10">
-                <h1>Call evaluation for: {{ call.long_name }}</h1>
-                <form method="post" enctype="multipart/form-data"
-                      action="{{ call_evaluation_form.helper.form_action }}">
-                    {% crispy call_evaluation_form %}
-                    {% include 'common/_submit-button.tmpl' with value="Save Call Evaluation" %}
-                    {% if call.callevaluation %}
-                        <a class="btn btn-danger"
-                           href="{% url 'logged-call-evaluation-detail' id=call.callevaluation.id %}">Cancel
-                            Edit</a>
-                    {% else %}
-                        <a class="btn btn-danger"
-                           href="{% url 'logged-call-evaluation-add' %}?call={{ call.id }}">Cancel Edit</a>
-                    {% endif %}
-                </form>
+                <h1>Call Evaluation for: {{ call.long_name }}</h1>
+                {% crispy call_evaluation_form %}
             </div>
             <div class="col-2">
                 {% if call.callevaluation %}

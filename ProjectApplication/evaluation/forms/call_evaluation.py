@@ -1,10 +1,12 @@
+from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
+from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 from django.urls import reverse
 
 from ProjectApplication import settings
 from evaluation.models import CallEvaluation
+from project_core.forms.utils import cancel_edit_button
 from project_core.utils import user_is_in_group_name
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
@@ -17,16 +19,20 @@ class CallEvaluationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper(self)
-        self.helper.form_tag = False
 
         if self.instance.id:
             self.helper.form_action = reverse('logged-call-evaluation-update', kwargs={'id': self.instance.id})
-            self.fields['call'].initial = self.instance.call
+            self.fields['call'].initial = call = self.instance.call
         else:
             self.helper.form_action = reverse('logged-call-evaluation-add')+f'?call={call.id}'
             self.fields['call'].initial = call
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['panel_date'])
+
+        if hasattr(call, 'callevaluation'):
+            cancel_edit_url = reverse('logged-call-evaluation-detail', kwargs={'id': call.callevaluation.id})
+        else:
+            cancel_edit_url = reverse('logged-call-evaluation-add') + f'?call={call.id}'
 
         self.helper.layout = Layout(
             Div(
@@ -40,6 +46,10 @@ class CallEvaluationForm(forms.ModelForm):
             Div(
                 Div('evaluation_sheet', css_class='col-12'),
                 css_class='row'
+            ),
+            FormActions(
+                Submit('save', 'Save Call Evaluation'),
+                cancel_edit_button(cancel_edit_url)
             )
         )
 
