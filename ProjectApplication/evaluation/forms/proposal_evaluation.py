@@ -1,11 +1,13 @@
+from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div
+from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.urls import reverse
 from django.utils.formats import number_format
 
 from ProjectApplication import settings
+from project_core.forms.utils import cancel_edit_button
 from project_core.utils import user_is_in_group_name
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from ..models import ProposalEvaluation
@@ -29,7 +31,6 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
         self.helper.form_action = reverse('logged-proposal-evaluation-update', kwargs={'id': self._proposal.id})
-        self.helper.form_tag = False
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
         self.fields['proposal'].initial = self._proposal
@@ -38,6 +39,12 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.fields['allocated_budget'] = forms.DecimalField(localize=True)
         self.fields['allocated_budget'].help_text = f'Requested: {requested_budget} CHF'
         self.fields['allocated_budget'].label = 'Allocated budget (CHF)'
+
+        if hasattr(self._proposal, 'proposalevaluation'):
+            cancel_button_url = reverse('logged-proposal-evaluation-detail',
+                                        kwargs={'id': self._proposal.proposalevaluation.id})
+        else:
+            cancel_button_url = reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}'
 
         self.helper.layout = Layout(
             Div(
@@ -66,6 +73,10 @@ class ProposalEvaluationForm(forms.ModelForm):
                 Div('decision_date', css_class='col-4'),
                 css_class='row'
             ),
+            FormActions(
+                Submit('save', 'Save Evaluation'),
+                cancel_edit_button(cancel_button_url)
+            )
         )
 
     def clean(self):

@@ -1,3 +1,4 @@
+from crispy_forms.layout import HTML
 from dal import autocomplete
 from django import forms
 from django.forms import ModelChoiceField, ModelMultipleChoiceField
@@ -70,3 +71,7 @@ def organisations_name_autocomplete(initial, help_text):
                                                initial=initial,
                                                help_text=help_text + ' If they are not available type the name and click on "Create".',
                                                label='Organisation(s)', )
+
+
+def cancel_edit_button(url):
+    return HTML(f'<a class="btn btn-danger" href="{url}">Cancel Edit</a>')

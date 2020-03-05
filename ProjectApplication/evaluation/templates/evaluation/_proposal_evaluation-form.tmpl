@@ -1,13 +1,3 @@
 {% load crispy_forms_tags %}
 
-<form method="post" enctype="multipart/form-data" action="{{ proposal_evaluation_form.helper.form_action }}">
-    {% crispy proposal_evaluation_form %}
-    {% include 'common/_submit-button.tmpl' with value="Save Evaluation" %}
-    {% if proposal.proposalevaluation %}
-        <a class="btn btn-danger" href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
-           role="button">Cancel Edit</a>
-    {% else %}
-        <a class="btn btn-danger" href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
-           role="button">Cancel Edit</a>
-    {% endif %}
-</form>
+{% crispy proposal_evaluation_form %}

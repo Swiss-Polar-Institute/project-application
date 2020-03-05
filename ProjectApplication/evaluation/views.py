@@ -93,10 +93,10 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
                                                           proposal=proposal)
 
         if proposal_evaluation_form.is_valid():
-            proposal_evaluation_form.save(user=request.user)
+            proposal_evaluation = proposal_evaluation_form.save(user=request.user)
 
             messages.success(request, 'Evaluation saved')
-            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'id': proposal.proposalevaluation.id}))
+            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'id': proposal_evaluation.id}))
         else:
             messages.warning(request, 'Evaluation not saved. Verify errors in the form')
             context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
