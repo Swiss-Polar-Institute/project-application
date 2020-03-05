@@ -1,9 +1,12 @@
+from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Layout, Div, Submit
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
 
+from project_core.forms.utils import cancel_edit_button
 from project_core.models import TemplateQuestion
 
 
@@ -32,7 +35,38 @@ class CrispyNoFormTag:
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.helper = FormHelper()
-        form.helper.form_tag = False
+
+        if form.instance.id:
+            cancel_edit_url = reverse('funding-instrument-detail', kwargs={'pk': form.instance.id})
+        else:
+            cancel_edit_url = reverse('template-question-add')
+
+        form.helper.layout = Layout(
+            Div(
+                Div('question_text', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('question_description', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('answer_type', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('answer_max_length', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('answer_required', css_class='col-12'),
+                css_class='row'
+            ),
+            FormActions(
+                Submit('save', 'Save Template Question'),
+                cancel_edit_button(cancel_edit_url)
+            )
+        )
 
         return form
 
