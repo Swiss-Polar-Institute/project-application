@@ -25,7 +25,7 @@
                             <div class="border p-1 bg-white rounded">{{ proposal.reason_eligibility_cannot_be_changed }}</div>
                         {% endif %}
                     </p>
-                    {% if proposal.can_be_evaluated %}
+                    {% if proposal.can_create_evaluation %}
                         {% if proposal.proposalevaluation %}
                             <a class="btn btn-primary"
                                href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
@@ -35,6 +35,8 @@
                                href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
                                role="button">Create Evaluation</a>
                         {% endif %}
+                    {% else %}
+                        <div class="border p-1 bg-white rounded">{{ proposal.reason_cannot_create_evaluation }}</div>
                     {% endif %}
                 {% endif %}
             </div>

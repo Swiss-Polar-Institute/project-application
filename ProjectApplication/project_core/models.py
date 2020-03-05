@@ -701,7 +701,7 @@ class Proposal(CreateModifyOn):
     def status_is_submitted(self):
         return self.proposal_status.name == settings.PROPOSAL_STATUS_SUBMITTED
 
-    def is_eligible(self):
+    def eligibility_is_eligible(self):
         return self.eligibility == Proposal.ELIGIBLE
 
     def attachments(self):
@@ -709,9 +709,6 @@ class Proposal(CreateModifyOn):
 
     def comments(self):
         return self.proposalcomment_set.all().order_by('created_on')
-
-    def can_be_evaluated(self):
-        return self.is_eligible() and self.call.callevaluation
 
     @staticmethod
     def attachment_object():
@@ -733,13 +730,17 @@ class Proposal(CreateModifyOn):
         assert False
 
     def can_create_evaluation(self):
-        return self.status_is_submitted() and self.call.callevaluation
+        return self.status_is_submitted() and self.eligibility_is_eligible() and self.call.callevaluation
 
     def reason_cannot_create_evaluation(self):
         if not self.status_is_submitted():
-            return 'Proposal status needs to be submitted'
-        elif not self.call.callevaluation:
-            return 'Call Evaluation needs to be created'
+            return 'To evaluate the proposal status needs to be submitted'
+        if not self.eligibility_is_eligible():
+            return 'To evaluate the proposal eligibility needs to be eligible '
+        if not self.call.callevaluation:
+            return 'To evaluate the Call Evaluation needs to be created'
+
+        assert False
 
     class Meta:
         unique_together = (('title', 'applicant', 'call'),)
