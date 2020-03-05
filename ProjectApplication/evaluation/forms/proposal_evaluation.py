@@ -57,6 +57,10 @@ class ProposalEvaluationForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('decision_letter', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div('panel_recommendation', css_class='col-4'),
                 Div('board_decision', css_class='col-4'),
                 Div('decision_date', css_class='col-4'),
@@ -80,8 +84,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         model = ProposalEvaluation
 
         fields = ['proposal', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant',
-                  'panel_recommendation',
-                  'board_decision', 'decision_date']
+                  'panel_recommendation', 'board_decision', 'decision_date', 'decision_letter']
         widgets = {
             'proposal': forms.HiddenInput,
             'decision_date': XDSoftYearMonthDayPickerInput,

@@ -1,6 +1,6 @@
 {% load crispy_forms_tags %}
 
-<form method="post" action="{{ proposal_evaluation_form.helper.form_action }}">
+<form method="post" enctype="multipart/form-data" action="{{ proposal_evaluation_form.helper.form_action }}">
     {% crispy proposal_evaluation_form %}
     {% include 'common/_submit-button.tmpl' with value="Save Evaluation" %}
     {% if proposal.proposalevaluation %}

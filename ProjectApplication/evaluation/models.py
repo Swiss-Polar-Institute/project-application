@@ -1,5 +1,6 @@
 import os
 
+import storages
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MinValueValidator
@@ -34,6 +35,14 @@ class Reviewer(models.Model):
             proposals = proposals.filter(call__in=reviewer.calls.all()).filter(eligibility=Proposal.ELIGIBLE)
 
         return proposals
+
+
+def proposal_evaluation_eligibility_letter_rename(instance, filename):
+    upload_to = 'proposal_evaluation/eligibility_letter'
+
+    filename = f'CallId-{instance.proposal.id}-ProposalId-{instance.proposal.id}-{filename}'
+
+    return os.path.join(upload_to, filename)
 
 
 class ProposalEvaluation(CreateModifyOn):
@@ -71,6 +80,9 @@ class ProposalEvaluation(CreateModifyOn):
     panel_recommendation = models.CharField(choices=PANEL_RECOMMENDATION, max_length=7)
     board_decision = models.CharField(choices=BOARD_DECISION, max_length=7)
     decision_date = models.DateField(blank=True, null=True)
+    decision_letter = models.FileField(storage=storages.backends.s3boto3.S3Boto3Storage(),
+                                       upload_to=proposal_evaluation_eligibility_letter_rename,
+                                       blank=True, null=True)
     history = HistoricalRecords()
 
     def __str__(self):
