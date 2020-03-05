@@ -730,15 +730,15 @@ class Proposal(CreateModifyOn):
         assert False
 
     def can_create_evaluation(self):
-        return self.status_is_submitted() and self.eligibility_is_eligible() and self.call.callevaluation
+        return self.status_is_submitted() and self.eligibility_is_eligible() and hasattr(self.call, 'callevaluation')
 
     def reason_cannot_create_evaluation(self):
         if not self.status_is_submitted():
             return 'To evaluate the proposal status needs to be submitted'
         if not self.eligibility_is_eligible():
-            return 'To evaluate the proposal eligibility needs to be eligible '
-        if not self.call.callevaluation:
-            return 'To evaluate the Call Evaluation needs to be created'
+            return 'To evaluate the proposal eligibility needs to be eligible'
+        if not hasattr(self.call, 'callevaluation'):
+            return 'To evaluate the proposal a Call Evaluation needs to be created'
 
         assert False
 

@@ -8,10 +8,8 @@
         {% include 'common/_messages-box.tmpl' %}
 
         <div class="row">
-            <div class="row-10">
+            <div class="col-10">
                 <h1>{{ call_action }} call</h1>
-
-
                 <form method="post" action="{{ call_action_url }}">
                     {% crispy call_form %}
 
@@ -35,7 +33,9 @@
                 </form>
             </div>
             <div class="col-2">
-
+                {% if id %}
+                    <a class="btn btn-primary" href="{% url 'logged-call-detail' id=id %}">View Call</a>
+                {% endif %}
             </div>
         </div>
     </div>
