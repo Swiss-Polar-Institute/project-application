@@ -37,7 +37,7 @@ class CrispyNoFormTag:
         form.helper = FormHelper()
 
         if form.instance.id:
-            cancel_edit_url = reverse('funding-instrument-detail', kwargs={'pk': form.instance.id})
+            cancel_edit_url = reverse('template-question-detail', kwargs={'pk': form.instance.id})
         else:
             cancel_edit_url = reverse('template-question-add')
 
