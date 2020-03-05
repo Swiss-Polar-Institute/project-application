@@ -58,8 +58,6 @@
                                        href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}">Create
                                         Evaluation</a>
                                 {% endif %}
-                            {% else %}
-                                <div class="border p-1 bg-white rounded">{{ proposal.reason_cannot_create_evaluation }}</div>
                             {% endif %}
                         {% endif %}
                     </td>
