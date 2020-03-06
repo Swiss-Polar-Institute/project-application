@@ -19,25 +19,25 @@
             <div class="col-2">
                 {% if request|request_is_management %}
                     <p>
-                        {% if proposal.can_eligibility_be_changed %}
-                            {% include 'evaluation/_eligibility_decision-form.tmpl' %}
+                        {% if proposal.can_eligibility_be_created_or_changed %}
+                            {% include 'evaluation/_eligibility_decision-form.tmpl' with proposal=proposal %}
                         {% else %}
-                            <div class="border p-1 bg-white rounded">{{ proposal.reason_eligibility_cannot_be_changed }}</div>
+                            <div class="border p-1 bg-white rounded">{{ proposal.reason_eligibility_cannot_be_created_or_changed }}</div>
                         {% endif %}
                     </p>
-                    {% if proposal.can_create_evaluation %}
+                    <p>
                         {% if proposal.proposalevaluation %}
-                            <a class="btn btn-primary"
+                            <a class="btn btn-primary"#}
                                href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
-                               role="button">View Evaluation</a>
-                        {% else %}
+                               role="button">View Proposal Evaluation</a>
+                        {% elif proposal.can_create_evaluation %}
                             <a class="btn btn-primary"
                                href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
-                               role="button">Create Evaluation</a>
+                               role="button">Create Proposal Evaluation</a>
+                        {% else %}
+                            <div class="border p-1 bg-white rounded">{{ proposal.reason_cannot_create_evaluation }}</div>
                         {% endif %}
-                    {% else %}
-                        <div class="border p-1 bg-white rounded">{{ proposal.reason_cannot_create_evaluation }}</div>
-                    {% endif %}
+                    </p>
                 {% endif %}
             </div>
         </div>

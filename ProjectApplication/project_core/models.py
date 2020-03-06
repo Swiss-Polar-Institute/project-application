@@ -720,21 +720,27 @@ class Proposal(CreateModifyOn):
         from comments.models import ProposalComment
         return ProposalComment
 
-    def can_eligibility_be_changed(self):
-        return self.status_is_submitted()
+    def can_eligibility_be_created_or_changed(self):
+        return self.status_is_submitted() and not hasattr(self.call, 'callevaluation')
 
-    def reason_eligibility_cannot_be_changed(self):
+    def reason_eligibility_cannot_be_created_or_changed(self):
         if not self.status_is_submitted():
-            return 'Proposal status needs to be submitted in order to choose eligibility'
+            return 'Proposal status needs to be submitted in order to create/edit eligibility'
+
+        if hasattr(self.call, 'callevaluation'):
+            return 'Call evaluation should not have been done in order to change the eligibility'
 
         assert False
+
+    def can_call_evaluation_be_visualised(self):
+        return hasattr(self.call, 'callevaluation')
 
     def can_create_evaluation(self):
         return self.status_is_submitted() and self.eligibility_is_eligible() and hasattr(self.call, 'callevaluation')
 
     def reason_cannot_create_evaluation(self):
         if not self.status_is_submitted():
-            return 'To evaluate the proposal status needs to be submitted'
+            return 'To evaluate the proposal the status needs to be submitted'
         if not self.eligibility_is_eligible():
             return 'To evaluate the proposal eligibility needs to be eligible'
         if not hasattr(self.call, 'callevaluation'):
