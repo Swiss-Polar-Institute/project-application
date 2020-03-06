@@ -51,7 +51,7 @@
                             {% if proposal.can_create_evaluation %}
                                 {% if proposal.proposalevaluation %}
                                     <a class="btn btn-primary btn-xs"
-                                       href="{% url 'logged-proposal-evaluation-update' id=proposal.proposalevaluation.id %}">Edit
+                                       href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}">View
                                         Evaluation</a>
                                 {% else %}
                                     <a class="btn btn-primary btn-xs"
