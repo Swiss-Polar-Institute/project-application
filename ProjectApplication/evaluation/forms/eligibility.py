@@ -46,7 +46,7 @@ class EligibilityDecisionForm(forms.Form):
                 Div('comment')
             ),
             FormActions(
-                Submit('save', 'Save Evaluation'),
+                Submit('save', 'Save Eligibility'),
                 HTML('<p></p>'),
                 cancel_edit_button(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
             )
