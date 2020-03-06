@@ -1,0 +1,7 @@
+{% load filename_from_path %}
+
+{% if file_field %}<a
+        href="{{ file_field.url }}">{{ file_field.name|filename_from_path }}</a> ({{ file_field.size|filesizeformat }})
+{% else %}
+    -
+{% endif %}

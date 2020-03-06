@@ -83,6 +83,7 @@ class ProposalEvaluation(CreateModifyOn):
     decision_letter = models.FileField(storage=storages.backends.s3boto3.S3Boto3Storage(),
                                        upload_to=proposal_evaluation_eligibility_letter_rename,
                                        blank=True, null=True)
+    decision_letter_date = models.DateField(blank=True, null=True)
     history = HistoricalRecords()
 
     def __str__(self):

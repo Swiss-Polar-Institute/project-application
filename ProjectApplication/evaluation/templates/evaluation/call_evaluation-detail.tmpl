@@ -13,11 +13,8 @@
                 <br>
                 <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
 
-                <strong>Evaluation sheet:</strong> {% if call_evaluation.evaluation_sheet %}<a
-                    href="{{ call_evaluation.evaluation_sheet.url }}">{{ call_evaluation.evaluation_sheet.file.name|filename_from_path }}</a>
-                {% else %}
-                    -
-                {% endif %}
+                <strong>Evaluation
+                    sheet:</strong> {% include 'common/_file_to_download.tmpl' with file_field=call_evaluation.evaluation_sheet %}
                 <p></p>
                 {% include 'comments/_comments-attachments.tmpl' with hide_attachments=True %}
             </div>

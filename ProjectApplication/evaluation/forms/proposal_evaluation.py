@@ -33,6 +33,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.helper.form_action = reverse('logged-proposal-evaluation-update', kwargs={'id': self._proposal.id})
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
+        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_letter_date'])
         self.fields['proposal'].initial = self._proposal
         requested_budget = number_format(self._proposal.total_budget())
 
@@ -64,7 +65,8 @@ class ProposalEvaluationForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('decision_letter', css_class='col-12'),
+                Div('decision_letter', css_class='col-6'),
+                Div('decision_letter_date', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -95,8 +97,10 @@ class ProposalEvaluationForm(forms.ModelForm):
         model = ProposalEvaluation
 
         fields = ['proposal', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant',
-                  'panel_recommendation', 'board_decision', 'decision_date', 'decision_letter']
+                  'panel_recommendation', 'board_decision', 'decision_date', 'decision_letter',
+                  'decision_letter_date']
         widgets = {
             'proposal': forms.HiddenInput,
             'decision_date': XDSoftYearMonthDayPickerInput,
+            'decision_letter_date': XDSoftYearMonthDayPickerInput,
         }

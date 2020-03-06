@@ -3,7 +3,7 @@
 
 {% for attachment in attachments %}
     {% include 'comments/_comment.tmpl' with value=attachment %}
-    <a href="{{ attachment.file.url }}">{{ attachment.file.name|filename_from_path }}</a>
+    {% include 'common/_file_to_download.tmpl' with file_field=attachment.file %}
     <p></p>
 {% endfor %}
 
