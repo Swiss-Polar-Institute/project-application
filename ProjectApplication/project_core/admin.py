@@ -199,7 +199,7 @@ class GeographicalAreaAdmin(admin.ModelAdmin):
 class ProposalAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
                     'end_date', 'duration_months', 'applicant', 'proposal_status', 'eligibility', 'eligibility_comment',
-                    'qas_list', 'call', 'created_on', 'modified_on',
+                    'call', 'created_on', 'modified_on',
                     'draft_saved_mail_sent', 'submitted_mail_sent',)
     ordering = ['title', 'uuid', 'start_date', 'end_date', 'duration_months', 'applicant',
                 'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'created_on',
