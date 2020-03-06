@@ -19,3 +19,4 @@ class ProposalModelTest(TestCase):
         call_evaluation.save()
 
         self.assertTrue(proposal.can_call_evaluation_be_visualised())
+
