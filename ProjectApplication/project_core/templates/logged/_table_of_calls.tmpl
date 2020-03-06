@@ -35,7 +35,7 @@
                 {% if evaluate_button %}
                     {% if call.callevaluation %}
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-call-evaluation-update' id=call.callevaluation.id %}">Edit call evaluation</a>
+                           href="{% url 'logged-call-evaluation-detail' id=call.callevaluation.id %}">View call evaluation</a>
                     {% else %}
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-call-evaluation-add' %}?call={{ call.pk }}">Create call
