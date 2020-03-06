@@ -82,8 +82,16 @@ class ProposalEvaluationForm(forms.ModelForm):
         )
 
     def clean(self):
-        super().clean()
-        # TODO: Check proposal is eligible - else this should not be displayed anyway
+        decision_letter_date = self.cleaned_data.get('decision_letter_date', None)
+        decision_letter = self.cleaned_data.get('decision_letter', None)
+
+        if not decision_letter_date and decision_letter:
+            raise forms.ValidationError(
+                {'decision_letter_date': 'Decision letter date cannot be empty if there is a decision letter attached'})
+
+        if not decision_letter and decision_letter_date:
+            raise forms.ValidationError(
+                {'decision_letter': 'Decision letter cannot be empty if decision letter date has a date'})
 
     def save(self, *args, **kwargs):
         user = kwargs.pop('user')
