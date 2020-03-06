@@ -8,10 +8,12 @@
 <br>
 <div class="row">
     <div class="col-6">
-        <strong>Decision letter: </strong> {% include 'common/_file_to_download.tmpl' with file_field=proposal.proposalevaluation.decision_letter %}
+        <strong>Decision
+            letter: </strong> {% include 'common/_file_to_download.tmpl' with file_field=proposal.proposalevaluation.decision_letter %}
     </div>
     <div class="col-6">
-        <strong>Decision letter date:</strong> {{ proposal.proposalevaluation.decision_letter_date }}
+        <strong>Decision letter
+            date:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.decision_letter_date %}
     </div>
 </div>
 <strong>Board decision:</strong> {{ proposal.proposalevaluation.board_decision }}<br>
