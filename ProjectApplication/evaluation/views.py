@@ -35,6 +35,11 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
 
         add_comment_attachment_forms(context, 'logged-proposal-evaluation-comment-add', proposal_evaluation)
 
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                        })
+
         return render(request, 'logged/proposal-detail-evaluation-detail.tmpl', context)
 
 
