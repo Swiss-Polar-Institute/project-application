@@ -1,4 +1,5 @@
 {% load request_is_management %}
+{% load request_is_reviewer %}
 {% load static %}
 
 <nav class="navbar navbar-expand-lg navbar-dark {{ navbarcolor|default_if_none:"bg-primary" }}">
@@ -17,9 +18,6 @@
                     <a class="nav-link" href="{% url 'logged-calls-list' %}">Calls</a>
                 </li>
             {% endif %}
-            <li class="nav-item {% if active == 'proposals' %}active{% endif %}">
-                <a class="nav-link" href="{% url 'logged-proposals-list' %}">Proposals</a>
-            </li>
             {% if request|request_is_management %}
                 <li class="nav-item {% if active == 'evaluation' %}active{% endif %}">
                     <a class="nav-link" href="{% url 'logged-evaluation-list' %}">Evaluation</a>
@@ -27,12 +25,25 @@
             {% endif %}
             {% if request|request_is_management %}
                 <li>
-                    <a class="nav-link disabled" href="#">Projects</a>
+                    <a class="nav-link disabled" href="#">Grant management</a>
+                </li>
+            {% endif %}
+            {% if request|request_is_reviewer %}
+                <li class="nav-item {% if active == 'proposals' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'logged-proposals-list' %}">Proposals</a>
                 </li>
             {% endif %}
             {% if request|request_is_management %}
-                <li class="nav-item {% if active == 'contacts' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'person-position-list' %}">People</a>
+                <li class="nav-item dropdown {% if active == 'lists' %}active{% endif %}">
+                    <a class="nav-link dropdown-toggle" href="#" id="listsDropdown" role="button"
+                       data-toggle="dropdown">
+                        Lists
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'logged-proposals-list' %}">Proposals</a>
+                        <a class="dropdown-item" href="{% url 'person-position-list' %}">People</a>
+                        <a class="dropdown-item disabled" href="#">Projects</a>
+                    </div>
                 </li>
             {% endif %}
         </ul>

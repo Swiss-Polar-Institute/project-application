@@ -13,9 +13,9 @@ class PersonPositionsListView(TemplateView):
 
         context['contacts'] = PersonPosition.objects.filter(privacy_policy=True)
 
-        context['active_section'] = 'contacts'
+        context['active_section'] = 'lists'
         context['active_subsection'] = 'contacts-list'
-        context['sidebar_template'] = 'logged/_sidebar-contacts.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-lists.tmpl'
 
         return render(request, 'logged/contact-list.tmpl', context)
 
@@ -28,9 +28,9 @@ class PersonPositionUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['active_section'] = 'contacts'
+        context['active_section'] = 'lists'
         context['active_subsection'] = 'contacts-list'
-        context['sidebar_template'] = 'logged/_sidebar-contacts.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-lists.tmpl'
 
         return context
 
@@ -47,9 +47,9 @@ class PersonPositionCreateView(SuccessMessageMixin, CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['active_section'] = 'contacts'
+        context['active_section'] = 'lists'
         context['active_subsection'] = 'contacts-add'
-        context['sidebar_template'] = 'logged/_sidebar-contacts.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-lists.tmpl'
 
         return context
 
@@ -64,9 +64,9 @@ class PersonPositionDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['active_section'] = 'contacts'
+        context['active_section'] = 'lists'
         context['active_subsection'] = 'contacts-list'
-        context['sidebar_template'] = 'logged/_sidebar-contacts.tmpl'
+        context['sidebar_template'] = 'logged/_sidebar-lists.tmpl'
 
         return context
 
