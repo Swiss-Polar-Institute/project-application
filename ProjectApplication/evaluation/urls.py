@@ -29,6 +29,9 @@ urlpatterns = [
     path('logged/call-evaluation/<int:id>/',
          evaluation.views.CallEvaluationDetail.as_view(),
          name='logged-call-evaluation-detail'),
+    path('logged/call-evaluation/<int:id>/comment/add/',
+         evaluation.views.CallCommentAdd.as_view(),
+         name='logged-call-evaluation-comment-add'),
 
     path('logged/call-evaluation/<int:call_id>/comment/add/',
          evaluation.views.ProposalList.as_view(),
