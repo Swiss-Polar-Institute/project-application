@@ -47,7 +47,7 @@ class ProposalEvaluationList(TemplateView):
 
         context['calls'] = Call.closed_calls()
 
-        context['view_button'] = True
+        context['view_button'] = False
         context['edit_button'] = False
         context['proposal_list_button'] = True
         context['evaluation_spreadsheet_button'] = True

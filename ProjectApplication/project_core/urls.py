@@ -14,6 +14,7 @@ urlpatterns = [
     path('', external.homepage.Homepage.as_view(), name='homepage'),
     path('admin/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-jsi18n'),
     path('calls/', external.call.CallsList.as_view(), name='calls-list'),
+
     path('proposal/add/', external.proposal.ProposalView.as_view(), name='proposal-add'),
     path('proposal/<uuid:uuid>/update/', external.proposal.ProposalView.as_view(),
          name='proposal-update'),
@@ -46,15 +47,19 @@ urlpatterns = [
          name='logged-export-proposals-csv-summary-call'),
     path('logged/proposals/export/csv/summary/', project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
+
     path('logged/call/list/', logged.call.CallsList.as_view(), name='logged-calls-list'),
     path('logged/call/add/', logged.call.CallView.as_view(), name='logged-call-add'),
     path('logged/call/<int:id>/update/', logged.call.CallView.as_view(),
          name='logged-call-update'),
+    path('logged/call/<int:call_id>/list_proposals/', logged.call.ProposalList.as_view(),
+         name='logged-call-list-proposals'),
     path('logged/call/<int:id>/comment/add/', logged.call.CallCommentAdd.as_view(),
          name='logged-call-comment-add'),
     path('logged/call/<int:id>/', logged.call.CallDetailView.as_view(),
          name='logged-call-detail'),
     path('logged/calls/', logged.call.CallsList.as_view(), name='logged-calls'),
+
     path('logged/', logged.homepage.Homepage.as_view(), name='logged-homepage'),
 
     path('logged/template_question/add/', logged.template_question.TemplateQuestionCreateView.as_view(),

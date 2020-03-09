@@ -4,11 +4,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 
-from comments.forms.attachment import AttachmentForm
-from comments.models import CallAttachmentCategory, CallCommentCategory
 from comments.utils import process_comment_attachment, add_comment_attachment_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
-from project_core.models import Call, BudgetCategory
+from project_core.models import Call, BudgetCategory, Proposal
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call
@@ -91,6 +89,22 @@ class CallCommentAdd(AbstractCallView):
                                             call)
 
         return result
+
+
+class ProposalList(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        call = Call.objects.get(id=kwargs['call_id'])
+        proposals = Proposal.objects.filter(call=call)
+
+        context['call'] = call
+        context['proposals'] = proposals
+        context['active_section'] = 'calls'
+        context['active_subsection'] = 'calls-list'
+        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+
+        return render(request, 'logged/_call_list_proposals.tmpl', context)
 
 
 class CallView(TemplateView):
