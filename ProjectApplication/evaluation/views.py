@@ -201,7 +201,7 @@ class CallEvaluationDetail(TemplateView):
         return render(request, 'evaluation/call_evaluation-detail.tmpl', context)
 
 
-class CallCommentAdd(TemplateView):
+class CallEvaluationCommentAdd(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
