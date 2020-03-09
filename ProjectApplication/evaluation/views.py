@@ -49,7 +49,8 @@ class ProposalEvaluationList(TemplateView):
 
         context['view_button'] = False
         context['edit_button'] = False
-        context['proposal_list_button'] = True
+        context['proposal_call_list_button'] = False
+        context['proposal_evaluation_list_button'] = True
         context['evaluation_spreadsheet_button'] = True
         context['evaluate_button'] = True
 
@@ -166,6 +167,22 @@ class CallEvaluationUpdate(TemplateView):
             return render(request, 'evaluation/call_evaluation-form.tmpl', context)
 
 
+class ProposalList(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        call = Call.objects.get(id=kwargs['call_id'])
+        proposals = Proposal.objects.filter(call=call).filter(eligibility=Proposal.ELIGIBLE)
+
+        context['call'] = call
+        context['proposals'] = proposals
+        context['active_section'] = 'evaluation'
+        context['active_subsection'] = 'evaluation-list'
+        context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
+
+        return render(request, 'evaluation/_evaluation_list-proposals.tmpl', context)
+
+
 class CallEvaluationDetail(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -198,6 +215,14 @@ class CallCommentAdd(TemplateView):
                                             call_evaluation)
 
         return result
+
+
+class ProposalDetail(TemplateView):
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self):
+        pass
 
 
 class ProposalCommentAdd(TemplateView):

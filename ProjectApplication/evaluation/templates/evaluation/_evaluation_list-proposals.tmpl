@@ -1,0 +1,61 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load request_is_management %}
+{% block subtitle %}Evaluation - List Proposals{% endblock %}
+
+{% block contents %}
+    <h1>List of proposals for call: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
+    <p></p>
+    {% if proposals %}
+        <style>
+            /** The buttons "Edit" and "View" in the Actions column should always be in the same line */
+            #list-of-proposals td:nth-child(6) {
+                white-space: nowrap;
+            }
+        </style>
+
+        <table id="list-of-call-proposals" class="table table-striped table-sm table-hover display">
+            <thead>
+            <tr>
+                <th>Callx</th>
+                <th>Title</th>
+                <th>Applicant</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for proposal in proposals %}
+                <tr>
+                    <td>{{ proposal.call.long_name }}</td>
+                    <td>{{ proposal.title }}</td>
+                    <td>{{ proposal.applicant.person }}</td>
+                    <td>{{ proposal.proposal_status.name }}</td>
+                    <td>
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'logged-call-proposal-detail' id=proposal.id %}">View</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        No proposals in the call
+    {% endif %}
+
+    <p>
+        <a class="btn btn-primary btn-sm"
+           href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
+    </p>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('table.display').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"],
+                        [1, "asc"]]
+                }
+            );
+        });
+    </script>
+    <p></p>
+{% endblock %}

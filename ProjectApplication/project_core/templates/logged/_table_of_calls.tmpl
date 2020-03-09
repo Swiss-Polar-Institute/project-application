@@ -28,14 +28,19 @@
                 {% if edit_button %}
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-call-update' id=call.id %}">Edit</a>
                 {% endif %}
-                {% if proposal_list_button %}
+                {% if proposal_call_list_button %}
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-call-list-proposals' call_id=call.id %}">List
+                        Proposals</a>
+                {% endif %}
+                {% if proposal_evaluation_list_button %}
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-evaluation-list-proposals' call_id=call.id %}">List
                         Proposals</a>
                 {% endif %}
                 {% if evaluate_button %}
                     {% if call.callevaluation %}
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-call-evaluation-detail' id=call.callevaluation.id %}">View call evaluation</a>
+                           href="{% url 'logged-call-evaluation-detail' id=call.callevaluation.id %}">View call
+                            evaluation</a>
                     {% else %}
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-call-evaluation-add' %}?call={{ call.pk }}">Create call

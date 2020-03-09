@@ -25,7 +25,8 @@ class CallsList(TemplateView):
 
         context['view_button'] = True
         context['edit_button'] = True
-        context['proposal_list_button'] = True
+        context['proposal_call_list_button'] = True
+        context['proposal_evaluation_list_button'] = False
         context['evaluation_spreadsheet_button'] = False
 
         context['open_calls'] = Call.open_calls()
