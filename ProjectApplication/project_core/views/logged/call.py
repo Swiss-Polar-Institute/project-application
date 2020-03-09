@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 
+from comments import utils
 from comments.utils import process_comment_attachment, add_comment_attachment_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory, Proposal
@@ -104,7 +105,40 @@ class ProposalList(TemplateView):
         context['active_subsection'] = 'calls-list'
         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
-        return render(request, 'logged/_call_list_proposals.tmpl', context)
+        return render(request, 'logged/_call_list-proposals.tmpl', context)
+
+
+class ProposalDetail(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        proposal = Proposal.objects.get(id=kwargs['id'])
+
+        utils.add_comment_attachment_forms(context, 'logged-call-proposal-detail', proposal)
+
+        context.update({'proposal': proposal,
+                        'active_section': 'calls',
+                        'active_subsection': 'calls-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'
+                        })
+
+        return render(request, 'logged/proposal-detail.tmpl', context)
+
+    def post(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'calls-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+
+        proposal = Proposal.objects.get(id=kwargs['id'])
+
+        result = process_comment_attachment(request, context, 'logged-call-proposal-detail',
+                                            'logged-call-comment-add',
+                                            'logged/proposal-detail.tmpl',
+                                            proposal)
+
+        return result
 
 
 class CallView(TemplateView):

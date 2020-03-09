@@ -54,6 +54,8 @@ urlpatterns = [
          name='logged-call-update'),
     path('logged/call/<int:call_id>/list_proposals/', logged.call.ProposalList.as_view(),
          name='logged-call-list-proposals'),
+    path('logged/call/proposal/<int:id>/', logged.call.ProposalDetail.as_view(),
+         name='logged-call-proposal-detail'),
     path('logged/call/<int:id>/comment/add/', logged.call.CallCommentAdd.as_view(),
          name='logged-call-comment-add'),
     path('logged/call/<int:id>/', logged.call.CallDetailView.as_view(),

@@ -20,7 +20,6 @@
                 <th>Title</th>
                 <th>Applicant</th>
                 <th>Status</th>
-                <th>Eligible</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -31,25 +30,9 @@
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
                     <td>{{ proposal.proposal_status.name }}</td>
-                    <td>{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}
-                    </td>
                     <td>
-                        <!-- <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-proposal-update' uuid=proposal.uuid %}">Edit</a>
-                       -->
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-proposal-detail' uuid=proposal.uuid %}">View</a>
-                        {% if request|request_is_management %}
-                            {% if proposal.proposalevaluation %}
-                                <a class="btn btn-primary btn-xs"
-                                   href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}">View
-                                    Evaluation</a>
-                            {% elif proposal.can_create_evaluation %}
-                                <a class="btn btn-primary btn-xs"
-                                   href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}">Create
-                                    Evaluation</a>
-                            {% endif %}
-                        {% endif %}
+                           href="{% url 'logged-call-proposal-detail' proposal_id=proposal.id %}">View</a>
                     </td>
                 </tr>
             {% endfor %}
