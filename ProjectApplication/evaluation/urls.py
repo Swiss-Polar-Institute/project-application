@@ -29,10 +29,10 @@ urlpatterns = [
     path('logged/call-evaluation/<int:id>/',
          evaluation.views.CallEvaluationDetail.as_view(),
          name='logged-call-evaluation-detail'),
+
     path('logged/call-evaluation/<int:call_id>/comment/add/',
          evaluation.views.ProposalList.as_view(),
          name='logged-call-evaluation-list-proposals'),
-
     path('logged/call-evaluation/proposal/<int:id>/',
          evaluation.views.ProposalDetail.as_view(),
          name='logged-call-evaluation-proposal-detail'),

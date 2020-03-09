@@ -8,7 +8,7 @@
     {% if proposals %}
         <style>
             /** The buttons "Edit" and "View" in the Actions column should always be in the same line */
-            #list-of-proposals td:nth-child(6) {
+            #list-of-proposals td:nth-child(8) {
                 white-space: nowrap;
             }
         </style>
@@ -16,10 +16,13 @@
         <table id="list-of-call-proposals" class="table table-striped table-sm table-hover display">
             <thead>
             <tr>
-                <th>Callx</th>
+                <th>Call</th>
                 <th>Title</th>
                 <th>Applicant</th>
                 <th>Status</th>
+                <th>Eligibility</th>
+                <th>Panel recommendation</th>
+                <th>Board decision</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -30,9 +33,21 @@
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
                     <td>{{ proposal.proposal_status.name }}</td>
+                    <td>{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}</td>
+                    <td>{{ proposal.proposalevaluation.panel_recommendation_str }}</td>
+                    <td>{{ proposal.proposalevaluation.board_decision }}</td>
                     <td>
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-call-proposal-detail' id=proposal.id %}">View</a>
+                           href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}">View Proposal</a>&nbsp;
+                        {% if proposal.proposalevaluation %}
+                            <a class="btn btn-primary btn-xs"
+                               href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}">View
+                                Evaluation</a>
+                        {% elif proposal.can_create_evaluation %}
+                            <a class="btn btn-primary btn-xs"
+                               href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}">Create
+                                Evaluation</a>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
@@ -41,11 +56,6 @@
     {% else %}
         No proposals in the call
     {% endif %}
-
-    <p>
-        <a class="btn btn-primary btn-sm"
-           href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
-    </p>
 
     <script type="text/javascript" class="init">
         $(document).ready(function () {

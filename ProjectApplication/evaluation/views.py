@@ -5,11 +5,12 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from ProjectApplication import settings
+from comments import utils
 from comments.utils import add_comment_attachment_forms, process_comment_attachment
 from evaluation.forms.call_evaluation import CallEvaluationForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import CallEvaluation, ProposalEvaluation
-from project_core.models import Proposal, Call
+from project_core.models import Proposal, Call, ProposalStatus
 from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 
@@ -19,10 +20,6 @@ def add_proposal_evaluation_form(context, proposal):
                                                       proposal=proposal)
 
     context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
-
-    context.update({'active_section': 'proposals',
-                    'active_subsection': 'proposals-list',
-                    'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
 
 
 class ProposalEvaluationDetail(AbstractProposalDetailView):
@@ -78,6 +75,10 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
         context = self.prepare_context(request, *args, **{'id': proposal.id})
 
         add_proposal_evaluation_form(context, proposal)
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
         return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
@@ -172,7 +173,8 @@ class ProposalList(TemplateView):
         context = super().get_context_data(**kwargs)
 
         call = Call.objects.get(id=kwargs['call_id'])
-        proposals = Proposal.objects.filter(call=call).filter(eligibility=Proposal.ELIGIBLE)
+        draft = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_DRAFT)
+        proposals = Proposal.objects.filter(call=call).exclude(proposal_status=draft)
 
         context['call'] = call
         context['proposals'] = proposals
@@ -205,7 +207,7 @@ class CallCommentAdd(TemplateView):
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
-                        'sidebar_template': 'logged/_sidebar-evaluation.tmpl'})
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
         call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
 
@@ -219,10 +221,35 @@ class CallCommentAdd(TemplateView):
 
 class ProposalDetail(TemplateView):
     def get(self, request, *args, **kwargs):
-        pass
+        context = super().get_context_data(**kwargs)
 
-    def post(self):
-        pass
+        proposal = Proposal.objects.get(id=kwargs['id'])
+
+        utils.add_comment_attachment_forms(context, 'logged-call-evaluation-proposal-detail', proposal)
+
+        context.update({'proposal': proposal,
+                        'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                        })
+
+        return render(request, 'logged/proposal-detail.tmpl', context)
+
+    def post(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
+
+        proposal = Proposal.objects.get(id=kwargs['id'])
+
+        result = process_comment_attachment(request, context, 'logged-call-evaluation-proposal-detail',
+                                            'logged-call-comment-add',
+                                            'logged/proposal-detail.tmpl',
+                                            proposal)
+
+        return result
 
 
 class ProposalCommentAdd(TemplateView):

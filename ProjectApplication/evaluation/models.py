@@ -102,6 +102,12 @@ class ProposalEvaluation(CreateModifyOn):
     def attachments(self):
         return self.proposalevaluationattachment_set.all().order_by('created_on')
 
+    def panel_recommendation_str(self):
+        if self.panel_recommendation == ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND:
+            return 'Do not fund'
+
+        return self.panel_recommendation
+
     def comments(self):
         return self.proposalevaluationcomment_set.all().order_by('created_on')
 
