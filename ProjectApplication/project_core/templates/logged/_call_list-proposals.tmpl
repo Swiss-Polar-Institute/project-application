@@ -32,7 +32,7 @@
                     <td>{{ proposal.proposal_status.name }}</td>
                     <td>
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-call-proposal-detail' proposal_id=proposal.id %}">View</a>
+                           href="{% url 'logged-call-proposal-detail' id=proposal.id %}">View</a>
                     </td>
                 </tr>
             {% endfor %}
