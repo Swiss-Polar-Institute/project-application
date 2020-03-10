@@ -12,6 +12,7 @@ from variable_templates.forms.template_variables import TemplateVariableItemForm
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
+from ..common.proposal import AbstractProposalDetailView
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -120,16 +121,15 @@ class ProposalList(TemplateView):
         return render(request, 'logged/_call_list-proposals.tmpl', context)
 
 
-class ProposalDetail(TemplateView):
+class ProposalDetail(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = self.prepare_context(request, *args, **kwargs)
 
         proposal = Proposal.objects.get(id=kwargs['id'])
 
         utils.add_comment_attachment_forms(context, 'logged-call-proposal-detail', proposal)
 
-        context.update({'proposal': proposal,
-                        'active_section': 'calls',
+        context.update({'active_section': 'calls',
                         'active_subsection': 'calls-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'
                         })
