@@ -99,33 +99,32 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
 
         return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
+    def post(self, request, *args, **kwargs):
+        if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
+            raise PermissionDenied()
 
-def post(self, request, *args, **kwargs):
-    if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
-        raise PermissionDenied()
+        context = self.prepare_context(request, *args, **kwargs)
 
-    context = self.prepare_context(request, *args, **kwargs)
+        proposal = Proposal.objects.get(id=kwargs['id'])
 
-    proposal = Proposal.objects.get(id=kwargs['id'])
+        proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES,
+                                                          prefix=ProposalEvaluationForm.FORM_NAME,
+                                                          proposal=proposal)
 
-    proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES,
-                                                      prefix=ProposalEvaluationForm.FORM_NAME,
-                                                      proposal=proposal)
+        if proposal_evaluation_form.is_valid():
+            proposal_evaluation = proposal_evaluation_form.save(user=request.user)
 
-    if proposal_evaluation_form.is_valid():
-        proposal_evaluation = proposal_evaluation_form.save(user=request.user)
+            messages.success(request, 'Evaluation saved')
+            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'id': proposal_evaluation.id}))
+        else:
+            messages.warning(request, 'Evaluation not saved. Verify errors in the form')
+            context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
 
-        messages.success(request, 'Evaluation saved')
-        return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'id': proposal_evaluation.id}))
-    else:
-        messages.warning(request, 'Evaluation not saved. Verify errors in the form')
-        context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
+            context.update({'active_section': 'proposals',
+                            'active_subsection': 'proposals-list',
+                            'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
 
-        context.update({'active_section': 'proposals',
-                        'active_subsection': 'proposals-list',
-                        'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
-
-        return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
+            return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
 
 class CallEvaluationUpdate(TemplateView):

@@ -4,36 +4,33 @@
 {% block subtitle %}Proposal{% endblock %}
 
 {% block contents %}
-    <div class="container-fluid">
-        <br>
-        {% include 'common/_messages-box.tmpl' %}
-        <div class="row">
-            <div class="col-10">
-                <div class="shadow-none p-2 mb-5 bg-light rounded">
-                    {% include 'common/_proposal_basic_information-detail.tmpl' %}
-                </div>
-                <p>
-                </p>
-                <hr>
-                <h2>Evaluation</h2>
-                {% include 'evaluation/_proposal_evaluation-detail.tmpl' %}
-                <p></p>
-                {% include 'comments/_comments-attachments.tmpl' %}
+    <div class="row">
+        <div class="col-10">
+            <div class="shadow-none p-2 mb-5 bg-light rounded">
+                {% include 'common/_proposal_basic_information-detail.tmpl' %}
             </div>
-            <div class="col-2">
-                <p>
-                    <a class="btn btn-primary"
-                       href="{% url 'logged-proposal-evaluation-update' id=proposal.proposalevaluation.id %}"
-                       role="button">Edit&nbsp;Proposal&nbsp;Evaluation</a>
-                </p>
-                <p>
-                    <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}"
-                       role="button">View&nbsp;Proposal</a>
-                </p>
-                <p>
-                    <a class="btn btn-primary" href="{% url 'logged-call-evaluation-list-proposals' call_id=proposal.call.id %}">List&nbsp;Proposals</a>
-                </p>
-            </div>
+            <p>
+            </p>
+            <hr>
+            <h2>Evaluation</h2>
+            {% include 'evaluation/_proposal_evaluation-detail.tmpl' %}
+            <p></p>
+            {% include 'comments/_comments-attachments.tmpl' %}
+        </div>
+        <div class="col-2">
+            <p>
+                <a class="btn btn-primary"
+                   href="{% url 'logged-proposal-evaluation-update' id=proposal.proposalevaluation.id %}"
+                   role="button">Edit&nbsp;Proposal&nbsp;Evaluation</a>
+            </p>
+            <p>
+                <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}"
+                   role="button">View&nbsp;Proposal</a>
+            </p>
+            <p>
+                <a class="btn btn-primary"
+                   href="{% url 'logged-call-evaluation-list-proposals' call_id=proposal.call.id %}">List&nbsp;Proposals</a>
+            </p>
         </div>
     </div>
 {% endblock %}
