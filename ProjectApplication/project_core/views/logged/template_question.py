@@ -17,7 +17,7 @@ class TemplateQuestionList(TemplateView):
         context['template_questions'] = TemplateQuestion.objects.all()
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'template-questions-list',
+                        'active_subsection': 'template-question-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Template questions'}]
@@ -85,7 +85,7 @@ class TemplateQuestionCreateView(TemplateQuestionMixin, CrispyNoFormTag, Success
                         'active_subsection': 'template-questions-add',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-questions-list')},
+        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-question-list')},
                                  {'name': 'Create'}]
 
         return context
@@ -100,10 +100,10 @@ class TemplateQuestionUpdateView(TemplateQuestionMixin, CrispyNoFormTag, Success
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'template-questions-list',
+                        'active_subsection': 'template-question-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-questions-list')},
+        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-question-list')},
                                  {'name': 'Edit'}]
 
         return context
@@ -117,10 +117,10 @@ class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'template-questions-list',
+                        'active_subsection': 'template-question-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-questions-list')},
+        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-question-list')},
                                  {'name': 'Details'}]
 
         return context

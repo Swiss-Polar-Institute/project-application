@@ -14,7 +14,7 @@ class CallFormTest(TestCase):
     def test_list_of_calls(self):
         c = Client()
 
-        response = c.get(reverse('calls-list'))
+        response = c.get(reverse('call-list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'List of open calls')
         self.assertContains(response, 'GreenLAnd Circumnavigation Expedition')
@@ -25,7 +25,7 @@ class CallFormTest(TestCase):
         self._call.call_open_date = datetime(2099, 1, 1)
         self._call.save()
 
-        response = c.get(reverse('calls-list'))
+        response = c.get(reverse('call-list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'List of open calls')
         self.assertNotContains(response, 'GreenLAnd Circumnavigation Expedition')

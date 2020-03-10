@@ -14,7 +14,7 @@ class PersonPositionsListView(TemplateView):
         context['contacts'] = PersonPosition.objects.filter(privacy_policy=True)
 
         context.update({'active_section': 'lists',
-                        'active_subsection': 'contacts-list',
+                        'active_subsection': 'contact-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People'}]
@@ -30,7 +30,7 @@ class PersonPositionUpdateView(UpdateView):
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'lists',
-                        'active_subsection': 'contacts-list',
+                        'active_subsection': 'contact-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People', 'url': reverse('person-position-list')},
@@ -71,7 +71,7 @@ class PersonPositionDetailView(DetailView):
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'lists',
-                        'active_subsection': 'contacts-list',
+                        'active_subsection': 'contact-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People', 'url': reverse('person-position-list')},

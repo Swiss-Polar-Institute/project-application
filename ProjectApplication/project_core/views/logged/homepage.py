@@ -11,7 +11,7 @@ class Homepage(TemplateView):
         context = super().get_context_data(**kwargs)
 
         if request_is_reviewer(request):
-            return HttpResponseRedirect(reverse('logged-proposals-list'))
+            return HttpResponseRedirect(reverse('logged-proposal-list'))
 
         context.update({'active_section': 'home',
                         'active_subsection': 'home',

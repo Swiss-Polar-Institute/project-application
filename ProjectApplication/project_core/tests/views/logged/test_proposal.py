@@ -77,7 +77,7 @@ class ManagementProposalTest(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('logged-proposals-list'))
+        response = c.get(reverse('logged-proposal-list'))
 
         self.assertEqual(response.status_code, 200)
 

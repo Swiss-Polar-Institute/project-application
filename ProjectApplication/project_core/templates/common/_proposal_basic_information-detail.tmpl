@@ -17,7 +17,7 @@
     <strong>Email:</strong> <a href="mailto:{{ email }}">{{ email }}</a>
     <br>
     <strong>Organisations:</strong>
-    {% include 'common/_organisations-list.tmpl' with organisations=applicant.organisations_ordered_by_name %}
+    {% include 'common/_organisation-list.tmpl' with organisations=applicant.organisations_ordered_by_name %}
     <br>
     <strong>Group / lab:</strong> {{ applicant.group }}<br>
     <div class="row">

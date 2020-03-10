@@ -21,7 +21,7 @@ class FundingInstrumentList(TemplateView):
         context['funding_instruments'] = FundingInstrument.objects.all()
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'funding-instruments-list',
+                        'active_subsection': 'funding-instrument-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Funding instruments'}]
@@ -60,7 +60,7 @@ class FundingInstrumentView(TemplateView):
             context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
 
             context.update({'active_section': 'calls',
-                            'active_subsection': 'funding-instruments-list',
+                            'active_subsection': 'funding-instrument-list',
                             'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
             breadcrumb = 'Edit'
@@ -109,7 +109,7 @@ class FundingInstrumentView(TemplateView):
         context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'funding-instruments-list',
+                        'active_subsection': 'funding-instrument-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         messages.error(request, 'Funding Instrument not saved. Please correct the errors in the form and try again')
@@ -126,7 +126,7 @@ class FundingInstrumentView(TemplateView):
 #         context = super().get_context_data(**kwargs)
 #
 #         context['active_section'] = 'calls'
-#         context['active_subsection'] = 'funding-instruments-list'
+#         context['active_subsection'] = 'funding-instrument-list'
 #         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 #
 #         return context
@@ -140,12 +140,12 @@ class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'funding-instruments-list',
+                        'active_subsection': 'funding-instrument-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['template_variables'] = get_template_variables_for_funding_instrument(kwargs['object'])
 
-        context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('funding-instruments-list')},
+        context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('funding-instrument-list')},
                                  {'name': 'Details'}]
 
         return context

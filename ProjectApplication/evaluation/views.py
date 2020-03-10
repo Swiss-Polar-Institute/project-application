@@ -129,7 +129,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
             context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
 
             context.update({'active_section': 'proposals',
-                            'active_subsection': 'proposals-list',
+                            'active_subsection': 'proposal-list',
                             'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
 
             return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)

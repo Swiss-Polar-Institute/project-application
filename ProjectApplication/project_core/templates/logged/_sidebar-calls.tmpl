@@ -2,8 +2,8 @@
 {% block sidebar_contents %}
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link {% if active == 'calls-list' %}active{% endif %}"
-               href="{% url 'logged-calls-list' %}">
+            <a class="nav-link {% if active == 'call-list' %}active{% endif %}"
+               href="{% url 'logged-call-list' %}">
                 List calls
             </a>
         </li>
@@ -16,8 +16,8 @@
             <hr>
         </li>
         <li class="nav-item">
-            <a class="nav-link {% if active == 'funding-instruments-list' %}active{% endif %}"
-                href="{% url 'funding-instruments-list' %}">List funding
+            <a class="nav-link {% if active == 'funding-instrument-list' %}active{% endif %}"
+                href="{% url 'funding-instrument-list' %}">List funding
                 instruments</a>
         </li>
         <li class="nav-item">
@@ -29,8 +29,8 @@
             <hr>
         </li>
         <li class="nav-item">
-            <a class="nav-link {% if active == 'template-questions-list' %}active{% endif %}"
-               href="{% url 'template-questions-list' %}">List template questions</a>
+            <a class="nav-link {% if active == 'template-question-list' %}active{% endif %}"
+               href="{% url 'template-question-list' %}">List template questions</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if active == 'template-questions-add' %}active{% endif %}"

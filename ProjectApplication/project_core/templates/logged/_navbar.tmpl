@@ -15,7 +15,7 @@
             {% endif %}
             {% if request|request_is_management %}
                 <li class="nav-item {% if active == 'calls' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'logged-calls-list' %}">Calls</a>
+                    <a class="nav-link" href="{% url 'logged-call-list' %}">Calls</a>
                 </li>
             {% endif %}
             {% if request|request_is_management %}
@@ -30,7 +30,7 @@
             {% endif %}
             {% if request|request_is_reviewer %}
                 <li class="nav-item {% if active == 'proposals' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'logged-proposals-list' %}">Proposals</a>
+                    <a class="nav-link" href="{% url 'logged-proposal-list' %}">Proposals</a>
                 </li>
             {% endif %}
             {% if request|request_is_management %}
@@ -40,7 +40,7 @@
                         Lists
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'logged-proposals-list' %}">Proposals</a>
+                        <a class="dropdown-item" href="{% url 'logged-proposal-list' %}">Proposals</a>
                         <a class="dropdown-item disabled" href="#">Projects</a>
                         <hr>
                         <a class="dropdown-item" href="{% url 'person-position-list' %}">People</a>

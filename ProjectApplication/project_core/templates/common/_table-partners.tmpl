@@ -9,7 +9,7 @@
                     {{ partner.person.person.surname }}
                     {{ partner.person.career_stage }}
                     <br>
-                    <strong>Organisation:</strong> {% include 'common/_organisations-list.tmpl' with organisations=partner.person.organisations_ordered_by_name %}
+                    <strong>Organisation:</strong> {% include 'common/_organisation-list.tmpl' with organisations=partner.person.organisations_ordered_by_name %}
                     <br>
                     <strong>Group /
                         lab:</strong> {% include 'common/_value-or-dash.tmpl' with value=partner.person.group %}

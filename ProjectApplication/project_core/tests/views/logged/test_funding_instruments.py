@@ -25,7 +25,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('funding-instruments-list'))
+        response = c.get(reverse('funding-instrument-list'))
         self.assertEqual(response.status_code, 200)
 
     def test_load_funding_instrument_update_get(self):

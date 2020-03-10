@@ -16,7 +16,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('logged-calls-list'))
+        response = c.get(reverse('logged-call-list'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self._call.long_name)
 

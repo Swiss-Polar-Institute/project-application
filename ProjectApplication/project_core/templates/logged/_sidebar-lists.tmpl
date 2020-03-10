@@ -2,14 +2,14 @@
 {% block sidebar_contents %}
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link {% if active == 'proposals-list' %}active{% endif %}"
-               href="{% url 'logged-proposals-list' %}">
+            <a class="nav-link {% if active == 'proposal-list' %}active{% endif %}"
+               href="{% url 'logged-proposal-list' %}">
                 List proposals
             </a>
         </li>
         <hr>
         <li class="nav-item">
-            <a class="nav-link {% if active == 'contacts-list' %}active{% endif %}"
+            <a class="nav-link {% if active == 'contact-list' %}active{% endif %}"
                href="{% url 'person-position-list' %}">
                 List people
             </a>

@@ -35,7 +35,7 @@ class CallsList(TemplateView):
                         'future_calls': Call.future_calls()})
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'calls-list',
+                        'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls'}]
@@ -52,7 +52,7 @@ class AbstractCallView(TemplateView):
         context['call'] = call
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'calls-list',
+                        'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['template_variables'] = get_template_variables_for_call(call)
@@ -77,7 +77,7 @@ class CallDetailView(AbstractCallView):
     def get(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
-        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls-list')},
+        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': 'Details'}]
 
         return render(request, 'logged/call-detail.tmpl', context)
@@ -88,7 +88,7 @@ class CallCommentAdd(AbstractCallView):
         context = self.prepare_context(request, *args, **kwargs)
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'calls-list',
+                        'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         call = Call.objects.get(id=kwargs['id'])
@@ -112,7 +112,7 @@ class ProposalList(TemplateView):
         context['proposals'] = proposals
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'calls-list',
+                        'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
@@ -130,11 +130,11 @@ class ProposalDetail(AbstractProposalDetailView):
         utils.add_comment_attachment_forms(context, 'logged-call-proposal-detail', proposal)
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'calls-list',
+                        'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'
                         })
 
-        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls-list')},
+        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': f'List of proposals ({proposal.call.little_name()})',
                                   'url': reverse('logged-call-list-proposals', kwargs={'call_id': proposal.call.id})},
                                  {'name': 'Proposal'}]
@@ -145,7 +145,7 @@ class ProposalDetail(AbstractProposalDetailView):
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'calls',
-                        'active_subsection': 'calls-list',
+                        'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         proposal = Proposal.objects.get(id=kwargs['id'])
@@ -172,7 +172,7 @@ class CallView(TemplateView):
                                                                                 prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('logged-call-update', kwargs={'id': call_id})
             context['call_action'] = 'Edit'
-            context['active_subsection'] = 'calls-list'
+            context['active_subsection'] = 'call-list'
 
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
@@ -207,7 +207,7 @@ class CallView(TemplateView):
             context['call_action_url'] = reverse('logged-call-update', kwargs={'id': call.id})
             call_action = 'Edit'
             action = 'updated'
-            active_subsection = 'calls-list'
+            active_subsection = 'call-list'
 
             to_validate = [call_form, call_question_form, template_variables_form]
 

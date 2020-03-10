@@ -13,7 +13,7 @@ from .views import logged
 urlpatterns = [
     path('', external.homepage.Homepage.as_view(), name='homepage'),
     path('admin/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-jsi18n'),
-    path('calls/', external.call.CallsList.as_view(), name='calls-list'),
+    path('calls/', external.call.CallsList.as_view(), name='call-list'),
 
     path('proposal/add/', external.proposal.ProposalView.as_view(), name='proposal-add'),
     path('proposal/<uuid:uuid>/update/', external.proposal.ProposalView.as_view(),
@@ -28,7 +28,7 @@ urlpatterns = [
          common.proposal.ProposalQuestionAnswerFileView.as_view(),
          name='proposal-question-answer-file'),
 
-    path('logged/proposals/', logged.proposal.ProposalsList.as_view(), name='logged-proposals-list'),
+    path('logged/proposals/', logged.proposal.ProposalsList.as_view(), name='logged-proposal-list'),
     path('logged/proposal/<int:id>/update/', logged.proposal.ProposalView.as_view(),
          name='logged-proposal-update'),
     path('logged/proposal/<int:id>/', logged.proposal.ProposalDetailView.as_view(),
@@ -42,7 +42,7 @@ urlpatterns = [
     path('logged/proposals/export/csv/summary/', project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
 
-    path('logged/call/list/', logged.call.CallsList.as_view(), name='logged-calls-list'),
+    path('logged/call/list/', logged.call.CallsList.as_view(), name='logged-call-list'),
     path('logged/call/add/', logged.call.CallView.as_view(), name='logged-call-add'),
     path('logged/call/<int:id>/update/', logged.call.CallView.as_view(),
          name='logged-call-update'),
@@ -66,7 +66,7 @@ urlpatterns = [
          logged.template_question.TemplateQuestionUpdateView.as_view(),
          name='template-question-update'),
     path('logged/template_questions/', logged.template_question.TemplateQuestionList.as_view(),
-         name='template-questions-list'),
+         name='template-question-list'),
 
     path('logged/funding_instrument/add/', logged.funding_instrument.FundingInstrumentView.as_view(),
          name='funding-instrument-add'),
@@ -76,7 +76,7 @@ urlpatterns = [
          logged.funding_instrument.FundingInstrumentView.as_view(),
          name='funding-instrument-update'),
     path('logged/funding_instruments/', logged.funding_instrument.FundingInstrumentList.as_view(),
-         name='funding-instruments-list'),
+         name='funding-instrument-list'),
 
     path('logged/person_position/add', logged.person_position.PersonPositionCreateView.as_view(),
          name='logged-person-position-add'),
