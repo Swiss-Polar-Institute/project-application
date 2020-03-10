@@ -13,8 +13,11 @@
 
             {% crispy form %}
         </div>
-        <div class="col-2">
-        
-        </div>
+        {% if form.instance.id %}
+            <div class="col-2">
+                <a class="btn btn-primary" href="{% url 'template-question-detail' pk=object.id %}">View template
+                    question</a>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
