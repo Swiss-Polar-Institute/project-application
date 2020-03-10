@@ -4,9 +4,9 @@
 <strong>Status:</strong> {{ proposal.proposal_status.name }} {{ link_to_edit_or_display|safe }}<br>
 <strong>Call:</strong>
 {% if request|request_is_management %}
-    <a href="{% url 'logged-call-detail' id=proposal.call.id %}">{{ call_name }}</a>
+    <a href="{% url 'logged-call-detail' id=proposal.call.id %}">{{ proposal.call.long_name }}</a>
 {% else %}
-    {{ call_name }}
+    {{ proposal.call.long_name }}
 {% endif %}
 <p></p>
 <h3>Applicant</h3>
