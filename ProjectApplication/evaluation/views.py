@@ -40,6 +40,12 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
                         })
 
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': f'List of proposals ({proposal_evaluation.proposal.call.little_name()})',
+                                  'url': reverse('logged-call-evaluation-list-proposals',
+                                                 kwargs={'call_id': proposal_evaluation.proposal.call.id})},
+                                 {'name': 'Proposal evaluation'}]
+
         return render(request, 'logged/proposal-detail-evaluation-detail.tmpl', context)
 
 
@@ -95,7 +101,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
                                  {'name': f'List of proposals ({proposal.call.short_name})',
                                   'url': reverse('logged-call-evaluation-list-proposals',
                                                  kwargs={'call_id': proposal.call.id})},
-                                 {'name': 'Proposal evaluation'}]
+                                 {'name': 'Edit proposal evaluation'}]
 
         return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
