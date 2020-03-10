@@ -56,35 +56,6 @@ class ProposalsList(TemplateView):
         return context
 
 
-class ProposalEligibilityUpdate(AbstractProposalDetailView):
-    def post(self, request, *args, **kwargs):
-        if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
-            raise PermissionDenied()
-
-        context = self.prepare_context(request, *args, **kwargs)
-
-        proposal_uuid = kwargs['uuid']
-
-        eligibility_decision_form = EligibilityDecisionForm(request.POST, prefix=EligibilityDecisionForm.FORM_NAME,
-                                                            proposal_uuid=proposal_uuid)
-
-        if eligibility_decision_form.is_valid():
-            eligibility_decision_form.save_eligibility(request.user)
-
-            messages.success(request, 'Eligibility saved')
-            return redirect(reverse('logged-proposal-detail', kwargs={'uuid': proposal_uuid}))
-
-        else:
-            messages.warning(request, 'Eligibility not saved. Verify errors in the form')
-            context[EligibilityDecisionForm.FORM_NAME] = eligibility_decision_form
-
-            context.update({'active_section': 'proposals',
-                            'active_subsection': 'proposals-list',
-                            'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
-
-            return render(request, 'logged/proposal-detail.tmpl', context)
-
-
 class ProposalCommentAdd(AbstractProposalDetailView):
     def post(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
@@ -146,7 +117,7 @@ class ProposalDetailView(AbstractProposalDetailView):
         context = self.prepare_context(request, *args, **kwargs)
 
         context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
-                                                                             proposal_uuid=proposal.uuid)
+                                                                             proposal_id=proposal.id)
 
         context['eligibility_history'] = get_eligibility_history(proposal)
 

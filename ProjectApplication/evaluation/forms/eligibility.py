@@ -15,7 +15,9 @@ class EligibilityDecisionForm(forms.Form):
     FORM_NAME = 'eligibility_decision_form'
 
     def __init__(self, *args, **kwargs):
-        self._proposal_uuid = kwargs.pop('proposal_uuid')
+        self._proposal_id = kwargs.pop('proposal_id')
+        assert 'form_action' not in kwargs
+
         super().__init__(*args, **kwargs)
 
         YES_NO_CHOICES = [(True, 'Yes'), (False, 'No')]
@@ -25,7 +27,7 @@ class EligibilityDecisionForm(forms.Form):
                                                  help_text='Maximum length 1000 characters. Required if proposal is not eligible.',
                                                  widget=forms.Textarea(attrs={'rows': 4}))
 
-        proposal = Proposal.objects.get(uuid=self._proposal_uuid)
+        proposal = Proposal.objects.get(id=self._proposal_id)
 
         if proposal.eligibility == Proposal.ELIGIBLE:
             self.fields['eligible'].initial = True
@@ -36,7 +38,7 @@ class EligibilityDecisionForm(forms.Form):
 
         self.helper = FormHelper(self)
         self.helper.form_id = 'eligibility_form'
-        self.helper.form_action = reverse('logged-proposal-eligibility-update', kwargs={'uuid': self._proposal_uuid})
+        self.helper.form_action = reverse('logged-proposal-eligibility-update', kwargs={'id': self._proposal_id})
 
         self.helper.layout = Layout(
             Div(
@@ -48,7 +50,7 @@ class EligibilityDecisionForm(forms.Form):
             FormActions(
                 Submit('save', 'Save Eligibility'),
                 HTML('<p></p>'),
-                cancel_edit_button(reverse('logged-proposal-detail', kwargs={'uuid': proposal.uuid}))
+                cancel_edit_button(reverse('logged-call-evaluation-proposal-detail', kwargs={'id': proposal.id}))
             )
         )
 
@@ -66,7 +68,7 @@ class EligibilityDecisionForm(forms.Form):
         eligible = self.cleaned_data['eligible']
         comment = self.cleaned_data.get('comment', None)
 
-        proposal = Proposal.objects.get(uuid=self._proposal_uuid)
+        proposal = Proposal.objects.get(id=self._proposal_id)
 
         if eligible == 'True':
             proposal.eligibility = Proposal.ELIGIBLE

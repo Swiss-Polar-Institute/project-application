@@ -8,11 +8,13 @@ from ProjectApplication import settings
 from comments import utils
 from comments.utils import add_comment_attachment_forms, process_comment_attachment
 from evaluation.forms.call_evaluation import CallEvaluationForm
+from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import CallEvaluation, ProposalEvaluation
 from project_core.models import Proposal, Call, ProposalStatus
 from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
+from project_core.views.logged.proposal import get_eligibility_history
 
 
 def add_proposal_evaluation_form(context, proposal):
@@ -253,16 +255,15 @@ class CallEvaluationCommentAdd(TemplateView):
         return result
 
 
-class ProposalDetail(TemplateView):
+class ProposalDetail(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = self.prepare_context(request, *args, **kwargs)
 
         proposal = Proposal.objects.get(id=kwargs['id'])
 
         utils.add_comment_attachment_forms(context, 'logged-call-evaluation-proposal-detail', proposal)
 
-        context.update({'proposal': proposal,
-                        'active_section': 'evaluation',
+        context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
                         })
@@ -273,7 +274,12 @@ class ProposalDetail(TemplateView):
                                                  kwargs={'call_id': proposal.call.id})},
                                  {'name': 'Proposal'}]
 
-        return render(request, 'logged/proposal-detail.tmpl', context)
+        context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
+                                                                             proposal_id=proposal.id)
+
+        context['eligibility_history'] = get_eligibility_history(proposal)
+
+        return render(request, 'evaluation/proposal-detail.tmpl', context)
 
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -308,3 +314,32 @@ class ProposalCommentAdd(TemplateView):
                                             proposal_evaluation)
 
         return result
+
+
+class ProposalEligibilityUpdate(AbstractProposalDetailView):
+    def post(self, request, *args, **kwargs):
+        if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
+            raise PermissionDenied()
+
+        context = self.prepare_context(request, *args, **kwargs)
+
+        proposal_id = kwargs['id']
+
+        eligibility_decision_form = EligibilityDecisionForm(request.POST, prefix=EligibilityDecisionForm.FORM_NAME,
+                                                            proposal_id=proposal_id)
+
+        if eligibility_decision_form.is_valid():
+            eligibility_decision_form.save_eligibility(request.user)
+
+            messages.success(request, 'Eligibility saved')
+            return redirect(reverse('logged-call-evaluation-proposal-detail', kwargs={'id': proposal_id}))
+
+        else:
+            messages.warning(request, 'Eligibility not saved. Verify errors in the form')
+            context[EligibilityDecisionForm.FORM_NAME] = eligibility_decision_form
+
+            context.update({'active_section': 'evaluation',
+                            'active_subsection': 'evaluation-list',
+                            'sidebar_template': 'logged/_sidebar-evaluation.tmpl'})
+
+            return render(request, 'logged/proposal-detail.tmpl', context)

@@ -7,6 +7,9 @@ urlpatterns = [
          evaluation.views.ProposalEvaluationList.as_view(),
          name='logged-evaluation-list'),
 
+    path('logged/proposal-evaluation/<int:id>/eligibility/',
+         evaluation.views.ProposalEligibilityUpdate.as_view(),
+         name='logged-proposal-eligibility-update'),
     path('logged/proposal-evaluation/<int:id>/',
          evaluation.views.ProposalEvaluationDetail.as_view(),
          name='logged-proposal-evaluation-detail'),

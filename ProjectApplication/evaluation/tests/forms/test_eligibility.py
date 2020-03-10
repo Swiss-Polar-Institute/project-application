@@ -27,7 +27,7 @@ class BudgetItemFormTest(TestCase):
                 'eligible': 'True'
                 }
 
-        eligibility_decision = EligibilityDecisionForm(data=data, proposal_uuid=proposal.uuid)
+        eligibility_decision = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
 
         self.assertTrue(eligibility_decision.is_valid())
         eligibility_decision.save_eligibility(self._user)
@@ -46,7 +46,7 @@ class BudgetItemFormTest(TestCase):
                 'eligible': 'True'
                 }
 
-        eligibility_decision = EligibilityDecisionForm(data=data, proposal_uuid=proposal.uuid)
+        eligibility_decision = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
 
         self.assertTrue(eligibility_decision.is_valid())
 
@@ -61,7 +61,7 @@ class BudgetItemFormTest(TestCase):
                 'eligible': 'False'
                 }
 
-        eligibility_decision = EligibilityDecisionForm(data=data, proposal_uuid=proposal.uuid)
+        eligibility_decision = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
 
         self.assertFalse(eligibility_decision.is_valid())
 
@@ -75,7 +75,7 @@ class BudgetItemFormTest(TestCase):
                 'eligible': 'False'
                 }
 
-        eligibility_decision = EligibilityDecisionForm(data=data, proposal_uuid=proposal.uuid)
+        eligibility_decision = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
 
         self.assertTrue(eligibility_decision.is_valid())
 
