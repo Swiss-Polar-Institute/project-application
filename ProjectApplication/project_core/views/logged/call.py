@@ -186,7 +186,7 @@ class CallView(TemplateView):
         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-                                 {'name': f'{context["call_action"]} call'}]
+                                 {'name': context['call_action']}]
 
         return render(request, 'logged/call.tmpl', context)
 
