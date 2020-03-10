@@ -32,7 +32,8 @@
                     <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}"
                        role="button">View&nbsp;Proposal</a>
                 </p>
-                <a class="btn btn-primary" href="{% url 'logged-proposals-list' %}?call={{ proposal.call.id }}">List&nbsp;Proposals</a>
+                <a class="btn btn-primary"
+                   href="{% url 'logged-call-evaluation-list-proposals' call_id=proposal.call.id %}">List&nbsp;Proposals</a>
             </div>
         </div>
     </div>
