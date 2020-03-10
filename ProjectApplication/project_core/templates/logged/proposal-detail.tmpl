@@ -4,43 +4,41 @@
 {% block subtitle %}Proposal{% endblock %}
 
 {% block contents %}
-    <div class="container-fluid">
-        <br>
-        {% include 'common/_breadcrumb.tmpl' %}
-        {% include 'common/_messages-box.tmpl' %}
-        <div class="row">
-            <div class="col-10">
+    <br>
+    {% include 'common/_breadcrumb.tmpl' %}
+    {% include 'common/_messages-box.tmpl' %}
+    <div class="row">
+        <div class="col-10">
 
-                {% include 'common/_proposal-detail.tmpl' %}
-                {% if request|request_is_management %}
-                    <hr>
-                    {% include 'comments/_comments-attachments.tmpl' %}
-                {% endif %}
-            </div>
-            <div class="col-2">
-                {% if request|request_is_management %}
-                    <p>
-                        {% if proposal.can_eligibility_be_created_or_changed %}
-                            {% include 'evaluation/_eligibility_decision-form.tmpl' with proposal=proposal %}
-                        {% else %}
-                            <div class="border p-1 bg-white rounded">{{ proposal.reason_eligibility_cannot_be_created_or_changed }}</div>
-                        {% endif %}
-                    </p>
-                    <p>
-                        {% if proposal.proposalevaluation %}
-                            <a class="btn btn-primary"#}
-                               href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
-                               role="button">View Proposal Evaluation</a>
-                        {% elif proposal.can_create_evaluation %}
-                            <a class="btn btn-primary"
-                               href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
-                               role="button">Create Proposal Evaluation</a>
-                        {% else %}
-                            <div class="border p-1 bg-white rounded">{{ proposal.reason_cannot_create_evaluation }}</div>
-                        {% endif %}
-                    </p>
-                {% endif %}
-            </div>
+            {% include 'common/_proposal-detail.tmpl' %}
+            {% if request|request_is_management %}
+                <hr>
+                {% include 'comments/_comments-attachments.tmpl' %}
+            {% endif %}
+        </div>
+        <div class="col-2">
+            {% if request|request_is_management %}
+                <p>
+                    {% if proposal.can_eligibility_be_created_or_changed %}
+                        {% include 'evaluation/_eligibility_decision-form.tmpl' with proposal=proposal %}
+                    {% else %}
+                        <div class="border p-1 bg-white rounded">{{ proposal.reason_eligibility_cannot_be_created_or_changed }}</div>
+                    {% endif %}
+                </p>
+                <p>
+                    {% if proposal.proposalevaluation %}
+                        <a class="btn btn-primary"#}
+                           href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
+                           role="button">View Proposal Evaluation</a>
+                    {% elif proposal.can_create_evaluation %}
+                        <a class="btn btn-primary"
+                           href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
+                           role="button">Create Proposal Evaluation</a>
+                    {% else %}
+                        <div class="border p-1 bg-white rounded">{{ proposal.reason_cannot_create_evaluation }}</div>
+                    {% endif %}
+                </p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
