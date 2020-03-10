@@ -2,100 +2,96 @@
 {% block subtitle %}Call{% endblock %}
 
 {% block contents %}
-    <div class="container-fluid">
-        <br>
-        {% include 'common/_messages-box.tmpl' %}
-        <div class="row">
-            <div class="col-10">
-                <h1>Call details</h1>
-                <strong>Funding instrument:</strong>
-                {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding
-                    instrument
-                {% endif %}
-                <br>
-                <strong>Long Name:</strong> {{ call.long_name }}
-                <br>
-                <strong>Short Name:</strong> {% include 'common/_value-or-dash.tmpl' with value=call.short_name %}
-                <br>
-                <strong>Description:</strong>
-                <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.description }}</div>
-                <br>
-                <strong>Introductory message:</strong>
-                <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.introductory_message }}</div>
-                <br>
-                <div class="row">
-                    <div class="col-6">
-                        <strong>Call Open
-                            Date:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call.call_open_date %}
-                    </div>
-                    <div class="col-6">
-                        <strong>Call Submission
-                            deadline:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call.submission_deadline %}
-                    </div>
+    <div class="row">
+        <div class="col-10">
+            <h1>Call details</h1>
+            <strong>Funding instrument:</strong>
+            {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding
+                instrument
+            {% endif %}
+            <br>
+            <strong>Long Name:</strong> {{ call.long_name }}
+            <br>
+            <strong>Short Name:</strong> {% include 'common/_value-or-dash.tmpl' with value=call.short_name %}
+            <br>
+            <strong>Description:</strong>
+            <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.description }}</div>
+            <br>
+            <strong>Introductory message:</strong>
+            <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.introductory_message }}</div>
+            <br>
+            <div class="row">
+                <div class="col-6">
+                    <strong>Call Open
+                        Date:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call.call_open_date %}
                 </div>
-                <br>
-                <strong>Budget maximum:</strong> {{ call.budget_maximum }} CHF
-                <div class="row">
-                    <div class="col-6">
-                        <strong>Budget categories:</strong><br>
-                        {% for budget_category in budget_categories_status %}
-                            {% include 'common/_check-icon.tmpl' with value=budget_category.in_call %}
-                            {{ budget_category.name }}
-                            <br>
-                        {% endfor %}
-                    </div>
+                <div class="col-6">
+                    <strong>Call Submission
+                        deadline:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call.submission_deadline %}
                 </div>
-                <p></p>
-                <div class="row">
-                    <div class="col-6">
-                        <strong>Other funding
-                            question:</strong> {% include 'common/_check-icon.tmpl' with value=call.other_funding_question %}
-                    </div>
-                    <div class="col-6">
-                        <strong>Proposal partner
-                            question:</strong> {% include 'common/_check-icon.tmpl' with value=call.proposal_partner_question %}
-                    </div>
-                    <div class="col-12">
-                        <strong>Overarching question</strong>
-                        {% include 'common/_check-icon.tmpl' with value=call.overarching_project_question %}
-                    </div>
-                </div>
-                <br>
-                <h2>Questions</h2>
-                {% for question in call.callquestion_set_ordered_by_order %}
-                    <strong>Answer type:</strong>
-                    {% include 'common/_answer_type-icon.tmpl' with type=question.answer_type %}
-                    <br>
-                    <strong>Question:</strong> {{ question.question_text }}
-                    {% if question.answer_type == question.TEXT %}(max words: {% if question.answer_max_length %}
-                        {{ question.answer_max_length }}{% else %}unlimited{% endif %}){% endif %}
-                    <br>
-                    <strong>Description:</strong> {{ question.question_description }}<br>
-                    <strong>Answer required:</strong>
-                    {% include 'common/_check-icon.tmpl' with value=question.answer_required %}
-                    <p></p>
-                {% empty %}
-                    No questions for this call
-                {% endfor %}
-                <p>
-                </p>
-
-                <h2>Template variables</h2>
-                {% if template_variables %}
-                    {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}
-                {% else %}
-                    No template variables in this call
-                {% endif %}
-                <p></p>
-
-                <hr>
-                {% include 'comments/_comments-attachments.tmpl' %}
             </div>
-            <div class="col-2">
-                <a class="btn btn-primary d-print-none" href="{% url 'logged-call-update' id=call.id %}">Edit
-                    call</a>
-
+            <br>
+            <strong>Budget maximum:</strong> {{ call.budget_maximum }} CHF
+            <div class="row">
+                <div class="col-6">
+                    <strong>Budget categories:</strong><br>
+                    {% for budget_category in budget_categories_status %}
+                        {% include 'common/_check-icon.tmpl' with value=budget_category.in_call %}
+                        {{ budget_category.name }}
+                        <br>
+                    {% endfor %}
+                </div>
             </div>
+            <p></p>
+            <div class="row">
+                <div class="col-6">
+                    <strong>Other funding
+                        question:</strong> {% include 'common/_check-icon.tmpl' with value=call.other_funding_question %}
+                </div>
+                <div class="col-6">
+                    <strong>Proposal partner
+                        question:</strong> {% include 'common/_check-icon.tmpl' with value=call.proposal_partner_question %}
+                </div>
+                <div class="col-12">
+                    <strong>Overarching question</strong>
+                    {% include 'common/_check-icon.tmpl' with value=call.overarching_project_question %}
+                </div>
+            </div>
+            <br>
+            <h2>Questions</h2>
+            {% for question in call.callquestion_set_ordered_by_order %}
+                <strong>Answer type:</strong>
+                {% include 'common/_answer_type-icon.tmpl' with type=question.answer_type %}
+                <br>
+                <strong>Question:</strong> {{ question.question_text }}
+                {% if question.answer_type == question.TEXT %}(max words: {% if question.answer_max_length %}
+                    {{ question.answer_max_length }}{% else %}unlimited{% endif %}){% endif %}
+                <br>
+                <strong>Description:</strong> {{ question.question_description }}<br>
+                <strong>Answer required:</strong>
+                {% include 'common/_check-icon.tmpl' with value=question.answer_required %}
+                <p></p>
+            {% empty %}
+                No questions for this call
+            {% endfor %}
+            <p>
+            </p>
+
+            <h2>Template variables</h2>
+            {% if template_variables %}
+                {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}
+            {% else %}
+                No template variables in this call
+            {% endif %}
+            <p></p>
+
+            <hr>
+            {% include 'comments/_comments-attachments.tmpl' %}
+        </div>
+        <div class="col-2">
+            <a class="btn btn-primary d-print-none" href="{% url 'logged-call-update' id=call.id %}">Edit
+                call</a>
+
         </div>
     </div>
 {% endblock %}

@@ -4,11 +4,10 @@
 
 {% block contents %}
     {% if pk %}
-        <h1>Editing funding instrument</h1>
+        <h1>Edit funding instrument</h1>
     {% else %}
-        <h1>Creating funding instrument</h1>
+        <h1>Create funding instrument</h1>
     {% endif %}
-    {% include 'common/_messages-box.tmpl' %}
 
     <form method="post" action="{{ action_url }}">
         {% crispy funding_instrument_form %}

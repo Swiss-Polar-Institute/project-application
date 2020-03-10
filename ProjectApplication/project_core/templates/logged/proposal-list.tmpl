@@ -3,7 +3,7 @@
 {% block subtitle %}Proposal list{% endblock %}
 
 {% block contents %}
-    <h1>List of proposals</h1>
+    <h1>Proposals</h1>
     {% if call_filter %}
         For call: <a href="{% url 'logged-call-detail' id=call_filter.id %}">{{ call_filter.long_name }}</a>
     {% elif reviewer %}

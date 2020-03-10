@@ -17,6 +17,7 @@ class PersonPositionsListView(TemplateView):
                         'active_subsection': 'contacts-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People'}]
         return render(request, 'logged/contact-list.tmpl', context)
 
 
@@ -31,6 +32,9 @@ class PersonPositionUpdateView(UpdateView):
         context.update({'active_section': 'lists',
                         'active_subsection': 'contacts-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People', 'url': reverse('person-position-list')},
+                                 {'name': 'Edit Person'}]
 
         return context
 
@@ -51,6 +55,8 @@ class PersonPositionCreateView(SuccessMessageMixin, CreateView):
                         'active_subsection': 'contacts-add',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'Create person'}]
+
         return context
 
     def get_success_url(self, **kwargs):
@@ -67,6 +73,9 @@ class PersonPositionDetailView(DetailView):
         context.update({'active_section': 'lists',
                         'active_subsection': 'contacts-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People', 'url': reverse('person-position-list')},
+                                 {'name': 'View'}]
 
         return context
 

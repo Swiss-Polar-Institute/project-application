@@ -37,6 +37,8 @@ class CallsList(TemplateView):
                         'active_subsection': 'calls-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Calls'}]
+
         return context
 
 
@@ -74,6 +76,9 @@ class CallDetailView(AbstractCallView):
     def get(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
+        context['breadcrumb'] = [{'name': 'Call', 'url': reverse('logged-calls-list')},
+                                 {'name': 'Call details'}]
+
         return render(request, 'logged/call-detail.tmpl', context)
 
 
@@ -108,6 +113,9 @@ class ProposalList(TemplateView):
         context.update({'active_section': 'calls',
                         'active_subsection': 'calls-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
+                                 {'name': 'List of proposals'}]
 
         return render(request, 'logged/_call_list-proposals.tmpl', context)
 
@@ -171,6 +179,9 @@ class CallView(TemplateView):
 
         context['active_section'] = 'calls'
         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+
+        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
+                                 {'name': f'{context["call_action"]} call'}]
 
         return render(request, 'logged/call.tmpl', context)
 

@@ -3,7 +3,7 @@
 {% block subtitle %}Evaluation - List Proposals{% endblock %}
 
 {% block contents %}
-    <h1>List of proposals for call: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
+    <h1>Proposals for call: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
     {% include 'common/_messages-box.tmpl' %}
     <p></p>
     {% if proposals %}

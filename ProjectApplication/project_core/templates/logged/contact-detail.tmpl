@@ -2,12 +2,8 @@
 {% block subtitle %}Contact{% endblock %}
 
 {% block contents %}
-    <br>
-
     {#<a class="float-sm-right btn btn-primary" href="{% url 'contact-update' pk=object.id %}">Edit contact</a>#}
-
     <h1>Contact</h1>
-    {% include 'common/_messages-box.tmpl' %}
 
     <p></p>
     <strong>Name:</strong> {{ object.academic_title }} {{ object.person.first_name }} {{ object.person.surname }}

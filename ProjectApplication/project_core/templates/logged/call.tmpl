@@ -3,40 +3,35 @@
 {% load crispy_forms_tags %}
 
 {% block contents %}
-    <div class="container-fluid">
-        <br>
-        {% include 'common/_messages-box.tmpl' %}
+    <div class="row">
+        <div class="col-10">
+            <h1>{{ call_action }} call</h1>
+            <form method="post" action="{{ call_action_url }}">
+                {% crispy call_form %}
 
-        <div class="row">
-            <div class="col-10">
-                <h1>{{ call_action }} call</h1>
-                <form method="post" action="{{ call_action_url }}">
-                    {% crispy call_form %}
+                {% include 'logged/_form_call_question.tmpl' %}
 
-                    {% include 'logged/_form_call_question.tmpl' %}
-
-                    {% if call_action != 'Create' %}
-                        <h1>Template variables</h1>
-                        {% include 'variable_templates/_template_variables-form.tmpl' %}
-                    {% endif %}
-
-                    {% include 'common/_submit-button.tmpl' with value='Save Call' %}
-
-                    {% if id %}
-                        <a class="btn btn-danger" href="{% url 'logged-call-detail' id=id %}"
-                           role="button">Cancel Edit</a>
-                    {% else %}
-                        <a class="btn btn-danger" href="{% url 'logged-calls-list' %}"
-                           role="button">Cancel Edit</a>
-                    {% endif %}
-                    <p></p>
-                </form>
-            </div>
-            <div class="col-2">
-                {% if id %}
-                    <a class="btn btn-primary" href="{% url 'logged-call-detail' id=id %}">View Call</a>
+                {% if call_action != 'Create' %}
+                    <h1>Template variables</h1>
+                    {% include 'variable_templates/_template_variables-form.tmpl' %}
                 {% endif %}
-            </div>
+
+                {% include 'common/_submit-button.tmpl' with value='Save Call' %}
+
+                {% if id %}
+                    <a class="btn btn-danger" href="{% url 'logged-call-detail' id=id %}"
+                       role="button">Cancel Edit</a>
+                {% else %}
+                    <a class="btn btn-danger" href="{% url 'logged-calls-list' %}"
+                       role="button">Cancel Edit</a>
+                {% endif %}
+                <p></p>
+            </form>
+        </div>
+        <div class="col-2">
+            {% if id %}
+                <a class="btn btn-primary" href="{% url 'logged-call-detail' id=id %}">View Call</a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
