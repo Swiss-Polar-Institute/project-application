@@ -23,19 +23,19 @@ class CallsList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['view_button'] = True
-        context['edit_button'] = True
-        context['proposal_call_list_button'] = True
-        context['proposal_evaluation_list_button'] = False
-        context['evaluation_spreadsheet_button'] = False
+        context.update({'view_button': True,
+                        'edit_button': True,
+                        'proposal_call_list_button': True,
+                        'proposal_evaluation_list_button': False,
+                        'evaluation_spreadsheet_button': False})
 
-        context['open_calls'] = Call.open_calls()
-        context['closed_calls'] = Call.closed_calls()
-        context['future_calls'] = Call.future_calls()
+        context.update({'open_calls': Call.open_calls(),
+                        'closed_calls': Call.closed_calls(),
+                        'future_calls': Call.future_calls()})
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'calls-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'calls-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         return context
 
@@ -47,9 +47,11 @@ class AbstractCallView(TemplateView):
         call = Call.objects.get(id=kwargs['id'])
 
         context['call'] = call
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'calls-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'calls-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+
         context['template_variables'] = get_template_variables_for_call(call)
 
         call_budget_categories_names = list(call.budget_categories.all().values_list('name', flat=True))
@@ -102,9 +104,10 @@ class ProposalList(TemplateView):
 
         context['call'] = call
         context['proposals'] = proposals
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'calls-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'calls-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         return render(request, 'logged/_call_list-proposals.tmpl', context)
 
@@ -230,9 +233,9 @@ class CallView(TemplateView):
         context[CALL_QUESTION_FORM_NAME] = call_question_form
         context[TEMPLATE_VARIABLES_FORM_NAME] = template_variables_form
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = active_subsection
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': active_subsection,
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         messages.error(request, 'Call not saved. Please correct the errors in the form and try again')
 

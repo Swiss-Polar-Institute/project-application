@@ -16,9 +16,9 @@ class TemplateQuestionList(TemplateView):
 
         context['template_questions'] = TemplateQuestion.objects.all()
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'template-questions-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'template-questions-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         return render(request, 'logged/template_question-list.tmpl', context)
 
@@ -79,9 +79,9 @@ class TemplateQuestionCreateView(TemplateQuestionMixin, CrispyNoFormTag, Success
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'template-questions-add'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'template-questions-add',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         return context
 
@@ -94,9 +94,9 @@ class TemplateQuestionUpdateView(TemplateQuestionMixin, CrispyNoFormTag, Success
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'template-questions-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'template-questions-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         return context
 
@@ -108,8 +108,8 @@ class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'template-questions-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'template-questions-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         return context

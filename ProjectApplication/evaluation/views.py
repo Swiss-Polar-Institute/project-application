@@ -137,15 +137,14 @@ class CallEvaluationUpdate(TemplateView):
             call_evaluation = None
             call = Call.objects.get(id=self.request.GET['call'])
 
-        context['active_section'] = 'evaluation'
-        context['active_subsection'] = 'evaluation-list'
-        context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
         context['call'] = call
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': 'Edit call evaluation', 'active': True}]
-
 
         call_evaluation_form = CallEvaluationForm(instance=call_evaluation, prefix=CallEvaluationForm.FORM_NAME,
                                                   call=call)
@@ -176,9 +175,9 @@ class CallEvaluationUpdate(TemplateView):
             messages.success(request, 'Call evaluation saved')
             return redirect(reverse('logged-call-evaluation-detail', kwargs={'id': call_evaluation.id}))
         else:
-            context['active_section'] = 'evaluation'
-            context['active_subsection'] = 'evaluation-list'
-            context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
+            context.update({'active_section': 'evaluation',
+                            'active_subsection': 'evaluation-list',
+                            'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
             messages.warning(request, 'Call evaluation not saved. Verify errors in the form')
             context[CallEvaluationForm.FORM_NAME] = call_evaluation_form
@@ -198,9 +197,10 @@ class ProposalList(TemplateView):
 
         context['call'] = call
         context['proposals'] = proposals
-        context['active_section'] = 'evaluation'
-        context['active_subsection'] = 'evaluation-list'
-        context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'List of proposals ({call.short_name})', 'active': True}]

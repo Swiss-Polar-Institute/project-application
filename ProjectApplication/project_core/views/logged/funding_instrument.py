@@ -20,9 +20,9 @@ class FundingInstrumentList(TemplateView):
 
         context['funding_instruments'] = FundingInstrument.objects.all()
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'funding-instruments-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'funding-instruments-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         return render(request, 'logged/funding_instrument-list.tmpl', context)
 
@@ -56,17 +56,18 @@ class FundingInstrumentView(TemplateView):
                                                                                 prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
             context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
-            context['active_section'] = 'calls'
-            context['active_subsection'] = 'funding-instruments-list'
-            context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+
+            context.update({'active_section': 'calls',
+                            'active_subsection': 'funding-instruments-list',
+                            'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         else:
             context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(prefix=FUNDING_INSTRUMENT_FORM_NAME)
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
-            context['active_section'] = 'calls'
-            context['active_subsection'] = 'funding-instrument-add'
-            context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+            context.update({'active_section': 'calls',
+                            'active_subsection': 'funding-instrument-add',
+                            'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         return render(request, 'logged/funding_instrument-form.tmpl', context)
 
@@ -98,9 +99,9 @@ class FundingInstrumentView(TemplateView):
 
         context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'funding-instruments-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'funding-instruments-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         messages.error(request, 'Funding Instrument not saved. Please correct the errors in the form and try again')
 
@@ -129,9 +130,10 @@ class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['active_section'] = 'calls'
-        context['active_subsection'] = 'funding-instruments-list'
-        context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'funding-instruments-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+
         context['template_variables'] = get_template_variables_for_funding_instrument(kwargs['object'])
 
         return context

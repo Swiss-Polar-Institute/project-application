@@ -47,9 +47,9 @@ class ProposalsList(TemplateView):
             context['proposals'] = Reviewer.filter_proposals(context['proposals'], self.request.user)
             context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
 
-        context['active_section'] = 'lists'
-        context['active_subsection'] = 'proposals-list'
-        context['sidebar_template'] = 'logged/_sidebar-lists.tmpl'
+        context.update({'active_section': 'lists',
+                        'active_subsection': 'proposals-list',
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         return context
 
