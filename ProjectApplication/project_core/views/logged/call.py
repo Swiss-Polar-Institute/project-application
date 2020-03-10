@@ -116,7 +116,7 @@ class ProposalList(TemplateView):
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-                                 {'name': 'List of proposals'}]
+                                 {'name': f'List of proposals ({call.little_name()})'}]
 
         return render(request, 'logged/_call_list-proposals.tmpl', context)
 
@@ -133,6 +133,11 @@ class ProposalDetail(AbstractProposalDetailView):
                         'active_subsection': 'calls-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'
                         })
+
+        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls-list')},
+                                 {'name': f'List of proposals ({proposal.call.little_name()})',
+                                  'url': reverse('logged-call-list-proposals', kwargs={'call_id': proposal.call.id})},
+                                 {'name': 'Proposal'}]
 
         return render(request, 'logged/proposal-detail.tmpl', context)
 
