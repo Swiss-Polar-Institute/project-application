@@ -20,6 +20,8 @@ class TemplateQuestionList(TemplateView):
                         'active_subsection': 'template-questions-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Template questions'}]
+
         return render(request, 'logged/template_question-list.tmpl', context)
 
 
@@ -83,6 +85,9 @@ class TemplateQuestionCreateView(TemplateQuestionMixin, CrispyNoFormTag, Success
                         'active_subsection': 'template-questions-add',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-questions-list')},
+                                 {'name': 'Create'}]
+
         return context
 
 
@@ -98,6 +103,9 @@ class TemplateQuestionUpdateView(TemplateQuestionMixin, CrispyNoFormTag, Success
                         'active_subsection': 'template-questions-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-questions-list')},
+                                 {'name': 'Edit'}]
+
         return context
 
 
@@ -111,5 +119,8 @@ class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
         context.update({'active_section': 'calls',
                         'active_subsection': 'template-questions-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-questions-list')},
+                                 {'name': 'Details'}]
 
         return context

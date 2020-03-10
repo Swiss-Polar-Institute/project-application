@@ -78,7 +78,7 @@ class CallDetailView(AbstractCallView):
         context = self.prepare_context(request, *args, **kwargs)
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls-list')},
-                                 {'name': 'Call details'}]
+                                 {'name': 'Details'}]
 
         return render(request, 'logged/call-detail.tmpl', context)
 

@@ -24,6 +24,8 @@ class FundingInstrumentList(TemplateView):
                         'active_subsection': 'funding-instruments-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Funding instruments'}]
+
         return render(request, 'logged/funding_instrument-list.tmpl', context)
 
 
@@ -61,6 +63,8 @@ class FundingInstrumentView(TemplateView):
                             'active_subsection': 'funding-instruments-list',
                             'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
+            breadcrumb = 'Edit'
+
         else:
             context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(prefix=FUNDING_INSTRUMENT_FORM_NAME)
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(prefix=TEMPLATE_VARIABLES_FORM_NAME)
@@ -68,6 +72,11 @@ class FundingInstrumentView(TemplateView):
             context.update({'active_section': 'calls',
                             'active_subsection': 'funding-instrument-add',
                             'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+
+            breadcrumb = 'Create'
+
+        context['breadcrumb'] = [{'name': 'Funding instruments'},
+                                 {'name': breadcrumb}]
 
         return render(request, 'logged/funding_instrument-form.tmpl', context)
 
