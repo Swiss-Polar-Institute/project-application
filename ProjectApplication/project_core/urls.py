@@ -13,7 +13,7 @@ from .views import logged
 urlpatterns = [
     path('', external.homepage.Homepage.as_view(), name='homepage'),
     path('admin/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-jsi18n'),
-    path('calls/', external.call.CallsList.as_view(), name='call-list'),
+    path('calls/', external.call.CallList.as_view(), name='call-list'),
 
     path('proposal/add/', external.proposal.ProposalView.as_view(), name='proposal-add'),
     path('proposal/<uuid:uuid>/update/', external.proposal.ProposalView.as_view(),
@@ -28,7 +28,7 @@ urlpatterns = [
          common.proposal.ProposalQuestionAnswerFileView.as_view(),
          name='proposal-question-answer-file'),
 
-    path('logged/proposals/', logged.proposal.ProposalsList.as_view(), name='logged-proposal-list'),
+    path('logged/proposals/', logged.proposal.ProposalList.as_view(), name='logged-proposal-list'),
     path('logged/proposal/<int:id>/update/', logged.proposal.ProposalView.as_view(),
          name='logged-proposal-update'),
     path('logged/proposal/<int:id>/', logged.proposal.ProposalDetailView.as_view(),
@@ -42,7 +42,7 @@ urlpatterns = [
     path('logged/proposals/export/csv/summary/', project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
 
-    path('logged/call/list/', logged.call.CallsList.as_view(), name='logged-call-list'),
+    path('logged/call/list/', logged.call.CallList.as_view(), name='logged-call-list'),
     path('logged/call/add/', logged.call.CallView.as_view(), name='logged-call-add'),
     path('logged/call/<int:id>/update/', logged.call.CallView.as_view(),
          name='logged-call-update'),
@@ -54,7 +54,7 @@ urlpatterns = [
          name='logged-call-comment-add'),
     path('logged/call/<int:id>/', logged.call.CallDetailView.as_view(),
          name='logged-call-detail'),
-    path('logged/calls/', logged.call.CallsList.as_view(), name='logged-calls'),
+    path('logged/calls/', logged.call.CallList.as_view(), name='logged-calls'),
 
     path('logged/', logged.homepage.Homepage.as_view(), name='logged-homepage'),
 
@@ -84,7 +84,7 @@ urlpatterns = [
          name='person-position-detail'),
     path('logged/person_position/<int:pk>/update', logged.person_position.PersonPositionUpdateView.as_view(),
          name='person-position-update'),
-    path('logged/person_position/', logged.person_position.PersonPositionsListView.as_view(),
+    path('logged/person_position/', logged.person_position.PersonPositionListView.as_view(),
          name='person-position-list'),
 
     path('accounts/login/',

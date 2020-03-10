@@ -18,7 +18,7 @@ CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
 
 
-class CallsList(TemplateView):
+class CallList(TemplateView):
     template_name = 'logged/call-list.tmpl'
 
     def get_context_data(self, **kwargs):

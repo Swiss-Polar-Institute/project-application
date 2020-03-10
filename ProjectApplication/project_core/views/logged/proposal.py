@@ -29,7 +29,7 @@ def create_file_name(name_specification, call_id):
     return filename
 
 
-class ProposalsList(TemplateView):
+class ProposalList(TemplateView):
     template_name = 'logged/proposal-list.tmpl'
 
     def get_context_data(self, **kwargs):

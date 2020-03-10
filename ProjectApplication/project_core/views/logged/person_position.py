@@ -7,7 +7,7 @@ from project_core.forms.contacts import ContactForm
 from project_core.models import PersonPosition
 
 
-class PersonPositionsListView(TemplateView):
+class PersonPositionListView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
