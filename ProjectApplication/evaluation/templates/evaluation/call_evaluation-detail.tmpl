@@ -6,10 +6,11 @@
 {% block contents %}
     <div class="container-fluid">
         <br>
+        {% include 'common/_breadcrumb.tmpl'%}
         {% include 'common/_messages-box.tmpl' %}
         <div class="row">
             <div class="col-10">
-                <h1>Call Evaluation for: {{ call_evaluation.call.long_name }}</h1>
+                <h1>Call Evaluation for: <a href="{% url 'logged-call-detail' id=call_evaluation.call.id %}">{{ call_evaluation.call.long_name }}</a></h1>
                 <br>
                 <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
 

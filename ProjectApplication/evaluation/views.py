@@ -49,16 +49,20 @@ class ProposalEvaluationList(TemplateView):
 
         context['calls'] = Call.closed_calls()
 
-        context['view_button'] = False
-        context['edit_button'] = False
-        context['proposal_call_list_button'] = False
-        context['proposal_evaluation_list_button'] = True
-        context['evaluation_spreadsheet_button'] = True
-        context['evaluate_button'] = True
+        context.update({'view_button': False,
+                        'edit_button': False,
+                        'proposal_call_list_button': False,
+                        'proposal_evaluation_list_button': True,
+                        'evaluation_spreadsheet_button': True,
+                        'evaluate_button': True
+                        })
 
-        context['active_section'] = 'evaluation'
-        context['active_subsection'] = 'evaluation-list'
-        context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                        })
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'active': True}]
 
         return render(request, 'evaluation/evaluation-list.tmpl', context)
 
@@ -85,34 +89,41 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': f'List of proposals ({proposal.call.short_name})',
+                                  'url': reverse('logged-call-evaluation-list-proposals',
+                                                 kwargs={'call_id': proposal.call.id})},
+                                 {'name': 'Proposal evaluation', 'active': True}]
+
         return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
-    def post(self, request, *args, **kwargs):
-        if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
-            raise PermissionDenied()
 
-        context = self.prepare_context(request, *args, **kwargs)
+def post(self, request, *args, **kwargs):
+    if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
+        raise PermissionDenied()
 
-        proposal = Proposal.objects.get(id=kwargs['id'])
+    context = self.prepare_context(request, *args, **kwargs)
 
-        proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES,
-                                                          prefix=ProposalEvaluationForm.FORM_NAME,
-                                                          proposal=proposal)
+    proposal = Proposal.objects.get(id=kwargs['id'])
 
-        if proposal_evaluation_form.is_valid():
-            proposal_evaluation = proposal_evaluation_form.save(user=request.user)
+    proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES,
+                                                      prefix=ProposalEvaluationForm.FORM_NAME,
+                                                      proposal=proposal)
 
-            messages.success(request, 'Evaluation saved')
-            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'id': proposal_evaluation.id}))
-        else:
-            messages.warning(request, 'Evaluation not saved. Verify errors in the form')
-            context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
+    if proposal_evaluation_form.is_valid():
+        proposal_evaluation = proposal_evaluation_form.save(user=request.user)
 
-            context.update({'active_section': 'proposals',
-                            'active_subsection': 'proposals-list',
-                            'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+        messages.success(request, 'Evaluation saved')
+        return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'id': proposal_evaluation.id}))
+    else:
+        messages.warning(request, 'Evaluation not saved. Verify errors in the form')
+        context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
 
-            return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
+        context.update({'active_section': 'proposals',
+                        'active_subsection': 'proposals-list',
+                        'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+
+        return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
 
 class CallEvaluationUpdate(TemplateView):
@@ -131,6 +142,10 @@ class CallEvaluationUpdate(TemplateView):
         context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
 
         context['call'] = call
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': 'Edit call evaluation', 'active': True}]
+
 
         call_evaluation_form = CallEvaluationForm(instance=call_evaluation, prefix=CallEvaluationForm.FORM_NAME,
                                                   call=call)
@@ -187,16 +202,23 @@ class ProposalList(TemplateView):
         context['active_subsection'] = 'evaluation-list'
         context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
 
-        return render(request, 'evaluation/_evaluation_list-proposals.tmpl', context)
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': f'List of proposals ({call.short_name})', 'active': True}]
+
+        return render(request, 'evaluation/evaluation_list-proposals.tmpl', context)
 
 
 class CallEvaluationDetail(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['active_section'] = 'evaluation'
-        context['active_subsection'] = 'evaluation-list'
-        context['sidebar_template'] = 'evaluation/_sidebar-evaluation.tmpl'
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                        })
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': 'View call evaluation', 'active': True}]
 
         call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
         context['call_evaluation'] = call_evaluation
@@ -237,6 +259,12 @@ class ProposalDetail(TemplateView):
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
                         })
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': f'List of proposals ({proposal.call.short_name})',
+                                  'url': reverse('logged-call-evaluation-list-proposals',
+                                                 kwargs={'call_id': proposal.call.id})},
+                                 {'name': 'Proposal View', 'active': True}]
 
         return render(request, 'logged/proposal-detail.tmpl', context)
 
