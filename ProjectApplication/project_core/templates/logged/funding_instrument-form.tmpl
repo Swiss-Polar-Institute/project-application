@@ -26,13 +26,14 @@
                     <a class="btn btn-danger" href="{% url 'funding-instrument-list' %}"
                        role="button">Cancel Edit</a>
                 {% endif %}
+                <p></p>
             </form>
         </div>
-        {% if pk %}
-            <div class="col-2">
+        <div class="col-2">
+            {% if pk %}
                 <a class="btn btn-primary"
                    href="{% url 'funding-instrument-detail' pk=pk %}">View funding instrument</a>
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
