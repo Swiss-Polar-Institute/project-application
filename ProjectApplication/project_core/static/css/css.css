@@ -153,8 +153,14 @@ div.selector-filter {
     display: none;
 }
 
+.breadcrumb {
+    padding-top: 0;
+    padding-bottom: 0;
+    /*background-color: transparent;*/
+}
 
-.carles {
-    background-color: #ff0000;
-    color: white;
+.breadcrumb-item + .breadcrumb-item::before {
+    font-family: "Font Awesome 5 Free";
+    content: "\f105";
+    font-weight: 900;
 }
