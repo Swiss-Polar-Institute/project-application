@@ -41,8 +41,9 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{% url 'logged-proposals-list' %}">Proposals</a>
-                        <a class="dropdown-item" href="{% url 'person-position-list' %}">People</a>
                         <a class="dropdown-item disabled" href="#">Projects</a>
+                        <hr>
+                        <a class="dropdown-item" href="{% url 'person-position-list' %}">People</a>
                     </div>
                 </li>
             {% endif %}

@@ -2,23 +2,23 @@
 {% block sidebar_contents %}
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link {% if active == 'contacts-list' %}active{% endif %}"
-               href="{% url 'person-position-list' %}">
-                List people
-            </a>
-        </li>
-{#        <li class="nav-item">#}
-{#            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}"#}
-{#               href="{% url 'logged-person-position-add' %}">#}
-{#                Create person#}
-{#            </a>#}
-{#        </li>#}
-        <hr>
-        <li class="nav-item">
             <a class="nav-link {% if active == 'proposals-list' %}active{% endif %}"
                href="{% url 'logged-proposals-list' %}">
                 List proposals
             </a>
         </li>
+        <hr>
+        <li class="nav-item">
+            <a class="nav-link {% if active == 'contacts-list' %}active{% endif %}"
+               href="{% url 'person-position-list' %}">
+                List people
+            </a>
+        </li>
+        {#        <li class="nav-item">#}
+        {#            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}"#}
+        {#               href="{% url 'logged-person-position-add' %}">#}
+        {#                Create person#}
+        {#            </a>#}
+        {#        </li>#}
     </ul>
 {% endblock %}
