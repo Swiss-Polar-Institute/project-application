@@ -49,6 +49,8 @@ class ProposalEvaluationList(TemplateView):
 
         context['calls'] = Call.closed_calls()
 
+        context['proposals_no_draft_only'] = True
+
         context.update({'view_button': False,
                         'edit_button': False,
                         'proposal_call_list_button': False,
@@ -62,7 +64,7 @@ class ProposalEvaluationList(TemplateView):
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
                         })
 
-        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'active': True}]
+        context['breadcrumb'] = [{'name': 'Calls to evaluate'}]
 
         return render(request, 'evaluation/evaluation-list.tmpl', context)
 
@@ -93,7 +95,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
                                  {'name': f'List of proposals ({proposal.call.short_name})',
                                   'url': reverse('logged-call-evaluation-list-proposals',
                                                  kwargs={'call_id': proposal.call.id})},
-                                 {'name': 'Proposal evaluation', 'active': True}]
+                                 {'name': 'Proposal evaluation'}]
 
         return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 
@@ -144,7 +146,7 @@ class CallEvaluationUpdate(TemplateView):
         context['call'] = call
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': 'Edit call evaluation', 'active': True}]
+                                 {'name': 'Edit call evaluation'}]
 
         call_evaluation_form = CallEvaluationForm(instance=call_evaluation, prefix=CallEvaluationForm.FORM_NAME,
                                                   call=call)
@@ -203,7 +205,7 @@ class ProposalList(TemplateView):
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': f'List of proposals ({call.short_name})', 'active': True}]
+                                 {'name': f'List of proposals ({call.little_name()})'}]
 
         return render(request, 'evaluation/evaluation_list-proposals.tmpl', context)
 
@@ -218,7 +220,7 @@ class CallEvaluationDetail(TemplateView):
                         })
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': 'View call evaluation', 'active': True}]
+                                 {'name': 'View call evaluation'}]
 
         call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
         context['call_evaluation'] = call_evaluation
@@ -264,7 +266,7 @@ class ProposalDetail(TemplateView):
                                  {'name': f'List of proposals ({proposal.call.short_name})',
                                   'url': reverse('logged-call-evaluation-list-proposals',
                                                  kwargs={'call_id': proposal.call.id})},
-                                 {'name': 'Proposal View', 'active': True}]
+                                 {'name': 'Proposal View'}]
 
         return render(request, 'logged/proposal-detail.tmpl', context)
 

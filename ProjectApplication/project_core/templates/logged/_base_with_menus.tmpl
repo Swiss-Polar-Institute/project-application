@@ -8,6 +8,10 @@
             {% include sidebar_template with active=active_subsection %}
 
             <div class="col-11 px-4" role="main">
+                <br>
+                {% include 'common/_breadcrumb.tmpl' %}
+                {% include 'common/_messages-box.tmpl' %}
+
                 {% block contents %}{% endblock %}
             </div>
         </div>

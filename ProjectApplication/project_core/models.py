@@ -112,6 +112,12 @@ class Call(CreateModifyOn):
     def __str__(self):
         return self.long_name
 
+    def little_name(self):
+        if self.short_name:
+            return self.short_name
+        else:
+            return f'{self.long_name[:10]}...'
+
     @staticmethod
     def open_calls():
         return Call.objects.filter(call_open_date__lte=timezone.now(),
@@ -127,6 +133,10 @@ class Call(CreateModifyOn):
 
     def number_of_proposals(self):
         return self.proposal_set.count()
+
+    def number_of_proposals_no_draft(self):
+        draft = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_DRAFT)
+        return self.proposal_set.exclude(proposal_status=draft).count()
 
     def callquestion_set_ordered_by_order(self):
         return self.callquestion_set.all().order_by('order')

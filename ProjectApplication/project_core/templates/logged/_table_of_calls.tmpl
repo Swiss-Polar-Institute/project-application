@@ -9,7 +9,7 @@
     <thead>
     <tr>
         <th>Name</th>
-        <th>Proposals</th>
+        <th>{{ th_proposals|default:"Proposals" }}</th>
         <th>Deadline</th>
         <th>Actions</th>
     </tr>
@@ -19,7 +19,13 @@
     {% for call in calls %}
         <tr>
             <td>{{ call.long_name }}</td>
-            <td>{{ call.number_of_proposals }}</td>
+            <td>
+                {% if proposals_no_draft_only %}
+                    {{ call.number_of_proposals_no_draft }}
+                {% else %}
+                    {{ call.number_of_proposals }}
+                {% endif %}
+            </td>
             <td>{% include 'common/_date_time.tmpl' with value=call.submission_deadline %}</td>
             <td>
                 {% if view_button %}
@@ -33,7 +39,8 @@
                         Proposals</a>
                 {% endif %}
                 {% if proposal_evaluation_list_button %}
-                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-evaluation-list-proposals' call_id=call.id %}">List
+                    <a class="btn btn-primary btn-xs"
+                       href="{% url 'logged-call-evaluation-list-proposals' call_id=call.id %}">List
                         Proposals</a>
                 {% endif %}
                 {% if evaluate_button %}

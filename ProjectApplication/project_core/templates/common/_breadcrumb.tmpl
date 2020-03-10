@@ -1,7 +1,7 @@
 <nav>
     <ol class="breadcrumb">
         {% for crumb in breadcrumb %}
-            {% if crumb.active %}
+            {% if forloop.last %}
                 <li class="breadcrumb-item active">{{ crumb.name }}</li>
             {% else %}
                 <li class="breadcrumb-item"><a href="{{ crumb.url }}">{{ crumb.name }}</a></li>

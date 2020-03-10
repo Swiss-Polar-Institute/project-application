@@ -18,4 +18,6 @@ class Homepage(TemplateView):
                         'sidebar_template': 'logged/_sidebar-homepage.tmpl'
                         })
 
+        context['breadcrumb'] = [{'name': 'Homepage'}]
+
         return render(request, 'logged/homepage.tmpl', context)

@@ -2,12 +2,9 @@
 {% block subtitle %}Evaluation List{% endblock %}
 
 {% block contents %}
-    <br>
-    {% include 'common/_breadcrumb.tmpl' %}
-    {% include 'common/_messages-box.tmpl' %}
     <h1>Calls to evaluate</h1>
     {% if calls %}
-        {% include 'logged/_table_of_calls.tmpl' with calls=calls table_id='calls' %}
+        {% include 'logged/_table_of_calls.tmpl' with th_proposals='Proposals submitted' calls=calls table_id='calls' %}
     {% else %}
         No closed calls at the moment.
     {% endif %}

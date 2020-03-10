@@ -3,9 +3,6 @@
 {% block subtitle %}Evaluation - List Proposals{% endblock %}
 
 {% block contents %}
-    <br>
-    {% include 'common/_breadcrumb.tmpl' %}
-
     <h1>List of proposals for call: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
     {% include 'common/_messages-box.tmpl' %}
     <p></p>
@@ -71,5 +68,6 @@
             );
         });
     </script>
+    Only listing submitted proposals.
     <p></p>
 {% endblock %}
