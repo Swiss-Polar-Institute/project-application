@@ -145,4 +145,7 @@ class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
 
         context['template_variables'] = get_template_variables_for_funding_instrument(kwargs['object'])
 
+        context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('funding-instruments-list')},
+                                 {'name': 'Details'}]
+
         return context

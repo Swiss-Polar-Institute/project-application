@@ -3,27 +3,36 @@
 {% block subtitle %}Funding instrument{% endblock %}
 
 {% block contents %}
-    {% if pk %}
-        <h1>Edit funding instrument</h1>
-    {% else %}
-        <h1>Create funding instrument</h1>
-    {% endif %}
+    <div class="row">
+        <div class="col-10">
+            {% if pk %}
+                <h1>Edit funding instrument</h1>
+            {% else %}
+                <h1>Create funding instrument</h1>
+            {% endif %}
 
-    <form method="post" action="{{ action_url }}">
-        {% crispy funding_instrument_form %}
+            <form method="post" action="{{ action_url }}">
+                {% crispy funding_instrument_form %}
 
-        <h2>Template variables</h2>
-        {% include 'variable_templates/_template_variables-form.tmpl' %}
+                <h2>Template variables</h2>
+                {% include 'variable_templates/_template_variables-form.tmpl' %}
 
-        {% include 'common/_submit-button.tmpl' with value='Save Funding Instrument' %}
+                {% include 'common/_submit-button.tmpl' with value='Save Funding Instrument' %}
 
+                {% if pk %}
+                    <a class="btn btn-danger" href="{% url 'funding-instrument-detail' pk=pk %}"
+                       role="button">Cancel Edit</a>
+                {% else %}
+                    <a class="btn btn-danger" href="{% url 'funding-instruments-list' %}"
+                       role="button">Cancel Edit</a>
+                {% endif %}
+            </form>
+        </div>
         {% if pk %}
-            <a class="btn btn-danger" href="{% url 'funding-instrument-detail' pk=pk %}"
-               role="button">Cancel Edit</a>
-        {% else %}
-            <a class="btn btn-danger" href="{% url 'funding-instruments-list' %}"
-               role="button">Cancel Edit</a>
+            <div class="col-2">
+                <a class="btn btn-primary"
+                   href="{% url 'funding-instrument-detail' pk=pk %}">View funding instrument</a>
+            </div>
         {% endif %}
-    </form>
-    <br>
+    </div>
 {% endblock %}
