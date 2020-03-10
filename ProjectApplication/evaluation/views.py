@@ -266,7 +266,7 @@ class ProposalDetail(TemplateView):
                                  {'name': f'List of proposals ({proposal.call.short_name})',
                                   'url': reverse('logged-call-evaluation-list-proposals',
                                                  kwargs={'call_id': proposal.call.id})},
-                                 {'name': 'Proposal View'}]
+                                 {'name': 'Proposal'}]
 
         return render(request, 'logged/proposal-detail.tmpl', context)
 

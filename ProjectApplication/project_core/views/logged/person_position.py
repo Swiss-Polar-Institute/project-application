@@ -55,7 +55,7 @@ class PersonPositionCreateView(SuccessMessageMixin, CreateView):
                         'active_subsection': 'contacts-add',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'Create person'}]
+        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People'}, {'name': 'Create'}]
 
         return context
 
@@ -75,7 +75,7 @@ class PersonPositionDetailView(DetailView):
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People', 'url': reverse('person-position-list')},
-                                 {'name': 'View'}]
+                                 {'name': 'Contact'}]
 
         return context
 
