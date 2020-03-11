@@ -74,7 +74,7 @@ class PersonPositionDetailView(DetailView):
                         'active_subsection': 'contact-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People', 'url': reverse('person-position-list')},
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('person-position-list')}, {'name': 'People', 'url': reverse('person-position-list')},
                                  {'name': 'Contact'}]
 
         return context
