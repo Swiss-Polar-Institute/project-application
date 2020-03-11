@@ -1,8 +1,7 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 
 {% block contents %}
-    {#<a class="float-sm-right btn btn-primary" href="{% url 'contact-update' pk=object.id %}">Edit contact</a>#}
-    <h1>Contact</h1>
+    <h1>Person</h1>
 
     <p></p>
     <strong>Name:</strong> {{ object.academic_title }} {{ object.person.first_name }} {{ object.person.surname }}

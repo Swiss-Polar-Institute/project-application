@@ -122,7 +122,9 @@ class ProposalDetailView(AbstractProposalDetailView):
     extra_context = {'active_section': 'lists',
                      'active_subsection': 'proposal-list',
                      'sidebar_template': 'logged/_sidebar-lists.tmpl',
-                     'breadcrumb': [{'name': 'Lists', 'url': reverse_lazy('logged-lists')}, {'name': 'Proposals'}]}
+                     'breadcrumb': [{'name': 'Lists', 'url': reverse_lazy('logged-lists')},
+                                    {'name': 'Proposals', 'url': reverse_lazy('logged-proposal-list')},
+                                    {'name': 'Details'}]}
 
 
 class ProposalView(AbstractProposalView):

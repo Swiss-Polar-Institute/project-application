@@ -78,7 +78,7 @@ class PersonPositionDetailView(DetailView):
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
                                  {'name': 'People', 'url': reverse('person-position-list')},
-                                 {'name': 'Contact'}]
+                                 {'name': 'Details'}]
 
         return context
 
