@@ -4,13 +4,11 @@
 
 {% block contents %}
     <h1>Proposals</h1>
-    {% if call_filter %}
-        For call: <a href="{% url 'logged-call-detail' id=call_filter.id %}">{{ call_filter.long_name }}</a>
-    {% elif reviewer %}
+    {% if reviewer %}
         For reviewer: {{ reviewer }}<br>
         Calls with access: {% for call in reviewer_calls_access %}{{ call.long_name }}{% endfor %}
-    {% else %}
-        All calls
+    {% elif request|request_is_management %}
+        All proposals from all calls
     {% endif %}
     <p></p>
     {% if proposals %}
@@ -53,13 +51,8 @@
         No proposals to be displayed
     {% endif %}
     <p>
-        {% if call_filter %}
-            <a class="btn btn-primary btn-sm"
-               href="{% url 'logged-export-proposals-csv-summary-call' call=call_filter.id %}">Export as CSV</a>
-        {% else %}
-            <a class="btn btn-primary btn-sm"
-               href="{% url 'logged-export-proposals-csv-summary-all' %}">Export as CSV</a>
-        {% endif %}
+        <a class="btn btn-primary btn-sm"
+           href="{% url 'logged-export-proposals-csv-summary-all' %}">Export as CSV</a>
     </p>
 
 
