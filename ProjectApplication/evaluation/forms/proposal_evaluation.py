@@ -53,10 +53,6 @@ class ProposalEvaluationForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('allocated_budget', css_class='col-6'),
-                css_class='row'
-            ),
-            Div(
                 Div('panel_remarks', css_class='col-12'),
                 css_class='row'
             ),
@@ -65,14 +61,18 @@ class ProposalEvaluationForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('decision_letter', css_class='col-6'),
-                Div('decision_letter_date', css_class='col-6'),
+                Div('panel_recommendation', css_class='col-6'),
+                Div('allocated_budget', css_class='col-6'),
                 css_class='row'
             ),
             Div(
-                Div('panel_recommendation', css_class='col-4'),
-                Div('board_decision', css_class='col-4'),
-                Div('decision_date', css_class='col-4'),
+                Div('board_decision', css_class='col-6'),
+                Div('decision_date', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                Div('decision_letter', css_class='col-6'),
+                Div('decision_letter_date', css_class='col-6'),
                 css_class='row'
             ),
             FormActions(

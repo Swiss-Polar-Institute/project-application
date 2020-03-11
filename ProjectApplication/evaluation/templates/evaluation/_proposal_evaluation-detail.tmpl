@@ -1,11 +1,26 @@
 {% load filename_from_path %}
 
-<strong>Allocated budget:</strong> {{ proposal.proposalevaluation.allocated_budget }} CHF<br>
 <strong>Panel remarks:</strong>
 <div class="pre-with-newlines border p-3 bg-white rounded">{{ proposal.proposalevaluation.panel_remarks }}</div><br>
 <strong>Feedback to applicant:</strong>
 <div class="pre-with-newlines border p-3 bg-white rounded">{{ proposal.proposalevaluation.feedback_to_applicant }}</div>
 <br>
+<div class="row">
+    <div class="col-6">
+        <strong>Panel recommendation: </strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str %}
+    </div>
+    <div class="col-6">
+        <strong>Allocated budget (CHF):</strong> {{ proposal.proposalevaluation.allocated_budget }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-6">
+        <strong>Board decision:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision %}<br>
+    </div>
+    <div class="col-6">
+        <strong>Decision date:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.decision_date %}<br>
+    </div>
+</div>
 <div class="row">
     <div class="col-6">
         <strong>Decision
@@ -16,5 +31,3 @@
             date:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.decision_letter_date %}
     </div>
 </div>
-<strong>Board decision:</strong> {{ proposal.proposalevaluation.board_decision }}<br>
-<strong>Decision date:</strong> {{ proposal.proposalevaluation.decision_date }}<br>
