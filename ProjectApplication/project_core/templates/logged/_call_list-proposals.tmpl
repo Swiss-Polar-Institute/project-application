@@ -1,6 +1,5 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 {% load request_is_management %}
-{% block subtitle %}Call - List Proposals{% endblock %}
 
 {% block contents %}
     <h1>Proposals for call: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>

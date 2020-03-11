@@ -1,5 +1,15 @@
 {% extends 'common/_base.tmpl' %}
-{% block title %}Project Management - {% block subtitle %}{% endblock %}{% endblock %}
+{% block title %}
+{#    Title is generated based on the breadcrumb#}
+    Project management
+    {% if breadcrumb %}
+        {% for bread in breadcrumb %}
+            >
+            {{ bread.name }}
+        {% endfor %}
+    {% endif %}
+{% endblock %}
+
 {% block body_contents %}
     {% include 'logged/_navbar.tmpl' with active=active_section %}
 
