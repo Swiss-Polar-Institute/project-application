@@ -13,7 +13,7 @@ class ProposalModelTest(TestCase):
         self._proposal_status_submitted, _ = ProposalStatus.objects.get_or_create(
             name=settings.PROPOSAL_STATUS_SUBMITTED)
 
-    def test_proposal_can_call_evaluation_be_visualised(self):
+    def test_proposal_can_create_evaluation(self):
         proposal = database_population.create_proposal()
 
         # It cannot be evaluated, it's not eligible
