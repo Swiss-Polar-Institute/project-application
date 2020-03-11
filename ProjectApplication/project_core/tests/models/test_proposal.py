@@ -43,3 +43,17 @@ class ProposalModelTest(TestCase):
         call_evaluation.save()
 
         self.assertTrue(proposal.can_create_evaluation())
+
+    def test_proposal_can_eligibility_be_created_or_changed(self):
+        proposal = database_population.create_proposal()
+
+        # Eligibility cannot be created or changed: ProposalStatus is not correct
+        self.assertFalse(proposal.can_eligibility_be_created_or_changed())
+        self.assertEqual('Proposal status needs to be submitted in order to create/edit eligibility',
+                         proposal.reason_eligibility_cannot_be_created_or_changed())
+
+        # Let's make the ProposalStatus submitted...
+        proposal.proposal_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_SUBMITTED)
+        proposal.save()
+
+        self.assertTrue(proposal.can_eligibility_be_created_or_changed())
