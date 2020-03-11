@@ -153,12 +153,13 @@ div.selector-filter {
     display: none;
 }
 
+/** Makes the breadcrumb thinner. The default one is from Bootstrap a bit too thick */
 .breadcrumb {
     padding-top: 0;
     padding-bottom: 0;
-    /*background-color: transparent;*/
 }
 
+/** The default Bootstrap breadcrumb separator is / , here it uses > */
 .breadcrumb-item + .breadcrumb-item::before {
     font-family: "Font Awesome 5 Free";
     content: "\f105";
