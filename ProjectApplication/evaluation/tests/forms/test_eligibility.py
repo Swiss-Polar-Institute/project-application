@@ -27,10 +27,10 @@ class BudgetItemFormTest(TestCase):
                 'eligible': 'True'
                 }
 
-        eligibility_decision = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
+        eligibility_decision_form = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
 
-        self.assertTrue(eligibility_decision.is_valid())
-        eligibility_decision.save_eligibility(self._user)
+        self.assertTrue(eligibility_decision_form.is_valid())
+        eligibility_decision_form.save_eligibility(self._user)
 
         proposal.refresh_from_db()
         self.assertEqual(proposal.eligibility, Proposal.ELIGIBLE)
@@ -46,11 +46,11 @@ class BudgetItemFormTest(TestCase):
                 'eligible': 'True'
                 }
 
-        eligibility_decision = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
+        eligibility_decision_form = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
 
-        self.assertTrue(eligibility_decision.is_valid())
+        self.assertTrue(eligibility_decision_form.is_valid())
 
-        self.assertRaises(PermissionDenied, eligibility_decision.save_eligibility, user_not_in_management)
+        self.assertRaises(PermissionDenied, eligibility_decision_form.save_eligibility, user_not_in_management)
 
     def test_not_eligible_missing_comment(self):
         proposal = create_proposal()
@@ -61,9 +61,9 @@ class BudgetItemFormTest(TestCase):
                 'eligible': 'False'
                 }
 
-        eligibility_decision = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
+        eligibility_decision_form = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
 
-        self.assertFalse(eligibility_decision.is_valid())
+        self.assertFalse(eligibility_decision_form.is_valid())
 
     def test_not_eligible(self):
         proposal = create_proposal()
@@ -75,11 +75,11 @@ class BudgetItemFormTest(TestCase):
                 'eligible': 'False'
                 }
 
-        eligibility_decision = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
+        eligibility_decision_form = EligibilityDecisionForm(data=data, proposal_id=proposal.id)
 
-        self.assertTrue(eligibility_decision.is_valid())
+        self.assertTrue(eligibility_decision_form.is_valid())
 
-        eligibility_decision.save_eligibility(self._user)
+        eligibility_decision_form.save_eligibility(self._user)
 
         proposal.refresh_from_db()
 
