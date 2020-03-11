@@ -51,7 +51,7 @@ class ProposalList(TemplateView):
                         'active_subsection': 'proposal-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'Proposals'}]
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')}, {'name': 'Proposals'}]
 
         return context
 

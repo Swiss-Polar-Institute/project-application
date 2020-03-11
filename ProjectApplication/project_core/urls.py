@@ -35,11 +35,14 @@ urlpatterns = [
          name='logged-proposal-detail'),
     path('logged/proposal/<int:id>/comment/add/', logged.proposal.ProposalCommentAdd.as_view(),
          name='logged-proposal-comment-add'),
-    path('logged/proposals/export/excel/<int:call>/', project_core.views.logged.proposals_export_to_excel.ProposalsExportExcel.as_view(),
+    path('logged/proposals/export/excel/<int:call>/',
+         project_core.views.logged.proposals_export_to_excel.ProposalsExportExcel.as_view(),
          name='logged-export-proposals-for-call-excel'),
-    path('logged/proposals/export/csv/summary/<int:call>/', project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
+    path('logged/proposals/export/csv/summary/<int:call>/',
+         project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-call'),
-    path('logged/proposals/export/csv/summary/', project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
+    path('logged/proposals/export/csv/summary/',
+         project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
 
     path('logged/call/list/', logged.call.CallList.as_view(), name='logged-call-list'),
@@ -86,6 +89,9 @@ urlpatterns = [
          name='person-position-update'),
     path('logged/person_position/', logged.person_position.PersonPositionListView.as_view(),
          name='person-position-list'),
+
+    path('logged/lists/', logged.lists.ListsView.as_view(),
+         name='logged-lists'),
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',

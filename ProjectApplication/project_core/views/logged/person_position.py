@@ -17,7 +17,7 @@ class PersonPositionListView(TemplateView):
                         'active_subsection': 'contact-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People'}]
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')}, {'name': 'People'}]
         return render(request, 'logged/contact-list.tmpl', context)
 
 
@@ -33,7 +33,8 @@ class PersonPositionUpdateView(UpdateView):
                         'active_subsection': 'contact-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People', 'url': reverse('person-position-list')},
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'People', 'url': reverse('person-position-list')},
                                  {'name': 'Edit Person'}]
 
         return context
@@ -55,7 +56,8 @@ class PersonPositionCreateView(SuccessMessageMixin, CreateView):
                         'active_subsection': 'contacts-add',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists'}, {'name': 'People'}, {'name': 'Create'}]
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')}, {'name': 'People'},
+                                 {'name': 'Create'}]
 
         return context
 
@@ -74,7 +76,8 @@ class PersonPositionDetailView(DetailView):
                         'active_subsection': 'contact-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('person-position-list')}, {'name': 'People', 'url': reverse('person-position-list')},
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'People', 'url': reverse('person-position-list')},
                                  {'name': 'Contact'}]
 
         return context
