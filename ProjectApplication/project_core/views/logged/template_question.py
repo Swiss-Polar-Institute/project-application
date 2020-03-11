@@ -85,7 +85,7 @@ class TemplateQuestionCreateView(TemplateQuestionMixin, CrispyNoFormTag, Success
                         'active_subsection': 'template-questions-add',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-question-list')},
+        context['breadcrumb'] = [{'name': 'Template questions', 'url': reverse('template-question-list')},
                                  {'name': 'Create'}]
 
         return context
@@ -103,7 +103,7 @@ class TemplateQuestionUpdateView(TemplateQuestionMixin, CrispyNoFormTag, Success
                         'active_subsection': 'template-question-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-question-list')},
+        context['breadcrumb'] = [{'name': 'Template questions', 'url': reverse('template-question-list')},
                                  {'name': 'Edit'}]
 
         return context
@@ -120,7 +120,7 @@ class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
                         'active_subsection': 'template-question-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Template question', 'url': reverse('template-question-list')},
+        context['breadcrumb'] = [{'name': 'Template questions', 'url': reverse('template-question-list')},
                                  {'name': 'Details'}]
 
         return context

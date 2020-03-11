@@ -75,7 +75,7 @@ class FundingInstrumentView(TemplateView):
 
             breadcrumb = 'Create'
 
-        context['breadcrumb'] = [{'name': 'Funding instruments'},
+        context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('funding-instrument-list')},
                                  {'name': breadcrumb}]
 
         return render(request, 'logged/funding_instrument-form.tmpl', context)
