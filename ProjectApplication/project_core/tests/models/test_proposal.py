@@ -2,21 +2,44 @@ from datetime import datetime
 
 from django.test import TestCase
 
+from ProjectApplication import settings
 from evaluation.models import CallEvaluation
-from project_core.models import Proposal
+from project_core.models import Proposal, ProposalStatus
 from project_core.tests import database_population
 
 
 class ProposalModelTest(TestCase):
     def setUp(self):
-        self._call = database_population.create_call()
+        self._proposal_status_submitted, _ = ProposalStatus.objects.get_or_create(
+            name=settings.PROPOSAL_STATUS_SUBMITTED)
 
     def test_proposal_can_call_evaluation_be_visualised(self):
-        proposal = Proposal(call=self._call)
-        self.assertFalse(proposal.can_call_evaluation_be_visualised())
+        proposal = database_population.create_proposal()
 
-        call_evaluation = CallEvaluation(call=self._call, panel_date=datetime.now())
+        # It cannot be evaluated, it's not eligible
+        self.assertFalse(proposal.can_create_evaluation())
+        self.assertEqual('To evaluate the proposal the status needs to be submitted',
+                         proposal.reason_cannot_create_evaluation())
+
+        # Let's make it eligible
+        proposal.eligibility = Proposal.ELIGIBLE
+        proposal.save()
+
+        # It cannot be evaluated: the proposal status needs to be submitted
+        self.assertFalse(proposal.can_create_evaluation())
+        self.assertEqual('To evaluate the proposal the status needs to be submitted',
+                         proposal.reason_cannot_create_evaluation())
+
+        # Let's mark the proposal as submitted
+        proposal.proposal_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_SUBMITTED)
+        proposal.save()
+
+        # It cannot be evaluated: no call evaluation yet
+        self.assertFalse(proposal.can_create_evaluation())
+        self.assertEqual('To evaluate the proposal a Call Evaluation needs to be created',
+                         proposal.reason_cannot_create_evaluation())
+
+        call_evaluation = CallEvaluation(call=proposal.call, panel_date=datetime.now())
         call_evaluation.save()
 
-        self.assertTrue(proposal.can_call_evaluation_be_visualised())
-
+        self.assertTrue(proposal.can_create_evaluation())
