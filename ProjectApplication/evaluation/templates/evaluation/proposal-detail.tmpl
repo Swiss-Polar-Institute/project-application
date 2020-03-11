@@ -17,7 +17,9 @@
                     {% if proposal.can_eligibility_be_created_or_changed %}
                         {% include 'evaluation/_eligibility_decision-form.tmpl' with proposal=proposal %}
                     {% else %}
-                        <div class="border p-1 bg-white rounded">{{ proposal.reason_eligibility_cannot_be_created_or_changed }}</div>
+                        {% include 'evaluation/_eligibility-detail.tmpl' with proposal=proposal %}<br>
+                        <div class="border p-1 bg-light rounded">
+                            <em>{{ proposal.reason_eligibility_cannot_be_created_or_changed }}</em></div>
                     {% endif %}
                 </p>
                 <p>
@@ -30,7 +32,7 @@
                            href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
                            role="button">Create Proposal Evaluation</a>
                     {% else %}
-                        <div class="border p-1 bg-white rounded">{{ proposal.reason_cannot_create_evaluation }}</div>
+                        <div class="border p-1 bg-white rounded"><em>{{ proposal.reason_cannot_create_evaluation }}</em></div>
                     {% endif %}
                 </p>
             {% endif %}

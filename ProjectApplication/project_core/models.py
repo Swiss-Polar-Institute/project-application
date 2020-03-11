@@ -732,11 +732,11 @@ class Proposal(CreateModifyOn):
 
     def can_eligibility_be_created_or_changed(self):
         # TODO: if there is a project for this proposal it cannot be changed anymore
-        return self.status_is_submitted()
+        return not self.status_is_draft()
 
     def reason_eligibility_cannot_be_created_or_changed(self):
-        if not self.status_is_submitted():
-            return 'Proposal status needs to be submitted in order to create/edit eligibility'
+        if self.status_is_draft():
+            return 'Proposal status cannot be draft in order to create/edit eligibility'
 
         # TODO: if can_eligibility_be_created_or_changed returned False because a project exists for this
         # proposal: explain it here
