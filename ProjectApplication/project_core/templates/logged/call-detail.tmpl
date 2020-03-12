@@ -5,7 +5,7 @@
         <div class="col-10">
             <h1>Call details</h1>
             <strong>Funding instrument:</strong>
-            {% if call.funding_instrument %}{{ call.funding_instrument }}{% else %}Call not assigned to funding
+            {% if call.funding_instrument %}<a href="{% url 'logged-funding-instrument-detail' pk=call.funding_instrument.id %}">{{ call.funding_instrument }}</a>{% else %}Call not assigned to funding
                 instrument
             {% endif %}
             <br>
