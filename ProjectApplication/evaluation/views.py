@@ -128,9 +128,9 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
             messages.warning(request, 'Evaluation not saved. Verify errors in the form')
             context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
 
-            context.update({'active_section': 'proposals',
-                            'active_subsection': 'proposal-list',
-                            'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+            context.update({'active_section': 'evaluation',
+                            'active_subsection': 'evaluation-list',
+                            'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
             return render(request, 'logged/proposal-detail-evaluation-form.tmpl', context)
 

@@ -1,30 +1,41 @@
 {% extends 'logged/_sidebar-base.tmpl' %}
+{% load request_is_reviewer %}
+{% load request_is_management %}
+
 {% block sidebar_contents %}
     <ul class="nav flex-column">
-        <li class="nav-item">
-            <a class="nav-link {% if active == 'lists' %}active{% endif %}"
-               href="{% url 'logged-lists' %}">
-                Lists
-            </a>
-        </li>
-        <hr>
-        <li class="nav-item">
-            <a class="nav-link {% if active == 'proposal-list' %}active{% endif %}"
-               href="{% url 'logged-proposal-list' %}">
-                List proposals
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if active == 'contact-list' %}active{% endif %}"
-               href="{% url 'logged-person-position-list' %}">
-                List people
-            </a>
-        </li>
-        {#        <li class="nav-item">#}
-        {#            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}"#}
-        {#               href="{% url 'logged-person-position-add' %}">#}
-        {#                Create person#}
-        {#            </a>#}
-        {#        </li>#}
+        {% if request|request_is_management %}
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'lists' %}active{% endif %}"
+                   href="{% url 'logged-lists' %}">
+                    Lists
+                </a>
+            </li>
+            <hr>
+        {% endif %}
+
+        {% if request|request_is_management or request|request_is_reviewer %}
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'proposal-list' %}active{% endif %}"
+                   href="{% url 'logged-proposal-list' %}">
+                    List proposals
+                </a>
+            </li>
+        {% endif %}
+    
+        {% if request|request_is_management %}
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'contact-list' %}active{% endif %}"
+                   href="{% url 'logged-person-position-list' %}">
+                    List people
+                </a>
+            </li>
+            {#        <li class="nav-item">#}
+            {#            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}"#}
+            {#               href="{% url 'logged-person-position-add' %}">#}
+            {#                Create person#}
+            {#            </a>#}
+            {#        </li>#}
+        {% endif %}
     </ul>
 {% endblock %}

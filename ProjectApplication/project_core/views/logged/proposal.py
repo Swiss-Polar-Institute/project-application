@@ -40,12 +40,15 @@ class ProposalList(TemplateView):
             context['reviewer'] = self.request.user
             context['proposals'] = Reviewer.filter_proposals(context['proposals'], self.request.user)
             context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
+            active_section = 'proposals'
+            context['breadcrumb'] = [{'name': 'Proposals'}]
+        else:
+            active_section = 'lists'
+            context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')}, {'name': 'Proposals'}]
 
-        context.update({'active_section': 'lists',
+        context.update({'active_section': active_section,
                         'active_subsection': 'proposal-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
-
-        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')}, {'name': 'Proposals'}]
 
         return context
 
@@ -54,9 +57,9 @@ class ProposalCommentAdd(AbstractProposalDetailView):
     def post(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
-        context.update({'active_section': 'proposals',
+        context.update({'active_section': 'lists',
                         'active_subsection': 'proposal-list',
-                        'sidebar_template': 'logged/_sidebar-proposals.tmpl'})
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         proposal = Proposal.objects.get(id=kwargs['id'])
 
@@ -136,6 +139,6 @@ class ProposalView(AbstractProposalView):
 
     success_message = 'Proposal updated'
 
-    extra_context = {'active_section': 'proposals',
+    extra_context = {'active_section': 'lists',
                      'active_subsection': 'proposal-list',
-                     'sidebar_template': 'logged/_sidebar-proposals.tmpl'}
+                     'sidebar_template': 'logged/_sidebar-lists.tmpl'}
