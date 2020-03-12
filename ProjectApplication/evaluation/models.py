@@ -77,8 +77,8 @@ class ProposalEvaluation(CreateModifyOn):
 
     panel_remarks = models.TextField(blank=True, null=True)
     feedback_to_applicant = models.TextField(blank=True, null=True)
-    panel_recommendation = models.CharField(choices=PANEL_RECOMMENDATION, max_length=7)
-    board_decision = models.CharField(choices=BOARD_DECISION, max_length=7)
+    panel_recommendation = models.CharField(choices=PANEL_RECOMMENDATION, max_length=7, blank=True, null=True)
+    board_decision = models.CharField(choices=BOARD_DECISION, max_length=7, blank=True, null=True)
     decision_date = models.DateField(blank=True, null=True)
     decision_letter = models.FileField(storage=storages.backends.s3boto3.S3Boto3Storage(),
                                        upload_to=proposal_evaluation_eligibility_letter_rename,

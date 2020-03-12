@@ -37,7 +37,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.fields['proposal'].initial = self._proposal
         requested_budget = number_format(self._proposal.total_budget())
 
-        self.fields['allocated_budget'] = forms.DecimalField(localize=True)
+        self.fields['allocated_budget'] = forms.DecimalField(localize=True, required=False)
         self.fields['allocated_budget'].help_text = f'Requested: {requested_budget} CHF'
         self.fields['allocated_budget'].label = 'Allocated budget (CHF)'
 
