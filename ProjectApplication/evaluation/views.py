@@ -382,14 +382,46 @@ class CloseEvaluation(TemplateView):
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
-        context['eligible_proposals_without_evaluation'] = Proposal.objects.filter(call=call).filter(
-            eligibility=Proposal.ELIGIBLE).filter(proposalevaluation=None)
+        proposals = Proposal.objects.filter(call=call)
 
-        context['not_funded_without_letter_for_applicant'] = Proposal.objects.filter(call=call).filter(
+        checks = []
+
+        eligible_proposals_without_evaluation = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
+            proposalevaluation=None)
+
+        checks.append({'message_problem': 'There are eligible proposals without an evaluation',
+                       'message_all_good': 'All the eligible proposals have an evaluation',
+                       'proposals': eligible_proposals_without_evaluation})
+
+        not_funded_without_letter_for_applicant = proposals.filter(
             proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND).filter(
             Q(proposalevaluation__feedback_to_applicant='') | Q(proposalevaluation__feedback_to_applicant__isnull=True))
+
+        checks.append(
+            {'message_problem': 'There are proposals that are not funded and don\'t have a letter for the applicant',
+             'message_all_good': 'All the not funded proposals have a letter for the applicant',
+             'proposals': not_funded_without_letter_for_applicant})
+
+        context['checks'] = checks
+        context['all_good'] = CloseEvaluation._all_good(checks)
+
+        if context['all_good']:
+            context['total_number_of_proposals'] = proposals.count()
+            context['total_number_of_eligible'] = proposals.filter(eligibility=Proposal.ELIGIBLE).count()
+            context['total_number_of_funded'] = proposals.filter(
+                proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND).count()
+            context['total_number_of_eligible_not_funded'] = context['total_number_of_eligible'] - context[
+                'total_number_of_funded']
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'Close evaluation ({call.little_name()})'}]
 
         return render(request, 'evaluation/close-evaluation.tmpl', context)
+
+    @staticmethod
+    def _all_good(proposals):
+        all_good = True
+        for proposal in proposals:
+            all_good = all_good and proposal['proposals'].count() == 0
+
+        return all_good
