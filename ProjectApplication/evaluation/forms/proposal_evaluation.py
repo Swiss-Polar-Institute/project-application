@@ -86,6 +86,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         decision_letter = self.cleaned_data.get('decision_letter', None)
         board_decision = self.cleaned_data.get('board_decision', None)
         allocated_budget = self.cleaned_data.get('allocated_budget', None)
+        decision_date = self.cleaned_data.get('decision_date', None)
 
         errors = {}
         if decision_letter_date is None and decision_letter:
@@ -97,6 +98,9 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         if board_decision == ProposalEvaluation.BOARD_DECISION_FUND and allocated_budget is None:
             errors['allocated_budget'] = forms.ValidationError('Allocated budget is required if the board decision is to fund')
+
+        if board_decision == ProposalEvaluation.BOARD_DECISION_FUND and decision_date is None:
+            errors['decision_date'] = forms.ValidationError('Decision date is required if the board decision is to fund')
 
         if errors:
             raise forms.ValidationError(errors)
