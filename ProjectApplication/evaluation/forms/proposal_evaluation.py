@@ -84,14 +84,22 @@ class ProposalEvaluationForm(forms.ModelForm):
     def clean(self):
         decision_letter_date = self.cleaned_data.get('decision_letter_date', None)
         decision_letter = self.cleaned_data.get('decision_letter', None)
+        board_decision = self.cleaned_data.get('board_decision', None)
+        allocated_budget = self.cleaned_data.get('allocated_budget', None)
 
-        if not decision_letter_date and decision_letter:
-            raise forms.ValidationError(
-                {'decision_letter_date': 'Decision letter date cannot be empty if there is a decision letter attached'})
+        errors = {}
+        if decision_letter_date is None and decision_letter:
+            errors['decision_letter_date'] = forms.ValidationError(
+                'Decision letter is required if there is a decision letter attached')
 
-        if not decision_letter and decision_letter_date:
-            raise forms.ValidationError(
-                {'decision_letter': 'Decision letter cannot be empty if decision letter date has a date'})
+        if decision_letter is None and decision_letter_date:
+            errors['decision_letter'] = forms.ValidationError('Decision letter is required if decision letter date has a date')
+
+        if board_decision == ProposalEvaluation.BOARD_DECISION_FUND and allocated_budget is None:
+            errors['allocated_budget'] = forms.ValidationError('Allocated budget is required if the board decision is to fund')
+
+        if errors:
+            raise forms.ValidationError(errors)
 
     def save(self, *args, **kwargs):
         user = kwargs.pop('user')

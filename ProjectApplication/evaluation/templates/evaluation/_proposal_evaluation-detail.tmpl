@@ -10,7 +10,7 @@
         <strong>Panel recommendation: </strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str %}
     </div>
     <div class="col-6">
-        <strong>Allocated budget (CHF):</strong> {{ proposal.proposalevaluation.allocated_budget }}
+        <strong>Allocated budget (CHF):</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.allocated_budget %}
     </div>
 </div>
 <div class="row">
