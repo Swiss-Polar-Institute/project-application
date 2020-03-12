@@ -69,8 +69,18 @@
 <script type="text/javascript" class="init">
     $(document).ready(function () {
         $('#{{ table_id }}.display').DataTable({
-                "pageLength": 100
+                "pageLength": 100,
+                "columns": [
+                    {"width": "40%"},
+                    {"width": "10%"},
+                    {"width": "30%"},
+                    {"width": "20%"}
+                ]
             }
         );
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $($.fn.dataTable.tables(true)).css('width', '100%');
+            $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
+        });
     });
 </script>
