@@ -89,18 +89,21 @@ class ProposalEvaluationForm(forms.ModelForm):
         decision_date = self.cleaned_data.get('decision_date', None)
 
         errors = {}
-        if decision_letter_date is None and decision_letter:
+        if decision_letter and decision_letter_date is None:
             errors['decision_letter_date'] = forms.ValidationError(
                 'Decision letter is required if there is a decision letter attached')
 
-        if decision_letter is None and decision_letter_date:
-            errors['decision_letter'] = forms.ValidationError('Decision letter is required if decision letter date has a date')
+        if decision_letter_date and decision_letter is None:
+            errors['decision_letter'] = forms.ValidationError(
+                'Decision letter is required if decision letter date has a date')
 
         if board_decision == ProposalEvaluation.BOARD_DECISION_FUND and allocated_budget is None:
-            errors['allocated_budget'] = forms.ValidationError('Allocated budget is required if the board decision is to fund')
+            errors['allocated_budget'] = forms.ValidationError(
+                'Allocated budget is required if the board decision is to fund')
 
         if board_decision == ProposalEvaluation.BOARD_DECISION_FUND and decision_date is None:
-            errors['decision_date'] = forms.ValidationError('Decision date is required if the board decision is to fund')
+            errors['decision_date'] = forms.ValidationError(
+                'Decision date is required if the board decision is to fund')
 
         if errors:
             raise forms.ValidationError(errors)
