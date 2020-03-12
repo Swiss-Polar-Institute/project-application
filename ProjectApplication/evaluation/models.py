@@ -61,7 +61,7 @@ class ProposalEvaluation(CreateModifyOn):
 
     BOARD_DECISION = (
         (BOARD_DECISION_FUND, 'Fund'),
-        (BOARD_DECISION_DO_NOT_FUND, 'Not Fund'),
+        (BOARD_DECISION_DO_NOT_FUND, 'Do not fund'),
     )
 
     ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
@@ -107,6 +107,12 @@ class ProposalEvaluation(CreateModifyOn):
             return 'Do not fund'
 
         return self.panel_recommendation
+
+    def board_decision_str(self):
+        if self.board_decision == ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND:
+            return 'Do not fund'
+
+        return self.board_decision
 
     def comments(self):
         return self.proposalevaluationcomment_set.all().order_by('created_on')

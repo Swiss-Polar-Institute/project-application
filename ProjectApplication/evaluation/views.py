@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -87,7 +88,8 @@ class ProposalEvaluationList(TemplateView):
                         'proposal_call_list_button': False,
                         'proposal_evaluation_list_button': True,
                         'evaluation_spreadsheet_button': True,
-                        'evaluate_button': True
+                        'view_evaluation_button': True,
+                        'evaluation_close_button': True
                         })
 
         context.update({'active_section': 'evaluation',
@@ -363,6 +365,31 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
             context.update({'active_section': 'evaluation',
                             'active_subsection': 'evaluation-list',
-                            'sidebar_template': 'logged/_sidebar-evaluation.tmpl'})
+                            'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
             return render(request, 'logged/proposal-detail.tmpl', context)
+
+
+class CloseEvaluation(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        call = Call.objects.get(id=kwargs['call_id'])
+
+        context['call'] = call
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
+
+        context['eligible_proposals_without_evaluation'] = Proposal.objects.filter(call=call).filter(
+            eligibility=Proposal.ELIGIBLE).filter(proposalevaluation=None)
+
+        context['not_funded_without_letter_for_applicant'] = Proposal.objects.filter(call=call).filter(
+            proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND).filter(
+            Q(proposalevaluation__feedback_to_applicant='') | Q(proposalevaluation__feedback_to_applicant__isnull=True))
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': f'Close evaluation ({call.little_name()})'}]
+
+        return render(request, 'evaluation/close-evaluation.tmpl', context)

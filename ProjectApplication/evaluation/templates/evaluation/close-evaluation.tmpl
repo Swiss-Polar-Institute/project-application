@@ -1,0 +1,46 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Close call evaluation for: <a
+                    href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
+
+            <p>
+            <h3><span style="color: red;">This is not finished - available on staging only, still in development. Carles.</span>
+            </h3>
+            </p>
+
+            <p>
+                When closing the call evaluation the projects are created. Please make sure that everything is as
+                expected.
+            </p>
+            <p>
+                There are {{ eligible_proposals_without_evaluation.count }} eligible proposals without an evaluation:
+            <ul>
+                {% for proposal in eligible_proposals_without_evaluation %}
+                    <li>
+                        <a href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}">{{ proposal.title }}</a>
+                        - {{ proposal.applicant.person.full_name }}</li>
+                {% endfor %}
+            </ul>
+            </p>
+
+            <p>
+                There are {{ not_funded_without_letter_for_applicant.count }} not funded proposals without a letter for
+                the
+                applicant:
+            <ul>
+                {% for proposal in not_funded_without_letter_for_applicant %}
+                    <li>
+                        <a href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}">{{ proposal.title }}</a>
+                        - {{ proposal.applicant.person.full_name }}</li>
+                {% endfor %}
+            </ul>
+            </p>
+        </div>
+        <div class="col-2">
+        </div>
+    </div>
+{% endblock %}

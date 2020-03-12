@@ -15,7 +15,7 @@
 </div>
 <div class="row">
     <div class="col-6">
-        <strong>Board decision:</strong> <span class="badge {{ board_decision_badge_class }}">{% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision %}</span><br>
+        <strong>Board decision:</strong> <span class="badge {{ board_decision_badge_class }}">{% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str %}</span><br>
     </div>
     <div class="col-6">
         <strong>Decision date:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.decision_date %}<br>

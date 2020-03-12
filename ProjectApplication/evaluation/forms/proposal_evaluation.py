@@ -82,8 +82,11 @@ class ProposalEvaluationForm(forms.ModelForm):
         )
 
     def clean(self):
+        super().clean()
+
         decision_letter_date = self.cleaned_data.get('decision_letter_date', None)
         decision_letter = self.cleaned_data.get('decision_letter', None)
+        panel_decision = self.cleaned_data.get('panel_decision', None)
         board_decision = self.cleaned_data.get('board_decision', None)
         allocated_budget = self.cleaned_data.get('allocated_budget', None)
         decision_date = self.cleaned_data.get('decision_date', None)
@@ -97,9 +100,10 @@ class ProposalEvaluationForm(forms.ModelForm):
             errors['decision_letter'] = forms.ValidationError(
                 'Decision letter is required if decision letter date has a date')
 
-        if board_decision == ProposalEvaluation.BOARD_DECISION_FUND and allocated_budget is None:
+        if panel_decision in (ProposalEvaluation.PANEL_RECOMMENDATION_FUND,
+                              ProposalEvaluation.PANEL_RECOMMENDATION_RESERVE) and allocated_budget is None:
             errors['allocated_budget'] = forms.ValidationError(
-                'Allocated budget is required if the board decision is to fund')
+                'Allocated budget is required if the panel decision is to fund or to reserve')
 
         if board_decision == ProposalEvaluation.BOARD_DECISION_FUND and decision_date is None:
             errors['decision_date'] = forms.ValidationError(
