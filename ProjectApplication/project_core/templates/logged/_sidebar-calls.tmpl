@@ -17,12 +17,12 @@
         </li>
         <li class="nav-item">
             <a class="nav-link {% if active == 'funding-instrument-list' %}active{% endif %}"
-                href="{% url 'funding-instrument-list' %}">List funding
+                href="{% url 'logged-funding-instrument-list' %}">List funding
                 instruments</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if active == 'funding-instrument-add' %}active{% endif %}"
-                href="{% url 'funding-instrument-add' %}">Create funding
+                href="{% url 'logged-funding-instrument-add' %}">Create funding
                 instrument</a>
         </li>
         <li>
@@ -30,11 +30,11 @@
         </li>
         <li class="nav-item">
             <a class="nav-link {% if active == 'template-question-list' %}active{% endif %}"
-               href="{% url 'template-question-list' %}">List template questions</a>
+               href="{% url 'logged-template-question-list' %}">List template questions</a>
         </li>
         <li class="nav-item">
             <a class="nav-link {% if active == 'template-questions-add' %}active{% endif %}"
-               href="{% url 'template-question-add' %}">Create template question</a>
+               href="{% url 'logged-template-question-add' %}">Create template question</a>
         </li>
     </ul>
 {% endblock %}

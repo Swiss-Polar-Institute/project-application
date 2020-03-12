@@ -23,9 +23,9 @@
                         {{ template_question.answer_max_length }}{% endif %}</td>
                     <td>{% include 'common/_check-icon.tmpl' with value=template_question.answer_required %}</td>
                     <td><a class="btn btn-primary btn-xs"
-                           href="{% url 'template-question-update' pk=template_question.id %}">Edit</a>
+                           href="{% url 'logged-template-question-update' pk=template_question.id %}">Edit</a>
                     <a class="btn btn-primary btn-xs"
-                           href="{% url 'template-question-detail' pk=template_question.id %}">View</a>
+                           href="{% url 'logged-template-question-detail' pk=template_question.id %}">View</a>
                     </td>
                 </tr>
             {% endfor %}

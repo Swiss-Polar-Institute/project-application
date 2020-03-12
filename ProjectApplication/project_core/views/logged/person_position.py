@@ -34,13 +34,13 @@ class PersonPositionUpdateView(UpdateView):
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
-                                 {'name': 'People', 'url': reverse('person-position-list')},
+                                 {'name': 'People', 'url': reverse('logged-person-position-list')},
                                  {'name': 'Edit Person'}]
 
         return context
 
     def get_success_url(self, **kwargs):
-        return reverse('person-position-detail', kwargs={'pk': self.object.pk})
+        return reverse('logged-person-position-detail', kwargs={'pk': self.object.pk})
 
 
 class PersonPositionCreateView(SuccessMessageMixin, CreateView):
@@ -62,7 +62,7 @@ class PersonPositionCreateView(SuccessMessageMixin, CreateView):
         return context
 
     def get_success_url(self, **kwargs):
-        return reverse('person-position-detail', kwargs={'pk': self.object.pk})
+        return reverse('logged-person-position-detail', kwargs={'pk': self.object.pk})
 
 
 class PersonPositionDetailView(DetailView):
@@ -77,7 +77,7 @@ class PersonPositionDetailView(DetailView):
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
-                                 {'name': 'People', 'url': reverse('person-position-list')},
+                                 {'name': 'People', 'url': reverse('logged-person-position-list')},
                                  {'name': 'Details'}]
 
         return context

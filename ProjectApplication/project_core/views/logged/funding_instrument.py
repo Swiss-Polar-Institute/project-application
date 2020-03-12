@@ -57,7 +57,7 @@ class FundingInstrumentView(TemplateView):
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(funding_instrument=funding_instrument,
                                                                                 prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
-            context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
+            context['action_url'] = reverse('logged-funding-instrument-update', kwargs={'pk': kwargs['pk']})
 
             context.update({'active_section': 'calls',
                             'active_subsection': 'funding-instrument-list',
@@ -75,7 +75,7 @@ class FundingInstrumentView(TemplateView):
 
             breadcrumb = 'Create'
 
-        context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('funding-instrument-list')},
+        context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('logged-funding-instrument-list')},
                                  {'name': breadcrumb}]
 
         return render(request, 'logged/funding_instrument-form.tmpl', context)
@@ -101,12 +101,12 @@ class FundingInstrumentView(TemplateView):
             template_variables_form.save_into_funding_instrument(funding_instrument)
 
             messages.success(request, 'Funding instrument has been saved')
-            return redirect(reverse('funding-instrument-detail', kwargs={'pk': funding_instrument.pk}))
+            return redirect(reverse('logged-funding-instrument-detail', kwargs={'pk': funding_instrument.pk}))
 
         context[FUNDING_INSTRUMENT_FORM_NAME] = funding_instrument_form
         context[TEMPLATE_VARIABLES_FORM_NAME] = template_variables_form
 
-        context['action_url'] = reverse('funding-instrument-update', kwargs={'pk': kwargs['pk']})
+        context['action_url'] = reverse('logged-funding-instrument-update', kwargs={'pk': kwargs['pk']})
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'funding-instrument-list',
@@ -145,7 +145,7 @@ class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
 
         context['template_variables'] = get_template_variables_for_funding_instrument(kwargs['object'])
 
-        context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('funding-instrument-list')},
+        context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('logged-funding-instrument-list')},
                                  {'name': 'Details'}]
 
         return context

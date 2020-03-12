@@ -75,7 +75,7 @@ class FundingInstrument(CreateModifyOn):
         return '{}'.format(self.long_name)
 
     def get_absolute_url(self):
-        return reverse('funding-instrument-detail', args=[str(self.pk)])
+        return reverse('logged-funding-instrument-detail', args=[str(self.pk)])
 
 
 class Call(CreateModifyOn):
@@ -231,7 +231,7 @@ class TemplateQuestion(AbstractQuestion):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     def get_absolute_url(self):
-        return reverse('template-question-detail', args=[str(self.pk)])
+        return reverse('logged-template-question-detail', args=[str(self.pk)])
 
 
 class CallQuestion(AbstractQuestion):

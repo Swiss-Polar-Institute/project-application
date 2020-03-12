@@ -19,10 +19,10 @@
                 {% include 'common/_submit-button.tmpl' with value='Save Funding Instrument' %}
 
                 {% if pk %}
-                    <a class="btn btn-danger" href="{% url 'funding-instrument-detail' pk=pk %}"
+                    <a class="btn btn-danger" href="{% url 'logged-funding-instrument-detail' pk=pk %}"
                        role="button">Cancel Edit</a>
                 {% else %}
-                    <a class="btn btn-danger" href="{% url 'funding-instrument-list' %}"
+                    <a class="btn btn-danger" href="{% url 'logged-funding-instrument-list' %}"
                        role="button">Cancel Edit</a>
                 {% endif %}
                 <p></p>
@@ -31,7 +31,7 @@
         <div class="col-2">
             {% if pk %}
                 <a class="btn btn-primary"
-                   href="{% url 'funding-instrument-detail' pk=pk %}">View funding instrument</a>
+                   href="{% url 'logged-funding-instrument-detail' pk=pk %}">View funding instrument</a>
             {% endif %}
         </div>
     </div>

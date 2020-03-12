@@ -16,7 +16,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('funding-instrument-add'))
+        response = c.get(reverse('logged-funding-instrument-add'))
         self.assertEqual(response.status_code, 200)
 
     def test_load_funding_instruments_list(self):
@@ -25,7 +25,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('funding-instrument-list'))
+        response = c.get(reverse('logged-funding-instrument-list'))
         self.assertEqual(response.status_code, 200)
 
     def test_load_funding_instrument_update_get(self):
@@ -34,7 +34,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('funding-instrument-update', kwargs={'pk': self._funding_instrument.id}))
+        response = c.get(reverse('logged-funding-instrument-update', kwargs={'pk': self._funding_instrument.id}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self._funding_instrument.long_name)
 
@@ -44,6 +44,6 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('funding-instrument-detail', kwargs={'pk': self._funding_instrument.id}))
+        response = c.get(reverse('logged-funding-instrument-detail', kwargs={'pk': self._funding_instrument.id}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self._funding_instrument.long_name)

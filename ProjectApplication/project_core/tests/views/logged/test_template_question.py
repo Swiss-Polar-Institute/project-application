@@ -16,7 +16,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('template-question-add'))
+        response = c.get(reverse('logged-template-question-add'))
         self.assertEqual(response.status_code, 200)
 
     def test_load_template_question_update(self):
@@ -25,7 +25,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('template-question-update', kwargs={'pk': self._question1.id}))
+        response = c.get(reverse('logged-template-question-update', kwargs={'pk': self._question1.id}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self._question1.question_description)
 
@@ -35,7 +35,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('template-question-detail', kwargs={'pk': self._question1.id}))
+        response = c.get(reverse('logged-template-question-detail', kwargs={'pk': self._question1.id}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self._question1.question_description)
 

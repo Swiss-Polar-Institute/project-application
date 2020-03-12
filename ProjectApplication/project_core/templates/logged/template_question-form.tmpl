@@ -15,7 +15,7 @@
         <div class="col-2">
             {% if form.instance.id %}
 
-                <a class="btn btn-primary" href="{% url 'template-question-detail' pk=object.id %}">View template
+                <a class="btn btn-primary" href="{% url 'logged-template-question-detail' pk=object.id %}">View template
                     question</a>
             {% endif %}
         </div>

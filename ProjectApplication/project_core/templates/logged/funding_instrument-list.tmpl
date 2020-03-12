@@ -28,9 +28,9 @@
                         -{% endif %}</td>
                     <td>{{ funding_instrument.description }}</td>
                     <td><a class="btn btn-primary btn-xs"
-                           href="{% url 'funding-instrument-update' pk=funding_instrument.id %}">Edit</a>
+                           href="{% url 'logged-funding-instrument-update' pk=funding_instrument.id %}">Edit</a>
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'funding-instrument-detail' pk=funding_instrument.id %}">View</a>
+                           href="{% url 'logged-funding-instrument-detail' pk=funding_instrument.id %}">View</a>
                     </td>
                 </tr>
             {% endfor %}

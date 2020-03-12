@@ -49,7 +49,7 @@ class ProposalModelTest(TestCase):
 
         # Eligibility cannot be created or changed: ProposalStatus is not correct
         self.assertFalse(proposal.can_eligibility_be_created_or_changed())
-        self.assertEqual('Proposal status needs to be submitted in order to create/edit eligibility',
+        self.assertEqual('Proposal status cannot be draft in order to create/edit eligibility',
                          proposal.reason_eligibility_cannot_be_created_or_changed())
 
         # Let's make the ProposalStatus submitted...
