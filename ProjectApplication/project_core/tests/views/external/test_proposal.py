@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timedelta
 
 from django.test import Client
 from django.test import TestCase
@@ -7,8 +8,8 @@ from django.utils.datastructures import MultiValueDict
 
 from project_core.models import Proposal
 from project_core.tests import database_population
-from datetime import datetime
 from variable_templates.tests import database_population as database_population_variable_templates
+
 
 class ProposalFormTest(TestCase):
     def setUp(self):
@@ -24,7 +25,10 @@ class ProposalFormTest(TestCase):
         database_population.create_proposal_status()
         database_population_variable_templates.create_default_variables()
 
-    def _proposal_post_data(self):
+    def _proposal_post_data(self, start_date):
+        start_date_str = start_date.strftime('%d-%m-%Y')
+        end_date_str = (start_date + timedelta(days=10)).strftime('%d-%m-%Y')
+
         return MultiValueDict(
             {
                 'person_form-academic_title': [self._person_titles[0].id], 'person_form-first_name': ['John'],
@@ -38,8 +42,8 @@ class ProposalFormTest(TestCase):
                 'proposal_form-title': ['Replace this title!'],
                 'proposal_form-geographical_areas': [self._geographical_areas[0].id],
                 'proposal_form-keywords': [[str(keyword.id) for keyword in self._keywords]],
-                'proposal_form-start_date': ['12-11-2019'],
-                'proposal_form-end_date': ['31-01-2020'],
+                'proposal_form-start_date': [start_date_str],
+                'proposal_form-end_date': [end_date_str],
                 'proposal_form-duration_months': ['1'], 'questions_form-question_1': ['Cool'],
                 'questions_form-question_2': ['Cold'], 'questions_form-question_3': ['Interesting'],
                 'questions_form-question_4': ['Eye opening'], 'questions_form-question_5': ['Many'],
@@ -103,7 +107,7 @@ class ProposalFormTest(TestCase):
         self._call.proposal_partner_question = False
         self._call.save()
 
-        data = self._proposal_post_data()
+        data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Collect algae']
 
         response = c.post(reverse('proposal-add'), data=data)
@@ -124,7 +128,7 @@ class ProposalFormTest(TestCase):
         self._call.submission_deadline = datetime(2000, 1, 1)
         self._call.save()
 
-        data = self._proposal_post_data()
+        data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Too late?']
 
         response = c.post(reverse('proposal-add'), data=data)

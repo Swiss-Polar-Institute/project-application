@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User, Group
+from django.utils.timezone import utc
 
 from ProjectApplication import settings
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
@@ -11,7 +12,7 @@ from project_core.models import BudgetCategory, Call, TemplateQuestion, Geograph
 def create_call(funding_instrument=None):
     call, created = Call.objects.get_or_create(long_name='GreenLAnd Circumnavigation Expedition',
                                                call_open_date=datetime(2019, 1, 1),
-                                               submission_deadline=datetime(2025, 1, 31),
+                                               submission_deadline=utc.localize(datetime(2025, 1, 31)),
                                                budget_maximum=100_000, other_funding_question=False,
                                                proposal_partner_question=True,
                                                funding_instrument=funding_instrument)

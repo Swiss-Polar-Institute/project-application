@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from django.test import TestCase
 
@@ -21,8 +21,8 @@ class CallFormTest(TestCase):
 
     def test_proposal_form(self):
         data = {'title': 'Collect algae around Greenland',
-                'start_date': datetime(2021, 7, 30),
-                'end_date': datetime(2021, 9, 15),
+                'start_date': self._call.submission_deadline + timedelta(days=10),
+                'end_date': self._call.submission_deadline + timedelta(days=20),
                 'duration_months': '3',
                 'call_id': self._call.id}
 
@@ -34,7 +34,6 @@ class CallFormTest(TestCase):
         proposal_form = ProposalForm(call=self._call,
                                      data=data)
 
-        proposal_form.is_valid()
         self.assertTrue(proposal_form.is_valid())
 
         proposal = proposal_form.save(commit=False)
