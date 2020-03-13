@@ -211,7 +211,7 @@ class AbstractProposalView(TemplateView):
         context['activity'] = get_template_value_for_call('activity', call)
 
         if timezone.now() > call.submission_deadline:
-            messages.warning(request,
+            messages.alert(request,
                              'New proposals for this call cannot be accepted because the submission deadline has now passed.')
 
         return render(request, self.form_template, context)
