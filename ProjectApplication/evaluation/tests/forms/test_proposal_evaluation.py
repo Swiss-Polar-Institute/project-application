@@ -36,6 +36,7 @@ class BudgetItemFormTest(TestCase):
                 'feedback_to_applicant': 'Keep working on it!',
                 'panel_recommendation': ProposalEvaluation.PANEL_RECOMMENDATION_FUND,
                 'board_decision': ProposalEvaluation.BOARD_DECISION_FUND,
+                'decision_date': datetime.today()
                 }
 
         proposal_evaluation_form = ProposalEvaluationForm(data=data, proposal=proposal)
