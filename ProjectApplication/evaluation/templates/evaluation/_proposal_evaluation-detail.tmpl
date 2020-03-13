@@ -7,16 +7,14 @@
 <br>
 <div class="row">
     <div class="col-8">
-        <strong>Panel recommendation: </strong> <span
-            class="badge {{ panel_recommendation_badge_class }}">{% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str %}</span><br>
-        <strong>Board decision:</strong> <span
-            class="badge {{ board_decision_badge_class }}">{% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str %}</span><br>
+        <strong>Panel recommendation: </strong> {% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str badge_class=panel_recommendation_badge_class %}<br>
+        <strong>Board decision:</strong> {% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str badge_class=board_decision_badge_class %}<br>
         <strong>Decision
             letter: </strong> {% include 'common/_file_to_download.tmpl' with file_field=proposal.proposalevaluation.decision_letter %}
     </div>
     <div class="col-4">
         <strong>Allocated budget
-            (CHF):</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.allocated_budget %}
+            (CHF):</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.allocated_budget %}<br>
         <strong>Decision
             date:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.decision_date %}<br>
         <strong>Decision letter
