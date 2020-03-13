@@ -217,7 +217,7 @@ class CallEvaluationUpdate(TemplateView):
                             'active_subsection': 'evaluation-list',
                             'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
-            messages.alert(request, 'Call evaluation not saved. Verify errors in the form')
+            messages.error(request, 'Call evaluation not saved. Verify errors in the form')
             context[CallEvaluationForm.FORM_NAME] = call_evaluation_form
 
             context['call'] = call
@@ -364,7 +364,7 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
             return redirect(reverse('logged-call-evaluation-proposal-detail', kwargs={'id': proposal_id}))
 
         else:
-            messages.alert(request, 'Eligibility not saved. Verify errors in the form')
+            messages.error(request, 'Eligibility not saved. Verify errors in the form')
             context[EligibilityDecisionForm.FORM_NAME] = eligibility_decision_form
 
             context.update({'active_section': 'evaluation',
