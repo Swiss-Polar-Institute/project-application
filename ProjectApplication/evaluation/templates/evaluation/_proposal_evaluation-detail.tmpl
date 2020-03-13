@@ -6,27 +6,19 @@
 <div class="pre-with-newlines border p-3 bg-white rounded">{{ proposal.proposalevaluation.feedback_to_applicant }}</div>
 <br>
 <div class="row">
-    <div class="col-6">
-        <strong>Panel recommendation: </strong> <span class="badge {{ panel_recommendation_badge_class }}">{% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str %}</span>
-    </div>
-    <div class="col-6">
-        <strong>Allocated budget (CHF):</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.allocated_budget %}
-    </div>
-</div>
-<div class="row">
-    <div class="col-6">
-        <strong>Board decision:</strong> <span class="badge {{ board_decision_badge_class }}">{% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str %}</span><br>
-    </div>
-    <div class="col-6">
-        <strong>Decision date:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.decision_date %}<br>
-    </div>
-</div>
-<div class="row">
-    <div class="col-6">
+    <div class="col-8">
+        <strong>Panel recommendation: </strong> <span
+            class="badge {{ panel_recommendation_badge_class }}">{% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str %}</span><br>
+        <strong>Board decision:</strong> <span
+            class="badge {{ board_decision_badge_class }}">{% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str %}</span><br>
         <strong>Decision
             letter: </strong> {% include 'common/_file_to_download.tmpl' with file_field=proposal.proposalevaluation.decision_letter %}
     </div>
-    <div class="col-6">
+    <div class="col-4">
+        <strong>Allocated budget
+            (CHF):</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.allocated_budget %}
+        <strong>Decision
+            date:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.decision_date %}<br>
         <strong>Decision letter
             date:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.proposalevaluation.decision_letter_date %}
     </div>
