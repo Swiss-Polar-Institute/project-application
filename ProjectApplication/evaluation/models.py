@@ -126,8 +126,10 @@ class ProposalEvaluation(CreateModifyOn):
                 proposal_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_ACCEPTED)
             elif self.board_decision == ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND:
                 proposal_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_REJECTED)
+            elif self.board_decision is None:
+                proposal_status = self.proposal.proposal_status
             else:
-                assert False
+                assert False, 'Unexpected proposal status'
 
             proposal.proposal_status = proposal_status
             proposal.save()

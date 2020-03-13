@@ -86,7 +86,7 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         decision_letter_date = self.cleaned_data.get('decision_letter_date', None)
         decision_letter = self.cleaned_data.get('decision_letter', None)
-        panel_decision = self.cleaned_data.get('panel_decision', None)
+        panel_recommendation = self.cleaned_data.get('panel_recommendation', None)
         board_decision = self.cleaned_data.get('board_decision', None)
         allocated_budget = self.cleaned_data.get('allocated_budget', None)
         decision_date = self.cleaned_data.get('decision_date', None)
@@ -94,20 +94,20 @@ class ProposalEvaluationForm(forms.ModelForm):
         errors = {}
         if decision_letter and decision_letter_date is None:
             errors['decision_letter_date'] = forms.ValidationError(
-                'Decision letter is required if there is a decision letter attached')
+                'A decision letter date is required if there is a decision letter attached')
 
         if decision_letter_date and decision_letter is None:
             errors['decision_letter'] = forms.ValidationError(
-                'Decision letter is required if decision letter date has a date')
+                'A decision letter is required if there is a decision letter date')
 
-        if panel_decision in (ProposalEvaluation.PANEL_RECOMMENDATION_FUND,
+        if panel_recommendation in (ProposalEvaluation.PANEL_RECOMMENDATION_FUND,
                               ProposalEvaluation.PANEL_RECOMMENDATION_RESERVE) and allocated_budget is None:
             errors['allocated_budget'] = forms.ValidationError(
-                'Allocated budget is required if the panel decision is to fund or to reserve')
+                'An allocated budget is required if the panel decision is to fund or keep the proposal as a reserve')
 
-        if board_decision == ProposalEvaluation.BOARD_DECISION_FUND and decision_date is None:
+        if board_decision and decision_date is None:
             errors['decision_date'] = forms.ValidationError(
-                'Decision date is required if the board decision is to fund')
+                'A decision date is required if the board has made a decision')
 
         if errors:
             raise forms.ValidationError(errors)
