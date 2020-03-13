@@ -1,9 +1,12 @@
+import datetime
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from dal import autocomplete
 from django import forms
 from django.forms import ModelForm
 from django.utils.safestring import mark_safe
+from django.utils.timezone import utc
 
 from variable_templates.utils import apply_templates
 from ..models import Proposal, ProposalStatus, Call
@@ -110,14 +113,32 @@ class ProposalForm(ModelForm):
             errors['keywords'] = forms.ValidationError('Please enter at least 5 keywords')
 
         if self._raise_duplicated_title:
-            errors['title'] = mark_safe('A proposal already exists with the same title and applicant for this call. '
-                                        'Rather than starting from scratch again please use the link with which you were provided to '
-                                        'edit your application. Otherwise please contact SPI '
-                                        '<a href="mailto:spi-grants@epfl.ch">spi-grants@epfl.ch</a> to receive a reminder of'
-                                        ' the link.')
+            errors['title'] = forms.ValidationError(
+                mark_safe('A proposal already exists with the same title and applicant for this call. '
+                          'Rather than starting from scratch again please use the link with which you were provided to '
+                          'edit your application. Otherwise please contact SPI '
+                          '<a href="mailto:spi-grants@epfl.ch">spi-grants@epfl.ch</a> to receive a reminder of'
+                          ' the link.'))
+
+        # Converts date to datetime objects to compare with the end of the call.
+        # The combine and datetime.datetime.min.time() makes it the beginning of the day
+        proposal_start_date = datetime.datetime.combine(self.cleaned_data['start_date'], datetime.datetime.min.time())
+        proposal_end_date = datetime.datetime.combine(self.cleaned_data['end_date'], datetime.datetime.min.time())
+
+        proposal_start_date = utc.localize(proposal_start_date)
+        proposal_end_date = utc.localize(proposal_end_date)
+
+        call_submission_deadline = self._call.submission_deadline
+
+        if proposal_end_date < proposal_start_date:
+            errors['start_date'] = forms.ValidationError('Proposal start date needs to be before end date')
+
+        if proposal_end_date < call_submission_deadline:
+            errors['end_date'] = forms.ValidationError(
+                'Proposal end date needs to be after call submission deadline')
 
         if errors:
-            forms.ValidationError(errors)
+            raise forms.ValidationError(errors)
 
     def raise_duplicated_title(self):
         self._raise_duplicated_title = True
