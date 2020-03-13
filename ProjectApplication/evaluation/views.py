@@ -390,11 +390,17 @@ class CloseEvaluation(TemplateView):
 
         checks = []
 
+        submitted_proposals_without_eligibility = proposals.filter(proposal_status__name=settings.PROPOSAL_STATUS_SUBMITTED).filter(eligibility=Proposal.ELIGIBILITYNOTCHECKED)
+
+        checks.append({'message_problem': 'Not all submitted proposals have had their eligibility checked',
+                       'message_all_good': 'All submitted proposals have had their eligibility checked',
+                       'proposals': submitted_proposals_without_eligibility})
+
         eligible_proposals_without_evaluation = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
             proposalevaluation=None)
 
-        checks.append({'message_problem': 'There are eligible proposals without an evaluation',
-                       'message_all_good': 'All the eligible proposals have an evaluation',
+        checks.append({'message_problem': 'There are eligible proposals that have not been evaluated',
+                       'message_all_good': 'All the eligible proposals have been evaluated',
                        'proposals': eligible_proposals_without_evaluation})
 
         not_funded_without_letter_for_applicant = proposals.filter(

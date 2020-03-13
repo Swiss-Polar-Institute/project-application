@@ -24,25 +24,30 @@
                     </ul>
                 {% else %}
                     <i class="fa fa-check" style="color:green"></i> {{ check.message_all_good }}.
-                {% endif %}
+                {% endif %}<br>
             {% endfor %}
 
             {% if not all_good %}
                 <p>
                 </p>
                 <p>
-                    To continue please fix the errors and reload this page.
+                    To continue please fix the errors above and reload this page.
                 </p>
             {% else %}
+            <p></p>
                 <p>
-                    If you continue the projects for the call {{ call.long_name }} will be created. This cannot be
-                    reversed.
+                <h4>Summary</h4>
                 <ul>
                     <li>Total number of proposals received: {{ total_number_of_proposals }}</li>
                     <li>Total number of proposals eligible: {{ total_number_of_eligible }}</li>
                     <li>Total number of proposals not funded: {{ total_number_of_eligible_not_funded }}</li>
                     <li>Total number of proposals funded: {{ total_number_of_funded }}</li>
                 </ul>
+                </p>
+                <p><strong>
+                    If you continue to close the evaluation, {{ total_number_of_funded}} project{{ total_number_of_funded|pluralize:"s" }}  for the call {{ call.long_name }} will be created. This cannot be
+                    reversed.
+                    </strong>
                 </p>
                 <p>
                     TO DO: add button

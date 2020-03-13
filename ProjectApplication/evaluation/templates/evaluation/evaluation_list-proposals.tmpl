@@ -3,6 +3,8 @@
 
 {% block contents %}
     <h1>Proposals for call: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
+    <p><strong>Only submitted proposals are listed.</strong></p>
+
     {% if proposals %}
         <style>
             /** The buttons "Edit" and "View" in the Actions column should always be in the same line */
@@ -65,5 +67,5 @@
             );
         });
     </script>
-    <p>Only submitted proposals are listed.</p>
+<p><strong>Only submitted proposals are listed.</strong></p>
 {% endblock %}
