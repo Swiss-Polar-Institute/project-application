@@ -28,9 +28,10 @@
                 <p>
                     To continue please fix the errors above and reload this page.
                 </p>
-            {% else %}
-                <p></p>
-                <p>
+            {% endif %}
+
+            {% if show_summary %}
+                <br>
                 <h4>Summary</h4>
                 <ul>
                     <li>Total number of proposals received: {{ total_number_of_proposals }}</li>
@@ -38,7 +39,9 @@
                     <li>Total number of proposals not funded: {{ total_number_of_eligible_not_funded }}</li>
                     <li>Total number of proposals funded: {{ total_number_of_funded }}</li>
                 </ul>
-                </p>
+            {% endif %}
+
+            {% if can_close %}
                 <p><strong>
                     If you continue to close the evaluation, {{ total_number_of_funded }}
                     project{{ total_number_of_funded|pluralize:"s" }} for the call {{ call.long_name }} will be created.
@@ -49,8 +52,9 @@
                 <p>
                     {% crispy close_call_evaluation_form %}
                 </p>
+            {% else %}
+                Cannot close the call evaluation: {{ reason_cannot_close }}
             {% endif %}
-            </p>
         </div>
         <div class="col-2">
         </div>

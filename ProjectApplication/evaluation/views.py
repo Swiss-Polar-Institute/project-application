@@ -3,6 +3,8 @@ from django.core.exceptions import PermissionDenied
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.utils import formats
+from django.utils import timezone
 from django.views.generic import TemplateView
 
 from ProjectApplication import settings
@@ -17,7 +19,7 @@ from project_core.models import Proposal, Call, ProposalStatus, Project
 from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 from project_core.views.logged.proposal import get_eligibility_history
-from django.utils import timezone
+
 
 def add_proposal_evaluation_form(context, proposal):
     proposal_evaluation_form = ProposalEvaluationForm(prefix=ProposalEvaluationForm.FORM_NAME,
@@ -419,8 +421,16 @@ class CallEvaluationSummary(TemplateView):
         context['checks'] = checks
         context['call'] = call
         context['all_good'] = CallEvaluationSummary._all_good(checks)
+        context['can_close'] = context['all_good'] and call.callevaluation.closed_date is None
+
+        if context['all_good'] == False:
+            context['reason_cannot_close'] = 'Call Evaluation cannot be closed because there are errors, see above'
+        elif call.callevaluation.closed_date is not None:
+            context[
+                'reason_cannot_close'] = f'Call Evaluation is already closed (by {call.callevaluation.closed_user} at {formats.date_format(call.callevaluation.closed_date, "DATETIME_FORMAT")})'
 
         if context['all_good']:
+            context['show_summary'] = True
             context['total_number_of_proposals'] = proposals.count()
             context['total_number_of_eligible'] = proposals.filter(eligibility=Proposal.ELIGIBLE).count()
             context['total_number_of_funded'] = proposals.filter(
