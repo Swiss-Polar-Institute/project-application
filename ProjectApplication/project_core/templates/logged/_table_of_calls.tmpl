@@ -61,7 +61,7 @@
                     {% endif %}
                 {% endif %}
                 {% if evaluation_close_button %}
-                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-evaluation-close' call_id=call.pk %}">Close Evaluation</a>
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-evaluation-summary' call_id=call.pk %}">Evaluation Summary</a>
                 {% endif %}
             </td>
         </tr>

@@ -103,7 +103,7 @@ class ProposalEvaluationList(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate'}]
 
-        return render(request, 'evaluation/evaluation-list.tmpl', context)
+        return render(request, 'evaluation/call_evaluation-list.tmpl', context)
 
 
 class ProposalEvaluationUpdate(AbstractProposalDetailView):
@@ -243,7 +243,7 @@ class ProposalList(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'List of proposals ({call.little_name()})'}]
 
-        return render(request, 'evaluation/evaluation_list-proposals.tmpl', context)
+        return render(request, 'evaluation/call_evaluation_list-proposals.tmpl', context)
 
 
 class CallEvaluationDetail(TemplateView):
@@ -374,7 +374,7 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
             return render(request, 'logged/proposal-detail.tmpl', context)
 
 
-class CloseEvaluation(TemplateView):
+class CallEvaluationSummary(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -413,7 +413,7 @@ class CloseEvaluation(TemplateView):
              'proposals': not_funded_without_letter_for_applicant})
 
         context['checks'] = checks
-        context['all_good'] = CloseEvaluation._all_good(checks)
+        context['all_good'] = CallEvaluationSummary._all_good(checks)
 
         if context['all_good']:
             context['total_number_of_proposals'] = proposals.count()
@@ -424,9 +424,9 @@ class CloseEvaluation(TemplateView):
                 'total_number_of_funded']
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': f'Close evaluation ({call.little_name()})'}]
+                                 {'name': f'Evaluation summary ({call.little_name()})'}]
 
-        return render(request, 'evaluation/close-evaluation.tmpl', context)
+        return render(request, 'evaluation/call_evaluation-summary-detail.tmpl', context)
 
     @staticmethod
     def _all_good(proposals):
