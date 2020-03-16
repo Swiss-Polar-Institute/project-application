@@ -40,10 +40,14 @@ urlpatterns = [
     path('logged/call-evaluation/<int:call_id>/list_proposals/',
          evaluation.views.ProposalList.as_view(),
          name='logged-call-evaluation-list-proposals'),
-    path('logged/call-evaluation/<int:call_id>/summary/',
-         evaluation.views.CallEvaluationSummary.as_view(),
-         name='logged-call-evaluation-summary'),
     path('logged/call-evaluation/proposal/<int:id>/',
          evaluation.views.ProposalDetail.as_view(),
          name='logged-call-evaluation-proposal-detail'),
+
+    path('logged/call-evaluation/<int:call_id>/summary/',
+         evaluation.views.CallEvaluationSummary.as_view(),
+         name='logged-call-evaluation-summary'),
+    path('logged/call-evaluation/<int:call_id>/close/',
+         evaluation.views.CallCloseEvaluation.as_view(),
+         name='logged-call-close-evaluation'),
 ]

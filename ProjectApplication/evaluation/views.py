@@ -9,6 +9,7 @@ from ProjectApplication import settings
 from comments import utils
 from comments.utils import add_comment_attachment_forms, process_comment_attachment
 from evaluation.forms.call_evaluation import CallEvaluationForm
+from evaluation.forms.close_call_evaluation import CloseCallEvaluation
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import CallEvaluation, ProposalEvaluation
@@ -390,7 +391,8 @@ class CallEvaluationSummary(TemplateView):
 
         checks = []
 
-        submitted_proposals_without_eligibility = proposals.filter(proposal_status__name=settings.PROPOSAL_STATUS_SUBMITTED).filter(eligibility=Proposal.ELIGIBILITYNOTCHECKED)
+        submitted_proposals_without_eligibility = proposals.filter(
+            proposal_status__name=settings.PROPOSAL_STATUS_SUBMITTED).filter(eligibility=Proposal.ELIGIBILITYNOTCHECKED)
 
         checks.append({'message_problem': 'Not all submitted proposals have had their eligibility checked',
                        'message_all_good': 'All submitted proposals have had their eligibility checked',
@@ -426,6 +428,8 @@ class CallEvaluationSummary(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'Evaluation summary ({call.little_name()})'}]
 
+        context[CloseCallEvaluation.name] = CloseCallEvaluation(call_id=call.id)
+
         return render(request, 'evaluation/call_evaluation-summary-detail.tmpl', context)
 
     @staticmethod
@@ -435,3 +439,23 @@ class CallEvaluationSummary(TemplateView):
             all_good = all_good and proposal['proposals'].count() == 0
 
         return all_good
+
+
+class CallCloseEvaluation(TemplateView):
+    def post(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        call = Call.objects.get(id=kwargs['call_id'])
+
+        context['call'] = call
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': f'Evaluation summary ({call.little_name()})',
+                                  'url': reverse('logged-call-evaluation-summary', kwargs={'call_id': call.id})},
+                                 {'name': f'Close call ({call.little_name()})'}]
+
+        return render(request, 'evaluation/call_evaluation-close-detail.tmpl', context)

@@ -7,11 +7,6 @@
             <h1>Evaluation summary for: <a
                     href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
 
-            <p>
-            <h3><span style="color: red;">This is not finished - available on staging only, still in development. Carles.</span>
-            </h3>
-            </p>
-
             {% for check in checks %}
                 {% if check.proposals %}
                     <i class="fa fa-times" style="color:red"></i> {{ check.message_problem }}:
@@ -34,7 +29,7 @@
                     To continue please fix the errors above and reload this page.
                 </p>
             {% else %}
-            <p></p>
+                <p></p>
                 <p>
                 <h4>Summary</h4>
                 <ul>
@@ -45,12 +40,14 @@
                 </ul>
                 </p>
                 <p><strong>
-                    If you continue to close the evaluation, {{ total_number_of_funded}} project{{ total_number_of_funded|pluralize:"s" }}  for the call {{ call.long_name }} will be created. This cannot be
+                    If you continue to close the evaluation, {{ total_number_of_funded }}
+                    project{{ total_number_of_funded|pluralize:"s" }} for the call {{ call.long_name }} will be created.
+                    This cannot be
                     reversed.
-                    </strong>
+                </strong>
                 </p>
                 <p>
-                    TO DO: add button
+                    {% crispy close_call_evaluation_form %}
                 </p>
             {% endif %}
             </p>

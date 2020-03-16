@@ -1,0 +1,15 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Call Evaluation closed for: <a
+                    href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a>
+            </h1>
+            <br>
+            Done!
+        </div>
+        <div class="col-2">
+        </div>
+    </div>
+{% endblock %}
