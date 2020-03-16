@@ -55,6 +55,7 @@
                     {% endif %}
                 {% endif %}
                 {% if evaluation_spreadsheet_button %}
+                    <br>
                     {% if call.number_of_proposals > 0 %}
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-export-proposals-for-call-excel' call=call.pk %}">Excel Evaluation</a>
