@@ -297,6 +297,29 @@ class ProposalQAFileAdmin(admin.ModelAdmin):
     readonly_fields = ('created_on', 'modified_on',)
 
 
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
+                    'end_date', 'duration_months', 'principal_investigator', 'call', 'proposal', 'overarching_project',
+                    'allocated_budget', 'status', 'abortion_reason', 'created_by', 'created_on', 'modified_by', 'modified_on',)
+    ordering = ['title', 'uuid', 'location', 'start_date', 'end_date', 'duration_months', 'principal_investigator',
+                'call', 'proposal', 'allocated_budget', 'status', 'abortion_reason',]
+
+    def keywords_list(self, obj):
+        keywords = obj.keywords.all()
+
+        return ", ".join([keyword.name for keyword in keywords])
+
+    def geographical_area_list(self, obj):
+        geographical_areas = obj.geographical_areas.all()
+
+        return ", ".join([geographical_area.name for geographical_area in geographical_areas])
+
+
+class ProjectPartnerAdmin(admin.ModelAdmin):
+    list_display = ('project', 'person', 'role', 'role_description', 'competences')
+    ordering = ['project', 'person', 'role', ]
+
+
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
@@ -330,3 +353,5 @@ admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
 admin.site.register(project_core.models.Role, RoleAdmin)
 admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
 admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)
+admin.site.register(project_core.models.Project, ProjectAdmin)
+admin.site.register(project_core.models.ProjectPartner, ProjectPartnerAdmin)
