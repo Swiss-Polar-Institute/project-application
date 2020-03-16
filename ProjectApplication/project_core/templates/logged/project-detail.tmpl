@@ -44,9 +44,12 @@
             {% endif %}
 
             <p></p>
-            
-            <strong>Project created:</strong> {{ project.created_on }}<br>
 
-        <div class="col-2"></div>
+            <strong>Project created:</strong> {{ project.created_on }}<br>
+        </div>
+        <div class="col-2">
+            <a class="btn btn-primary" href="{% url 'logged-proposal-detail' id=object.proposal.id %}">View Proposal</a>
+        </div>
     </div>
+
 {% endblock %}
