@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -376,45 +375,47 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
 
 class CallEvaluationSummary(TemplateView):
+    @staticmethod
+    def _check_all_submitted_proposals_have_eligibility_set(proposals):
+        proposals_without_eligibility_set = proposals.filter(
+            proposal_status__name=settings.PROPOSAL_STATUS_SUBMITTED).filter(eligibility=Proposal.ELIGIBILITYNOTCHECKED)
+
+        return {'message_problem': 'Not all submitted proposals have had their eligibility checked',
+                'message_all_good': 'All submitted proposals have had their eligibility checked',
+                'proposals': proposals_without_eligibility_set}
+
+    @staticmethod
+    def _check_eligible_proposals_have_evaluation(proposals):
+        proposals_without_evaluation = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
+            proposalevaluation=None)
+
+        return {'message_problem': 'There are eligible proposals that have not been evaluated',
+                'message_all_good': 'All the eligible proposals have been evaluated',
+                'proposals': proposals_without_evaluation}
+
+    @staticmethod
+    def _check_proposal_evaluations_have_letter_for_applicant(proposals):
+        proposals_without_decision_letter = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
+            proposalevaluation__decision_letter__isnull=True)
+
+        return {'message_problem': 'There are proposals without decision letter',
+                'message_all_good': 'All the proposals have a decision letter',
+                'proposals': proposals_without_decision_letter}
+
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
         call = Call.objects.get(id=kwargs['call_id'])
 
-        context['call'] = call
-
-        context.update({'active_section': 'evaluation',
-                        'active_subsection': 'evaluation-list',
-                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
-
         proposals = Proposal.objects.filter(call=call)
 
         checks = []
-
-        submitted_proposals_without_eligibility = proposals.filter(
-            proposal_status__name=settings.PROPOSAL_STATUS_SUBMITTED).filter(eligibility=Proposal.ELIGIBILITYNOTCHECKED)
-
-        checks.append({'message_problem': 'Not all submitted proposals have had their eligibility checked',
-                       'message_all_good': 'All submitted proposals have had their eligibility checked',
-                       'proposals': submitted_proposals_without_eligibility})
-
-        eligible_proposals_without_evaluation = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
-            proposalevaluation=None)
-
-        checks.append({'message_problem': 'There are eligible proposals that have not been evaluated',
-                       'message_all_good': 'All the eligible proposals have been evaluated',
-                       'proposals': eligible_proposals_without_evaluation})
-
-        not_funded_without_letter_for_applicant = proposals.filter(
-            proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND).filter(
-            Q(proposalevaluation__feedback_to_applicant='') | Q(proposalevaluation__feedback_to_applicant__isnull=True))
-
-        checks.append(
-            {'message_problem': 'There are proposals that are not funded and don\'t have a letter for the applicant',
-             'message_all_good': 'All the not funded proposals have a letter for the applicant',
-             'proposals': not_funded_without_letter_for_applicant})
+        checks.append(self._check_all_submitted_proposals_have_eligibility_set(proposals))
+        checks.append(self._check_eligible_proposals_have_evaluation(proposals))
+        checks.append(self._check_proposal_evaluations_have_letter_for_applicant(proposals))
 
         context['checks'] = checks
+        context['call'] = call
         context['all_good'] = CallEvaluationSummary._all_good(checks)
 
         if context['all_good']:
@@ -424,6 +425,10 @@ class CallEvaluationSummary(TemplateView):
                 proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND).count()
             context['total_number_of_eligible_not_funded'] = context['total_number_of_eligible'] - context[
                 'total_number_of_funded']
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'Evaluation summary ({call.little_name()})'}]
