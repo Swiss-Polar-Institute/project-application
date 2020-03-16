@@ -10,7 +10,9 @@
                 <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
 
                 <strong>Evaluation
-                    sheet:</strong> {% include 'common/_file_to_download.tmpl' with file_field=call_evaluation.evaluation_sheet %}
+                    sheet:</strong> {% include 'common/_file_to_download.tmpl' with file_field=call_evaluation.evaluation_sheet %}<br>
+                <strong>Closed date:</strong> {% include 'common/_value-or-dash.tmpl' with value=call_evaluation.closed_date %}<br>
+                <strong>Closed by user:</strong> {% include 'common/_value-or-dash.tmpl' with value=call_evaluation.closed_user %}<br>
                 <p></p>
                 <hr>
                 {% include 'comments/_comments-attachments.tmpl' with hide_attachments=True %}

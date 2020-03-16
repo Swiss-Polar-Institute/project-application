@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -16,7 +17,7 @@ from project_core.models import Proposal, Call, ProposalStatus, Project
 from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 from project_core.views.logged.proposal import get_eligibility_history
-
+from django.utils import timezone
 
 def add_proposal_evaluation_form(context, proposal):
     proposal_evaluation_form = ProposalEvaluationForm(prefix=ProposalEvaluationForm.FORM_NAME,
@@ -446,31 +447,37 @@ class CallEvaluationSummary(TemplateView):
         return all_good
 
 
-def close_evaluation_call(call):
+def close_evaluation_call(call, user_closing_call):
     created_projects = 0
 
-    for proposal in Proposal.objects.filter(call=call).filter(eligibility=Proposal.ELIGIBLE):
-        project = Project()
+    with transaction.atomic():
+        for proposal in Proposal.objects.filter(call=call).filter(eligibility=Proposal.ELIGIBLE):
+            project = Project()
 
-        project.title = proposal.title
-        project.location = proposal.location
-        project.start_date = proposal.start_date
-        project.end_date = proposal.end_date
-        project.duration_months = proposal.duration_months
-        project.principal_investigator = proposal.applicant
+            project.title = proposal.title
+            project.location = proposal.location
+            project.start_date = proposal.start_date
+            project.end_date = proposal.end_date
+            project.duration_months = proposal.duration_months
+            project.principal_investigator = proposal.applicant
 
-        project.overarching_project = proposal.overarching_project
-        project.allocated_budget = proposal.proposalevaluation.allocated_budget
-        project.status = Project.ONGOING
+            project.overarching_project = proposal.overarching_project
+            project.allocated_budget = proposal.proposalevaluation.allocated_budget
+            project.status = Project.ONGOING
 
-        project.call = proposal.call
-        project.proposal = proposal
+            project.call = proposal.call
+            project.proposal = proposal
 
-        project.save()
-        project.geographical_areas.add(*proposal.geographical_areas.all())
-        project.keywords.add(*proposal.keywords.all())
+            project.save()
+            project.geographical_areas.add(*proposal.geographical_areas.all())
+            project.keywords.add(*proposal.keywords.all())
 
-        created_projects += 1
+            created_projects += 1
+
+        call_evaluation = CallEvaluation.objects.get(call=call)
+        call_evaluation.closed_date = timezone.now()
+        call_evaluation.closed_user = user_closing_call
+        call_evaluation.save()
 
     return created_projects
 
@@ -483,7 +490,7 @@ class CallCloseEvaluation(TemplateView):
 
         context['call'] = call
 
-        projects_created = close_evaluation_call(call)
+        projects_created = close_evaluation_call(call, request.user)
 
         context['projects_created_count'] = projects_created
 

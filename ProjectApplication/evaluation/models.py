@@ -154,6 +154,11 @@ class CallEvaluation(CreateModifyOn):
                                         upload_to=call_evaluation_sheet_rename,
                                         blank=True, null=True)
 
+    closed_date = models.DateTimeField(blank=True, null=True)
+    closed_user = models.ForeignKey(User, help_text='User by which the Call Evaluation was closed',
+                                    blank=True, null=True,
+                                    on_delete=models.PROTECT)
+
     @staticmethod
     def comment_object():
         from comments.models import CallEvaluationComment
