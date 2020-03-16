@@ -459,6 +459,7 @@ class CallEvaluationSummary(TemplateView):
 
 
 def close_evaluation_call(call, user_closing_call):
+    """ It creates the projects and closes the call. """
     created_projects = 0
 
     with transaction.atomic():
