@@ -12,7 +12,7 @@ from evaluation.forms.close_call_evaluation import CloseCallEvaluation
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import CallEvaluation, ProposalEvaluation
-from project_core.models import Proposal, Call, ProposalStatus
+from project_core.models import Proposal, Call, ProposalStatus, Project
 from project_core.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 from project_core.views.logged.proposal import get_eligibility_history
@@ -446,6 +446,34 @@ class CallEvaluationSummary(TemplateView):
         return all_good
 
 
+def close_evaluation_call(call):
+    created_projects = 0
+
+    for proposal in Proposal.objects.filter(call=call).filter(eligibility=Proposal.ELIGIBLE):
+        project = Project()
+
+        project.title = proposal.title
+        project.location = proposal.location
+        project.start_date = proposal.start_date
+        project.end_date = proposal.end_date
+        project.duration_months = proposal.duration_months
+        project.principal_investigator = proposal.applicant
+
+        project.overarching_project = proposal.overarching_project
+        project.allocated_budget = proposal.proposalevaluation.allocated_budget
+        project.status = Project.ONGOING
+
+        project.call = proposal.call
+        project.proposal = proposal
+
+        project.save()
+        project.geographical_areas.add(*proposal.geographical_areas.all())
+        project.keywords.add(*proposal.keywords.all())
+
+        created_projects += 1
+
+    return created_projects
+
 class CallCloseEvaluation(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -453,6 +481,10 @@ class CallCloseEvaluation(TemplateView):
         call = Call.objects.get(id=kwargs['call_id'])
 
         context['call'] = call
+
+        projects_created = close_evaluation_call(call)
+
+        context['projects_created_count'] = projects_created
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
