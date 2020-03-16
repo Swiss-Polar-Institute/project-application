@@ -22,10 +22,9 @@
                     <td>{{ project.title }}</td>
                     <td>{{ project.principal_investigator.person }}</td>
                     <td>{{ project.status.name }}</td>
-                    <td>{% comment %}
+                    <td>
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-project-detail' id=proposal.id %}">View</a>
-                        {% endcomment %}
+                           href="{% url 'logged-project-detail' pk=project.id %}">View</a>
                     </td>
                 </tr>
             {% endfor %}

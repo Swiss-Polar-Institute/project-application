@@ -25,7 +25,7 @@ class ProjectList(TemplateView):
                         'active_subsection': 'project-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-project-list')},
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
                                  {'name': 'Projects'}]
 
         return context
@@ -42,8 +42,8 @@ class ProjectDetailView(DetailView):
                         'active_subsection': 'project-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-project-list')},
-                                 {'name': 'Projects'},
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'Projects', 'url': reverse('logged-project-list')},
                                  {'name': 'Details'}]
 
         return context
