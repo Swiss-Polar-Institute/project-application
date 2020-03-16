@@ -913,10 +913,12 @@ class Project(CreateModify):
 
     ONGOING = 'Ongoing'
     COMPLETED = 'Completed'
+    ABORTED = 'Aborted'
 
     STATUS = (
         (ONGOING, 'Ongoing'),
         (COMPLETED, 'Completed'),
+        (ABORTED, 'Aborted'),
     )
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
@@ -945,6 +947,7 @@ class Project(CreateModify):
     allocated_budget = models.DecimalField(help_text='Budget allocated to project', decimal_places=2, max_digits=10,
                                  validators=[MinValueValidator(0)], blank=False, null=True)
     status = models.CharField(help_text='Status of a project', max_length=30, default='ONGOING', choices=STATUS, blank=False, null=False)
+    abortion_reason = models.CharField(help_text='Reason that a project was aborted', max_length=50, blank=True, null=True)
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.principal_investigator)
