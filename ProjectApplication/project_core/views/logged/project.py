@@ -25,4 +25,8 @@ class ProjectList(TemplateView):
                         'active_subsection': 'project-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-project-list')},
+                                 {'name': 'Projects'}]
+
         return context
+
