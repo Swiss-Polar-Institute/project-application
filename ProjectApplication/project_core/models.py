@@ -954,7 +954,7 @@ class ProposalPartner(Partner):
         unique_together = (('person', 'role', 'proposal'),)
 
 
-class Project(CreateModify):
+class Project(CreateModifyOn):
     """Proposal that has been funded is now a project. Otherwise another project that has been accepted."""
 
     objects = models.Manager()  # Helps Pycharm CE auto-completion
