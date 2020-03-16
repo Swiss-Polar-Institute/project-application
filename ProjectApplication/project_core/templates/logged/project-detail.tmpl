@@ -6,10 +6,13 @@
         <div class="col-10">
             <h2>{{ object.title }}</h2>
 
-            <br>
+            <strong>Status:</strong> {{ project.status }}<br>
+            <strong>Call:</strong> <a href="{% url 'logged-call-detail' id=project.call.id %}">{{ project.call.long_name }}</a><br>
+
+            <p></p>
 
             <h3>Principal investigator</h3>
-            <strong>{{ object.principal_investigator.academic_title }} {{ object.principal_investigator.person }} </strong><br>
+            {{ object.principal_investigator.academic_title }} {{ object.principal_investigator.person }} <br>
             <strong>Email:</strong> <a href="mailto:{{ object.principal_investigator.main_email }}">{{ object.principal_investigator.main_email }} </a><br>
             <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=object.principal_investigator.organisations_ordered_by_name %}
 
@@ -18,13 +21,10 @@
             <h3>Project details</h3>
 
             <div class="row">
-                <div class="col-4">
-                    <strong>Status:</strong> {{ project.status }}<br>
-               </div>
-                <div class="col-4">
+                <div class="col-5">
                     <strong>Start date:</strong> {{ project.start_date }}<br>
                 </div>
-                <div class="col-4">
+                <div class="col-5">
                     <strong>End date:</strong> {{ project.end_date }}<br>
                 </div>
             </div>
