@@ -5,15 +5,35 @@
     <h1>Projects</h1>
     <p></p>
     {% if projects %}
-        hello
+        <table id="list-of-projects" class="table table-striped table-sm table-hover display">
+            <thead>
+            <tr>
+                <th>Call</th>
+                <th>Title</th>
+                <th>Principal Investigator</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td>{{ project.call.long_name }}</td>
+                    <td>{{ project.title }}</td>
+                    <td>{{ project.principal_investigator.person }}</td>
+                    <td>{{ project.status.name }}</td>
+                    <td>{% comment %}
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'logged-project-detail' id=proposal.id %}">View</a>
+                        {% endcomment %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     {% else %}
         No projects to be displayed
     {% endif %}
-    <p>
-        <a class="btn btn-primary btn-sm"
-           href="{% url 'logged-export-proposals-csv-summary-all' %}">Export as CSV</a>
-    </p>
-
 
     <script type="text/javascript" class="init">
         $(document).ready(function () {
