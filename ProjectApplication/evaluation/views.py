@@ -97,7 +97,7 @@ class ProposalEvaluationList(TemplateView):
                         'proposal_evaluation_list_button': True,
                         'evaluation_spreadsheet_button': True,
                         'view_evaluation_button': True,
-                        'evaluation_close_button': True
+                        'evaluation_summary_button': True
                         })
 
         context.update({'active_section': 'evaluation',

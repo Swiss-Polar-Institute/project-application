@@ -60,8 +60,9 @@
                            href="{% url 'logged-export-proposals-for-call-excel' call=call.pk %}">Excel Evaluation</a>
                     {% endif %}
                 {% endif %}
-                {% if evaluation_close_button %}
-                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-evaluation-summary' call_id=call.pk %}">Evaluation Summary</a>
+                {% if evaluation_summary_button and call.callevaluation %}
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-evaluation-summary' call_id=call.pk %}">Evaluation
+                        Summary</a>
                 {% endif %}
             </td>
         </tr>

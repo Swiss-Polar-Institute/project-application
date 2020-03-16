@@ -29,7 +29,7 @@ class CallList(TemplateView):
                         'proposal_call_list_button': True,
                         'proposal_evaluation_list_button': False,
                         'evaluation_spreadsheet_button': False,
-                        'evaluation_close_button': False})
+                        'evaluation_summary_button': False})
 
         context.update({'open_calls': Call.open_calls(),
                         'closed_calls': Call.closed_calls(),
