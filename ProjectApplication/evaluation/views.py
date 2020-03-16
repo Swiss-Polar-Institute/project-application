@@ -463,7 +463,8 @@ def close_evaluation_call(call, user_closing_call):
     created_projects = 0
 
     with transaction.atomic():
-        for proposal in Proposal.objects.filter(call=call).filter(eligibility=Proposal.ELIGIBLE):
+        for proposal in Proposal.objects.filter(call=call).filter(eligibility=Proposal.ELIGIBLE).filter(
+                proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND):
             project = Project()
 
             project.title = proposal.title
