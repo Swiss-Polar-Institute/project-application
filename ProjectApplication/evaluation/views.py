@@ -474,6 +474,7 @@ def close_evaluation_call(call):
 
     return created_projects
 
+
 class CallCloseEvaluation(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
