@@ -137,6 +137,9 @@ urlpatterns = [
     path('logged/project/list/',
          logged.project.ProjectList.as_view(),
          name='logged-project-list'),
+    path('logged/project/<int:pk>/',
+         logged.project.ProjectDetailView.as_view(),
+         name='logged-project-detail'),
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',

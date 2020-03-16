@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 
 from ProjectApplication import settings
 from comments.utils import process_comment_attachment
@@ -30,3 +30,20 @@ class ProjectList(TemplateView):
 
         return context
 
+
+class ProjectDetailView(DetailView):
+    template_name = 'logged/project-detail.tmpl'
+    model = Project
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'lists',
+                        'active_subsection': 'project-list',
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-project-list')},
+                                 {'name': 'Projects'},
+                                 {'name': 'Details'}]
+
+        return context
