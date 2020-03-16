@@ -84,7 +84,8 @@ class ProposalEvaluationList(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['calls'] = Call.closed_calls()
+        context['calls_opened_evaluation'] = Call.closed_calls().filter(callevaluation__closed_date__isnull=True)
+        context['calls_closed_evaluation'] = Call.closed_calls().filter(callevaluation__closed_date__isnull=False)
 
         context['proposals_no_draft_only'] = True
 
