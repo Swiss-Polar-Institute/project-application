@@ -1,0 +1,29 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load request_is_management %}
+
+{% block contents %}
+    <h1>Projects</h1>
+    <p></p>
+    {% if projects %}
+        hello
+    {% else %}
+        No projects to be displayed
+    {% endif %}
+    <p>
+        <a class="btn btn-primary btn-sm"
+           href="{% url 'logged-export-proposals-csv-summary-all' %}">Export as CSV</a>
+    </p>
+
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('table.display').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"],
+                        [1, "asc"]]
+                }
+            );
+        });
+    </script>
+    <p></p>
+{% endblock %}

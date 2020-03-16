@@ -134,6 +134,10 @@ urlpatterns = [
          logged.lists.ListsView.as_view(),
          name='logged-lists'),
 
+    path('logged/project/list/',
+         logged.project.ProjectList.as_view(),
+         name='logged-project-list'),
+
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',
                                       extra_context={'contact': settings.LOGIN_CONTACT,
