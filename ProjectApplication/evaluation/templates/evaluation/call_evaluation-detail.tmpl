@@ -3,24 +3,29 @@
 {% load crispy_forms_tags %}
 
 {% block contents %}
-        <div class="row">
-            <div class="col-10">
-                <h1>Call Evaluation for: <a href="{% url 'logged-call-detail' id=call_evaluation.call.id %}">{{ call_evaluation.call.long_name }}</a></h1>
-                <br>
-                <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
+    <div class="row">
+        <div class="col-10">
+            <h1>Call Evaluation for: <a
+                    href="{% url 'logged-call-detail' id=call_evaluation.call.id %}">{{ call_evaluation.call.long_name }}</a>
+            </h1>
+            <br>
+            <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
 
-                <strong>Evaluation
-                    sheet:</strong> {% include 'common/_file_to_download.tmpl' with file_field=call_evaluation.evaluation_sheet %}<br>
-                <strong>Closed date:</strong> {% include 'common/_value-or-dash.tmpl' with value=call_evaluation.closed_date %}<br>
-                <strong>Closed by user:</strong> {% include 'common/_value-or-dash.tmpl' with value=call_evaluation.closed_user %}<br>
-                <p></p>
-                <hr>
-                {% include 'comments/_comments-attachments.tmpl' with hide_attachments=True %}
-            </div>
-            <div class="col-2">
-                <a class="btn btn-primary d-print-none"
-                   href="{% url 'logged-call-evaluation-update' id=call_evaluation.id %}">Edit Call Evaluation</a>
-            </div>
+            <strong>Evaluation
+                sheet:</strong> {% include 'common/_file_to_download.tmpl' with file_field=call_evaluation.evaluation_sheet %}<br>
+            <strong>Closed
+                date:</strong> {% include 'common/_value-or-dash.tmpl' with value=call_evaluation.closed_date %}<br>
+            <strong>Closed by
+                user:</strong> {% include 'common/_value-or-dash.tmpl' with value=call_evaluation.closed_user %}<br>
+            <p></p>
+            <hr>
+            {% include 'comments/_comments-attachments.tmpl' with hide_attachments=True %}
         </div>
+        <div class="col-2">
+            <a class="btn btn-primary d-print-none"
+               href="{% url 'logged-call-evaluation-update' id=call_evaluation.id %}">Edit Call Evaluation</a>
+        </div>
+        &nbsp;
+        <br>
     </div>
 {% endblock %}
