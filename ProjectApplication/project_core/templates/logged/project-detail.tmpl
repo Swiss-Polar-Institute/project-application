@@ -4,16 +4,52 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            <h1>Project details</h1>
+            <h2>{{ object.title }}</h2>
+
+            <br>
+
+            <h3>Principal investigator</h3>
+            <strong>{{ object.principal_investigator.academic_title }} {{ object.principal_investigator.person }} </strong><br>
+            <strong>Email:</strong> <a href="mailto:{{ object.principal_investigator.main_email }}">{{ object.principal_investigator.main_email }} </a><br>
+            <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=object.principal_investigator.organisations_ordered_by_name %}
 
             <p></p>
-            <p><strong>Title:</strong> {{ object.title }}</p>
-            <p><strong>Principal investigator:</strong><br>{{ object.principal_investigator }}</p>
 
+            <h3>Project details</h3>
+
+            <div class="row">
+                <div class="col-4">
+                    <strong>Status:</strong> {{ project.status }}<br>
+               </div>
+                <div class="col-4">
+                    <strong>Start date:</strong> {{ project.start_date }}<br>
+                </div>
+                <div class="col-4">
+                    <strong>End date:</strong> {{ project.end_date }}<br>
+                </div>
+            </div>
+            <strong>Allocated budget:</strong> {{ project.allocated_budget }} CHF<br>
+            <strong>Geographical focus:</strong> {% for area in project.geographical_areas.all %}
+                {{ area }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}<br>
+            <strong>Precise region:</strong> {{ project.location }}<br>
+            <strong>Keywords:</strong> {% for keyword in project.keywords.all %}{{ keyword }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}<br>
+
+            <p></p>
+
+            {% if project.call.overarching_project_question %}
+                 <h3>Overarching project</h3>
+                 {% include 'common/_project_overarching.tmpl' with overarching_project=project.proposal.overarching_project %}
+            {% endif %}
+
+            <p></p>
+
+            <strong>Project created:</strong> {{ project.created_on }}<br>
         </div>
-
         <div class="col-2">
-
+            <a class="btn btn-primary" href="{% url 'logged-proposal-detail' id=object.proposal.id %}">View Proposal</a>
         </div>
     </div>
+
 {% endblock %}
