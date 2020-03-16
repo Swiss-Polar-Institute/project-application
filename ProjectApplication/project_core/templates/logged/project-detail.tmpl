@@ -32,7 +32,7 @@
             <strong>Geographical focus:</strong> {% for area in project.geographical_areas.all %}
                 {{ area }}{% if not forloop.last %}, {% endif %}
                 {% endfor %}<br>
-            <strong>Precise region:</strong> {{ project.region }}<br>
+            <strong>Precise region:</strong> {{ project.location }}<br>
             <strong>Keywords:</strong> {% for keyword in project.keywords.all %}{{ keyword }}{% if not forloop.last %}, {% endif %}
             {% endfor %}<br>
 
