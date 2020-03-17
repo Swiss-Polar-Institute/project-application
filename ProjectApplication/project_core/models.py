@@ -766,7 +766,7 @@ class Proposal(CreateModifyOn):
         unique_together = (('title', 'applicant', 'call'),)
 
     def can_eligibility_be_edited(self):
-        return self.can_eligibility_be_created_or_changed() and not self.proposalevaluation
+        return self.can_eligibility_be_created_or_changed() and not hasattr(self, 'proposalevaluation')
 
     def reason_cannot_eligibility_be_edited(self):
         if not self.can_eligibility_be_created_or_changed():
