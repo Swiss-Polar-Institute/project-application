@@ -1,9 +1,9 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.db import transaction
+from django.db.models.fields.files import FieldFile
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils import formats
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView, ListView, DetailView
@@ -393,6 +393,25 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
 class CallEvaluationSummary(TemplateView):
     @staticmethod
+    def _check_call_evaluation_is_completed(call_evaluation):
+        required_fields = CallEvaluationForm(call=call_evaluation.call).fields
+        missing_fields = []
+
+        for required_field in required_fields:
+            value = getattr(call_evaluation, required_field)
+
+            if (type(value) == FieldFile and bool(value) is False) or (value is None):
+                missing_fields.append(required_fields[required_field].label)
+
+        edit_link = reverse('logged-call-evaluation-update', kwargs={'pk': call_evaluation.pk})
+        return {
+            'message_all_good': 'Call Evaluation has been completed',
+            'message_problem': mark_safe(
+                f'Missing fields in the call evaluation: <em>{",".join(missing_fields)}</em>. <a href="{edit_link}">Edit Call Evaluation</a>'),
+            'ok': len(missing_fields) == 0
+        }
+
+    @staticmethod
     def _check_all_submitted_proposals_have_eligibility_set(proposals):
         proposals_without_eligibility_set = proposals.filter(
             proposal_status__name=settings.PROPOSAL_STATUS_SUBMITTED).filter(eligibility=Proposal.ELIGIBILITYNOTCHECKED)
@@ -426,21 +445,27 @@ class CallEvaluationSummary(TemplateView):
 
         proposals = Proposal.objects.filter(call=call)
 
-        checks = []
-        checks.append(self._check_all_submitted_proposals_have_eligibility_set(proposals))
-        checks.append(self._check_eligible_proposals_have_evaluation(proposals))
-        checks.append(self._check_proposal_evaluations_have_letter_for_applicant(proposals))
+        proposal_checks = []
+        proposal_checks.append(self._check_all_submitted_proposals_have_eligibility_set(proposals))
+        proposal_checks.append(self._check_eligible_proposals_have_evaluation(proposals))
+        proposal_checks.append(self._check_proposal_evaluations_have_letter_for_applicant(proposals))
 
-        context['checks'] = checks
+        other_checks = []
+        other_checks.append(self._check_call_evaluation_is_completed(call.callevaluation))
+
+        context['proposal_checks'] = proposal_checks
+        context['other_checks'] = other_checks
+
         context['call'] = call
-        context['all_good'] = CallEvaluationSummary._all_good(checks)
+
+        context['all_good'] = CallEvaluationSummary._all_good(proposal_checks + other_checks)
         context['can_close'] = context['all_good'] and call.callevaluation.closed_date is None
 
         if context['all_good'] == False:
-            context['reason_cannot_close'] = mark_safe('Call Evaluation cannot be closed because there are errors.<br>Please fix them and reload the page.')
-        elif call.callevaluation.closed_date is not None:
-            context[
-                'reason_cannot_close'] = f'Call Evaluation is already closed (by {call.callevaluation.closed_user} at {formats.date_format(call.callevaluation.closed_date, "DATETIME_FORMAT")}).'
+            context['reason_cannot_close'] = mark_safe(
+                'Call Evaluation cannot be closed because there are errors.<br>Please fix them and reload the page.')
+
+        context['call_evaluation_is_closed'] = call.callevaluation.closed_date is not None
 
         if context['all_good']:
             context['show_summary'] = True
@@ -463,10 +488,15 @@ class CallEvaluationSummary(TemplateView):
         return render(request, 'evaluation/call_evaluation-summary-detail.tmpl', context)
 
     @staticmethod
-    def _all_good(proposals):
+    def _all_good(checks):
         all_good = True
-        for proposal in proposals:
-            all_good = all_good and proposal['proposals'].count() == 0
+        for check in checks:
+            if 'proposals' in check:
+                all_good = all_good and check['proposals'].count() == 0
+            elif 'ok' in check:
+                all_good = all_good and check['ok']
+            else:
+                assert False
 
         return all_good
 
