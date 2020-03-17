@@ -18,7 +18,7 @@
                 {% include 'common/_submit-button.tmpl' with value='Save Call' %}
 
                 {% if id %}
-                    <a class="btn btn-danger" href="{% url 'logged-call-detail' id=id %}"
+                    <a class="btn btn-danger" href="{% url 'logged-call-detail' pk=id %}"
                        role="button">Cancel Edit</a>
                 {% else %}
                     <a class="btn btn-danger" href="{% url 'logged-call-list' %}"
@@ -29,7 +29,7 @@
         </div>
         <div class="col-2">
             {% if id %}
-                <a class="btn btn-primary" href="{% url 'logged-call-detail' id=id %}">View Call</a>
+                <a class="btn btn-primary" href="{% url 'logged-call-detail' pk=id %}">View Call</a>
             {% endif %}
         </div>
     </div>

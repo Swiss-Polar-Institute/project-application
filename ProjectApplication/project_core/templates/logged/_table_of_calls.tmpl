@@ -29,10 +29,10 @@
             <td>{% include 'common/_date_time.tmpl' with value=call.submission_deadline %}</td>
             <td>
                 {% if view_button %}
-                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-detail' id=call.id %}">View</a>
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-detail' pk=call.id %}">View</a>
                 {% endif %}
                 {% if edit_button %}
-                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-update' id=call.id %}">Edit</a>
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-update' pk=call.id %}">Edit</a>
                 {% endif %}
                 {% if proposal_call_list_button %}
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-call-list-proposals' call_id=call.id %}">List

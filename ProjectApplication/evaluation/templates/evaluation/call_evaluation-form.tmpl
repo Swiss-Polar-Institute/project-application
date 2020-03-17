@@ -4,7 +4,7 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            <h1>Call Evaluation for: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
+            <h1>Call Evaluation for: <a href="{% url 'logged-call-detail' pk=call.id %}">{{ call.long_name }}</a></h1>
             {% crispy call_evaluation_form %}
         </div>
         <div class="col-2">

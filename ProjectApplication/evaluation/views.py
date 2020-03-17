@@ -33,7 +33,7 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
         if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
             raise PermissionDenied()
 
-        proposal_evaluation_id = kwargs['id']
+        proposal_evaluation_id = kwargs['pk']
         proposal_evaluation = ProposalEvaluation.objects.get(id=proposal_evaluation_id)
 
         context = self.prepare_context(request, *args, **{'id': proposal_evaluation.proposal.id})
@@ -115,8 +115,8 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
         if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
             raise PermissionDenied()
 
-        if 'id' in kwargs:
-            proposal_evaluation = ProposalEvaluation.objects.get(id=kwargs['id'])
+        if 'pk' in kwargs:
+            proposal_evaluation = ProposalEvaluation.objects.get(id=kwargs['pk'])
             proposal = proposal_evaluation.proposal
         elif 'proposal' in request.GET:
             proposal_id = request.GET['proposal']
@@ -146,7 +146,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
 
         context = self.prepare_context(request, *args, **kwargs)
 
-        proposal = Proposal.objects.get(id=kwargs['id'])
+        proposal = Proposal.objects.get(id=kwargs['pk'])
 
         proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES,
                                                           prefix=ProposalEvaluationForm.FORM_NAME,
@@ -156,7 +156,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
             proposal_evaluation = proposal_evaluation_form.save(user=request.user)
 
             messages.success(request, 'Evaluation saved')
-            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'id': proposal_evaluation.id}))
+            return redirect(reverse('logged-proposal-evaluation-detail', kwargs={'pk': proposal_evaluation.id}))
         else:
             messages.error(request, 'Evaluation not saved. Verify errors in the form')
             context[ProposalEvaluationForm.FORM_NAME] = proposal_evaluation_form
@@ -172,8 +172,8 @@ class CallEvaluationUpdate(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if 'id' in kwargs:
-            call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
+        if 'pk' in kwargs:
+            call_evaluation = CallEvaluation.objects.get(id=kwargs['pk'])
             call = call_evaluation.call
         else:
             call_evaluation = None
@@ -201,8 +201,8 @@ class CallEvaluationUpdate(TemplateView):
 
         context = super().get_context_data(**kwargs)
 
-        if 'id' in kwargs:
-            call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
+        if 'pk' in kwargs:
+            call_evaluation = CallEvaluation.objects.get(id=kwargs['pk'])
             call = call_evaluation.call
         else:
             call_evaluation = None
@@ -289,7 +289,7 @@ class CallEvaluationCommentAdd(TemplateView):
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
-        call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
+        call_evaluation = CallEvaluation.objects.get(id=kwargs['pk'])
 
         result = process_comment_attachment(request, context, 'logged-call-evaluation-detail',
                                             'logged-proposal-call-comment-add',
@@ -303,7 +303,7 @@ class ProposalDetail(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
-        proposal = Proposal.objects.get(id=kwargs['id'])
+        proposal = Proposal.objects.get(id=kwargs['pk'])
 
         utils.add_comment_attachment_forms(context, 'logged-call-evaluation-proposal-detail', proposal)
 
@@ -332,7 +332,7 @@ class ProposalDetail(AbstractProposalDetailView):
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
-        proposal = Proposal.objects.get(id=kwargs['id'])
+        proposal = Proposal.objects.get(id=kwargs['pk'])
 
         result = process_comment_attachment(request, context, 'logged-call-evaluation-proposal-detail',
                                             'logged-call-comment-add',
@@ -350,7 +350,7 @@ class ProposalCommentAdd(TemplateView):
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'logged/_sidebar-evaluation.tmpl'})
 
-        proposal_evaluation = ProposalEvaluation.objects.get(id=kwargs['id'])
+        proposal_evaluation = ProposalEvaluation.objects.get(id=kwargs['pk'])
 
         result = process_comment_attachment(request, context, 'logged-proposal-evaluation-detail',
                                             'logged-proposal-evaluation-comment-add',
@@ -367,7 +367,7 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
         context = self.prepare_context(request, *args, **kwargs)
 
-        proposal_id = kwargs['id']
+        proposal_id = kwargs['pk']
 
         eligibility_decision_form = EligibilityDecisionForm(request.POST, prefix=EligibilityDecisionForm.FORM_NAME,
                                                             proposal_id=proposal_id)
@@ -376,7 +376,7 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
             eligibility_decision_form.save_eligibility(request.user)
 
             messages.success(request, 'Eligibility saved')
-            return redirect(reverse('logged-call-evaluation-proposal-detail', kwargs={'id': proposal_id}))
+            return redirect(reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': proposal_id}))
 
         else:
             messages.error(request, 'Eligibility not saved. Verify errors in the form')

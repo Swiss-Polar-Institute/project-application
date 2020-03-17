@@ -30,7 +30,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper(self)
-        self.helper.form_action = reverse('logged-proposal-evaluation-update', kwargs={'id': self._proposal.id})
+        self.helper.form_action = reverse('logged-proposal-evaluation-update', kwargs={'pk': self._proposal.id})
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_letter_date'])
@@ -43,7 +43,7 @@ class ProposalEvaluationForm(forms.ModelForm):
 
         if hasattr(self._proposal, 'proposalevaluation'):
             cancel_button_url = reverse('logged-proposal-evaluation-detail',
-                                        kwargs={'id': self._proposal.proposalevaluation.id})
+                                        kwargs={'pk': self._proposal.proposalevaluation.id})
         else:
             cancel_button_url = reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}'
 

@@ -18,12 +18,12 @@
             <p>
                 {% if proposal.proposalevaluation %}
                     <a class="btn btn-primary"
-                       href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}"
+                       href="{% url 'logged-proposal-evaluation-detail' pk=proposal.proposalevaluation.id %}"
                        role="button">View&nbsp;Proposal&nbsp;Evaluation</a>
                 {% endif %}
             </p>
             <p>
-                <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}"
+                <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}"
                    role="button">View&nbsp;Proposal</a>
             </p>
         </div>

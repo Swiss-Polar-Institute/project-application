@@ -2,7 +2,7 @@
 {% load request_is_management %}
 
 {% block contents %}
-    <h1>Proposals for call: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
+    <h1>Proposals for call: <a href="{% url 'logged-call-detail' pk=call.id %}">{{ call.long_name }}</a></h1>
     <p></p>
     {% if proposals %}
         <style>
@@ -31,7 +31,7 @@
                     <td>{{ proposal.proposal_status.name }}</td>
                     <td>
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-call-proposal-detail' id=proposal.id %}">View</a>
+                           href="{% url 'logged-call-proposal-detail' pk=proposal.id %}">View</a>
                     </td>
                 </tr>
             {% endfor %}

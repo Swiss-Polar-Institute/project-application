@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-10">
             <h1>Evaluation summary for: <a
-                    href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
+                    href="{% url 'logged-call-detail' pk=call.id %}">{{ call.long_name }}</a></h1>
 
             {% for check in checks %}
                 {% if check.proposals %}
@@ -13,7 +13,7 @@
                     <ul>
                         {% for proposal in check.proposals %}
                             <li>
-                                <a href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}">{{ proposal.title }}</a>
+                                <a href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}">{{ proposal.title }}</a>
                                 - {{ proposal.applicant.person.full_name }}</li>
                         {% endfor %}
                     </ul>

@@ -19,11 +19,11 @@
         <div class="col-2">
             <p>
                 <a class="btn btn-primary"
-                   href="{% url 'logged-proposal-evaluation-update' id=proposal.proposalevaluation.id %}"
+                   href="{% url 'logged-proposal-evaluation-update' pk=proposal.proposalevaluation.id %}"
                    role="button">Edit&nbsp;Proposal&nbsp;Evaluation</a>
             </p>
             <p>
-                <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}"
+                <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}"
                    role="button">View&nbsp;Proposal</a>
             </p>
         </div>

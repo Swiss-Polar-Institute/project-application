@@ -21,7 +21,7 @@ class CallEvaluationForm(forms.ModelForm):
         self.helper = FormHelper(self)
 
         if self.instance.id:
-            self.helper.form_action = reverse('logged-call-evaluation-update', kwargs={'id': self.instance.id})
+            self.helper.form_action = reverse('logged-call-evaluation-update', kwargs={'pk': self.instance.id})
             self.fields['call'].initial = call = self.instance.call
         else:
             self.helper.form_action = reverse('logged-call-evaluation-add')+f'?call={call.id}'

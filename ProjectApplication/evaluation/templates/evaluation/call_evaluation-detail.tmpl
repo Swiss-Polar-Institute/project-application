@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-10">
             <h1>Call Evaluation for: <a
-                    href="{% url 'logged-call-detail' id=call_evaluation.call.id %}">{{ call_evaluation.call.long_name }}</a>
+                    href="{% url 'logged-call-detail' pk=call_evaluation.call.id %}">{{ call_evaluation.call.long_name }}</a>
             </h1>
             <br>
             <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
@@ -23,7 +23,7 @@
         </div>
         <div class="col-2">
             <a class="btn btn-primary d-print-none"
-               href="{% url 'logged-call-evaluation-update' id=call_evaluation.id %}">Edit Call Evaluation</a>
+               href="{% url 'logged-call-evaluation-update' pk=call_evaluation.id %}">Edit Call Evaluation</a>
         </div>
         &nbsp;
         <br>

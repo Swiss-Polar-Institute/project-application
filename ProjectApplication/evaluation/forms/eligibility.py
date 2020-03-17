@@ -38,7 +38,7 @@ class EligibilityDecisionForm(forms.Form):
 
         self.helper = FormHelper(self)
         self.helper.form_id = 'eligibility_form'
-        self.helper.form_action = reverse('logged-proposal-eligibility-update', kwargs={'id': self._proposal_id})
+        self.helper.form_action = reverse('logged-proposal-eligibility-update', kwargs={'pk': self._proposal_id})
 
         self.helper.layout = Layout(
             Div(
@@ -50,7 +50,7 @@ class EligibilityDecisionForm(forms.Form):
             FormActions(
                 Submit('save', 'Save Eligibility'),
                 HTML('<p></p>'),
-                cancel_edit_button(reverse('logged-call-evaluation-proposal-detail', kwargs={'id': proposal.id}))
+                cancel_edit_button(reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': proposal.id}))
             )
         )
 

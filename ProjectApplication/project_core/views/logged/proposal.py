@@ -68,7 +68,7 @@ class ProposalCommentAdd(AbstractProposalDetailView):
                         'active_subsection': 'proposal-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        proposal = Proposal.objects.get(id=kwargs['id'])
+        proposal = Proposal.objects.get(id=kwargs['pk'])
 
         result = process_comment_attachment(request, context, 'logged-proposal-detail', 'logged-proposal-comment-add',
                                             'logged/proposal-detail.tmpl',
@@ -104,13 +104,13 @@ def get_eligibility_history(proposal):
 
 class ProposalDetailView(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
-        if 'id' in kwargs:
+        if 'pk' in kwargs:
             # When coming from adding comments/attachments it contains the 'id' but the
             # other system relies on the 'uuid'.
             # Adaptor here to avoid at all costs that the public page can use 'id' to refer to proposals
             # (even though the urls.py doesn't allow it...)
-            proposal = Proposal.objects.get(id=kwargs['id'])
-            del kwargs['id']
+            proposal = Proposal.objects.get(id=kwargs['pk'])
+            del kwargs['pk']
             kwargs['uuid'] = proposal.uuid
         elif 'uuid' in kwargs:
             # The normal proposal view from admin for example

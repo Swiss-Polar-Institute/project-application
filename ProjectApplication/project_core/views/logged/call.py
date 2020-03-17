@@ -48,7 +48,7 @@ class AbstractCallView(TemplateView):
     def prepare_context(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        call = Call.objects.get(id=kwargs['id'])
+        call = Call.objects.get(id=kwargs['pk'])
 
         context['call'] = call
 
@@ -92,7 +92,7 @@ class CallCommentAdd(AbstractCallView):
                         'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        call = Call.objects.get(id=kwargs['id'])
+        call = Call.objects.get(id=kwargs['pk'])
 
         result = process_comment_attachment(request, context, 'logged-call-detail',
                                             'logged-call-comment-add',
@@ -132,7 +132,7 @@ class ProposalDetail(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
-        proposal = Proposal.objects.get(id=kwargs['id'])
+        proposal = Proposal.objects.get(id=kwargs['pk'])
 
         utils.add_comment_attachment_forms(context, 'logged-call-proposal-detail', proposal)
 
@@ -155,7 +155,7 @@ class ProposalDetail(AbstractProposalDetailView):
                         'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        proposal = Proposal.objects.get(id=kwargs['id'])
+        proposal = Proposal.objects.get(id=kwargs['pk'])
 
         result = process_comment_attachment(request, context, 'logged-call-proposal-detail',
                                             'logged-call-comment-add',
@@ -169,15 +169,15 @@ class CallView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        if 'id' in kwargs:
-            call_id = kwargs['id']
+        if 'pk' in kwargs:
+            call_id = kwargs['pk']
             call = Call.objects.get(id=call_id)
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(call=call,
                                                                                 prefix=TEMPLATE_VARIABLES_FORM_NAME)
-            context['call_action_url'] = reverse('logged-call-update', kwargs={'id': call_id})
+            context['call_action_url'] = reverse('logged-call-update', kwargs={'pk': call_id})
             context['call_action'] = 'Edit'
             context['active_subsection'] = 'call-list'
 
@@ -204,14 +204,14 @@ class CallView(TemplateView):
         new_call = False
         template_variables_form = None  # avoids warning referenced without initialization
 
-        if 'id' in kwargs:
-            call = Call.objects.get(id=kwargs['id'])
+        if 'pk' in kwargs:
+            call = Call.objects.get(id=kwargs['pk'])
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
             call_question_form = CallQuestionItemFormSet(request.POST, instance=call, prefix=CALL_QUESTION_FORM_NAME)
             template_variables_form = TemplateVariableItemFormSet(request.POST, call=call,
                                                                   prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
-            context['call_action_url'] = reverse('logged-call-update', kwargs={'id': call.id})
+            context['call_action_url'] = reverse('logged-call-update', kwargs={'pk': call.id})
             call_action = 'Edit'
             action = 'updated'
             active_subsection = 'call-list'
@@ -247,7 +247,7 @@ class CallView(TemplateView):
                 template_variables_form.save_into_call(call)
 
             messages.success(request, 'Call has been saved')
-            return redirect(reverse('logged-call-detail', kwargs={'id': call.id}) + '?action={}'.format(action))
+            return redirect(reverse('logged-call-detail', kwargs={'pk': call.id}) + '?action={}'.format(action))
 
         context = super().get_context_data(**kwargs)
 

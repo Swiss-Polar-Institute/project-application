@@ -41,7 +41,7 @@ class UtilsTest(TestCase):
 
         comment_text = 'This is a very good comment'
 
-        client.post(reverse(submit_viewname_repost, kwargs={'id': parent.id}),
+        client.post(reverse(submit_viewname_repost, kwargs={'pk': parent.id}),
                     {'comment_form_submit': '1',
                      f'{CommentForm.FORM_NAME}-category': self._proposal_comment_category.id,
                      f'{CommentForm.FORM_NAME}-text': comment_text}
@@ -56,7 +56,7 @@ class UtilsTest(TestCase):
         client = Client()
         client.force_login(self._user)
         parent = self._proposal
-        url = reverse('logged-proposal-comment-add', kwargs={'id': parent.id})
+        url = reverse('logged-proposal-comment-add', kwargs={'pk': parent.id})
 
         self.assertEqual(ProposalComment.objects.all().count(), 0)
 

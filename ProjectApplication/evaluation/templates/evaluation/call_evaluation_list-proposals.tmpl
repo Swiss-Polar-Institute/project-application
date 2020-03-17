@@ -2,7 +2,7 @@
 {% load request_is_management %}
 
 {% block contents %}
-    <h1>Proposals for call: <a href="{% url 'logged-call-detail' id=call.id %}">{{ call.long_name }}</a></h1>
+    <h1>Proposals for call: <a href="{% url 'logged-call-detail' pk=call.id %}">{{ call.long_name }}</a></h1>
     <p><strong>Only submitted proposals are listed.</strong></p>
 
     {% if proposals %}
@@ -38,10 +38,10 @@
                     <td>{{ proposal.proposalevaluation.board_decision }}</td>
                     <td>
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-call-evaluation-proposal-detail' id=proposal.id %}">View&nbsp;Proposal</a>&nbsp;
+                           href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}">View&nbsp;Proposal</a>&nbsp;
                         {% if proposal.proposalevaluation %}
                             <a class="btn btn-primary btn-xs"
-                               href="{% url 'logged-proposal-evaluation-detail' id=proposal.proposalevaluation.id %}">View
+                               href="{% url 'logged-proposal-evaluation-detail' pk=proposal.proposalevaluation.id %}">View
                                 Evaluation</a>
                         {% elif proposal.can_create_evaluation %}
                             <a class="btn btn-primary btn-xs"

@@ -46,9 +46,9 @@ class AbstractProposalDetailView(TemplateView):
         if 'uuid' in kwargs:
             # Public requests are based on 'uuid'
             proposal = Proposal.objects.get(uuid=kwargs['uuid'])
-        elif 'id' in kwargs:
+        elif 'pk' in kwargs:
             # Logged requests (for the comments specially) are based on 'id'
-            proposal = Proposal.objects.get(id=kwargs['id'])
+            proposal = Proposal.objects.get(id=kwargs['pk'])
         else:
             assert False
         call = proposal.call

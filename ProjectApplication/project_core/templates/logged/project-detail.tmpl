@@ -7,7 +7,7 @@
             <h2>{{ project.title }}</h2>
 
             <strong>Status:</strong> {{ project.status }}<br>
-            <strong>Call:</strong> <a href="{% url 'logged-call-detail' id=project.call.id %}">{{ project.call.long_name }}</a><br>
+            <strong>Call:</strong> <a href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
 
             <p></p>
 
@@ -48,7 +48,7 @@
             <strong>Project created:</strong> {{ project.created_on }}<br>
         </div>
         <div class="col-2">
-            <a class="btn btn-primary" href="{% url 'logged-proposal-detail' id=project.proposal.id %}">View Proposal</a>
+            <a class="btn btn-primary" href="{% url 'logged-proposal-detail' pk=project.proposal.id %}">View Proposal</a>
         </div>
     </div>
 

@@ -26,7 +26,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('logged-call-detail', kwargs={'id': self._call.id}))
+        response = c.get(reverse('logged-call-detail', kwargs={'pk': self._call.id}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self._call.long_name)
 
@@ -36,7 +36,7 @@ class CallList(TestCase):
         login = c.login(username='unittest_management', password='12345')
         self.assertTrue(login)
 
-        response = c.get(reverse('logged-call-update', kwargs={'id': self._call.id}))
+        response = c.get(reverse('logged-call-update', kwargs={'pk': self._call.id}))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, self._call.long_name)
 
