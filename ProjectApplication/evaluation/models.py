@@ -161,4 +161,4 @@ class CallEvaluation(CreateModifyOn):
         return None
 
     def __str__(self):
-        return f'CallEvaluation {self.id} for call: {self.call.id}'
+        return f'CallEvaluation: {self.id} for call: {self.call.little_name()}'
