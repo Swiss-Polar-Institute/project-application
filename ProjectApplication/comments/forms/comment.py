@@ -23,7 +23,7 @@ class CommentForm(forms.Form):
 
         self.helper = FormHelper(self)
         self.helper.form_action = form_action
-        self.helper.add_input(Submit('comment_form_submit', 'Save comment', css_class='btn-primary'))
+        self.helper.add_input(Submit('comment_form_submit', 'Save Comment', css_class='btn-primary'))
 
         self.helper.layout = Layout(
             Div(
