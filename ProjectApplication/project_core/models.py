@@ -765,6 +765,15 @@ class Proposal(CreateModifyOn):
     class Meta:
         unique_together = (('title', 'applicant', 'call'),)
 
+    def can_eligibility_be_edited(self):
+        return self.can_eligibility_be_created_or_changed() and not self.proposalevaluation
+
+    def reason_cannot_eligibility_be_edited(self):
+        if not self.can_eligibility_be_created_or_changed():
+            return self.reason_eligibility_cannot_be_created_or_changed()
+        elif self.proposalevaluation:
+            return 'Eligibility cannot be changed because a proposal evaluation already exists'
+
 
 class ProposalQAText(CreateModifyOn):
     """Questions assigned to a proposal and their respective answers"""

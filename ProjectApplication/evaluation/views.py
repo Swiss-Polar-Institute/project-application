@@ -322,6 +322,7 @@ class ProposalDetail(AbstractProposalDetailView):
         context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
                                                                              proposal_id=proposal.id)
 
+        context['can_edit_eligibility'] = proposal.can_eligibility_be_edited()
         context['eligibility_history'] = get_eligibility_history(proposal)
 
         return render(request, 'evaluation/proposal-detail.tmpl', context)

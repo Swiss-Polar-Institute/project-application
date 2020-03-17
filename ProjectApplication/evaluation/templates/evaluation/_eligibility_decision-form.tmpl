@@ -3,7 +3,12 @@
 <div id="eligibility_detail">
     {% include 'evaluation/_eligibility-detail.tmpl' with proposal=proposal %}
     <br>
-    <button id="edit_button" type="button" class="btn btn-primary">Edit Eligibility</button>
+    {% if can_edit_eligibility %}
+        <button id="edit_button" type="button" class="btn btn-primary">Edit Eligibility</button>
+    {% else %}
+        <div class="border p-1 bg-light rounded">
+            <em>{{ proposal.reason_cannot_eligibility_be_edited }}</em></div>
+    {% endif %}
 </div>
 <div id="eligibility_form" style="display:none">
     {% crispy eligibility_decision_form %}
