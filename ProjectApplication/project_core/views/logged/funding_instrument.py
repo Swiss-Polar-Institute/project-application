@@ -134,6 +134,7 @@ class FundingInstrumentView(TemplateView):
 
 class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
     template_name = 'logged/funding_instrument-detail.tmpl'
+    context_object_name = 'funding_instrument'
     model = FundingInstrument
 
     def get_context_data(self, **kwargs):
