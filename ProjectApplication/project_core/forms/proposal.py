@@ -159,7 +159,8 @@ class ProposalForm(ModelForm):
             'geographical_areas': 'Select all options describing the geographical focus of this {{ activity }}',
             'title': 'Name of the proposed {{ activity }}',
             'location': 'Name of more precise location of where the proposed {{ activity }} would take place (not coordinates)',
-            'keywords': 'Please select / add at least 5 keywords that describe the proposed {{ activity }}',
+            'keywords': 'Please select at least 5 keywords that describe the proposed {{ activity }}. If the keywords you are looking for do not exist, then add each term separately.'
+                        '',
             'start_date': "Date on which the {{ activity }} to be funded by SPI, is expected to start. \
                                         If a calendar doesn't appear when clicking on this field, please enter the date in the format dd-mm-yyyy. If all else fails, please use another browser, such as Firefox",
             'end_date': "Date on which the {{ activity }} to be funded by SPI, is expected to end. \
