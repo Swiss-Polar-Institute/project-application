@@ -104,6 +104,9 @@ class ProposalAttachment(AbstractAttachment):
     category = models.ForeignKey(ProposalAttachmentCategory, help_text='Category of the attachment',
                                  on_delete=models.PROTECT)
 
+    def __str__(self):
+        return f'Proposal:{self.proposal} Category:{self.category} File: {self.file.name}'
+
     def set_parent(self, parent):
         self.proposal = parent
 
@@ -161,6 +164,9 @@ class CallAttachment(AbstractAttachment):
                              on_delete=models.PROTECT)
     category = models.ForeignKey(CallAttachmentCategory, help_text='Category of the attachment',
                                  on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'Call:{self.call.little_name()} Category:{self.category} File: {self.file.name}'
 
     def set_parent(self, parent):
         self.call = parent
