@@ -124,7 +124,7 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
         else:
             assert False
 
-        context = self.prepare_context(request, *args, **{'id': proposal.id})
+        context = self.prepare_context(request, *args, **{'pk': proposal.id})
 
         add_proposal_evaluation_form(context, proposal)
 
