@@ -996,9 +996,6 @@ class Project(CreateModifyOn):
     end_date = models.DateField(
         help_text='Date on which the project is expected to end',
         blank=False, null=False)
-    duration_months = models.DecimalField(
-        help_text='Duration of the project in months',
-        decimal_places=1, max_digits=5, validators=[MinValueValidator(0)], blank=False, null=False)
     principal_investigator = models.ForeignKey(PersonPosition, help_text='Main applicant of the project', blank=False,
                                                null=False,
                                                on_delete=models.PROTECT)  # maybe rename this to principal investigator
@@ -1015,6 +1012,7 @@ class Project(CreateModifyOn):
                               blank=False, null=False)
     abortion_reason = models.CharField(help_text='Reason that a project was aborted', max_length=50, blank=True,
                                        null=True)
+    history = HistoricalRecords
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.principal_investigator)
