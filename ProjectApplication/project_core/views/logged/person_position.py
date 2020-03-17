@@ -1,14 +1,18 @@
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import TemplateView, UpdateView, CreateView, DetailView
+from django.views.generic import UpdateView, CreateView, DetailView, ListView
 
 from project_core.forms.contacts import ContactForm
 from project_core.models import PersonPosition
 
 
-class PersonPositionListView(TemplateView):
-    def get(self, request, *args, **kwargs):
+class PersonPositionListView(ListView):
+    template_name = 'logged/contact-list.tmpl'
+    context_object_name = 'contacts'
+    model = PersonPosition
+    queryset = PersonPosition.objects.filter(privacy_policy=True)
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context['contacts'] = PersonPosition.objects.filter(privacy_policy=True)
@@ -18,7 +22,8 @@ class PersonPositionListView(TemplateView):
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')}, {'name': 'People'}]
-        return render(request, 'logged/contact-list.tmpl', context)
+
+        return context
 
 
 class PersonPositionUpdateView(UpdateView):
