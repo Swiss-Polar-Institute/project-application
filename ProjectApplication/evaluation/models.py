@@ -144,6 +144,7 @@ class CallEvaluation(CreateModifyOn):
     closed_user = models.ForeignKey(User, help_text='User by which the Call Evaluation was closed',
                                     blank=True, null=True,
                                     on_delete=models.PROTECT)
+    history = HistoricalRecords()
 
     @staticmethod
     def comment_object():
