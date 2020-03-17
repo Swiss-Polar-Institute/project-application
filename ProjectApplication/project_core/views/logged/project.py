@@ -1,15 +1,8 @@
-from django.shortcuts import render
-from django.urls import reverse, reverse_lazy
-from django.utils import timezone
+from django.urls import reverse
+from django.urls import reverse
 from django.views.generic import TemplateView, DetailView
 
-from ProjectApplication import settings
-from comments.utils import process_comment_attachment
-from evaluation.forms.eligibility import EligibilityDecisionForm
-from evaluation.models import Reviewer
-from project_core.models import Proposal, Call, Project
-from project_core.utils import user_is_in_group_name
-from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
+from project_core.models import Project
 
 
 class ProjectList(TemplateView):
