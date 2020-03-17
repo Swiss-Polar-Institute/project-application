@@ -3,7 +3,7 @@ from crispy_forms.layout import Submit
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, ListView
 
 from project_core.forms.funding_instrument import FundingInstrumentForm
 from project_core.models import FundingInstrument
@@ -14,11 +14,13 @@ FUNDING_INSTRUMENT_FORM_NAME = 'funding_instrument_form'
 TEMPLATE_VARIABLES_FORM_NAME = 'template_variables_form'
 
 
-class FundingInstrumentList(TemplateView):
-    def get(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
+class FundingInstrumentList(ListView):
+    model = FundingInstrument
+    context_object_name = 'funding_instruments'
+    template_name = 'logged/funding_instrument-list.tmpl'
 
-        context['funding_instruments'] = FundingInstrument.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'funding-instrument-list',
@@ -26,7 +28,7 @@ class FundingInstrumentList(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Funding instruments'}]
 
-        return render(request, 'logged/funding_instrument-list.tmpl', context)
+        return context
 
 
 class FundingInstrumentMixin:

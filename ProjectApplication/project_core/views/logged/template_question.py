@@ -2,19 +2,20 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
+from django.views.generic import CreateView, UpdateView, DetailView, ListView
 
 from project_core.forms.utils import cancel_edit_button
 from project_core.models import TemplateQuestion
 
 
-class TemplateQuestionList(TemplateView):
-    def get(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
+class TemplateQuestionList(ListView):
+    model = TemplateQuestion
+    context_object_name = 'template_questions'
+    template_name = 'logged/template_question-list.tmpl'
 
-        context['template_questions'] = TemplateQuestion.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'template-question-list',
@@ -22,7 +23,7 @@ class TemplateQuestionList(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Template questions'}]
 
-        return render(request, 'logged/template_question-list.tmpl', context)
+        return context
 
 
 class TemplateQuestionMixin:
