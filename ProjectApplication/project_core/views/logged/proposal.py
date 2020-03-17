@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import TemplateView
+from django.views.generic import ListView
 
 from ProjectApplication import settings
 from comments.utils import process_comment_attachment
@@ -27,18 +27,15 @@ def create_file_name(name_specification, call_id):
     return filename
 
 
-class ProposalList(TemplateView):
+class ProposalList(ListView):
     template_name = 'logged/proposal-list.tmpl'
+    model = Proposal
+    context_object_name = 'proposals'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        call_id = self.request.GET.get('call', None)
-
-        context['proposals'] = Proposal.objects.all()
 
         if user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
-            context['reviewer'] = self.request.user
-            context['proposals'] = Reviewer.filter_proposals(context['proposals'], self.request.user)
             context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
             active_section = 'proposals'
             context['breadcrumb'] = [{'name': 'Proposals'}]
@@ -51,6 +48,16 @@ class ProposalList(TemplateView):
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         return context
+
+    def get_queryset(self):
+        proposals = Proposal.objects.all()
+
+        if user_is_in_group_name(self.request.user, settings.MANAGEMENT_GROUP_NAME):
+            return proposals
+        elif user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
+            return Reviewer.filter_proposals(proposals, self.request.user)
+        else:
+            assert False
 
 
 class ProposalCommentAdd(AbstractProposalDetailView):
