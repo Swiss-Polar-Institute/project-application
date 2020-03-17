@@ -67,6 +67,7 @@ class PersonPositionCreateView(SuccessMessageMixin, CreateView):
 
 class PersonPositionDetailView(DetailView):
     template_name = 'logged/contact-detail.tmpl'
+    context_object_name = 'person'
     model = PersonPosition
 
     def get_context_data(self, **kwargs):
