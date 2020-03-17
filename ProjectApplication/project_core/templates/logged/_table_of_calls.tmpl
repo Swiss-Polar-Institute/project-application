@@ -46,7 +46,7 @@
                 {% if view_evaluation_button %}
                     {% if call.callevaluation %}
                         <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-call-evaluation-detail' id=call.callevaluation.id %}">View Call
+                           href="{% url 'logged-call-evaluation-detail' pk=call.callevaluation.id %}">View Call
                             Evaluation</a>
                     {% else %}
                         <a class="btn btn-primary btn-xs"

@@ -30,7 +30,7 @@ class CallEvaluationForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['panel_date'])
 
         if hasattr(call, 'callevaluation'):
-            cancel_edit_url = reverse('logged-call-evaluation-detail', kwargs={'id': call.callevaluation.id})
+            cancel_edit_url = reverse('logged-call-evaluation-detail', kwargs={'pk': call.callevaluation.id})
         else:
             cancel_edit_url = reverse('logged-call-evaluation-add') + f'?call={call.id}'
 

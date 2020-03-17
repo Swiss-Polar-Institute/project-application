@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import formats
 from django.utils import timezone
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 
 from ProjectApplication import settings
 from comments import utils
@@ -215,7 +215,7 @@ class CallEvaluationUpdate(TemplateView):
             call_evaluation = call_evaluation_form.save_call_evaluation(user=request.user)
 
             messages.success(request, 'Call evaluation saved')
-            return redirect(reverse('logged-call-evaluation-detail', kwargs={'id': call_evaluation.id}))
+            return redirect(reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id}))
         else:
             context.update({'active_section': 'evaluation',
                             'active_subsection': 'evaluation-list',
@@ -258,8 +258,12 @@ class ProposalList(ListView):
         return proposals
 
 
-class CallEvaluationDetail(TemplateView):
-    def get(self, request, *args, **kwargs):
+class CallEvaluationDetail(DetailView):
+    model = CallEvaluation
+    template_name = 'evaluation/call_evaluation-detail.tmpl'
+    context_object_name = 'call_evaluation'
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'evaluation',
@@ -270,12 +274,11 @@ class CallEvaluationDetail(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': 'View call evaluation'}]
 
-        call_evaluation = CallEvaluation.objects.get(id=kwargs['id'])
-        context['call_evaluation'] = call_evaluation
+        call_evaluation = CallEvaluation.objects.get(id=self.kwargs['pk'])
 
         add_comment_attachment_forms(context, 'logged-call-evaluation-comment-add', call_evaluation)
 
-        return render(request, 'evaluation/call_evaluation-detail.tmpl', context)
+        return context
 
 
 class CallEvaluationCommentAdd(TemplateView):

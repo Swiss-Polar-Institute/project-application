@@ -29,7 +29,7 @@ urlpatterns = [
     path('logged/call-evaluation/<int:id>/update/',
          evaluation.views.CallEvaluationUpdate.as_view(),
          name='logged-call-evaluation-update'),
-    path('logged/call-evaluation/<int:id>/',
+    path('logged/call-evaluation/<int:pk>/',
          evaluation.views.CallEvaluationDetail.as_view(),
          name='logged-call-evaluation-detail'),
 
