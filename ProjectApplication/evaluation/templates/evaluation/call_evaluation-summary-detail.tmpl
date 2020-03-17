@@ -18,17 +18,9 @@
                         {% endfor %}
                     </ul>
                 {% else %}
-                    <i class="fa fa-check" style="color:green"></i> {{ check.message_all_good }}.
-                {% endif %}<br>
+                    <i class="fa fa-check" style="color:green"></i> {{ check.message_all_good }}.<br>
+                {% endif %}
             {% endfor %}
-
-            {% if not all_good %}
-                <p>
-                </p>
-                <p>
-                    To continue please fix the errors above and reload this page.
-                </p>
-            {% endif %}
 
             {% if show_summary %}
                 <br>

@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import formats
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView, ListView, DetailView
 
 from ProjectApplication import settings
@@ -435,10 +436,10 @@ class CallEvaluationSummary(TemplateView):
         context['can_close'] = context['all_good'] and call.callevaluation.closed_date is None
 
         if context['all_good'] == False:
-            context['reason_cannot_close'] = 'Call Evaluation cannot be closed because there are errors, see above'
+            context['reason_cannot_close'] = mark_safe('Call Evaluation cannot be closed because there are errors.<br>Please fix them and reload the page.')
         elif call.callevaluation.closed_date is not None:
             context[
-                'reason_cannot_close'] = f'Call Evaluation is already closed (by {call.callevaluation.closed_user} at {formats.date_format(call.callevaluation.closed_date, "DATETIME_FORMAT")})'
+                'reason_cannot_close'] = f'Call Evaluation is already closed (by {call.callevaluation.closed_user} at {formats.date_format(call.callevaluation.closed_date, "DATETIME_FORMAT")}).'
 
         if context['all_good']:
             context['show_summary'] = True
