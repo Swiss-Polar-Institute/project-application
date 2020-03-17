@@ -1,18 +1,16 @@
 from django.urls import reverse
-from django.urls import reverse
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import DetailView, ListView
 
 from project_core.models import Project
 
 
-class ProjectList(TemplateView):
+class ProjectList(ListView):
     template_name = 'logged/project-list.tmpl'
+    context_object_name = 'projects'
+    model = Project
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        call_id = self.request.GET.get('call', None)
-
-        context['projects'] = Project.objects.all()
 
         context.update({'active_section': 'lists',
                         'active_subsection': 'project-list',
