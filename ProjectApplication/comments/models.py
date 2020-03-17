@@ -26,6 +26,16 @@ class AbstractComment(CreateModifyOn):
                                    related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
                                    on_delete=models.PROTECT)
 
+    def truncate_text(self):
+        max_text = 70
+        if len(self.text) < max_text:
+            text = self.text
+        else:
+            text = self.text[:max_text - 3] + '...'
+
+        text = text.replace('\n', '\\n')
+        return text
+
     class Meta:
         abstract = True
 
@@ -60,6 +70,9 @@ class ProposalComment(AbstractComment):
     created_by = models.ForeignKey(User, help_text='User by which the entry was created',
                                    related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
                                    on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'Proposal:{self.proposal} Category:{self.category} Text: {self.truncate_text()}'
 
     def set_parent(self, parent):
         self.proposal = parent
@@ -116,6 +129,9 @@ class CallComment(AbstractComment):
 
     category = models.ForeignKey(CallCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'Call:{self.call} Category:{self.category} Text: {self.truncate_text()}'
 
     def set_parent(self, parent):
         self.call = parent
@@ -231,6 +247,9 @@ class CallEvaluationComment(AbstractComment):
 
     category = models.ForeignKey(CallEvaluationCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'CallEvaluation:{self.call_evaluation} Category:{self.category} Text: {self.truncate_text()}'
 
     def set_parent(self, parent):
         self.call_evaluation = parent
