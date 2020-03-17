@@ -36,7 +36,7 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
         proposal_evaluation_id = kwargs['pk']
         proposal_evaluation = ProposalEvaluation.objects.get(id=proposal_evaluation_id)
 
-        context = self.prepare_context(request, *args, **{'id': proposal_evaluation.proposal.id})
+        context = self.prepare_context(request, *args, **{'pk': proposal_evaluation.proposal.id})
         add_proposal_evaluation_form(context, proposal_evaluation.proposal)
 
         add_comment_attachment_forms(context, 'logged-proposal-evaluation-comment-add', proposal_evaluation)
