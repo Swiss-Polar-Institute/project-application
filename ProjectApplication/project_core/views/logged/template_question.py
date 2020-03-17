@@ -112,6 +112,7 @@ class TemplateQuestionUpdateView(TemplateQuestionMixin, CrispyNoFormTag, Success
 class TemplateQuestionDetailView(TemplateQuestionMixin, DetailView):
     template_name = 'logged/template_question-detail.tmpl'
     model = TemplateQuestion
+    context_object_name = 'template_question'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
