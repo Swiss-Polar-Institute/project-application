@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import formats
 from django.utils import timezone
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from ProjectApplication import settings
 from comments import utils
@@ -229,16 +229,17 @@ class CallEvaluationUpdate(TemplateView):
             return render(request, 'evaluation/call_evaluation-form.tmpl', context)
 
 
-class ProposalList(TemplateView):
-    def get(self, request, *args, **kwargs):
+class ProposalList(ListView):
+    template_name = 'evaluation/call_evaluation_list-proposals.tmpl'
+    model = Proposal
+    context_object_name = 'proposals'
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        call = Call.objects.get(id=kwargs['call_id'])
-        draft = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_DRAFT)
-        proposals = Proposal.objects.filter(call=call).exclude(proposal_status=draft)
+        call = Call.objects.get(id=self.kwargs['call_id'])
 
         context['call'] = call
-        context['proposals'] = proposals
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
@@ -247,7 +248,14 @@ class ProposalList(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'List of proposals ({call.little_name()})'}]
 
-        return render(request, 'evaluation/call_evaluation_list-proposals.tmpl', context)
+        return context
+
+    def get_queryset(self):
+        call = Call.objects.get(id=self.kwargs['call_id'])
+        draft = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_DRAFT)
+        proposals = Proposal.objects.filter(call=call).exclude(proposal_status=draft)
+
+        return proposals
 
 
 class CallEvaluationDetail(TemplateView):
