@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 
 from comments import utils
 from comments.utils import process_comment_attachment, add_comment_attachment_forms
@@ -102,15 +102,17 @@ class CallCommentAdd(AbstractCallView):
         return result
 
 
-class ProposalList(TemplateView):
-    def get(self, request, *args, **kwargs):
+class ProposalList(ListView):
+    template_name = 'logged/_call_list-proposals.tmpl'
+    model = Proposal
+    context_object_name = 'proposals'
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        call = Call.objects.get(id=kwargs['call_id'])
-        proposals = Proposal.objects.filter(call=call)
+        call = Call.objects.get(id=self.kwargs['call_id'])
 
         context['call'] = call
-        context['proposals'] = proposals
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'call-list',
@@ -119,7 +121,11 @@ class ProposalList(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
                                  {'name': f'List of proposals ({call.little_name()})'}]
 
-        return render(request, 'logged/_call_list-proposals.tmpl', context)
+        return context
+
+    def get_queryset(self):
+        call = Call.objects.get(id=self.kwargs['call_id'])
+        return Proposal.objects.filter(call=call)
 
 
 class ProposalDetail(AbstractProposalDetailView):
