@@ -16,7 +16,7 @@ class BudgetItemFormTest(TestCase):
         self._user = User.objects.create_user('TestUser', 'test@example.com', 'password')
         group, _ = Group.objects.get_or_create(name=settings.MANAGEMENT_GROUP_NAME)
 
-        ProposalStatus.objects.get_or_create(name=settings.PROPOSAL_STATUS_ACCEPTED)
+        ProposalStatus.objects.get_or_create(name=settings.PROPOSAL_STATUS_SUBMITTED)
 
         group.user_set.add(self._user)
         group.save()

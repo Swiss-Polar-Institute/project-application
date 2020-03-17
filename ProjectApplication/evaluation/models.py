@@ -4,7 +4,7 @@ import storages
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MinValueValidator
-from django.db import models, transaction
+from django.db import models
 from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
@@ -118,21 +118,7 @@ class ProposalEvaluation(CreateModifyOn):
         return self.proposalevaluationcomment_set.all().order_by('created_on')
 
     def save(self, *args, **kwargs):
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-            proposal = self.proposal
-
-            if self.board_decision == ProposalEvaluation.BOARD_DECISION_FUND:
-                proposal_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_ACCEPTED)
-            elif self.board_decision == ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND:
-                proposal_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_REJECTED)
-            elif self.board_decision is None:
-                proposal_status = self.proposal.proposal_status
-            else:
-                assert False, 'Unexpected proposal status'
-
-            proposal.proposal_status = proposal_status
-            proposal.save()
+        super().save(*args, **kwargs)
 
 
 def call_evaluation_sheet_rename(instance, filename):
