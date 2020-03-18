@@ -29,9 +29,7 @@
                 </div>
             </div>
             <strong>Allocated budget:</strong> {{ project.allocated_budget }} CHF<br>
-            <strong>Geographical focus:</strong> {% for area in project.geographical_areas.all %}
-                {{ area }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}<br>
+            <strong>Geographical focus:</strong> {{ project.geographical_areas_enumeration }}<br>
             <strong>Precise region:</strong> {{ project.location }}<br>
             <strong>Keywords:</strong> {{ project.keywords_enumeration }}<br>
 
