@@ -1,15 +1,10 @@
 {% include 'common/_proposal_basic_information-detail.tmpl' %}
 <h3>Proposal details</h3>
-<strong>Geographical focus:</strong>
-{% for area in proposal.geographical_areas.all %}
-    {{ area }}{% if not forloop.last %}, {% endif %}
-{% endfor %}
+<strong>Geographical focus:</strong> {{ proposal.geographical_areas_enumeration }}
 <br>
 <strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.location %}
 <br>
-<strong>Keywords:</strong> {% for keyword in proposal.keywords.all %}{{ keyword }}{% if not forloop.last %}, {% endif %}
-{% endfor %}
-
+<strong>Keywords:</strong> {{ proposal.keywords_enumeration }}
 <div class="row">
     <div class="col-4">
         <strong>Start date:</strong> {{ proposal.start_date }}<br>

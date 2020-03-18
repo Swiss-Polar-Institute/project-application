@@ -7,7 +7,16 @@
     <a href="{% url 'logged-call-detail' pk=proposal.call.id %}">{{ proposal.call.long_name }}</a>
 {% else %}
     {{ proposal.call.long_name }}
-{% endif %}
+{% endif %}<br>
+<strong>Keywords:</strong> {{ proposal.keywords_enumeration }}<br>
+<div class="row">
+    <div class="col-8">
+        <strong>Geographical focus:</strong> {{ proposal.geographical_areas_enumeration }}
+    </div>
+    <div class="col-4">
+       <strong>Precise region:</strong> {{ proposal.location }}
+    </div>
+</div>
 <p></p>
 <h3>Applicant</h3>
 {% with applicant=proposal.applicant %}
