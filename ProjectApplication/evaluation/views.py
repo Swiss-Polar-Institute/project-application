@@ -425,6 +425,7 @@ class CallEvaluationValidation(TemplateView):
 
         return {'message_problem': 'Not all submitted proposals have had their eligibility checked',
                 'message_all_good': 'All submitted proposals have had their eligibility checked',
+                'ok': proposals_without_eligibility_set.count() == 0,
                 'proposals': proposals_without_eligibility_set}
 
     @staticmethod
@@ -434,18 +435,14 @@ class CallEvaluationValidation(TemplateView):
 
         return {'message_problem': 'There are eligible proposals that have not been evaluated',
                 'message_all_good': 'All the eligible proposals have been evaluated',
+                'ok': proposals_without_evaluation.count() == 0,
                 'proposals': proposals_without_evaluation}
 
     @staticmethod
     def _all_good(checks):
         all_good = True
         for check in checks:
-            if 'proposals' in check:
-                all_good = all_good and check['proposals'].count() == 0
-            elif 'ok' in check:
-                all_good = all_good and check['ok']
-            else:
-                assert False
+            all_good = all_good and check['ok']
 
         return all_good
 
@@ -456,6 +453,7 @@ class CallEvaluationValidation(TemplateView):
 
         return {'message_problem': 'There are proposals without decision letter',
                 'message_all_good': 'All the proposals have a decision letter',
+                'ok': proposals_without_decision_letter.count() == 0,
                 'proposals': proposals_without_decision_letter}
 
     def get(self, request, *args, **kwargs):
@@ -470,15 +468,15 @@ class CallEvaluationValidation(TemplateView):
         proposal_checks.append(self._check_eligible_proposals_have_evaluation(proposals))
         proposal_checks.append(self._check_proposal_evaluations_have_letter_for_applicant(proposals))
 
-        other_checks = []
-        other_checks.append(self._check_call_evaluation_is_completed(call.callevaluation))
+        evaluation_validations = []
+        evaluation_validations.append(self._check_call_evaluation_is_completed(call.callevaluation))
 
-        context['proposal_checks'] = proposal_checks
-        context['other_checks'] = other_checks
+        context['proposal_validations'] = proposal_checks
+        context['evaluation_validations'] = evaluation_validations
 
         context['call'] = call
 
-        context['all_good'] = CallEvaluationValidation._all_good(proposal_checks + other_checks)
+        context['all_good'] = CallEvaluationValidation._all_good(proposal_checks + evaluation_validations)
         context['can_close'] = context['all_good'] and call.callevaluation.closed_date is None
 
         if context['all_good'] == False:
@@ -496,7 +494,7 @@ class CallEvaluationValidation(TemplateView):
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': f'Evaluation summary ({call.little_name()})'}]
+                                 {'name': f'Evaluation validation ({call.little_name()})'}]
 
         context[CloseCallEvaluation.name] = CloseCallEvaluation(call_id=call.id)
 

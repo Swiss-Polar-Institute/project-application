@@ -4,10 +4,9 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            <h1>Evaluation validation and summary for: <a
+            <h1>Evaluation validation for: <a
                     href="{% url 'logged-call-detail' pk=call.id %}">{{ call.long_name }}</a></h1>
 
-            <h3>Eligibility validation</h3>
             {% include 'evaluation/_call_evaluation-validation-detail.tmpl' %}
 
             {% if show_summary %}
@@ -29,7 +28,7 @@
                 </p>
             {% else %}
                 <p></p>
-                Cannot close the call evaluation. Please fix the errors and reload this page.
+                Cannot close the call evaluation. <strong>Please fix the errors and reload this page.</strong>
             {% endif %}
         </div>
         <div class="col-2">

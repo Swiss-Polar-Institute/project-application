@@ -1,23 +1,6 @@
-{% for check in proposal_checks %}
-    {% if check.proposals %}
-        <i class="fa fa-times" style="color:red"></i> {{ check.message_problem }}:
-        <ul>
-            {% for proposal in check.proposals %}
-                <li>
-                    <a href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}">{{ proposal.title }}</a>
-                    - {{ proposal.applicant.person.full_name }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <i class="fa fa-check" style="color:green"></i> {{ check.message_all_good }}.<br>
-    {% endif %}
-{% endfor %}
+<h3>Proposal validation</h3>
+{% include 'evaluation/_validations-list.tmpl' with validations=proposal_validations %}
+
 <p></p>
 <h3>Evaluation validation</h3>
-{% for check in other_checks %}
-    {% if check.ok %}
-        <i class="fa fa-check" style="color:green"></i> {{ check.message_all_good }}.<br>
-    {% else %}
-        <i class="fa fa-times" style="color:red"></i> {{ check.message_problem }}.<br>
-    {% endif %}
-{% endfor %}
+{% include 'evaluation/_validations-list.tmpl' with validations=evaluation_validations %}
