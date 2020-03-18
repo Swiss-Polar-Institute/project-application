@@ -178,3 +178,6 @@ class CallEvaluation(CreateModifyOn):
 
     def __str__(self):
         return f'CallEvaluation: {self.id} for call: {self.call.little_name()}'
+
+    def is_closed(self):
+        return self.closed_date is not None

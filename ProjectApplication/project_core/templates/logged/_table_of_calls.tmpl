@@ -61,9 +61,16 @@
                            href="{% url 'logged-export-proposals-for-call-excel' call=call.pk %}">Excel Evaluation</a>
                     {% endif %}
                 {% endif %}
-                {% if evaluation_summary_button and call.callevaluation %}
-                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-evaluation-summary' call_id=call.pk %}">Evaluation
-                        Summary</a>
+                {% if call.callevaluation and evaluation_summary_or_validation_button %}
+                    {% if call.evaluation_is_closed %}
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'logged-call-evaluation-summary' call_id=call.pk %}">Evaluation
+                            Summary</a>
+                    {% else %}
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'logged-call-evaluation-validation' call_id=call.pk %}">Evaluation
+                            Validation</a>
+                    {% endif %}
                 {% endif %}
             </td>
         </tr>

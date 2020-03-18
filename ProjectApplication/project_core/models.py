@@ -157,6 +157,10 @@ class Call(CreateModifyOn):
         from comments.models import CallComment
         return CallComment
 
+    def evaluation_is_closed(self):
+        result = hasattr(self, 'callevaluation') and self.callevaluation.is_closed()
+        return result
+
 
 class StepType(models.Model):
     """Notable steps during the process"""

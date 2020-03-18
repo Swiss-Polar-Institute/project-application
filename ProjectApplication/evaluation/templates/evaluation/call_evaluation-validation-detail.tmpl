@@ -1,0 +1,38 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Evaluation validation and summary for: <a
+                    href="{% url 'logged-call-detail' pk=call.id %}">{{ call.long_name }}</a></h1>
+
+            <h3>Eligibility validation</h3>
+            {% include 'evaluation/_call_evaluation-validation-detail.tmpl' %}
+
+            {% if show_summary %}
+                <br>
+                <h4>Summary</h4>
+                {% include 'evaluation/_call_evaluation-summary-detail.tmpl' %}
+            {% endif %}
+
+            {% if can_close %}
+                <p><strong>
+                    If you continue to close the evaluation, {{ total_number_of_funded }}
+                    project{{ total_number_of_funded|pluralize:"s" }} for the call {{ call.long_name }} will be created.
+                    This cannot be
+                    reversed.
+                </strong>
+                </p>
+                <p>
+                    {% crispy close_call_evaluation_form %}
+                </p>
+            {% else %}
+                <p></p>
+                Cannot close the call evaluation. Please fix the errors and reload this page.
+            {% endif %}
+        </div>
+        <div class="col-2">
+        </div>
+    </div>
+{% endblock %}

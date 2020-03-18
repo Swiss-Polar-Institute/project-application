@@ -71,7 +71,7 @@ class ProposalEvaluationList(TemplateView):
                         'proposal_evaluation_list_button': True,
                         'evaluation_spreadsheet_button': True,
                         'view_evaluation_button': True,
-                        'evaluation_summary_button': True
+                        'evaluation_summary_or_validation_button': True
                         })
 
         context.update({'active_section': 'evaluation',
@@ -366,6 +366,40 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
 class CallEvaluationSummary(TemplateView):
     @staticmethod
+    def get_call_summary(call):
+        summary = {}
+        proposals = Proposal.objects.filter(call=call)
+
+        summary['total_number_of_proposals'] = proposals.count()
+        summary['total_number_of_eligible'] = proposals.filter(eligibility=Proposal.ELIGIBLE).count()
+        summary['total_number_of_funded'] = proposals.filter(
+            proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND).count()
+        summary['total_number_of_eligible_not_funded'] = summary['total_number_of_eligible'] - summary[
+            'total_number_of_funded']
+
+        return summary
+
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        call = Call.objects.get(id=kwargs['call_id'])
+
+        context['call'] = call
+
+        context.update(CallEvaluationSummary.get_call_summary(call))
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': f'Evaluation summary ({call.little_name()})'}]
+
+        return render(request, 'evaluation/call_evaluation-summary-detail.tmpl', context)
+
+
+class CallEvaluationValidation(TemplateView):
+    @staticmethod
     def _check_call_evaluation_is_completed(call_evaluation):
         required_fields = CallEvaluationForm(call=call_evaluation.call).fields
         missing_fields = []
@@ -403,6 +437,19 @@ class CallEvaluationSummary(TemplateView):
                 'proposals': proposals_without_evaluation}
 
     @staticmethod
+    def _all_good(checks):
+        all_good = True
+        for check in checks:
+            if 'proposals' in check:
+                all_good = all_good and check['proposals'].count() == 0
+            elif 'ok' in check:
+                all_good = all_good and check['ok']
+            else:
+                assert False
+
+        return all_good
+
+    @staticmethod
     def _check_proposal_evaluations_have_letter_for_applicant(proposals):
         proposals_without_decision_letter = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
             proposalevaluation__decision_letter__isnull=True)
@@ -431,7 +478,7 @@ class CallEvaluationSummary(TemplateView):
 
         context['call'] = call
 
-        context['all_good'] = CallEvaluationSummary._all_good(proposal_checks + other_checks)
+        context['all_good'] = CallEvaluationValidation._all_good(proposal_checks + other_checks)
         context['can_close'] = context['all_good'] and call.callevaluation.closed_date is None
 
         if context['all_good'] == False:
@@ -442,12 +489,7 @@ class CallEvaluationSummary(TemplateView):
 
         if context['all_good']:
             context['show_summary'] = True
-            context['total_number_of_proposals'] = proposals.count()
-            context['total_number_of_eligible'] = proposals.filter(eligibility=Proposal.ELIGIBLE).count()
-            context['total_number_of_funded'] = proposals.filter(
-                proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND).count()
-            context['total_number_of_eligible_not_funded'] = context['total_number_of_eligible'] - context[
-                'total_number_of_funded']
+            context.update(CallEvaluationSummary.get_call_summary(call))
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
@@ -458,20 +500,7 @@ class CallEvaluationSummary(TemplateView):
 
         context[CloseCallEvaluation.name] = CloseCallEvaluation(call_id=call.id)
 
-        return render(request, 'evaluation/call_evaluation-summary-detail.tmpl', context)
-
-    @staticmethod
-    def _all_good(checks):
-        all_good = True
-        for check in checks:
-            if 'proposals' in check:
-                all_good = all_good and check['proposals'].count() == 0
-            elif 'ok' in check:
-                all_good = all_good and check['ok']
-            else:
-                assert False
-
-        return all_good
+        return render(request, 'evaluation/call_evaluation-validation-detail.tmpl', context)
 
 
 def close_evaluation_call(call, user_closing_call):
