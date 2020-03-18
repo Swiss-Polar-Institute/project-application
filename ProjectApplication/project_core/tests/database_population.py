@@ -45,7 +45,16 @@ def create_keywords():
     ice, created = Keyword.objects.get_or_create(name='Ice', uid=keyword_uuid)
     micro_plastics, created = Keyword.objects.get_or_create(name='Micro-plastics', uid=keyword_uuid)
 
-    return algae, birds, penguins, ice, micro_plastics
+    source, created = Source.objects.get_or_create(source='External User')
+
+    keyword_uuid, created = KeywordUid.objects.get_or_create(uid='de20ndwneip', source=source)
+
+    cloud, created = Keyword.objects.get_or_create(name='Cloud', uid=keyword_uuid)
+    rain, created = Keyword.objects.get_or_create(name='Rain', uid=keyword_uuid)
+    snow, created = Keyword.objects.get_or_create(name='Snow', uid=keyword_uuid)
+
+
+    return algae, birds, penguins, ice, micro_plastics, cloud, rain, snow
 
 
 def create_career_stages():
@@ -186,6 +195,11 @@ def create_proposal():
                                                  applicant=applicant,
                                                  proposal_status=proposal_status_draft,
                                                  eligibility=Proposal.ELIGIBILITYNOTCHECKED,
-                                                 call=call)
+                                                 call=call,
+                                                 )
+    keywords = create_keywords()
+
+    proposal.keywords.add(keywords[2])
+    proposal.save()
 
     return proposal
