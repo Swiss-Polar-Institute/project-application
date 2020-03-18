@@ -20,9 +20,9 @@
                 <th>Title</th>
                 <th>Applicant</th>
                 <th>Status</th>
-                <th>Eligibility</th>
-                <th>Panel recommendation</th>
-                <th>Board decision</th>
+                <th style="text-align:center">Eligibility</th>
+                <th style="text-align:center">Panel recommendation</th>
+                <th style="text-align:center">Board decision</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -34,8 +34,8 @@
                     <td>{{ proposal.applicant.person }}</td>
                     <td>{{ proposal.proposal_status.name }}</td>
                     <td style="text-align:center">{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}</td>
-                    <td>{{ proposal.proposalevaluation.panel_recommendation_str }}</td>
-                    <td>{{ proposal.proposalevaluation.board_decision_str }}</td>
+                    <td style="text-align:center">{% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str badge_class=proposal.proposalevaluation.panel_recommendation_badge_class %}</td>
+                    <td style="text-align:center">{% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str badge_class=proposal.proposalevaluation.board_decision_badge_class %}</td>
                     <td>
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}">View&nbsp;Proposal</a>&nbsp;
