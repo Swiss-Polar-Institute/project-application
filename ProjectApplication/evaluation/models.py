@@ -108,11 +108,26 @@ class ProposalEvaluation(CreateModifyOn):
 
         return self.panel_recommendation
 
+    def panel_recommendation_badge_class(self):
+        lookup = {ProposalEvaluation.PANEL_RECOMMENDATION_FUND: 'badge-success',
+                  ProposalEvaluation.PANEL_RECOMMENDATION_RESERVE: 'badge-warning',
+                  ProposalEvaluation.PANEL_RECOMMENDATION_DO_NOT_FUND: 'badge-danger',
+                  None: 'badge-secondary'}
+
+        return lookup[self.panel_recommendation]
+
     def board_decision_str(self):
         if self.board_decision == ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND:
             return 'Do not fund'
 
         return self.board_decision
+
+    def board_decision_badge_class(self):
+        lookup = {ProposalEvaluation.BOARD_DECISION_FUND: 'badge-success',
+                  ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND: 'badge-danger',
+                  None: 'badge-secondary'}
+
+        return lookup[self.board_decision]
 
     def comments(self):
         return self.proposalevaluationcomment_set.all().order_by('created_on')

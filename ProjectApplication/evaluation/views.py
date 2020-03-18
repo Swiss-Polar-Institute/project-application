@@ -42,33 +42,6 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
 
         add_comment_attachment_forms(context, 'logged-proposal-evaluation-comment-add', proposal_evaluation)
 
-        board_decision = proposal_evaluation.board_decision
-
-        if board_decision == ProposalEvaluation.BOARD_DECISION_FUND:
-            board_decision_badge_class = 'badge-success'
-        elif board_decision == ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND:
-            board_decision_badge_class = 'badge-danger'
-        elif board_decision is None:
-            board_decision_badge_class = 'badge-secondary'
-        else:
-            assert False, 'Unexpected bootstrap badge class'
-
-        panel_recommendation = proposal_evaluation.panel_recommendation
-
-        if panel_recommendation == ProposalEvaluation.PANEL_RECOMMENDATION_FUND:
-            panel_recommendation_badge_class = 'badge-success'
-        elif panel_recommendation == ProposalEvaluation.PANEL_RECOMMENDATION_RESERVE:
-            panel_recommendation_badge_class = 'badge-warning'
-        elif panel_recommendation == ProposalEvaluation.PANEL_RECOMMENDATION_DO_NOT_FUND:
-            panel_recommendation_badge_class = 'badge-danger'
-        elif panel_recommendation is None:
-            panel_recommendation_badge_class = 'badge-secondary'
-        else:
-            assert False, 'Unexpected bootsrap badge class'
-
-        context['board_decision_badge_class'] = board_decision_badge_class
-        context['panel_recommendation_badge_class'] = panel_recommendation_badge_class
-
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'

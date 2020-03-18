@@ -33,9 +33,9 @@
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
                     <td>{{ proposal.proposal_status.name }}</td>
-                    <td>{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}</td>
+                    <td style="text-align:center">{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}</td>
                     <td>{{ proposal.proposalevaluation.panel_recommendation_str }}</td>
-                    <td>{{ proposal.proposalevaluation.board_decision }}</td>
+                    <td>{{ proposal.proposalevaluation.board_decision_str }}</td>
                     <td>
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}">View&nbsp;Proposal</a>&nbsp;
