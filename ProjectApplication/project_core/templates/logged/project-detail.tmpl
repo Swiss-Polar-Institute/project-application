@@ -33,8 +33,7 @@
                 {{ area }}{% if not forloop.last %}, {% endif %}
                 {% endfor %}<br>
             <strong>Precise region:</strong> {{ project.location }}<br>
-            <strong>Keywords:</strong> {% for keyword in project.keywords.all %}{{ keyword }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}<br>
+            <strong>Keywords:</strong> {{ project.keywords_enumeration }}<br>
 
             <p></p>
 
