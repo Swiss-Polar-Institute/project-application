@@ -452,7 +452,7 @@ class CallEvaluationValidation(TemplateView):
     @staticmethod
     def _check_proposal_evaluations_have_letter_for_applicant(proposals):
         proposals_without_decision_letter = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
-            proposalevaluation__decision_letter__isnull=True)
+            proposalevaluation__decision_letter='')
 
         return {'message_problem': 'There are proposals without decision letter',
                 'message_all_good': 'All the proposals have a decision letter',
