@@ -412,7 +412,7 @@ class CallEvaluationValidation(TemplateView):
 
         edit_link = reverse('logged-call-evaluation-update', kwargs={'pk': call_evaluation.pk})
         return {
-            'message_all_good': 'Call Evaluation has been completed',
+            'message_all_good': 'Call Evaluation details have been completed',
             'message_problem': mark_safe(
                 f'Missing fields in the call evaluation: <em>{",".join(missing_fields)}</em>. <a href="{edit_link}">Edit Call Evaluation</a>'),
             'ok': len(missing_fields) == 0
@@ -429,16 +429,6 @@ class CallEvaluationValidation(TemplateView):
                 'proposals': proposals_without_eligibility_set}
 
     @staticmethod
-    def _check_eligible_proposals_have_evaluation(proposals):
-        proposals_without_evaluation = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
-            proposalevaluation=None)
-
-        return {'message_problem': 'There are eligible proposals that have not been evaluated',
-                'message_all_good': 'All the eligible proposals have been evaluated',
-                'ok': proposals_without_evaluation.count() == 0,
-                'proposals': proposals_without_evaluation}
-
-    @staticmethod
     def _all_good(checks):
         all_good = True
         for check in checks:
@@ -448,13 +438,39 @@ class CallEvaluationValidation(TemplateView):
 
     @staticmethod
     def _check_proposal_evaluations_have_letter_for_applicant(proposals):
-        proposals_without_decision_letter = proposals.filter(eligibility=Proposal.ELIGIBLE).filter(
-            proposalevaluation__decision_letter='')
+        proposals_with_decision_letter = proposals.exclude(proposalevaluation__decision_letter='').values_list('id',
+                                                                                                               flat=True)
+
+        proposals_without_decision_letter = proposals.exclude(id__in=proposals_with_decision_letter)
 
         return {'message_problem': 'There are proposals without decision letter',
                 'message_all_good': 'All the proposals have a decision letter',
                 'ok': proposals_without_decision_letter.count() == 0,
                 'proposals': proposals_without_decision_letter}
+
+    @staticmethod
+    def _check_all_proposals_decision_panel_set(proposals):
+        proposals_with_panel_recommendation = proposals.filter(
+            proposalevaluation__panel_recommendation__isnull=False).values_list('id', flat=True)
+
+        proposals_without_panel_recommendation = proposals.exclude(id__in=proposals_with_panel_recommendation)
+
+        return {'message_problem': 'There are proposals without panel recommendation',
+                'message_all_good': 'All the proposals have a panel recommendation',
+                'ok': proposals_without_panel_recommendation.count() == 0,
+                'proposals': proposals_without_panel_recommendation}
+
+    @staticmethod
+    def _check_all_proposals_board_meeting_set(proposals):
+        proposals_with_board_meeting_set = proposals.filter(
+            proposalevaluation__board_decision__isnull=False).values_list('id', flat=True)
+
+        proposals_without_board_meeting_decision = proposals.exclude(id__in=proposals_with_board_meeting_set)
+
+        return {'message_problem': 'There are proposals without board decision',
+                'message_all_good': 'All the proposals have a board decision',
+                'ok': proposals_without_board_meeting_decision.count() == 0,
+                'proposals': proposals_without_board_meeting_decision}
 
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -462,21 +478,23 @@ class CallEvaluationValidation(TemplateView):
         call = Call.objects.get(id=kwargs['call_id'])
 
         proposals = Proposal.objects.filter(call=call)
+        eligible_proposals = proposals.filter(eligibility=Proposal.ELIGIBLE)
 
-        proposal_checks = []
-        proposal_checks.append(self._check_all_submitted_proposals_have_eligibility_set(proposals))
-        proposal_checks.append(self._check_eligible_proposals_have_evaluation(proposals))
-        proposal_checks.append(self._check_proposal_evaluations_have_letter_for_applicant(proposals))
+        proposal_validations = []
+        proposal_validations.append(self._check_all_submitted_proposals_have_eligibility_set(proposals))
 
         evaluation_validations = []
+        evaluation_validations.append(self._check_proposal_evaluations_have_letter_for_applicant(eligible_proposals))
+        evaluation_validations.append(self._check_all_proposals_decision_panel_set(eligible_proposals))
+        evaluation_validations.append(self._check_all_proposals_board_meeting_set(eligible_proposals))
         evaluation_validations.append(self._check_call_evaluation_is_completed(call.callevaluation))
 
-        context['proposal_validations'] = proposal_checks
+        context['proposal_validations'] = proposal_validations
         context['evaluation_validations'] = evaluation_validations
 
         context['call'] = call
 
-        context['all_good'] = CallEvaluationValidation._all_good(proposal_checks + evaluation_validations)
+        context['all_good'] = CallEvaluationValidation._all_good(proposal_validations + evaluation_validations)
         context['can_close'] = context['all_good'] and call.callevaluation.closed_date is None
 
         if context['all_good'] == False:
@@ -487,7 +505,7 @@ class CallEvaluationValidation(TemplateView):
 
         if context['all_good']:
             context['show_summary'] = True
-            context.update(CallEvaluationSummary.get_call_summary(call))
+        context.update(CallEvaluationSummary.get_call_summary(call))
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
