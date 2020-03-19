@@ -1036,6 +1036,22 @@ class Project(CreateModifyOn):
         else:
             return '-'
 
+    @staticmethod
+    def comment_object():
+        from comments.models import ProjectComment
+        return ProjectComment
+
+    @staticmethod
+    def attachment_object():
+        from comments.models import ProjectAttachment
+        return ProjectAttachment
+
+    def attachments(self):
+        return self.projectattachment_set.all().order_by('created_on')
+
+    def comments(self):
+        return self.projectcomment_set.all().order_by('created_on')
+
     class Meta:
         unique_together = (('title', 'principal_investigator', 'call'),)
 

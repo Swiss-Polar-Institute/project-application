@@ -4,7 +4,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from colours.models import ColourPair
 from evaluation.models import ProposalEvaluation, CallEvaluation
-from project_core.models import CreateModifyOn, Proposal, Call
+from project_core.models import CreateModifyOn, Proposal, Call, Project
 
 
 # Models used by Proposal, Call...
@@ -232,6 +232,64 @@ class ProposalEvaluationAttachment(AbstractAttachment):
     @staticmethod
     def category_queryset():
         return ProposalEvaluationAttachmentCategory.objects.all()
+
+
+# Project
+class ProjectCommentCategory(CreateModifyOn):
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.category.name
+
+    class Meta:
+        verbose_name_plural = 'Project Comment Categories'
+
+
+class ProjectComment(AbstractComment):
+    """Comments made about a Proposal Evaluation"""
+    project = models.ForeignKey(Project,
+                                help_text='Project about which the comment was made',
+                                on_delete=models.PROTECT)
+
+    category = models.ForeignKey(ProjectCommentCategory, help_text='Type of comment',
+                                 on_delete=models.PROTECT)
+
+    def set_parent(self, parent):
+        self.project = parent
+
+    @staticmethod
+    def category_queryset():
+        return ProjectCommentCategory.objects.all()
+
+    class Meta:
+        unique_together = (('project', 'created_on', 'created_by'),)
+
+
+class ProjectAttachmentCategory(CreateModifyOn):
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.category.name
+
+    class Meta:
+        verbose_name_plural = 'Project Attachment Categories'
+
+
+class ProjectAttachment(AbstractAttachment):
+    file = models.FileField(storage=S3Boto3Storage(),
+                            upload_to='attachments/project/')
+    project = models.ForeignKey(Project,
+                                help_text='Project that this attachment belongs to',
+                                on_delete=models.PROTECT)
+    category = models.ForeignKey(ProjectAttachmentCategory, help_text='Category of the attachment',
+                                 on_delete=models.PROTECT)
+
+    def set_parent(self, parent):
+        self.project = parent
+
+    @staticmethod
+    def category_queryset():
+        return ProjectAttachmentCategory.objects.all()
 
 
 # CallEvaluation

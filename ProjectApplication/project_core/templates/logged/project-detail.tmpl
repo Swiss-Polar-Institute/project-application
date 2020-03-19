@@ -7,13 +7,15 @@
             <h2>{{ project.title }}</h2>
 
             <strong>Status:</strong> {{ project.status }}<br>
-            <strong>Call:</strong> <a href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
+            <strong>Call:</strong> <a
+                href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
 
             <p></p>
 
             <h3>Principal investigator</h3>
             {{ project.principal_investigator.academic_title }} {{ project.principal_investigator.person }} <br>
-            <strong>Email:</strong> <a href="mailto:{{ project.principal_investigator.main_email }}">{{ project.principal_investigator.main_email }} </a><br>
+            <strong>Email:</strong> <a
+                href="mailto:{{ project.principal_investigator.main_email }}">{{ project.principal_investigator.main_email }} </a><br>
             <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}
 
             <p></p>
@@ -36,16 +38,19 @@
             <p></p>
 
             {% if project.call.overarching_project_question %}
-                 <h3>Overarching project</h3>
-                 {% include 'common/_project_overarching.tmpl' with overarching_project=project.proposal.overarching_project %}
+                <h3>Overarching project</h3>
+                {% include 'common/_project_overarching.tmpl' with overarching_project=project.proposal.overarching_project %}
             {% endif %}
 
             <p></p>
 
             <strong>Project created:</strong> {{ project.created_on }}<br>
+            <hr>
+            {% include 'comments/_comments-attachments.tmpl' %}
         </div>
         <div class="col-2">
-            <a class="btn btn-primary" href="{% url 'logged-proposal-detail' pk=project.proposal.id %}">View Proposal</a>
+            <a class="btn btn-primary" href="{% url 'logged-proposal-detail' pk=project.proposal.id %}">View
+                Proposal</a>
         </div>
     </div>
 

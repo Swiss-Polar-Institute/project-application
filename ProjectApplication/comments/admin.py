@@ -71,6 +71,23 @@ class CallEvaluationCommentAdmin(admin.ModelAdmin):
     ordering = ('call_evaluation', 'text', 'created_on')
 
 
+class ProjectAttachmentCategoryAdmin(admin.ModelAdmin):
+    list_display = ('category', 'created_on',)
+
+
+class ProjectAttachmentAdmin(admin.ModelAdmin):
+    list_display = ('project', 'file', 'created_on',)
+
+
+class ProjectCommentCategoryAdmin(admin.ModelAdmin):
+    list_display = ('category', 'created_on',)
+
+
+class ProjectCommentAdmin(admin.ModelAdmin):
+    list_display = ('project', 'text', 'created_on')
+    ordering = ('project', 'text', 'created_on')
+
+
 admin.site.register(comments.models.Category, CategoryAdmin)
 
 admin.site.register(comments.models.ProposalCommentCategory, ProposalCommentCategoryAdmin)
@@ -87,6 +104,11 @@ admin.site.register(comments.models.ProposalEvaluationCommentCategory, ProposalE
 admin.site.register(comments.models.ProposalEvaluationComment, ProposalEvaluationCommentAdmin)
 admin.site.register(comments.models.ProposalEvaluationAttachmentCategory, ProposalEvaluationAttachmentCategoryAdmin)
 admin.site.register(comments.models.ProposalEvaluationAttachment, ProposalEvaluationAttachmentAdmin)
+
+admin.site.register(comments.models.ProjectCommentCategory, ProjectCommentCategoryAdmin)
+admin.site.register(comments.models.ProjectComment, ProjectCommentAdmin)
+admin.site.register(comments.models.ProjectAttachmentCategory, ProjectAttachmentCategoryAdmin)
+admin.site.register(comments.models.ProjectAttachment, ProjectAttachmentAdmin)
 
 admin.site.register(comments.models.CallEvaluationCommentCategory, CallEvaluationCommentCategoryAdmin)
 admin.site.register(comments.models.CallEvaluationComment, CallEvaluationCommentAdmin)
