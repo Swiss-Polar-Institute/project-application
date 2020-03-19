@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView, ListView
 
 from comments import utils
-from comments.utils import process_comment_attachment, add_comment_attachment_forms
+from comments.utils import process_comment_attachment, comments_attachments_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, BudgetCategory, Proposal
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
@@ -69,7 +69,7 @@ class AbstractCallView(TemplateView):
 
         context['budget_categories_status'] = budget_categories_status
 
-        add_comment_attachment_forms(context, 'logged-call-comment-add', call)
+        context.update(comments_attachments_forms('logged-call-comment-add', call))
 
         return context
 
@@ -134,7 +134,7 @@ class ProposalDetail(AbstractProposalDetailView):
 
         proposal = Proposal.objects.get(id=kwargs['pk'])
 
-        utils.add_comment_attachment_forms(context, 'logged-call-proposal-detail', proposal)
+        context.update(utils.comments_attachments_forms('logged-call-proposal-detail', proposal))
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'call-list',

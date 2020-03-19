@@ -36,7 +36,7 @@ class AbstractProjectView(DetailView):
                         'active_subsection': 'project-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        utils.add_comment_attachment_forms(context, 'logged-project-comment-add', context['project'])
+        context.update(utils.comments_attachments_forms('logged-project-comment-add', context['project']))
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
                                  {'name': 'Projects', 'url': reverse('logged-project-list')},
@@ -46,10 +46,6 @@ class AbstractProjectView(DetailView):
 
 
 class ProjectDetailView(AbstractProjectView):
-    template_name = 'logged/project-detail.tmpl'
-    model = Project
-    context_object_name = 'project'
-
     def get_context_data(self, **kwargs):
         return super().get_context_data(**kwargs)
 

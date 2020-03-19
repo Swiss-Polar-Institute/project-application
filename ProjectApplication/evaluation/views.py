@@ -10,7 +10,7 @@ from django.views.generic import TemplateView, ListView, DetailView
 
 from ProjectApplication import settings
 from comments import utils
-from comments.utils import add_comment_attachment_forms, process_comment_attachment
+from comments.utils import comments_attachments_forms, process_comment_attachment
 from evaluation.forms.call_evaluation import CallEvaluationForm
 from evaluation.forms.close_call_evaluation import CloseCallEvaluation
 from evaluation.forms.eligibility import EligibilityDecisionForm
@@ -40,7 +40,7 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
         context = self.prepare_context(request, *args, **{'pk': proposal_evaluation.proposal.id})
         add_proposal_evaluation_form(context, proposal_evaluation.proposal)
 
-        add_comment_attachment_forms(context, 'logged-proposal-evaluation-comment-add', proposal_evaluation)
+        context.update(comments_attachments_forms('logged-proposal-evaluation-comment-add', proposal_evaluation))
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
@@ -252,7 +252,7 @@ class CallEvaluationDetail(DetailView):
 
         call_evaluation = CallEvaluation.objects.get(id=self.kwargs['pk'])
 
-        add_comment_attachment_forms(context, 'logged-call-evaluation-comment-add', call_evaluation)
+        context.update(comments_attachments_forms('logged-call-evaluation-comment-add', call_evaluation))
 
         return context
 
@@ -281,7 +281,7 @@ class ProposalDetail(AbstractProposalDetailView):
 
         proposal = Proposal.objects.get(id=kwargs['pk'])
 
-        utils.add_comment_attachment_forms(context, 'logged-call-evaluation-proposal-detail', proposal)
+        context.update(utils.comments_attachments_forms('logged-call-evaluation-proposal-detail', proposal))
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',

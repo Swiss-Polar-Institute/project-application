@@ -6,7 +6,8 @@ from comments.forms.attachment import AttachmentForm
 from comments.forms.comment import CommentForm
 
 
-def add_comment_attachment_forms(context, submit_viewname, parent):
+def comments_attachments_forms(submit_viewname, parent):
+    context = {}
     if parent.comment_object():
         context[CommentForm.FORM_NAME] = CommentForm(form_action=reverse(submit_viewname,
                                                                          kwargs={'pk': parent.id}),
@@ -22,6 +23,8 @@ def add_comment_attachment_forms(context, submit_viewname, parent):
     context['comments'] = parent.comments()
 
     context['attachments'] = parent.attachments()
+
+    return context
 
 
 def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, form_with_errors_template,

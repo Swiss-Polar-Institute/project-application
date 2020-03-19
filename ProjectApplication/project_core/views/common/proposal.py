@@ -14,7 +14,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from ProjectApplication import settings
-from comments.utils import add_comment_attachment_forms
+from comments.utils import comments_attachments_forms
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
@@ -110,7 +110,7 @@ class AbstractProposalDetailView(TemplateView):
                 context[
                     'link_to_edit_or_display'] = f'(<a href="{href}"><i class="fas fa-link"></i> {description}</a>)'
 
-        add_comment_attachment_forms(context, 'logged-proposal-comment-add', proposal)
+        context.update(comments_attachments_forms('logged-proposal-comment-add', proposal))
 
         return context
 

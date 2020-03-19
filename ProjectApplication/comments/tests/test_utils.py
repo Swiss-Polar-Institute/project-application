@@ -24,7 +24,7 @@ class UtilsTest(TestCase):
         submit_viewname = 'logged-proposal-comment-add'
         parent = self._proposal
 
-        utils.add_comment_attachment_forms(context, submit_viewname, parent)
+        context.update(utils.comments_attachments_forms(submit_viewname, parent))
 
         self.assertIn('comments', context)
         self.assertIn('attachments', context)
