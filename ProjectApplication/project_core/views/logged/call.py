@@ -166,7 +166,9 @@ class ProposalDetail(AbstractProposalDetailView):
 
 
 class CallView(TemplateView):
-    def get(self, request, *args, **kwargs):
+    template_name = 'logged/call.tmpl'
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         if 'pk' in kwargs:
@@ -195,7 +197,7 @@ class CallView(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
                                  {'name': context['call_action']}]
 
-        return render(request, 'logged/call.tmpl', context)
+        return context
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):

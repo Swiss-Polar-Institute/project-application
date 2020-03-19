@@ -3,7 +3,9 @@ from django.views.generic import TemplateView
 
 
 class ListsView(TemplateView):
-    def get(self, request, *args, **kwargs):
+    template_name = 'logged/lists.tmpl'
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'lists',
@@ -12,4 +14,4 @@ class ListsView(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Lists'}]
 
-        return render(request, 'logged/lists.tmpl', context)
+        return context

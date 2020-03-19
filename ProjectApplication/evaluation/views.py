@@ -57,7 +57,9 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
 
 
 class ProposalEvaluationList(TemplateView):
-    def get(self, request, *args, **kwargs):
+    template_name = 'evaluation/call_evaluation-list.tmpl'
+
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context['calls_opened_evaluation'] = Call.closed_calls().filter(callevaluation__closed_date__isnull=True)
@@ -81,7 +83,7 @@ class ProposalEvaluationList(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate'}]
 
-        return render(request, 'evaluation/call_evaluation-list.tmpl', context)
+        return context
 
 
 class ProposalEvaluationUpdate(AbstractProposalDetailView):
@@ -365,6 +367,8 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
 
 class CallEvaluationSummary(TemplateView):
+    template_name = 'evaluation/call_evaluation-summary-detail.tmpl'
+
     @staticmethod
     def get_call_summary(call):
         summary = {}
@@ -379,7 +383,7 @@ class CallEvaluationSummary(TemplateView):
 
         return summary
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         call = Call.objects.get(id=kwargs['call_id'])
@@ -395,10 +399,12 @@ class CallEvaluationSummary(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'Evaluation summary ({call.little_name()})'}]
 
-        return render(request, 'evaluation/call_evaluation-summary-detail.tmpl', context)
+        return context
 
 
 class CallEvaluationValidation(TemplateView):
+    template_name = 'evaluation/call_evaluation-validation-detail.tmpl'
+
     @staticmethod
     def _check_call_evaluation_is_completed(call_evaluation):
         required_fields = CallEvaluationForm(call=call_evaluation.call).fields
@@ -443,7 +449,7 @@ class CallEvaluationValidation(TemplateView):
 
         proposals_without_decision_letter = proposals.exclude(id__in=proposals_with_decision_letter)
 
-        return {'message_problem': 'There are proposals without decision letter',
+        return {'message_problem': 'There are proposals without a decision letter',
                 'message_all_good': 'All the proposals have a decision letter',
                 'ok': proposals_without_decision_letter.count() == 0,
                 'proposals': proposals_without_decision_letter}
@@ -455,7 +461,7 @@ class CallEvaluationValidation(TemplateView):
 
         proposals_without_panel_recommendation = proposals.exclude(id__in=proposals_with_panel_recommendation)
 
-        return {'message_problem': 'There are proposals without panel recommendation',
+        return {'message_problem': 'There are proposals without a panel recommendation',
                 'message_all_good': 'All the proposals have a panel recommendation',
                 'ok': proposals_without_panel_recommendation.count() == 0,
                 'proposals': proposals_without_panel_recommendation}
@@ -467,12 +473,12 @@ class CallEvaluationValidation(TemplateView):
 
         proposals_without_board_meeting_decision = proposals.exclude(id__in=proposals_with_board_meeting_set)
 
-        return {'message_problem': 'There are proposals without board decision',
+        return {'message_problem': 'There are proposals without a board decision',
                 'message_all_good': 'All the proposals have a board decision',
                 'ok': proposals_without_board_meeting_decision.count() == 0,
                 'proposals': proposals_without_board_meeting_decision}
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         call = Call.objects.get(id=kwargs['call_id'])
@@ -516,7 +522,7 @@ class CallEvaluationValidation(TemplateView):
 
         context[CloseCallEvaluation.name] = CloseCallEvaluation(call_id=call.id)
 
-        return render(request, 'evaluation/call_evaluation-validation-detail.tmpl', context)
+        return context
 
 
 def close_evaluation_call(call, user_closing_call):
@@ -573,7 +579,7 @@ class CallCloseEvaluation(TemplateView):
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': f'Evaluation summary ({call.little_name()})',
+                                 {'name': f'Call Evaluation ({call.little_name()})',
                                   'url': reverse('logged-call-evaluation-summary', kwargs={'call_id': call.id})},
                                  {'name': f'Close call ({call.little_name()})'}]
 
