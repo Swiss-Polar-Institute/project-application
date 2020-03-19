@@ -27,6 +27,8 @@ services:
       - MYSQL_USER=${PROJECT_APPLICATION_DB_USER}
       - MYSQL_PASSWORD=${PROJECT_APPLICATION_DB_PASSWORD}
       - MYSQL_ROOT_PASSWORD=${PROJECT_APPLICATION_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:33307:3306"
     logging:
       driver: fluentd
       options:
