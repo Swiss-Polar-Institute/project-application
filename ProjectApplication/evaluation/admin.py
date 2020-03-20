@@ -14,11 +14,14 @@ class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges
 
 
 class ReviewerAdmin(admin.ModelAdmin):
-    list_display = ('user', 'calls_list')
-    filter_horizontal = ('calls',)
+    list_display = ('user', 'person', 'call_list', 'proposal_list', )
+    filter_vertical = ('calls', 'proposals', )
 
-    def calls_list(self, obj):
+    def call_list(self, obj):
         return ', '.join([str(call) for call in obj.calls.all()])
+
+    def proposal_list(self, obj):
+        return ', '.join([str(proposal) for proposal in obj.proposals.all()])
 
 
 class CallEvaluationAdmin(admin.ModelAdmin):

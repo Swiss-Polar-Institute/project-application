@@ -1,6 +1,9 @@
 {% load filename_from_path %}
 
 {% with proposalevaluation=proposal.proposalevaluation %}
+    <strong>Reviewers:</strong> {% for reviewer in proposalevaluation.proposal.reviewer_set.all %}
+    {{ reviewer.person }}{% if not forloop.last %},{% endif %}
+{% endfor %}<br>
     <strong>Panel remarks:</strong>
     <div class="pre-with-newlines border p-3 bg-white rounded">{{ proposalevaluation.panel_remarks }}</div><br>
     <strong>Feedback to applicant:</strong>

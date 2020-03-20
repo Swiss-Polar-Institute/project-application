@@ -2,6 +2,7 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.urls import reverse
 from django.utils.formats import number_format
@@ -10,7 +11,15 @@ from ProjectApplication import settings
 from project_core.forms.utils import cancel_edit_button
 from project_core.utils import user_is_in_group_name
 from project_core.widgets import XDSoftYearMonthDayPickerInput
-from ..models import ProposalEvaluation
+from ..models import ProposalEvaluation, Reviewer
+
+
+class ModelMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def label_from_instance(self, obj):
+        return obj.person
 
 
 class ProposalEvaluationForm(forms.ModelForm):
@@ -41,6 +50,18 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.fields['allocated_budget'].help_text = f'Requested: {requested_budget} CHF'
         self.fields['allocated_budget'].label = 'Allocated budget (CHF)'
 
+        if self._proposal.proposalevaluation:
+            initial_reviewers = self._proposal.reviewer_set.all()
+        else:
+            initial_reviewers = []
+
+        self.fields['reviewers'] = ModelMultipleChoiceField(initial=initial_reviewers,
+                                                            queryset=Reviewer.objects.all(),
+                                                            required=True,
+                                                            widget=FilteredSelectMultiple(
+                                                                is_stacked=True,
+                                                                verbose_name='reviewers'))
+
         if hasattr(self._proposal, 'proposalevaluation'):
             cancel_button_url = reverse('logged-proposal-evaluation-detail',
                                         kwargs={'pk': self._proposal.proposalevaluation.id})
@@ -50,6 +71,10 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('proposal', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div('reviewers', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -101,7 +126,7 @@ class ProposalEvaluationForm(forms.ModelForm):
                 'A decision letter is required if there is a decision letter date')
 
         if panel_recommendation in (ProposalEvaluation.PANEL_RECOMMENDATION_FUND,
-                              ProposalEvaluation.PANEL_RECOMMENDATION_RESERVE) and allocated_budget is None:
+                                    ProposalEvaluation.PANEL_RECOMMENDATION_RESERVE) and allocated_budget is None:
             errors['allocated_budget'] = forms.ValidationError(
                 'An allocated budget is required if the panel decision is to fund or keep the proposal as a reserve')
 
@@ -118,7 +143,13 @@ class ProposalEvaluationForm(forms.ModelForm):
         if not user_is_in_group_name(user, settings.MANAGEMENT_GROUP_NAME):
             raise PermissionDenied()
 
-        return super().save(*args, **kwargs)
+        reviewers = self.cleaned_data['reviewers']
+
+        proposal_evaluation = super().save(*args, **kwargs)
+
+        proposal_evaluation.proposal.reviewer_set.set(reviewers)
+
+        return proposal_evaluation
 
     class Meta:
         model = ProposalEvaluation
