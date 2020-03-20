@@ -1,27 +1,35 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 
 {% block contents %}
-    <h1>Person</h1>
-
-    <p></p>
-    <strong>Name:</strong> {{ person.academic_title }} {{ person.person.first_name }} {{ person.person.surname }}
-    <br>
-    <strong>Organisations:</strong>
-    {% for organisation in person.organisations_ordered_by_name %}{% if not forloop.first %}, {% endif %}
-        {{ organisation }}{% empty %}
-        -
-    {% endfor %}
-    <br>
-    <strong>Group:</strong> {% include 'common/_value-or-dash.tmpl' with value=person.group %}
-    <br>
-    <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=person.main_email %}
-    <p></p>
     <div class="row">
-        <div class="col-6">
-            <strong>Privacy policy:</strong> {% include 'common/_check-icon.tmpl' with value=person.privacy_policy %}
+        <div class="col-10">
+            <h1>Person</h1>
+
+            <p></p>
+            <strong>Name:</strong> {{ person.academic_title }} {{ person.person.first_name }} {{ person.person.surname }}
+            <br>
+            <strong>Organisations:</strong>
+            {% for organisation in person.organisations_ordered_by_name %}{% if not forloop.first %}, {% endif %}
+                {{ organisation }}{% empty %}
+                -
+            {% endfor %}
+            <br>
+            <strong>Group:</strong> {% include 'common/_value-or-dash.tmpl' with value=person.group %}
+            <br>
+            <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=person.main_email %}
+            <p></p>
+            <div class="row">
+                <div class="col-6">
+                    <strong>Privacy
+                        policy:</strong> {% include 'common/_check-icon.tmpl' with value=person.privacy_policy %}
+                </div>
+                <div class="col-6">
+                    <strong>Newsletter:</strong> {% include 'common/_check-icon.tmpl' with value=person.contact_newsletter %}
+                </div>
+            </div>
         </div>
-        <div class="col-6">
-            <strong>Newsletter:</strong> {% include 'common/_check-icon.tmpl' with value=person.contact_newsletter %}
+        <div class="col-2">
+
         </div>
     </div>
 {% endblock %}

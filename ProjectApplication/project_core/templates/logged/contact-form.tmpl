@@ -2,11 +2,18 @@
 {% load crispy_forms_tags %}
 
 {% block contents %}
-    {% if form.instance.id %}
-        <h1>Edit person</h1>
-    {% else %}
-        <h1>Create person</h1>
-    {% endif %}
+    <div class="row">
+        <div class="col-10">
+            {% if form.instance.id %}
+                <h1>Edit person</h1>
+            {% else %}
+                <h1>Create person</h1>
+            {% endif %}
 
-    {% crispy form %}
+            {% crispy form %}
+        </div>
+        <div class="col-2">
+
+        </div>
+    </div>
 {% endblock %}
