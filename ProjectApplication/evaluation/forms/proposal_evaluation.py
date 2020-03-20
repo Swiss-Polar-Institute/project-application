@@ -56,7 +56,7 @@ class ProposalEvaluationForm(forms.ModelForm):
             initial_reviewers = []
 
         self.fields['reviewers'] = ModelMultipleChoiceField(initial=initial_reviewers,
-                                                            queryset=Reviewer.objects.all(),
+                                                            queryset=Reviewer.objects.filter(calls=self._proposal.call),
                                                             required=True,
                                                             widget=FilteredSelectMultiple(
                                                                 is_stacked=True,
