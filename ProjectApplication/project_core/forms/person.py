@@ -1,9 +1,11 @@
+from crispy_forms.bootstrap import AppendedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator, ValidationError
 from django.forms import Form
+from django.utils.safestring import mark_safe
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
 from .utils import organisations_name_autocomplete
@@ -32,6 +34,9 @@ class PersonForm(Form):
                 # In the database is always saved as yyyy-mm (validator in the model) but it's visualized as mm-yyyy
                 phd_date_parts = self.person_position.person.phd_date.split('-')
                 phd_date_initial = f'{phd_date_parts[1]}-{phd_date_parts[0]}'
+
+        self.fields['orcid'] = forms.CharField(initial='', label='Orcid',
+                                               help_text='Please enter your Orcid ID. If you do not have one please create one at...')
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                initial=academic_title_initial)
@@ -71,6 +76,12 @@ class PersonForm(Form):
         self.helper.form_tag = False
 
         self.helper.layout = Layout(
+            Div(
+                Div(AppendedText('orcid', mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>'), active=True,
+                                 css_id='xxxxxxxxxxx'),
+                    css_class='col-6'),
+                css_class='row'
+            ),
             Div(
                 Div('academic_title', css_class='col-2'),
                 Div('first_name', css_class='col-4'),
