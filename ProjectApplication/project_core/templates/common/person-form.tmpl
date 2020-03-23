@@ -2,4 +2,4 @@
 {% load crispy_forms_tags %}
 {% crispy person_form %}
 
-{% include 'common/_orcid_javascript-form.tmpl' with form_prefix=person_form.prefix %}
+{% include 'common/_orcid_javascript-form.tmpl' with form_prefix=person_form.prefix orcid_field='orcid' first_name_field='first_name' surname_field='surname' %}
