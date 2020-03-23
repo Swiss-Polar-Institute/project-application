@@ -8,7 +8,7 @@ from ProjectApplication import settings
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import ProposalEvaluation
 from project_core.models import ProposalStatus
-from project_core.tests.database_population import create_proposal
+from project_core.tests.database_population import create_proposal, create_reviewer
 
 
 class BudgetItemFormTest(TestCase):
@@ -30,13 +30,18 @@ class BudgetItemFormTest(TestCase):
         proposal.proposal_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_SUBMITTED)
         proposal.save()
 
+        reviewers = [create_reviewer()]
+
+        proposal.call.reviewer_set.add(*reviewers)
+
         data = {'proposal': proposal,
                 'allocated_budget': 10_000,
                 'panel_remarks': 'Very good',
                 'feedback_to_applicant': 'Keep working on it!',
                 'panel_recommendation': ProposalEvaluation.PANEL_RECOMMENDATION_FUND,
                 'board_decision': ProposalEvaluation.BOARD_DECISION_FUND,
-                'decision_date': datetime.today()
+                'decision_date': datetime.today(),
+                'reviewers': reviewers
                 }
 
         proposal_evaluation_form = ProposalEvaluationForm(data=data, proposal=proposal)

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.utils.timezone import utc
 
 from ProjectApplication import settings
+from evaluation.models import Reviewer
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
     Proposal, PersonPosition, PhysicalPerson, FundingInstrument
@@ -118,6 +119,17 @@ def create_reviewer_user():
     group.save()
 
     return user
+
+
+def create_reviewer():
+    reviewer_user = create_reviewer_user()
+    physical_person, _ = PhysicalPerson.objects.get_or_create(first_name='Alan',
+                                                              surname='Smithee',
+                                                              orcid='1111-0002-1825-0097'
+                                                              )
+
+    reviewer, _ = Reviewer.objects.get_or_create(user=reviewer_user, person=physical_person)
+    return reviewer
 
 
 def create_person_titles():
