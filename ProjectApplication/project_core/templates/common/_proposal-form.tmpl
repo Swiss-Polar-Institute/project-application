@@ -23,7 +23,7 @@
     <h1>Application form</h1>
     <h2>Part 1: General Information</h2>
     <h3>Applicant</h3>
-    {% crispy person_form %}
+    {% include 'common/person-form.tmpl' %}
 
     <h2>Proposed {{ activity }}</h2>
     {% crispy proposal_form %}
@@ -59,7 +59,8 @@
         {% include 'common/_submit-button.tmpl' with value='Submit' name='submit' %}
 
         <p>
-            After saving your draft proposal you will be able to edit the proposal until the call deadline. Unsubmitted drafts will not be evaluated. <br>
+            After saving your draft proposal you will be able to edit the proposal until the call deadline. Unsubmitted
+            drafts will not be evaluated. <br>
             Please make sure to submit the final version of your proposal before the call deadline.
             {% include 'common/_submitted_cannot_modify_text.tmpl' %}
         </p>

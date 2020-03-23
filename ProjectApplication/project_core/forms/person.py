@@ -77,15 +77,14 @@ class PersonForm(Form):
 
         self.helper.layout = Layout(
             Div(
-                Div(AppendedText('orcid', mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>'), active=True,
-                                 css_id='xxxxxxxxxxx'),
-                    css_class='col-6'),
+                Div(AppendedText('orcid', mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>')),
+                    css_class='col-8'),
                 css_class='row'
             ),
             Div(
-                Div('academic_title', css_class='col-2'),
                 Div('first_name', css_class='col-4'),
                 Div('surname', css_class='col-4'),
+                Div('academic_title', css_class='col-2'),
                 Div('gender', css_class='col-2'),
                 css_class='row'
             ),

@@ -3,10 +3,6 @@
 {% load crispy_forms_tags %}
 
 {% block contents %}
-    <script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
-
-    <input id="clickMe" type="button" value="clickme" onclick="getOrcid();"/>
-
     <div class="row">
         <div class="col-10">
             {% if form.instance.id %}

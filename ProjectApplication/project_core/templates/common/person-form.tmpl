@@ -1,0 +1,24 @@
+{% load static %}
+{% load crispy_forms_tags %}
+{% crispy person_form %}
+
+<script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
+
+<script type="text/javascript" class="init">
+    function success(orcid_record) {
+        let family_name = orcid_record['person']['name']['family-name'].value;
+        let given_names = orcid_record['person']['name']['given-names'].value;
+
+        $('#id_person_form-first_name').val(given_names);
+        $('#id_person_form-surname').val(family_name);
+    }
+
+    function error() {
+        alert('Error getting orcid id information');
+    }
+
+    $(".input-group-append").click(function () {
+        let orcid_id = $('#id_person_form-orcid.textinput.textInput.form-control').val()
+        getOrcid(orcid_id, success, error);
+    });
+</script>

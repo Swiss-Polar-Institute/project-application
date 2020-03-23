@@ -1,11 +1,11 @@
-function getOrcid() {
+function getOrcid(orcid_id, success_function, error_function) {
     $.ajax({
-        url: "https://pub.orcid.org/v3.0/0000-0003-3120-9475",
+        url: "https://pub.orcid.org/v3.0/" + orcid_id,
         type: "GET",
         dataType: "JSON",
         beforeSend: setHeader,
-        success: orcid_success,
-        error: orcid_error
+        success: success_function,
+        error: error_function
     });
 
     function orcid_success(orcid_record) {
