@@ -29,10 +29,13 @@ class ProposalFormTest(TestCase):
         start_date_str = start_date.strftime('%d-%m-%Y')
         end_date_str = (start_date + timedelta(days=10)).strftime('%d-%m-%Y')
 
+        orcid = '0000-1111-2222-3333'
+
         return MultiValueDict(
             {
                 'person_form-academic_title': [self._person_titles[0].id], 'person_form-first_name': ['John'],
                 'person_form-surname': ['Doe'],
+                'person_form-orcid': [orcid],
                 'person_form-gender': [self._genders[0].id],
                 'person_form-email': ['test@example.com'],
                 'person_form-organisation_names': [self._organisation_names[0].id],
