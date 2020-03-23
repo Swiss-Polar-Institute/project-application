@@ -1,7 +1,9 @@
+from crispy_forms.bootstrap import AppendedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.forms import ModelForm
+from django.utils.safestring import mark_safe
 
 from project_core.forms.utils import get_field_information, organisations_name_autocomplete
 from project_core.models import ExternalProject
@@ -13,15 +15,25 @@ class PersonPositionMixin:
         pass
 
     def _add_person_fields(self):
+        self.fields['person__physical_person__orcid'] = forms.CharField(initial='', label='ORCID iD',
+                                                                        help_text='Please enter your ORCID iD and press the button. If you do not have one please create one at <a href="https://orcid.org/">ORCID</a>')
+
         self.fields['person__physical_person__first_name'] = forms.CharField(
             **get_field_information(PhysicalPerson, 'first_name', help_text=''),
             label='First name(s)')
         self.fields['person__physical_person__surname'] = forms.CharField(
             **get_field_information(PhysicalPerson, 'surname', help_text=''),
             label='Surname(s)')
+
+        # First name and surname are populated via ORCID. Not using "disabled=True" so these values are accessible
+        # via cleaned_data. A user could change them obviously but server side validation for the ORCID is coming later.
+        self.fields['person__physical_person__first_name'].widget.attrs.update({'readonly': 'readonly'})
+        self.fields['person__physical_person__surname'].widget.attrs.update({'readonly': 'readonly'})
+
         self.fields['person__academic_title'] = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'),
-                                                                       label='Academic title',)
-        self.fields['person__organisations'] = organisations_name_autocomplete(initial=None, help_text='Please select the organisation(s) to which the supervisor belongs.')
+                                                                       label='Academic title', )
+        self.fields['person__organisations'] = organisations_name_autocomplete(initial=None,
+                                                                               help_text='Please select the organisation(s) to which the supervisor belongs.')
         self.fields['person__group'] = forms.CharField(
             **get_field_information(PersonPosition, 'group', label='Group / lab',
                                     help_text='Please type the names of the group(s) or laboratories to which the overarching project supervisor belongs.'))
@@ -37,6 +49,7 @@ class PersonPositionMixin:
     def _save_person(self, person_position):
         person__group = self.cleaned_data['person__group']
         person__academic_title = self.cleaned_data['person__academic_title']
+        person__physical_person__orcid = self.cleaned_data['person__physical_person__orcid']
         person__physical_person__first_name = self.cleaned_data['person__physical_person__first_name']
         person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
         person__organisations = self.cleaned_data['person__organisations']
@@ -57,12 +70,13 @@ class PersonPositionMixin:
 
             person__physical_person.first_name = person__physical_person__first_name
             person__physical_person.surname = person__physical_person__surname
+            person__physical_person.orcid = person__physical_person__orcid
 
             # update_fields is required because only first_name and surname can have changed from this form
             # The problem that this solve is that: if the applicant is the same as the overarching project supervisor
             # and the applicant was updating the PhD date of the applicant: the PhD date was updated twice in the database:
             # the new PhD date and then when saving the overarching project it was reverting to the previous date
-            person__physical_person.save(update_fields=['first_name', 'surname'])
+            person__physical_person.save(update_fields=['first_name', 'surname', 'orcid'])
 
             return person_position
 
@@ -90,9 +104,15 @@ class PersonPositionMixin:
                     HTML(description), css_class='col-12'),
                 css_class='row'),
             Div(
-                Div('person__academic_title', css_class='col-2'),
-                Div('person__physical_person__first_name', css_class='col-5'),
-                Div('person__physical_person__surname', css_class='col-5'),
+                Div(AppendedText('person__physical_person__orcid',
+                                 mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>')),
+                    css_class='col-8'),
+                css_class='row'
+            ),
+            Div(
+                Div('person__physical_person__first_name', css_class='col-4'),
+                Div('person__physical_person__surname', css_class='col-4'),
+                Div('person__academic_title', css_class='col-4'),
                 css_class='row'
             ),
             Div(
