@@ -1,25 +1,6 @@
-{% load static %}
 {% load crispy_forms_tags %}
 
 Please add the following details describing the overarching project to which this proposed {{ activity }} would contribute.
 {% crispy project_overarching_form %}
 
-<script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
-
-<script type="text/javascript" class="init">
-    $("#div_id_{{ project_overarching_form.prefix }}-person__physical_person__orcid .input-group-text").click(function () {
-        function success(orcid_record) {
-            let family_name = orcid_record['person']['name']['family-name'].value;
-            let given_names = orcid_record['person']['name']['given-names'].value;
-            $('#id_{{ project_overarching_form.prefix }}-person__physical_person__first_name').val(given_names);
-            $('#id_{{ project_overarching_form.prefix }}-person__physical_person__surname').val(family_name);
-        }
-
-        function error() {
-            alert('Error getting orcid id information');
-        }
-
-        let orcid_id = $('#id_{{ project_overarching_form.prefix }}-person__physical_person__orcid.textinput.textInput.form-control').val()
-        getOrcid(orcid_id, success, error);
-    });
-</script>
+{% include 'common/_orcid_javascript-form.tmpl' with form_prefix=project_overarching_form.prefix %}
