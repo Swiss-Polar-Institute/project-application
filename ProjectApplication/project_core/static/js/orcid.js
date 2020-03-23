@@ -9,12 +9,14 @@ function getOrcid(orcid_id, success_function, error_function) {
     });
 
     function orcid_success(orcid_record) {
+        // For debugging
         let family_name = orcid_record['person']['name']['family-name'].value;
         let given_names = orcid_record['person']['name']['given-names'].value;
         alert('orcid success: ' + given_names + " " + family_name);
     }
 
     function orcid_error() {
+        // For debugging
         alert('orcid failure');
     }
 
