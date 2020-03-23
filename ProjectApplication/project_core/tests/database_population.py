@@ -53,7 +53,6 @@ def create_keywords():
     rain, created = Keyword.objects.get_or_create(name='Rain', uid=keyword_uuid)
     snow, created = Keyword.objects.get_or_create(name='Snow', uid=keyword_uuid)
 
-
     return algae, birds, penguins, ice, micro_plastics, cloud, rain, snow
 
 
@@ -162,6 +161,7 @@ def create_organisation_names():
 def create_physical_person():
     physical_person, _ = PhysicalPerson.objects.get_or_create(first_name='John',
                                                               surname='Smith',
+                                                              orcid='0000-0002-1825-0097'
                                                               )
 
     return physical_person
