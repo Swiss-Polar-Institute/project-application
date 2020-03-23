@@ -17,10 +17,11 @@ class PersonForm(Form):
         self.person_position = kwargs.pop('person_position', None)
         super().__init__(*args, **kwargs)
 
-        first_name_initial = surname_initial = organisations_initial = group_initial = \
+        orcid_initial = first_name_initial = surname_initial = organisations_initial = group_initial = \
             academic_title_initial = email_initial = gender_initial = career_stage_initial = phd_date_initial = None
 
         if self.person_position:
+            orcid_initial = self.person_position.person.orcid
             first_name_initial = self.person_position.person.first_name
             surname_initial = self.person_position.person.surname
             organisations_initial = self.person_position.organisation_names.all()
@@ -35,7 +36,7 @@ class PersonForm(Form):
                 phd_date_parts = self.person_position.person.phd_date.split('-')
                 phd_date_initial = f'{phd_date_parts[1]}-{phd_date_parts[0]}'
 
-        self.fields['orcid'] = forms.CharField(initial='', label='ORCID iD',
+        self.fields['orcid'] = forms.CharField(initial=orcid_initial, label='ORCID iD',
                                                help_text='Please enter your ORCID iD and press the button. If you do not have one please create one at <a href="https://orcid.org/">ORCID</a>')
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),

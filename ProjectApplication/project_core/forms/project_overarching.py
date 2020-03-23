@@ -42,6 +42,7 @@ class PersonPositionMixin:
         if person:
             self.fields['person__group'].initial = person.group
             self.fields['person__academic_title'].initial = person.academic_title
+            self.fields['person__physical_person__orcid'].initial = person.person.orcid
             self.fields['person__physical_person__first_name'].initial = person.person.first_name
             self.fields['person__physical_person__surname'].initial = person.person.surname
             self.fields['person__organisations'].initial = person.organisation_names.all()
