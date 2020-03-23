@@ -17,7 +17,6 @@
         alert('Error getting orcid id information');
     }
 
-    {{ test }}
     $("#div_id_person_form-orcid .input-group-append").click(function () {
         let orcid_id = $('#id_{{ person_form.prefix }}-orcid.textinput.textInput.form-control').val()
         getOrcid(orcid_id, success, error);

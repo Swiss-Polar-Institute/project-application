@@ -440,10 +440,10 @@ class PhysicalPerson(CreateModifyOn):
 
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
-    orcid_id = models.CharField(help_text='Orcid ID', max_length=19, blank=False, null=True,
-                                validators=[RegexValidator(regex='^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$',
-                                                           message='Format orcid ID is 0000-0000-0000-0000',
-                                                           code='Invalid format')])
+    orcid = models.CharField(help_text='Orcid ID', max_length=19, blank=False, null=True,
+                             validators=[RegexValidator(regex='^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$',
+                                                        message='Format orcid ID is 0000-0000-0000-0000',
+                                                        code='Invalid format')])
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
     phd_date = models.CharField(help_text='Date (yyyy-mm) on which PhD awarded or expected', max_length=20, blank=True,

@@ -35,8 +35,8 @@ class PersonForm(Form):
                 phd_date_parts = self.person_position.person.phd_date.split('-')
                 phd_date_initial = f'{phd_date_parts[1]}-{phd_date_parts[0]}'
 
-        self.fields['orcid'] = forms.CharField(initial='', label='Orcid',
-                                               help_text='Please enter your Orcid ID. If you do not have one please create one at...')
+        self.fields['orcid'] = forms.CharField(initial='', label='ORCID iD',
+                                               help_text='Please enter your ORCID iD and press the button. If you do not have one please create one at <a href="https://orcid.org/">ORCID</a>')
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                initial=academic_title_initial)
@@ -48,10 +48,19 @@ class PersonForm(Form):
                                                              initial=career_stage_initial)
 
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,
-                                                    label='First name(s)')
+                                                    label='First name(s)',
+                                                    help_text='Please enter the ORCID iD above and press the ORCID iD button')
 
         self.fields['surname'] = forms.CharField(initial=surname_initial,
-                                                 label='Surname(s)')
+                                                 label='Surname(s)',
+                                                 help_text='Please enter the ORCID iD above and press the ORCID iD button')
+
+        # It makes the field read only. It doesn't use disabled=True on the forms.CharField because the field is readonly
+        # but we are using (at the moment) the value to save the person name. It's populated by Javascript ORCID.
+        # Yes, it could be changed via the browser but this is a proof of concept and server side validation is coming later.
+        # (and a user could also create a fake ORCID, etc.)
+        self.fields['first_name'].widget.attrs.update({'readonly': 'readonly'})
+        self.fields['surname'].widget.attrs.update({'readonly': 'readonly'})
 
         self.fields['email'] = forms.EmailField(initial=email_initial)
 
@@ -152,14 +161,10 @@ class PersonForm(Form):
             physical_person = self.person_position.person
         else:
             physical_person, created = PhysicalPerson.objects.get_or_create(
-                first_name=self.cleaned_data['first_name'],
-                surname=self.cleaned_data['surname'],
-                defaults={
-                    'gender': self.cleaned_data['gender']
-                }
-            )
+                orcid=self.cleaned_data['orcid'])
 
         # Any new gender changes the previously assigned gender
+        physical_person.orcid = self.cleaned_data['orcid']
         physical_person.first_name = self.cleaned_data['first_name']
         physical_person.surname = self.cleaned_data['surname']
         physical_person.gender = self.cleaned_data['gender']
