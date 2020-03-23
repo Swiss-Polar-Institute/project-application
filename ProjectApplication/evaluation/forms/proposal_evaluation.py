@@ -50,7 +50,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.fields['allocated_budget'].help_text = f'Requested: {requested_budget} CHF'
         self.fields['allocated_budget'].label = 'Allocated budget (CHF)'
 
-        if self._proposal.proposalevaluation:
+        if hasattr(self._proposal, 'proposalevaluation'):
             initial_reviewers = self._proposal.reviewer_set.all()
         else:
             initial_reviewers = []
