@@ -1,17 +1,23 @@
+from crispy_forms.bootstrap import AppendedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
-from variable_templates.utils import apply_templates
+from django.utils.safestring import mark_safe
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
+from variable_templates.utils import apply_templates
 from .utils import organisations_name_autocomplete
 
 
 class ProposalPartnerItemForm(ModelForm):
-    person__physical_person__first_name = forms.CharField(**get_field_information(PhysicalPerson, 'first_name', help_text=''),
-                                                          label='First name(s)')
+    person__physical_person__orcid = forms.CharField(
+        **get_field_information(PhysicalPerson, 'orcid', help_text='To be written'), label='ORCID')
+
+    person__physical_person__first_name = forms.CharField(
+        **get_field_information(PhysicalPerson, 'first_name', help_text=''),
+        label='First name(s)')
     person__physical_person__surname = forms.CharField(**get_field_information(PhysicalPerson, 'surname', help_text=''),
                                                        label='Surname(s)')
     person__academic_title = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'), label='Academic title')
@@ -33,6 +39,7 @@ class ProposalPartnerItemForm(ModelForm):
             self.fields['person__group'].initial = self.instance.person.group
             self.fields['person__career_stage'].initial = self.instance.person.career_stage
             self.fields['person__academic_title'].initial = self.instance.person.academic_title
+            self.fields['person__physical_person__orcid'].initial = self.instance.person.person.orcid
             self.fields['person__physical_person__first_name'].initial = self.instance.person.person.first_name
             self.fields['person__physical_person__surname'].initial = self.instance.person.person.surname
             self.fields['id'] = self.instance.pk
@@ -44,10 +51,16 @@ class ProposalPartnerItemForm(ModelForm):
 
         self.helper.layout = Layout(
             Div(
+                Div(AppendedText('person__physical_person__orcid',
+                                 mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>')),
+                    css_class='col-8'),
+                css_class='row'
+            ),
+            Div(
                 Div('id', hidden=True),
-                Div('person__academic_title', css_class='col-2'),
                 Div('person__physical_person__first_name', css_class='col-4'),
                 Div('person__physical_person__surname', css_class='col-4'),
+                Div('person__academic_title', css_class='col-2'),
                 Div('person__career_stage', css_class='col-2'),
                 css_class='row'
             ),
@@ -85,6 +98,7 @@ class ProposalPartnerItemForm(ModelForm):
         person__career_stage = self.cleaned_data['person__career_stage']
         person__organisation_names = self.cleaned_data['person__organisations']
 
+        person__physical_person__orcid = self.cleaned_data['person__physical_person__orcid']
         person__physical_person__first_name = self.cleaned_data['person__physical_person__first_name']
         person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
 
@@ -102,6 +116,7 @@ class ProposalPartnerItemForm(ModelForm):
             person__physical_person = self.instance.person.person
             assert person__physical_person
 
+            person__physical_person.orcid = person__physical_person__orcid
             person__physical_person.first_name = person__physical_person__first_name
             person__physical_person.surname = person__physical_person__surname
             person__physical_person.save()
@@ -111,8 +126,7 @@ class ProposalPartnerItemForm(ModelForm):
         else:
             # Needs to create a partner
             physical_person, created = PhysicalPerson.objects.get_or_create(
-                first_name=person__physical_person__first_name,
-                surname=person__physical_person__surname)
+                orcid=person__physical_person__orcid)
 
             person_position, created = PersonPosition.objects.get_or_create(
                 person=physical_person,
