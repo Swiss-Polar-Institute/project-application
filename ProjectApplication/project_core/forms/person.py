@@ -113,8 +113,7 @@ class PersonForm(Form):
         """ Matches and returns the person_position from the database. """
         try:
             physical_person = PhysicalPerson.objects.get(
-                first_name=self.cleaned_data['first_name'],
-                surname=self.cleaned_data['surname'],
+                orcid=self.cleaned_data['orcid']
             )
 
             person_position = PersonPosition.objects.get(
