@@ -4,7 +4,9 @@
 
 <script type="text/javascript">
     function setup_orcid_lookup(form_prefix, orcid_field, first_name_field, surname_field) {
-        $("#div_id_" + form_prefix + "-" + orcid_field + " .input-group-append").click(function () {
+        let selector = "#div_id_" + form_prefix + "-" + orcid_field + " .input-group-append"
+
+        $(selector).click(function () {
             function success(orcid_record) {
                 let family_name = orcid_record['person']['name']['family-name'].value;
                 let given_names = orcid_record['person']['name']['given-names'].value;
