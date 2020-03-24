@@ -212,7 +212,7 @@ class AbstractProposalView(TemplateView):
 
         if timezone.now() > call.submission_deadline:
             messages.error(request,
-                             'New proposals for this call cannot be accepted because the submission deadline has now passed.')
+                           'New proposals for this call cannot be accepted because the submission deadline has now passed.')
 
         return render(request, self.form_template, context)
 
@@ -413,6 +413,11 @@ class AbstractProposalView(TemplateView):
         return render(request, 'common/proposal-form.tmpl', context)
 
     def _validate_project_title_applicant(self, proposal_form, person_form):
+        if 'orcid' not in proposal_form.cleaned_data:
+            # get_person_position below would fail so let's skip the test now.
+            # This can happen if orcid is not valid (format or the example one)
+            return True
+
         proposal_title = proposal_form.cleaned_data['title']
         call_id = proposal_form.cleaned_data['call_id']
 
