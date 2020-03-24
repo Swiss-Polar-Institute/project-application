@@ -1,14 +1,13 @@
-from crispy_forms.bootstrap import AppendedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
-from django.utils.safestring import mark_safe
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
 from variable_templates.utils import apply_templates
 from .utils import organisations_name_autocomplete
+from ..utils.orcid import field_set_read_only, orcid_div
 
 
 class ProposalPartnerItemForm(ModelForm):
@@ -35,6 +34,9 @@ class ProposalPartnerItemForm(ModelForm):
 
         person__organisations_initial = None
 
+        field_set_read_only(
+            [self.fields['person__physical_person__first_name'], self.fields['person__physical_person__surname']])
+
         if self.instance.pk:
             self.fields['person__group'].initial = self.instance.person.group
             self.fields['person__career_stage'].initial = self.instance.person.career_stage
@@ -50,12 +52,7 @@ class ProposalPartnerItemForm(ModelForm):
         apply_templates(self.fields, call)
 
         self.helper.layout = Layout(
-            Div(
-                Div(AppendedText('person__physical_person__orcid',
-                                 mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>')),
-                    css_class='col-8'),
-                css_class='row'
-            ),
+            orcid_div('person__physical_person__orcid'),
             Div(
                 Div('id', hidden=True),
                 Div('person__physical_person__first_name', css_class='col-4'),
