@@ -12,7 +12,10 @@ from ..utils.orcid import field_set_read_only, orcid_div
 
 class ProposalPartnerItemForm(ModelForm):
     person__physical_person__orcid = forms.CharField(
-        **get_field_information(PhysicalPerson, 'orcid', help_text='To be written'), label='ORCID')
+        **get_field_information(PhysicalPerson, 'orcid',
+                                help_text='Enter the partner\'s ORCID iD (e.g. 0000-0002-1825-0097).<br>'
+                                          'Please ask the partner to create an <a href="https://orcid.org">ORCID iD</a> if they do not already have one.'),
+        label='ORCID iD')
 
     person__physical_person__first_name = forms.CharField(
         **get_field_information(PhysicalPerson, 'first_name', help_text=''),

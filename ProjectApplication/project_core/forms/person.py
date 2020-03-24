@@ -36,7 +36,8 @@ class PersonForm(Form):
                 phd_date_initial = f'{phd_date_parts[1]}-{phd_date_parts[0]}'
 
         self.fields['orcid'] = forms.CharField(initial=orcid_initial, label='ORCID iD', max_length=19,
-                                               help_text='Please enter your ORCID iD and press the button. If you do not have one please create one at <a href="https://orcid.org/">ORCID</a>')
+                                               help_text='Enter your ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
+                                                         'Please create an <a href="https://orcid.org">ORCID iD</a> if you do not already have one.')
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                initial=academic_title_initial)
@@ -49,11 +50,11 @@ class PersonForm(Form):
 
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,
                                                     label='First name(s)',
-                                                    help_text='Please enter the ORCID iD above and press the ORCID iD button')
+                                                    help_text='Your name is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>.')
 
         self.fields['surname'] = forms.CharField(initial=surname_initial,
                                                  label='Surname(s)',
-                                                 help_text='Please enter the ORCID iD above and press the ORCID iD button')
+                                                 help_text='Your surname is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>.')
 
         field_set_read_only([self.fields['first_name'], self.fields['surname']])
 
