@@ -7,7 +7,6 @@ import uuid as uuid_lib
 from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from django.core.validators import validate_email
 from django.db import models, transaction
@@ -18,6 +17,7 @@ from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
+from .utils.orcid import orcid_is_not_example
 
 logger = logging.getLogger('project_core')
 
@@ -435,11 +435,6 @@ class Gender(CreateModifyOn):
         return '{}'.format(self.name)
 
 
-def orcid_is_not_example(orcid):
-    if orcid == '0000-0002-1825-0097':
-        raise ValidationError('0000-0002-1825-0097 is the example ORCID and cannot be used')
-
-
 class PhysicalPerson(CreateModifyOn):
     """Information about a unique person."""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -447,10 +442,7 @@ class PhysicalPerson(CreateModifyOn):
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
     orcid = models.CharField(help_text='Orcid ID', max_length=19, blank=False, null=True,
-                             validators=[RegexValidator(regex='^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$',
-                                                        message='Format orcid ID is 0000-0000-0000-0000',
-                                                        code='Invalid format'),
-                                         orcid_is_not_example])
+                             validators=utils.orcid.orcid_validators())
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
     phd_date = models.CharField(help_text='Date (yyyy-mm) on which PhD awarded or expected', max_length=20, blank=True,

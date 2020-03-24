@@ -1,5 +1,7 @@
 from crispy_forms.bootstrap import AppendedText
 from crispy_forms.layout import Div
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.utils.safestring import mark_safe
 
 
@@ -18,3 +20,16 @@ def field_set_read_only(fields):
 
     for field in fields:
         field.widget.attrs.update({'readonly': 'readonly'})
+
+
+def orcid_is_not_example(orcid):
+    if orcid == '0000-0002-1825-0097':
+        raise ValidationError('0000-0002-1825-0097 is the example ORCID and cannot be used')
+
+
+def orcid_validators():
+    return [orcid_is_not_example,
+            RegexValidator(regex='^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$',
+                           message='Invalid format for ORCID iD. E.g.: 0000-0002-1825-0097.',
+                           code='Invalid format')
+            ]
