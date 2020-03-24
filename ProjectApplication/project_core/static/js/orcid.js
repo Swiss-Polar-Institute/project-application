@@ -1,26 +1,45 @@
 function setup_orcid_lookup(form_prefix, orcid_field, first_name_field, surname_field) {
-    let selector = "#div_id_" + form_prefix + "-" + orcid_field + " .input-group-append"
+    let button_selector = "#div_id_" + form_prefix + "-" + orcid_field + " .input-group-append";
+    let icon_selector = button_selector + " .input-group-text i";
 
-    $(selector).click(function () {
+    let orcid_field_selector = '#id_' + form_prefix + '-' + orcid_field;
+    let first_name_selector = '#id_' + form_prefix + '-' + first_name_field;
+    let surname_selector = '#id_' + form_prefix + '-' + surname_field;
+
+    const initial_icon_class = $(icon_selector).attr('class');  // It assumes that all the ORCID iD icons are the same,
+                                                                // (this function is used for different of them and stores
+                                                                // the first attr)
+    const initial_icon_style = $(icon_selector).attr('style');
+
+    $(button_selector).click(function () {
         function success(orcid_record) {
             let family_name = orcid_record['person']['name']['family-name'].value;
             let given_names = orcid_record['person']['name']['given-names'].value;
 
-            $('#id_' + form_prefix + '-' + first_name_field).val(given_names);
-            $('#id_' + form_prefix + '-' + surname_field).val(family_name);
+            $(first_name_selector).val(given_names);
+            $(surname_selector).val(family_name);
+
+            $(icon_selector).attr('class', 'fas fa-check');
+            $(icon_selector).attr('style', initial_icon_style);
         }
 
         function error() {
-            alert('Error getting orcid id information');
+            $(icon_selector).attr('class', 'fas fa-exclamation');
+            $(icon_selector).attr('style', 'color:#ff0000');
         }
 
-        let orcid_id = $('#id_' + form_prefix + '-' + orcid_field + '.textinput.textInput.form-control').val()
+        // let orcid_id = $('#id_' + form_prefix + '-' + orcid_field + '.textinput.textInput.form-control').val();
+        let orcid_id = $(orcid_field_selector).val();
         getOrcid(orcid_id, success, error);
+        $(icon_selector).attr('class', 'fas fa-spinner fa-spin');
     });
 
-    $('#id_' + form_prefix + '-' + orcid_field).on('input', function () {
-        $('#id_' + form_prefix + '-' + first_name_field).val("");
-        $('#id_' + form_prefix + '-' + surname_field).val("");
+    $(orcid_field_selector).on('input', function () {
+        $(first_name_selector).val('');
+        $(surname_selector).val('');
+
+        $(icon_selector).attr('class', initial_icon_class);
+        $(icon_selector).attr('style', initial_icon_style);
     });
 }
 
