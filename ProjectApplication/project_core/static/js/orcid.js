@@ -6,12 +6,14 @@ function setup_orcid_lookup(form_prefix, orcid_field, first_name_field, surname_
     let first_name_selector = '#id_' + form_prefix + '-' + first_name_field;
     let surname_selector = '#id_' + form_prefix + '-' + surname_field;
 
+    let typing_timer;
+
     const initial_icon_class = $(icon_selector).attr('class');  // It assumes that all the ORCID iD icons are the same,
                                                                 // (this function is used for different of them and stores
                                                                 // the first attr)
     const initial_icon_style = $(icon_selector).attr('style');
 
-    $(button_selector).click(function () {
+    let start_lookup = function () {
         function success(orcid_record) {
             let family_name = orcid_record['person']['name']['family-name'].value;
             let given_names = orcid_record['person']['name']['given-names'].value;
@@ -32,14 +34,22 @@ function setup_orcid_lookup(form_prefix, orcid_field, first_name_field, surname_
         let orcid_id = $(orcid_field_selector).val();
         getOrcid(orcid_id, success, error);
         $(icon_selector).attr('class', 'fas fa-spinner fa-spin');
-    });
+    };
+
+    $(button_selector).click(start_lookup);
 
     $(orcid_field_selector).on('input', function () {
+        let done_typing = function () {
+            start_lookup();
+        };
+        clearTimeout(typing_timer);
+
         $(first_name_selector).val('');
         $(surname_selector).val('');
-
         $(icon_selector).attr('class', initial_icon_class);
         $(icon_selector).attr('style', initial_icon_style);
+
+        typing_timer = setTimeout(done_typing, 1000);
     });
 }
 
