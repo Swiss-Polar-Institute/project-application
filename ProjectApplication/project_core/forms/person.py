@@ -149,11 +149,8 @@ class PersonForm(Form):
         super().clean()
 
     def save_person(self):
-        if self.person_position and self.person_position.person:
-            physical_person = self.person_position.person
-        else:
-            physical_person, created = PhysicalPerson.objects.get_or_create(
-                orcid=self.cleaned_data['orcid'])
+        physical_person, created = PhysicalPerson.objects.get_or_create(
+            orcid=self.cleaned_data['orcid'])
 
         # Any new gender changes the previously assigned gender
         physical_person.orcid = self.cleaned_data['orcid']
