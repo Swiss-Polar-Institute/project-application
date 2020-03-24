@@ -1,13 +1,12 @@
-from crispy_forms.bootstrap import AppendedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator, ValidationError
 from django.forms import Form
-from django.utils.safestring import mark_safe
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
+from project_core.utils.orcid import orcid_div, field_set_read_only
 from .utils import organisations_name_autocomplete
 from ..widgets import XDSoftYearMonthPickerInput
 
@@ -56,12 +55,7 @@ class PersonForm(Form):
                                                  label='Surname(s)',
                                                  help_text='Please enter the ORCID iD above and press the ORCID iD button')
 
-        # It makes the field read only. It doesn't use disabled=True on the forms.CharField because the field is readonly
-        # but we are using (at the moment) the value to save the person name. It's populated by Javascript ORCID.
-        # Yes, it could be changed via the browser but this is a proof of concept and server side validation is coming later.
-        # (and a user could also create a fake ORCID, etc.)
-        self.fields['first_name'].widget.attrs.update({'readonly': 'readonly'})
-        self.fields['surname'].widget.attrs.update({'readonly': 'readonly'})
+        field_set_read_only([self.fields['first_name'], self.fields['surname']])
 
         self.fields['email'] = forms.EmailField(initial=email_initial)
 
@@ -86,11 +80,7 @@ class PersonForm(Form):
         self.helper.form_tag = False
 
         self.helper.layout = Layout(
-            Div(
-                Div(AppendedText('orcid', mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>')),
-                    css_class='col-8'),
-                css_class='row'
-            ),
+            orcid_div(),
             Div(
                 Div('first_name', css_class='col-4'),
                 Div('surname', css_class='col-4'),
