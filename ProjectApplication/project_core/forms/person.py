@@ -7,7 +7,7 @@ from django.forms import Form
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
 from project_core.utils.orcid import orcid_div, field_set_read_only
-from .utils import organisations_name_autocomplete
+from .utils import organisations_name_autocomplete, get_field_information
 from ..widgets import XDSoftYearMonthPickerInput
 
 
@@ -35,9 +35,10 @@ class PersonForm(Form):
                 phd_date_parts = self.person_position.person.phd_date.split('-')
                 phd_date_initial = f'{phd_date_parts[1]}-{phd_date_parts[0]}'
 
-        self.fields['orcid'] = forms.CharField(initial=orcid_initial, label='ORCID iD', max_length=19,
-                                               help_text='Enter your ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
-                                                         'Please create an <a href="https://orcid.org">ORCID iD</a> if you do not already have one.')
+        self.fields['orcid'] = forms.CharField(initial=orcid_initial,
+                                               **get_field_information(PhysicalPerson, 'orcid', label='ORCID iD',
+                                                                       help_text='Enter your ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
+                                                                                 'Please create an <a href="https://orcid.org">ORCID iD</a> if you do not already have one.'))
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                initial=academic_title_initial)

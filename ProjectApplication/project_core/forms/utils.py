@@ -15,8 +15,9 @@ def get_field_information(model, field, label=None, help_text=None):
 
     kwargs['help_text'] = get_model_information(model, field, 'help_text')
     kwargs['required'] = not get_model_information(model, field, 'blank')
-
     max_length = get_model_information(model, field, 'max_length')
+    kwargs['validators'] = get_model_information(model, field, 'validators')
+
     if max_length is not None:
         kwargs['max_length'] = max_length
 

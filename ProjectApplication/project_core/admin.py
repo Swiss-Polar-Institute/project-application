@@ -150,8 +150,8 @@ class GenderAdmin(admin.ModelAdmin):
 
 class PhysicalPersonAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
-        'first_name', 'surname', 'gender', 'phd_date', 'created_on', 'modified_on',)
-    ordering = ['first_name', 'surname', 'gender', 'phd_date', 'created_on',
+        'first_name', 'surname', 'orcid', 'gender', 'phd_date', 'created_on', 'modified_on',)
+    ordering = ['first_name', 'surname', 'orcid', 'gender', 'phd_date', 'created_on',
                 'modified_on', ]
     readonly_fields = ('created_on', 'modified_on',)
     history_list_display = ['history_field_changes']
@@ -302,7 +302,7 @@ class ProjectAdmin(admin.ModelAdmin):
                     'end_date', 'principal_investigator', 'call', 'proposal', 'overarching_project',
                     'allocated_budget', 'status', 'abortion_reason', 'created_on', 'modified_on',)
     ordering = ['title', 'uuid', 'location', 'start_date', 'end_date', 'principal_investigator',
-                'call', 'proposal', 'allocated_budget', 'status', 'abortion_reason',]
+                'call', 'proposal', 'allocated_budget', 'status', 'abortion_reason', ]
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()

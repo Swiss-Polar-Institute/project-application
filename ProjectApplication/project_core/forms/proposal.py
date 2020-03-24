@@ -26,7 +26,7 @@ class ProposalForm(ModelForm):
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
-            call = self.instance.call
+            call = self._call = self.instance.call
         else:
             self.fields['call_id'].initial = self._call.id
             call = Call.objects.get(id=self._call.id)
