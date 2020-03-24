@@ -3,4 +3,8 @@
 Please add the following details describing the overarching project to which this proposed {{ activity }} would contribute.
 {% crispy project_overarching_form %}
 
-{% include 'common/_orcid_javascript-form.tmpl' with form_prefix=project_overarching_form.prefix orcid_field='person__physical_person__orcid' first_name_field='person__physical_person__first_name' surname_field='person__physical_person__surname' %}
+{% include 'common/_orcid_javascript-form.tmpl' %}
+
+<script>
+    setup_orcid_lookup('{{ project_overarching_form.prefix }}', 'person__physical_person__orcid', 'person__physical_person__first_name', 'person__physical_person__surname');
+</script>
