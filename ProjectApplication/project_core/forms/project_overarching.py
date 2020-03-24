@@ -72,7 +72,7 @@ class PersonPositionMixin:
             person__physical_person.surname = person__physical_person__surname
             person__physical_person.orcid = person__physical_person__orcid
 
-            # update_fields is required because only first_name and surname can have changed from this form
+            # update_fields is required because only first_name, surname and orcid can have changed from this form
             # The problem that this solve is that: if the applicant is the same as the overarching project supervisor
             # and the applicant was updating the PhD date of the applicant: the PhD date was updated twice in the database:
             # the new PhD date and then when saving the overarching project it was reverting to the previous date
@@ -84,7 +84,8 @@ class PersonPositionMixin:
             # Needs to create a partner
             physical_person, created = PhysicalPerson.objects.get_or_create(
                 first_name=person__physical_person__first_name,
-                surname=person__physical_person__surname)
+                surname=person__physical_person__surname,
+                orcid=person__physical_person__orcid)
 
             person_position, created = PersonPosition.objects.get_or_create(
                 person=physical_person,

@@ -126,6 +126,8 @@ class ProposalPartnerItemForm(ModelForm):
         else:
             # Needs to create a partner
             physical_person, created = PhysicalPerson.objects.get_or_create(
+                first_name=person__physical_person__first_name,
+                surname=person__physical_person__surname,
                 orcid=person__physical_person__orcid)
 
             person_position, created = PersonPosition.objects.get_or_create(
