@@ -52,7 +52,9 @@
     function removed_proposal_partner() {
     }
 
-    added_proposal_partner_index(0);
+    $("#proposal_partners_form_table tbody tr").each(function (index, element) {
+        added_proposal_partner_index(index);
+    });
 
     jQueryForFormset(function () {
         jQueryForFormset('#proposal_partners_form_table tbody tr').formset({
