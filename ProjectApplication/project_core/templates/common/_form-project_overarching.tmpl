@@ -1,9 +1,10 @@
+{% load static %}
 {% load crispy_forms_tags %}
 
 Please add the following details describing the overarching project to which this proposed {{ activity }} would contribute.
 {% crispy project_overarching_form %}
 
-{% include 'common/_orcid_javascript-form.tmpl' %}
+<script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
 
 <script>
     setup_orcid_lookup('{{ project_overarching_form.prefix }}', 'person__physical_person__orcid', 'person__physical_person__first_name', 'person__physical_person__surname');

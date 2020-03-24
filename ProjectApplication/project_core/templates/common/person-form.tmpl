@@ -2,7 +2,7 @@
 {% load crispy_forms_tags %}
 {% crispy person_form %}
 
-{% include 'common/_orcid_javascript-form.tmpl' %}
+<script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
 
 <script>
     setup_orcid_lookup('{{ person_form.prefix }}', 'orcid', 'first_name', 'surname');
