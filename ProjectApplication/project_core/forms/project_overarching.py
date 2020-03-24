@@ -1,13 +1,12 @@
-from crispy_forms.bootstrap import AppendedText
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.forms import ModelForm
-from django.utils.safestring import mark_safe
 
 from project_core.forms.utils import get_field_information, organisations_name_autocomplete
 from project_core.models import ExternalProject
 from project_core.models import PersonPosition, PhysicalPerson, PersonTitle
+from project_core.utils.orcid import field_set_read_only, orcid_div
 
 
 class PersonPositionMixin:
@@ -25,10 +24,8 @@ class PersonPositionMixin:
             **get_field_information(PhysicalPerson, 'surname', help_text=''),
             label='Surname(s)')
 
-        # First name and surname are populated via ORCID. Not using "disabled=True" so these values are accessible
-        # via cleaned_data. A user could change them obviously but server side validation for the ORCID is coming later.
-        self.fields['person__physical_person__first_name'].widget.attrs.update({'readonly': 'readonly'})
-        self.fields['person__physical_person__surname'].widget.attrs.update({'readonly': 'readonly'})
+        field_set_read_only(
+            [self.fields['person__physical_person__first_name'], self.fields['person__physical_person__surname']])
 
         self.fields['person__academic_title'] = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'),
                                                                        label='Academic title', )
@@ -104,12 +101,7 @@ class PersonPositionMixin:
                 Div(
                     HTML(description), css_class='col-12'),
                 css_class='row'),
-            Div(
-                Div(AppendedText('person__physical_person__orcid',
-                                 mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>')),
-                    css_class='col-8'),
-                css_class='row'
-            ),
+            orcid_div('person__physical_person__orcid'),
             Div(
                 Div('person__physical_person__first_name', css_class='col-4'),
                 Div('person__physical_person__surname', css_class='col-4'),

@@ -80,7 +80,7 @@ class PersonForm(Form):
         self.helper.form_tag = False
 
         self.helper.layout = Layout(
-            orcid_div(),
+            orcid_div('orcid'),
             Div(
                 Div('first_name', css_class='col-4'),
                 Div('surname', css_class='col-4'),

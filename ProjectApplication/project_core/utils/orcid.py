@@ -3,9 +3,9 @@ from crispy_forms.layout import Div
 from django.utils.safestring import mark_safe
 
 
-def orcid_div():
+def orcid_div(field_name):
     return Div(
-        Div(AppendedText('orcid', mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>')),
+        Div(AppendedText(field_name, mark_safe('<i class="fab fa-orcid" style="color:#a6ce39"></i>')),
             css_class='col-8'),
         css_class='row'
     )
