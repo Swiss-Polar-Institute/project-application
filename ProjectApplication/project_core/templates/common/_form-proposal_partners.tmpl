@@ -32,19 +32,32 @@
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 </script>
 
+{% include 'common/_orcid_javascript-form.tmpl' %}
+
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 <script>
-    function added_proposal_partner(t) {
-        alert('index: ' + t[0].sectionRowIndex);
+    function added_proposal_partner_index(index) {
+        let orcid = index + "-person__physical_person__orcid";
+        let first_name = index + "-person__physical_person__first_name";
+        let surname = index + "-person__physical_person__surname";
+
+        setup_orcid_lookup('{{ proposal_partners_form.prefix }}', orcid, first_name, surname);
+    }
+
+    function added_proposal_partner(partner_row) {
+        let index = t[0].sectionRowIndex;
+        added_proposal_partner_index(index);
     }
 
     function removed_proposal_partner() {
         alert('removed proposal partner');
     }
 
+    added_proposal_partner_index(0);
+
     jQueryForFormset(function () {
         jQueryForFormset('#proposal_partners_form_table tbody tr').formset({
-            prefix: 'proposal_partners_form',
+            prefix: '{{ proposal_partners_form.prefix }}',
             added: added_proposal_partner,
             removed: removed_proposal_partner
         })
