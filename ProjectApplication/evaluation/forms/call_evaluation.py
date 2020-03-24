@@ -7,7 +7,7 @@ from django.urls import reverse
 from ProjectApplication import settings
 from evaluation.models import CallEvaluation
 from project_core.forms.utils import cancel_edit_button
-from project_core.utils import user_is_in_group_name
+from project_core.utils.utils import user_is_in_group_name
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 

@@ -17,7 +17,7 @@ from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import CallEvaluation, ProposalEvaluation
 from project_core.models import Proposal, Call, ProposalStatus, Project
-from project_core.utils import user_is_in_group_name
+from project_core.utils.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 from project_core.views.logged.proposal import get_eligibility_history
 

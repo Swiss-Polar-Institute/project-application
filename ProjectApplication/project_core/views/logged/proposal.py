@@ -8,7 +8,7 @@ from comments.utils import process_comment_attachment
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.models import Reviewer
 from project_core.models import Proposal, Call
-from project_core.utils import user_is_in_group_name
+from project_core.utils.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
 
 

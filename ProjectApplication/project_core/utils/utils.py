@@ -1,7 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 
 
-
 def bytes_to_human_readable(num: int) -> str:
     if num is None:
         return 'Unknown'

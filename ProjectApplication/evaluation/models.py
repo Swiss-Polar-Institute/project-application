@@ -10,7 +10,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from ProjectApplication import settings
 from project_core.models import Call, Proposal, CreateModifyOn, ProposalStatus, PhysicalPerson
-from project_core.utils import user_is_in_group_name
+from project_core.utils.utils import user_is_in_group_name
 
 
 class Reviewer(models.Model):

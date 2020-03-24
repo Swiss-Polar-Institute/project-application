@@ -1,7 +1,7 @@
 from django import template
 
 from ProjectApplication import settings
-from project_core.utils import user_is_in_group_name
+from project_core.utils.utils import user_is_in_group_name
 
 register = template.Library()
 
