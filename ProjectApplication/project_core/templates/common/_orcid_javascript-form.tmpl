@@ -2,7 +2,7 @@
 
 <script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
 
-<script type="text/javascript" class="init">
+<script type="text/javascript">
     $("#div_id_{{ form_prefix }}-{{ orcid_field }} .input-group-append").click(function () {
         function success(orcid_record) {
             let family_name = orcid_record['person']['name']['family-name'].value;

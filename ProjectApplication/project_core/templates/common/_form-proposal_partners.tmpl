@@ -34,9 +34,19 @@
 
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 <script>
+    function added_proposal_partner(t) {
+        alert('index: ' + t[0].sectionRowIndex);
+    }
+
+    function removed_proposal_partner() {
+        alert('removed proposal partner');
+    }
+
     jQueryForFormset(function () {
         jQueryForFormset('#proposal_partners_form_table tbody tr').formset({
-            prefix: 'proposal_partners_form'
+            prefix: 'proposal_partners_form',
+            added: added_proposal_partner,
+            removed: removed_proposal_partner
         })
     })
 </script>
