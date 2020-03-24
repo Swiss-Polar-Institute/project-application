@@ -35,7 +35,7 @@ class PersonForm(Form):
                 phd_date_parts = self.person_position.person.phd_date.split('-')
                 phd_date_initial = f'{phd_date_parts[1]}-{phd_date_parts[0]}'
 
-        self.fields['orcid'] = forms.CharField(initial=orcid_initial, label='ORCID iD',
+        self.fields['orcid'] = forms.CharField(initial=orcid_initial, label='ORCID iD', max_length=19,
                                                help_text='Please enter your ORCID iD and press the button. If you do not have one please create one at <a href="https://orcid.org/">ORCID</a>')
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),

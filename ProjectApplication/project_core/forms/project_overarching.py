@@ -14,7 +14,7 @@ class PersonPositionMixin:
         pass
 
     def _add_person_fields(self):
-        self.fields['person__physical_person__orcid'] = forms.CharField(initial='', label='ORCID iD',
+        self.fields['person__physical_person__orcid'] = forms.CharField(initial='', label='ORCID iD', max_length=19,
                                                                         help_text='Please enter your ORCID iD and press the button. If you do not have one please create one at <a href="https://orcid.org/">ORCID</a>')
 
         self.fields['person__physical_person__first_name'] = forms.CharField(

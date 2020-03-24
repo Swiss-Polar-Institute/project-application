@@ -49,7 +49,7 @@ function setup_orcid_lookup(form_prefix, orcid_field, first_name_field, surname_
         $(icon_selector).attr('class', initial_icon_class);
         $(icon_selector).attr('style', initial_icon_style);
 
-        typing_timer = setTimeout(done_typing, 1000);
+        typing_timer = setTimeout(done_typing, 100);
     });
 }
 
