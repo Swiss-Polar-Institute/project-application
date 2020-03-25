@@ -25,7 +25,6 @@ from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
 from variable_templates.utils import get_template_value_for_call
-from ...templatetags.in_management import in_management
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -265,8 +264,7 @@ class AbstractProposalView(TemplateView):
 
         if proposal:
             # Editing an existing proposal
-            proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME,
-                                         in_management=in_management(request))
+            proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
