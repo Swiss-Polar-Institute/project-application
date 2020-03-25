@@ -1,13 +1,15 @@
 {% extends 'common/_base.tmpl' %}
 {% block title %}
-{#    Title is generated based on the breadcrumb#}
-    Project management
+    {#    Title is generated based on the breadcrumb#}
     {% if breadcrumb %}
         {% for bread in breadcrumb %}
-            >
             {{ bread.name }}
+            {% if not forloop.last %}
+                >
+            {% endif %}
         {% endfor %}
     {% endif %}
+    | Project Management
 {% endblock %}
 
 {% block body_contents %}
