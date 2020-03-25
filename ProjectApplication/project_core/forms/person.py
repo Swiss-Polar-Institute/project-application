@@ -162,14 +162,13 @@ class PersonForm(Form):
         academic_title = self.cleaned_data['academic_title']
         group = self.cleaned_data['group']
         career_stage = self.cleaned_data['career_stage']
+        organisation_names = self.cleaned_data['organisation_names']
 
         person_position, person_position_created = PersonPosition.objects.get_or_create(person=physical_person,
                                                                                         academic_title=academic_title,
                                                                                         group=group,
-                                                                                        career_stage=career_stage)
-
-        # TODO: this might change previous person_positions
-        person_position.organisation_names.set(self.cleaned_data['organisation_names'])
+                                                                                        career_stage=career_stage,
+                                                                                        organisation_names__in=organisation_names)
 
         try:
             email_contact = person_position.contact_set.get(method=Contact.EMAIL)

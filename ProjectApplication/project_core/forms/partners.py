@@ -90,8 +90,10 @@ class ProposalPartnerItemForm(ModelForm):
             ),
         )
 
-    def save(self, commit=True):
-        proposal_partner = super().save(commit=False)
+    def save_partner(self, proposal):
+        role = self.cleaned_data['role']
+        competences = self.cleaned_data['competences']
+        role_description = self.cleaned_data['role_description']
 
         person__group = self.cleaned_data['person__group']
         person__academic_title = self.cleaned_data['person__academic_title']
@@ -102,47 +104,26 @@ class ProposalPartnerItemForm(ModelForm):
         person__physical_person__first_name = self.cleaned_data['person__physical_person__first_name']
         person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
 
-        if self.instance.id:
-            # Needs to update and existing partner
-            person = self.instance.person
-            assert person
+        person__physical_person, created = PhysicalPerson.objects.get_or_create(
+            orcid=person__physical_person__orcid)
 
-            person.group = person__group
-            person.academic_title = person__academic_title
-            person.career_stage = person__career_stage
-            person.organisation_names.set(person__organisation_names)
-            person.save()
+        person__physical_person.first_name = person__physical_person__first_name
+        person__physical_person.surname = person__physical_person__surname
+        person__physical_person.save()
 
-            person__physical_person = self.instance.person.person
-            assert person__physical_person
+        person_position, created = PersonPosition.objects.get_or_create(person=person__physical_person,
+                                                                        academic_title=person__academic_title,
+                                                                        career_stage=person__career_stage,
+                                                                        organisation_names__in=person__organisation_names,
+                                                                        group=person__group)
 
-            person__physical_person.orcid = person__physical_person__orcid
-            person__physical_person.first_name = person__physical_person__first_name
-            person__physical_person.surname = person__physical_person__surname
-            person__physical_person.save()
+        person_position.save()
 
-            return proposal_partner
-
-        else:
-            # Needs to create a partner
-            physical_person, created = PhysicalPerson.objects.get_or_create(
-                orcid=person__physical_person__orcid,
-                defaults={'first_name': person__physical_person__first_name,
-                          'surname': person__physical_person__surname})
-
-            person_position, created = PersonPosition.objects.get_or_create(
-                person=physical_person,
-                academic_title=person__academic_title,
-                group=person__group,
-                career_stage=person__career_stage,
-            )
-
-            person_position.organisation_names.set(person__organisation_names)
-
-            proposal_partner.person = person_position
-
-        if commit:
-            proposal_partner.save()
+        proposal_partner, created = ProposalPartner.objects.get_or_create(person=person_position,
+                                                                          role=role,
+                                                                          role_description=role_description,
+                                                                          competences=competences,
+                                                                          proposal=proposal)
 
         return proposal_partner
 
@@ -187,9 +168,7 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
                     partner = form.cleaned_data['id']
                     partner.delete()
                 elif form.cleaned_data['DELETE'] is False:
-                    partner = form.save(commit=False)
-                    partner.proposal = proposal
-                    partner.save()
+                    form.save_partner(proposal)
 
 
 ProposalPartnersInlineFormSet = inlineformset_factory(

@@ -55,18 +55,19 @@ class PersonPositionMixin:
         person__organisations = self.cleaned_data['person__organisations']
 
         physical_person, physical_person_created = PhysicalPerson.objects.get_or_create(
-            orcid=person__physical_person__orcid,
-            defaults={'first_name': person__physical_person__first_name,
-                      'surname': person__physical_person__surname})
+            orcid=person__physical_person__orcid)
+
+        physical_person.first_name = person__physical_person__first_name
+        physical_person.surname = person__physical_person__surname
+        physical_person.save()
 
         person_position, person_position_created = PersonPosition.objects.get_or_create(
             person=physical_person,
             academic_title=person__academic_title,
             group=person__group,
+            organisation_names__in=person__organisations,
             career_stage=None
         )
-
-        person_position.organisation_names.set(person__organisations)
 
         return person_position
 
