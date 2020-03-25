@@ -3,7 +3,7 @@ from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.forms import ModelForm
 
-from project_core.forms.utils import get_field_information, organisations_name_autocomplete
+from project_core.forms.utils import get_field_information, organisations_name_autocomplete, create_person_position
 from project_core.models import ExternalProject
 from project_core.models import PersonPosition, PhysicalPerson, PersonTitle
 from project_core.utils.orcid import field_set_read_only, orcid_div
@@ -47,28 +47,14 @@ class PersonPositionMixin:
             self.fields['person__organisations'].initial = person.organisation_names.all()
 
     def _save_leader(self):
-        person__group = self.cleaned_data['person__group']
-        person__academic_title = self.cleaned_data['person__academic_title']
-        person__physical_person__orcid = self.cleaned_data['person__physical_person__orcid']
-        person__physical_person__first_name = self.cleaned_data['person__physical_person__first_name']
-        person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
-        person__organisations = self.cleaned_data['person__organisations']
+        cd = self.cleaned_data
 
-        physical_person, physical_person_created = PhysicalPerson.objects.get_or_create(
-            orcid=person__physical_person__orcid)
-
-        physical_person.first_name = person__physical_person__first_name
-        physical_person.surname = person__physical_person__surname
-        physical_person.save()
-
-        person_position, person_position_created = PersonPosition.objects.get_or_create(
-            person=physical_person,
-            academic_title=person__academic_title,
-            group=person__group,
-            organisation_names__in=person__organisations,
-            career_stage=None
-        )
-
+        person_position = create_person_position(orcid=cd['person__physical_person__orcid'],
+                                                 first_name=cd['person__physical_person__first_name'],
+                                                 surname=cd['person__physical_person__surname'],
+                                                 academic_title=cd['person__academic_title'],
+                                                 group=cd['person__group'],
+                                                 organisation_names=cd['person__organisations'])
         return person_position
 
     def _person_layout(self, description):

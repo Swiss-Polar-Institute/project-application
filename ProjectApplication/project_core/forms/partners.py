@@ -117,8 +117,6 @@ class ProposalPartnerItemForm(ModelForm):
                                                                         organisation_names__in=person__organisation_names,
                                                                         group=person__group)
 
-        person_position.save()
-
         proposal_partner, created = ProposalPartner.objects.get_or_create(person=person_position,
                                                                           role=role,
                                                                           role_description=role_description,
