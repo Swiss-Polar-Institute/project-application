@@ -40,7 +40,7 @@ def create_person_position(orcid, first_name, surname, gender=None, phd_date=Non
     person_position = None
 
     for person_position in person_positions:
-        if person_position.organisation_names == organisation_names:
+        if set(person_position.organisation_names.all()) == set(organisation_names):
             person_position_found = True
             break
 
