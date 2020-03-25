@@ -3,7 +3,7 @@ from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
-from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
+from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField, create_person_position
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
 from variable_templates.utils import apply_templates
 from .utils import organisations_name_autocomplete
@@ -91,36 +91,20 @@ class ProposalPartnerItemForm(ModelForm):
         )
 
     def save_partner(self, proposal):
-        role = self.cleaned_data['role']
-        competences = self.cleaned_data['competences']
-        role_description = self.cleaned_data['role_description']
+        cd = self.cleaned_data
 
-        person__group = self.cleaned_data['person__group']
-        person__academic_title = self.cleaned_data['person__academic_title']
-        person__career_stage = self.cleaned_data['person__career_stage']
-        person__organisation_names = self.cleaned_data['person__organisations']
-
-        person__physical_person__orcid = self.cleaned_data['person__physical_person__orcid']
-        person__physical_person__first_name = self.cleaned_data['person__physical_person__first_name']
-        person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
-
-        person__physical_person, created = PhysicalPerson.objects.get_or_create(
-            orcid=person__physical_person__orcid)
-
-        person__physical_person.first_name = person__physical_person__first_name
-        person__physical_person.surname = person__physical_person__surname
-        person__physical_person.save()
-
-        person_position, created = PersonPosition.objects.get_or_create(person=person__physical_person,
-                                                                        academic_title=person__academic_title,
-                                                                        career_stage=person__career_stage,
-                                                                        organisation_names__in=person__organisation_names,
-                                                                        group=person__group)
+        person_position = create_person_position(cd['person__physical_person__orcid'],
+                                                 cd['person__physical_person__first_name'],
+                                                 cd['person__physical_person__surname'],
+                                                 academic_title=cd['person__academic_title'],
+                                                 group=cd['person__group'],
+                                                 career_stage=cd['person__career_stage'],
+                                                 organisation_names=cd['person__organisations'])
 
         proposal_partner, created = ProposalPartner.objects.get_or_create(person=person_position,
-                                                                          role=role,
-                                                                          role_description=role_description,
-                                                                          competences=competences,
+                                                                          role=cd['role'],
+                                                                          role_description=cd['role_description'],
+                                                                          competences=cd['competences'],
                                                                           proposal=proposal)
 
         return proposal_partner
