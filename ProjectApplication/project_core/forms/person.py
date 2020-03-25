@@ -7,7 +7,7 @@ from django.forms import Form
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
 from project_core.utils.orcid import orcid_div, field_set_read_only
-from .utils import organisations_name_autocomplete, get_field_information
+from .utils import organisations_name_autocomplete, get_field_information, create_person_position
 from ..widgets import XDSoftYearMonthPickerInput
 
 
@@ -149,26 +149,12 @@ class PersonForm(Form):
         super().clean()
 
     def save_person(self):
-        physical_person, physical_person_created = PhysicalPerson.objects.get_or_create(
-            orcid=self.cleaned_data['orcid'])
+        cd = self.cleaned_data
 
-        # Updates any previous information (besides the ORCID that it stays the same or it's creating a new person)
-        physical_person.first_name = self.cleaned_data['first_name']
-        physical_person.surname = self.cleaned_data['surname']
-        physical_person.gender = self.cleaned_data['gender']
-        physical_person.phd_date = self.cleaned_data['phd_date']
-        physical_person.save()
-
-        academic_title = self.cleaned_data['academic_title']
-        group = self.cleaned_data['group']
-        career_stage = self.cleaned_data['career_stage']
-        organisation_names = self.cleaned_data['organisation_names']
-
-        person_position, person_position_created = PersonPosition.objects.get_or_create(person=physical_person,
-                                                                                        academic_title=academic_title,
-                                                                                        group=group,
-                                                                                        career_stage=career_stage,
-                                                                                        organisation_names__in=organisation_names)
+        person_position = create_person_position(cd['orcid'], cd['first_name'], cd['surname'], gender=cd['gender'],
+                                                 phd_date=cd['phd_date'], academic_title=cd['academic_title'],
+                                                 group=cd['group'], career_stage=cd['career_stage'],
+                                                 organisation_names=cd['organisation_names'])
 
         try:
             email_contact = person_position.contact_set.get(method=Contact.EMAIL)
