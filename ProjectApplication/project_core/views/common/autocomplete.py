@@ -40,9 +40,7 @@ class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
              'description': 'User entered',
              'uid': keyword_uuid}
 
-        return self.get_queryset().get_or_create(
-            **d,
-            defaults={'created_by': User.objects.get(username=settings.LOGGED_OUT_USERNAME)})[0]
+        return self.get_queryset().get_or_create(**d)[0]
 
     def get_result_label(self, result):
         return result.name
