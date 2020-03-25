@@ -329,9 +329,7 @@ class AbstractProposalView(TemplateView):
             is_valid = form.is_valid()
             all_valid = all_valid and is_valid
 
-        valid_title_applicant = all_valid and self._validate_project_title_applicant(proposal_form, person_form)
-
-        all_valid = all_valid and valid_title_applicant
+        all_valid = all_valid and self._validate_project_title_applicant(proposal_form, person_form)
 
         if all_valid:
             proposal = proposal_form.save(commit=False)
