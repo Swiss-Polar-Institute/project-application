@@ -3,7 +3,8 @@ from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.forms import ModelForm
 
-from project_core.forms.utils import get_field_information, organisations_name_autocomplete, create_person_position
+from project_core.forms.utils import get_field_information, organisations_name_autocomplete
+from project_core.utils.utils import create_person_position
 from project_core.models import ExternalProject
 from project_core.models import PersonPosition, PhysicalPerson, PersonTitle
 from project_core.utils.orcid import field_set_read_only, orcid_div

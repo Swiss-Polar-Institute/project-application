@@ -7,7 +7,8 @@ from django.forms import Form
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
 from project_core.utils.orcid import orcid_div, field_set_read_only
-from .utils import organisations_name_autocomplete, get_field_information, create_person_position
+from .utils import organisations_name_autocomplete, get_field_information
+from ..utils.utils import create_person_position
 from ..widgets import XDSoftYearMonthPickerInput
 
 

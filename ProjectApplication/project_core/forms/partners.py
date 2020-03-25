@@ -3,7 +3,8 @@ from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
-from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField, create_person_position
+from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
+from ..utils.utils import create_person_position
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
 from variable_templates.utils import apply_templates
 from .utils import organisations_name_autocomplete

@@ -3,58 +3,7 @@ from dal import autocomplete
 from django import forms
 from django.forms import ModelChoiceField, ModelMultipleChoiceField
 
-from ..models import OrganisationName, PhysicalPerson, PersonPosition
-
-
-def create_person_position(orcid, first_name, surname, gender=None, phd_date=None,
-                           academic_title=None, group=None, career_stage=None, organisation_names=None):
-    """
-    Creates a PhysicalPerson (if needed) and a PersonPosition. Returns the PersonPosition.
-    """
-    physical_person, physical_person_created = PhysicalPerson.objects.get_or_create(orcid=orcid)
-
-    # Updates any previous information (besides the ORCID that it stays the same or it's creating a new person)
-    physical_person.first_name = first_name
-    physical_person.surname = surname
-
-    if gender:
-        physical_person.gender = gender
-
-    if phd_date:
-        physical_person.phd_date = phd_date
-
-    physical_person.save()
-
-    person_position_filter = {'person': physical_person,
-                              'academic_title': academic_title}
-
-    if career_stage:
-        person_position_filter['career_stage'] = career_stage
-
-    if group:
-        person_position_filter['group'] = group
-
-    person_positions = PersonPosition.objects.filter(**person_position_filter)
-
-    person_position_found = False
-    person_position = None
-
-    for person_position in person_positions:
-        if set(person_position.organisation_names.all()) == set(organisation_names):
-            person_position_found = True
-            break
-
-    if not person_position_found:
-        person_position = PersonPosition.objects.create(person=physical_person,
-                                                        academic_title=academic_title,
-                                                        group=group,
-                                                        career_stage=career_stage)
-        person_position.organisation_names.set(organisation_names)
-        person_position.save()
-
-    assert person_position
-
-    return person_position
+from ..models import OrganisationName
 
 
 def get_model_information(model, field, information):
