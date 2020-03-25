@@ -22,7 +22,6 @@ class ProjectOverarchingForm(ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                Div('id', hidden=True),
                 Div('title')
             ),
             *self._person_layout('Please add the details of the overarching project supervisor.')
@@ -109,4 +108,4 @@ class ProjectOverarchingForm(ModelForm):
 
     class Meta:
         model = ExternalProject
-        fields = ['id', 'title', ]
+        fields = ['title', ]
