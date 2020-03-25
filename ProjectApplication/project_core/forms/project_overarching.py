@@ -46,7 +46,7 @@ class PersonPositionMixin:
             self.fields['person__physical_person__surname'].initial = person.person.surname
             self.fields['person__organisations'].initial = person.organisation_names.all()
 
-    def _save_person(self, person_position):
+    def _save_leader(self):
         person__group = self.cleaned_data['person__group']
         person__academic_title = self.cleaned_data['person__academic_title']
         person__physical_person__orcid = self.cleaned_data['person__physical_person__orcid']
@@ -54,49 +54,21 @@ class PersonPositionMixin:
         person__physical_person__surname = self.cleaned_data['person__physical_person__surname']
         person__organisations = self.cleaned_data['person__organisations']
 
-        if person_position:
-            # Needs to update and existing partner
-            person_position.group = person__group
-            person_position.academic_title = person__academic_title
-            person_position.organisation_names.set(person__organisations)
-            # Updates only the fields that might have been updated. See below the explanation for
-            # person__physical_person.save(update_fields)
+        physical_person, physical_person_created = PhysicalPerson.objects.get_or_create(
+            orcid=person__physical_person__orcid,
+            defaults={'first_name': person__physical_person__first_name,
+                      'surname': person__physical_person__surname})
 
-            # Note that organisation_names is saved (even not in update_fields) since it's a many-to-many
-            person_position.save(update_fields=['group', 'academic_title'])
+        person_position, person_position_created = PersonPosition.objects.get_or_create(
+            person=physical_person,
+            academic_title=person__academic_title,
+            group=person__group,
+            career_stage=None
+        )
 
-            person__physical_person = person_position.person
-            assert person__physical_person
+        person_position.organisation_names.set(person__organisations)
 
-            person__physical_person.first_name = person__physical_person__first_name
-            person__physical_person.surname = person__physical_person__surname
-            person__physical_person.orcid = person__physical_person__orcid
-
-            # update_fields is required because only first_name, surname and orcid can have changed from this form
-            # The problem that this solve is that: if the applicant is the same as the overarching project supervisor
-            # and the applicant was updating the PhD date of the applicant: the PhD date was updated twice in the database:
-            # the new PhD date and then when saving the overarching project it was reverting to the previous date
-            person__physical_person.save(update_fields=['first_name', 'surname', 'orcid'])
-
-            return person_position
-
-        else:
-            # Needs to create a partner
-            physical_person, created = PhysicalPerson.objects.get_or_create(
-                orcid=person__physical_person__orcid,
-                defaults={'first_name': person__physical_person__first_name,
-                          'surname': person__physical_person__surname})
-
-            person_position, created = PersonPosition.objects.get_or_create(
-                person=physical_person,
-                academic_title=person__academic_title,
-                group=person__group,
-                career_stage=None
-            )
-
-            person_position.organisation_names.set(person__organisations)
-
-            return person_position
+        return person_position
 
     def _person_layout(self, description):
         return [
@@ -144,7 +116,7 @@ class ProjectOverarchingForm(ModelForm, PersonPositionMixin):
     def save(self, commit=True):
         project_overarching = super().save(commit=False)
 
-        person = self._save_person(project_overarching.leader)
+        person = self._save_leader()
 
         project_overarching.leader = person
 

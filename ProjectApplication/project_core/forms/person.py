@@ -149,34 +149,26 @@ class PersonForm(Form):
         super().clean()
 
     def save_person(self):
-        physical_person, created = PhysicalPerson.objects.get_or_create(
+        physical_person, physical_person_created = PhysicalPerson.objects.get_or_create(
             orcid=self.cleaned_data['orcid'])
 
-        # Any new gender changes the previously assigned gender
-        physical_person.orcid = self.cleaned_data['orcid']
+        # Updates any previous information (besides the ORCID that it stays the same or it's creating a new person)
         physical_person.first_name = self.cleaned_data['first_name']
         physical_person.surname = self.cleaned_data['surname']
         physical_person.gender = self.cleaned_data['gender']
         physical_person.phd_date = self.cleaned_data['phd_date']
         physical_person.save()
 
-        if self.person_position:
-            person_position = self.person_position
-            person_position.person = physical_person
-            person_position.academic_title = self.cleaned_data['academic_title']
-            person_position.group = self.cleaned_data['group']
-            person_position.career_stage = self.cleaned_data['career_stage']
+        academic_title = self.cleaned_data['academic_title']
+        group = self.cleaned_data['group']
+        career_stage = self.cleaned_data['career_stage']
 
-            person_position.save()
+        person_position, person_position_created = PersonPosition.objects.get_or_create(person=physical_person,
+                                                                                        academic_title=academic_title,
+                                                                                        group=group,
+                                                                                        career_stage=career_stage)
 
-        else:
-            person_position, created = PersonPosition.objects.get_or_create(person=physical_person,
-                                                                            academic_title=self.cleaned_data[
-                                                                                'academic_title'],
-                                                                            group=self.cleaned_data['group'],
-                                                                            career_stage=self.cleaned_data[
-                                                                                'career_stage'])
-
+        # TODO: this might change previous person_positions
         person_position.organisation_names.set(self.cleaned_data['organisation_names'])
 
         try:
