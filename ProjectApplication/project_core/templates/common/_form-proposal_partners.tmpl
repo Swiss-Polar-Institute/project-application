@@ -41,7 +41,7 @@
         let first_name = index + "-person__physical_person__first_name";
         let surname = index + "-person__physical_person__surname";
 
-        setup_orcid_lookup('{{ proposal_partners_form.prefix }}', orcid, first_name, surname);
+        setupOrcidLookup('{{ proposal_partners_form.prefix }}', orcid, first_name, surname);
     }
 
     function added_proposal_partner(partner_row) {
