@@ -110,24 +110,21 @@ class PersonForm(Form):
             ),
         )
 
-    def get_person_position(self):
+    def get_person_positions(self):
         """ Matches and returns the person_position from the database. """
-        try:
-            physical_person = PhysicalPerson.objects.get(
-                orcid=self.cleaned_data['orcid']
-            )
 
-            person_position = PersonPosition.objects.get(
-                person=physical_person,
-                academic_title=self.cleaned_data['academic_title'],
-                group=self.cleaned_data['group'],
-                career_stage=self.cleaned_data['career_stage']
-            )
+        physical_person = PhysicalPerson.objects.get(
+            orcid=self.cleaned_data['orcid']
+        )
 
-        except ObjectDoesNotExist:
-            return None
+        person_positions = PersonPosition.objects.filter(
+            person=physical_person,
+            academic_title=self.cleaned_data['academic_title'],
+            group=self.cleaned_data['group'],
+            career_stage=self.cleaned_data['career_stage']
+        )
 
-        return person_position
+        return person_positions
 
     def clean_phd_date(self):
         if 'phd_date' not in self.cleaned_data:

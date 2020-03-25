@@ -410,18 +410,14 @@ class AbstractProposalView(TemplateView):
         proposal_title = proposal_form.cleaned_data['title']
         call_id = proposal_form.cleaned_data['call_id']
 
-        person_position = person_form.get_person_position()
-        if not person_position:
-            # Cannot be duplicated because it's going to create a new person_position
-            return True
+        for person_position in person_form.get_person_positions():
+            proposals = Proposal.objects.filter(title=proposal_title,
+                                                applicant=person_position,
+                                                call_id=call_id).exclude(id=proposal_form.instance.id)
 
-        proposals = Proposal.objects.filter(title=proposal_title,
-                                            applicant=person_position,
-                                            call_id=call_id).exclude(id=proposal_form.instance.id)
-
-        if proposals.exists():
-            proposal_form.raise_duplicated_title()
-            return False
+            if len(proposals) > 0:
+                proposal_form.raise_duplicated_title()
+                return False
 
         return True
 
