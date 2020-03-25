@@ -9,9 +9,24 @@ from project_core.models import PersonPosition, PhysicalPerson, PersonTitle
 from project_core.utils.orcid import field_set_read_only, orcid_div
 
 
-class PersonPositionMixin:
-    def __init__(self):
-        pass
+class ProjectOverarchingForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self._add_person_fields()
+
+        if self.instance:
+            self._set_person(self.instance.leader)
+
+        self.helper.layout = Layout(
+            Div(
+                Div('id', hidden=True),
+                Div('title')
+            ),
+            *self._person_layout('Please add the details of the overarching project supervisor.')
+        )
 
     def _add_person_fields(self):
         self.fields['person__physical_person__orcid'] = forms.CharField(**get_field_information(PhysicalPerson, 'orcid',
@@ -79,26 +94,6 @@ class PersonPositionMixin:
                 css_class='row'
             )
         ]
-
-
-class ProjectOverarchingForm(ModelForm, PersonPositionMixin):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self._add_person_fields()
-
-        if self.instance:
-            self._set_person(self.instance.leader)
-
-        self.helper.layout = Layout(
-            Div(
-                Div('id', hidden=True),
-                Div('title')
-            ),
-            *self._person_layout('Please add the details of the overarching project supervisor.')
-        )
 
     def save(self, commit=True):
         project_overarching = super().save(commit=False)
