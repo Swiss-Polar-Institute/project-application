@@ -150,8 +150,7 @@ class AbstractProposalView(TemplateView):
             proposal: Proposal = Proposal.objects.get(uuid=proposal_uuid)
             call = proposal.call
 
-            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal,
-                                         in_management=in_management(request))
+            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
             questions_form = Questions(proposal=proposal,
                                        prefix=QUESTIONS_FORM_NAME)
@@ -177,7 +176,7 @@ class AbstractProposalView(TemplateView):
             call_pk = context['call_pk'] = request.GET.get('call')
             call = Call.objects.get(pk=call_pk)
 
-            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, in_management=in_management(request))
+            proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME)
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)
@@ -294,8 +293,7 @@ class AbstractProposalView(TemplateView):
 
         else:
             # Creating a new proposal
-            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME,
-                                         in_management=in_management(request))
+            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,

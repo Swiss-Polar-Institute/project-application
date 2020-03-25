@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import utc
 
 from variable_templates.utils import apply_templates
-from ..models import Proposal, ProposalStatus, Call
+from ..models import Proposal, Call
 from ..widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -18,7 +18,6 @@ class ProposalForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
-        self._in_management = kwargs.pop('in_management', False)
 
         super().__init__(*args, **kwargs)
 
@@ -49,19 +48,6 @@ class ProposalForm(ModelForm):
                 css_class='row'
             )
         )
-
-        if self._in_management:
-            self.fields['proposal_status'] = forms.ModelChoiceField(ProposalStatus.objects.all().order_by('name'))
-
-            if self.instance.id:
-                self.fields['proposal_status'].initial = self.instance.proposal_status
-
-            divs.append(
-                Div(
-                    Div('proposal_status', css_class='col-12'),
-                    css_class='row'
-                )
-            )
 
         divs.append(
             Div(
@@ -96,9 +82,6 @@ class ProposalForm(ModelForm):
 
     def save(self, commit=True):
         self.instance.call_id = self.cleaned_data['call_id']
-
-        if 'proposal_status' in self.cleaned_data:
-            self.instance.proposal_status = self.cleaned_data['proposal_status']
 
         model = super().save(commit)
 
