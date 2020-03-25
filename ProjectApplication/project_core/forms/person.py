@@ -113,9 +113,13 @@ class PersonForm(Form):
     def get_person_positions(self):
         """ Matches and returns the person_position from the database. """
 
-        physical_person = PhysicalPerson.objects.get(
-            orcid=self.cleaned_data['orcid']
-        )
+        try:
+            physical_person = PhysicalPerson.objects.get(
+                orcid=self.cleaned_data['orcid']
+            )
+        except ObjectDoesNotExist:
+            # Non-existing PHysicalPerson so it doesn't have any PersonPositions associated
+            return []
 
         person_positions = PersonPosition.objects.filter(
             person=physical_person,
