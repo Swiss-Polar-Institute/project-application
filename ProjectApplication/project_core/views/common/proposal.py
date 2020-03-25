@@ -329,7 +329,7 @@ class AbstractProposalView(TemplateView):
             is_valid = form.is_valid()
             all_valid = all_valid and is_valid
 
-        valid_title_applicant = self._validate_project_title_applicant(proposal_form, person_form)
+        valid_title_applicant = all_valid and self._validate_project_title_applicant(proposal_form, person_form)
 
         all_valid = all_valid and valid_title_applicant
 
@@ -409,11 +409,6 @@ class AbstractProposalView(TemplateView):
         return render(request, 'common/proposal-form.tmpl', context)
 
     def _validate_project_title_applicant(self, proposal_form, person_form):
-        if 'orcid' not in proposal_form.cleaned_data:
-            # get_person_position below would fail so let's skip the test now.
-            # This can happen if orcid is not valid (format or the example one)
-            return True
-
         proposal_title = proposal_form.cleaned_data['title']
         call_id = proposal_form.cleaned_data['call_id']
 
