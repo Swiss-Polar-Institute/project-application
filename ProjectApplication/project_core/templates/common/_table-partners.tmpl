@@ -7,12 +7,13 @@
                     {% include 'common/_orcid_detail.tmpl' with orcid=partner.person.person.orcid %}{{ partner.person.academic_title }}
                     {{ partner.person.person.first_name }}
                     {{ partner.person.person.surname }}
-                    {{ partner.person.career_stage }}
                     <br>
                     <strong>Organisation:</strong> {% include 'common/_organisation-list.tmpl' with organisations=partner.person.organisations_ordered_by_name %}
                     <br>
                     <strong>Group /
                         lab:</strong> {% include 'common/_value-or-dash.tmpl' with value=partner.person.group %}
+                    <br>
+                    <strong>Career stage:</strong> {{ partner.person.career_stage }}
                     <br>
                     <strong>Role:</strong> {{ partner.role.name }}
                     <br>
