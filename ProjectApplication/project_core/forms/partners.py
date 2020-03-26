@@ -152,7 +152,7 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
         for form in self.forms:
             if form.cleaned_data:
                 if form.cleaned_data['DELETE'] and form.partner_id:
-                    partner = form.cleaned_data['id']
+                    partner = form.partner_id
                     partner.delete()
                 elif form.cleaned_data['DELETE'] is False:
                     form.save_partner(proposal)
