@@ -9,8 +9,8 @@ function setupOrcidLookup(formPrefix, orcidFieldName, firstNameFieldName, surnam
     let typingTimer;
 
     const INITIAL_ICON_CLASS = $(iconSelector).attr('class');  // It assumes that all the ORCID iD icons are the same,
-                                                                // (this function is used for different of them and stores
-                                                                // the first attr)
+    // (this function is used for different of them and stores
+    // the first attr)
     const INITIAL_ICON_STYLE = $(iconSelector).attr('style');
 
     let startLookup = function () {
@@ -40,7 +40,14 @@ function setupOrcidLookup(formPrefix, orcidFieldName, firstNameFieldName, surnam
 
     $(orcidFieldSelector).on('input', function () {
         let doneTyping = function () {
-            startLookup();
+            let orcidId = $(orcidFieldSelector).val();
+
+            if (orcidId == '') {
+                $(iconSelector).attr('class', INITIAL_ICON_CLASS);
+                $(iconSelector).attr('style', INITIAL_ICON_STYLE);
+            } else {
+                startLookup();
+            }
         };
         clearTimeout(typingTimer);
 
