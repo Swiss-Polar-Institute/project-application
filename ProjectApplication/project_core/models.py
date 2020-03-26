@@ -18,6 +18,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
 from .utils.orcid import orcid_is_not_example
+from .utils.utils import bytes_to_human_readable
 
 logger = logging.getLogger('project_core')
 
@@ -805,7 +806,7 @@ class ProposalQAFile(CreateModifyOn):
 
     def human_file_size(self):
         try:
-            return utils.bytes_to_human_readable(self.file.size)
+            return bytes_to_human_readable(self.file.size)
         except EndpointConnectionError:
             logger.warning(f'NOTIFY: ProposalQAFile {self.id} EndpointConnectionError')
             return 'Unknown -EndpointConnectionError'
