@@ -18,6 +18,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
 from .utils.orcid import orcid_is_not_example
+from .utils.utils import bytes_to_human_readable
 
 logger = logging.getLogger('project_core')
 
