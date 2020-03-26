@@ -17,15 +17,17 @@ class PartnerFormTest(TestCase):
         data = {'person__physical_person__orcid': '1111-0002-1825-0097',
                 'person__physical_person__first_name': 'John',
                 'person__physical_person__surname': 'Smith',
-                'person__academic_title': str(self.academic_title.id),
+                'person__academic_title': self.academic_title,
                 'person__group': 'Lab of Science',
-                'person__career_stage': str(self.career_stage.id),
-                'role': str(self.role.id),
+                'person__career_stage': self.career_stage.id,
+                'role': self.role.id,
                 'role_description': 'Very useful!',
                 'competences': 'Many',
-                'person__organisations': self.organisations
+                'person__organisations': [self.organisations[0].id],
                 }
 
-        partner_form = ProposalPartnerItemForm(data=data, call=self.proposal.call)
+        partner_form = ProposalPartnerItemForm(data, call=self.proposal.call)
         self.assertTrue(partner_form.is_valid())
         partner_form.save_partner(self.proposal)
+
+        # TODO: check the partner in the database!

@@ -35,11 +35,10 @@ class ProposalPartnerItemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         call = kwargs.pop('call')
         super().__init__(*args, **kwargs)
-        self.full_clean()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
-        self.fields['id'] = None
+        self.partner_id = None
 
         person__organisations_initial = None
 
@@ -53,17 +52,17 @@ class ProposalPartnerItemForm(ModelForm):
             self.fields['person__physical_person__orcid'].initial = self.instance.person.person.orcid
             self.fields['person__physical_person__first_name'].initial = self.instance.person.person.first_name
             self.fields['person__physical_person__surname'].initial = self.instance.person.person.surname
-            self.fields['id'] = self.instance.pk
+            self.partner_id = self.instance.pk
             person__organisations_initial = self.instance.person.organisation_names.all()
 
         self.fields['person__organisations'] = organisations_name_autocomplete(initial=person__organisations_initial,
                                                                                help_text='Please select the organisation(s) to which the partner is affiliated for the purposes of this proposal.')
+
         apply_templates(self.fields, call)
 
         self.helper.layout = Layout(
             orcid_div('person__physical_person__orcid'),
             Div(
-                Div('id', hidden=True),
                 Div('person__physical_person__first_name', css_class='col-4'),
                 Div('person__physical_person__surname', css_class='col-4'),
                 Div('person__academic_title', css_class='col-2'),
@@ -152,7 +151,7 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
     def save_partners(self, proposal):
         for form in self.forms:
             if form.cleaned_data:
-                if form.cleaned_data['DELETE'] and form.cleaned_data['id']:
+                if form.cleaned_data['DELETE'] and form.partner_id:
                     partner = form.cleaned_data['id']
                     partner.delete()
                 elif form.cleaned_data['DELETE'] is False:
