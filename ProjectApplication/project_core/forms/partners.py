@@ -29,8 +29,6 @@ class ProposalPartnerItemForm(ModelForm):
     person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab',
                                                             help_text='Please type the names of the group(s) or laboratories to which the partner belongs for the purposes of this proposal'))
 
-    # needed for data for the unit tests, else it just gets created as part of self.fields
-    person__organisations = forms.ModelMultipleChoiceField(OrganisationName.objects.all())
 
     def __init__(self, *args, **kwargs):
         call = kwargs.pop('call')
