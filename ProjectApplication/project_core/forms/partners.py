@@ -4,8 +4,7 @@ from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
-from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage, \
-    OrganisationName
+from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
 from variable_templates.utils import apply_templates
 from .utils import organisations_name_autocomplete
 from ..utils.orcid import field_set_read_only, orcid_div
@@ -28,7 +27,6 @@ class ProposalPartnerItemForm(ModelForm):
     person__career_stage = forms.ModelChoiceField(CareerStage.objects.all().order_by('name'), label='Career stage')
     person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab',
                                                             help_text='Please type the names of the group(s) or laboratories to which the partner belongs for the purposes of this proposal'))
-
 
     def __init__(self, *args, **kwargs):
         call = kwargs.pop('call')
