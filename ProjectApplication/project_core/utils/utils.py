@@ -1,7 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
 
-from project_core.models import PhysicalPerson, PersonPosition
-
 
 def bytes_to_human_readable(num: int) -> str:
     if num is None:
@@ -27,6 +25,8 @@ def user_is_in_group_name(user, group_name):
 
 def create_person_position(orcid, first_name, surname, gender=None, phd_date=None,
                            academic_title=None, group=None, career_stage=None, organisation_names=None):
+    from ..models import PhysicalPerson, PersonPosition
+
     """
     Creates a PhysicalPerson (if needed) and a PersonPosition. Returns the PersonPosition.
     """
