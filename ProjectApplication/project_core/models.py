@@ -805,7 +805,7 @@ class ProposalQAFile(CreateModifyOn):
 
     def human_file_size(self):
         try:
-            return utils.bytes_to_human_readable(self.file.size)
+            return bytes_to_human_readable(self.file.size)
         except EndpointConnectionError:
             logger.warning(f'NOTIFY: ProposalQAFile {self.id} EndpointConnectionError')
             return 'Unknown -EndpointConnectionError'

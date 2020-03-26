@@ -21,7 +21,7 @@ class ProposalFormTest(TestCase):
         self._organisation_names = database_population.create_organisation_names()
         self._geographical_areas = database_population.create_geographical_areas()
         self._keywords = database_population.create_keywords()
-        self._career_stages = database_population.create_career_stages()
+        self._career_stage = database_population.create_career_stage()
         database_population.create_proposal_status()
         database_population_variable_templates.create_default_variables()
 
@@ -40,7 +40,7 @@ class ProposalFormTest(TestCase):
                 'person_form-email': ['test@example.com'],
                 'person_form-organisation_names': [self._organisation_names[0].id],
                 'person_form-group': ['A new group'],
-                'person_form-career_stage': [self._career_stages[0].id],
+                'person_form-career_stage': [self._career_stage.id],
                 'proposal_form-call_id': [self._call.id],
                 'proposal_form-title': ['Replace this title!'],
                 'proposal_form-geographical_areas': [self._geographical_areas[0].id],

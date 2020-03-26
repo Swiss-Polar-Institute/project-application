@@ -69,8 +69,9 @@ def create_person_position(orcid, first_name, surname, gender=None, phd_date=Non
                                                         group=group,
                                                         career_stage=career_stage)
         person_position.organisation_names.set(organisation_names)
-        person_position.save()
 
     assert person_position
+
+    person_position.save()
 
     return person_position

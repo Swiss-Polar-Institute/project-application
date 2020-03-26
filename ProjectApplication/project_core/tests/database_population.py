@@ -7,7 +7,7 @@ from ProjectApplication import settings
 from evaluation.models import Reviewer
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
-    Proposal, PersonPosition, PhysicalPerson, FundingInstrument
+    Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role
 
 
 def create_call(funding_instrument=None):
@@ -57,10 +57,10 @@ def create_keywords():
     return algae, birds, penguins, ice, micro_plastics, cloud, rain, snow
 
 
-def create_career_stages():
+def create_career_stage():
     career, created = CareerStage.objects.get_or_create(name='PhD More than 5 years')
 
-    return career,
+    return career
 
 
 def create_proposal_status():
@@ -161,6 +161,11 @@ def create_organisations():
                                                                 uid=organisation2_uid)
 
     return organisation1, organisation2
+
+
+def create_role():
+    role, created = Role.objects.get_or_create(name='Collaborator', description='Collaborates')
+    return role
 
 
 def create_organisation_names():

@@ -4,11 +4,12 @@ from django import forms
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
-from ..utils.utils import create_person_position
-from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
+from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage, \
+    OrganisationName
 from variable_templates.utils import apply_templates
 from .utils import organisations_name_autocomplete
 from ..utils.orcid import field_set_read_only, orcid_div
+from ..utils.utils import create_person_position
 
 
 class ProposalPartnerItemForm(ModelForm):
@@ -28,9 +29,13 @@ class ProposalPartnerItemForm(ModelForm):
     person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab',
                                                             help_text='Please type the names of the group(s) or laboratories to which the partner belongs for the purposes of this proposal'))
 
+    # needed for data for the unit tests, else it just gets created as part of self.fields
+    person__organisations = forms.ModelMultipleChoiceField(OrganisationName.objects.all())
+
     def __init__(self, *args, **kwargs):
         call = kwargs.pop('call')
         super().__init__(*args, **kwargs)
+        self.full_clean()
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
