@@ -42,7 +42,7 @@ function setupOrcidLookup(formPrefix, orcidFieldName, firstNameFieldName, surnam
         let doneTyping = function () {
             let orcidId = $(orcidFieldSelector).val();
 
-            if (orcidId == '') {
+            if (orcidId === '') {
                 $(iconSelector).attr('class', INITIAL_ICON_CLASS);
                 $(iconSelector).attr('style', INITIAL_ICON_STYLE);
             } else {
