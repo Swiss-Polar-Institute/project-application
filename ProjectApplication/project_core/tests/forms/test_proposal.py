@@ -1,12 +1,11 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django.test import TestCase
 
 from project_core.forms.proposal import ProposalForm
-from project_core.models import CallQuestion, Call, GeographicalArea, Keyword, ProposalStatus, PersonPosition, \
-    PhysicalPerson, PersonTitle, CareerStage
+from project_core.models import CallQuestion, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
 from project_core.tests import database_population
-from project_core.tests import utils
+from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
 
 class CallFormTest(TestCase):
@@ -26,7 +25,7 @@ class CallFormTest(TestCase):
                 'duration_months': '3',
                 'call_id': self._call.id}
 
-        data = utils.dict_to_multivalue_dict(data)
+        data = dict_to_multivalue_dict(data)
         data.setlist('geographical_areas', [self._geographical_areas[0]])
 
         data.setlist('keywords', self._keywords)

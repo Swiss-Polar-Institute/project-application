@@ -22,13 +22,13 @@ def field_set_read_only(fields):
         field.widget.attrs.update({'readonly': 'readonly'})
 
 
-def orcid_is_not_example(orcid):
+def raise_error_if_orcid_invalid(orcid):
     if orcid == '0000-0002-1825-0097':
         raise ValidationError('0000-0002-1825-0097 is the example ORCID and cannot be used')
 
 
 def orcid_validators():
-    return [orcid_is_not_example,
+    return [raise_error_if_orcid_invalid,
             RegexValidator(regex='^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]$',
                            message='Invalid format for ORCID iD. E.g.: 0000-0002-1825-0097.',
                            code='Invalid format')

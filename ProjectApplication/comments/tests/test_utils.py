@@ -3,7 +3,6 @@ from django.test import TestCase, Client
 from django.urls import reverse
 
 from project_core.tests import database_population
-from project_core.utils.utils import bytes_to_human_readable
 from .. import utils
 from ..forms.attachment import AttachmentForm
 from ..forms.comment import CommentForm
@@ -75,7 +74,3 @@ class UtilsTest(TestCase):
 
         self.assertEqual(message_text,
                          'Error saving the comment. Check the information in the comments section.')
-
-    def test_bytes_to_human(self):
-        self.assertEqual(bytes_to_human_readable(2048), '2.00 KB')
-        self.assertEqual(bytes_to_human_readable(24545844), '23.41 MB')

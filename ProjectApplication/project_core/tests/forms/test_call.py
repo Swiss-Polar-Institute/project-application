@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from project_core.forms.call import CallForm
 from project_core.tests import database_population
-from project_core.tests.utils import dict_to_multivalue_dict
+from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
 
 class CallFormTest(TestCase):
