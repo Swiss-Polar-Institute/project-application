@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
+from django.db import transaction
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
@@ -12,6 +13,7 @@ from ..utils.utils import create_person_position
 
 
 class ProposalPartnerItemForm(ModelForm):
+    id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
     person__physical_person__orcid = forms.CharField(
         **get_field_information(PhysicalPerson, 'orcid',
                                 help_text='Enter the partner\'s ORCID iD (e.g. 0000-0002-1825-0097).<br>'
@@ -34,21 +36,20 @@ class ProposalPartnerItemForm(ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
-        self.partner_id = None
-
         person__organisations_initial = None
 
         field_set_read_only(
             [self.fields['person__physical_person__first_name'], self.fields['person__physical_person__surname']])
 
         if self.instance.pk:
+            self.fields['id'] = self.instance.id
+
             self.fields['person__group'].initial = self.instance.person.group
             self.fields['person__career_stage'].initial = self.instance.person.career_stage
             self.fields['person__academic_title'].initial = self.instance.person.academic_title
             self.fields['person__physical_person__orcid'].initial = self.instance.person.person.orcid
             self.fields['person__physical_person__first_name'].initial = self.instance.person.person.first_name
             self.fields['person__physical_person__surname'].initial = self.instance.person.person.surname
-            self.partner_id = self.instance.pk
             person__organisations_initial = self.instance.person.organisation_names.all()
 
         self.fields['person__organisations'] = organisations_name_autocomplete(initial=person__organisations_initial,
@@ -59,6 +60,7 @@ class ProposalPartnerItemForm(ModelForm):
         self.helper.layout = Layout(
             orcid_div('person__physical_person__orcid'),
             Div(
+                Div('id', hidden=True),
                 Div('person__physical_person__first_name', css_class='col-4'),
                 Div('person__physical_person__surname', css_class='col-4'),
                 Div('person__academic_title', css_class='col-2'),
@@ -125,33 +127,44 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
         self.helper.form_id = 'proposal_partners_form'
 
     def clean(self):
-        if self.errors:
-            # If the inner-forms have errors self.cleaned_data is not assigned (or not valid at all)
-            return
-
         super().clean()
 
-        sets_of_person_role_proposal = set()
+        if not hasattr(self, 'cleaned_data'):
+            return
+
+        orcids = set()
 
         for form_data in self.cleaned_data:
             if not form_data:
                 continue
 
-            partner = (form_data['person__physical_person__first_name'], form_data['person__physical_person__surname'])
+            partner_orcid = form_data['person__physical_person__orcid']
 
-            if partner in sets_of_person_role_proposal:
+            if partner_orcid in orcids:
                 raise forms.ValidationError('There is a duplicated partner')
 
-            sets_of_person_role_proposal.add(partner)
+            orcids.add(partner_orcid)
+
+    @staticmethod
+    def _delete_proposal_partner(proposal_partner):
+        if proposal_partner is None:
+            return
+
+        proposal_partner.delete()
 
     def save_partners(self, proposal):
-        for form in self.forms:
-            if form.cleaned_data:
-                if form.cleaned_data['DELETE'] and form.partner_id:
-                    partner = form.partner_id
-                    partner.delete()
-                elif form.cleaned_data['DELETE'] is False:
-                    form.save_partner(proposal)
+        with transaction.atomic():
+            for form in self.forms:
+                if form.cleaned_data:
+                    if form.cleaned_data['DELETE'] and form.cleaned_data['id']:
+                        ProposalPartnersFormSet._delete_proposal_partner(form.cleaned_data['id'])
+
+                    elif form.cleaned_data['DELETE'] is False:
+                        previous_proposal_partner = form.cleaned_data['id'].id if form.cleaned_data['id'] else None
+                        new_proposal_partner = form.save_partner(proposal)
+
+                        if previous_proposal_partner != new_proposal_partner.id:
+                            ProposalPartnersFormSet._delete_proposal_partner(form.cleaned_data['id'])
 
 
 ProposalPartnersInlineFormSet = inlineformset_factory(
