@@ -1,6 +1,4 @@
 from dal import autocomplete
-from django.conf import settings
-from django.contrib.auth.models import User
 
 from project_core.models import OrganisationName, Source, KeywordUid, Keyword
 
@@ -26,8 +24,7 @@ class OrganisationsAutocomplete(autocomplete.Select2QuerySetView):
         d = {self.create_field: text}
 
         return self.get_queryset().get_or_create(
-            **d,
-            defaults={'created_by': User.objects.get(username=settings.LOGGED_OUT_USERNAME)})[0]
+            **d)[0]
 
 
 class KeywordsAutocomplete(autocomplete.Select2QuerySetView):
