@@ -29,6 +29,8 @@ def comments_attachments_forms(submit_viewname, parent):
 
 def process_comment_attachment(request, context, submit_viewname, submit_viewname_repost, form_with_errors_template,
                                parent):
+    proposal_attachment_form = None
+
     if 'comment_form_submit' in request.POST:
         proposal_comment_form = CommentForm(request.POST, form_action=reverse(submit_viewname,
                                                                               kwargs={'pk': parent.id}),
@@ -71,7 +73,9 @@ def process_comment_attachment(request, context, submit_viewname, submit_viewnam
     else:
         assert False
 
-    context[AttachmentForm.FORM_NAME] = proposal_attachment_form
+    if proposal_comment_form is not None:
+        context[AttachmentForm.FORM_NAME] = proposal_attachment_form
+
     context[CommentForm.FORM_NAME] = proposal_comment_form
 
     return render(request, form_with_errors_template, context)
