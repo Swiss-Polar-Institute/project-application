@@ -1,33 +1,39 @@
 from django.test import TestCase
 
 from project_core.forms.partners import ProposalPartnerItemForm
+from project_core.models import PhysicalPerson
 from project_core.tests import database_population
 
 
 class PartnerFormTest(TestCase):
     def setUp(self):
-        self.proposal = database_population.create_proposal()
+        self._proposal = database_population.create_proposal()
 
-        self.academic_title = database_population.create_academic_title()
-        self.career_stage = database_population.create_career_stage()
-        self.organisations = database_population.create_organisation_names()
-        self.role = database_population.create_role()
+        self._academic_title = database_population.create_academic_title()
+        self._career_stage = database_population.create_career_stage()
+        self._organisations = database_population.create_organisation_names()
+        self._role = database_population.create_role()
 
     def test_save_partner(self):
         data = {'person__physical_person__orcid': '1111-0002-1825-0097',
                 'person__physical_person__first_name': 'John',
                 'person__physical_person__surname': 'Smith',
-                'person__academic_title': self.academic_title,
+                'person__academic_title': self._academic_title,
                 'person__group': 'Lab of Science',
-                'person__career_stage': self.career_stage.id,
-                'role': self.role.id,
+                'person__career_stage': self._career_stage.id,
+                'role': self._role.id,
                 'role_description': 'Very useful!',
                 'competences': 'Many',
-                'person__organisations': [self.organisations[0].id],
+                'person__organisations': [self._organisations[0].id],
                 }
 
-        partner_form = ProposalPartnerItemForm(data, call=self.proposal.call)
-        self.assertTrue(partner_form.is_valid())
-        partner_form.save_partner(self.proposal)
+        partner_form = ProposalPartnerItemForm(data, call=self._proposal.call)
 
-        # TODO: check the partner in the database!
+        self.assertEqual(PhysicalPerson.objects.filter(orcid='1111-0002-1825-0097').count(), 0)
+        self.assertEqual(self._proposal.proposalpartner_set.count(), 0)
+
+        self.assertTrue(partner_form.is_valid())
+        partner_form.save_partner(self._proposal)
+
+        self.assertEqual(PhysicalPerson.objects.filter(orcid='1111-0002-1825-0097').count(), 1)
+        self.assertEqual(self._proposal.proposalpartner_set.count(), 1)
