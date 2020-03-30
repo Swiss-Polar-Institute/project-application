@@ -110,6 +110,22 @@ class CallEvaluationUpdateTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    def test_post(self):
+        data = dict_to_multivalue_dict({'call_evaluation_form-call': self._proposal.call.id,
+                                        'call_evaluation_form-panel_date': '16-03-2020',
+                                        'call_evaluation_form-evaluation_sheet': [''],
+                                        'save': 'Save Call Evaluation'})
+
+        self.assertEqual(CallEvaluation.objects.all().count(), 0)
+
+        response = self._client_management.post(
+            reverse('logged-call-evaluation-add') + f'?call={self._proposal.call.id}', data=data)
+        call_evaluation = self._proposal.call.callevaluation
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id}))
+        self.assertEqual(CallEvaluation.objects.all().count(), 1)
+
 
 class ProposalListTest(TestCase):
     def setUp(self):
@@ -306,7 +322,7 @@ class CallCloseEvaluationTest(TestCase):
 class ProposalEligibilityUpdateTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_post(self):
         self.assertEqual(self._proposal.eligibility, Proposal.ELIGIBILITYNOTCHECKED)
@@ -317,8 +333,9 @@ class ProposalEligibilityUpdateTest(TestCase):
                                         'save': 'Save Eligibility'
                                         })
 
-        response = self._client.post(reverse('logged-proposal-eligibility-update', kwargs={'pk': self._proposal.id}),
-                                     data=data)
+        response = self._client_management.post(
+            reverse('logged-proposal-eligibility-update', kwargs={'pk': self._proposal.id}),
+            data=data)
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
@@ -333,8 +350,9 @@ class ProposalEligibilityUpdateTest(TestCase):
                                         'eligibility_decision_form-comment': 'Good proposal!',
                                         'save': 'Save Eligibility'
                                         })
-        response = self._client.post(reverse('logged-proposal-eligibility-update', kwargs={'pk': self._proposal.id}),
-                                     data=data)
+        response = self._client_management.post(
+            reverse('logged-proposal-eligibility-update', kwargs={'pk': self._proposal.id}),
+            data=data)
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
                          reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
