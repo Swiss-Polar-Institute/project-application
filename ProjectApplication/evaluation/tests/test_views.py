@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, date
 
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 
 from ProjectApplication import settings
@@ -76,10 +76,31 @@ class ProposalEvaluationUpdateTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_proposal_evaluation_detail_permission_denied(self):
-        c = Client()
-        response = c.get(reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}')
+        client = database_population.create_reviewer_logged_client()
 
-        self.assertEqual(response.status_code, 302)
+        response = client.get(reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}')
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_proposal_evaluation_post_permission_denied(self):
+        client = database_population.create_reviewer_logged_client()
+
+        response = client.post(reverse('logged-proposal-evaluation-add'), kwargs={'pk': self._proposal.id})
+
+        self.assertEqual(response.status_code, 403)
+
+    # def test_proposal_evaluation_create(self):
+    # TODO: enable test: currently disabled because it returns that the reviewer is not valid
+    #     reviewers = database_population.create_reviewer()
+    #
+    #     data = MultiValueDict({'proposal_evaluation_form-proposal': [self._proposal.id],
+    #                            'proposal_evaluation_form-reviewers': [reviewers.id]})
+    #
+    #     response = self._client_management.post(
+    #         reverse('logged-proposal-evaluation-update', kwargs={'pk': self._proposal.id}),
+    #         data=data)
+    #
+    #     self.assertEqual(response.status_code, 200)
 
 
 class ProposalEvaluationListTest(TestCase):
@@ -125,6 +146,20 @@ class CallEvaluationUpdateTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id}))
         self.assertEqual(CallEvaluation.objects.all().count(), 1)
+        self.assertEqual(call_evaluation.panel_date, date(2020, 3, 16))
+
+    def test_post_permission_denied(self):
+        reviewer_client = database_population.create_reviewer_logged_client()
+
+        data = dict_to_multivalue_dict({'call_evaluation_form-call': self._proposal.call.id,
+                                        'call_evaluation_form-panel_date': '16-03-2020',
+                                        'call_evaluation_form-evaluation_sheet': [''],
+                                        'save': 'Save Call Evaluation'})
+
+        response = reviewer_client.post(
+            reverse('logged-call-evaluation-add') + f'?call={self._proposal.call.id}', data=data)
+
+        self.assertEqual(response.status_code, 403)
 
 
 class ProposalListTest(TestCase):
