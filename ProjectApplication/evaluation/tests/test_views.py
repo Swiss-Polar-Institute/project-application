@@ -69,7 +69,8 @@ class ProposalEvaluationUpdateTest(TestCase):
         self._client_management = database_population.create_management_logged_client()
 
     def test_proposal_evaluation_detail(self):
-        response = self._client_management.get(reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}')
+        response = self._client_management.get(
+            reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}')
 
         self.assertEqual(response.status_code, 200)
 
@@ -103,7 +104,8 @@ class CallEvaluationUpdateTest(TestCase):
         call_evaluation.panel_date = datetime.today()
         call_evaluation.save()
 
-        response = self._client_management.get(reverse('logged-call-evaluation-update', kwargs={'pk': call_evaluation.id}))
+        response = self._client_management.get(
+            reverse('logged-call-evaluation-update', kwargs={'pk': call_evaluation.id}))
 
         self.assertEqual(response.status_code, 200)
 
@@ -115,7 +117,8 @@ class ProposalListTest(TestCase):
         self._client_management = database_population.create_management_logged_client()
 
     def test_detail(self):
-        response = self._client_management.get(reverse('logged-call-evaluation-list-proposals', kwargs={'call_id': self._proposal.call.id}))
+        response = self._client_management.get(
+            reverse('logged-call-evaluation-list-proposals', kwargs={'call_id': self._proposal.call.id}))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context_data['call'], self._proposal.call)
@@ -133,7 +136,8 @@ class ProposalEvaluationDetailTest(TestCase):
         proposal_evaluation.proposal = self._proposal
         proposal_evaluation.save()
 
-        response = self._client_management.get(reverse('logged-proposal-evaluation-detail', kwargs={'pk': proposal_evaluation.id}))
+        response = self._client_management.get(
+            reverse('logged-proposal-evaluation-detail', kwargs={'pk': proposal_evaluation.id}))
 
         self.assertEqual(response.status_code, 200)
 
@@ -150,7 +154,8 @@ class CallEvaluationDetailTest(TestCase):
         call_evaluation.panel_date = datetime.today()
         call_evaluation.save()
 
-        response = self._client_management.get(reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id}))
+        response = self._client_management.get(
+            reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id}))
 
         self.assertEqual(response.status_code, 200)
 
@@ -162,7 +167,8 @@ class ProposalDetailTest(TestCase):
         self._client_management = database_population.create_management_logged_client()
 
     def test_get_detail(self):
-        response = self._client_management.get(reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
+        response = self._client_management.get(
+            reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
 
         self.assertEqual(response.status_code, 200)
 
@@ -174,6 +180,72 @@ class CallEvaluationSummaryTest(TestCase):
         self._client_management = database_population.create_management_logged_client()
 
     def test_get_detail(self):
-        response = self._client_management.get(reverse('logged-call-evaluation-summary', kwargs={'call_id': self._proposal.call.id}))
+        response = self._client_management.get(
+            reverse('logged-call-evaluation-summary', kwargs={'call_id': self._proposal.call.id}))
 
         self.assertEqual(response.status_code, 200)
+
+
+class CallEvaluationValidationTest(TestCase):
+    def setUp(self):
+        self._proposal = database_population.create_proposal()
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get_context_data(self):
+        call_evaluation = CallEvaluation()
+        call_evaluation.call = self._proposal.call
+        call_evaluation.panel_date = datetime.today()
+        call_evaluation.save()
+
+        # Checks that 1 proposal, 0 eligible...
+        response = self._client_management.get(
+            reverse('logged-call-evaluation-validation', kwargs={'call_id': self._proposal.call.id}))
+
+        self.assertEqual(response.status_code, 200)
+
+        context_data = response.context_data
+        self.assertEqual(context_data['all_good'], False)
+        self.assertEqual(context_data['can_close'], False)
+        self.assertEqual(context_data['total_number_of_proposals'], 1)
+        self.assertEqual(context_data['total_number_of_eligible'], 0)
+        self.assertEqual(context_data['total_number_of_funded'], 0)
+        self.assertEqual(context_data['total_number_of_eligible_not_funded'], 0)
+
+        # Makes the proposal eligible
+        self._proposal.eligibility = Proposal.ELIGIBLE
+        self._proposal.save()
+
+        # Checks that 1 proposal, 1 eligible, 0 funded
+        response = self._client_management.get(
+            reverse('logged-call-evaluation-validation', kwargs={'call_id': self._proposal.call.id}))
+
+        self.assertEqual(response.status_code, 200)
+
+        context_data = response.context_data
+        self.assertEqual(context_data['all_good'], False)
+        self.assertEqual(context_data['can_close'], False)
+        self.assertEqual(context_data['total_number_of_proposals'], 1)
+        self.assertEqual(context_data['total_number_of_eligible'], 1)
+        self.assertEqual(context_data['total_number_of_funded'], 0)
+        self.assertEqual(context_data['total_number_of_eligible_not_funded'], 1)
+
+        # Funds the proposal. In reality the form would force the attached letter before it's funded, etc.
+        # but here accessing to the model straight away all the rest is not needed
+        proposal_evaluation = ProposalEvaluation()
+        proposal_evaluation.proposal = self._proposal
+        proposal_evaluation.board_decision = ProposalEvaluation.BOARD_DECISION_FUND
+        proposal_evaluation.save()
+
+        # Checks that 1 proposal, 1 eligible, 1 funded
+        response = self._client_management.get(
+            reverse('logged-call-evaluation-validation', kwargs={'call_id': self._proposal.call.id}))
+
+        self.assertEqual(response.status_code, 200)
+
+        context_data = response.context_data
+        self.assertEqual(context_data['all_good'], False)
+        self.assertEqual(context_data['can_close'], False)
+        self.assertEqual(context_data['total_number_of_proposals'], 1)
+        self.assertEqual(context_data['total_number_of_eligible'], 1)
+        self.assertEqual(context_data['total_number_of_funded'], 1)
+        self.assertEqual(context_data['total_number_of_eligible_not_funded'], 0)
