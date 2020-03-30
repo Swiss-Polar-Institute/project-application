@@ -68,7 +68,7 @@ class ProposalEvaluationUpdateTest(TestCase):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
 
-    def test_proposal_evaluation_detail(self):
+    def test_get(self):
         response = self._client_management.get(
             reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}')
 
@@ -86,7 +86,7 @@ class ProposalEvaluationListTest(TestCase):
         self._user = database_population.create_management_user()
         self._client_management = database_population.create_management_logged_client()
 
-    def test_list(self):
+    def test_get(self):
         response = self._client_management.get(reverse('logged-evaluation-list'))
 
         self.assertEqual(response.status_code, 200)
@@ -98,7 +98,7 @@ class CallEvaluationUpdateTest(TestCase):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
 
-    def test_detail(self):
+    def test_get(self):
         call_evaluation = CallEvaluation()
         call_evaluation.call = self._proposal.call
         call_evaluation.panel_date = datetime.today()
@@ -116,7 +116,7 @@ class ProposalListTest(TestCase):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
 
-    def test_detail(self):
+    def test_get(self):
         response = self._client_management.get(
             reverse('logged-call-evaluation-list-proposals', kwargs={'call_id': self._proposal.call.id}))
 
@@ -131,7 +131,7 @@ class ProposalEvaluationDetailTest(TestCase):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
 
-    def test_detail(self):
+    def test_get(self):
         proposal_evaluation = ProposalEvaluation()
         proposal_evaluation.proposal = self._proposal
         proposal_evaluation.save()
@@ -166,7 +166,7 @@ class ProposalDetailTest(TestCase):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
 
-    def test_get_detail(self):
+    def test_get(self):
         response = self._client_management.get(
             reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
 
@@ -179,7 +179,7 @@ class CallEvaluationSummaryTest(TestCase):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
 
-    def test_get_detail(self):
+    def test_get(self):
         response = self._client_management.get(
             reverse('logged-call-evaluation-summary', kwargs={'call_id': self._proposal.call.id}))
 
