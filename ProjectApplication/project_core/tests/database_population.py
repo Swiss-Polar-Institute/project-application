@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
+from django.test import Client
 from django.utils.timezone import utc
 
 from ProjectApplication import settings
@@ -116,6 +117,14 @@ def create_management_user():
     group.save()
 
     return user
+
+
+def create_management_logged_client():
+    create_management_user()
+
+    client = Client()
+    client.login(username='unittest_management', password='12345')
+    return client
 
 
 def create_reviewer_user():
