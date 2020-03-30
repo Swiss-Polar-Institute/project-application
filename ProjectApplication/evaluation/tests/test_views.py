@@ -66,10 +66,10 @@ class CallEvaluationSummaryViewTest(TestCase):
 class ProposalEvaluationUpdateTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_proposal_evaluation_detail(self):
-        response = self._client.get(reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}')
+        response = self._client_management.get(reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}')
 
         self.assertEqual(response.status_code, 200)
 
@@ -83,10 +83,10 @@ class ProposalEvaluationUpdateTest(TestCase):
 class ProposalEvaluationListTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_list(self):
-        response = self._client.get(reverse('logged-evaluation-list'))
+        response = self._client_management.get(reverse('logged-evaluation-list'))
 
         self.assertEqual(response.status_code, 200)
 
@@ -95,7 +95,7 @@ class CallEvaluationUpdateTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
         self._proposal = database_population.create_proposal()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_detail(self):
         call_evaluation = CallEvaluation()
@@ -103,7 +103,7 @@ class CallEvaluationUpdateTest(TestCase):
         call_evaluation.panel_date = datetime.today()
         call_evaluation.save()
 
-        response = self._client.get(reverse('logged-call-evaluation-update', kwargs={'pk': call_evaluation.id}))
+        response = self._client_management.get(reverse('logged-call-evaluation-update', kwargs={'pk': call_evaluation.id}))
 
         self.assertEqual(response.status_code, 200)
 
@@ -112,10 +112,10 @@ class ProposalListTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
         self._proposal = database_population.create_proposal()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_detail(self):
-        response = self._client.get(reverse('logged-call-evaluation-list-proposals', kwargs={'call_id': self._proposal.call.id}))
+        response = self._client_management.get(reverse('logged-call-evaluation-list-proposals', kwargs={'call_id': self._proposal.call.id}))
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context_data['call'], self._proposal.call)
@@ -126,14 +126,14 @@ class ProposalEvaluationDetailTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
         self._proposal = database_population.create_proposal()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_detail(self):
         proposal_evaluation = ProposalEvaluation()
         proposal_evaluation.proposal = self._proposal
         proposal_evaluation.save()
 
-        response = self._client.get(reverse('logged-proposal-evaluation-detail', kwargs={'pk': proposal_evaluation.id}))
+        response = self._client_management.get(reverse('logged-proposal-evaluation-detail', kwargs={'pk': proposal_evaluation.id}))
 
         self.assertEqual(response.status_code, 200)
 
@@ -142,7 +142,7 @@ class CallEvaluationDetailTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
         self._proposal = database_population.create_proposal()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_get_context_data(self):
         call_evaluation = CallEvaluation()
@@ -150,7 +150,7 @@ class CallEvaluationDetailTest(TestCase):
         call_evaluation.panel_date = datetime.today()
         call_evaluation.save()
 
-        response = self._client.get(reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id}))
+        response = self._client_management.get(reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id}))
 
         self.assertEqual(response.status_code, 200)
 
@@ -159,10 +159,10 @@ class ProposalDetailTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
         self._proposal = database_population.create_proposal()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_get_detail(self):
-        response = self._client.get(reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
+        response = self._client_management.get(reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
 
         self.assertEqual(response.status_code, 200)
 
@@ -171,9 +171,9 @@ class CallEvaluationSummaryTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
         self._proposal = database_population.create_proposal()
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_get_detail(self):
-        response = self._client.get(reverse('logged-call-evaluation-summary', kwargs={'call_id': self._proposal.call.id}))
+        response = self._client_management.get(reverse('logged-call-evaluation-summary', kwargs={'call_id': self._proposal.call.id}))
 
         self.assertEqual(response.status_code, 200)

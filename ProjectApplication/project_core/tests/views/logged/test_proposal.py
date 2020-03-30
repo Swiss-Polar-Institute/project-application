@@ -19,7 +19,7 @@ class ManagementProposalTest(TestCase):
         self._management_user = database_population.create_management_user()
         self._reviewer_user = database_population.create_reviewer_user()
 
-        self._client = database_population.create_management_logged_client()
+        self._client_management = database_population.create_management_logged_client()
 
     def test_create_file_name(self):
         filename = proposal.create_file_name('this-is-{}-something-{}.csv', self._call.id)
@@ -31,7 +31,7 @@ class ManagementProposalTest(TestCase):
         self.assertRegex(filename, '^this-is-GLACE-something-[0-9]{8}-[0-9]{6}\.csv$')
 
     def test_proposals_export_csv_summary(self):
-        response = self._client.get(
+        response = self._client_management.get(
             reverse('logged-export-proposals-csv-summary-call', args=[str(self._proposal.call.id)]))
 
         self.assertContains(response, 'A test proposal')
@@ -69,11 +69,11 @@ class ManagementProposalTest(TestCase):
         self.assertContains(response, 'A test proposal')
 
     def test_load_logged_proposal_list(self):
-        response = self._client.get(reverse('logged-proposal-list'))
+        response = self._client_management.get(reverse('logged-proposal-list'))
 
         self.assertEqual(response.status_code, 200)
 
     def test_export_to_excel(self):
-        response = self._client.get(reverse('logged-export-proposals-for-call-excel', kwargs={'call': self._call.id}))
+        response = self._client_management.get(reverse('logged-export-proposals-for-call-excel', kwargs={'call': self._call.id}))
 
         self.assertEqual(response.status_code, 200)
