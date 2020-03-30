@@ -1,3 +1,7 @@
+import logging
+
+from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -10,6 +14,8 @@ from evaluation.models import Reviewer
 from project_core.models import Proposal, Call
 from project_core.utils.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
+
+logger = logging.getLogger('project_core')
 
 
 def create_file_name(name_specification, call_id):
@@ -36,7 +42,16 @@ class ProposalList(ListView):
         context = super().get_context_data(**kwargs)
 
         if user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
-            context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
+            try:
+                context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
+            except ObjectDoesNotExist:
+                messages.error(self.request,
+                               'This review user is not setup properly. Contact SPI.')
+                logger.warning(
+                    f'NOTIFY: User in group reviewer but not having a reviewer associated: {self.request.user}')
+
+                context['reviewer_calls_access'] = []
+
             active_section = 'proposals'
             context['breadcrumb'] = [{'name': 'Proposals'}]
         else:
