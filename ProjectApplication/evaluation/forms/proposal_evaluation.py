@@ -12,14 +12,7 @@ from project_core.forms.utils import cancel_edit_button
 from project_core.utils.utils import user_is_in_group_name
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from ..models import ProposalEvaluation, Reviewer
-
-
-class ModelMultipleChoiceField(forms.ModelMultipleChoiceField):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def label_from_instance(self, obj):
-        return obj.person
+from ..utils import ReviewerMultipleChoiceField
 
 
 class ProposalEvaluationForm(forms.ModelForm):
@@ -51,22 +44,20 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.fields['allocated_budget'].label = 'Allocated budget (CHF)'
 
         if hasattr(self._proposal, 'proposalevaluation'):
-            initial_reviewers = self._proposal.reviewer_set.all()
-        else:
-            initial_reviewers = []
-
-        self.fields['reviewers'] = ModelMultipleChoiceField(initial=initial_reviewers,
-                                                            queryset=Reviewer.objects.filter(calls=self._proposal.call),
-                                                            required=True,
-                                                            widget=FilteredSelectMultiple(
-                                                                is_stacked=True,
-                                                                verbose_name='reviewers'))
-
-        if hasattr(self._proposal, 'proposalevaluation'):
             cancel_button_url = reverse('logged-proposal-evaluation-detail',
                                         kwargs={'pk': self._proposal.proposalevaluation.id})
+            initial_reviewers = self._proposal.reviewer_set.all()
         else:
             cancel_button_url = reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}'
+            initial_reviewers = []
+
+        self.fields['reviewers'] = ReviewerMultipleChoiceField(initial=initial_reviewers,
+                                                               queryset=Reviewer.objects.filter(
+                                                                   calls=self._proposal.call),
+                                                               required=True,
+                                                               widget=FilteredSelectMultiple(
+                                                                   is_stacked=True,
+                                                                   verbose_name='reviewers'))
 
         self.helper.layout = Layout(
             Div(

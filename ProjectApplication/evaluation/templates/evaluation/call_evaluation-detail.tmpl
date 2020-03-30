@@ -9,6 +9,10 @@
                     href="{% url 'logged-call-detail' pk=call_evaluation.call.id %}">{{ call_evaluation.call.long_name }}</a>
             </h1>
             <br>
+            <strong>Reviewers:</strong> {% for reviewer in call_evaluation.call.reviewer_set.all %}
+            {{ reviewer.person }}{% if not forloop.last %},{% endif %}
+        {% endfor %}<br>
+
             <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
 
             <strong>Evaluation
