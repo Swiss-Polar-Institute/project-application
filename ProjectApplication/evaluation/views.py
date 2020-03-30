@@ -538,7 +538,6 @@ def close_evaluation_call(call, user_closing_call):
             project.location = proposal.location
             project.start_date = proposal.start_date
             project.end_date = proposal.end_date
-            project.duration_months = proposal.duration_months
             project.principal_investigator = proposal.applicant
 
             project.overarching_project = proposal.overarching_project

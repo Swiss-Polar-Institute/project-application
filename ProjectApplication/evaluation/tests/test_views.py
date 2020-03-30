@@ -6,7 +6,7 @@ from django.urls import reverse
 from ProjectApplication import settings
 from evaluation.models import ProposalEvaluation, CallEvaluation
 from evaluation.views import CallEvaluationValidation
-from project_core.models import Proposal, ProposalStatus
+from project_core.models import Proposal, ProposalStatus, Project
 from project_core.tests import database_population
 
 
@@ -249,3 +249,54 @@ class CallEvaluationValidationTest(TestCase):
         self.assertEqual(context_data['total_number_of_eligible'], 1)
         self.assertEqual(context_data['total_number_of_funded'], 1)
         self.assertEqual(context_data['total_number_of_eligible_not_funded'], 0)
+
+
+class CallCloseEvaluationTest(TestCase):
+    def setUp(self):
+        self._client = database_population.create_management_logged_client()
+        self._proposal = database_population.create_proposal()
+
+    def test_post(self):
+        call_evaluation = CallEvaluation()
+        call_evaluation.call = self._proposal.call
+        call_evaluation.panel_date = datetime.today()
+        call_evaluation.save()
+
+        # Makes the proposal eligible
+        self._proposal.eligibility = Proposal.ELIGIBLE
+        self._proposal.save()
+
+        # Funds the proposal. In reality the form would force the attached letter before it's funded, etc.
+        # but here accessing to the model straight away all the rest is not needed
+        proposal_evaluation = ProposalEvaluation()
+        proposal_evaluation.proposal = self._proposal
+        proposal_evaluation.board_decision = ProposalEvaluation.BOARD_DECISION_FUND
+        proposal_evaluation.save()
+
+        self.assertEqual(Project.objects.all().count(), 0)
+
+        response = self._client.post(
+            reverse('logged-call-close-evaluation', kwargs={'call_id': self._proposal.call.id}))
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(Project.objects.all().count(), 1)
+
+        # Verifies created project
+        project = Project.objects.all()[0]
+
+        self.assertEqual(project.title, self._proposal.title)
+        self.assertEqual(project.location, self._proposal.location)
+        self.assertEqual(project.start_date, self._proposal.start_date)
+        self.assertEqual(project.end_date, self._proposal.end_date)
+        self.assertEqual(project.principal_investigator, self._proposal.applicant)
+        self.assertEqual(project.principal_investigator, self._proposal.applicant)
+
+        self.assertEqual(project.overarching_project, self._proposal.overarching_project)
+        self.assertEqual(project.allocated_budget, self._proposal.proposalevaluation.allocated_budget)
+        self.assertEqual(project.status, Project.ONGOING)
+
+        self.assertEqual(project.call, self._proposal.call)
+        self.assertEqual(project.proposal, self._proposal)
+
+        # TODO: check project.geographical_areas and project.keywords

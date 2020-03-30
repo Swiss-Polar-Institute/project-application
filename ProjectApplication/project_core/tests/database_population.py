@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
@@ -222,8 +222,8 @@ def create_proposal():
     proposal_status_draft = create_proposal_status()[1]
 
     proposal, _ = Proposal.objects.get_or_create(title='A test proposal',
-                                                 start_date='2010-12-10',
-                                                 end_date='2011-11-11',
+                                                 start_date=date(2010, 12, 10),
+                                                 end_date=date(2011, 11, 11),
                                                  duration_months=2,
                                                  applicant=applicant,
                                                  proposal_status=proposal_status_draft,
