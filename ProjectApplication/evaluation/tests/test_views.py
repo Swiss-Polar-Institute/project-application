@@ -8,6 +8,7 @@ from evaluation.models import ProposalEvaluation, CallEvaluation
 from evaluation.views import CallEvaluationValidation
 from project_core.models import Proposal, ProposalStatus, Project
 from project_core.tests import database_population
+from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
 
 class CallEvaluationSummaryViewTest(TestCase):
@@ -300,3 +301,44 @@ class CallCloseEvaluationTest(TestCase):
         self.assertEqual(project.proposal, self._proposal)
 
         # TODO: check project.geographical_areas and project.keywords
+
+
+class ProposalEligibilityUpdateTest(TestCase):
+    def setUp(self):
+        self._proposal = database_population.create_proposal()
+        self._client = database_population.create_management_logged_client()
+
+    def test_post(self):
+        self.assertEqual(self._proposal.eligibility, Proposal.ELIGIBILITYNOTCHECKED)
+
+        # Makes self._proposal not-eligible
+        data = dict_to_multivalue_dict({'eligibility_decision_form-eligible': False,
+                                        'eligibility_decision_form-comment': 'Not in the scope of the call',
+                                        'save': 'Save Eligibility'
+                                        })
+
+        response = self._client.post(reverse('logged-proposal-eligibility-update', kwargs={'pk': self._proposal.id}),
+                                     data=data)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
+
+        self._proposal.refresh_from_db()
+        self.assertEqual(self._proposal.eligibility, Proposal.NOTELIGIBLE)
+        self.assertEqual(self._proposal.eligibility_comment, 'Not in the scope of the call')
+
+        # Makes self._proposal eligible
+        data = dict_to_multivalue_dict({'eligibility_decision_form-eligible': True,
+                                        'eligibility_decision_form-comment': 'Good proposal!',
+                                        'save': 'Save Eligibility'
+                                        })
+        response = self._client.post(reverse('logged-proposal-eligibility-update', kwargs={'pk': self._proposal.id}),
+                                     data=data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
+
+        self._proposal.refresh_from_db()
+        self.assertEqual(self._proposal.eligibility, Proposal.ELIGIBLE)
+        self.assertEqual(self._proposal.eligibility_comment, 'Good proposal!')
