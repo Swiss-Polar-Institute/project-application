@@ -1,6 +1,7 @@
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
+
 from project_core.tests import database_population
 
 
@@ -16,12 +17,10 @@ class CallFormTest(TestCase):
         self.assertEqual(response.url, '{}?next={}'.format(reverse('accounts-login'), reverse('logged-homepage')))
 
     def test_homepage(self):
-        c = Client()
+        client = database_population.create_management_logged_client()
 
-        login = c.login(username='unittest_management', password='12345')
-        self.assertTrue(login)
+        response = client.get(reverse('logged-homepage'))
 
-        response = c.get(reverse('logged-homepage'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Homepage')
         self.assertContains(response, 'User:')
