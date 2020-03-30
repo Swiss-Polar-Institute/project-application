@@ -63,7 +63,7 @@ class CallEvaluationSummaryViewTest(TestCase):
         self.assertEqual(check_result['proposals'].count(), 0)
 
 
-class ProposalEvaluationDetailTest(TestCase):
+class ProposalEvaluationUpdateTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
         self._user = database_population.create_management_user()
@@ -125,3 +125,21 @@ class ProposalListTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context_data['call'], self._proposal.call)
         self.assertEqual(response.context_data['proposals'].count(), 0)
+
+
+class ProposalEvaluationDetailTest(TestCase):
+    def setUp(self):
+        self._user = database_population.create_management_user()
+        self._proposal = database_population.create_proposal()
+
+    def test_detail(self):
+        c = Client()
+        c.login(username='unittest_management', password='12345')
+
+        proposal_evaluation = ProposalEvaluation()
+        proposal_evaluation.proposal = self._proposal
+        proposal_evaluation.save()
+
+        response = c.get(reverse('logged-proposal-evaluation-detail', kwargs={'pk': proposal_evaluation.id}))
+
+        self.assertEqual(response.status_code, 200)

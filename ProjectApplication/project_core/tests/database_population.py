@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import ObjectDoesNotExist
 from django.utils.timezone import utc
 
 from ProjectApplication import settings
@@ -102,6 +103,12 @@ def create_template_questions():
 
 
 def create_management_user():
+    try:
+        user = User.objects.get(username='unittest_management')
+        return user
+    except ObjectDoesNotExist:
+        pass
+
     user = User.objects.create_user(username='unittest_management', password='12345')
     group, _ = Group.objects.get_or_create(name=settings.MANAGEMENT_GROUP_NAME)
 
