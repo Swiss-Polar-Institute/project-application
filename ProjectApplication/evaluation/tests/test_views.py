@@ -143,3 +143,22 @@ class ProposalEvaluationDetailTest(TestCase):
         response = c.get(reverse('logged-proposal-evaluation-detail', kwargs={'pk': proposal_evaluation.id}))
 
         self.assertEqual(response.status_code, 200)
+
+
+class CallEvaluationDetailTest(TestCase):
+    def setUp(self):
+        self._user = database_population.create_management_user()
+        self._proposal = database_population.create_proposal()
+
+    def test_get_context_data(self):
+        call_evaluation = CallEvaluation()
+        call_evaluation.call = self._proposal.call
+        call_evaluation.panel_date = datetime.today()
+        call_evaluation.save()
+
+        c = Client()
+        c.login(username='unittest_management', password='12345')
+
+        response = c.get(reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id}))
+
+        self.assertEqual(response.status_code, 200)
