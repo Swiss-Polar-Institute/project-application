@@ -19,14 +19,11 @@ class LoginRequiredFormanagementMiddleware(MiddlewareMixin):
         if request.path.startswith(settings.LOGIN_REDIRECT_URL):
             if user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
                 # Managers can see everything
-                pass
+                return
             elif user_is_in_group_name(request.user, settings.REVIEWER_GROUP_NAME):
                 # TODO: change this approach and/or add unit test
                 if request.path.startswith('/logged/proposal/') or request.path.startswith('/logged/proposals/') or \
                         request.path == '/logged/':
-                    pass
-                # else:
-                # TODO: it could show a message
+                    return
 
-            else:
-                return redirect_to_login(request.path)
+            return redirect_to_login(request.path)
