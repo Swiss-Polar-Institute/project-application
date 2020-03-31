@@ -1,13 +1,13 @@
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 
-from project_core.middleware.login import LoginRequiredFormanagementMiddleware
+from project_core.middleware.login import LoginRequiredMiddleware
 from project_core.tests import database_population
 
 
-class LoginRequiredFormanagementMiddlewareTest(TestCase):
+class LoginRequiredMiddlewareTest(TestCase):
     def setUp(self):
-        self._middleware_login = LoginRequiredFormanagementMiddleware()
+        self._middleware_login = LoginRequiredMiddleware()
         self._user_manager = database_population.create_management_user()
         self._user_reviewer = database_population.create_reviewer_user()
 

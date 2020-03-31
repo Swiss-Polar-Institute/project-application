@@ -8,7 +8,7 @@ from django.utils.deprecation import MiddlewareMixin
 from project_core.utils.utils import user_is_in_group_name
 
 
-class LoginRequiredFormanagementMiddleware(MiddlewareMixin):
+class LoginRequiredMiddleware(MiddlewareMixin):
     def process_request(self, request):
         assert hasattr(request, 'user'), (
             'The LoginRequiredMiddleware requires authentication middleware '

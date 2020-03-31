@@ -80,14 +80,16 @@ class ProposalEvaluationUpdateTest(TestCase):
 
         response = client.get(reverse('logged-proposal-evaluation-add') + f'?proposal={self._proposal.id}')
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('accounts-login')))
 
     def test_proposal_evaluation_post_permission_denied(self):
         client = database_population.create_reviewer_logged_client()
 
         response = client.post(reverse('logged-proposal-evaluation-add'), kwargs={'pk': self._proposal.id})
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('accounts-login')))
 
     def test_proposal_evaluation_create(self):
         reviewer = database_population.create_reviewer()
@@ -161,7 +163,8 @@ class CallEvaluationUpdateTest(TestCase):
         response = reviewer_client.post(
             reverse('logged-call-evaluation-add') + f'?call={self._proposal.call.id}', data=data)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse('accounts-login')))
 
 
 class ProposalListTest(TestCase):
