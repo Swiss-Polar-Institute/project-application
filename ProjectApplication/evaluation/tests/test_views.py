@@ -90,8 +90,6 @@ class ProposalEvaluationUpdateTest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     # def test_proposal_evaluation_create(self):
-    # TODO: enable test: currently disabled because it returns that the reviewer is not valid
-    #     reviewers = database_population.create_reviewer()
     #
     #     data = MultiValueDict({'proposal_evaluation_form-proposal': [self._proposal.id],
     #                            'proposal_evaluation_form-reviewers': [reviewers.id]})
@@ -119,6 +117,7 @@ class CallEvaluationUpdateTest(TestCase):
         self._user = database_population.create_management_user()
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
+        self._reviewer = database_population.create_reviewer()
 
     def test_get(self):
         call_evaluation = CallEvaluation()
@@ -135,12 +134,14 @@ class CallEvaluationUpdateTest(TestCase):
         data = dict_to_multivalue_dict({'call_evaluation_form-call': self._proposal.call.id,
                                         'call_evaluation_form-panel_date': '16-03-2020',
                                         'call_evaluation_form-evaluation_sheet': [''],
+                                        'call_evaluation_form-reviewers': [self._reviewer.id],
                                         'save': 'Save Call Evaluation'})
 
         self.assertEqual(CallEvaluation.objects.all().count(), 0)
 
         response = self._client_management.post(
             reverse('logged-call-evaluation-add') + f'?call={self._proposal.call.id}', data=data)
+
         call_evaluation = self._proposal.call.callevaluation
 
         self.assertEqual(response.status_code, 302)

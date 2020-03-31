@@ -1,5 +1,4 @@
-from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 
 from project_core.tests import database_population
@@ -15,9 +14,7 @@ class UtilsTest(TestCase):
         self._category, _ = Category.objects.get_or_create(name='Budget')
         self._proposal_comment_category, _ = ProposalCommentCategory.objects.get_or_create(category=self._category)
 
-        self._user = User.objects.create_user('TestUser', 'test@example.com', 'password')
-        self._user.is_staff = True
-        self._user.save()
+        self._user_management = database_population.create_management_logged_client()
 
     def test_add_comment_attachment_forms(self):
         context = {}
@@ -32,8 +29,6 @@ class UtilsTest(TestCase):
         self.assertIn(AttachmentForm.FORM_NAME, context)
 
     def test_process_comment_success(self):
-        client = Client()
-        client.force_login(self._user)
         parent = self._proposal
         submit_viewname_repost = 'logged-proposal-comment-add'
 
@@ -41,11 +36,11 @@ class UtilsTest(TestCase):
 
         comment_text = 'This is a very good comment'
 
-        client.post(reverse(submit_viewname_repost, kwargs={'pk': parent.id}),
-                    {'comment_form_submit': '1',
-                     f'{CommentForm.FORM_NAME}-category': self._proposal_comment_category.id,
-                     f'{CommentForm.FORM_NAME}-text': comment_text}
-                    , follow=True)
+        self._user_management.post(reverse(submit_viewname_repost, kwargs={'pk': parent.id}),
+                                   data={'comment_form_submit': '1',
+                                         f'{CommentForm.FORM_NAME}-category': self._proposal_comment_category.id,
+                                         f'{CommentForm.FORM_NAME}-text': comment_text}
+                                   , follow=True)
 
         self.assertEqual(ProposalComment.objects.all().count(), 1)
         proposal_comment = ProposalComment.objects.all().first()
@@ -53,8 +48,6 @@ class UtilsTest(TestCase):
         self.assertEqual(proposal_comment.category, self._proposal_comment_category)
 
     def test_process_comment_success_failure(self):
-        client = Client()
-        client.force_login(self._user)
         parent = self._proposal
         url = reverse('logged-proposal-comment-add', kwargs={'pk': parent.id})
 
@@ -62,11 +55,11 @@ class UtilsTest(TestCase):
 
         comment_text = ''
 
-        response = client.post(url,
-                               data={'comment_form_submit': '1',
-                                     f'{CommentForm.FORM_NAME}-category': self._proposal_comment_category.id,
-                                     f'{CommentForm.FORM_NAME}-text': comment_text}
-                               )
+        response = self._user_management.post(url,
+                                              data={'comment_form_submit': '1',
+                                                    f'{CommentForm.FORM_NAME}-category': self._proposal_comment_category.id,
+                                                    f'{CommentForm.FORM_NAME}-text': comment_text}
+                                              )
 
         self.assertEqual(ProposalComment.objects.all().count(), 0)
 

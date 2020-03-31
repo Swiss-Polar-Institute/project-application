@@ -408,6 +408,10 @@ class CallEvaluationValidation(TemplateView):
     @staticmethod
     def _check_call_evaluation_is_completed(call_evaluation):
         required_fields = CallEvaluationForm(call=call_evaluation.call).fields
+        del required_fields['reviewers']  # reviewers is required but it's checked on the form
+        # below check using getattr would always fail because
+        # it's a Many to Many
+
         missing_fields = []
 
         for required_field in required_fields:

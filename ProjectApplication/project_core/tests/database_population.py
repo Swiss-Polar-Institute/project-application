@@ -134,8 +134,13 @@ def create_reviewer_logged_client():
     client.login(username='unittest_reviewer', password='12345')
     return client
 
+
 def create_reviewer_user():
-    user = User.objects.create_user(username='unittest_reviewer', password='12345')
+    try:
+        user = User.objects.get(username='unittest_reviewer')
+    except ObjectDoesNotExist:
+        user = User.objects.create_user(username='unittest_reviewer', password='12345')
+
     group, _ = Group.objects.get_or_create(name=settings.REVIEWER_GROUP_NAME)
 
     group.user_set.add(user)
