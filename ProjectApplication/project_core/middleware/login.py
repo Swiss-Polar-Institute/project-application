@@ -13,11 +13,16 @@ class LoginRequiredMiddleware(MiddlewareMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        for reviewer_url in settings.REVIEWER_CAN_ACCESS_VIEW_NAMES:
+        LoginRequiredMiddleware._check_view_names_exist()
+
+    @staticmethod
+    def _check_view_names_exist():
+        """ The application will not start if a settings.REVIEW_CAN_ACCESS_VIEW_NAMES does not exist"""
+        for view_name in settings.REVIEWER_CAN_ACCESS_VIEW_NAMES:
             try:
-                reverse(reviewer_url)
+                reverse(view_name)
             except NoReverseMatch as e:
-                assert 'with no arguments not found' in str(e), f'viewname: "{reviewer_url}" needs to exist'
+                assert 'with no arguments not found' in str(e), f'view_name: "{view_name}" needs to exist'
 
     @staticmethod
     def _reviewer_can_access(path):
