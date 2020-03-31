@@ -5,7 +5,7 @@
     <h1>Proposals</h1>
     {% if reviewer %}
         Reviewer: {{ reviewer }}<br>
-        Calls with access: {% for call in reviewer_calls_access %}{{ call.long_name }}{% endfor %}
+        Calls with access: {% for call in reviewer_calls_access %}{{ call.long_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
     {% elif request|request_is_management %}
         All proposals from all calls
     {% endif %}
