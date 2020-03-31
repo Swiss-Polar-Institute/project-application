@@ -261,5 +261,11 @@ EMAIL_USE_TLS = True
 REVIEWER_GROUP_NAME = 'reviewer'
 MANAGEMENT_GROUP_NAME = 'management'
 
+REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
+                                  'logged-proposal-detail',
+                                  'logged-export-proposals-csv-summary-all',
+                                  'logged-export-proposals-csv-summary-call',
+                                  'logged-homepage']
+
 DEBUG = os.environ['DEBUG'] == '1'
 NAVBAR_BACKGROUND_COLOR = os.getenv('NAVBAR_BACKGROUND_COLOR', 'bg-primary')
