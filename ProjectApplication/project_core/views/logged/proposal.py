@@ -42,6 +42,7 @@ class ProposalList(ListView):
         context = super().get_context_data(**kwargs)
 
         if user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
+            context['reviewer'] = self.request.user
             try:
                 context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
             except ObjectDoesNotExist:

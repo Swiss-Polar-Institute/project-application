@@ -4,7 +4,7 @@
 {% block contents %}
     <h1>Proposals</h1>
     {% if reviewer %}
-        For reviewer: {{ reviewer }}<br>
+        Reviewer: {{ reviewer }}<br>
         Calls with access: {% for call in reviewer_calls_access %}{{ call.long_name }}{% endfor %}
     {% elif request|request_is_management %}
         All proposals from all calls
