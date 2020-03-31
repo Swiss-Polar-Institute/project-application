@@ -89,16 +89,17 @@ class ProposalEvaluationUpdateTest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    # def test_proposal_evaluation_create(self):
-    #
-    #     data = MultiValueDict({'proposal_evaluation_form-proposal': [self._proposal.id],
-    #                            'proposal_evaluation_form-reviewers': [reviewers.id]})
-    #
-    #     response = self._client_management.post(
-    #         reverse('logged-proposal-evaluation-update', kwargs={'pk': self._proposal.id}),
-    #         data=data)
-    #
-    #     self.assertEqual(response.status_code, 200)
+    def test_proposal_evaluation_create(self):
+        reviewer = database_population.create_reviewer()
+
+        data = dict_to_multivalue_dict({'proposal_evaluation_form-proposal': self._proposal.id,
+                                        'proposal_evaluation_form-reviewers': [reviewer.id]})
+
+        response = self._client_management.post(
+            reverse('logged-proposal-evaluation-update', kwargs={'pk': self._proposal.id}),
+            data=data)
+
+        self.assertEqual(response.status_code, 200)
 
 
 class ProposalEvaluationListTest(TestCase):
