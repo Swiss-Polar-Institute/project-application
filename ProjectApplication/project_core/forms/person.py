@@ -38,6 +38,7 @@ class PersonForm(Form):
 
         self.fields['orcid'] = forms.CharField(initial=orcid_initial,
                                                **get_field_information(PhysicalPerson, 'orcid', label='ORCID iD',
+                                                                       required=True,
                                                                        help_text='Enter your ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
                                                                                  'Please create an <a href="https://orcid.org">ORCID iD</a> if you do not already have one.'))
 
