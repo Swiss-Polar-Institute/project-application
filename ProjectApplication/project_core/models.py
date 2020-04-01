@@ -442,7 +442,7 @@ class PhysicalPerson(CreateModifyOn):
 
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100, blank=False, null=False)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100, blank=False, null=False)
-    orcid = models.CharField(help_text='Orcid ID', max_length=19, blank=True, null=True, unique=True,
+    orcid = models.CharField(help_text='Orcid ID', max_length=19, blank=False, null=True, unique=True,
                              validators=utils.orcid.orcid_validators())
     gender = models.ForeignKey(Gender, help_text='Gender with which the person identifies', blank=True, null=True,
                                on_delete=models.PROTECT)
