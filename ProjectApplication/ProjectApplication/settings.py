@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'variable_templates',
     'evaluation',
     'comments',
-    'colours'
+    'colours',
+    'grant_management'
 ]
 
 MIDDLEWARE = [
