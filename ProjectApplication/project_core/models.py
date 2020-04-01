@@ -1017,7 +1017,7 @@ class Project(CreateModifyOn):
                               blank=False, null=False)
     abortion_reason = models.CharField(help_text='Reason that a project was aborted', max_length=50, blank=True,
                                        null=True)
-    history = HistoricalRecords
+    history = HistoricalRecords()
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.principal_investigator)
