@@ -3,13 +3,31 @@
 from django.db import migrations, models
 
 
-class Migration(migrations.Migration):
+def make_abbreviation(long_name):
+    short_name = ''
 
+    for word in long_name.split(' '):
+        short_name += word[0].upper()
+
+    return short_name
+
+
+def create_funding_instrument_short_name(apps, schema_editor):
+    FundingInstrument = apps.get_model('project_core', 'FundingInstrument')
+
+    for funding_instrument in FundingInstrument.objects.all():
+        funding_instrument.short_name = make_abbreviation(funding_instrument.long_name)
+        funding_instrument.save()
+
+
+class Migration(migrations.Migration):
     dependencies = [
         ('project_core', '0115_historicalproject'),
     ]
 
     operations = [
+        migrations.RunPython(create_funding_instrument_short_name),
+
         migrations.AlterField(
             model_name='fundinginstrument',
             name='short_name',
