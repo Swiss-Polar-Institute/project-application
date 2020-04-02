@@ -190,9 +190,9 @@ class CallEvaluation(CreateModifyOn):
         created_projects = 0
 
         with transaction.atomic():
-            for proposal in Proposal.objects.filter(call=self.call).filter(eligibility=Proposal.ELIGIBLE).filter(
+            for proposal in Proposal.objects.filter(call=self.call).filter(
                     proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND):
-                Project.create_from_proposal(proposal)
+                Project.create_from_proposal(proposal, created_projects + 1)
 
                 created_projects += 1
 

@@ -110,7 +110,8 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('short_name', css_class='col-12'),
+                Div('short_name', css_class='col-6'),
+                Div('finance_year', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -189,10 +190,10 @@ class CallForm(forms.ModelForm):
 
     class Meta:
         model = Call
-        fields = ['funding_instrument', 'long_name', 'short_name', 'description', 'introductory_message',
-                  'call_open_date',
-                  'submission_deadline', 'budget_categories', 'budget_maximum', 'other_funding_question',
-                  'proposal_partner_question', 'overarching_project_question', ]
+        fields = ['funding_instrument', 'long_name', 'short_name', 'finance_year', 'description',
+                  'introductory_message',
+                  'call_open_date', 'submission_deadline', 'budget_categories', 'budget_maximum',
+                  'other_funding_question', 'proposal_partner_question', 'overarching_project_question', ]
 
         widgets = {
             'call_open_date': XDSoftYearMonthDayHourMinutePickerInput,
