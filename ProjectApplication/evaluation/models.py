@@ -1,5 +1,3 @@
-import os
-
 import storages
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
@@ -41,11 +39,7 @@ class Reviewer(models.Model):
 
 
 def proposal_evaluation_eligibility_letter_rename(instance, filename):
-    upload_to = 'evaluation/eligibility_letter'
-
-    filename = f'CallId-{instance.proposal.call.id}-ProposalId-{instance.proposal.id}-{filename}'
-
-    return os.path.join(upload_to, filename)
+    return f'evaluation/ProposalEvaluation/Proposal-{instance.proposal.id}-{filename}'
 
 
 class ProposalEvaluation(CreateModifyOn):
@@ -140,11 +134,7 @@ class ProposalEvaluation(CreateModifyOn):
 
 
 def post_panel_management_table_rename(instance, filename):
-    upload_to = 'evaluation/post_panel_management_table'
-
-    filename = f'CallEvaluation_{instance.id}-Call_{instance.call.id}-{filename}'
-
-    return os.path.join(upload_to, filename)
+    return f'evaluation/CallEvaluation/{instance.call.id}-{filename}'
 
 
 class CallEvaluation(CreateModifyOn):
