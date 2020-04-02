@@ -96,7 +96,7 @@ class ProposalAttachmentCategory(CreateModifyOn):
 
 
 def proposal_attachment_rename(instance, filename):
-    return f'comments/ProposalAttachment/Proposal-{instance.proposal.id}-{filename}'
+    return f'comments/ProposalAttachment/AttachmentProposal-{instance.proposal.id}-{filename}'
 
 
 class ProposalAttachment(AbstractAttachment):
@@ -162,7 +162,7 @@ class CallAttachmentCategory(CreateModifyOn):
 
 
 def call_attachment_rename(instance, filename):
-    return f'comments/CallAttachment/Call-{instance.call.id}-{filename}'
+    return f'comments/CallAttachment/AttachmentCall-{instance.call.id}-{filename}'
 
 
 class CallAttachment(AbstractAttachment):
@@ -226,7 +226,7 @@ class ProposalEvaluationAttachmentCategory(CreateModifyOn):
 
 
 def proposal_evaluation_rename(instance, filename):
-    return f'comments/ProposalEvaluationAttachment/ProposalEvaluation-{instance.proposal_evaluation.id}-{filename}'
+    return f'comments/ProposalEvaluationAttachment/AttachmentProposalEvaluation-{instance.proposal_evaluation.id}-{filename}'
 
 
 class ProposalEvaluationAttachment(AbstractAttachment):
@@ -288,7 +288,7 @@ class ProjectAttachmentCategory(CreateModifyOn):
 
 
 def project_attachment_rename(instance, filename):
-    return f'comments/ProjectAttachment/Project-{instance.project.id}-{filename}'
+    return f'comments/ProjectAttachment/AttachmentProject-{instance.project.id}-{filename}'
 
 
 class ProjectAttachment(AbstractAttachment):
