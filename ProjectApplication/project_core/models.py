@@ -66,7 +66,7 @@ class FundingInstrument(CreateModifyOn):
     long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False,
                                  unique=True)
     short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60,
-                                  blank=True, null=True)
+                                  blank=False, null=False, unique=True)
     description = models.TextField(
         help_text='Description of the funding instrument that can be used to distinguish it from others', blank=False,
         null=False)
