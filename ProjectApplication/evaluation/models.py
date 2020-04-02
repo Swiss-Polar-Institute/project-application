@@ -138,10 +138,10 @@ class ProposalEvaluation(CreateModifyOn):
         super().save(*args, **kwargs)
 
 
-def call_evaluation_sheet_rename(instance, filename):
-    upload_to = 'call_evaluation'
+def post_panel_management_table_rename(instance, filename):
+    upload_to = 'evaluation/post_panel_management_table'
 
-    filename = f'{instance.call.id}-{filename}'
+    filename = f'CallEvaluation_{instance.id}-Call_{instance.call.id}-{filename}'
 
     return os.path.join(upload_to, filename)
 
@@ -153,9 +153,9 @@ class CallEvaluation(CreateModifyOn):
 
     panel_date = models.DateField()
 
-    evaluation_sheet = models.FileField(storage=S3Boto3Storage(),
-                                        upload_to=call_evaluation_sheet_rename,
-                                        blank=True, null=True)
+    post_panel_management_table = models.FileField(storage=S3Boto3Storage(),
+                                                   upload_to=post_panel_management_table_rename,
+                                                   blank=True, null=True)
 
     closed_date = models.DateTimeField(blank=True, null=True)
     closed_user = models.ForeignKey(User, help_text='User by which the Call Evaluation was closed',

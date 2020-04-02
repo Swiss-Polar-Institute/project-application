@@ -59,7 +59,7 @@ class CallEvaluationForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('evaluation_sheet', css_class='col-12'),
+                Div('post_panel_management_table', css_class='col-12'),
                 css_class='row'
             ),
             FormActions(
@@ -86,7 +86,7 @@ class CallEvaluationForm(forms.ModelForm):
     class Meta:
         model = CallEvaluation
 
-        fields = ['call', 'panel_date', 'evaluation_sheet']
+        fields = ['call', 'panel_date', 'post_panel_management_table']
 
         widgets = {
             'panel_date': XDSoftYearMonthDayPickerInput

@@ -25,7 +25,7 @@ class ReviewerAdmin(admin.ModelAdmin):
 
 
 class CallEvaluationAdmin(admin.ModelAdmin):
-    list_display = ('call', 'panel_date', 'evaluation_sheet')
+    list_display = ('call', 'panel_date', 'post_panel_management_table')
 
 
 admin.site.register(Reviewer, ReviewerAdmin)
