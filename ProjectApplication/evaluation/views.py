@@ -273,30 +273,37 @@ class CallEvaluationCommentAdd(TemplateView):
         return result
 
 
+def proposal_detail_eligibility_context(proposal):
+    context = {}
+    context.update(utils.comments_attachments_forms('logged-call-evaluation-proposal-detail', proposal))
+
+    context.update({'active_section': 'evaluation',
+                    'active_subsection': 'evaluation-list',
+                    'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                    })
+
+    context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                             {'name': f'List of proposals ({proposal.call.short_name})',
+                              'url': reverse('logged-call-evaluation-list-proposals',
+                                             kwargs={'call_id': proposal.call.id})},
+                             {'name': 'Proposal'}]
+
+    context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
+                                                                         proposal_id=proposal.id)
+
+    context['can_edit_eligibility'] = proposal.can_eligibility_be_edited()
+    context['eligibility_history'] = get_eligibility_history(proposal)
+
+    return context
+
+
 class ProposalDetail(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
         proposal = Proposal.objects.get(id=kwargs['pk'])
 
-        context.update(utils.comments_attachments_forms('logged-call-evaluation-proposal-detail', proposal))
-
-        context.update({'active_section': 'evaluation',
-                        'active_subsection': 'evaluation-list',
-                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
-                        })
-
-        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': f'List of proposals ({proposal.call.short_name})',
-                                  'url': reverse('logged-call-evaluation-list-proposals',
-                                                 kwargs={'call_id': proposal.call.id})},
-                                 {'name': 'Proposal'}]
-
-        context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
-                                                                             proposal_id=proposal.id)
-
-        context['can_edit_eligibility'] = proposal.can_eligibility_be_edited()
-        context['eligibility_history'] = get_eligibility_history(proposal)
+        context.update(proposal_detail_eligibility_context(proposal))
 
         return render(request, 'evaluation/proposal-detail.tmpl', context)
 
@@ -355,13 +362,20 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
         else:
             messages.error(request, 'Eligibility not saved. Verify errors in the form')
-            context[EligibilityDecisionForm.FORM_NAME] = eligibility_decision_form
 
             context.update({'active_section': 'evaluation',
                             'active_subsection': 'evaluation-list',
                             'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
-            return render(request, 'logged/proposal-detail.tmpl', context)
+            proposal = Proposal.objects.get(id=proposal_id)
+
+            context.update(proposal_detail_eligibility_context(proposal))
+
+            context[EligibilityDecisionForm.FORM_NAME] = eligibility_decision_form
+
+            context['force_eligibility_form_displayed'] = True
+
+            return render(request, 'evaluation/proposal-detail.tmpl', context)
 
 
 class CallEvaluationSummary(TemplateView):
