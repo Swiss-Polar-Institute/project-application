@@ -41,7 +41,7 @@ class Reviewer(models.Model):
 
 
 def proposal_evaluation_eligibility_letter_rename(instance, filename):
-    upload_to = 'proposal_evaluation/eligibility_letter'
+    upload_to = 'evaluation/eligibility_letter'
 
     filename = f'CallId-{instance.proposal.call.id}-ProposalId-{instance.proposal.id}-{filename}'
 
