@@ -191,7 +191,7 @@ class CallEvaluation(CreateModifyOn):
 
         with transaction.atomic():
             for proposal in Proposal.objects.filter(call=self.call).filter(
-                    proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND):
+                    proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND).order_by('?'):
                 Project.create_from_proposal(proposal, created_projects + 1)
 
                 created_projects += 1
