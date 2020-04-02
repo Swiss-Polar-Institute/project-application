@@ -1055,7 +1055,7 @@ class Project(CreateModifyOn):
         project = Project()
 
         project.title = proposal.title
-        project.key = f'{proposal.call.funding_instrument.short_name}-{proposal.call.finance_year}-{sequence}'
+        project.key = f'{proposal.call.funding_instrument.short_name}-{proposal.call.finance_year}-{sequence:03d}'
         project.location = proposal.location
         project.start_date = proposal.start_date
         project.end_date = proposal.end_date
