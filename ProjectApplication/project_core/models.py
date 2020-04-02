@@ -1047,6 +1047,29 @@ class Project(CreateModifyOn):
         from comments.models import ProjectAttachment
         return ProjectAttachment
 
+    @staticmethod
+    def create_from_proposal(proposal):
+        project = Project()
+
+        project.title = proposal.title
+        project.location = proposal.location
+        project.start_date = proposal.start_date
+        project.end_date = proposal.end_date
+        project.principal_investigator = proposal.applicant
+
+        project.overarching_project = proposal.overarching_project
+        project.allocated_budget = proposal.proposalevaluation.allocated_budget
+        project.status = Project.ONGOING
+
+        project.call = proposal.call
+        project.proposal = proposal
+
+        project.save()
+        project.geographical_areas.add(*proposal.geographical_areas.all())
+        project.keywords.add(*proposal.keywords.all())
+
+        return project
+
     def attachments(self):
         return self.projectattachment_set.all().order_by('created_on')
 

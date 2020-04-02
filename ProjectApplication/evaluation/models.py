@@ -4,12 +4,13 @@ import storages
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import MinValueValidator
-from django.db import models
+from django.db import models, transaction
+from django.utils import timezone
 from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from ProjectApplication import settings
-from project_core.models import Call, Proposal, CreateModifyOn, ProposalStatus, PhysicalPerson
+from project_core.models import Call, Proposal, CreateModifyOn, ProposalStatus, PhysicalPerson, Project
 from project_core.utils.utils import user_is_in_group_name
 
 
@@ -183,3 +184,20 @@ class CallEvaluation(CreateModifyOn):
 
     def is_closed(self):
         return self.closed_date is not None
+
+    def close(self, user_closing_call_evaluation):
+        """ It creates the projects and closes the call. """
+        created_projects = 0
+
+        with transaction.atomic():
+            for proposal in Proposal.objects.filter(call=self.call).filter(eligibility=Proposal.ELIGIBLE).filter(
+                    proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND):
+                Project.create_from_proposal(proposal)
+
+                created_projects += 1
+
+            self.closed_date = timezone.now()
+            self.closed_user = user_closing_call_evaluation
+            self.save()
+
+        return created_projects
