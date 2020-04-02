@@ -8,7 +8,7 @@
         <table id="list-of-projects" class="table table-striped table-sm table-hover display">
             <thead>
             <tr>
-                <th>Call</th>
+                <th>Key</th>
                 <th>Title</th>
                 <th>Principal Investigator</th>
                 <th>Status</th>
@@ -18,7 +18,7 @@
             <tbody>
             {% for project in projects %}
                 <tr>
-                    <td>{{ project.call.long_name }}</td>
+                    <td>{{ project.key }}</td>
                     <td>{{ project.title }}</td>
                     <td>{{ project.principal_investigator.person }}</td>
                     <td>{{ project.status }}</td>
@@ -39,8 +39,8 @@
             $('table.display').DataTable({
                 "pageLength": 100,
                 "columns": [
-                    {"width": "20%"},
-                    {"width": "40%"},
+                    {"width": "10%"},
+                    {"width": "50%"},
                     {"width": "20%"},
                     {"width": "10%"},
                     {"width": "10%"}
