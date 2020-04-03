@@ -58,7 +58,7 @@ class BudgetItemForm(forms.Form):
         category = BudgetCategory.objects.get(id=cleaned_data['category'])
 
         if 'amount' not in cleaned_data:
-            self.add_error('amount', 'Please write a number (do not use thousands separator if you have a problem) {}'.format(category))
+            self.add_error('amount', 'Please write a number (do not use thousands separator if you have a problem)')
             amount = 0
         else:
             amount = cleaned_data['amount'] or 0

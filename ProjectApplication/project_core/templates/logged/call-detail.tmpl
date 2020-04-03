@@ -1,23 +1,28 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
+{% load l10n %}
 
 {% block contents %}
     <div class="row">
         <div class="col-10">
             <h1>Call details</h1>
             <strong>Funding instrument:</strong>
-            {% if call.funding_instrument %}<a href="{% url 'logged-funding-instrument-detail' pk=call.funding_instrument.id %}">{{ call.funding_instrument }}</a>{% else %}Call not assigned to funding
+            {% if call.funding_instrument %}
+                <a href="{% url 'logged-funding-instrument-detail' pk=call.funding_instrument.id %}">{{ call.funding_instrument }}</a>{% else %}
+                Call not assigned to funding
                 instrument
             {% endif %}
             <br>
             <strong>Long Name:</strong> {{ call.long_name }}
             <br>
-            <strong>Short Name:</strong> {% include 'common/_value-or-dash.tmpl' with value=call.short_name %}
+            <strong>Short Name:</strong> {{ call.short_name }}
+            <br>
+            <strong>Finance year:</strong> {{ call.finance_year|unlocalize }}
             <br>
             <strong>Description:</strong>
-            <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.description }}</div>
+            <div class="pre-with-newlines border p-1 bg-white rounded">{{ call.description }}</div>
             <br>
             <strong>Introductory message:</strong>
-            <div class="pre-with-newlines border p-3 bg-white rounded">{{ call.introductory_message }}</div>
+            <div class="pre-with-newlines border p-1 bg-white rounded">{{ call.introductory_message }}</div>
             <br>
             <div class="row">
                 <div class="col-6">

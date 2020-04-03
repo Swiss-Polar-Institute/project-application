@@ -57,12 +57,6 @@ class AttachmentForm(forms.Form):
         attachment.text = self.cleaned_data['text']
         attachment.created_by = user
         attachment.category = self.cleaned_data['category']
-
-        file = self.cleaned_data['file']
-
-        if not file.name.startswith('/'):
-            file.name = f'{parent.id}-{file.name}'
-
         attachment.file = self.cleaned_data['file']
 
         all_good = True

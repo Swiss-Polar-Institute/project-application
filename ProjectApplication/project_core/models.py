@@ -66,7 +66,7 @@ class FundingInstrument(CreateModifyOn):
     long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False,
                                  unique=True)
     short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60,
-                                  blank=True, null=True)
+                                  blank=False, null=False, unique=True)
     description = models.TextField(
         help_text='Description of the funding instrument that can be used to distinguish it from others', blank=False,
         null=False)
@@ -87,10 +87,12 @@ class Call(CreateModifyOn):
     long_name = models.CharField(help_text='Full name of the call', max_length=200, blank=False, null=False,
                                  unique=True)
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
+    finance_year = models.IntegerField(
+        help_text='Finance year of this call. It is used, for example, for the project key from this call')
     description = models.TextField(help_text='Description of the call that can be used to distinguish it from others',
                                    blank=False, null=False)
     funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the call belongs',
-                                           blank=True, null=True, on_delete=models.PROTECT)
+                                           blank=False, null=False, on_delete=models.PROTECT)
     introductory_message = models.TextField(help_text='Introductory text to the call for applicants', blank=True,
                                             null=True)
     call_open_date = models.DateTimeField(help_text='Date on which the call is opened', blank=False, null=False)
@@ -987,6 +989,7 @@ class Project(CreateModifyOn):
     )
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
+    key = models.CharField(help_text='Project key identifier all the way to finance', max_length=64, unique=True)
     title = models.CharField(help_text='Title of the project', max_length=500, blank=False, null=False)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project',
                                       blank=False)
@@ -1046,6 +1049,30 @@ class Project(CreateModifyOn):
     def attachment_object():
         from comments.models import ProjectAttachment
         return ProjectAttachment
+
+    @staticmethod
+    def create_from_proposal(proposal, sequence):
+        project = Project()
+
+        project.title = proposal.title
+        project.key = f'{proposal.call.funding_instrument.short_name}-{proposal.call.finance_year}-{sequence:03d}'
+        project.location = proposal.location
+        project.start_date = proposal.start_date
+        project.end_date = proposal.end_date
+        project.principal_investigator = proposal.applicant
+
+        project.overarching_project = proposal.overarching_project
+        project.allocated_budget = proposal.proposalevaluation.allocated_budget
+        project.status = Project.ONGOING
+
+        project.call = proposal.call
+        project.proposal = proposal
+
+        project.save()
+        project.geographical_areas.add(*proposal.geographical_areas.all())
+        project.keywords.add(*proposal.keywords.all())
+
+        return project
 
     def attachments(self):
         return self.projectattachment_set.all().order_by('created_on')

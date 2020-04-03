@@ -1,7 +1,6 @@
 import logging
 
 from django.contrib import messages
-from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -42,14 +41,15 @@ class ProposalList(ListView):
         context = super().get_context_data(**kwargs)
 
         if user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
-            context['reviewer'] = self.request.user.reviewer.person
-            try:
+            if hasattr(self.request.user, 'reviewer'):
+                context['reviewer'] = self.request.user.reviewer.person
                 context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
-            except ObjectDoesNotExist:
+            else:
                 messages.error(self.request,
                                'This review user is not setup properly. Contact SPI.')
                 logger.warning(
                     f'NOTIFY: User in group reviewer but not having a reviewer associated: {self.request.user}')
+                context['reviewer'] = f'User: {self.request.user.username}'
 
                 context['reviewer_calls_access'] = []
 

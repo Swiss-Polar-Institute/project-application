@@ -29,13 +29,21 @@
         $("#id_eligibility_decision_form-comment").attr('required', required);
     }
 
+    function displayEligibilityForm() {
+        $('#eligibility_detail').hide();
+        $('#eligibility_form').show();
+    }
+
     $(document).ready(function () {
         $('#edit_button').click(function () {
-            $('#eligibility_detail').hide();
-            $('#eligibility_form').show();
+            displayEligibilityForm();
         });
 
-        var required = $('#id_eligibility_decision_form-eligible_2').prop('checked');
+        let required = $('#id_eligibility_decision_form-eligible_2').prop('checked');
+
+        {% if force_eligibility_form_displayed %}
+            displayEligibilityForm();
+        {% endif %}
 
         commentIsRequired(required);
 

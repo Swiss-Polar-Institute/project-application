@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 /code/wait-for-mysql.sh
 

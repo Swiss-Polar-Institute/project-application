@@ -10,7 +10,7 @@
         <tbody>
         {% for proposal_funding_item in proposal.proposalfundingitem_set.all %}
             <tr>
-                <td>{{ proposal_funding_item.organisation.long_name }}</td>
+                <td>{{ proposal_funding_item.organisation_name.name }}</td>
                 <td>{{ proposal_funding_item.funding_status }}</td>
                 <td>{{ proposal_funding_item.amount }}</td>
             </tr>
