@@ -48,7 +48,6 @@ class Invoice(AbstractProjectReportDates):
     paid_date = models.DateField(help_text='Date that the invoice was paid', null=True, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice', null=True,
                                  blank=True)
-    urls = models.TextField(help_text='Weblink for invoice', null=False, blank=False)
 
 
 def finance_report_file_rename(instance, filename):
