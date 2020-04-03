@@ -61,7 +61,7 @@ class PersonForm(Form):
 
         field_set_read_only([self.fields['first_name'], self.fields['surname']])
 
-        self.fields['email'] = forms.EmailField(initial=email_initial)
+        self.fields['email'] = forms.EmailField(initial=email_initial, help_text='Please write a valid email address. You will receive a confirmation email')
 
         self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
                                                   label='Date of PhD',
