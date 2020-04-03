@@ -1,5 +1,3 @@
-import os
-
 from django.db import models
 # Create your models here.
 # add dates of review, signed date, who signed, grant agreement - need flexibilty in types of dates that are added
@@ -9,11 +7,7 @@ from project_core.models import CreateModifyOn, PhysicalPerson, Project
 
 
 def grant_agreement_file_rename(instance, filename):
-    upload_to = 'grant_management/grant_agreement'
-
-    filename = f'GrantAgreement-{instance.id}-ProjectId-{instance.project.id}-{filename}'
-
-    return os.path.join(upload_to, filename)
+    return f'grant_management/GrantAgreement/Project-{instance.project.id}-{filename}'
 
 
 class GrantAgreement(CreateModifyOn):
@@ -28,7 +22,7 @@ class GrantAgreement(CreateModifyOn):
 class AbstractProjectReportDates(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',
                                 on_delete=models.PROTECT)
-    due_date = models.DateField(help_text='Date that the document was signed', null=True, blank=True)
+    due_date = models.DateField(help_text='Date that the document is expected to be received', null=True, blank=True)
     sent_date = models.DateField(help_text='Date that the document was sent')
     reception_date = models.DateField(help_text='Date that the document was received')
 
@@ -37,25 +31,18 @@ class AbstractProjectReportDates(CreateModifyOn):
 
 
 def invoice_file_rename(instance, filename):
-    upload_to = 'invoice/invoice'
-    filename = f'Invoice-{instance.id}-ProjectId-{instance.project.id}-{filename}'
-
-    return os.path.join(upload_to, filename)
+    return f'grant_management/Invoice/ProjectId-{instance.project.id}-{filename}'
 
 
 class Invoice(AbstractProjectReportDates):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=invoice_file_rename, null=True, blank=True)
     paid_date = models.DateField(help_text='Date that the invoice was paid', null=True, blank=True)
-    amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice', null=True,
+    amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice (CHF)', null=True,
                                  blank=True)
 
 
 def finance_report_file_rename(instance, filename):
-    upload_to = 'finance_report/finance_report'
-
-    filename = f'FinanceReport-{instance.id}-ProjectId-{instance.project.id}-{filename}'
-
-    return os.path.join(upload_to, filename)
+    return f'grant_management/FinanceReport/ProjectId-{instance.project.id}-{filename}'
 
 
 class FinanceReport(AbstractProjectReportDates):
@@ -103,7 +90,7 @@ class Publication(CreateModifyOn):
     doi = models.TextField(help_text='DOI reference for entry', null=True, blank=True)
     reference = models.TextField(help_text='Journal reference for entry', null=True, blank=True)
     title = models.TextField(help_text='Publication title', null=False, blank=False)
-    date_published = models.DateField(help_text='Date of the publication', null=True, blank=True)
+    date_time_published = models.DateTimeField(help_text='Date of the publication', null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.title)
