@@ -69,7 +69,7 @@ class LaySummary(AbstractProjectReportDates):
     text = models.TextField(help_text='Please enter summary here', null=False, blank=False)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
                                on_delete=models.PROTECT)
-    webversion = models.TextField(help_text='Please the web version of the summary here', null=True, blank=True)
+    web_version = models.TextField(help_text='Please the web version of the summary here', null=True, blank=True)
 
 
 class License(CreateModifyOn):
@@ -94,7 +94,7 @@ class ProjectSocialMedia(CreateModifyOn):
                                 on_delete=models.PROTECT)
     social_network = models.ForeignKey(SocialNetwork, help_text='Choose the related social network',
                                        on_delete=models.PROTECT)
-    url = models.TextField(help_text='Web address of social media entry', null=True, blank=True)
+    url = models.URLField(help_text='Web address of social media entry', null=True, blank=True)
 
 
 class Publication(CreateModifyOn):
@@ -113,7 +113,7 @@ class Dataset(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Choose related project',
                                 on_delete=models.PROTECT)
     doi = models.TextField(help_text='DOI reference for entry', null=True, blank=True)
-    url = models.TextField(help_text='Web address for entry', null=True, blank=True)
+    url = models.URLField(help_text='Web address for entry', null=True, blank=True)
     title = models.TextField(help_text='Dataset title', null=False, blank=False)
     date_published = models.DateField(help_text='Date of publication', null=True, blank=True)
 
