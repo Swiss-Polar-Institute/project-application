@@ -11,7 +11,8 @@
             <p><strong>Short
                 name:</strong><br>{% include 'common/_value-or-dash.tmpl' with value=funding_instrument.short_name %}
             </p>
-            <p><strong>Description:</strong><br>{{ funding_instrument.description }}</p>
+            <p><strong>Description:</strong><br>
+            <div class="pre-with-newlines border p-1 bg-white rounded">{{ funding_instrument.description }}</div>
 
             <h1>Template variables</h1>
             {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}
