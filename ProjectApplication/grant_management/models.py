@@ -46,8 +46,10 @@ def invoice_file_rename(instance, filename):
 class Invoice(AbstractProjectReportDates):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=invoice_file_rename, null=True, blank=True)
     paid_date = models.DateField(help_text='Date that the invoice was paid', null=True, blank=True)
-    amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice', null=True, blank=True)
+    amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice', null=True,
+                                 blank=True)
     urls = models.TextField(help_text='Weblink for invoice', null=False, blank=False)
+
 
 def finance_report_file_rename(instance, filename):
     upload_to = 'finance_report/finance_report'
@@ -67,7 +69,7 @@ class FinanceReport(AbstractProjectReportDates):
 class LaySummary(AbstractProjectReportDates):
     text = models.TextField(help_text='Please enter summary here', null=False, blank=False)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
-                                  on_delete=models.PROTECT)
+                               on_delete=models.PROTECT)
     webversion = models.TextField(help_text='Please the web version of the summary here', null=True, blank=True)
 
 
@@ -78,9 +80,9 @@ class License(CreateModifyOn):
 
 class Media(AbstractProjectReportDates):
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
-                                  on_delete=models.PROTECT)
+                               on_delete=models.PROTECT)
     license = models.ForeignKey(License, help_text='Type of license',
-                                  on_delete=models.PROTECT)
+                                on_delete=models.PROTECT)
     copyright = models.TextField(help_text='Owner of copyright', null=True, blank=True)
 
 
@@ -92,7 +94,7 @@ class ProjectSocialMedia(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Choose related project',
                                 on_delete=models.PROTECT)
     social_network = models.ForeignKey(SocialNetwork, help_text='Choose the related social network',
-                                  on_delete=models.PROTECT)
+                                       on_delete=models.PROTECT)
     url = models.TextField(help_text='Web address of social media entry', null=True, blank=True)
 
 
@@ -118,4 +120,3 @@ class Dataset(CreateModifyOn):
 
     def __str__(self):
         return '{}'.format(self.title)
-
