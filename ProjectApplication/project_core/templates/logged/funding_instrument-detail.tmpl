@@ -5,15 +5,12 @@
     <div class="row">
         <div class="col-10">
             <h1>Funding instrument details</h1>
-
-            <p></p>
-            <p><strong>Long name:</strong><br>{{ funding_instrument.long_name }}</p>
+            <p><strong>Long name:</strong> {{ funding_instrument.long_name }}<br>
             <p><strong>Short
-                name:</strong><br>{% include 'common/_value-or-dash.tmpl' with value=funding_instrument.short_name %}
-            </p>
-            <p><strong>Description:</strong><br>
+                name: </strong>{% include 'common/_value-or-dash.tmpl' with value=funding_instrument.short_name %}<br>
+            <p><strong>Description: </strong>
             <div class="pre-with-newlines border p-1 bg-white rounded">{{ funding_instrument.description }}</div>
-
+            <p></p>
             <h1>Template variables</h1>
             {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}
         </div>
