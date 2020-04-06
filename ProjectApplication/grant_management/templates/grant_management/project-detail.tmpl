@@ -8,14 +8,17 @@
             {% include 'grant_management/_project_summary-detail.tmpl' %}
             <p></p>
             <h2>Project information<a class="float-right btn btn-primary"
-                                      href="{% url 'logged-grant_management-project-update' pk=project.pk %}">Edit Project
+                                      href="{% url 'logged-grant_management-project-update' pk=project.pk %}">Edit
+                Project
                 Information</a></h2>
             <strong>Budget allocated:</strong> {{ project.allocated_budget }} CHF<br>
             <strong>Start date:</strong> {{ project.start_date }}<br>
             <strong>End date:</strong> {{ project.end_date }}<br>
             <p></p>
-            <h2>Grant agreement<a class="float-right btn btn-primary disabled"
-                                  href="#">Edit Grant Management</a></h2>
+            <h2>Grant agreement<a class="float-right btn btn-primary"
+                                  href="{% url 'logged-grant_management-grant_agreement-add' project=project.pk %}">Edit
+                Grant
+                Management</a></h2>
             <strong>Agreement:</strong><br>
             <strong>Signed date:</strong><br>
             <strong>Signed:</strong><br>
@@ -40,7 +43,7 @@
                     Proposal</a>
             {% else %}
                 <a class="btn btn-primary disabled" href="#">View
-                    <em>Proposal</a><br>(project not created from a proposal)</em>
+                    Proposal</a><br><em>(project not created from a proposal)</em>
             {% endif %}
         </div>
     </div>
