@@ -18,6 +18,9 @@ class GrantAgreement(CreateModifyOn):
                                   blank=True, on_delete=models.PROTECT)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename)
 
+    def __str__(self):
+        return f'{self.project}'
+
 
 class AbstractProjectReportDates(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',
@@ -25,6 +28,9 @@ class AbstractProjectReportDates(CreateModifyOn):
     due_date = models.DateField(help_text='Date that the document is expected to be received', null=True, blank=True)
     sent_date = models.DateField(help_text='Date that the document was sent')
     reception_date = models.DateField(help_text='Date that the document was received')
+
+    def __str__(self):
+        return f'{self.project}'
 
     class Meta:
         abstract = True
@@ -39,6 +45,9 @@ class Invoice(AbstractProjectReportDates):
     paid_date = models.DateField(help_text='Date that the invoice was paid', null=True, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice (CHF)', null=True,
                                  blank=True)
+
+    def __str__(self):
+        return f'{self.amount}'
 
 
 def finance_report_file_rename(instance, filename):
@@ -58,10 +67,16 @@ class LaySummary(AbstractProjectReportDates):
                                on_delete=models.PROTECT)
     web_version = models.TextField(help_text='Please the web version of the summary here', null=True, blank=True)
 
+    def __str__(self):
+        return f'{self.text[:20]}'
+
 
 class License(CreateModifyOn):
     name = models.TextField(help_text='License name', null=False, blank=False)
     public_text = models.TextField(help_text='Explanatory text for this license', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Media(AbstractProjectReportDates):
@@ -71,9 +86,17 @@ class Media(AbstractProjectReportDates):
                                 on_delete=models.PROTECT)
     copyright = models.TextField(help_text='Owner of copyright', null=True, blank=True)
 
+    # TODO: add file to the media?
+
+    def __str__(self):
+        return f'{self.project}-{self.author}'
+
 
 class SocialNetwork(CreateModifyOn):
     name = models.TextField(help_text='Please enter social network title', null=False, blank=False)
+
+    def __str__(self):
+        return f'{self.name}'
 
 
 class ProjectSocialMedia(CreateModifyOn):
@@ -82,6 +105,9 @@ class ProjectSocialMedia(CreateModifyOn):
     social_network = models.ForeignKey(SocialNetwork, help_text='Choose the related social network',
                                        on_delete=models.PROTECT)
     url = models.URLField(help_text='Web address of social media entry', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.project}-{self.social_network}'
 
 
 class Publication(CreateModifyOn):
