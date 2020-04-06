@@ -18,8 +18,8 @@ class FinanceReportAdmin(admin.ModelAdmin):
 
 
 class LaySummaryAdmin(admin.ModelAdmin):
-    list_display = ('author','license','copyright','project','due_date','sent_date','reception_date')
-    fields = ['author','license','copyright','project','due_date','sent_date','reception_date']
+    list_display = ('project','text','author','web_version','due_date','sent_date','reception_date')
+    fields = ['project','text','author','web_version','due_date','sent_date','reception_date']
 
 
 class LicenseAdmin(admin.ModelAdmin):
