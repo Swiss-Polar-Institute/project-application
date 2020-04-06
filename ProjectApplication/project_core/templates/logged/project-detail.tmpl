@@ -9,6 +9,7 @@
             <strong>Status:</strong> {{ project.status }}<br>
             <strong>Call:</strong> <a
                 href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
+            <strong>Project Key:</strong> {{ project.key }}
 
             <p></p>
 

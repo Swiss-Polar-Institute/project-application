@@ -1,10 +1,8 @@
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
-from django.db import transaction
 from django.db.models.fields.files import FieldFile
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView, ListView, DetailView
 
@@ -16,7 +14,7 @@ from evaluation.forms.close_call_evaluation import CloseCallEvaluation
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import CallEvaluation, ProposalEvaluation
-from project_core.models import Proposal, Call, ProposalStatus, Project
+from project_core.models import Proposal, Call, ProposalStatus
 from project_core.utils.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 from project_core.views.logged.proposal import get_eligibility_history
@@ -275,30 +273,37 @@ class CallEvaluationCommentAdd(TemplateView):
         return result
 
 
+def proposal_detail_eligibility_context(proposal):
+    context = {}
+    context.update(utils.comments_attachments_forms('logged-call-evaluation-proposal-detail', proposal))
+
+    context.update({'active_section': 'evaluation',
+                    'active_subsection': 'evaluation-list',
+                    'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                    })
+
+    context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                             {'name': f'List of proposals ({proposal.call.short_name})',
+                              'url': reverse('logged-call-evaluation-list-proposals',
+                                             kwargs={'call_id': proposal.call.id})},
+                             {'name': 'Proposal'}]
+
+    context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
+                                                                         proposal_id=proposal.id)
+
+    context['can_edit_eligibility'] = proposal.can_eligibility_be_edited()
+    context['eligibility_history'] = get_eligibility_history(proposal)
+
+    return context
+
+
 class ProposalDetail(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
         context = self.prepare_context(request, *args, **kwargs)
 
         proposal = Proposal.objects.get(id=kwargs['pk'])
 
-        context.update(utils.comments_attachments_forms('logged-call-evaluation-proposal-detail', proposal))
-
-        context.update({'active_section': 'evaluation',
-                        'active_subsection': 'evaluation-list',
-                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
-                        })
-
-        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': f'List of proposals ({proposal.call.short_name})',
-                                  'url': reverse('logged-call-evaluation-list-proposals',
-                                                 kwargs={'call_id': proposal.call.id})},
-                                 {'name': 'Proposal'}]
-
-        context[EligibilityDecisionForm.FORM_NAME] = EligibilityDecisionForm(prefix=EligibilityDecisionForm.FORM_NAME,
-                                                                             proposal_id=proposal.id)
-
-        context['can_edit_eligibility'] = proposal.can_eligibility_be_edited()
-        context['eligibility_history'] = get_eligibility_history(proposal)
+        context.update(proposal_detail_eligibility_context(proposal))
 
         return render(request, 'evaluation/proposal-detail.tmpl', context)
 
@@ -357,13 +362,20 @@ class ProposalEligibilityUpdate(AbstractProposalDetailView):
 
         else:
             messages.error(request, 'Eligibility not saved. Verify errors in the form')
-            context[EligibilityDecisionForm.FORM_NAME] = eligibility_decision_form
 
             context.update({'active_section': 'evaluation',
                             'active_subsection': 'evaluation-list',
                             'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
 
-            return render(request, 'logged/proposal-detail.tmpl', context)
+            proposal = Proposal.objects.get(id=proposal_id)
+
+            context.update(proposal_detail_eligibility_context(proposal))
+
+            context[EligibilityDecisionForm.FORM_NAME] = eligibility_decision_form
+
+            context['force_eligibility_form_displayed'] = True
+
+            return render(request, 'evaluation/proposal-detail.tmpl', context)
 
 
 class CallEvaluationSummary(TemplateView):
@@ -529,51 +541,16 @@ class CallEvaluationValidation(TemplateView):
         return context
 
 
-def close_evaluation_call(call, user_closing_call):
-    """ It creates the projects and closes the call. """
-    created_projects = 0
-
-    with transaction.atomic():
-        for proposal in Proposal.objects.filter(call=call).filter(eligibility=Proposal.ELIGIBLE).filter(
-                proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND):
-            project = Project()
-
-            project.title = proposal.title
-            project.location = proposal.location
-            project.start_date = proposal.start_date
-            project.end_date = proposal.end_date
-            project.principal_investigator = proposal.applicant
-
-            project.overarching_project = proposal.overarching_project
-            project.allocated_budget = proposal.proposalevaluation.allocated_budget
-            project.status = Project.ONGOING
-
-            project.call = proposal.call
-            project.proposal = proposal
-
-            project.save()
-            project.geographical_areas.add(*proposal.geographical_areas.all())
-            project.keywords.add(*proposal.keywords.all())
-
-            created_projects += 1
-
-        call_evaluation = CallEvaluation.objects.get(call=call)
-        call_evaluation.closed_date = timezone.now()
-        call_evaluation.closed_user = user_closing_call
-        call_evaluation.save()
-
-    return created_projects
-
-
 class CallCloseEvaluation(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
         call = Call.objects.get(id=kwargs['call_id'])
+        call_evaluation = CallEvaluation.objects.get(call=call)
 
         context['call'] = call
 
-        projects_created = close_evaluation_call(call, request.user)
+        projects_created = call_evaluation.close(request.user)
 
         context['projects_created_count'] = projects_created
 

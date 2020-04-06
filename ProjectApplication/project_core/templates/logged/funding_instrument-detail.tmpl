@@ -8,16 +8,19 @@
 
             <p></p>
             <p><strong>Long name:</strong><br>{{ funding_instrument.long_name }}</p>
-            <p><strong>Short name:</strong><br>{% include 'common/_value-or-dash.tmpl' with value=funding_instrument.short_name %}
+            <p><strong>Short
+                name:</strong><br>{% include 'common/_value-or-dash.tmpl' with value=funding_instrument.short_name %}
             </p>
-            <p><strong>Description:</strong><br>{{ funding_instrument.description }}</p>
+            <p><strong>Description:</strong><br>
+            <div class="pre-with-newlines border p-1 bg-white rounded">{{ funding_instrument.description }}</div>
 
             <h1>Template variables</h1>
             {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}
         </div>
 
         <div class="col-2">
-            <a class="btn btn-primary" href="{% url 'logged-funding-instrument-update' pk=funding_instrument.id %}">Edit Funding
+            <a class="btn btn-primary" href="{% url 'logged-funding-instrument-update' pk=funding_instrument.id %}">Edit
+                Funding
                 Instrument</a>
         </div>
     </div>

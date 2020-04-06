@@ -10,7 +10,7 @@ def get_model_information(model, field, information):
     return getattr(model._meta.get_field(field), information)
 
 
-def get_field_information(model, field, label=None, help_text=None):
+def get_field_information(model, field, label=None, help_text=None, required=None):
     kwargs = {}
 
     kwargs['help_text'] = get_model_information(model, field, 'help_text')
@@ -26,6 +26,9 @@ def get_field_information(model, field, label=None, help_text=None):
 
     if help_text is not None:
         kwargs['help_text'] = help_text
+
+    if required is not None:
+        kwargs['required'] = required
 
     return kwargs
 
@@ -70,7 +73,7 @@ def organisations_name_autocomplete(initial, help_text):
                                                widget=autocomplete.ModelSelect2Multiple(
                                                    url='autocomplete-organisation-names'),
                                                initial=initial,
-                                               help_text=help_text + ' If they are not available type the name and click on "Create".',
+                                               help_text=help_text + ' If they are not available type the name and click on "Create"',
                                                label='Organisation(s)', )
 
 

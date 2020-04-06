@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='callevaluation',
             name='evaluation_sheet',
-            field=models.FileField(blank=True, null=True, storage=storages.backends.s3boto3.S3Boto3Storage(), upload_to=evaluation.models.call_evaluation_sheet_rename),
+            field=models.FileField(blank=True, null=True, storage=storages.backends.s3boto3.S3Boto3Storage(), upload_to=evaluation.models.post_panel_management_table_rename),
         ),
     ]

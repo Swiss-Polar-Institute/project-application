@@ -38,8 +38,9 @@ class PersonForm(Form):
 
         self.fields['orcid'] = forms.CharField(initial=orcid_initial,
                                                **get_field_information(PhysicalPerson, 'orcid', label='ORCID iD',
+                                                                       required=True,
                                                                        help_text='Enter your ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
-                                                                                 'Please create an <a href="https://orcid.org">ORCID iD</a> if you do not already have one.'))
+                                                                                 'Please create an <a href="https://orcid.org">ORCID iD</a> if you do not already have one'))
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                initial=academic_title_initial)
@@ -60,11 +61,11 @@ class PersonForm(Form):
 
         field_set_read_only([self.fields['first_name'], self.fields['surname']])
 
-        self.fields['email'] = forms.EmailField(initial=email_initial)
+        self.fields['email'] = forms.EmailField(initial=email_initial, help_text='Please write a valid email address. You will receive a confirmation email')
 
         self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
                                                   label='Date of PhD',
-                                                  help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm-yyyy).',
+                                                  help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm-yyyy)',
                                                   required=False,
                                                   widget=XDSoftYearMonthPickerInput,
                                                   validators=[RegexValidator(regex='^[0-9]{2}-[0-9]{4}$',

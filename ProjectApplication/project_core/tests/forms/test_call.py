@@ -12,10 +12,13 @@ class CallFormTest(TestCase):
         self._budget_categories = database_population.create_budget_categories()
         self._template_questions = database_population.create_template_questions()
 
-    def test_call(self):
+    def test_create_call(self):
+        funding_instrument = database_population.create_funding_instrument()
+
         call_data = dict_to_multivalue_dict(
             {'call_open_date': '01-01-2020 10:00',
              'submission_deadline': (datetime.datetime.now() + datetime.timedelta(days=10)).strftime('%d-%m-%Y 12:00'),
+             'finance_year': 2020,
              'long_name': 'GreenLAnd Circumnavigation Expedition 2',
              'description': 'Cool, cold',
              'budget_maximum': '100000',
@@ -24,6 +27,7 @@ class CallFormTest(TestCase):
 
         call_data.setlist('budget_categories',
                           [self._budget_categories[0].id, self._budget_categories[1].id])
+        call_data.setlist('funding_instrument', [funding_instrument.id])
 
         call_form = CallForm(data=call_data)
         self.assertTrue(call_form.is_valid())

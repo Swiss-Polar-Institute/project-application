@@ -95,9 +95,13 @@ class ProposalAttachmentCategory(CreateModifyOn):
         verbose_name_plural = 'Proposal Attachment Categories'
 
 
+def proposal_attachment_rename(instance, filename):
+    return f'comments/ProposalAttachment/AttachmentProposal-{instance.proposal.id}-{filename}'
+
+
 class ProposalAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
-                            upload_to='attachments/proposals/')
+                            upload_to=proposal_attachment_rename)
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal that this attachments belongs to',
                                  on_delete=models.PROTECT)
@@ -157,9 +161,13 @@ class CallAttachmentCategory(CreateModifyOn):
         verbose_name_plural = 'Call Attachment Categories'
 
 
+def call_attachment_rename(instance, filename):
+    return f'comments/CallAttachment/AttachmentCall-{instance.call.id}-{filename}'
+
+
 class CallAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
-                            upload_to='attachments/calls/')
+                            upload_to=call_attachment_rename)
     call = models.ForeignKey(Call, help_text='Call that this attachment belongs to',
                              on_delete=models.PROTECT)
     category = models.ForeignKey(CallAttachmentCategory, help_text='Category of the attachment',
@@ -217,9 +225,13 @@ class ProposalEvaluationAttachmentCategory(CreateModifyOn):
         verbose_name_plural = 'Proposal Evaluation Attachment Categories'
 
 
+def proposal_evaluation_rename(instance, filename):
+    return f'comments/ProposalEvaluationAttachment/AttachmentProposalEvaluation-{instance.proposal_evaluation.id}-{filename}'
+
+
 class ProposalEvaluationAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
-                            upload_to='attachments/proposal_evaluation/')
+                            upload_to=proposal_evaluation_rename)
     proposal_evaluation = models.ForeignKey(ProposalEvaluation,
                                             help_text='Proposal Evaluation that this attachment belongs to',
                                             on_delete=models.PROTECT)
@@ -275,9 +287,13 @@ class ProjectAttachmentCategory(CreateModifyOn):
         verbose_name_plural = 'Project Attachment Categories'
 
 
+def project_attachment_rename(instance, filename):
+    return f'comments/ProjectAttachment/AttachmentProject-{instance.project.id}-{filename}'
+
+
 class ProjectAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
-                            upload_to='attachments/project/')
+                            upload_to=proposal_evaluation_rename)
     project = models.ForeignKey(Project,
                                 help_text='Project that this attachment belongs to',
                                 on_delete=models.PROTECT)

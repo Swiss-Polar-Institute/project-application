@@ -4,10 +4,10 @@ from django import forms
 from django.forms import ModelForm
 
 from project_core.forms.utils import get_field_information, organisations_name_autocomplete
-from project_core.utils.utils import create_person_position
 from project_core.models import ExternalProject
 from project_core.models import PersonPosition, PhysicalPerson, PersonTitle
 from project_core.utils.orcid import field_set_read_only, orcid_div
+from project_core.utils.utils import create_person_position
 
 
 class ProjectOverarchingForm(ModelForm):
@@ -31,6 +31,7 @@ class ProjectOverarchingForm(ModelForm):
     def _add_person_fields(self):
         self.fields['person__physical_person__orcid'] = forms.CharField(**get_field_information(PhysicalPerson, 'orcid',
                                                                                                 label='ORCID iD',
+                                                                                                required=True,
                                                                                                 help_text='Enter the supervisor\'s ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
                                                                                                           'Please ask the supervisor to create an <a href="https://orcid.org">ORCID iD</a> if they do not already have one.'))
 

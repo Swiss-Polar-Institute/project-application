@@ -13,9 +13,13 @@ from project_core.models import BudgetCategory, Call, TemplateQuestion, Geograph
 
 
 def create_call(funding_instrument=None):
+    if funding_instrument is None:
+        funding_instrument = create_funding_instrument()
+
     call, created = Call.objects.get_or_create(long_name='GreenLAnd Circumnavigation Expedition',
                                                call_open_date=datetime(2019, 1, 1),
                                                submission_deadline=utc.localize(datetime(2025, 1, 31)),
+                                               finance_year=2020,
                                                budget_maximum=100_000, other_funding_question=False,
                                                proposal_partner_question=True,
                                                funding_instrument=funding_instrument)
