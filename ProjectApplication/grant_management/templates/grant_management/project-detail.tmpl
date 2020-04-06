@@ -4,16 +4,18 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            <h2>{{ project.title }}</h2>
+            <h1>{{ project.title }}</h1>
             {% include 'grant_management/_project_summary-detail.tmpl' %}
             <p></p>
-            <h2>Project information<a class="float-right btn btn-primary" href="#">Edit Project Information</a></h2>
+            <h2>Project information<a class="float-right btn btn-primary"
+                                      href="{% url 'logged-grant_management-project-update' pk=project.pk %}">Edit Project
+                Information</a></h2>
             <strong>Budget allocated:</strong> {{ project.allocated_budget }} CHF<br>
             <strong>Start date:</strong> {{ project.start_date }}<br>
             <strong>End date:</strong> {{ project.end_date }}<br>
             <p></p>
-            <h2>Grant agreement<a class="float-right btn btn-primary"
-                                  href="{% url 'logged-proposal-detail' pk=10 %}">Edit Grant Management</a></h2>
+            <h2>Grant agreement<a class="float-right btn btn-primary disabled"
+                                  href="#">Edit Grant Management</a></h2>
             <strong>Agreement:</strong><br>
             <strong>Signed date:</strong><br>
             <strong>Signed:</strong><br>

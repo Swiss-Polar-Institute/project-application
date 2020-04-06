@@ -9,4 +9,7 @@ urlpatterns = [
     path('logged/grant-management/project/<int:pk>/',
          grant_management.views.ProjectDetail.as_view(),
          name='logged-grant_management-project-detail'),
+    path('logged/grant-management/project/<int:pk>/information/update/',
+         grant_management.views.ProjectBasicInformationUpdateView.as_view(),
+         name='logged-grant_management-project-update'),
 ]
