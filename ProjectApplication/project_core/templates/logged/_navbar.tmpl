@@ -24,8 +24,8 @@
                 </li>
             {% endif %}
             {% if request|request_is_management %}
-                <li>
-                    <a class="nav-link disabled" href="#">Grant management</a>
+                <li class="nav-item {% if active == 'grant_management' %}active{% endif %}">
+                    <a class=" nav-link" href="{% url 'logged-grant_management-project-list' %}">Grant management</a>
                 </li>
             {% endif %}
             {% if request|request_is_reviewer %}
