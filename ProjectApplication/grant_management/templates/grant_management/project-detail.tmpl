@@ -19,9 +19,9 @@
                                   href="{% url 'logged-grant_management-grant_agreement-add' project=project.pk %}">Edit
                 Grant
                 Management</a></h2>
-            <strong>Agreement:</strong><br>
-            <strong>Signed date:</strong><br>
-            <strong>Signed:</strong><br>
+            <strong>Agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
+            <strong>Signed date:</strong> {{ project.grantagreement.signed_date }}<br>
+            <strong>Signed by:</strong> {{ project.grantagreement.signed_by }}<br>
             <p></p>
             <h2>Finances<a class="float-right btn btn-primary disabled"
                            href="#">Edit Finances</a></h2>
