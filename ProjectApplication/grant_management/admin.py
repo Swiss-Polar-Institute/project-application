@@ -6,7 +6,7 @@ from .models import (GrantAgreement, Invoice, FinanceReport, LaySummary, License
 
 class GrantAgreementAdmin(admin.ModelAdmin):
     list_display = ('project', 'signed_date', 'signed_by', 'file')
-    fields = ['project', 'signed_date', 'signed_by', 'file']
+    fields = ['project', ('signed_date', 'signed_by'), 'file']
 
 
 class InvoiceAdmin(admin.ModelAdmin):
