@@ -40,8 +40,8 @@ class ProjectSocialMediaAdmin(admin.ModelAdmin):
 
 
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('project', 'doi', 'reference', 'title', 'date_published')
-    fields = ['project', 'doi', 'reference', 'title', 'date_published']
+    list_display = ('project', 'doi', 'reference', 'title', 'date_time_published')
+    fields = ['project', 'doi', 'reference', 'title', 'date_time_published']
 
 
 class DatasetAdmin(admin.ModelAdmin):
