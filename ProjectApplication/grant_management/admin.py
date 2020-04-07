@@ -4,7 +4,7 @@ from .models import (GrantAgreement, Invoice, FinanceReport, LaySummary, License
                      Publication, Dataset)
 
 
-class GrantAdmin(admin.ModelAdmin):
+class GrantAgreementAdmin(admin.ModelAdmin):
     list_display = ('project', 'signed_date', 'signed_by', 'file')
     fields = ['project', 'signed_date', 'signed_by', 'file']
 
@@ -50,12 +50,12 @@ class DatasetAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-admin.site.register(GrantAgreement)
-admin.site.register(Invoice)
-admin.site.register(FinanceReport)
-admin.site.register(LaySummary)
-admin.site.register(License)
-admin.site.register(Media)
-admin.site.register(ProjectSocialMedia)
-admin.site.register(Publication)
-admin.site.register(Dataset)
+admin.site.register(GrantAgreement, GrantAgreementAdmin)
+admin.site.register(Invoice, InvoiceAdmin)
+admin.site.register(FinanceReport, FinanceReportAdmin)
+admin.site.register(LaySummary, LaySummaryAdmin)
+admin.site.register(License, LicenseAdmin)
+admin.site.register(Media, MediaAdmin)
+admin.site.register(ProjectSocialMedia, ProjectSocialMediaAdmin)
+admin.site.register(Publication, PublicationAdmin)
+admin.site.register(Dataset, DatasetAdmin)
