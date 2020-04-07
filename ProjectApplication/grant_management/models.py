@@ -11,8 +11,8 @@ def grant_agreement_file_rename(instance, filename):
 
 
 class GrantAgreement(CreateModifyOn):
-    project = models.ForeignKey(Project, help_text='Project that this Grant Agreement belongs to',
-                                on_delete=models.PROTECT)
+    project = models.OneToOneField(Project, help_text='Project that this Grant Agreement belongs to',
+                                   on_delete=models.PROTECT)
     signed_date = models.DateField(help_text='Date that the grant agreement was signed', null=True, blank=True)
     signed_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the grant agreement', null=True,
                                   blank=True, on_delete=models.PROTECT)
