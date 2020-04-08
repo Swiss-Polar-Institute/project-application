@@ -15,8 +15,8 @@ class InvoiceAdmin(admin.ModelAdmin):
 
 
 class FinanceReportAdmin(admin.ModelAdmin):
-    list_display = ('sent_for_approval_date', 'signed_by', 'file')
-    fields = ['sent_for_approval_date', 'signed_by', 'file']
+    list_display = ('project', 'sent_for_approval_date', 'signed_by', 'file')
+    fields = ['project', 'sent_for_approval_date', 'signed_by', 'file']
 
 
 class LaySummaryAdmin(admin.ModelAdmin):
