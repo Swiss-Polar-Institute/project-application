@@ -26,7 +26,7 @@ class InvoiceItemForm(forms.ModelForm):
                 Div('project', hidden=True),
                 Div('id', hidden=True),
                 Div(Field('DELETE', hidden=True)),
-                css_class='row'
+                css_class='row', hidden=True
             ),
             Div(
                 Div('due_date', css_class='col-3'),
@@ -67,6 +67,9 @@ class InvoicesFormSet(BaseInlineFormSet):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.form_id = InvoicesFormSet.FORM_NAME
+
+    def get_queryset(self):
+        return super().get_queryset().order_by('-reception_date')
 
 
 InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemForm, formset=InvoicesFormSet, extra=0,
