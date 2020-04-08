@@ -7,35 +7,34 @@
             <h1>{{ project.title }}</h1>
             {% include 'grant_management/_project_summary-detail.tmpl' %}
             <p></p>
-            <h2>Project information<a class="float-right btn btn-primary"
-                                      href="{% url 'logged-grant_management-project-update' pk=project.pk %}">Edit
-                Project
-                Information</a></h2>
+            <h2>Project information <a class="btn btn-primary btn-sm"
+                                       href="{% url 'logged-grant_management-project-update' pk=project.pk %}">Edit</a>
+            </h2>
             <strong>Budget allocated:</strong> {{ project.allocated_budget }} CHF<br>
             <strong>Start date:</strong> {{ project.start_date }}<br>
             <strong>End date:</strong> {{ project.end_date }}<br>
             <p></p>
-            <h2>Grant agreement<a class="float-right btn btn-primary"
-                                  href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a></h2>
+            <h2>Grant agreement <a class="btn btn-primary btn-sm"
+                                   href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
+            </h2>
             <strong>Agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
             <strong>Signed
                 date:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_date %}<br>
             <strong>Signed
                 by:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_by %}<br>
             <p></p>
-            <h2>Finances<a class="float-right btn btn-primary"
-                           href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit
-                Finances</a></h2>
+            <h2>Finances <a class="btn btn-primary btn-sm"
+                            href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h2>
             <h3>Invoices</h3>
             {% include 'grant_management/_invoices-detail.tmpl' %}
 
             <h3>Financial report</h3>
             <p></p>
-            <h2>Project follow-up<a class="float-right btn btn-primary disabled"
-                                    href="#">Edit Follow-up</a></h2>
+            <h2>Project follow-up <a class="btn btn-primary disabled btn-sm"
+                                     href="#">Edit</a></h2>
             <p></p>
-            <h2>Deliverables and media<a class="float-right btn btn-primary disabled"
-                                         href="#">Edit Deliverables and Media</a></h2>
+            <h2>Deliverables and media <a class="btn btn-primary disabled btn-sm"
+                                          href="#">Edit</a></h2>
             <hr>
             {#            {% include 'comments/_comments-attachments.tmpl' %}#}
         </div>

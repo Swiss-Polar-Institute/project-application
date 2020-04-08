@@ -39,11 +39,11 @@ class ProjectDetail(DetailView):
         project = context['project']
 
         if hasattr(project, 'grantagreement'):
-            context['grant_agreement_button_text'] = 'Edit Grant Agreement'
+            context['grant_agreement_button_text'] = 'Edit'
             context['grant_agreement_button_url'] = reverse('logged-grant_management-grant_agreement-update',
                                                             kwargs={'pk': project.grantagreement.id})
         else:
-            context['grant_agreement_button_text'] = 'Create Grant Agreement'
+            context['grant_agreement_button_text'] = 'Create'
             context['grant_agreement_button_url'] = reverse('logged-grant_management-grant_agreement-add',
                                                             kwargs={'project': project.id})
 
