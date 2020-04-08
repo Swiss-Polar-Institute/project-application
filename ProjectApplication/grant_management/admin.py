@@ -10,8 +10,8 @@ class GrantAgreementAdmin(admin.ModelAdmin):
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('project', 'amount', 'sent_date', 'reception_date', 'due_date', 'paid_date', 'urls', 'file')
-    fields = ['project', 'amount', 'sent_date', 'reception_date', 'due_date', 'paid_date', 'urls', 'file']
+    list_display = ('project', 'amount', 'sent_date', 'reception_date', 'due_date', 'paid_date', 'file')
+    fields = ['project', 'amount', 'sent_date', 'reception_date', 'due_date', 'paid_date', 'file']
 
 
 class FinanceReportAdmin(admin.ModelAdmin):

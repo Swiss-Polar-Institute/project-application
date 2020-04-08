@@ -1,0 +1,24 @@
+{% with invoices=project.invoice_set.all %}
+    <table class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Received</th>
+            <th>Due</th>
+            <th>Sent</th>
+            <th>Paid</th>
+            <th>Amount</th>
+            <th>File</th>
+        </tr>
+        </thead>
+        {% for invoice in invoices %}
+            <tr>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.reception_date %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.due_date %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.sent_date %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.paid_date %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.amount %}</td>
+                <td>{% include 'common/_file_to_download.tmpl' with file_field=invoice.file %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endwith %}

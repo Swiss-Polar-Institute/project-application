@@ -20,4 +20,8 @@ urlpatterns = [
     path('logged/grant-management/grant-agreement/<int:pk>/update/',
          grant_management.views.GrantAgreementUpdateView.as_view(),
          name='logged-grant_management-grant_agreement-update'),
+
+    path('logged/grant-management/project/<int:project>/finances/update/',
+         grant_management.views.FinancesViewUpdate.as_view(),
+         name='logged-grant_management-finances-update')
 ]

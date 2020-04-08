@@ -1,7 +1,9 @@
+from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
 from grant_management.forms.grant_agreement import GrantAgreementForm
+from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
 from grant_management.forms.project import ProjectBasicInformationForm
 from grant_management.models import GrantAgreement
 from project_core.models import Project
@@ -139,3 +141,52 @@ class GrantAgreementUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('logged-grant_management-project-detail', kwargs={'pk': self.object.project.pk})
+
+
+class FinancesViewUpdate(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = Project.objects.get(id=kwargs['project'])
+
+        context.update({'active_section': 'grant_management',
+                        'active_subsection': 'project-list',
+                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
+
+        project = Project.objects.get(id=kwargs['project'])
+
+        # financial_reports_form = FinancialReportsForm()
+
+        context[InvoicesFormSet.FORM_NAME] = InvoicesInlineFormSet(prefix=InvoicesFormSet.FORM_NAME, instance=project)
+
+        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
+                                 {'name': 'Project detail',
+                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
+                                 {'name': 'Finances'}]
+
+        return render(request, 'grant_management/finances-form.tmpl', context)
+
+    def post(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        project = Project.objects.get(id=kwargs['project'])
+
+        invoices_form = InvoicesInlineFormSet(request.POST, prefix=InvoicesFormSet.FORM_NAME, instance=project)
+
+        if invoices_form.is_valid():
+            invoices_form.save()
+            return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': project.id}))
+
+        context.update({'active_section': 'grant_management',
+                        'active_subsection': 'project-list',
+                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
+                                 {'name': 'Project detail',
+                                  'url': reverse('logged-grant_management-project-detail',
+                                                 kwargs={'pk': project.id})},
+                                 {'name': 'Finances'}]
+
+        context[InvoicesFormSet.FORM_NAME] = invoices_form
+        context['project'] = project
+
+        return render(request, 'grant_management/finances-form.tmpl', context)

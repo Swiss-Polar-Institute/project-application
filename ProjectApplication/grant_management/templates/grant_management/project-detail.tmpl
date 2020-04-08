@@ -23,9 +23,11 @@
             <strong>Signed
                 by:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_by %}<br>
             <p></p>
-            <h2>Finances<a class="float-right btn btn-primary disabled"
-                           href="#">Edit Finances</a></h2>
+            <h2>Finances<a class="float-right btn btn-primary"
+                           href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit
+                Finances</a></h2>
             <h3>Invoices</h3>
+            {% include 'grant_management/_invoices-detail.tmpl' %}
 
             <h3>Financial report</h3>
             <p></p>
