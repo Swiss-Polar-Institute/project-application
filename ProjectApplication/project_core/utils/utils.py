@@ -75,3 +75,7 @@ def create_person_position(orcid, first_name, surname, gender=None, phd_date=Non
     person_position.save()
 
     return person_position
+
+
+def format_date(date):
+    return f'{date:%d-%m-%Y}'

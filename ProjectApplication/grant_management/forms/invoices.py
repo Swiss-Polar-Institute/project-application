@@ -5,6 +5,7 @@ from django.forms import inlineformset_factory, BaseInlineFormSet
 
 from grant_management.models import Invoice
 from project_core.models import Project
+from project_core.utils.utils import format_date
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -41,6 +42,23 @@ class InvoiceItemForm(forms.ModelForm):
                 css_class='row'
             )
         )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        project = cleaned_data['project']
+        project_starts = project.start_date
+        project_ends = project.end_date
+
+        errors = {}
+
+        if self.cleaned_data['due_date'] < project_starts:
+            errors['due_date'] = f'Due date cannot be before the project starting date ({format_date(project_starts)})'
+
+        if self.cleaned_data['reception_date'] > project_ends:
+            errors['reception_date'] = f'Reception date cannot be after project end date ({format_date(project_ends)})'
+
+        if errors:
+            raise forms.ValidationError(errors)
 
     class Meta:
         model = Invoice
