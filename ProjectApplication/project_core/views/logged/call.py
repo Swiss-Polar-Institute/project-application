@@ -168,8 +168,17 @@ class ProposalDetail(AbstractProposalDetailView):
 class CallView(TemplateView):
     template_name = 'logged/call.tmpl'
 
+    @staticmethod
+    def _cancel_url(kwargs):
+        if 'pk' in kwargs:
+            return reverse('logged-call-detail', kwargs={'pk': kwargs['pk']})
+        else:
+            return reverse('logged-call-list')
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context['cancel_url'] = CallView._cancel_url(kwargs)
 
         if 'pk' in kwargs:
             call_id = kwargs['pk']
@@ -181,6 +190,7 @@ class CallView(TemplateView):
                                                                                 prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('logged-call-update', kwargs={'pk': call_id})
             context['call_action'] = 'Edit'
+
             context['active_subsection'] = 'call-list'
 
         else:
@@ -189,6 +199,7 @@ class CallView(TemplateView):
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('logged-call-add')
             context['call_action'] = 'Create'
+
             context['active_subsection'] = 'call-add'
 
         context['active_section'] = 'calls'
@@ -202,6 +213,8 @@ class CallView(TemplateView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context['cancel_url'] = CallView._cancel_url(kwargs)
 
         new_call = False
         template_variables_form = None  # avoids warning referenced without initialization

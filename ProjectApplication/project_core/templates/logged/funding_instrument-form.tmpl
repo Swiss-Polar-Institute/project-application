@@ -17,14 +17,15 @@
                 {% include 'variable_templates/_template_variables-form.tmpl' %}
 
                 {% include 'common/_submit-button.tmpl' with value='Save Funding Instrument' %}
+                {% include 'common/_cancel-button.tmpl' with value='Cancel Edit' url=cancel_url %}
 
-                {% if pk %}
-                    <a class="btn btn-danger" href="{% url 'logged-funding-instrument-detail' pk=pk %}"
-                       role="button">Cancel Edit</a>
-                {% else %}
-                    <a class="btn btn-danger" href="{% url 'logged-funding-instrument-list' %}"
-                       role="button">Cancel Edit</a>
-                {% endif %}
+{#                {% if pk %}#}
+{#                    <a class="btn btn-danger" href="{% url 'logged-funding-instrument-detail' pk=pk %}"#}
+{#                       role="button">Cancel Edit</a>#}
+{#                {% else %}#}
+{#                    <a class="btn btn-danger" href="{% url 'logged-funding-instrument-list' %}"#}
+{#                       role="button">Cancel Edit</a>#}
+{#                {% endif %}#}
                 <p></p>
             </form>
         </div>

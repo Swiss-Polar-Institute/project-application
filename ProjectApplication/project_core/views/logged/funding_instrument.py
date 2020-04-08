@@ -49,8 +49,17 @@ class AddCrispySubmitButtonMixin:
 
 
 class FundingInstrumentView(TemplateView):
+    @staticmethod
+    def _cancel_url(kwargs):
+        if 'pk' in kwargs:
+            return reverse('logged-funding-instrument-detail', kwargs={'pk': kwargs['pk']})
+        else:
+            return reverse('logged-funding-instrument-list')
+
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context['cancel_url'] = FundingInstrumentView._cancel_url(kwargs)
 
         if 'pk' in kwargs:
             funding_instrument = FundingInstrument.objects.get(pk=kwargs['pk'])
@@ -85,12 +94,12 @@ class FundingInstrumentView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['cancel_url'] = FundingInstrumentView._cancel_url(kwargs)
+
         if 'pk' in kwargs:
             funding_instrument = FundingInstrument.objects.get(id=kwargs['pk'])
             funding_instrument_form = FundingInstrumentForm(request.POST, instance=funding_instrument,
                                                             prefix=FUNDING_INSTRUMENT_FORM_NAME)
-
-
 
         else:
             funding_instrument_form = FundingInstrumentForm(request.POST, prefix=FUNDING_INSTRUMENT_FORM_NAME)
@@ -117,21 +126,6 @@ class FundingInstrumentView(TemplateView):
         messages.error(request, 'Funding Instrument not saved. Please correct the errors in the form and try again')
 
         return render(request, 'logged/funding_instrument-form.tmpl', context)
-
-
-# class FundingInstrumentUpdateView(FundingInstrumentMixin, AddCrispySubmitButtonMixin, SuccessMessageMixin, UpdateView):
-#     template_name = 'logged/funding_instrument-form.tmpl'
-#     model = FundingInstrument
-#     success_message = 'Funding instrument updated'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#
-#         context['active_section'] = 'calls'
-#         context['active_subsection'] = 'funding-instrument-list'
-#         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
-#
-#         return context
 
 
 class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):

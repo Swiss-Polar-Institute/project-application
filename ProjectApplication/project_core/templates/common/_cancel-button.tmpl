@@ -1,2 +1,1 @@
-<input type="submit" {% if name %}name="{{ name }}"{% endif %} value="{{ value|default:"Cancel" }}"
-       class="btn btn-danger"   >
+<a class="btn btn-danger" href="{{ cancel_url }}" role="button">{{ value }}</a>
