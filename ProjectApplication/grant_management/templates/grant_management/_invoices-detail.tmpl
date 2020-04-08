@@ -1,5 +1,5 @@
 {% with invoices=project.invoice_set.all %}
-    <table class="table table-striped table-sm table-hover display">
+    <table id="invoices_table" class="table table-striped table-sm table-hover display">
         <thead>
         <tr>
             <th>Received</th>
@@ -21,4 +21,18 @@
             </tr>
         {% endfor %}
     </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#invoices_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"],
+                        [1, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                }
+            );
+        });
+    </script>
 {% endwith %}
