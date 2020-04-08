@@ -26,8 +26,8 @@ class AbstractProjectReportDates(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',
                                 on_delete=models.PROTECT)
     due_date = models.DateField(help_text='Date that the document is expected to be received', null=True, blank=True)
-    sent_date = models.DateField(help_text='Date that the document was sent')
-    reception_date = models.DateField(help_text='Date that the document was received')
+    sent_date = models.DateField(help_text='Date that the document was sent', null=True, blank=True)
+    reception_date = models.DateField(help_text='Date that the document was received', null=True, blank=True)
 
     def __str__(self):
         return f'{self.project}'

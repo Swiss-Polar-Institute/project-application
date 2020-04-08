@@ -28,8 +28,8 @@ class InvoiceItemForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('reception_date', css_class='col-3'),
                 Div('due_date', css_class='col-3'),
+                Div('reception_date', css_class='col-3'),
                 Div('sent_date', css_class='col-3'),
                 Div('paid_date', css_class='col-3'),
                 css_class='row'
@@ -54,6 +54,11 @@ class InvoiceItemForm(forms.ModelForm):
             'reception_date': XDSoftYearMonthDayPickerInput,
             'paid_date': XDSoftYearMonthDayPickerInput,
         }
+        labels = {'due_date': 'Due',
+                  'reception_date': 'Received',
+                  'sent_date': 'Sent for payment',
+                  'paid_date': 'Paid'
+                  }
 
 
 class InvoicesFormSet(BaseInlineFormSet):
