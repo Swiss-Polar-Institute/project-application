@@ -51,10 +51,10 @@ class InvoiceItemForm(forms.ModelForm):
 
         errors = {}
 
-        if self.cleaned_data['due_date'] < project_starts:
+        if cleaned_data['due_date'] is not None and cleaned_data['due_date'] < project_starts:
             errors['due_date'] = f'Due date cannot be before the project starting date ({format_date(project_starts)})'
 
-        if self.cleaned_data['reception_date'] > project_ends:
+        if cleaned_data['reception_date'] is not None and cleaned_data['reception_date'] > project_ends:
             errors['reception_date'] = f'Reception date cannot be after project end date ({format_date(project_ends)})'
 
         if errors:

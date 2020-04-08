@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
@@ -144,9 +145,15 @@ class GrantAgreementUpdateView(UpdateView):
 
 
 class FinancesViewUpdate(TemplateView):
+    @staticmethod
+    def _cancel_url(kwargs):
+        return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['project']})
+
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
         project = Project.objects.get(id=kwargs['project'])
+
+        context['cancel_url'] = FinancesViewUpdate._cancel_url(kwargs)
 
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
@@ -168,6 +175,8 @@ class FinancesViewUpdate(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['cancel_url'] = FinancesViewUpdate._cancel_url(kwargs)
+
         project = Project.objects.get(id=kwargs['project'])
 
         invoices_form = InvoicesInlineFormSet(request.POST, prefix=InvoicesFormSet.FORM_NAME, instance=project)
@@ -175,6 +184,8 @@ class FinancesViewUpdate(TemplateView):
         if invoices_form.is_valid():
             invoices_form.save()
             return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': project.id}))
+
+        messages.error(request, 'Finances not saved. Verify errors in the forms')
 
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
