@@ -25,6 +25,7 @@ class InvoiceItemForm(forms.ModelForm):
             Div(
                 Div('project', hidden=True),
                 Div('id', hidden=True),
+                Div(Field('DELETE', hidden=True)),
                 css_class='row'
             ),
             Div(
@@ -38,10 +39,6 @@ class InvoiceItemForm(forms.ModelForm):
                 Div('amount', css_class='col-6'),
                 Div('file', css_class='col-6'),
                 css_class='row'
-            ),
-            Div(
-                Div(Field('DELETE', css_class='col-12'),
-                    css_class='row')
             )
         )
 
