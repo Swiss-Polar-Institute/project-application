@@ -19,6 +19,7 @@ class InvoiceItemForm(forms.ModelForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.disable_csrf = True
 
         self.helper.layout = Layout(
             Div(

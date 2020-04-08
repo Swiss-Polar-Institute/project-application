@@ -3,7 +3,6 @@
 {% load crispy_forms_filters %}
 
 {{ invoices_form.management_form }}
-
 {% if invoices_form.non_form_errors %}
     {{ invoices_form|as_crispy_errors }}
 {% endif %}

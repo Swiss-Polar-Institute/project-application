@@ -9,13 +9,15 @@
 
             <h3>Invoices</h3>
             <form action="" enctype="multipart/form-data" method="post">
-                {% include 'grant_management/invoices-form.tmpl' %}
+                <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
+                {% include 'grant_management/_invoices-form.tmpl' %}
 
                 <h3>Financial report</h3>
                 TODO
                 {#            {% crispy finance_reports_form %}#}
                 <p></p>
                 {% include 'common/_submit-button.tmpl' with value="Save Finances" name="save_finances" %}
+                <p></p>
             </form>
         </div>
         <div class="col-2">
