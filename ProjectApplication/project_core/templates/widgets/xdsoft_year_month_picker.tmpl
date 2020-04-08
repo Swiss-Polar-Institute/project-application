@@ -4,15 +4,7 @@
     $(function () {
         $("input[name='{{ widget.name }}']").datetimepicker(
             {
-                timepicker: false,
-                format: 'm-Y',
-
-                // disables validation on leaving the widget.
-                // The format that we are using (m-Y, without the day)
-                // is not technically valid. Then on the validation process on moving the
-                // focus out it replaced the existing date with the "current date"
-                // as explained here: https://xdsoft.net/jqplugins/datetimepicker/
-                validateOnBlur: false
+                {% include 'widgets/xdsoft_year_month_picker_js_properties.tmpl' %}
             }
         );
     });

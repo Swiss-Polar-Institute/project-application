@@ -4,8 +4,7 @@
     $(function () {
         $("input[name='{{ widget.name }}']").datetimepicker(
             {
-                timepicker: false,
-                format: 'd-m-Y'
+                {% include 'widgets/xdsoft_year_month_day_picker_js_properties.tmpl' %}
             }
         );
     });

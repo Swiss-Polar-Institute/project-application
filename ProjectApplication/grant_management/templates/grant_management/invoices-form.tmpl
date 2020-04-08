@@ -28,9 +28,39 @@
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 
+    function addedRow(row) {
+        $(row).find('.xdsoftyearmonthdaypickerinput').each(function (i, value) {
+                $(value).datetimepicker(
+                    {
+                        {% include 'widgets/xdsoft_year_month_day_picker_js_properties.tmpl' %}
+                    }
+                );
+            }
+        );
+
+        $(row).find('.xdsoftyearmonthpickerinput').each(function (i, value) {
+                $(value).datetimepicker(
+                    {
+                        {% include 'widgets/xdsoft_year_month_picker_js_properties.tmpl' %}
+                    }
+                );
+            }
+        );
+
+        $(row).find('.xdsoftyearmonthdayhourminutepickerinput').each(function (i, value) {
+                $(value).datetimepicker(
+                    {
+                        {% include 'widgets/xdsoft_year_month_day_hour_minute_picker_js_properties.tmpl' %}
+                    }
+                );
+            }
+        );
+    }
+
     jQueryForFormset(function () {
         jQueryForFormset('#invoices_form_table tbody tr').formset({
-            prefix: '{{ invoices_form.prefix }}'
+            prefix: '{{ invoices_form.prefix }}',
+            added: addedRow
         })
     })
 </script>
