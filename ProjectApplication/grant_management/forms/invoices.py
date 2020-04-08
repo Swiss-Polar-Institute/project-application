@@ -18,6 +18,11 @@ class InvoiceItemForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['reception_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['paid_date'])
 
+        if self.instance and self.instance.paid_date is not None:
+            for widget_name in ['due_date', 'sent_date', 'reception_date']:
+                self.fields[widget_name].disabled = True
+                self.fields[widget_name].help_text = 'It cannot be changed since the invoice has a paid date'
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True
@@ -90,5 +95,5 @@ class InvoicesFormSet(BaseInlineFormSet):
         return super().get_queryset().order_by('-reception_date')
 
 
-InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemForm, formset=InvoicesFormSet, extra=0,
-                                              can_delete=True)
+InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemForm, formset=InvoicesFormSet,
+                                              min_num=1, extra=0, can_delete=True)
