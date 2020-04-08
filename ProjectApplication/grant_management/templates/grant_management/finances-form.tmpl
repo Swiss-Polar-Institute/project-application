@@ -17,6 +17,7 @@
                 {#            {% crispy finance_reports_form %}#}
                 <p></p>
                 {% include 'common/_submit-button.tmpl' with value="Save Finances" name="save_finances" %}
+                {% include 'common/_cancel-button.tmpl' with value="Cancel" url=cancel_url %}
                 <p></p>
             </form>
         </div>
