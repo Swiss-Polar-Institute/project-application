@@ -27,14 +27,18 @@
                             href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h2>
             <h3>Invoices</h3>
             {% include 'grant_management/_invoices-detail.tmpl' %}
-
+            <p></p>
             <h3>Financial reports</h3>
+            {% include 'grant_management/_financial_reports-detail.tmpl' %}
+
             <p></p>
             <h2>Project follow-up <a class="btn btn-primary disabled btn-sm"
                                      href="#">Edit</a></h2>
+            TO DO
             <p></p>
             <h2>Deliverables and media <a class="btn btn-primary disabled btn-sm"
                                           href="#">Edit</a></h2>
+            TO DO
             <hr>
             {#            {% include 'comments/_comments-attachments.tmpl' %}#}
         </div>
