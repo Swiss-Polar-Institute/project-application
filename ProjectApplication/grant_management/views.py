@@ -179,7 +179,7 @@ class FinancesViewUpdate(TemplateView):
 
         project = Project.objects.get(id=kwargs['project'])
 
-        invoices_form = InvoicesInlineFormSet(request.POST, prefix=InvoicesFormSet.FORM_NAME, instance=project)
+        invoices_form = InvoicesInlineFormSet(request.POST, request.FILES, prefix=InvoicesFormSet.FORM_NAME, instance=project)
 
         if invoices_form.is_valid():
             invoices_form.save()

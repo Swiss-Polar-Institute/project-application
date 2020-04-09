@@ -19,12 +19,14 @@ class InvoiceItemForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['paid_date'])
 
         if self.instance and self.instance.paid_date is not None:
-            for widget_name in ['due_date', 'sent_date', 'reception_date']:
+            for widget_name in ['due_date', 'sent_date', 'reception_date', 'file', 'amount']:
                 self.fields[widget_name].disabled = True
                 self.fields[widget_name].help_text = 'It cannot be changed since the invoice has a paid date'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+        # It's included in the main formset, it avoids problems when adding new invoices and the jquery.formset.js
         self.helper.disable_csrf = True
 
         self.helper.layout = Layout(
