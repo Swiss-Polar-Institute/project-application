@@ -58,6 +58,9 @@ class InvoiceItemForm(forms.ModelForm):
 
         errors = {}
 
+        if cleaned_data['reception_date'] is None and cleaned_data['file']:
+            errors['reception_date'] = f'If the invoice is attached the received date needs to be valid'
+
         if cleaned_data['due_date'] is not None and cleaned_data['due_date'] < project_starts:
             errors['due_date'] = f'Due date cannot be before the project starting date ({format_date(project_starts)})'
 
