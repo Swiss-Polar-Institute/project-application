@@ -33,4 +33,17 @@ class BudgetItemFormTest(TestCase):
 
         budget_item_form = BudgetItemForm(data=budget_item_data)
 
+        self.assertFalse(budget_item_form.is_valid())
+
+    def test_valid_budget(self):
+        budget_item_data = dict_to_multivalue_dict(
+            {
+                'category': self._budget_categories[0].id,
+                'details': 'Trips',
+                'amount': 100
+            }
+        )
+
+        budget_item_form = BudgetItemForm(data=budget_item_data)
+
         self.assertTrue(budget_item_form.is_valid())
