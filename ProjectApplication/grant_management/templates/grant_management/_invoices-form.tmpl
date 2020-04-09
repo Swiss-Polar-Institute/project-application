@@ -23,7 +23,7 @@
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 
 <script>
-    var jQueryForFormset = $.noConflict();
+    let jQueryForFormset = $.noConflict();
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 
@@ -54,12 +54,34 @@
                 );
             }
         );
+        make_fields_writable(row);
+        hide_delete_links();
+    }
+
+    function make_fields_writable(row) {
+        $(row).find(":input").each(function (i, value) {
+            $(value).attr('disabled', false);
+        });
+    }
+
+    function hide_delete_links() {
+        // TODO: 'delete-row' comes from formset jQuery
+        $("#invoices_form_table tbody td").each(function (i, td) {
+            let can_be_deleted = $(td).find(".can_be_deleted input").val();
+
+            if (can_be_deleted === "0") {
+                $(td).find(".delete-row").each(function (i, delete_row) {
+                    $(delete_row).hide();
+                });
+            }
+        });
     }
 
     jQueryForFormset(function () {
         jQueryForFormset('#invoices_form_table tbody tr').formset({
             prefix: '{{ invoices_form.prefix }}',
             added: addedRow
-        })
-    })
+        });
+        hide_delete_links();
+    });
 </script>

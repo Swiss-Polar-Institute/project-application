@@ -18,7 +18,10 @@ class InvoiceItemForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['reception_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['paid_date'])
 
+        self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
+
         if self.instance and self.instance.paid_date is not None:
+            self.fields['can_be_deleted'].initial = 0
             for widget_name in ['due_date', 'sent_date', 'reception_date', 'file', 'amount']:
                 self.fields[widget_name].disabled = True
                 self.fields[widget_name].help_text = 'It cannot be changed since the invoice has a paid date'
@@ -34,6 +37,7 @@ class InvoiceItemForm(forms.ModelForm):
                 Div('project', hidden=True),
                 Div('id', hidden=True),
                 Div(Field('DELETE', hidden=True)),
+                Div('can_be_deleted', hidden=True, css_class='can_be_deleted'),
                 css_class='row', hidden=True
             ),
             Div(
@@ -60,6 +64,9 @@ class InvoiceItemForm(forms.ModelForm):
 
         if cleaned_data['reception_date'] is None and cleaned_data['file']:
             errors['reception_date'] = f'If the invoice is attached the received date needs to be valid'
+
+        if cleaned_data['file'] is None and cleaned_data['paid_date']:
+            errors['paid_date'] = f'Paid date cannot be written if the invoice is not attached'
 
         if cleaned_data['due_date'] is not None and cleaned_data['due_date'] < project_starts:
             errors['due_date'] = f'Due date cannot be before the project starting date ({format_date(project_starts)})'
@@ -97,7 +104,7 @@ class InvoicesFormSet(BaseInlineFormSet):
         self.helper.form_id = InvoicesFormSet.FORM_NAME
 
     def get_queryset(self):
-        return super().get_queryset().order_by('-reception_date')
+        return super().get_queryset().order_by('reception_date')
 
 
 InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemForm, formset=InvoicesFormSet,
