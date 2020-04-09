@@ -2,17 +2,17 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 
-{{ invoices_form.management_form }}
-{% if invoices_form.non_form_errors %}
-    {{ invoices_form|as_crispy_errors }}
+{{ form_set.management_form }}
+{% if form_set.non_form_errors %}
+    {{ form_set|as_crispy_errors }}
 {% endif %}
 
-<table id="invoices_form_table" class="table table-striped table-sm">
+<table id="{{ form_set.prefix }}" class="table table-striped table-sm">
     <tbody>
-    {% for invoice_form in invoices_form %}
+    {% for form in form_set %}
         <tr>
             <td>
-                {% crispy invoice_form %}
+                {% crispy form %}
             </td>
         </tr>
     {% endfor %}
@@ -27,7 +27,7 @@
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 
-    function addedRow(row) {
+    function attach_xdsoft_date_time_picker(row) {
         $(row).find('.xdsoftyearmonthdaypickerinput').each(function (i, value) {
                 $(value).datetimepicker(
                     {
@@ -54,6 +54,10 @@
                 );
             }
         );
+    }
+
+    function addedRow(row) {
+        attach_xdsoft_date_time_picker(row);
         make_fields_writable(row);
         hide_delete_links();
     }
@@ -66,7 +70,7 @@
 
     function hide_delete_links() {
         // TODO: 'delete-row' comes from formset jQuery
-        $("#invoices_form_table tbody td").each(function (i, td) {
+        $("#{{ form_set.prefix }} tbody td").each(function (i, td) {
             let can_be_deleted = $(td).find(".can_be_deleted input").val();
 
             if (can_be_deleted === "0") {
@@ -78,8 +82,8 @@
     }
 
     jQueryForFormset(function () {
-        jQueryForFormset('#invoices_form_table tbody tr').formset({
-            prefix: '{{ invoices_form.prefix }}',
+        jQueryForFormset('#{{ form_set.prefix }} tbody tr').formset({
+            prefix: '{{ form_set.prefix }}',
             added: addedRow
         });
         hide_delete_links();

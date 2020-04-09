@@ -74,6 +74,8 @@ class InvoiceItemForm(forms.ModelForm):
         if cleaned_data['reception_date'] is not None and cleaned_data['reception_date'] > project_ends:
             errors['reception_date'] = f'Reception date cannot be after project end date ({format_date(project_ends)})'
 
+        # TODO: if everything is empty: return invalid form
+
         if errors:
             raise forms.ValidationError(errors)
 

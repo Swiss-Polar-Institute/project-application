@@ -10,7 +10,7 @@
             <h3>Invoices</h3>
             <form action="" enctype="multipart/form-data" method="post">
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
-                {% include 'grant_management/_invoices-form.tmpl' %}
+                {% include 'common/_dynamic_formset.tmpl' with form_set=invoices_form %}
 
                 <h3>Financial reports</h3>
                 TODO
