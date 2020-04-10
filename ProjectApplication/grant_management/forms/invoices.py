@@ -66,13 +66,15 @@ class InvoiceItemForm(forms.ModelForm):
             errors['reception_date'] = f'If the invoice is attached the received date needs to be valid'
 
         if cleaned_data['file'] is None and cleaned_data['paid_date']:
-            errors['paid_date'] = f'Paid date cannot be written if the invoice is not attached'
+            errors['file'] = f'Please attach the file for a paid invoice'
 
         if cleaned_data['due_date'] is not None and cleaned_data['due_date'] < project_starts:
-            errors['due_date'] = f'Due date cannot be before the project starting date ({format_date(project_starts)})'
+            errors[
+                'due_date'] = f'Please make sure that the due date is after the project starting date ({format_date(project_starts)})'
 
         if cleaned_data['reception_date'] is not None and cleaned_data['reception_date'] > project_ends:
-            errors['reception_date'] = f'Reception date cannot be after project end date ({format_date(project_ends)})'
+            errors[
+                'reception_date'] = f'Please make sure that the reception date is before the project ends ({format_date(project_ends)})'
 
         # TODO: review what's the minimum "Invoice" data to create an invoice
         # if cleaned_data['due_date'] is None and cleaned_data['sent_date'] is None and \
