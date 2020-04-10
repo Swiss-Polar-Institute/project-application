@@ -23,23 +23,26 @@
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 
 <script>
-    function clean_up_file_field(row) {
-        let file_input = $(row).find(".clearablefileinput");
-        let div = $(file_input).parent();
+    function clean_up_file_fields(row) {
+        let file_inputs = $(row).find(".clearablefileinput");
 
-        // Deletes all the text
-        $(div).contents()
-            .filter(function () {
-                return this.nodeType === Node.TEXT_NODE;
-            }).remove();
+        $(file_inputs).each(function (i, file_input) {
+            let div = $(file_input).parent();
 
-        $(div).find("a").remove();
+            // Deletes all the text
+            $(div).contents()
+                .filter(function () {
+                    return this.nodeType === Node.TEXT_NODE;
+                }).remove();
 
-        $(div).find(":checkbox").remove();
+            $(div).find("a").remove();
 
-        $(div).find("label").remove();
+            $(div).find(":checkbox").remove();
 
-        $(div).find("br").remove();
+            $(div).find("label").remove();
+
+            $(div).find("br").remove();
+        });
     }
 
     function attach_xdsoft_date_time_picker(row) {
@@ -71,11 +74,18 @@
         );
     }
 
+    function clean_autocomplete_fields(row) {
+        $(row).find('.select2-selection').each(function (i, value) {
+            $(value).empty();
+        })
+    }
+
     function addedRow(row) {
         attach_xdsoft_date_time_picker(row);
         make_fields_writable(row);
         hide_delete_links();
-        clean_up_file_field(row);
+        clean_up_file_fields(row);
+        clean_autocomplete_fields(row);
     }
 
     function make_fields_writable(row) {
