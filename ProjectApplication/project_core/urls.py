@@ -159,6 +159,9 @@ urlpatterns = [
     path('autocomplete/keywords/',
          common.autocomplete.KeywordsAutocomplete.as_view(create_field='name'),
          name='autocomplete-keywords'),
+    path('logged/autocomplete/physical_people/',
+         logged.autocomplete.PhysicalPersonAutocomplete.as_view(),
+         name='logged-autocomplete-physical-people'),
 
     path('raises500/', server_error),
 ]

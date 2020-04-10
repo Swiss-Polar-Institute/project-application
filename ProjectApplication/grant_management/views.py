@@ -86,7 +86,7 @@ class ProjectBasicInformationUpdateView(UpdateView):
 
 
 class GrantAgreementAddView(CreateView):
-    template_name = 'grant_management/grant_agreement-form.tmpl'
+    template_name = 'grant_management/_grant_agreement-form.tmpl'
     form_class = GrantAgreementForm
     model = GrantAgreement
 
@@ -116,7 +116,7 @@ class GrantAgreementAddView(CreateView):
 
 
 class GrantAgreementUpdateView(UpdateView):
-    template_name = 'grant_management/grant_agreement-form.tmpl'
+    template_name = 'grant_management/_grant_agreement-form.tmpl'
     form_class = GrantAgreementForm
     model = GrantAgreement
 

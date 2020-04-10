@@ -1,5 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
+from dal import autocomplete
 from django import forms
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
@@ -62,6 +63,7 @@ class FinancialReportItemForm(forms.ModelForm):
             'due_date': XDSoftYearMonthDayPickerInput,
             'sent_date': XDSoftYearMonthDayPickerInput,
             'reception_date': XDSoftYearMonthDayPickerInput,
+            'signed_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
         }
         labels = {'due_date': 'Due',
                   'reception_date': 'Received',

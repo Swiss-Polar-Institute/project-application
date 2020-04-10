@@ -1,6 +1,7 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
+from dal import autocomplete
 from django import forms
 from django.urls import reverse
 
@@ -43,4 +44,5 @@ class GrantAgreementForm(forms.ModelForm):
     class Meta:
         model = GrantAgreement
         fields = ['project', 'signed_date', 'signed_by', 'file']
-        widgets = {'signed_date': XDSoftYearMonthDayPickerInput}
+        widgets = {'signed_date': XDSoftYearMonthDayPickerInput,
+                   'signed_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
