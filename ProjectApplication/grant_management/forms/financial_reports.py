@@ -54,7 +54,22 @@ class FinancialReportItemForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        # TODO: Validate
+
+        errors = {}
+
+        if cleaned_data['file'] is None and cleaned_data['signed_by']:
+            errors['file'] = 'Report needs to be attached if it is signed'
+
+        if cleaned_data['reception_date'] is not None and cleaned_data['sent_date'] is not None and \
+                cleaned_data['reception_date'] > cleaned_data['sent_date']:
+            errors['reception_date'] = 'Received date needs to be before sent date'
+
+        # if cleaned_data['due_date'] is None and cleaned_data['sent_date'] is None and cleaned_data[
+        #     'reception_date'] is None and cleaned_data['signed_by'] is None and cleaned_data['file'] is None:
+        #     raise forms.ValidationError('Please enter more data to create the financial report')
+        #
+        if errors:
+            raise forms.ValidationError(errors)
 
     class Meta:
         model = FinancialReport
