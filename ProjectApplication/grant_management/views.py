@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
+from grant_management.forms.financial_reports import FinancialReportsFormSet, FinancialReportsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
 from grant_management.forms.project import ProjectBasicInformationForm
@@ -181,11 +182,16 @@ class FinancesViewUpdate(TemplateView):
 
         project = Project.objects.get(id=kwargs['project'])
 
-        invoices_form = InvoicesInlineFormSet(request.POST, request.FILES, prefix=InvoicesFormSet.FORM_NAME,
+        invoices_form = InvoicesInlineFormSet(request.POST, request.FILES,
+                                              prefix=InvoicesFormSet.FORM_NAME,
                                               instance=project)
+        financial_reports_form = FinancialReportsInlineFormSet(request.POST, request.FILES,
+                                                               prefix=FinancialReportsFormSet.FORM_NAME,
+                                                               instance=project)
 
-        if invoices_form.is_valid():
+        if all([invoices_form.is_valid(), financial_reports_form.is_valid()]):
             invoices_form.save()
+            financial_reports_form.save()
             return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': project.id}))
 
         messages.error(request, 'Finances not saved. Verify errors in the forms')
@@ -201,6 +207,8 @@ class FinancesViewUpdate(TemplateView):
                                  {'name': 'Finances'}]
 
         context[InvoicesFormSet.FORM_NAME] = invoices_form
+        context[FinancialReportsFormSet.FORM_NAME] = financial_reports_form
+
         context['project'] = project
 
         return render(request, 'grant_management/finances-form.tmpl', context)

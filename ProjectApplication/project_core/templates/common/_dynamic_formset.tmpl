@@ -23,13 +23,15 @@
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 
 <script>
-    let jQueryForFormset = $.noConflict();
+    {# This variable needs to be "var" (or nothing) but not const or let. The _dynamic_formset.tmpl can be included #}
+    {# multiple times in the samge page. #}
+    var jQueryForFormset = $.noConflict();
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 
     function clean_up_file_field(row) {
-        let file_input = $(row).find(".clearablefileinput")
-        let div = $(file_input).parent()
+        let file_input = $(row).find(".clearablefileinput");
+        let div = $(file_input).parent();
 
         // Deletes all the text
         $(div).contents()
@@ -37,7 +39,7 @@
                 return this.nodeType === Node.TEXT_NODE;
             }).remove();
 
-        $(div).find("a").remove()
+        $(div).find("a").remove();
 
         $(div).find(":checkbox").remove();
 
