@@ -18,11 +18,11 @@ class FinancialReportItemForm(forms.ModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
-        # if self.instance and self.instance.paid_date is not None:
-        #     self.fields['can_be_deleted'].initial = 0
-        #     for widget_name in ['due_date', 'sent_date', 'reception_date', 'file', 'amount']:
-        #         self.fields[widget_name].disabled = True
-        #         self.fields[widget_name].help_text = 'It cannot be changed since the invoice has a paid date'
+        if self.instance and self.instance.signed_by is not None:
+            self.fields['can_be_deleted'].initial = 0
+            for widget_name in ['due_date', 'sent_date', 'reception_date']:
+                self.fields[widget_name].disabled = True
+                self.fields[widget_name].help_text = 'It cannot be changed since the financial report is signed'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -42,6 +42,7 @@ class FinancialReportItemForm(forms.ModelForm):
                 Div('due_date', css_class='col-3'),
                 Div('reception_date', css_class='col-3'),
                 Div('sent_date', css_class='col-3'),
+                Div('signed_by', css_class='col-3'),
                 css_class='row'
             ),
             Div(
@@ -56,7 +57,7 @@ class FinancialReportItemForm(forms.ModelForm):
 
     class Meta:
         model = FinancialReport
-        fields = ['project', 'due_date', 'sent_date', 'reception_date', 'file']
+        fields = ['project', 'due_date', 'sent_date', 'reception_date', 'signed_by', 'file']
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'sent_date': XDSoftYearMonthDayPickerInput,
@@ -64,7 +65,7 @@ class FinancialReportItemForm(forms.ModelForm):
         }
         labels = {'due_date': 'Due',
                   'reception_date': 'Received',
-                  'sent_date': 'Sent for payment',
+                  'sent_date': 'Sent for reviewing',
                   }
 
 
