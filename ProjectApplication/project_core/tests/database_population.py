@@ -9,7 +9,7 @@ from ProjectApplication import settings
 from evaluation.models import Reviewer
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
-    Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role
+    Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role, Project
 
 
 def create_call(funding_instrument=None):
@@ -244,11 +244,27 @@ def create_proposal():
                                                  applicant=applicant,
                                                  proposal_status=proposal_status_draft,
                                                  eligibility=Proposal.ELIGIBILITYNOTCHECKED,
-                                                 call=call,
-                                                 )
+                                                 call=call)
     keywords = create_keywords()
 
     proposal.keywords.add(keywords[2])
     proposal.save()
 
     return proposal
+
+
+def create_project():
+    proposal = create_proposal()
+
+    project, _ = Project.objects.get_or_create(key='SPI-2020-001',
+                                               title='This is a test proejct',
+                                               location='Somewhere in the world',
+                                               start_date=datetime(2020, 1, 1),
+                                               end_date=datetime(2022, 10, 10),
+                                               call=proposal.call,
+                                               proposal=proposal,
+                                               allocated_budget=20_000,
+                                               status=Project.ONGOING,
+                                               principal_investigator=proposal.applicant)
+
+    return project
