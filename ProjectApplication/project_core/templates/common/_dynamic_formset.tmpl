@@ -27,6 +27,25 @@
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 
+    function clean_up_file_field(row) {
+        let file_input = $(row).find(".clearablefileinput")
+        let div = $(file_input).parent()
+
+        // Deletes all the text
+        $(div).contents()
+            .filter(function () {
+                return this.nodeType === Node.TEXT_NODE;
+            }).remove();
+
+        $(div).find("a").remove()
+
+        $(div).find(":checkbox").remove();
+
+        $(div).find("label").remove();
+
+        $(div).find("br").remove();
+    }
+
     function attach_xdsoft_date_time_picker(row) {
         $(row).find('.xdsoftyearmonthdaypickerinput').each(function (i, value) {
                 $(value).datetimepicker(
@@ -60,6 +79,7 @@
         attach_xdsoft_date_time_picker(row);
         make_fields_writable(row);
         hide_delete_links();
+        clean_up_file_field(row);
     }
 
     function make_fields_writable(row) {
