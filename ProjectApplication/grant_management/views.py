@@ -164,6 +164,8 @@ class FinancesViewUpdate(TemplateView):
         # financial_reports_form = FinancialReportsForm()
 
         context[InvoicesFormSet.FORM_NAME] = InvoicesInlineFormSet(prefix=InvoicesFormSet.FORM_NAME, instance=project)
+        context[FinancialReportsFormSet.FORM_NAME] = FinancialReportsInlineFormSet(
+            prefix=FinancialReportsFormSet.FORM_NAME, instance=project)
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
                                  {'name': 'Project detail',
@@ -179,7 +181,8 @@ class FinancesViewUpdate(TemplateView):
 
         project = Project.objects.get(id=kwargs['project'])
 
-        invoices_form = InvoicesInlineFormSet(request.POST, request.FILES, prefix=InvoicesFormSet.FORM_NAME, instance=project)
+        invoices_form = InvoicesInlineFormSet(request.POST, request.FILES, prefix=InvoicesFormSet.FORM_NAME,
+                                              instance=project)
 
         if invoices_form.is_valid():
             invoices_form.save()

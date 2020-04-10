@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import (GrantAgreement, Invoice, FinanceReport, LaySummary, License, Media, ProjectSocialMedia,
+from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Media, ProjectSocialMedia,
                      Publication, Dataset)
 
 
@@ -12,7 +12,7 @@ class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('project', 'amount', 'sent_date', 'reception_date', 'due_date', 'paid_date', 'file')
 
 
-class FinanceReportAdmin(admin.ModelAdmin):
+class FinancialReportAdmin(admin.ModelAdmin):
     list_display = ('project', 'sent_for_approval_date', 'signed_by', 'file')
 
 
@@ -43,7 +43,7 @@ class DatasetAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(GrantAgreement, GrantAgreementAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
-admin.site.register(FinanceReport, FinanceReportAdmin)
+admin.site.register(FinancialReport, FinancialReportAdmin)
 admin.site.register(LaySummary, LaySummaryAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Media, MediaAdmin)

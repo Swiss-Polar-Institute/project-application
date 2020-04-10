@@ -7,14 +7,13 @@
             <h1>{{ project.title }}</h1>
             <h2>Finances</h2>
 
-            <h3>Invoices</h3>
             <form action="" enctype="multipart/form-data" method="post">
+                <h3>Invoices</h3>
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
                 {% include 'common/_dynamic_formset.tmpl' with form_set=invoices_form %}
 
                 <h3>Financial reports</h3>
-                TODO
-                {#            {% crispy finance_reports_form %}#}
+                {% include 'common/_dynamic_formset.tmpl' with form_set=financial_reports_form %}
                 <p></p>
                 {% include 'common/_submit-button.tmpl' with value="Save Finances" name="save_finances" %}
                 {% include 'common/_cancel-button.tmpl' with value="Cancel" url=cancel_url %}

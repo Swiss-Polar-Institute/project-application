@@ -54,7 +54,7 @@ def finance_report_file_rename(instance, filename):
     return f'grant_management/FinanceReport/ProjectId-{instance.project.id}-{filename}'
 
 
-class FinanceReport(AbstractProjectReportDates):
+class FinancialReport(AbstractProjectReportDates):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=finance_report_file_rename)
     sent_for_approval_date = models.DateField(help_text='Date that the finance report was sent for approval')
     signed_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the finance report',
