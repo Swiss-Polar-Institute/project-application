@@ -1,0 +1,16 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load git_commit %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Home</h1>
+            Welcome to <i class="fas fa-home"></i><br>
+            <h2>News</h2>
+            {% include 'logged/_news.tmpl' %}
+        </div>
+        <div class="col-2">
+
+        </div>
+    </div>
+{% endblock %}

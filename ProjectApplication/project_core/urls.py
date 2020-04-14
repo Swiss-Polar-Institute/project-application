@@ -88,8 +88,12 @@ urlpatterns = [
          name='logged-calls'),
 
     path('logged/',
-         logged.homepage.Homepage.as_view(),
-         name='logged-homepage'),
+         logged.home.Home.as_view(),
+         name='logged-home'),
+
+    path('logged/home/changelog/',
+         logged.changelog.Changelog.as_view(),
+         name='logged-changelog'),
 
     path('logged/template_question/add/',
          logged.template_question.TemplateQuestionCreateView.as_view(),

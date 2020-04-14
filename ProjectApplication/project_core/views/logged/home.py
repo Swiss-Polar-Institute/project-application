@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 from project_core.templatetags.request_is_reviewer import request_is_reviewer
 
 
-class Homepage(TemplateView):
+class Home(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -15,9 +15,9 @@ class Homepage(TemplateView):
 
         context.update({'active_section': 'home',
                         'active_subsection': 'home',
-                        'sidebar_template': 'logged/_sidebar-homepage.tmpl'
+                        'sidebar_template': 'logged/_sidebar-home.tmpl'
                         })
 
         context['breadcrumb'] = [{'name': 'Home'}]
 
-        return render(request, 'logged/homepage.tmpl', context)
+        return render(request, 'logged/home.tmpl', context)
