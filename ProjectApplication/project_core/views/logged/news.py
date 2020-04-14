@@ -8,62 +8,89 @@ from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
 
 from evaluation.models import CallEvaluation
-from project_core.models import Call
+from grant_management.models import Invoice
+from project_core.models import Call, Project
 from project_core.templatetags.request_is_reviewer import request_is_reviewer
 
 
-def create_notable_event(date, description):
+def create_news(date, description):
     return {'date': date,
             'description': mark_safe(description)
             }
 
 
-def get_notable_events():
-    notable_events = []
-    date_now = timezone.now()
-    date_1_week_ago = date_now - timedelta(days=5)
+def create_news_project(date, description, project):
+    news = create_news(date, description)
 
-    for call_open in Call.objects.filter(call_open_date__gte=date_1_week_ago):
+    project_url = reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})
+    pi_name_url = reverse('logged-person-position-detail', kwargs={'pk': project.principal_investigator.id})
+
+    news['project_title'] = mark_safe(f'<a href="{project_url}">{project.title}</a>')
+    news['pi_name'] = mark_safe(f'<a href="{pi_name_url}">{project.principal_investigator.person}</a>')
+    news['institution'] = 'Unknown'
+
+    return news
+
+
+def date_1_week_ago():
+    date_now = timezone.now()
+    return date_now - timedelta(days=5)
+
+
+def get_project_news():
+    starts = date_1_week_ago()
+
+    news = []
+
+    for invoice in Project.objects.filter(start_date__gte=starts):
+        news.append(
+            create_news_project(invoice.start_date, f'Starts',
+                                invoice)
+        )
+
+    for project in Project.objects.filter(start_date__gte=starts):
+        news.append(
+            create_news_project(project.end_date, f'Ends', project)
+        )
+
+    for invoice in Invoice.objects.filter(due_date__gte=starts):
+        news.append(
+            create_news_project(invoice.due_date, f'Invoice due', invoice.project)
+        )
+
+    return news
+
+
+def get_call_news():
+    news = []
+    starts = date_1_week_ago()
+
+    for call_open in Call.objects.filter(call_open_date__gte=starts):
         url = reverse('logged-call-detail', kwargs={'pk': call_open.id})
 
-        notable_events.append(
-            create_notable_event(call_open.call_open_date,
-                                 f'Call open: <a href="{url}">{call_open.short_name}</a>'))
+        news.append(
+            create_news(call_open.call_open_date,
+                        f'Call open: <a href="{url}">{call_open.short_name}</a>'))
 
-    for call_close in Call.objects.filter(submission_deadline__gte=date_1_week_ago):
+    for call_close in Call.objects.filter(submission_deadline__gte=starts):
         url = reverse('logged-call-detail', kwargs={'pk': call_close.id})
 
-        notable_events.append(
-            create_notable_event(call_close.submission_deadline,
-                                 f'Call close: <a href="{url}">{call_close.short_name}</a>'))
+        news.append(
+            create_news(call_close.submission_deadline,
+                        f'Call close: <a href="{url}">{call_close.short_name}</a>'))
 
-    for call_evaluation in CallEvaluation.objects.filter(panel_date__gte=date_1_week_ago):
+    for call_evaluation in CallEvaluation.objects.filter(panel_date__gte=starts):
         url = reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id})
 
-        notable_events.append(
-            create_notable_event(call_evaluation.panel_date,
-                                 f'Panel for call <a href="{url}">{call_evaluation.call.short_name}</a>')
+        news.append(
+            create_news(call_evaluation.panel_date,
+                        f'Panel for call <a href="{url}">{call_evaluation.call.short_name}</a>')
 
         )
 
-    # for project_start in Project.objects.filter(start_date__gte=date_1_week_ago):
-    #     notable_events.append(
-    #         create_notable_event(project_start.start_date, f'Project <em>{project_start.title}</em> starts')
-    #     )
-    #
-    # for project_end in Project.objects.filter(start_date__gte=date_1_week_ago):
-    #     notable_events.append(
-    #         create_notable_event(project_end.end_date, f'Project <em>{project_end.title}</em> ends')
-    #     )
+    news.append(create_news(datetime.today(), '<strong>TODAY</strong>'))
 
-    # for invoice_due in Invoice.objects.filter(due_date__gte=date_1_week_ago):
-    #     notable_events.append(
-    #         create_notable_event(invoice_due.due_date, f'Invoice due')
-    #     )
-
-    notable_events.append(create_notable_event(datetime.today(), '<strong>TODAY</strong>'))
-
-    return notable_events
+    return news
 
 
 class News(TemplateView):
@@ -80,6 +107,7 @@ class News(TemplateView):
 
         context['breadcrumb'] = [{'name': 'News'}]
 
-        context['notable_events'] = get_notable_events()
+        context['call_news'] = get_call_news()
+        context['project_news'] = get_project_news()
 
         return render(request, 'logged/news.tmpl', context)

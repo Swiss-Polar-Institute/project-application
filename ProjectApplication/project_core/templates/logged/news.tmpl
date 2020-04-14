@@ -16,11 +16,11 @@
     <div class="tab-content">
         <div class="tab-pane fade show active" id="call" role="tabpanel">
             <h1>Calls news</h1>
-            {% include 'logged/_news_call-list.tmpl' %}
+            {% include 'logged/_news_call-list.tmpl' with news=call_news %}
         </div>
         <div class="tab-pane fade" id="projects" role="tabpanel">
             <h1>Projects news</h1>
-            {% include 'logged/_news_project-list.tmpl' %}
+            {% include 'logged/_news_project-list.tmpl' with news=project_news %}
         </div>
     </div>
     &nbsp;

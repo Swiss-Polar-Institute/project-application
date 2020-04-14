@@ -1,0 +1,7 @@
+{% if project.proposal %}
+    <a class="btn btn-primary" href="{% url 'logged-proposal-detail' pk=project.proposal.id %}">View
+        Proposal</a>
+{% else %}
+    <a class="btn btn-primary disabled" href="#">View
+        Proposal</a><br><em>(project not created from a proposal)</em>
+{% endif %}

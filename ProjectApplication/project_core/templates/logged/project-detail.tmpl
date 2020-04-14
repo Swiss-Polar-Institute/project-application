@@ -50,8 +50,7 @@
             {% include 'comments/_comments-attachments.tmpl' %}
         </div>
         <div class="col-2">
-            <a class="btn btn-primary" href="{% url 'logged-proposal-detail' pk=project.proposal.id %}">View
-                Proposal</a>
+            {% include 'logged/_proposal_button.tmpl' with project=project %}
         </div>
     </div>
 

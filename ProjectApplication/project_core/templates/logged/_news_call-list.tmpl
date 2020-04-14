@@ -1,4 +1,4 @@
-<table id="news-overview" class="table table-stripped table-sm table-hover display">
+<table id="call-news" class="table table-stripped table-sm table-hover display">
     <thead>
     <tr>
         <th>Event</th>
@@ -7,10 +7,10 @@
     </thead>
 
     <tbody>
-    {% for notable_event in notable_events %}
+    {% for news in call_news %}
         <tr>
-            <td>{{ notable_event.description }}</td>
-            <td data-sort="{{ notable_event.date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=notable_event.date %}</td>
+            <td>{{ news.description }}</td>
+            <td data-sort="{{ news.date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=news.date %}</td>
         </tr>
     {% endfor %}
     </tbody>
@@ -18,7 +18,7 @@
 
 <script type="text/javascript" class="init">
     $(document).ready(function () {
-        $('#news-overview').DataTable({
+        $('#call-news').DataTable({
                 "pageLength": 100,
                 "order": [[1, "asc"]]
             }

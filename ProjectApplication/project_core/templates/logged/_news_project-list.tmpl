@@ -1,1 +1,33 @@
-TODO projects
+<table id="project-news" class="table table-stripped table-sm table-hover display">
+    <thead>
+    <tr>
+        <th>PI Name</th>
+        <th>Institution</th>
+        <th>Project</th>
+        <th>Description</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for news in project_news %}
+        <tr>
+            <td>{{ news.pi_name }}</td>
+            <td>{{ news.institution }}</td>
+            <td>{{ news.project_title }}</td>
+            <td>{{ news.description }}</td>
+            <td data-sort="{{ news.date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=news.date %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript" class="init">
+    $(document).ready(function () {
+        $('#project-news').DataTable({
+                "pageLength": 100,
+                "order": [[1, "asc"]]
+            }
+        );
+    });
+</script>
