@@ -43,10 +43,11 @@ class FinancialReportItemForm(forms.ModelForm):
                 Div('due_date', css_class='col-3'),
                 Div('reception_date', css_class='col-3'),
                 Div('sent_date', css_class='col-3'),
-                Div('signed_by', css_class='col-3'),
+                Div('approval_date', css_class='col-3'),
                 css_class='row'
             ),
             Div(
+                Div('signed_by', css_class='col-6'),
                 Div('file', css_class='col-6'),
                 css_class='row'
             )
@@ -73,11 +74,12 @@ class FinancialReportItemForm(forms.ModelForm):
 
     class Meta:
         model = FinancialReport
-        fields = ['project', 'due_date', 'sent_date', 'reception_date', 'signed_by', 'file']
+        fields = ['project', 'due_date', 'sent_date', 'reception_date', 'signed_by', 'approval_date', 'file']
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'sent_date': XDSoftYearMonthDayPickerInput,
             'reception_date': XDSoftYearMonthDayPickerInput,
+            'approval_date': XDSoftYearMonthDayPickerInput,
             'signed_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
         }
         labels = {'due_date': 'Due',
@@ -103,4 +105,4 @@ class FinancialReportsFormSet(BaseInlineFormSet):
 FinancialReportsInlineFormSet = inlineformset_factory(Project, FinancialReport,
                                                       form=FinancialReportItemForm,
                                                       formset=FinancialReportsFormSet,
-                                                      min_num=1, extra=0, can_delete=True)
+                                                      extra=0, can_delete=True)

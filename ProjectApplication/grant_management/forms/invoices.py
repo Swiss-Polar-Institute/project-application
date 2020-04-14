@@ -76,6 +76,8 @@ class InvoiceItemForm(forms.ModelForm):
             errors[
                 'reception_date'] = f'Please make sure that the reception date is before the project ends ({format_date(project_ends)})'
 
+        # TODO: avoid deleting already signed invoices
+
         # TODO: review what's the minimum "Invoice" data to create an invoice
         # if cleaned_data['due_date'] is None and cleaned_data['sent_date'] is None and \
         #         cleaned_data['reception_date'] is None and cleaned_data['paid_date'] is None:
@@ -115,4 +117,4 @@ class InvoicesFormSet(BaseInlineFormSet):
 
 
 InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemForm, formset=InvoicesFormSet,
-                                              min_num=1, extra=0, can_delete=True)
+                                              extra=0, can_delete=True)
