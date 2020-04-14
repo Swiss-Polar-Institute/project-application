@@ -5,7 +5,7 @@
     <div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab">Overview</a>
+                <a class="nav-link active" id="call-tab" data-toggle="tab" href="#call" role="tab">Calls</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="projects-tab" data-toggle="tab" href="#projects" role="tab">Projects</a>
@@ -14,13 +14,13 @@
     </div>
 
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="overview" role="tabpanel">
-            <h1>Overview news</h1>
-            {% include 'logged/_news_overview-list.tmpl' %}
+        <div class="tab-pane fade show active" id="call" role="tabpanel">
+            <h1>Calls news</h1>
+            {% include 'logged/_news_call-list.tmpl' %}
         </div>
         <div class="tab-pane fade" id="projects" role="tabpanel">
             <h1>Projects news</h1>
-            {% include 'logged/_news_projects-list.tmpl' %}
+            {% include 'logged/_news_project-list.tmpl' %}
         </div>
     </div>
 {% endblock %}
