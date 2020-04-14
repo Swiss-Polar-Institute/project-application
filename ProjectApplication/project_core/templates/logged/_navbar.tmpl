@@ -10,7 +10,7 @@
         <ul class="navbar-nav mr-auto justify-content-center d-flex flex-fill">
             {% if request|request_is_management %}
                 <li class="nav-item {% if active == 'home' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'logged-home' %}">Home</a>
+                    <a class="nav-link" href="{% url 'logged-news' %}">Home</a>
                 </li>
             {% endif %}
             {% if request|request_is_management %}

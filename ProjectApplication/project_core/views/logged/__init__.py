@@ -2,7 +2,7 @@ from . import autocomplete
 from . import call
 from . import changelog
 from . import funding_instrument
-from . import home
+from . import news
 from . import lists
 from . import person_position
 from . import project

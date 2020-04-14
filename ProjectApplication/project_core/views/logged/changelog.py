@@ -18,6 +18,6 @@ class Changelog(TemplateView):
                         'sidebar_template': 'logged/_sidebar-home.tmpl'
                         })
 
-        context['breadcrumb'] = [{'name': 'Home'}]
+        context['breadcrumb'] = [{'name': 'Changelog'}]
 
         return render(request, 'logged/changelog.tmpl', context)

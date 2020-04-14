@@ -87,9 +87,9 @@ urlpatterns = [
          logged.call.CallList.as_view(),
          name='logged-calls'),
 
-    path('logged/',
-         logged.home.Home.as_view(),
-         name='logged-home'),
+    path('logged/news/',
+         logged.news.News.as_view(),
+         name='logged-news'),
 
     path('logged/home/changelog/',
          logged.changelog.Changelog.as_view(),

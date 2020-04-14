@@ -12,14 +12,14 @@ class CallFormTest(TestCase):
     def test_homepage_redirects(self):
         c = Client()
 
-        response = c.get(reverse('logged-home'))
+        response = c.get(reverse('logged-news'))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '{}?next={}'.format(reverse('accounts-login'), reverse('logged-home')))
+        self.assertEqual(response.url, '{}?next={}'.format(reverse('accounts-login'), reverse('logged-news')))
 
     def test_homepage(self):
         client = database_population.create_management_logged_client()
 
-        response = client.get(reverse('logged-home'))
+        response = client.get(reverse('logged-news'))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Homepage')
