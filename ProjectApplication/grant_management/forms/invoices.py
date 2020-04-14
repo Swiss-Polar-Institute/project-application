@@ -117,4 +117,4 @@ class InvoicesFormSet(BaseInlineFormSet):
 
 
 InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemForm, formset=InvoicesFormSet,
-                                              extra=0, can_delete=True)
+                                              min_num=1, extra=0, can_delete=True)

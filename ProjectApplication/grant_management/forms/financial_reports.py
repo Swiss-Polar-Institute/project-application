@@ -105,4 +105,4 @@ class FinancialReportsFormSet(BaseInlineFormSet):
 FinancialReportsInlineFormSet = inlineformset_factory(Project, FinancialReport,
                                                       form=FinancialReportItemForm,
                                                       formset=FinancialReportsFormSet,
-                                                      extra=0, can_delete=True)
+                                                      min_num=1, extra=0, can_delete=True)
