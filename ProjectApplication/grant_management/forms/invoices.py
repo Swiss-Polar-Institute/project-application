@@ -78,6 +78,9 @@ class InvoiceItemForm(ModelValidIfEmptyForm):
             errors[
                 'reception_date'] = f'Please make sure that the reception date is before the project ends ({format_date(project_ends)})'
 
+        if cleaned_data['DELETE'] and 'paid_date' in cleaned_data and cleaned_data['paid_date']:
+            errors['paid_date'] = 'Tried to delete a paid invoice'
+
         if errors:
             raise forms.ValidationError(errors)
 
