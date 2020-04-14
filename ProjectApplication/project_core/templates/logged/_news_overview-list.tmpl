@@ -1,0 +1,27 @@
+<table id="news-overview" class="table table-stripped table-sm table-hover display">
+    <thead>
+    <tr>
+        <th>What</th>
+        <th>Date</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    {% for notable_event in notable_events %}
+        <tr>
+            <td>{{ notable_event.description }}</td>
+            <td data-sort="{{ notable_event.date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=notable_event.date %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<script type="text/javascript" class="init">
+    $(document).ready(function () {
+        $('#news-overview').DataTable({
+                "pageLength": 100,
+                "order": [[1, "asc"]]
+            }
+        );
+    });
+</script>

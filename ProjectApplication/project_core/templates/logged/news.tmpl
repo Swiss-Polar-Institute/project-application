@@ -2,38 +2,25 @@
 {% load git_commit %}
 
 {% block contents %}
-    <div class="row">
-        <div class="col-10">
-            <h1>News</h1>
-            <table id="list-of-funding-instruments" class="table table-stripped table-sm table-hover display">
-                <thead>
-                <tr>
-                    <th>What</th>
-                    <th>Date</th>
-                </tr>
-                </thead>
+    <div>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" id="overview-tab" data-toggle="tab" href="#overview" role="tab">Overview</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="projects-tab" data-toggle="tab" href="#projects" role="tab">Projects</a>
+            </li>
+        </ul>
+    </div>
 
-                <tbody>
-                {% for notable_event in notable_events %}
-                    <tr>
-                        <td>{{ notable_event.description }}</td>
-                        <td data-sort="{{ notable_event.date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=notable_event.date %}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-
-            <script type="text/javascript" class="init">
-                $(document).ready(function () {
-                    $('table.display').DataTable({
-                            "pageLength": 100
-                        }
-                    );
-                });
-            </script>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="overview" role="tabpanel">
+            <h1>Overview news</h1>
+            {% include 'logged/_news_overview-list.tmpl' %}
         </div>
-        <div class="col-2">
-
+        <div class="tab-pane fade" id="projects" role="tabpanel">
+            <h1>Projects news</h1>
+            {% include 'logged/_news_projects-list.tmpl' %}
         </div>
     </div>
 {% endblock %}
