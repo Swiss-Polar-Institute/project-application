@@ -3,13 +3,14 @@ from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
+from grant_management.forms.valid_if_empty import ModelValidIfEmptyForm
 from grant_management.models import Invoice
 from project_core.models import Project
 from project_core.utils.utils import format_date
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
-class InvoiceItemForm(forms.ModelForm):
+class InvoiceItemForm(ModelValidIfEmptyForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -68,7 +69,8 @@ class InvoiceItemForm(forms.ModelForm):
         if cleaned_data['file'] is None and cleaned_data['paid_date']:
             errors['file'] = f'Please attach the file for a paid invoice'
 
-        if cleaned_data['due_date'] is not None and cleaned_data['due_date'] < project_starts:
+        if 'due_date' in cleaned_data and cleaned_data['due_date'] is not None and cleaned_data[
+            'due_date'] < project_starts:
             errors[
                 'due_date'] = f'Please make sure that the due date is after the project starting date ({format_date(project_starts)})'
 

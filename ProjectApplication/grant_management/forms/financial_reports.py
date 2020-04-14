@@ -4,12 +4,13 @@ from dal import autocomplete
 from django import forms
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
+from grant_management.forms.valid_if_empty import ModelValidIfEmptyForm
 from grant_management.models import FinancialReport
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
-class FinancialReportItemForm(forms.ModelForm):
+class FinancialReportItemForm(ModelValidIfEmptyForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -52,29 +53,6 @@ class FinancialReportItemForm(forms.ModelForm):
                 css_class='row'
             )
         )
-
-    def _is_empty(self):
-        # Returns True if no data has been entered (based on self.cleaned_data)
-        # This is used in order to show a Financial Report but let the user to not enter anything
-        # (so it plays easily with the jQuery modelset)
-        # TODO: avoid this
-
-        for field_name in ['due_date', 'sent_date', 'reception_date', 'signed_by', 'approval_date', 'file']:
-            if field_name in self.cleaned_data and self.cleaned_data[field_name] is not None:
-                return False
-
-        return True
-
-    def is_valid(self):
-        valid = super().is_valid()
-
-        return valid or self._is_empty()
-
-    def save(self, *args, **kwargs):
-        if self._is_empty():
-            return None
-
-        super().save(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super().clean()
