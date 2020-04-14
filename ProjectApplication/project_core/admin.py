@@ -51,8 +51,8 @@ class FundingInstrumentAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges)
 
 class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
-        'long_name', 'short_name', 'description', 'introductory_message', 'call_open_date', 'submission_deadline',
-        'budget_categories_list', 'budget_maximum', 'call_questions_list', 'other_funding_question',
+        'long_name', 'short_name', 'call_open_date', 'submission_deadline',
+        'budget_categories_list', 'budget_maximum', 'other_funding_question',
         'proposal_partner_question', 'created_on', 'modified_on',)
     ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',
                 'created_on', 'modified_on', ]

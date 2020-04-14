@@ -7,7 +7,7 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
 
-from grant_management.models import Invoice
+from evaluation.models import CallEvaluation
 from project_core.models import Call
 from project_core.templatetags.request_is_reviewer import request_is_reviewer
 
@@ -36,6 +36,15 @@ def get_notable_events():
         notable_events.append(
             create_notable_event(call_close.submission_deadline,
                                  f'Call close: <a href="{url}">{call_close.short_name}</a>'))
+
+    for call_evaluation in CallEvaluation.objects.filter(panel_date__gte=date_1_week_ago):
+        url = reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id})
+
+        notable_events.append(
+            create_notable_event(call_evaluation.panel_date,
+                                 f'Panel for call <a href="{url}">{call_evaluation.call.short_name}</a>')
+
+        )
 
     # for project_start in Project.objects.filter(start_date__gte=date_1_week_ago):
     #     notable_events.append(
