@@ -76,13 +76,6 @@ class InvoiceItemForm(forms.ModelForm):
             errors[
                 'reception_date'] = f'Please make sure that the reception date is before the project ends ({format_date(project_ends)})'
 
-        # TODO: avoid deleting already signed invoices
-
-        # TODO: review what's the minimum "Invoice" data to create an invoice
-        # if cleaned_data['due_date'] is None and cleaned_data['sent_date'] is None and \
-        #         cleaned_data['reception_date'] is None and cleaned_data['paid_date'] is None:
-        #     raise forms.ValidationError('Some dates are needed')
-
         if errors:
             raise forms.ValidationError(errors)
 
