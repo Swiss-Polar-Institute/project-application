@@ -402,7 +402,7 @@ class AbstractProposalView(TemplateView):
 
         context.update(call_context_for_template(call))
 
-        messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again')
+        messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again.')
 
         return render(request, 'common/proposal-form.tmpl', context)
 

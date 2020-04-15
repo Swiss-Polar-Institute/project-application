@@ -123,7 +123,7 @@ class FundingInstrumentView(TemplateView):
                         'active_subsection': 'funding-instrument-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        messages.error(request, 'Funding Instrument not saved. Please correct the errors in the form and try again')
+        messages.error(request, 'Funding Instrument not saved. Please correct the errors in the form and try again.')
 
         return render(request, 'logged/funding_instrument-form.tmpl', context)
 
