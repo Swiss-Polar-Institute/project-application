@@ -78,14 +78,14 @@ def get_call_news():
 
         news.append(
             create_news(call_open.call_open_date,
-                        f'Call open: <a href="{url}">{call_open.short_name}</a>'))
+                        f'Call opening: <a href="{url}">{call_open.short_name}</a>'))
 
     for call_close in Call.objects.filter(submission_deadline__gte=starts):
         url = reverse('logged-call-detail', kwargs={'pk': call_close.id})
 
         news.append(
             create_news(call_close.submission_deadline,
-                        f'Call close: <a href="{url}">{call_close.short_name}</a>'))
+                        f'Call closing: <a href="{url}">{call_close.short_name}</a>'))
 
     for call_evaluation in CallEvaluation.objects.filter(panel_date__gte=starts):
         url = reverse('logged-call-evaluation-detail', kwargs={'pk': call_evaluation.id})
