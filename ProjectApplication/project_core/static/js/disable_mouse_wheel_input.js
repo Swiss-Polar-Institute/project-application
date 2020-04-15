@@ -19,16 +19,5 @@ $(document).ready(function () {
     $(':input[type=number]').on('mousewheel', function (e) {
         $(this).blur();
     });
-
-    // $('.xdsoftyearmonthpickerinput').on('mousewheel', function (e) {
-    //     $(this).blur();
-    // });
-    // console.log('document ready 3');
-    // $('.xdsoftyearmonthdaypickerinput').on('mousewheel', function (e) {
-    //     $(this).blur();
-    // });
-    // console.log('document ready 4');
-    // $('.xdsoftyearmonthdayhourminutepickerinput').on('mousewheel', function (e) {
-    //     $(this).blur();
-    // });
+    // For the date time see the properties of the XDSoft Jquery date time widget
 });
