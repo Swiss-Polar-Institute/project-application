@@ -85,7 +85,7 @@ class FinancialReportItemForm(ModelValidIfEmptyForm):
         }
         labels = {'due_date': 'Due',
                   'reception_date': 'Received',
-                  'sent_date': 'Sent for reviewing',
+                  'sent_date': 'Sent for review',
                   }
 
 
