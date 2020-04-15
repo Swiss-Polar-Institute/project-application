@@ -53,8 +53,6 @@ class BudgetItemForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
 
-        budget_amount = 0
-
         category = BudgetCategory.objects.get(id=cleaned_data['category'])
 
         if 'amount' not in cleaned_data:
@@ -65,10 +63,10 @@ class BudgetItemForm(forms.Form):
 
         details = cleaned_data['details'] or ''
 
-        budget_amount += amount
-
-        if amount > 0 and details == '':
+        if details == '' and amount > 0:
             self.add_error('details', 'Please fill in details {}'.format(category))
+        elif details != '' and amount == 0:
+            self.add_error('amount', 'Please declare a budget amount {}'.format(category))
 
         if amount < 0:
             self.add_error('amount', 'Cannot be negative {}'.format(category))
