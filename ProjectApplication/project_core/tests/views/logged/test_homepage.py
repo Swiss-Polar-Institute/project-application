@@ -22,6 +22,6 @@ class CallFormTest(TestCase):
         response = client.get(reverse('logged-news'))
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Homepage')
+        self.assertContains(response, 'Latest News')
         self.assertContains(response, 'User:')
         self.assertContains(response, 'unittest_management')
