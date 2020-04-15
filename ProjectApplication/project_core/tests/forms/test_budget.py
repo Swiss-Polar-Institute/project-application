@@ -22,8 +22,9 @@ class BudgetItemFormTest(TestCase):
         budget_item_form = BudgetItemForm(data=budget_item_data)
 
         self.assertFalse(budget_item_form.is_valid())
+        self.assertIn('amount', budget_item_form.errors)
 
-    def test_no_amount_with_description(self):
+    def test_no_amount_with_details(self):
         budget_item_data = dict_to_multivalue_dict(
             {
                 'category': self._budget_categories[0].id,
@@ -34,6 +35,20 @@ class BudgetItemFormTest(TestCase):
         budget_item_form = BudgetItemForm(data=budget_item_data)
 
         self.assertFalse(budget_item_form.is_valid())
+        self.assertIn('amount', budget_item_form.errors)
+
+    def test_no_details_with_amount(self):
+        budget_item_data = dict_to_multivalue_dict(
+            {
+                'category': self._budget_categories[0].id,
+                'amount': '100'
+            }
+        )
+
+        budget_item_form = BudgetItemForm(data=budget_item_data)
+
+        self.assertFalse(budget_item_form.is_valid())
+        self.assertIn('details', budget_item_form.errors)
 
     def test_valid_budget(self):
         budget_item_data = dict_to_multivalue_dict(

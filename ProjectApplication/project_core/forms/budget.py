@@ -63,12 +63,10 @@ class BudgetItemForm(forms.Form):
 
         details = cleaned_data['details'] or ''
 
-        if details == '':
-            if amount > 0:
-                self.add_error('details', 'Please fill in details {}'.format(category))
-        else:
-            if amount == 0:
-                self.add_error('amount', 'Please declare a budget amount {}'.format(category))
+        if details == '' and amount > 0:
+            self.add_error('details', 'Please fill in details {}'.format(category))
+        elif details != '' and amount == 0:
+            self.add_error('amount', 'Please declare a budget amount {}'.format(category))
 
         if amount < 0:
             self.add_error('amount', 'Cannot be negative {}'.format(category))
