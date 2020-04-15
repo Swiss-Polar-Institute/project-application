@@ -44,7 +44,7 @@ class ProposalsExportCsvSummary(View):
             first_name = proposal.applicant.person.first_name
             surname = proposal.applicant.person.surname
 
-            institutions = ', '.join(proposal.applicant.organisations_ordered_by_name_str())
+            institutions = proposal.applicant.organisations_ordered_by_name_str()
             title = proposal.title
 
             keywords = proposal.keywords_enumeration()

@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
 
@@ -27,18 +26,18 @@ def create_news_project(date, description, project):
 
     news['project_title'] = mark_safe(f'<a href="{project_url}">{project.title}</a>')
     news['pi_name'] = mark_safe(f'<a href="{pi_name_url}">{project.principal_investigator.person}</a>')
-    news['institution'] = 'Unknown'
+    news['institution'] = project.principal_investigator.organisations_ordered_by_name_str()
 
     return news
 
 
-def date_1_week_ago():
-    date_now = timezone.now()
-    return date_now - timedelta(days=5)
+def date_1_week_ago(date):
+    return date - timedelta(days=5)
 
 
 def get_project_news():
-    starts = date_1_week_ago()
+    today = datetime.today()
+    starts = date_1_week_ago(today)
 
     news = []
 
@@ -58,12 +57,21 @@ def get_project_news():
             create_news_project(invoice.due_date, f'Invoice due', invoice.project)
         )
 
+    bold_today = mark_safe('<strong>TODAY</strong>')
+    news.append({'date': today,
+                 'project_title': bold_today,
+                 'pi_name': bold_today,
+                 'institution': bold_today,
+                 'description': bold_today})
+
     return news
 
 
 def get_call_news():
+    today = datetime.today()
+    starts = date_1_week_ago(today)
+
     news = []
-    starts = date_1_week_ago()
 
     for call_open in Call.objects.filter(call_open_date__gte=starts):
         url = reverse('logged-call-detail', kwargs={'pk': call_open.id})
@@ -88,7 +96,7 @@ def get_call_news():
 
         )
 
-    news.append(create_news(datetime.today(), '<strong>TODAY</strong>'))
+    news.append(create_news(today, '<strong>TODAY</strong>'))
 
     return news
 

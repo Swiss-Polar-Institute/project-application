@@ -552,7 +552,7 @@ class PersonPosition(CreateModifyOn):
             else:
                 organisations.append(organisation.organisation.long_name)
 
-        return organisations
+        return ', '.join(organisations)
 
     class Meta:
         verbose_name_plural = 'People from organisation(s)'
