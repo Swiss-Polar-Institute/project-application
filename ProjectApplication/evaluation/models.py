@@ -142,10 +142,11 @@ class CallEvaluation(CreateModifyOn):
 
     call = models.OneToOneField(Call, on_delete=models.PROTECT)
 
-    panel_date = models.DateField()
+    panel_date = models.DateField(help_text='Date on which the panel review meeting will take place')
 
     post_panel_management_table = models.FileField(storage=S3Boto3Storage(),
                                                    upload_to=post_panel_management_table_rename,
+                                                   help_text='File in which the panel review information is contained',
                                                    blank=True, null=True)
 
     closed_date = models.DateTimeField(blank=True, null=True)
