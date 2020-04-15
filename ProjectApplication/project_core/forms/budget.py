@@ -53,8 +53,6 @@ class BudgetItemForm(forms.Form):
     def clean(self):
         cleaned_data = super().clean()
 
-        budget_amount = 0
-
         category = BudgetCategory.objects.get(id=cleaned_data['category'])
 
         if 'amount' not in cleaned_data:
@@ -64,8 +62,6 @@ class BudgetItemForm(forms.Form):
             amount = cleaned_data['amount'] or 0
 
         details = cleaned_data['details'] or ''
-
-        budget_amount += amount
 
         if details == '':
             if amount > 0:
