@@ -278,6 +278,6 @@ class CallView(TemplateView):
                         'active_subsection': active_subsection,
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-        messages.error(request, 'Call not saved. Please correct the errors in the form and try again')
+        messages.error(request, 'Call not saved. Please correct the errors in the form and try again.')
 
         return render(request, 'logged/call.tmpl', context)

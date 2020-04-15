@@ -142,7 +142,7 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
             partner_orcid = form_data['person__physical_person__orcid']
 
             if partner_orcid in orcids:
-                raise forms.ValidationError('There is a duplicated partner')
+                raise forms.ValidationError('A proposal partner has been entered more than once. Use the remove button to delete the duplicated partner.')
 
             orcids.add(partner_orcid)
 
