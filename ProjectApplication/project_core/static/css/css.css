@@ -165,3 +165,9 @@ div.selector-filter {
     content: "\f105";
     font-weight: 900;
 }
+
+.unstyled-button {
+  border: none;
+  padding: 0;
+  background: none;
+}

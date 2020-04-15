@@ -6,15 +6,17 @@
     <!-- Required meta tags -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'external/bootstrap/bootstrap.min.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static '/css/css.css' %}">
-
-
+    <!-- jquery -->
     <script type="text/javascript" src="{% static 'external/jquery/jquery.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'external/popper/popper.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'external/jquery-ui/jquery-ui.css' %}">
 
+    <!-- jquery-ui for datetime picker -->
+    <script type="text/javascript" src="{% static 'external/jquery-ui/jquery-ui.min.js' %}"></script>
+
+    <!-- Bootstrap after jquery-ui: else the tooltips are the wrong ones and the API to use them is different -->
+    <script type="text/javascript" src="{% static 'external/popper/popper.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'external/bootstrap/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'external/bootstrap/bootstrap.min.css' %}">
 
     <!-- Sorting tables -->
     <link rel="stylesheet" type="text/css" href="{% static 'external/datatables/dataTables.bootstrap4.min.css' %}">
@@ -25,11 +27,6 @@
     <script type="text/javascript" src="{% static 'external/datatables/dataTables.responsive.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'external/datatables/responsive.bootstrap4.min.js' %}"></script>
 
-    <!-- jquery-ui for datetime picker -->
-    <link rel="stylesheet" type="text/css" href="{% static 'external/jquery-ui/jquery-ui.css' %}">
-    <script type="text/javascript" src="{% static 'external/jquery-ui/jquery-ui.min.js' %}"></script>
-
-
     <!-- XDSoft DateTimePicker -->
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css"
@@ -37,6 +34,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"
             integrity="sha256-FEqEelWI3WouFOo2VWP/uJfs1y8KJ++FLh2Lbqc8SJk=" crossorigin="anonymous"></script>
 
+    <!-- Local CSS and JS -->
+    <link rel="stylesheet" type="text/css" href="{% static '/css/css.css' %}">
     <script type="text/javascript" src="{% static 'js/js.js' %}"></script>
 
     <!-- Next block for django horizontal_filter in forms -->
@@ -67,6 +66,6 @@
 {% endblock %}
 {% include 'common/_cookiesalert.tmpl' %}
 <script type="text/javascript" src="{% static 'js/disable_mouse_wheel_input.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/initialise_tooltips.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/initialise_tooltips_popovers.js' %}"></script>
 </body>
 </html>

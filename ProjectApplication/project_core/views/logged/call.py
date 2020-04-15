@@ -134,6 +134,9 @@ class ProposalDetail(AbstractProposalDetailView):
 
         proposal = Proposal.objects.get(id=kwargs['pk'])
 
+        context['external_url'] = self.request.build_absolute_uri(
+            reverse('proposal-detail', kwargs={'uuid': proposal.uuid}))
+
         context.update(utils.comments_attachments_forms('logged-call-proposal-detail', proposal))
 
         context.update({'active_section': 'calls',
