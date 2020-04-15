@@ -194,7 +194,7 @@ class FinancesViewUpdate(TemplateView):
             financial_reports_form.save()
             return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': project.id}))
 
-        messages.error(request, 'Finances not saved. Verify errors in the forms')
+        messages.error(request, 'Finances not saved. Verify errors in the forms.')
 
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
