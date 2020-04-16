@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from grant_management.forms.financial_reports import FinancialReportItemForm
+from grant_management.forms.financial_reports import FinancialReportItemModelForm
 from project_core.tests import database_population
 
 
@@ -15,7 +15,7 @@ class FinancialReportItemFormTest(TestCase):
                 'due_date': datetime(2020, 1, 5)
                 }
 
-        financial_report_item_form = FinancialReportItemForm(data=data)
+        financial_report_item_form = FinancialReportItemModelForm(data=data)
 
         self.assertTrue(financial_report_item_form.is_valid())
 
@@ -25,6 +25,6 @@ class FinancialReportItemFormTest(TestCase):
                 'sent_date': datetime(2020, 1, 5)
                 }
 
-        financial_report_item_form = FinancialReportItemForm(data=data)
+        financial_report_item_form = FinancialReportItemModelForm(data=data)
 
         self.assertFalse(financial_report_item_form.is_valid())

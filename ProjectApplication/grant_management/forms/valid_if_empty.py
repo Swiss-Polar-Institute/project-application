@@ -1,7 +1,7 @@
 from django import forms
 
 
-class ModelValidIfEmptyForm(forms.ModelForm):
+class ValidIfEmptyModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         fields_allowed_empty = kwargs.pop('fields_allowed_empty', [])
         self._basic_fields = kwargs.pop('basic_fields', [])

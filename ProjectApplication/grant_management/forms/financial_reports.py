@@ -4,13 +4,13 @@ from dal import autocomplete
 from django import forms
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
-from grant_management.forms.valid_if_empty import ModelValidIfEmptyForm
+from grant_management.forms.valid_if_empty import ValidIfEmptyModelForm
 from grant_management.models import FinancialReport
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
-class FinancialReportItemForm(ModelValidIfEmptyForm):
+class FinancialReportItemModelForm(ValidIfEmptyModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          fields_allowed_empty=['due_date'],
@@ -106,6 +106,6 @@ class FinancialReportsFormSet(BaseInlineFormSet):
 
 
 FinancialReportsInlineFormSet = inlineformset_factory(Project, FinancialReport,
-                                                      form=FinancialReportItemForm,
+                                                      form=FinancialReportItemModelForm,
                                                       formset=FinancialReportsFormSet,
                                                       min_num=1, extra=0, can_delete=True)

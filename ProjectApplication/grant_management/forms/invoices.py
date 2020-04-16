@@ -3,14 +3,14 @@ from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
-from grant_management.forms.valid_if_empty import ModelValidIfEmptyForm
+from grant_management.forms.valid_if_empty import ValidIfEmptyModelForm
 from grant_management.models import Invoice
 from project_core.models import Project
 from project_core.utils.utils import format_date
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
-class InvoiceItemForm(ModelValidIfEmptyForm):
+class InvoiceItemModelForm(ValidIfEmptyModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          fields_allowed_empty=['due_date'],
@@ -116,5 +116,5 @@ class InvoicesFormSet(BaseInlineFormSet):
         return super().get_queryset().order_by('reception_date')
 
 
-InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemForm, formset=InvoicesFormSet,
+InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemModelForm, formset=InvoicesFormSet,
                                               min_num=1, extra=0, can_delete=True)
