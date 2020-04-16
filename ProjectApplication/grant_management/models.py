@@ -11,9 +11,9 @@ def grant_agreement_file_rename(instance, filename):
 
 
 class GrantAgreement(CreateModifyOn):
-    project = models.OneToOneField(Project, help_text='Project that this Grant Agreement belongs to',
+    project = models.OneToOneField(Project, help_text='Project this Grant Agreement belongs to',
                                    on_delete=models.PROTECT)
-    signed_date = models.DateField(help_text='Date that the grant agreement was signed', null=True, blank=True)
+    signed_date = models.DateField(help_text='Date the grant agreement was signed', null=True, blank=True)
     signed_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the grant agreement', null=True,
                                   blank=True, on_delete=models.PROTECT)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename)
@@ -25,9 +25,9 @@ class GrantAgreement(CreateModifyOn):
 class AbstractProjectReportDates(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',
                                 on_delete=models.PROTECT)
-    due_date = models.DateField(help_text='Date that the document is expected to be received')
-    sent_date = models.DateField(help_text='Date that the document was sent', null=True, blank=True)
-    reception_date = models.DateField(help_text='Date that the document was received', null=True, blank=True)
+    due_date = models.DateField(help_text='Date the document is expected to be received')
+    sent_date = models.DateField(help_text='Date the document was sent', null=True, blank=True)
+    reception_date = models.DateField(help_text='Date the document was received', null=True, blank=True)
 
     def __str__(self):
         return f'{self.project}'
@@ -42,7 +42,7 @@ def invoice_file_rename(instance, filename):
 
 class Invoice(AbstractProjectReportDates):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=invoice_file_rename, null=True, blank=True)
-    paid_date = models.DateField(help_text='Date that the invoice was paid', null=True, blank=True)
+    paid_date = models.DateField(help_text='Date the invoice was paid', null=True, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice (CHF)', null=True,
                                  blank=True)
 
@@ -56,7 +56,7 @@ def finance_report_file_rename(instance, filename):
 
 class FinancialReport(AbstractProjectReportDates):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=finance_report_file_rename, blank=True, null=True)
-    approval_date = models.DateField(help_text='Date that the finance report was approved',
+    approval_date = models.DateField(help_text='Date the finance report was approved',
                                      blank=True, null=True)
     signed_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the finance report',
                                   on_delete=models.PROTECT, blank=True, null=True)

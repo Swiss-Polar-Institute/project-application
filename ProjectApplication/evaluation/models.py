@@ -72,15 +72,17 @@ class ProposalEvaluation(CreateModifyOn):
     allocated_budget = models.DecimalField(help_text='Allocated budget', decimal_places=2, max_digits=10,
                                            validators=[MinValueValidator(0)], blank=True, null=True)
 
-    panel_remarks = models.TextField(blank=True, null=True)
-    feedback_to_applicant = models.TextField(blank=True, null=True)
-    panel_recommendation = models.CharField(choices=PANEL_RECOMMENDATION, max_length=7, blank=True, null=True)
-    board_decision = models.CharField(choices=BOARD_DECISION, max_length=7, blank=True, null=True)
-    decision_date = models.DateField(blank=True, null=True)
+    panel_remarks = models.TextField(help_text='Remarks made by the panel regarding the proposal', blank=True, null=True)
+    feedback_to_applicant = models.TextField(help_text="Details of the panel's feedback to the applicant", blank=True, null=True)
+    panel_recommendation = models.CharField(choices=PANEL_RECOMMENDATION, max_length=7,
+                                            help_text='Recommendation made by the panel', blank=True, null=True)
+    board_decision = models.CharField(choices=BOARD_DECISION, max_length=7, help_text='Decision made by the board', blank=True, null=True)
+    decision_date = models.DateField(help_text="Date on which the board's decision was made", blank=True, null=True)
     decision_letter = models.FileField(storage=storages.backends.s3boto3.S3Boto3Storage(),
                                        upload_to=proposal_evaluation_eligibility_letter_rename,
+                                       help_text='Decision letter file sent to applicant',
                                        blank=True, null=True)
-    decision_letter_date = models.DateField(blank=True, null=True)
+    decision_letter_date = models.DateField(help_text='Date on which the decision letter was sent', blank=True, null=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -142,10 +144,11 @@ class CallEvaluation(CreateModifyOn):
 
     call = models.OneToOneField(Call, on_delete=models.PROTECT)
 
-    panel_date = models.DateField()
+    panel_date = models.DateField(help_text='Date on which the panel review meeting will take place')
 
     post_panel_management_table = models.FileField(storage=S3Boto3Storage(),
                                                    upload_to=post_panel_management_table_rename,
+                                                   help_text='File in which the panel review information is contained',
                                                    blank=True, null=True)
 
     closed_date = models.DateTimeField(blank=True, null=True)

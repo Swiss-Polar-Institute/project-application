@@ -57,7 +57,8 @@ class ProposalEvaluationForm(forms.ModelForm):
                                                                required=True,
                                                                widget=FilteredSelectMultiple(
                                                                    is_stacked=True,
-                                                                   verbose_name='reviewers'))
+                                                                   verbose_name='reviewers'),
+                                                               help_text=self.Meta.help_texts['reviewers'])
 
         self.helper.layout = Layout(
             Div(
@@ -148,6 +149,10 @@ class ProposalEvaluationForm(forms.ModelForm):
         fields = ['proposal', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant',
                   'panel_recommendation', 'board_decision', 'decision_date', 'decision_letter',
                   'decision_letter_date']
+        help_texts = {
+            'reviewers': "Select the reviewers that you would like to review this proposal. If you cannot find the person "
+                         "you are looking for, please make sure this reviewer has been added to this call's Call Evaluation."
+        }
         widgets = {
             'proposal': forms.HiddenInput,
             'decision_date': XDSoftYearMonthDayPickerInput,

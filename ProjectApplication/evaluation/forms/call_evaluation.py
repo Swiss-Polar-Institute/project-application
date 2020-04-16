@@ -42,8 +42,9 @@ class CallEvaluationForm(forms.ModelForm):
                                                                queryset=Reviewer.objects.all(),
                                                                required=True,
                                                                widget=FilteredSelectMultiple(
-                                                                is_stacked=True,
-                                                                verbose_name='reviewers'))
+                                                                   is_stacked=True,
+                                                                   verbose_name='reviewers'),
+                                                               help_text=self.Meta.help_texts['reviewers'])
 
         self.helper.layout = Layout(
             Div(
@@ -87,6 +88,13 @@ class CallEvaluationForm(forms.ModelForm):
         model = CallEvaluation
 
         fields = ['call', 'panel_date', 'post_panel_management_table']
+
+        help_texts = {
+            'reviewers': 'Select the reviewers that you would like to be added for this call. This is everyone that '
+                         'will review individual proposals and be on the review panel. If you cannot find the person '
+                         'you are looking for, please contact Carles to add them. This is not currently possible as a '
+                         'management user.'
+        }
 
         widgets = {
             'panel_date': XDSoftYearMonthDayPickerInput
