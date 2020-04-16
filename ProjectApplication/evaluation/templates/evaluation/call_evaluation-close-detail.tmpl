@@ -7,7 +7,15 @@
                     href="{% url 'logged-call-detail' pk=call.id %}">{{ call.long_name }}</a>
             </h1>
             <br>
-            Created: {{ projects_created_count }} projects.
+            Created: {{ projects_created_count }} project{{ projects_created_count|pluralize:"s" }}
+            <ul>
+                {% for project in projects_created %}
+                    <li>
+                        {% include 'common/_person_with_orcid.tmpl' with person=project.principal_investigator %} - <a
+                            href="{% url 'logged-grant_management-project-detail' pk=project.id %}">{{ project.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
         </div>
         <div class="col-2">
         </div>

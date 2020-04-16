@@ -553,7 +553,8 @@ class CallCloseEvaluation(TemplateView):
 
         projects_created = call_evaluation.close(request.user)
 
-        context['projects_created_count'] = projects_created
+        context['projects_created_count'] = len(projects_created)
+        context['projects_created'] = projects_created
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
