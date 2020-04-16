@@ -4,7 +4,7 @@
         {% for partner in proposal.proposalpartner_set.all %}
             <tr>
                 <td>
-                    {% include 'common/_orcid_detail.tmpl' with orcid=partner.person.person.orcid %}{{ partner.person.academic_title }}
+                    {% include 'common/_orcid-icon.tmpl' with orcid=partner.person.person.orcid %}{{ partner.person.academic_title }}
                     {{ partner.person.person.first_name }}
                     {{ partner.person.person.surname }}
                     <br>

@@ -5,7 +5,7 @@
         <div class="col-10">
             <h1>Person</h1>
             <p></p>
-            <strong>Name:</strong> {% include 'common/_orcid_detail.tmpl' with orcid=person.person.orcid %}{{ person.academic_title }} {{ person.person.first_name }} {{ person.person.surname }}
+            <strong>Name:</strong> {% include 'common/_orcid-icon.tmpl' with orcid=person.person.orcid %}{{ person.academic_title }} {{ person.person.first_name }} {{ person.person.surname }}
             <br>
             <strong>Organisations:</strong>
             {% for organisation in person.organisations_ordered_by_name %}{% if not forloop.first %}, {% endif %}
