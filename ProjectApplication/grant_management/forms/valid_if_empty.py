@@ -2,6 +2,15 @@ from django import forms
 
 
 class ModelValidIfEmptyForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        fields_allowed_empty = kwargs.pop('fields_allowed_empty', [])
+        self._basic_fields = kwargs.pop('basic_fields', [])
+
+        super().__init__(*args, **kwargs)
+
+        for field_allowed_empty in fields_allowed_empty:
+            self.fields[field_allowed_empty].required = False
+
     def _is_empty(self):
         # Returns True if no data has been entered (based on self.cleaned_data)
         # This is used in order to show a Financial Report but let the user to not enter anything
@@ -9,7 +18,7 @@ class ModelValidIfEmptyForm(forms.ModelForm):
         # TODO: avoid this
 
         for field_name in self.fields:
-            if field_name in ['project', 'id', 'DELETE', 'can_be_deleted']:
+            if field_name in self._basic_fields:
                 continue
             if field_name in self.cleaned_data and self.cleaned_data[field_name] is not None:
                 return False

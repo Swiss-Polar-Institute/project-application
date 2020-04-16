@@ -12,7 +12,9 @@ from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 class InvoiceItemForm(ModelValidIfEmptyForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs,
+                         fields_allowed_empty=['due_date'],
+                         basic_fields=['project', 'id', 'DELETE', 'can_be_deleted'])
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_date'])
