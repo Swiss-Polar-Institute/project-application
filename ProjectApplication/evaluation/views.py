@@ -386,7 +386,8 @@ class CallEvaluationSummary(TemplateView):
         summary = {}
         proposals = Proposal.objects.filter(call=call)
 
-        summary['total_number_of_proposals'] = proposals.count()
+        submitted_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_SUBMITTED)
+        summary['total_number_of_submitted'] = proposals.filter(proposal_status=submitted_status).count()
         summary['total_number_of_eligible'] = proposals.filter(eligibility=Proposal.ELIGIBLE).count()
         summary['total_number_of_funded'] = proposals.filter(
             proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND).count()

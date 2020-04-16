@@ -249,6 +249,10 @@ class CallEvaluationValidationTest(TestCase):
         self._client_management = database_population.create_management_logged_client()
 
     def test_get_context_data(self):
+        proposal_submitted = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_SUBMITTED)
+        self._proposal.proposal_status = proposal_submitted
+        self._proposal.save()
+
         call_evaluation = CallEvaluation()
         call_evaluation.call = self._proposal.call
         call_evaluation.panel_date = datetime.today()
@@ -263,7 +267,7 @@ class CallEvaluationValidationTest(TestCase):
         context_data = response.context_data
         self.assertEqual(context_data['all_good'], False)
         self.assertEqual(context_data['can_close'], False)
-        self.assertEqual(context_data['total_number_of_proposals'], 1)
+        self.assertEqual(context_data['total_number_of_submitted'], 1)
         self.assertEqual(context_data['total_number_of_eligible'], 0)
         self.assertEqual(context_data['total_number_of_funded'], 0)
         self.assertEqual(context_data['total_number_of_eligible_not_funded'], 0)
@@ -281,7 +285,7 @@ class CallEvaluationValidationTest(TestCase):
         context_data = response.context_data
         self.assertEqual(context_data['all_good'], False)
         self.assertEqual(context_data['can_close'], False)
-        self.assertEqual(context_data['total_number_of_proposals'], 1)
+        self.assertEqual(context_data['total_number_of_submitted'], 1)
         self.assertEqual(context_data['total_number_of_eligible'], 1)
         self.assertEqual(context_data['total_number_of_funded'], 0)
         self.assertEqual(context_data['total_number_of_eligible_not_funded'], 1)
@@ -302,7 +306,7 @@ class CallEvaluationValidationTest(TestCase):
         context_data = response.context_data
         self.assertEqual(context_data['all_good'], False)
         self.assertEqual(context_data['can_close'], False)
-        self.assertEqual(context_data['total_number_of_proposals'], 1)
+        self.assertEqual(context_data['total_number_of_submitted'], 1)
         self.assertEqual(context_data['total_number_of_eligible'], 1)
         self.assertEqual(context_data['total_number_of_funded'], 1)
         self.assertEqual(context_data['total_number_of_eligible_not_funded'], 0)
