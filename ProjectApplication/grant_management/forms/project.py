@@ -34,6 +34,21 @@ class ProjectBasicInformationForm(forms.ModelForm):
             )
         )
 
+    def clean(self):
+        super().clean()
+
+        cd = self.cleaned_data
+
+        errors = {}
+
+        if 'start_date' in cd and 'end_date' in cd and \
+                cd['start_date'] > cd['end_date']:
+            errors['start_date'] = forms.ValidationError(
+                'Start date needs to be before the end date')
+
+        if errors:
+            raise forms.ValidationError(errors)
+
     class Meta:
         model = Project
         fields = ['start_date', 'end_date']
