@@ -1,7 +1,9 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
+from django.db.models import Sum
 from django.forms import inlineformset_factory, BaseInlineFormSet
+from django.utils.formats import number_format
 
 from grant_management.forms.valid_if_empty import ValidIfEmptyModelForm
 from grant_management.models import Invoice
@@ -57,42 +59,85 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
             )
         )
 
+    @staticmethod
+    def _total_amount_invoices_for_project(project, excluded_invoice):
+        excluded_invoice_id = None
+        if excluded_invoice:
+            excluded_invoice_id = excluded_invoice.id
+
+        amount = Invoice.objects.filter(project=project).exclude(id=excluded_invoice_id).aggregate(Sum('amount'))[
+            'amount__sum']
+        return amount or 0
+
     def clean(self):
-        cleaned_data = super().clean()
-        project = cleaned_data['project']
+        cd = super().clean()
+
+        project = cd['project']
+        DELETE = cd.get('DELETE', None)
+
         project_starts = project.start_date
         project_ends = project.end_date
 
+        due_date = cd.get('due_date', None)
+        reception_date = cd.get('reception_date', None)
+        sent_date = cd.get('sent_date', None)
+        paid_date = cd.get('paid_date', None)
+
+        amount = cd.get('amount', None)
+        file = cd.get('file', None)
+
         errors = {}
 
-        if cleaned_data['reception_date'] is None and cleaned_data['file']:
-            errors['reception_date'] = f'If the invoice is attached the received date needs to be valid'
+        if not due_date and (due_date or reception_date or sent_date or paid_date or amount or file):
+            errors['due_date'] = f'Due date is required to create an invoice'
 
-        if cleaned_data['file'] is None and cleaned_data['paid_date']:
-            errors['file'] = f'Please attach the file for a paid invoice'
+        if due_date and due_date < project_starts:
+            errors['due_date'] = f'Due date needs to be on or after project start date ({format_date(project_starts)})'
 
-        if 'due_date' in cleaned_data and cleaned_data['due_date'] is not None and cleaned_data[
-            'due_date'] < project_starts:
+        if reception_date and reception_date < project_starts:
             errors[
-                'due_date'] = f'Please make sure that the due date is after the project starting date ({format_date(project_starts)})'
+                'reception_date'] = f'Reception date needs to be after project start date ({format_date(project_starts)})'
 
-        if cleaned_data['reception_date'] is not None and cleaned_data['reception_date'] > project_ends:
-            errors[
-                'reception_date'] = f'Please make sure that the reception date is before the project ends ({format_date(project_ends)})'
+        if sent_date and reception_date and sent_date < reception_date:
+            errors['sent_date'] = f'Sent for payment date needs to be after the reception date'
 
-        if cleaned_data['DELETE'] and 'paid_date' in cleaned_data and cleaned_data['paid_date']:
-            errors['paid_date'] = 'Tried to delete a paid invoice'
+        if paid_date and sent_date and paid_date < sent_date:
+            errors['paid_date'] = f'Paid date needs to be after send for payment date'
+
+        if due_date and due_date > project_ends:
+            errors['due_date'] = f'Due date needs to be before the project ends date ({format_date(project_starts)})'
+
+        if amount:
+            amount_invoices_to_now = InvoiceItemModelForm._total_amount_invoices_for_project(project, self.instance)
+            if (amount_invoices_to_now + amount) > project.allocated_budget:
+                errors[
+                    'amount'] = f'The amount of this invoice will take this project over budget (Total invoiced until now: {number_format(amount_invoices_to_now)} CHF, Allocated budget: {number_format(project.allocated_budget)} CHF).'
+
+        if not file and reception_date:
+            errors['file'] = f'File needs to be attached if the invoice has a received date'
+
+        if not reception_date and sent_date:
+            errors['reception_date'] = f'Reception date is mandatory if the invoice is sent for payment'
+
+        if not reception_date and paid_date:
+            errors['reception_date'] = f'Reception date is mandatory if the invoice has a paid date'
+
+        if not amount and sent_date:
+            errors['amount'] = f'Amount is mandatory if the invoice is sent for payment'
+
+        if DELETE and paid_date:
+            errors['paid_date'] = 'Cannot delete a paid invoice. Delete paid date and try again'
 
         if errors:
             raise forms.ValidationError(errors)
 
     class Meta:
         model = Invoice
-        fields = ['project', 'due_date', 'sent_date', 'reception_date', 'file', 'paid_date', 'amount']
+        fields = ['project', 'due_date', 'reception_date', 'sent_date', 'paid_date', 'amount', 'file']
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
-            'sent_date': XDSoftYearMonthDayPickerInput,
             'reception_date': XDSoftYearMonthDayPickerInput,
+            'sent_date': XDSoftYearMonthDayPickerInput,
             'paid_date': XDSoftYearMonthDayPickerInput,
         }
         labels = {'due_date': 'Due',
