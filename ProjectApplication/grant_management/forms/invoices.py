@@ -29,7 +29,7 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
             self.fields['can_be_deleted'].initial = 0
             for widget_name in ['due_date', 'sent_date', 'reception_date', 'file', 'amount']:
                 self.fields[widget_name].disabled = True
-                self.fields[widget_name].help_text = 'It cannot be changed since the invoice has a paid date'
+                self.fields[widget_name].help_text = 'Date cannot be changed as the invoice has already been paid'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -98,10 +98,10 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
             errors['reception_date'] = utils.error_reception_date_too_early(project.start_date)
 
         if sent_date and reception_date and sent_date < reception_date:
-            errors['sent_date'] = f'Sent for payment date needs to be after the reception date'
+            errors['sent_date'] = f'Date sent for payment should be after the date the invoice was received'
 
         if paid_date and sent_date and paid_date < sent_date:
-            errors['paid_date'] = f'Paid date needs to be after send for payment date'
+            errors['paid_date'] = f'Date paid should be after the date the invoice was sent for payment'
 
         if due_date and due_date > project_ends:
             errors['due_date'] = utils.error_due_date_too_late(project.end_date)
@@ -113,19 +113,19 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
                     'amount'] = f'The amount of this invoice will take this project over budget (Total invoiced until now: {number_format(amount_invoices_to_now)} CHF, Allocated budget: {number_format(project.allocated_budget)} CHF).'
 
         if not file and reception_date:
-            errors['file'] = f'File needs to be attached if the invoice has a received date'
+            errors['file'] = f'Please attach the invoice file (a date received has been entered).'
 
         if not reception_date and sent_date:
-            errors['reception_date'] = f'Reception date is mandatory if the invoice is sent for payment'
+            errors['reception_date'] = f'Please enter the date the invoice was received (a date sent for payment has been entered).'
 
         if not reception_date and paid_date:
-            errors['reception_date'] = f'Reception date is mandatory if the invoice has a paid date'
+            errors['reception_date'] = f'Please enter the date the invoice was recevived (a date paid has been entered).'
 
         if not amount and sent_date:
-            errors['amount'] = f'Amount is mandatory if the invoice is sent for payment'
+            errors['amount'] = f'Please enter the invoice amount (a date sent for payment has been entered).'
 
         if DELETE and paid_date:
-            errors['paid_date'] = 'Cannot delete a paid invoice. Delete paid date and try again'
+            errors['paid_date'] = 'A paid invoice cannot be deleted. Delete the date paid and try again.'
 
         if errors:
             raise forms.ValidationError(errors)
