@@ -8,8 +8,8 @@ from django.utils.formats import number_format
 from grant_management.forms.valid_if_empty import ValidIfEmptyModelForm
 from grant_management.models import Invoice
 from project_core.models import Project
-from project_core.utils.utils import format_date
 from project_core.widgets import XDSoftYearMonthDayPickerInput
+from . import utils
 
 
 class InvoiceItemModelForm(ValidIfEmptyModelForm):
@@ -92,11 +92,10 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
             errors['due_date'] = f'Due date is required to create an invoice'
 
         if due_date and due_date < project_starts:
-            errors['due_date'] = f'Due date needs to be on or after project start date ({format_date(project_starts)})'
+            errors['due_date'] = utils.error_due_date_too_early(project_starts)
 
         if reception_date and reception_date < project_starts:
-            errors[
-                'reception_date'] = f'Reception date needs to be after project start date ({format_date(project_starts)})'
+            errors['reception_date'] = utils.error_reception_date_too_early(project.start_date)
 
         if sent_date and reception_date and sent_date < reception_date:
             errors['sent_date'] = f'Sent for payment date needs to be after the reception date'
@@ -105,7 +104,7 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
             errors['paid_date'] = f'Paid date needs to be after send for payment date'
 
         if due_date and due_date > project_ends:
-            errors['due_date'] = f'Due date needs to be before the project ends date ({format_date(project_starts)})'
+            errors['due_date'] = utils.error_due_date_too_late(project.end_date)
 
         if amount:
             amount_invoices_to_now = InvoiceItemModelForm._total_amount_invoices_for_project(project, self.instance)

@@ -8,6 +8,7 @@ from grant_management.forms.valid_if_empty import ValidIfEmptyModelForm
 from grant_management.models import FinancialReport
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
+from . import utils
 
 
 class FinancialReportItemModelForm(ValidIfEmptyModelForm):
@@ -19,6 +20,7 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['reception_date'])
+        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['approval_date'])
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
@@ -57,31 +59,61 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
         )
 
     def clean(self):
-        cleaned_data = super().clean()
+        cd = super().clean()
+
+        project = cd['project']
+        project_starts = project.start_date
+        project_ends = project.end_date
+
+        due_date = cd.get('due_date', None)
+        reception_date = cd.get('reception_date', None)
+        sent_date = cd.get('sent_date', None)
+        approval_date = cd.get('approval_date', None)
+        signed_by = cd.get('signed_date', None)
+        file = cd.get('file', None)
 
         errors = {}
 
-        if cleaned_data['file'] is None and cleaned_data['signed_by']:
-            errors['file'] = 'Report needs to be attached if it is signed'
+        if due_date and due_date < project_starts:
+            errors['due_date'] = utils.error_due_date_too_early(project.start_date)
 
-        if cleaned_data['reception_date'] is not None and cleaned_data['sent_date'] is not None and \
-                cleaned_data['reception_date'] > cleaned_data['sent_date']:
-            errors['reception_date'] = 'Received date needs to be before sent date'
+        if due_date and due_date > project_ends:
+            errors['due_date'] = utils.error_due_date_too_late(project.end_date)
 
-        # if cleaned_data['due_date'] is None and cleaned_data['sent_date'] is None and cleaned_data[
-        #     'reception_date'] is None and cleaned_data['signed_by'] is None and cleaned_data['file'] is None:
-        #     raise forms.ValidationError('Please enter more data to create the financial report')
-        #
+        if reception_date and reception_date < project_starts:
+            errors['reception_date'] = utils.error_reception_date_too_early(project.start_date)
+
+        if sent_date and reception_date and sent_date < reception_date:
+            errors['sent_date'] = 'Sent date cannot be before date received'
+
+        if approval_date and sent_date and approval_date < sent_date:
+            errors['approval_date'] = 'Approval date needs to be after send for review date'
+
+        if not signed_by and approval_date:
+            errors['signed_by'] = 'Signed by required if the report has an approval date'
+
+        if not file and reception_date:
+            errors['file'] = 'File is required if reception date is filled in'
+
+        if not reception_date and sent_date:
+            errors['reception_date'] = 'Reception date is required if send date is filled in'
+
+        if not sent_date and approval_date:
+            errors['sent_date'] = 'Send date is required if approval date is filled in'
+
+        if not approval_date and signed_by:
+            errors['approval_date'] = 'Approval date is required if the financial report is signed'
+
         if errors:
             raise forms.ValidationError(errors)
 
     class Meta:
         model = FinancialReport
-        fields = ['project', 'due_date', 'sent_date', 'reception_date', 'signed_by', 'approval_date', 'file']
+        fields = ['project', 'due_date', 'reception_date', 'sent_date', 'approval_date', 'signed_by', 'file']
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
-            'sent_date': XDSoftYearMonthDayPickerInput,
             'reception_date': XDSoftYearMonthDayPickerInput,
+            'sent_date': XDSoftYearMonthDayPickerInput,
             'approval_date': XDSoftYearMonthDayPickerInput,
             'signed_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
         }
