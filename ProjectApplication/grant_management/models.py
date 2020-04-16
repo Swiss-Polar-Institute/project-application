@@ -47,7 +47,7 @@ class Invoice(AbstractProjectReportDates):
                                  blank=True)
 
     def __str__(self):
-        return f'{self.amount}'
+        return f'Id: {self.id} Amount: {self.amount}'
 
 
 def finance_report_file_rename(instance, filename):

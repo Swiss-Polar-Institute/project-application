@@ -17,10 +17,21 @@ class ModelValidIfEmptyForm(forms.ModelForm):
         return True
 
     def save(self, *args, **kwargs):
+        """
+        -If it's empty but it has an instance id: it needs to delete this. This is in the case that the user
+        emptied an Invoice / FinancialReport / ...
+        -If it's empty but it didn't have an instance id: do nothing, this is when a user didn't input anything
+        in the form: it does nothing. The validation said that was "ok" even with the missing required fields
+        but we cannot save it.
+        -If it's not empty: save
+        """
         if self._is_empty():
+            if self.instance.id:
+                self.instance.delete()
+
             return None
 
-        super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     def is_valid(self):
         valid = super().is_valid()
