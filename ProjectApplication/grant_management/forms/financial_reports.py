@@ -28,7 +28,8 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
             self.fields['can_be_deleted'].initial = 0
             for widget_name in ['due_date', 'sent_date', 'reception_date']:
                 self.fields[widget_name].disabled = True
-                self.fields[widget_name].help_text = 'It cannot be changed since the financial report is signed'
+                self.fields[widget_name].help_text = 'The financial report can no longer can be changed as it has ' \
+                                                     'already been signed. Delete the date it was signed and try again.'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -84,25 +85,28 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
             errors['reception_date'] = utils.error_reception_date_too_early(project.start_date)
 
         if sent_date and reception_date and sent_date < reception_date:
-            errors['sent_date'] = 'Sent date cannot be before date received'
+            errors['sent_date'] = 'Date sent for approval should be after the date the financial report was received'
 
         if approval_date and sent_date and approval_date < sent_date:
-            errors['approval_date'] = 'Approval date needs to be after send for review date'
+            errors['approval_date'] = 'Date the report was approved should be after the date it was sent for approval.'
 
         if not signed_by and approval_date:
-            errors['signed_by'] = 'Signed by required if the report has an approval date'
+            errors['signed_by'] = 'Please enter who approved the report (the approval date has been entered).'
 
         if not file and reception_date:
-            errors['file'] = 'File is required if reception date is filled in'
+            errors['file'] = 'Please attach the financial report file (the date received has been entered).'
 
         if not reception_date and sent_date:
-            errors['reception_date'] = 'Reception date is required if send date is filled in'
+            errors['reception_date'] = 'Please enter the date the financial report was received (the date it was ' \
+                                       'sent for approval has been entered).'
 
         if not sent_date and approval_date:
-            errors['sent_date'] = 'Send date is required if approval date is filled in'
+            errors['sent_date'] = 'Please enter the date the financial report was sent for approval (the date it ' \
+                                  'was approved has been entered).'
 
         if not approval_date and signed_by:
-            errors['approval_date'] = 'Approval date is required if the financial report is signed'
+            errors['approval_date'] = 'Please enter the date the financial report was approved (the person who ' \
+                                      'approved it has been entered).'
 
         if errors:
             raise forms.ValidationError(errors)
