@@ -56,8 +56,6 @@ class AbstractProposalDetailView(TemplateView):
 
         context['proposal'] = proposal
 
-        context['email'] = proposal.applicant.main_email()
-
         context['questions_answers'] = []
 
         for question in call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):

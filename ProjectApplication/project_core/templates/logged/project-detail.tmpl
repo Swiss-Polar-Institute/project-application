@@ -14,9 +14,8 @@
             <p></p>
 
             <h3>Principal investigator</h3>
-            {{ project.principal_investigator.academic_title }} {{ project.principal_investigator.person }} <br>
-            <strong>Email:</strong> <a
-                href="mailto:{{ project.principal_investigator.main_email }}">{{ project.principal_investigator.main_email }} </a><br>
+            {% include 'common/_person_with_orcid.tmpl' with person=project.principal_investigator %}<br>
+            <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=project.principal_investigator.main_email %}<br>
             <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}
 
             <p></p>

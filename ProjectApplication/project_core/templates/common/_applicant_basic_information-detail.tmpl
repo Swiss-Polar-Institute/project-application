@@ -2,11 +2,10 @@
 
 <h3>Applicant</h3>
 {% with applicant=proposal.applicant %}
-    {% include 'common/_orcid-icon.tmpl' with orcid=applicant.person.orcid %} {{ applicant.academic_title }}
-    {{ applicant.person.first_name }} {{ applicant.person.surname }} (Gender:
-    {% include 'common/_value-or-dash.tmpl' with value=applicant.person.gender %})
+    {% include 'common/_person_with_orcid.tmpl' with person=applicant %}
+    (Gender: {% include 'common/_value-or-dash.tmpl' with value=applicant.person.gender %})
     <br>
-    <strong>Email:</strong> <a href="mailto:{{ email }}">{{ email }}</a>
+    <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=applicant.main_email %}
     <br>
     <strong>Organisations:</strong>
     {% include 'common/_organisation-list.tmpl' with organisations=applicant.organisations_ordered_by_name %}
