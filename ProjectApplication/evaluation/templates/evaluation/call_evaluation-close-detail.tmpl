@@ -7,7 +7,7 @@
                     href="{% url 'logged-call-detail' pk=call.id %}">{{ call.long_name }}</a>
             </h1>
             <br>
-            Created: {{ projects_created_count }} project{{ projects_created_count|pluralize:"s" }}
+            {{ projects_created_count }} project{{ projects_created_count|pluralize:"s" }} created:
             <ul>
                 {% for project in projects_created %}
                     <li>
