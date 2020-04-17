@@ -473,6 +473,8 @@ class CallEvaluationValidation(TemplateView):
         proposals_without_eligibility_set = proposals.filter(
             proposal_status__name=settings.PROPOSAL_STATUS_SUBMITTED).filter(eligibility=Proposal.ELIGIBILITYNOTCHECKED)
 
+        proposals_without_eligibility_set = proposals_without_eligibility_set.order_by('id')
+
         CallEvaluationValidation._add_call_evaluation_proposal_detail_url(
             proposals_without_eligibility_set)
 
@@ -486,6 +488,8 @@ class CallEvaluationValidation(TemplateView):
         proposals_with_decision_letter = proposals.exclude(proposalevaluation__decision_letter='').values_list('id',
                                                                                                                flat=True)
         proposals_without_decision_letter = proposals.exclude(id__in=proposals_with_decision_letter)
+
+        proposals_without_decision_letter = proposals_without_decision_letter.order_by('id')
 
         CallEvaluationValidation._add_call_evaluation_proposal_evaluation_edit_url(proposals_without_decision_letter)
 
@@ -501,6 +505,8 @@ class CallEvaluationValidation(TemplateView):
 
         proposals_without_panel_recommendation = proposals.exclude(id__in=proposals_with_panel_recommendation)
 
+        proposals_without_panel_recommendation = proposals_without_panel_recommendation.order_by('id')
+
         CallEvaluationValidation._add_call_evaluation_proposal_evaluation_edit_url(
             proposals_without_panel_recommendation)
 
@@ -515,6 +521,9 @@ class CallEvaluationValidation(TemplateView):
             proposalevaluation__board_decision__isnull=False).values_list('id', flat=True)
 
         proposals_without_board_meeting_decision = proposals.exclude(id__in=proposals_with_board_meeting_set)
+
+        proposals_without_board_meeting_decision = proposals_without_board_meeting_decision.order_by('id')
+
         CallEvaluationValidation._add_call_evaluation_proposal_evaluation_edit_url(
             proposals_without_board_meeting_decision)
 
