@@ -419,6 +419,33 @@ class CallEvaluationValidation(TemplateView):
     template_name = 'evaluation/call_evaluation-validation-detail.tmpl'
 
     @staticmethod
+    def _all_good(checks):
+        all_good = True
+        for check in checks:
+            all_good = all_good and check['ok']
+
+        return all_good
+
+    @staticmethod
+    def _add_call_evaluation_proposal_detail_url(proposals):
+        for proposal in proposals:
+            proposal.url_fix_validation_error = reverse('logged-call-evaluation-proposal-detail',
+                                                        kwargs={'pk': proposal.id})
+
+    @staticmethod
+    def _add_call_evaluation_proposal_evaluation_edit_url(proposals):
+        proposal: Proposal
+        for proposal in proposals:
+            if hasattr(proposal, 'proposalevaluation'):
+                proposal.url_fix_validation_error = reverse('logged-proposal-evaluation-update',
+                                                            kwargs={'pk': proposal.proposalevaluation.pk})
+            else:
+                # Actually logged-proposale-valuation-add also works if the proposal-evaluation is already created -
+                # we could use this one only if needed
+                proposal.url_fix_validation_error = reverse(
+                    'logged-proposal-evaluation-add') + f'?proposal={proposal.id}'
+
+    @staticmethod
     def _check_call_evaluation_is_completed(call_evaluation):
         required_fields = CallEvaluationForm(call=call_evaluation.call).fields
         del required_fields['reviewers']  # reviewers is required but it's checked on the form
@@ -446,25 +473,21 @@ class CallEvaluationValidation(TemplateView):
         proposals_without_eligibility_set = proposals.filter(
             proposal_status__name=settings.PROPOSAL_STATUS_SUBMITTED).filter(eligibility=Proposal.ELIGIBILITYNOTCHECKED)
 
+        CallEvaluationValidation._add_call_evaluation_proposal_detail_url(
+            proposals_without_eligibility_set)
+
         return {'message_problem': 'Not all submitted proposals have had their eligibility checked',
                 'message_all_good': 'All submitted proposals have had their eligibility checked',
                 'ok': proposals_without_eligibility_set.count() == 0,
                 'proposals': proposals_without_eligibility_set}
 
     @staticmethod
-    def _all_good(checks):
-        all_good = True
-        for check in checks:
-            all_good = all_good and check['ok']
-
-        return all_good
-
-    @staticmethod
     def _check_proposal_evaluations_have_letter_for_applicant(proposals):
         proposals_with_decision_letter = proposals.exclude(proposalevaluation__decision_letter='').values_list('id',
                                                                                                                flat=True)
-
         proposals_without_decision_letter = proposals.exclude(id__in=proposals_with_decision_letter)
+
+        CallEvaluationValidation._add_call_evaluation_proposal_evaluation_edit_url(proposals_without_decision_letter)
 
         return {'message_problem': 'There are proposals without a decision letter',
                 'message_all_good': 'All the proposals have a decision letter',
@@ -478,6 +501,9 @@ class CallEvaluationValidation(TemplateView):
 
         proposals_without_panel_recommendation = proposals.exclude(id__in=proposals_with_panel_recommendation)
 
+        CallEvaluationValidation._add_call_evaluation_proposal_evaluation_edit_url(
+            proposals_without_panel_recommendation)
+
         return {'message_problem': 'There are proposals without a panel recommendation',
                 'message_all_good': 'All the proposals have a panel recommendation',
                 'ok': proposals_without_panel_recommendation.count() == 0,
@@ -489,6 +515,8 @@ class CallEvaluationValidation(TemplateView):
             proposalevaluation__board_decision__isnull=False).values_list('id', flat=True)
 
         proposals_without_board_meeting_decision = proposals.exclude(id__in=proposals_with_board_meeting_set)
+        CallEvaluationValidation._add_call_evaluation_proposal_evaluation_edit_url(
+            proposals_without_board_meeting_decision)
 
         return {'message_problem': 'There are proposals without a board decision',
                 'message_all_good': 'All the proposals have a board decision',

@@ -6,8 +6,8 @@
         <ul>
             {% for proposal in item.proposals %}
                 <li>
-                    <a href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}">{{ proposal.title }}</a>
-                    - {{ proposal.applicant.person.full_name }}</li>
+                {% include 'common/_person_with_orcid.tmpl' with person=proposal.applicant %} -
+                <a href="{{ proposal.url_fix_validation_error }}">{{ proposal.title }}</a>
             {% endfor %}
         </ul>
     {% else %}
