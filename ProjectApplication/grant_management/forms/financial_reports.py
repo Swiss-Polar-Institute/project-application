@@ -29,7 +29,7 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
             for widget_name in ['due_date', 'sent_date', 'reception_date']:
                 self.fields[widget_name].disabled = True
                 self.fields[widget_name].help_text = 'The financial report can no longer can be changed as it has ' \
-                                                     'already been signed. Delete the date it was signed and try again.'
+                                                     'already been approved. Delete the date it was approved and try again.'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
