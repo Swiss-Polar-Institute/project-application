@@ -80,25 +80,16 @@
         })
     }
 
-    function addedRow(row) {
-        attach_xdsoft_date_time_picker(row);
-        make_fields_writable(row);
-        hide_delete_links();
-        clean_up_file_fields(row);
-        clean_autocomplete_fields(row);
-    }
-
     function make_fields_writable(row) {
         $(row).find(":input").each(function (i, value) {
             $(value).attr('disabled', false);
         });
     }
 
-    function hide_delete_links() {
+    function hide_delete_links(formset_prefix) {
         // TODO: 'delete-row' comes from formset jQuery
-        $("#{{ form_set.prefix }} tbody td").each(function (i, td) {
+        $("#" + formset_prefix + " tbody td").each(function (i, td) {
             let can_be_deleted = $(td).find(".can_be_deleted input").val();
-
             if (can_be_deleted === "0") {
                 $(td).find(".delete-row").each(function (i, delete_row) {
                     $(delete_row).hide();
@@ -116,8 +107,17 @@
     jQueryForFormset(function () {
         jQueryForFormset('#{{ form_set.prefix }} tbody tr').formset({
             prefix: '{{ form_set.prefix }}',
-            added: addedRow
+            added: function (row) {
+                // Not in a function because multiple _dynamic_formset.tmpl might exist and hide_delete_links are
+                // different for each one. Javascript having a global scope for the functions is a reason to have
+                // this anonymous function
+                attach_xdsoft_date_time_picker(row);
+                make_fields_writable(row);
+                hide_delete_links("{{ form_set.prefix }}");
+                clean_up_file_fields(row);
+                clean_autocomplete_fields(row);
+            }
         });
-        hide_delete_links();
+        hide_delete_links("{{ form_set.prefix }}");
     });
 </script>
