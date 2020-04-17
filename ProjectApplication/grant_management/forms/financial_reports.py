@@ -24,7 +24,7 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
-        if self.instance and self.instance.signed_by is not None:
+        if self.instance and self.instance.approved_by is not None:
             self.fields['can_be_deleted'].initial = 0
             for widget_name in ['due_date', 'sent_date', 'reception_date']:
                 self.fields[widget_name].disabled = True
@@ -53,7 +53,7 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
             ),
             Div(
                 Div('sent_date', css_class='col-4'),
-                Div('signed_by', css_class='col-4'),
+                Div('approved_by', css_class='col-4'),
                 Div('approval_date', css_class='col-4'),
                 css_class='row'
             )
@@ -70,7 +70,7 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
         reception_date = cd.get('reception_date', None)
         sent_date = cd.get('sent_date', None)
         approval_date = cd.get('approval_date', None)
-        signed_by = cd.get('signed_date', None)
+        approved_by = cd.get('approved_by', None)
         file = cd.get('file', None)
 
         errors = {}
@@ -90,8 +90,8 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
         if approval_date and sent_date and approval_date < sent_date:
             errors['approval_date'] = 'Date the report was approved should be after the date it was sent for approval.'
 
-        if not signed_by and approval_date:
-            errors['signed_by'] = 'Please enter who approved the report (the approval date has been entered).'
+        if not approved_by and approval_date:
+            errors['approved_by'] = 'Please enter who approved the report (the approval date has been entered).'
 
         if not file and reception_date:
             errors['file'] = 'Please attach the financial report file (the date received has been entered).'
@@ -104,7 +104,7 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
             errors['sent_date'] = 'Please enter the date the financial report was sent for approval (the date it ' \
                                   'was approved has been entered).'
 
-        if not approval_date and signed_by:
+        if not approval_date and approved_by:
             errors['approval_date'] = 'Please enter the date the financial report was approved (the person who ' \
                                       'approved it has been entered).'
 
@@ -113,13 +113,13 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
 
     class Meta:
         model = FinancialReport
-        fields = ['project', 'due_date', 'reception_date', 'sent_date', 'approval_date', 'signed_by', 'file']
+        fields = ['project', 'due_date', 'reception_date', 'sent_date', 'approval_date', 'approved_by', 'file']
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'reception_date': XDSoftYearMonthDayPickerInput,
             'sent_date': XDSoftYearMonthDayPickerInput,
             'approval_date': XDSoftYearMonthDayPickerInput,
-            'signed_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
+            'approved_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
         }
         labels = {'due_date': 'Due',
                   'reception_date': 'Received',

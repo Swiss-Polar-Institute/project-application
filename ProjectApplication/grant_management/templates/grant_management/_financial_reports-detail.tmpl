@@ -6,7 +6,7 @@
             <th>Received</th>
             <th>Sent for signing</th>
             <th>Approval date</th>
-            <th>Signed by</th>
+            <th>Approved by</th>
             <th>File</th>
         </tr>
         </thead>
@@ -16,7 +16,7 @@
                 <td data-sort="{{ financial_report.reception_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=financial_report.reception_date %}</td>
                 <td data-sort="{{ financial_report.sent_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=financial_report.sent_date %}</td>
                 <td data-sort="{{ financial_report.approval_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=financial_report.approval_date %}</td>
-                <td data-sort="{{ financial_report.signed_by }}">{% include 'common/_value-or-dash.tmpl' with value=financial_report.signed_by %}</td>
+                <td data-sort="{{ financial_report.approved_by }}">{% include 'common/_value-or-dash.tmpl' with value=financial_report.approved_by %}</td>
                 <td>{% include 'common/_file_to_download.tmpl' with file_field=financial_report.file %}</td>
             </tr>
         {% endfor %}

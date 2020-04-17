@@ -13,7 +13,7 @@ class InvoiceAdmin(admin.ModelAdmin):
 
 
 class FinancialReportAdmin(admin.ModelAdmin):
-    list_display = ('project', 'approval_date', 'signed_by', 'file')
+    list_display = ('project', 'approval_date', 'approved_by', 'file')
 
 
 class LaySummaryAdmin(admin.ModelAdmin):

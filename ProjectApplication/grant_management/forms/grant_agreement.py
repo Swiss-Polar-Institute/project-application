@@ -45,4 +45,4 @@ class GrantAgreementForm(forms.ModelForm):
         model = GrantAgreement
         fields = ['project', 'signed_date', 'signed_by', 'file']
         widgets = {'signed_date': XDSoftYearMonthDayPickerInput,
-                   'signed_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
+                   'approved_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}

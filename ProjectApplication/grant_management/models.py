@@ -58,8 +58,8 @@ class FinancialReport(AbstractProjectReportDates):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=finance_report_file_rename, blank=True, null=True)
     approval_date = models.DateField(help_text='Date the finance report was approved',
                                      blank=True, null=True)
-    signed_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the finance report',
-                                  on_delete=models.PROTECT, blank=True, null=True)
+    approved_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the finance report',
+                                    on_delete=models.PROTECT, blank=True, null=True)
 
 
 class LaySummary(AbstractProjectReportDates):
