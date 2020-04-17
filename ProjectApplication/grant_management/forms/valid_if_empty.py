@@ -12,15 +12,23 @@ class ValidIfEmptyModelForm(forms.ModelForm):
             self.fields[field_allowed_empty].required = False
 
     def _is_empty(self):
-        # Returns True if no data has been entered (based on self.cleaned_data)
-        # This is used in order to show a Financial Report but let the user to not enter anything
-        # (so it plays easily with the jQuery modelset)
-        # TODO: avoid this
+        """
+        Returns True if no data has been entered (based on self.data)
+        This is used in order to show a Financial Report but let the user to not enter anything
+        (so it plays easily with the jQuery modelset)
+        TODO: avoid this (changing how the initial form is done)
+        Note that this method needs to use self.data and not self.cleaned_data because
+        fields that fail the validation are removed from self.cleaned_data . E.g. if only
+        due_date is entered and is before the project starts: this method should return "False"
+        but due_date is not found in self.cleaned_data. Dealing with self.errors was considered
+        more fragile than dealing with self.data to detect if it was or not empty
+        """
 
         for field_name in self.fields:
             if field_name in self._basic_fields:
                 continue
-            if field_name in self.cleaned_data and self.cleaned_data[field_name] is not None:
+            field_name_in_data = f'{self.prefix}-{field_name}'
+            if self.data.get(field_name_in_data, '') != '':
                 return False
 
         return True
