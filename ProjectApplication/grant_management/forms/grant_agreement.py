@@ -36,7 +36,7 @@ class GrantAgreementForm(forms.ModelForm):
                 css_class='row'
             ),
             FormActions(
-                Submit('save', 'Save Call Evaluation'),
+                Submit('save', 'Save Grant Agreement'),
                 cancel_edit_button(cancel_url)
             )
         )
