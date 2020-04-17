@@ -13,6 +13,27 @@
 
             <h2>Version deployed on 17/04/2020</h2>
             <ul>
+                <li>Improved message on the disabled fields of the invoice (it doesn't say "Date cannot be changed" in
+                    the file field)
+                </li>
+                <li>
+                    Renamed "Signed by" to "Approved by" in the financial reports
+                </li>
+                <li>
+                    Fixed error where deleting the date paid of an invoice was deleting the whole invoice
+                </li>
+                <li>
+                    Hides "remove" for invoices that cannot be removed at the moment (they can be removed if the "Date
+                    paid" is deleted). This was a bug and it's to avoid accidental removal of paid invoices
+                </li>
+                <li>
+                    Fixed error where "add another" (invoice or financial report) could crete fields with red (like it
+                    had an error)
+                </li>
+            </ul>
+
+            <h2>Version deployed on 17/04/2020</h2>
+            <ul>
                 <li><strong>Stage 3: grant agreement started!</strong> Currently with the Project Information, Grant
                     Agreement and Finances
                 </li>
