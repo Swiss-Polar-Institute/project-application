@@ -46,15 +46,15 @@ class FinancialReportItemModelForm(ValidIfEmptyModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('due_date', css_class='col-3'),
-                Div('reception_date', css_class='col-3'),
-                Div('sent_date', css_class='col-3'),
-                Div('approval_date', css_class='col-3'),
+                Div('due_date', css_class='col-4'),
+                Div('reception_date', css_class='col-4'),
+                Div('file', css_class='col-4'),
                 css_class='row'
             ),
             Div(
-                Div('signed_by', css_class='col-6'),
-                Div('file', css_class='col-6'),
+                Div('sent_date', css_class='col-4'),
+                Div('signed_by', css_class='col-4'),
+                Div('approval_date', css_class='col-4'),
                 css_class='row'
             )
         )

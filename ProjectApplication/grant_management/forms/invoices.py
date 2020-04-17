@@ -3,7 +3,9 @@ from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.db.models import Sum
 from django.forms import inlineformset_factory, BaseInlineFormSet
+from django.urls import reverse
 from django.utils.formats import number_format
+from django.utils.safestring import mark_safe
 
 from grant_management.forms.valid_if_empty import ValidIfEmptyModelForm
 from grant_management.models import Invoice
@@ -46,15 +48,15 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('due_date', css_class='col-3'),
-                Div('reception_date', css_class='col-3'),
-                Div('sent_date', css_class='col-3'),
-                Div('paid_date', css_class='col-3'),
+                Div('due_date', css_class='col-4'),
+                Div('reception_date', css_class='col-4'),
+                Div('file', css_class='col-4'),
                 css_class='row'
             ),
             Div(
-                Div('amount', css_class='col-6'),
-                Div('file', css_class='col-6'),
+                Div('amount', css_class='col-4'),
+                Div('sent_date', css_class='col-4'),
+                Div('paid_date', css_class='col-4'),
                 css_class='row'
             )
         )
@@ -116,13 +118,22 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
             errors['file'] = f'Please attach the invoice file (a date received has been entered).'
 
         if not reception_date and sent_date:
-            errors['reception_date'] = f'Please enter the date the invoice was received (a date sent for payment has been entered).'
+            errors[
+                'reception_date'] = f'Please enter the date the invoice was received (a date sent for payment has been entered).'
 
         if not reception_date and paid_date:
-            errors['reception_date'] = f'Please enter the date the invoice was recevived (a date paid has been entered).'
+            errors[
+                'reception_date'] = f'Please enter the date the invoice was recevived (a date paid has been entered).'
 
         if not amount and sent_date:
             errors['amount'] = f'Please enter the invoice amount (a date sent for payment has been entered).'
+
+        if sent_date is not None and (
+                hasattr(project, 'grantagreement') is False or project.grantagreement.file is None):
+            grant_agreement_url = reverse('logged-grant_management-grant_agreement-add', kwargs={'project': project.id})
+            errors[
+                'sent_date'] = mark_safe(
+                f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
 
         if DELETE and paid_date:
             errors['paid_date'] = 'A paid invoice cannot be deleted. Delete the date paid and try again.'
