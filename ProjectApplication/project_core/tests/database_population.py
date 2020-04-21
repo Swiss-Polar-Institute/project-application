@@ -1,4 +1,5 @@
 from datetime import datetime, date
+from io import StringIO
 
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
@@ -268,3 +269,10 @@ def create_project():
                                                principal_investigator=proposal.applicant)
 
     return project
+
+
+def create_file():
+    a_file = StringIO('some file content')
+    a_file.name = 'a_file.txt'
+
+    return a_file
