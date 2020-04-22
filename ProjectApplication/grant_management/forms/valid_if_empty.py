@@ -32,7 +32,12 @@ class ValidIfEmptyModelForm(forms.ModelForm):
         for field_name in self.fields:
             if field_name in self._basic_fields:
                 continue
-            field_name_in_data = f'{self.prefix}-{field_name}'
+
+            if self.prefix is not None:
+                field_name_in_data = f'{self.prefix}-{field_name}'
+            else:
+                field_name_in_data = field_name
+
             if self.data.get(field_name_in_data, '') != '' or self.cleaned_data.get(field_name) is not None:
                 return False
 

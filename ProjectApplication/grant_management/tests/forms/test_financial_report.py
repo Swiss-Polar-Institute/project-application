@@ -3,6 +3,7 @@ from datetime import datetime
 from django.test import TestCase
 
 from grant_management.forms.financial_reports import FinancialReportItemModelForm
+from grant_management.models import FinancialReport
 from project_core.tests import database_population
 
 
@@ -15,9 +16,14 @@ class FinancialReportItemFormTest(TestCase):
                 'due_date': datetime(2020, 1, 5)
                 }
 
+        self.assertEqual(FinancialReport.objects.all().count(), 0)
         financial_report_item_form = FinancialReportItemModelForm(data=data)
 
         self.assertTrue(financial_report_item_form.is_valid())
+
+        financial_report_item_form.save()
+
+        self.assertEqual(FinancialReport.objects.all().count(), 1)
 
     def test_reception_date_after_sent_date(self):
         data = {'project': self._project,
@@ -28,3 +34,5 @@ class FinancialReportItemFormTest(TestCase):
         financial_report_item_form = FinancialReportItemModelForm(data=data)
 
         self.assertFalse(financial_report_item_form.is_valid())
+        self.assertIn('sent_date', financial_report_item_form.errors)
+
