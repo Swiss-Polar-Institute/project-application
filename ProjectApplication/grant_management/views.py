@@ -6,7 +6,7 @@ from django.views.generic import TemplateView, DetailView, UpdateView, CreateVie
 from grant_management.forms.financial_reports import FinancialReportsFormSet, FinancialReportsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
-from grant_management.forms.project import ProjectBasicInformationForm
+from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.models import GrantAgreement
 from project_core.models import Project
 
