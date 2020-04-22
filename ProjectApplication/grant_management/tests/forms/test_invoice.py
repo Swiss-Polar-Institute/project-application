@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
@@ -14,7 +14,7 @@ class InvoiceItemFormTest(TestCase):
 
     def test_valid_incomplete_invoice(self):
         data = {'project': self._project,
-                'due_date': datetime(2020, 1, 5)
+                'due_date': date(2020, 1, 5)
                 }
 
         self.assertEqual(Invoice.objects.all().count(), 0)
@@ -36,18 +36,18 @@ class InvoiceItemFormTest(TestCase):
 
     def test_valid_complete_invoice(self):
         grant_agreement = GrantAgreement(project=self._project,
-                                         signed_date=datetime(2020, 1, 4),
+                                         signed_date=date(2020, 1, 4),
                                          signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
 
         data = {'project': self._project,
-                'due_date': datetime(2020, 1, 5),
-                'reception_date': datetime(2020, 1, 6),
-                'sent_date': datetime(2020, 1, 7),
+                'due_date': date(2020, 1, 5),
+                'reception_date': date(2020, 1, 6),
+                'sent_date': date(2020, 1, 7),
                 'amount': 200,
-                'paid_date': datetime(2020, 1, 8)
+                'paid_date': date(2020, 1, 8)
                 }
         file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
 
@@ -60,14 +60,14 @@ class InvoiceItemFormTest(TestCase):
 
     def test_invalid_due_date_too_early(self):
         grant_agreement = GrantAgreement(project=self._project,
-                                         signed_date=datetime(2020, 1, 4),
+                                         signed_date=date(2020, 1, 4),
                                          signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
 
         data = {'project': self._project,
-                'due_date': datetime(2019, 12, 1),
+                'due_date': date(2019, 12, 1),
                 }
 
         self.assertEqual(Invoice.objects.all().count(), 0)
@@ -79,14 +79,14 @@ class InvoiceItemFormTest(TestCase):
 
     def test_invalid_due_date_too_late(self):
         grant_agreement = GrantAgreement(project=self._project,
-                                         signed_date=datetime(2020, 1, 4),
+                                         signed_date=date(2020, 1, 4),
                                          signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
 
         data = {'project': self._project,
-                'due_date': datetime(2025, 12, 1),
+                'due_date': date(2025, 12, 1),
                 }
 
         self.assertEqual(Invoice.objects.all().count(), 0)
@@ -98,17 +98,17 @@ class InvoiceItemFormTest(TestCase):
 
     def test_invalid_amount_missing(self):
         grant_agreement = GrantAgreement(project=self._project,
-                                         signed_date=datetime(2020, 1, 4),
+                                         signed_date=date(2020, 1, 4),
                                          signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
 
         data = {'project': self._project,
-                'due_date': datetime(2020, 1, 5),
-                'reception_date': datetime(2020, 1, 6),
-                'sent_date': datetime(2020, 1, 7),
-                'paid_date': datetime(2020, 1, 8)
+                'due_date': date(2020, 1, 5),
+                'reception_date': date(2020, 1, 6),
+                'sent_date': date(2020, 1, 7),
+                'paid_date': date(2020, 1, 8)
                 }
         file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
 
@@ -119,9 +119,9 @@ class InvoiceItemFormTest(TestCase):
 
     def test_invalid_grant_management_missing(self):
         data = {'project': self._project,
-                'due_date': datetime(2020, 1, 5),
-                'reception_date': datetime(2020, 1, 6),
-                'sent_date': datetime(2020, 1, 7),
+                'due_date': date(2020, 1, 5),
+                'reception_date': date(2020, 1, 6),
+                'sent_date': date(2020, 1, 7),
                 }
 
         invoice_item_form = InvoiceItemModelForm(data=data)
