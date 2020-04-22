@@ -258,7 +258,7 @@ def create_project():
     proposal = create_proposal()
 
     project, _ = Project.objects.get_or_create(key='SPI-2020-001',
-                                               title='This is a test proejct',
+                                               title='This is a test project',
                                                location='Somewhere in the world',
                                                start_date=datetime(2020, 1, 1),
                                                end_date=datetime(2022, 10, 10),
