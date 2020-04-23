@@ -12,7 +12,7 @@ from project_core.tests import database_population
 from project_core.tests.database_population import create_proposal, create_reviewer
 
 
-class BudgetItemFormTest(TestCase):
+class ProposalEvaluationFormTest(TestCase):
     def setUp(self):
         self._user = User.objects.create_user('TestUser', 'test@example.com', 'password')
         group, _ = Group.objects.get_or_create(name=settings.MANAGEMENT_GROUP_NAME)
@@ -35,7 +35,7 @@ class BudgetItemFormTest(TestCase):
         self.assertEqual(ProposalEvaluation.objects.count(), 0)
         proposal = create_proposal()
 
-        BudgetItemFormTest._create_call_evaluation(proposal.call)
+        ProposalEvaluationFormTest._create_call_evaluation(proposal.call)
 
         proposal.proposal_status = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_SUBMITTED)
         proposal.save()
