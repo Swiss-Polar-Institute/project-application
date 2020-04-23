@@ -130,10 +130,16 @@ class ProposalEvaluationForm(forms.ModelForm):
             raise forms.ValidationError(errors)
 
     def save(self, *args, **kwargs):
+        # Next line checks that the Call Evaluation is not closed
+        # the getattr(self.instance, 'proposal'): if the instance doesn't have a proposal the call evaluation
+        # is not closed: the call evaluation can be closed if and only if all the proposal evaluations are completed
+        if hasattr(self.instance, 'proposal') and self.instance.proposal.call.callevaluation.closed_date is not None:
+            raise PermissionDenied('Proposal Evaluation cannot be saved because Call Evaluation is already closed')
+
         user = kwargs.pop('user')
 
         if not user_is_in_group_name(user, settings.MANAGEMENT_GROUP_NAME):
-            raise PermissionDenied()
+            raise PermissionDenied('User {user} cannot save a ProposalEvaluation')
 
         reviewers = self.cleaned_data['reviewers']
 
