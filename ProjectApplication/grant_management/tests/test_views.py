@@ -12,7 +12,7 @@ class ProjectListTest(TestCase):
         self._client_management = database_population.create_management_logged_client()
 
     def test_get(self):
-        response = self._client_management.get(reverse('logged-grant_management-project-lis'))
+        response = self._client_management.get(reverse('logged-grant_management-project-list'))
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, self._project.title)

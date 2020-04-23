@@ -87,7 +87,7 @@ class ProposalEvaluationList(TemplateView):
 class ProposalEvaluationUpdate(AbstractProposalDetailView):
     def get(self, request, *args, **kwargs):
         if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
-            raise PermissionDenied()
+            raise PermissionDenied(f'User {request.user} does not have access to Evaluate proposals')
 
         if 'pk' in kwargs:
             proposal_evaluation = ProposalEvaluation.objects.get(id=kwargs['pk'])
@@ -97,6 +97,9 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
             proposal = Proposal.objects.get(id=proposal_id)
         else:
             assert False
+
+        if proposal.call.callevaluation.is_closed():
+            raise PermissionDenied('Cannot edit a Proposal Evaluation for a closed call')
 
         context = self.prepare_context(request, *args, **{'pk': proposal.id})
 
@@ -116,11 +119,14 @@ class ProposalEvaluationUpdate(AbstractProposalDetailView):
 
     def post(self, request, *args, **kwargs):
         if not user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
-            raise PermissionDenied()
-
-        context = self.prepare_context(request, *args, **kwargs)
+            raise PermissionDenied('User does not have access to update a Proposal')
 
         proposal = Proposal.objects.get(id=kwargs['pk'])
+
+        if proposal.call.callevaluation.is_closed():
+            raise PermissionDenied('Cannot edit a Proposal Evaluation for a closed call')
+
+        context = self.prepare_context(request, *args, **kwargs)
 
         proposal_evaluation_form = ProposalEvaluationForm(request.POST, request.FILES,
                                                           prefix=ProposalEvaluationForm.FORM_NAME,

@@ -67,6 +67,12 @@ class CallEvaluationSummaryViewTest(TestCase):
 class ProposalEvaluationUpdateTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
+
+        call_evaluation = CallEvaluation()
+        call_evaluation.call = self._proposal.call
+        call_evaluation.panel_date = datetime.today()
+        call_evaluation.save()
+
         self._client_management = database_population.create_management_logged_client()
 
     def test_get(self):
