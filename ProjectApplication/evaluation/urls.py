@@ -13,7 +13,7 @@ urlpatterns = [
     path('logged/proposal-evaluation/<int:pk>/',
          evaluation.views.ProposalEvaluationDetail.as_view(),
          name='logged-proposal-evaluation-detail'),
-    path('logged/proposal-evaluation/<int:pk>/evaluation/',
+    path('logged/proposal-evaluation/<int:pk>/update/',
          evaluation.views.ProposalEvaluationUpdate.as_view(),
          name='logged-proposal-evaluation-update'),
     path('logged/proposal-evaluation/add/',
