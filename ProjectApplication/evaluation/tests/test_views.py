@@ -68,10 +68,10 @@ class ProposalEvaluationUpdateTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
 
-        call_evaluation = CallEvaluation()
-        call_evaluation.call = self._proposal.call
-        call_evaluation.panel_date = datetime.today()
-        call_evaluation.save()
+        self._call_evaluation = CallEvaluation()
+        self._call_evaluation.call = self._proposal.call
+        self._call_evaluation.panel_date = datetime.today()
+        self._call_evaluation.save()
 
         self._client_management = database_population.create_management_logged_client()
 
@@ -108,6 +108,36 @@ class ProposalEvaluationUpdateTest(TestCase):
             data=data)
 
         self.assertEqual(response.status_code, 200)
+
+    def test_proposal_evaluation_update_post_permission_denied(self):
+        client = database_population.create_management_logged_client()
+
+        self._create_proposal_evaluation(self._proposal)
+        self._call_evaluation.close(database_population.create_management_user())
+
+        response = client.post(reverse('logged-proposal-evaluation-update', kwargs={'pk': self._proposal.id}))
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_proposal_evaluation_update_get_permission_denied(self):
+        client = database_population.create_management_logged_client()
+
+        self._create_proposal_evaluation(self._proposal)
+
+        self._call_evaluation.close(database_population.create_management_user())
+
+        response = client.get(
+            reverse('logged-proposal-evaluation-update', kwargs={'pk': self._proposal.proposalevaluation.id}))
+
+        self.assertEqual(response.status_code, 403)
+
+    @staticmethod
+    def _create_proposal_evaluation(proposal):
+        proposal_evaluation = ProposalEvaluation()
+        proposal_evaluation.proposal = proposal
+        proposal_evaluation.board_decision = ProposalEvaluation.BOARD_DECISION_FUND
+        proposal_evaluation.panel_recommendation = ProposalEvaluation.PANEL_RECOMMENDATION_FUND
+        proposal_evaluation.save()
 
 
 class ProposalEvaluationListTest(TestCase):
