@@ -19,13 +19,17 @@
         </div>
         <div class="col-2">
             <p>
-                <a class="btn btn-primary"
-                   href="{% url 'logged-proposal-evaluation-update' pk=proposal.proposalevaluation.id %}"
-                   role="button">Edit&nbsp;Proposal&nbsp;Evaluation</a>
+                {% if proposal.proposalevaluation.can_edit %}
+                    <a class="btn btn-primary"
+                       href="{% url 'logged-proposal-evaluation-update' pk=proposal.proposalevaluation.id %}"
+                       role="button">Edit Proposal Evaluation</a>
+                {% else %}
+                    <em>{{ proposal.proposalevaluation.reason_cannot_edit }}</em>
+                {% endif %}
             </p>
             <p>
                 <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}"
-                   role="button">View&nbsp;Proposal</a>
+                   role="button">View Proposal</a>
             </p>
         </div>
     </div>

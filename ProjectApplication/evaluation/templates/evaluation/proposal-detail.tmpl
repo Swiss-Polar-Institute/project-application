@@ -24,7 +24,7 @@
                 </p>
                 <p>
                     {% if proposal.proposalevaluation %}
-                        <a class="btn btn-primary"#}
+                        <a class="btn btn-primary"
                            href="{% url 'logged-proposal-evaluation-detail' pk=proposal.proposalevaluation.id %}"
                            role="button">View Proposal Evaluation</a>
                     {% elif proposal.can_create_evaluation %}
@@ -32,7 +32,8 @@
                            href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
                            role="button">Create Proposal Evaluation</a>
                     {% else %}
-                        <div class="border p-1 bg-white rounded"><em>{{ proposal.reason_cannot_create_evaluation }}</em></div>
+                        <div class="border p-1 bg-white rounded"><em>{{ proposal.reason_cannot_create_evaluation }}</em>
+                        </div>
                     {% endif %}
                 </p>
             {% endif %}

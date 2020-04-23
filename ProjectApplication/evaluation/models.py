@@ -135,6 +135,13 @@ class ProposalEvaluation(CreateModifyOn):
     def comments(self):
         return self.proposalevaluationcomment_set.all().order_by('created_on')
 
+    def can_edit(self):
+        self.proposal.call.callevaluation.is_open()
+
+    def reason_cannot_edit(self):
+        if not self.proposal.call.callevaluation.is_open():
+            return 'Cannot edit proposal evaluation because call evaluation is closed'
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
@@ -181,6 +188,9 @@ class CallEvaluation(CreateModifyOn):
 
     def is_closed(self):
         return self.closed_date is not None
+
+    def is_open(self):
+        return self.closed_date is None
 
     def close(self, user_closing_call_evaluation):
         """ It creates the projects and closes the call. """

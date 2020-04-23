@@ -3,7 +3,7 @@
 <div id="eligibility_detail">
     {% include 'evaluation/_eligibility-detail.tmpl' with proposal=proposal %}
     <br>
-    {% if can_edit_eligibility %}
+    {% if proposal.can_edit_eligibility %}
         <button id="edit_button" type="button" class="btn btn-primary">Edit Eligibility</button>
     {% else %}
         <div class="border p-1 bg-light rounded">
