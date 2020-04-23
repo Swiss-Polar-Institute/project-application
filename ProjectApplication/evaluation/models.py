@@ -136,7 +136,7 @@ class ProposalEvaluation(CreateModifyOn):
         return self.proposalevaluationcomment_set.all().order_by('created_on')
 
     def can_edit(self):
-        self.proposal.call.callevaluation.is_open()
+        return self.proposal.call.callevaluation.is_open()
 
     def reason_cannot_edit(self):
         if not self.proposal.call.callevaluation.is_open():

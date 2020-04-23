@@ -14,8 +14,8 @@ class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges
 
 
 class ReviewerAdmin(admin.ModelAdmin):
-    list_display = ('user', 'person', 'call_list', 'proposal_list', )
-    filter_vertical = ('calls', 'proposals', )
+    list_display = ('user', 'person', 'call_list', 'proposal_list',)
+    filter_vertical = ('calls', 'proposals',)
 
     def call_list(self, obj):
         return ', '.join([str(call) for call in obj.calls.all()])
@@ -25,7 +25,7 @@ class ReviewerAdmin(admin.ModelAdmin):
 
 
 class CallEvaluationAdmin(admin.ModelAdmin):
-    list_display = ('call', 'panel_date', 'post_panel_management_table')
+    list_display = ('call', 'panel_date', 'post_panel_management_table', 'closed_date', 'closed_user')
 
 
 admin.site.register(Reviewer, ReviewerAdmin)
