@@ -1,0 +1,5 @@
+{% with lay_summaries=project.laysummary_set.all %}
+    {% for lay_summary in lay_summaries %}
+        {{ lay_summary.text }} {{ lay_summary.author }}
+    {% endfor %}
+{% endwith %}

@@ -1,0 +1,14 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>{{ project.title }}</h1>
+            <h2>Deliverables</h2>
+            {% crispy lay_summary %}
+        </div>
+        <div class="col-2">
+        </div>
+    </div>
+{% endblock %}

@@ -2,12 +2,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 
-from project_core.models import Proposal
-from ..models import ProposalComment, ProposalCommentCategory
-
 
 class CommentForm(forms.Form):
     FORM_NAME = 'comment_form'
+
     # Note that Comments are not editable, so initial is always empty, always a new comment
     def __init__(self, *args, **kwargs):
         comment_category = kwargs.pop('category_queryset')
@@ -16,7 +14,7 @@ class CommentForm(forms.Form):
         super().__init__(*args, **kwargs)
 
         self.fields['category'] = forms.ModelChoiceField(label='Category', queryset=comment_category,
-                                                     help_text='Select category of comment', )
+                                                         help_text='Select category of comment', )
         self.fields['text'] = forms.CharField(label='Text', max_length=10000,
                                               help_text='Write the comment (max length: 10000 characters)',
                                               widget=forms.Textarea(attrs={'rows': 4}))

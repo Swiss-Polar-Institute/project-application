@@ -40,11 +40,10 @@
             TO DO
             <p></p>
             <h2>Deliverables and media
-                <div class="d-inline-block" data-toggle="tooltip" title="Not available yet">
-                    <a class="btn btn-primary disabled btn-sm"
-                       href="#">Edit</a></div>
+                <a class="btn btn-primary btn-sm"
+                   href="{% url 'logged-grant_management-project-deliverables' pk=project.id %}">Edit</a>
             </h2>
-            TO DO
+            {% include 'grant_management/_deliverables-detail.tmpl' %}
             <hr>
             {#            {% include 'comments/_comments-attachments.tmpl' %}#}
         </div>
