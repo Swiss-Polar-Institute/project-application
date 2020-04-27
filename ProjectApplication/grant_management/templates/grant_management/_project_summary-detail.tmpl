@@ -1,13 +1,15 @@
-<strong>Status:</strong> {{ project.status }}<br>
-<strong>Call:</strong> <a
-        href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
-<strong>Project Key:</strong> {{ project.key }}
-
-<p></p>
-
-<h3>Principal investigator</h3>
-{% include 'common/_person_with_orcid.tmpl' with person=project.principal_investigator %}<br>
-<strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=project.principal_investigator.main_email %}
-<br>
-<strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}
-<br>
+<div class="row">
+    <div class="col-8">
+        <strong>Principal
+            investigator:</strong> {% include 'common/_person_with_orcid.tmpl' with person=project.principal_investigator %}<br>
+        <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=project.principal_investigator.main_email %}
+        <br>
+        <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}
+    </div>
+    <div class="col-4">
+        <strong>Status:</strong> {{ project.status }}<br>
+        <strong>Call:</strong> <a
+            href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
+        <strong>Project Key:</strong> {{ project.key }}
+    </div>
+</div>
