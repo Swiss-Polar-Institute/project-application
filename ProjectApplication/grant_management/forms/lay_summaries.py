@@ -49,11 +49,8 @@ class LaySummaryModelForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('author', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('web_version', css_class='col-12'),
+                Div('author', css_class='col-6'),
+                Div('lay_summary_type', css_class='col-6'),
                 css_class='row'
             ),
             FormActions(
@@ -64,7 +61,7 @@ class LaySummaryModelForm(forms.ModelForm):
 
     class Meta:
         model = LaySummary
-        fields = ['project', 'due_date', 'sent_date', 'reception_date', 'text', 'author', 'web_version']
+        fields = ['project', 'lay_summary_type', 'due_date', 'sent_date', 'reception_date', 'text', 'author']
         labels = {'text': 'Lay summary'}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,

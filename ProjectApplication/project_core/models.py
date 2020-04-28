@@ -1023,10 +1023,14 @@ class Project(CreateModifyOn):
                               blank=False, null=False)
     abortion_reason = models.CharField(help_text='Reason that a project was aborted', max_length=50, blank=True,
                                        null=True)
+
     history = HistoricalRecords()
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.principal_investigator)
+
+    def call_pi(self):
+        return f'{self.call.short_name}-{self.principal_investigator.person.surname}'
 
     def keywords_enumeration(self):
         keywords = self.keywords.all().order_by('name')

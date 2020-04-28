@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
-from grant_management.forms.deliverables import LaySummaryModelForm
+from grant_management.forms.lay_summaries import LaySummaryModelForm
 from grant_management.forms.financial_reports import FinancialReportsFormSet, FinancialReportsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
@@ -55,7 +55,7 @@ class ProjectDetail(DetailView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': 'Project detail'}]
+                                 {'name': f'Project detail ({project.call_pi()})'}]
 
         return context
 
@@ -75,7 +75,7 @@ class ProjectBasicInformationUpdateView(UpdateView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': 'Project detail',
+                                 {'name': f'Project detail ({project.call_pi()})',
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Project basic information Edit'}]
 
@@ -94,16 +94,16 @@ class GrantAgreementAddView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project_id = self.kwargs['project']
+        project = Project.objects.get(id=self.kwargs['project'])
 
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': 'Project detail',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project_id})},
-                                 {'name': 'Grant management edit'}]
+                                 {'name': f'Project detail ({project.call_pi()})',
+                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
+                                 {'name': 'Grant management'}]
 
         return context
 
@@ -124,15 +124,15 @@ class GrantAgreementUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project_id = context['grantagreement'].project.id
+        project = context['grantagreement'].project
 
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': 'Project detail',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project_id})},
+                                 {'name': f'Project detail ({project.call_pi()})',
+                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Grant management'}]
 
         return context
@@ -146,7 +146,7 @@ class GrantAgreementUpdateView(UpdateView):
         return reverse('logged-grant_management-project-detail', kwargs={'pk': self.object.project.pk})
 
 
-class DeliverablesUpdateView(TemplateView):
+class LaySummariesUpdateView(TemplateView):
     @staticmethod
     def _cancel_url(kwargs):
         return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['pk']})
@@ -164,7 +164,7 @@ class DeliverablesUpdateView(TemplateView):
                                                                      project=project)
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail',
+                                 {'name': f'Project detail ({project.call_pi()})',
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Deliverables'}]
 
@@ -190,7 +190,7 @@ class DeliverablesUpdateView(TemplateView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail',
+                                 {'name': f'Project detail ({project.call_pi()})',
                                   'url': reverse('logged-grant_management-project-detail',
                                                  kwargs={'pk': project.id})},
                                  {'name': 'Deliverables'}]
@@ -223,7 +223,7 @@ class FinancesViewUpdate(TemplateView):
             prefix=FinancialReportsFormSet.FORM_NAME, instance=project)
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': 'Project detail',
+                                 {'name': f'Project detail ({project.call_pi()})',
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Finances'}]
 
@@ -255,7 +255,7 @@ class FinancesViewUpdate(TemplateView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': 'Project detail',
+                                 {'name': f'Project detail ({project.call_pi()})',
                                   'url': reverse('logged-grant_management-project-detail',
                                                  kwargs={'pk': project.id})},
                                  {'name': 'Finances'}]

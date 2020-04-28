@@ -62,11 +62,19 @@ class FinancialReport(AbstractProjectReportDates):
                                     on_delete=models.PROTECT, blank=True, null=True)
 
 
+class LaySummaryType(CreateModifyOn):
+    name = models.CharField(max_length=10, unique=True)
+    description = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class LaySummary(AbstractProjectReportDates):
     text = models.TextField(help_text='Please enter summary here', null=False, blank=False)
+    lay_summary_type = models.ForeignKey(LaySummaryType, on_delete=models.PROTECT)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
                                on_delete=models.PROTECT)
-    web_version = models.TextField(help_text='Please the web version of the summary here', null=True, blank=True)
 
     def __str__(self):
         return f'{self.text[:20]}'
