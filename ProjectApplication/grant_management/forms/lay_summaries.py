@@ -47,8 +47,23 @@ class LaySummaryModelForm(forms.ModelForm):
             )
         )
 
-    def save(self, *args, **kwargs):
-        return super().save(*args, **kwargs)
+    def clean(self):
+        cd = super().clean()
+
+        due_date = cd.get('due_date', None)
+        reception_date = cd.get('reception_date', None)
+        sent_date = cd.get('sent_date', None)
+        text = cd.get('text', None)
+        author = cd.get('author', None)
+        lay_summary_type = cd.get('lay_summary_type', None)
+
+        errors = {}
+
+        if author is None and text is not None:
+            errors['author'] = 'Please select the author if there is text'
+
+        if errors:
+            raise forms.ValidationError(errors)
 
     class Meta:
         model = LaySummary
