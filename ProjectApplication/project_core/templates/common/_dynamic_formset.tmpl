@@ -78,6 +78,10 @@
         $(row).find('.select2-selection').empty();
     }
 
+    function clean_combobox_fields(row) {
+        $(row).find('.form-control').val("");
+    }
+
     function make_fields_writable(row) {
         $(row).find(":input").attr("disabled", false);
     }
@@ -118,6 +122,7 @@
                 clean_up_file_fields(row);
                 clean_autocomplete_fields(row);
                 clean_help_text_errors(row);
+                clean_combobox_fields(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
