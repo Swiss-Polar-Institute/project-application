@@ -2,11 +2,12 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
+from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 from django.urls import reverse
 
 from grant_management.models import LaySummary
 from project_core.forms.utils import cancel_edit_button
+from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -14,29 +15,20 @@ class LaySummaryModelForm(forms.ModelForm):
     FORM_NAME = 'lay_summary'
 
     def __init__(self, *args, **kwargs):
-        project = kwargs.pop('project', None)
-
-        try:
-            instance = LaySummary.objects.get(project=project)
-        except ObjectDoesNotExist:
-            instance = None
-
-        super().__init__(*args, instance=instance, **kwargs)
+        super().__init__(*args, **kwargs)
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['reception_date'])
 
-        cancel_edit_url = reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})
-
-        self.fields['project'].initial = project
-
         self.helper = FormHelper()
+        self.helper.form_tag = False
 
         self.helper.layout = Layout(
             Div(
-                Div('project', css_class='col-6', hidden=True),
-                css_class='row'
+                Div('project', hidden=True),
+                Div('id', hidden=True),
+                css_class='row', hidden=True
             ),
             Div(
                 Div('due_date', css_class='col-4'),
@@ -52,12 +44,11 @@ class LaySummaryModelForm(forms.ModelForm):
                 Div('author', css_class='col-6'),
                 Div('lay_summary_type', css_class='col-6'),
                 css_class='row'
-            ),
-            FormActions(
-                Submit('save', 'Save Deliverables'),
-                cancel_edit_button(cancel_edit_url)
             )
         )
+
+    def save(self, *args, **kwargs):
+        return super().save(*args, **kwargs)
 
     class Meta:
         model = LaySummary
@@ -66,5 +57,25 @@ class LaySummaryModelForm(forms.ModelForm):
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'sent_date': XDSoftYearMonthDayPickerInput,
-            'reception_date': XDSoftYearMonthDayPickerInput
+            'reception_date': XDSoftYearMonthDayPickerInput,
+            'project': NumberInput
         }
+
+
+class LaySummariesFormSet(BaseInlineFormSet):
+    FORM_NAME = 'lay_summaries_form'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_id = LaySummariesFormSet.FORM_NAME
+
+    def get_queryset(self):
+        return super().get_queryset().order_by('reception_date')
+
+
+LaySummariesInlineFormSet = inlineformset_factory(Project, LaySummary, form=LaySummaryModelForm,
+                                                  formset=LaySummariesFormSet,
+                                                  min_num=1, extra=0, can_delete=True)

@@ -3,10 +3,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
-from grant_management.forms.lay_summaries import LaySummaryModelForm
 from grant_management.forms.financial_reports import FinancialReportsFormSet, FinancialReportsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
+from grant_management.forms.lay_summaries import LaySummariesFormSet, LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.models import GrantAgreement
 from project_core.models import Project
@@ -149,41 +149,48 @@ class GrantAgreementUpdateView(UpdateView):
 class LaySummariesUpdateView(TemplateView):
     @staticmethod
     def _cancel_url(kwargs):
-        return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['pk']})
+        return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['project']})
 
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['cancel_url'] = LaySummariesUpdateView._cancel_url(kwargs)
+
+        project = Project.objects.get(id=kwargs['project'])
+
+        context['project'] = project
+
+        context[LaySummariesFormSet.FORM_NAME] = LaySummariesInlineFormSet(prefix=LaySummariesFormSet.FORM_NAME,
+                                                                           instance=project)
+
+
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        project = Project.objects.get(id=kwargs['pk'])
-
-        context[LaySummaryModelForm.FORM_NAME] = LaySummaryModelForm(prefix=LaySummaryModelForm.FORM_NAME,
-                                                                     project=project)
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
                                  {'name': f'Project detail ({project.call_pi()})',
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                                 {'name': 'Deliverables'}]
+                                 {'name': 'Lay Summaries'}]
 
-        return render(request, 'grant_management/deliverables-form.tmpl', context)
+        return render(request, 'grant_management/lay_summaries-form.tmpl', context)
 
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project = Project.objects.get(id=kwargs['pk'])
+        context['cancel_url'] = LaySummariesUpdateView._cancel_url(kwargs)
 
-        lay_summary_form = LaySummaryModelForm(request.POST, request.FILES,
-                                               prefix=LaySummaryModelForm.FORM_NAME,
-                                               project=project)
+        project = Project.objects.get(id=kwargs['project'])
 
-        if lay_summary_form.is_valid():
-            lay_summary_form.save()
+        lay_summaries_form = LaySummariesInlineFormSet(request.POST, request.FILES,
+                                                       prefix=LaySummariesFormSet.FORM_NAME,
+                                                       instance=project)
+
+        if lay_summaries_form.is_valid():
+            lay_summaries_form.save()
             return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': project.id}))
 
-        messages.error(request, 'Lay summary not saved. Verify errors in the forms.')
+        messages.error(request, 'Lay Summaries not saved. Verify errors in the form')
 
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
@@ -191,15 +198,14 @@ class LaySummariesUpdateView(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
                                  {'name': f'Project detail ({project.call_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail',
-                                                 kwargs={'pk': project.id})},
-                                 {'name': 'Deliverables'}]
+                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
+                                 {'name': 'Lay Summaries'}]
 
-        context[LaySummaryModelForm.FORM_NAME] = lay_summary_form
+        context[LaySummariesFormSet.FORM_NAME] = lay_summaries_form
 
         context['project'] = project
 
-        return render(request, 'grant_management/deliverables-form.tmpl', context)
+        return render(request, 'grant_management/lay_summaries-form.tmpl', context)
 
 
 class FinancesViewUpdate(TemplateView):

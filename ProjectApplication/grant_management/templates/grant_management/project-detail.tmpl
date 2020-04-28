@@ -42,7 +42,7 @@
             <h2>Deliverables and media</h2>
             <h3>Lay summaries
                 <a class="btn btn-primary btn-sm"
-                   href="{% url 'logged-grant_management-lay_summaries' pk=project.id %}">Edit</a>
+                   href="{% url 'logged-grant_management-lay_summaries' project=project.id %}">Edit</a>
             </h3>
             {% include 'grant_management/_lay_summaries-detail.tmpl' %}
             <h3>Blog posts

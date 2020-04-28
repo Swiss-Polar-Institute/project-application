@@ -74,7 +74,7 @@ class LaySummary(AbstractProjectReportDates):
     text = models.TextField(help_text='Please enter summary here', null=False, blank=False)
     lay_summary_type = models.ForeignKey(LaySummaryType, on_delete=models.PROTECT)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
-                               on_delete=models.PROTECT)
+                               blank=True, null=True, on_delete=models.PROTECT)
 
     def __str__(self):
         return f'{self.text[:20]}'
