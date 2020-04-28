@@ -1,5 +1,39 @@
 {% with lay_summaries=project.laysummary_set.all %}
-    {% for lay_summary in lay_summaries %}
-        {{ lay_summary.text }} {{ lay_summary.author }}
-    {% endfor %}
+    <table id="lay_summaries_table" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Due</th>
+            <th>Received</th>
+            <th>Text</th>
+            <th>Author</th>
+            <th>Type</th>
+        </tr>
+        </thead>
+        {% for lay_summary in lay_summaries %}
+            <tr>
+                <td data-sort="{{ lay_summary.due_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=lay_summary.due_date %}</td>
+                <td data-sort="{{ lay_summary.reception_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=lay_summary.reception_date %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=lay_summary.text|linebreaksbr %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=lay_summary.author %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=lay_summary.lay_summary_type %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#lay_summaries_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[1, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                    "language": {
+                        "zeroRecords": "No lay summaries"
+                    }
+                }
+            );
+        });
+    </script>
 {% endwith %}
+<p></p>
