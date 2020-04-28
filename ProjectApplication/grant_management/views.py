@@ -233,7 +233,7 @@ class FinancesViewUpdate(TemplateView):
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Finances'}]
 
-        return render(request, 'grant_management/_finances-form.tmpl', context)
+        return render(request, 'grant_management/finances-form.tmpl', context)
 
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -271,4 +271,4 @@ class FinancesViewUpdate(TemplateView):
 
         context['project'] = project
 
-        return render(request, 'grant_management/_finances-form.tmpl', context)
+        return render(request, 'grant_management/finances-form.tmpl', context)
