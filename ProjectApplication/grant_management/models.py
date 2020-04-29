@@ -76,7 +76,6 @@ class LaySummaryType(CreateModifyOn):
 
 class LaySummary(AbstractProjectDueDate):
     received_date = models.DateField(help_text='Date the Lay Summary was received', null=True, blank=True)
-    sent_date = models.DateField(help_text='Date the Lay Summary was sent', null=True, blank=True)
     text = models.TextField(help_text='Please enter summary here', null=False, blank=False)
     lay_summary_type = models.ForeignKey(LaySummaryType, on_delete=models.PROTECT)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',

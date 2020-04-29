@@ -21,7 +21,7 @@ class LaySummaryTypeAdmin(admin.ModelAdmin):
 
 
 class LaySummaryAdmin(admin.ModelAdmin):
-    list_display = ('project', 'text', 'author', 'lay_summary_type', 'due_date', 'sent_date', 'received_date')
+    list_display = ('project', 'text', 'author', 'lay_summary_type', 'due_date', 'received_date')
 
 
 class LicenseAdmin(admin.ModelAdmin):

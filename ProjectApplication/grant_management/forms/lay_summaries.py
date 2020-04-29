@@ -1,5 +1,4 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
@@ -16,7 +15,6 @@ class LaySummaryModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
-        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
 
         self.helper = FormHelper()
@@ -32,7 +30,6 @@ class LaySummaryModelForm(forms.ModelForm):
             ),
             Div(
                 Div('due_date', css_class='col-4'),
-                Div('sent_date', css_class='col-4'),
                 Div('received_date', css_class='col-4'),
                 css_class='row'
             ),
@@ -67,7 +64,7 @@ class LaySummaryModelForm(forms.ModelForm):
 
     class Meta:
         model = LaySummary
-        fields = ['project', 'lay_summary_type', 'due_date', 'sent_date', 'received_date', 'text', 'author']
+        fields = ['project', 'lay_summary_type', 'due_date', 'received_date', 'text', 'author']
         labels = {'text': 'Lay summary'}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
