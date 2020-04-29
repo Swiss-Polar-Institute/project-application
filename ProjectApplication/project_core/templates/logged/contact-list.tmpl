@@ -25,7 +25,7 @@
                     <td>{% include 'common/_check-icon.tmpl' with value=contact.contact_newsletter %}</td>
 
                     <td>{#<a class="btn btn-primary btn-xs"#}
-                           {#href="{% url 'contact-update' pk=contact.id %}">Edit</a>#}
+                        {#href="{% url 'contact-update' pk=contact.id %}">Edit</a>#}
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-person-position-detail' pk=contact.id %}">View</a>
                     </td>
@@ -39,7 +39,8 @@
     <script type="text/javascript" class="init">
         $(document).ready(function () {
             $('table.display').DataTable({
-                    "pageLength": 100
+                    "pageLength": 100,
+                    "searchHighlight": true
                 }
             );
         });
