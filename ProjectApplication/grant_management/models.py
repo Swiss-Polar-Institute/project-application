@@ -51,19 +51,32 @@ class Invoice(AbstractProjectDueDate):
         return f'Id: {self.id} Amount: {self.amount}'
 
 
+class AbstractProjectReport(AbstractProjectDueDate):
+    received_date = models.DateField(help_text='Date the report was received', null=True, blank=True)
+    sent_date = models.DateField(help_text='Date the report was sent to review', null=True, blank=True)
+    approval_date = models.DateField(help_text='Date the report was approved',
+                                     blank=True, null=True)
+    approved_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the report',
+                                    on_delete=models.PROTECT, blank=True, null=True)
+
+    class Meta:
+        abstract = True
+
+
 def finance_report_file_rename(instance, filename):
     return f'grant_management/FinanceReport/ProjectId-{instance.project.id}-{filename}'
 
 
-class FinancialReport(AbstractProjectDueDate):
-    received_date = models.DateField(help_text='Date the financial report was received', null=True, blank=True)
-    sent_date = models.DateField(help_text='Date the financial report was sent to review', null=True, blank=True)
-
+class FinancialReport(AbstractProjectReport):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=finance_report_file_rename, blank=True, null=True)
-    approval_date = models.DateField(help_text='Date the finance report was approved',
-                                     blank=True, null=True)
-    approved_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the finance report',
-                                    on_delete=models.PROTECT, blank=True, null=True)
+
+
+def scientific_report_file_rename(instance, filename):
+    return f'grant_management/ScientificReport/ProjectId-{instance.project.id}-{filename}'
+
+
+class ScientificReport(AbstractProjectReport):
+    file = models.FileField(storage=S3Boto3Storage(), upload_to=scientific_report_file_rename, blank=True, null=True)
 
 
 class LaySummaryType(CreateModifyOn):
