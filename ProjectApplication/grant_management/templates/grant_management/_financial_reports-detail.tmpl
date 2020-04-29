@@ -13,7 +13,7 @@
         {% for financial_report in financial_reports %}
             <tr>
                 <td data-sort="{{ financial_report.due_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=financial_report.due_date %}</td>
-                <td data-sort="{{ financial_report.reception_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=financial_report.reception_date %}</td>
+                <td data-sort="{{ financial_report.received_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=financial_report.received_date %}</td>
                 <td data-sort="{{ financial_report.sent_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=financial_report.sent_date %}</td>
                 <td data-sort="{{ financial_report.approval_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=financial_report.approval_date %}</td>
                 <td data-sort="{{ financial_report.approved_by }}">{% include 'common/_value-or-dash.tmpl' with value=financial_report.approved_by %}</td>

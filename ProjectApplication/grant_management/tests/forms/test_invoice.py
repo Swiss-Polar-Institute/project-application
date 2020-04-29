@@ -44,7 +44,7 @@ class InvoiceItemFormTest(TestCase):
 
         data = {'project': self._project,
                 'due_date': date(2020, 1, 5),
-                'reception_date': date(2020, 1, 6),
+                'received_date': date(2020, 1, 6),
                 'sent_date': date(2020, 1, 7),
                 'amount': 200,
                 'paid_date': date(2020, 1, 8)
@@ -106,7 +106,7 @@ class InvoiceItemFormTest(TestCase):
 
         data = {'project': self._project,
                 'due_date': date(2020, 1, 5),
-                'reception_date': date(2020, 1, 6),
+                'received_date': date(2020, 1, 6),
                 'sent_date': date(2020, 1, 7),
                 'paid_date': date(2020, 1, 8)
                 }
@@ -120,7 +120,7 @@ class InvoiceItemFormTest(TestCase):
     def test_invalid_grant_management_missing(self):
         data = {'project': self._project,
                 'due_date': date(2020, 1, 5),
-                'reception_date': date(2020, 1, 6),
+                'received_date': date(2020, 1, 6),
                 'sent_date': date(2020, 1, 7),
                 }
 

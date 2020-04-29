@@ -9,7 +9,7 @@ class GrantAgreementAdmin(admin.ModelAdmin):
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('project', 'amount', 'sent_date', 'reception_date', 'due_date', 'paid_date', 'file')
+    list_display = ('project', 'amount', 'sent_date', 'received_date', 'due_date', 'paid_date', 'file')
 
 
 class FinancialReportAdmin(admin.ModelAdmin):
@@ -21,7 +21,7 @@ class LaySummaryTypeAdmin(admin.ModelAdmin):
 
 
 class LaySummaryAdmin(admin.ModelAdmin):
-    list_display = ('project', 'text', 'author', 'lay_summary_type', 'due_date', 'sent_date', 'reception_date')
+    list_display = ('project', 'text', 'author', 'lay_summary_type', 'due_date', 'sent_date', 'received_date')
 
 
 class LicenseAdmin(admin.ModelAdmin):

@@ -25,9 +25,9 @@ class FinancialReportItemFormTest(TestCase):
 
         self.assertEqual(FinancialReport.objects.all().count(), 1)
 
-    def test_reception_date_after_sent_date(self):
+    def test_received_date_after_sent_date(self):
         data = {'project': self._project,
-                'reception_date': datetime(2020, 5, 5),
+                'received_date': datetime(2020, 5, 5),
                 'sent_date': datetime(2020, 1, 5)
                 }
 

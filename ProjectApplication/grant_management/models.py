@@ -39,7 +39,7 @@ def invoice_file_rename(instance, filename):
 
 
 class Invoice(AbstractProjectDueDate):
-    reception_date = models.DateField(help_text='Date the invoice was received', null=True, blank=True)
+    received_date = models.DateField(help_text='Date the invoice was received', null=True, blank=True)
     sent_date = models.DateField(help_text='Date the invoice was sent for payment', null=True, blank=True)
 
     file = models.FileField(storage=S3Boto3Storage(), upload_to=invoice_file_rename, null=True, blank=True)
@@ -56,7 +56,7 @@ def finance_report_file_rename(instance, filename):
 
 
 class FinancialReport(AbstractProjectDueDate):
-    reception_date = models.DateField(help_text='Date the financial report was received', null=True, blank=True)
+    received_date = models.DateField(help_text='Date the financial report was received', null=True, blank=True)
     sent_date = models.DateField(help_text='Date the financial report was sent to review', null=True, blank=True)
 
     file = models.FileField(storage=S3Boto3Storage(), upload_to=finance_report_file_rename, blank=True, null=True)
@@ -75,8 +75,8 @@ class LaySummaryType(CreateModifyOn):
 
 
 class LaySummary(AbstractProjectDueDate):
+    received_date = models.DateField(help_text='Date the Lay Summary was received', null=True, blank=True)
     sent_date = models.DateField(help_text='Date the Lay Summary was sent', null=True, blank=True)
-    reception_date = models.DateField(help_text='Date the Lay Summary was received', null=True, blank=True)
     text = models.TextField(help_text='Please enter summary here', null=False, blank=False)
     lay_summary_type = models.ForeignKey(LaySummaryType, on_delete=models.PROTECT)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',

@@ -17,7 +17,7 @@ class LaySummaryModelForm(forms.ModelForm):
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_date'])
-        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['reception_date'])
+        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -33,7 +33,7 @@ class LaySummaryModelForm(forms.ModelForm):
             Div(
                 Div('due_date', css_class='col-4'),
                 Div('sent_date', css_class='col-4'),
-                Div('reception_date', css_class='col-4'),
+                Div('received_date', css_class='col-4'),
                 css_class='row'
             ),
             Div(
@@ -51,7 +51,7 @@ class LaySummaryModelForm(forms.ModelForm):
         cd = super().clean()
 
         due_date = cd.get('due_date', None)
-        reception_date = cd.get('reception_date', None)
+        received_date = cd.get('received_date', None)
         sent_date = cd.get('sent_date', None)
         text = cd.get('text', None)
         author = cd.get('author', None)
@@ -67,12 +67,12 @@ class LaySummaryModelForm(forms.ModelForm):
 
     class Meta:
         model = LaySummary
-        fields = ['project', 'lay_summary_type', 'due_date', 'sent_date', 'reception_date', 'text', 'author']
+        fields = ['project', 'lay_summary_type', 'due_date', 'sent_date', 'received_date', 'text', 'author']
         labels = {'text': 'Lay summary'}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'sent_date': XDSoftYearMonthDayPickerInput,
-            'reception_date': XDSoftYearMonthDayPickerInput,
+            'received_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput
         }
 
@@ -88,7 +88,7 @@ class LaySummariesFormSet(BaseInlineFormSet):
         self.helper.form_id = LaySummariesFormSet.FORM_NAME
 
     def get_queryset(self):
-        return super().get_queryset().order_by('reception_date')
+        return super().get_queryset().order_by('received_date')
 
 
 LaySummariesInlineFormSet = inlineformset_factory(Project, LaySummary, form=LaySummaryModelForm,
