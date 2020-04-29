@@ -42,15 +42,14 @@
             <h2>Deliverables and media</h2>
             <h3>Lay summaries
                 <a class="btn btn-primary btn-sm"
-                   href="{% url 'logged-grant_management-lay_summaries' project=project.id %}">Edit</a>
+                   href="{% url 'logged-grant_management-lay_summaries-update' project=project.id %}">Edit</a>
             </h3>
             {% include 'grant_management/_lay_summaries-detail.tmpl' %}
             <h3>Blog posts
-                <div class="d-inline-block" data-toggle="tooltip" title="Not available yet"><a
-                        class="btn btn-primary disabled btn-sm"
-                        href="#">Edit</a></div>
+                <a class="btn btn-primary btn-sm"
+                   href="{% url 'logged-grant_management-blog_posts-update' project=project.id %}">Edit</a>
             </h3>
-            TODO
+            {% include 'grant_management/_blog_posts-list.tmpl' %}
             <h3>Photos and media
                 <div class="d-inline-block" data-toggle="tooltip" title="Not available yet"><a
                         class="btn btn-primary disabled btn-sm"

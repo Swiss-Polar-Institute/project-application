@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Media, ProjectSocialMedia,
-                     Publication, Dataset, LaySummaryType)
+                     Publication, Dataset, LaySummaryType, BlogPost)
 
 
 class GrantAgreementAdmin(admin.ModelAdmin):
@@ -22,6 +22,10 @@ class LaySummaryTypeAdmin(admin.ModelAdmin):
 
 class LaySummaryAdmin(admin.ModelAdmin):
     list_display = ('project', 'text', 'author', 'lay_summary_type', 'due_date', 'received_date')
+
+
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ('project', 'text', 'author', 'due_date', 'received_date')
 
 
 class LicenseAdmin(admin.ModelAdmin):
@@ -49,6 +53,7 @@ admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(FinancialReport, FinancialReportAdmin)
 admin.site.register(LaySummaryType, LaySummaryTypeAdmin)
 admin.site.register(LaySummary, LaySummaryAdmin)
+admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Media, MediaAdmin)
 admin.site.register(ProjectSocialMedia, ProjectSocialMediaAdmin)
