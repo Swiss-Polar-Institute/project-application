@@ -24,3 +24,10 @@
         </div>
     </div>
 </div>
+<script>
+    // Fixes sizes of columns if this table is going to appear in a accordion
+    $('#{{ prefix }}').on('shown.bs.collapse', function (e) {
+        $($.fn.dataTable.tables(true)).css('width', '100%');
+        $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
+    });
+</script>
