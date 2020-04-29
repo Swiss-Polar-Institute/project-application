@@ -29,7 +29,7 @@ class LicenseAdmin(admin.ModelAdmin):
 
 
 class MediaAdmin(admin.ModelAdmin):
-    list_display = ('author', 'license', 'copyright', 'project', 'due_date', 'sent_date', 'reception_date')
+    list_display = ('author', 'license', 'copyright', 'project', 'due_date')
 
 
 class ProjectSocialMediaAdmin(admin.ModelAdmin):

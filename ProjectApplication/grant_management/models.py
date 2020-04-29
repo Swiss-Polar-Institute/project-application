@@ -22,12 +22,10 @@ class GrantAgreement(CreateModifyOn):
         return f'{self.project}'
 
 
-class AbstractProjectReportDates(CreateModifyOn):
+class AbstractProjectDueDate(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',
                                 on_delete=models.PROTECT)
     due_date = models.DateField(help_text='Date the document is expected to be received')
-    sent_date = models.DateField(help_text='Date the document was sent', null=True, blank=True)
-    reception_date = models.DateField(help_text='Date the document was received', null=True, blank=True)
 
     def __str__(self):
         return f'{self.project}'
@@ -40,7 +38,10 @@ def invoice_file_rename(instance, filename):
     return f'grant_management/Invoice/ProjectId-{instance.project.id}-{filename}'
 
 
-class Invoice(AbstractProjectReportDates):
+class Invoice(AbstractProjectDueDate):
+    reception_date = models.DateField(help_text='Date the invoice was received', null=True, blank=True)
+    sent_date = models.DateField(help_text='Date the invoice was sent for payment', null=True, blank=True)
+
     file = models.FileField(storage=S3Boto3Storage(), upload_to=invoice_file_rename, null=True, blank=True)
     paid_date = models.DateField(help_text='Date the invoice was paid', null=True, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice (CHF)', null=True,
@@ -54,7 +55,10 @@ def finance_report_file_rename(instance, filename):
     return f'grant_management/FinanceReport/ProjectId-{instance.project.id}-{filename}'
 
 
-class FinancialReport(AbstractProjectReportDates):
+class FinancialReport(AbstractProjectDueDate):
+    reception_date = models.DateField(help_text='Date the financial report was received', null=True, blank=True)
+    sent_date = models.DateField(help_text='Date the financial report was sent to review', null=True, blank=True)
+
     file = models.FileField(storage=S3Boto3Storage(), upload_to=finance_report_file_rename, blank=True, null=True)
     approval_date = models.DateField(help_text='Date the finance report was approved',
                                      blank=True, null=True)
@@ -70,7 +74,9 @@ class LaySummaryType(CreateModifyOn):
         return self.name
 
 
-class LaySummary(AbstractProjectReportDates):
+class LaySummary(AbstractProjectDueDate):
+    sent_date = models.DateField(help_text='Date the Lay Summary was sent', null=True, blank=True)
+    reception_date = models.DateField(help_text='Date the Lay Summary was received', null=True, blank=True)
     text = models.TextField(help_text='Please enter summary here', null=False, blank=False)
     lay_summary_type = models.ForeignKey(LaySummaryType, on_delete=models.PROTECT)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
@@ -88,7 +94,7 @@ class License(CreateModifyOn):
         return f'{self.name}'
 
 
-class Media(AbstractProjectReportDates):
+class Media(AbstractProjectDueDate):
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
                                on_delete=models.PROTECT)
     license = models.ForeignKey(License, help_text='Type of license',
