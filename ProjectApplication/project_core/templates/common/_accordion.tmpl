@@ -4,7 +4,8 @@
             <h5 class="mb-0">
                 <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#{{ prefix }}">
                     {% if button_text_collapsed and button_text_not_collapsed %}
-                        <span class="if-collapsed">{{ button_text_collapsed }}</span>
+                        <span class="if-collapsed">{{ button_text_collapsed }}
+                            {% if count %}({{ count }}){% endif %}</span>
                         <span class="if-not-collapsed">{{ button_text_not_collapsed }}</span>
                     {% else %}
                         {{ button_text }}

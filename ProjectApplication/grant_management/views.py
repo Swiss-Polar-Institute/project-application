@@ -58,6 +58,9 @@ class ProjectDetail(DetailView):
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
                                  {'name': f'Project detail ({project.call_pi()})'}]
 
+        context['lay_summaries_count'] = project.laysummary_set.exclude(text='').count()
+        context['blog_posts_count'] = project.blogpost_set.exclude(text='').count()
+
         return context
 
 
