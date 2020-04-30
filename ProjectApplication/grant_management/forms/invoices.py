@@ -7,18 +7,22 @@ from django.urls import reverse
 from django.utils.formats import number_format
 from django.utils.safestring import mark_safe
 
-from grant_management.forms.valid_if_empty import ValidIfEmptyModelForm
+from grant_management.forms.valid_if_empty import ValidIfEmpty
 from grant_management.models import Invoice
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from . import utils
 
 
-class InvoiceItemModelForm(ValidIfEmptyModelForm):
+class InvoiceItemModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         fields_allowed_empty=['due_date'],
-                         basic_fields=['project', 'id', 'DELETE', 'can_be_deleted'])
+        super().__init__(*args, **kwargs)
+
+        self._valid_if_empty = ValidIfEmpty(fields_allowed_empty=['due_date'],
+                                            basic_fields=['project', 'id', 'DELETE', 'can_be_deleted'],
+                                            form=self)
+
+        self._valid_if_empty.update_required(self.fields)
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_date'])
@@ -141,6 +145,12 @@ class InvoiceItemModelForm(ValidIfEmptyModelForm):
 
         if errors:
             raise forms.ValidationError(errors)
+
+    def save(self, *args, **kwargs):
+        return self._valid_if_empty.save(*args, **kwargs)
+
+    def is_valid(self):
+        return self._valid_if_empty.is_valid()
 
     class Meta:
         model = Invoice

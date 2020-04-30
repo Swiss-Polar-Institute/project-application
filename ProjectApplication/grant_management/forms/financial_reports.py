@@ -12,8 +12,7 @@ class FinancialReportItemModelForm(AbstractReportItemModelForm):
         super().__init__(*args, **kwargs)
 
         self._valid_if_empty = ValidIfEmpty(fields_allowed_empty=['due_date'],
-                                            basic_fields=['project', 'id', 'DELETE', 'can_be_deleted'],
-                                            # base_class=AbstractReportItemModelForm)
+                                            basic_fields=AbstractReportItemModelForm.BASIC_FIELDS,
                                             form=self)
 
         self._valid_if_empty.update_required(self.fields)
