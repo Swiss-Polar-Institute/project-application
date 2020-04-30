@@ -14,7 +14,7 @@
             <tr>
                 <td data-sort="{{ invoice.due_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=invoice.due_date %}</td>
                 <td data-sort="{{ invoice.received_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=invoice.received_date %}</td>
-                <td data-sort="{{ invoice.sent_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=invoice.sent_date %}</td>
+                <td data-sort="{{ invoice.sent_for_payment_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=invoice.sent_for_payment_date %}</td>
                 <td data-sort="{{ invoice.paid_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=invoice.paid_date %}</td>
                 <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.amount %}</td>
                 <td>{% include 'common/_file_to_download.tmpl' with file_field=invoice.file %}</td>

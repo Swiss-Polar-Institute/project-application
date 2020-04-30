@@ -28,11 +28,11 @@ class FinancialReportItemFormTest(TestCase):
     def test_received_date_after_sent_date(self):
         data = {'project': self._project,
                 'received_date': datetime(2020, 5, 5),
-                'sent_date': datetime(2020, 1, 5)
+                'sent_for_approval_date': datetime(2020, 1, 5)
                 }
 
         financial_report_item_form = FinancialReportItemModelForm(data=data)
 
         self.assertFalse(financial_report_item_form.is_valid())
-        self.assertIn('sent_date', financial_report_item_form.errors)
+        self.assertIn('sent_for_approval_date', financial_report_item_form.errors)
 

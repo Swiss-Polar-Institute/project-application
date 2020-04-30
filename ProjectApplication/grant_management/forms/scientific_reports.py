@@ -27,6 +27,8 @@ class ScientificReportItemModelForm(AbstractReportItemModelForm):
         model = ScientificReport
 
 
+
+
 class ScientificReportsFormSet(BaseInlineFormSet):
     FORM_NAME = 'scientific_reports_form'
 

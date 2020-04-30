@@ -67,7 +67,7 @@ class AbstractReportItemModelForm(forms.ModelForm):
 
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
-        sent_date = cd.get('sent_date', None)
+        sent_for_approval_date = cd.get('sent_for_approval_date', None)
         approval_date = cd.get('approval_date', None)
         approved_by = cd.get('approved_by', None)
         file = cd.get('file', None)
@@ -83,10 +83,10 @@ class AbstractReportItemModelForm(forms.ModelForm):
         if received_date and received_date < project_starts:
             errors['received_date'] = utils.error_received_date_too_early(project.start_date)
 
-        if sent_date and received_date and sent_date < received_date:
-            errors['sent_date'] = 'Date sent for approval should be after the date the financial report was received'
+        if sent_for_approval_date and received_date and sent_for_approval_date < received_date:
+            errors['sent_for_approval_date'] = 'Date sent for approval should be after the date the financial report was received'
 
-        if approval_date and sent_date and approval_date < sent_date:
+        if approval_date and sent_for_approval_date and approval_date < sent_for_approval_date:
             errors['approval_date'] = 'Date the report was approved should be after the date it was sent for approval.'
 
         if not approved_by and approval_date:
@@ -95,12 +95,12 @@ class AbstractReportItemModelForm(forms.ModelForm):
         if not file and received_date:
             errors['file'] = 'Please attach the financial report file (the date received has been entered).'
 
-        if not received_date and sent_date:
+        if not received_date and sent_for_approval_date:
             errors['received_date'] = 'Please enter the date the financial report was received (the date it was ' \
                                       'sent for approval has been entered).'
 
-        if not sent_date and approval_date:
-            errors['sent_date'] = 'Please enter the date the financial report was sent for approval (the date it ' \
+        if not sent_for_approval_date and approval_date:
+            errors['sent_for_approval_date'] = 'Please enter the date the financial report was sent for approval (the date it ' \
                                   'was approved has been entered).'
 
         if not approval_date and approved_by:
@@ -112,15 +112,15 @@ class AbstractReportItemModelForm(forms.ModelForm):
 
     class Meta:
         # model = XXX  # : this needs to be defined by the subclass
-        fields = ['project', 'due_date', 'received_date', 'sent_date', 'approval_date', 'approved_by', 'file']
+        fields = ['project', 'due_date', 'received_date', 'sent_for_approval_date', 'approval_date', 'approved_by', 'file']
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
-            'sent_date': XDSoftYearMonthDayPickerInput,
+            'sent_for_approval_date': XDSoftYearMonthDayPickerInput,
             'approval_date': XDSoftYearMonthDayPickerInput,
             'approved_by': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
         }
         labels = {'due_date': 'Due',
                   'received_date': 'Received',
-                  'sent_date': 'Sent for review',
+                  'sent_for_approval_date': 'Sent for approval',
                   }

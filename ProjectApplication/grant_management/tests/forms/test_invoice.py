@@ -107,7 +107,7 @@ class InvoiceItemFormTest(TestCase):
         data = {'project': self._project,
                 'due_date': date(2020, 1, 5),
                 'received_date': date(2020, 1, 6),
-                'sent_date': date(2020, 1, 7),
+                'sent_for_payment_date': date(2020, 1, 7),
                 'paid_date': date(2020, 1, 8)
                 }
         file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
@@ -121,11 +121,11 @@ class InvoiceItemFormTest(TestCase):
         data = {'project': self._project,
                 'due_date': date(2020, 1, 5),
                 'received_date': date(2020, 1, 6),
-                'sent_date': date(2020, 1, 7),
+                'sent_for_payment_date': date(2020, 1, 7),
                 }
 
         invoice_item_form = InvoiceItemModelForm(data=data)
 
         self.assertFalse(invoice_item_form.is_valid())
         # sent_date cannot be entered because the grant agreement is not signed
-        self.assertIn('sent_date', invoice_item_form.errors)
+        self.assertIn('sent_for_payment_date', invoice_item_form.errors)

@@ -68,7 +68,7 @@ class LaySummaryModelForm(forms.ModelForm):
         labels = {'text': 'Lay summary'}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
-            'sent_date': XDSoftYearMonthDayPickerInput,
+            'sent_for_approval_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput
         }

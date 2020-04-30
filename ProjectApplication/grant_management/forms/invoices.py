@@ -25,7 +25,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         self._valid_if_empty.update_required(self.fields)
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
-        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_date'])
+        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_for_payment_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['paid_date'])
 
@@ -33,7 +33,7 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         if self.instance and self.instance.paid_date is not None:
             self.fields['can_be_deleted'].initial = 0
-            for field_name in ['due_date', 'received_date', 'sent_date', 'file', 'amount']:
+            for field_name in ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount']:
                 self.fields[field_name].disabled = True
                 self.fields[field_name].help_text = f'Invoice cannot be changed as it has already been paid. ' \
                                                     f'Delete the date it was paid and try again'
@@ -60,7 +60,7 @@ class InvoiceItemModelForm(forms.ModelForm):
             ),
             Div(
                 Div('amount', css_class='col-4'),
-                Div('sent_date', css_class='col-4'),
+                Div('sent_for_payment_date', css_class='col-4'),
                 Div('paid_date', css_class='col-4'),
                 css_class='row'
             )
@@ -87,7 +87,7 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
-        sent_date = cd.get('sent_date', None)
+        sent_for_payment = cd.get('sent_for_payment_date', None)
         paid_date = cd.get('paid_date', None)
 
         amount = cd.get('amount', None)
@@ -95,7 +95,7 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         errors = {}
 
-        if not due_date and (due_date or received_date or sent_date or paid_date or amount or file):
+        if not due_date and (due_date or received_date or sent_for_payment or paid_date or amount or file):
             errors['due_date'] = f'Due date is required to create an invoice'
 
         if due_date and due_date < project_starts:
@@ -104,10 +104,10 @@ class InvoiceItemModelForm(forms.ModelForm):
         if received_date and received_date < project_starts:
             errors['received_date'] = utils.error_received_date_too_early(project.start_date)
 
-        if sent_date and received_date and sent_date < received_date:
-            errors['sent_date'] = f'Date sent for payment should be after the date the invoice was received'
+        if sent_for_payment and received_date and sent_for_payment < received_date:
+            errors['sent_for_payment_date'] = f'Date sent for payment should be after the date the invoice was received'
 
-        if paid_date and sent_date and paid_date < sent_date:
+        if paid_date and sent_for_payment and paid_date < sent_for_payment:
             errors['paid_date'] = f'Date paid should be after the date the invoice was sent for payment'
 
         if due_date and due_date > project_ends:
@@ -122,7 +122,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         if not file and received_date:
             errors['file'] = f'Please attach the invoice file (a date received has been entered).'
 
-        if not received_date and sent_date:
+        if not received_date and sent_for_payment:
             errors[
                 'received_date'] = f'Please enter the date the invoice was received (a date sent for payment has been entered).'
 
@@ -130,14 +130,14 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors[
                 'received_date'] = f'Please enter the date the invoice was recevived (a date paid has been entered).'
 
-        if not amount and sent_date:
+        if not amount and sent_for_payment:
             errors['amount'] = f'Please enter the invoice amount (a date sent for payment has been entered).'
 
-        if sent_date is not None and (
+        if sent_for_payment is not None and (
                 hasattr(project, 'grantagreement') is False or project.grantagreement.file is None):
             grant_agreement_url = reverse('logged-grant_management-grant_agreement-add', kwargs={'project': project.id})
             errors[
-                'sent_date'] = mark_safe(
+                'sent_for_payment_date'] = mark_safe(
                 f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
 
         if DELETE and paid_date:
@@ -154,16 +154,16 @@ class InvoiceItemModelForm(forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ['project', 'due_date', 'received_date', 'sent_date', 'paid_date', 'amount', 'file']
+        fields = ['project', 'due_date', 'received_date', 'sent_for_payment_date', 'paid_date', 'amount', 'file']
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
-            'sent_date': XDSoftYearMonthDayPickerInput,
+            'sent_for_payment_date': XDSoftYearMonthDayPickerInput,
             'paid_date': XDSoftYearMonthDayPickerInput,
         }
         labels = {'due_date': 'Due',
                   'received_date': 'Received',
-                  'sent_date': 'Sent for payment',
+                  'sent_for_payment_date': 'Sent for payment',
                   'paid_date': 'Paid'
                   }
 
