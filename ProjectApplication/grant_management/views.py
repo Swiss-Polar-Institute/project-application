@@ -150,15 +150,15 @@ class GrantAgreementUpdateView(UpdateView):
         return reverse('logged-grant_management-project-detail', kwargs={'pk': self.object.project.pk})
 
 
-class BlogPostsUpdateView(TemplateView):
-    @staticmethod
-    def _cancel_url(kwargs):
-        return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['project']})
+def grant_management_project_url(kwargs):
+    return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['project']})
 
+
+class BlogPostsUpdateView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['cancel_url'] = BlogPostsUpdateView._cancel_url(kwargs)
+        context['cancel_url'] = grant_management_project_url(kwargs)
 
         project = Project.objects.get(id=kwargs['project'])
 
@@ -181,7 +181,7 @@ class BlogPostsUpdateView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['cancel_url'] = LaySummariesUpdateView._cancel_url(kwargs)
+        context['cancel_url'] = grant_management_project_url(kwargs)
 
         project = Project.objects.get(id=kwargs['project'])
 
@@ -212,14 +212,10 @@ class BlogPostsUpdateView(TemplateView):
 
 
 class LaySummariesUpdateView(TemplateView):
-    @staticmethod
-    def _cancel_url(kwargs):
-        return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['project']})
-
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['cancel_url'] = LaySummariesUpdateView._cancel_url(kwargs)
+        context['cancel_url'] = grant_management_project_url(kwargs)
 
         project = Project.objects.get(id=kwargs['project'])
 
@@ -242,7 +238,7 @@ class LaySummariesUpdateView(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['cancel_url'] = LaySummariesUpdateView._cancel_url(kwargs)
+        context['cancel_url'] = grant_management_project_url(kwargs)
 
         project = Project.objects.get(id=kwargs['project'])
 
@@ -272,15 +268,15 @@ class LaySummariesUpdateView(TemplateView):
         return render(request, 'grant_management/lay_summaries-form.tmpl', context)
 
 
-class FinancesViewUpdate(TemplateView):
-    @staticmethod
-    def _cancel_url(kwargs):
-        return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['project']})
+class ScientificReportsUpdateView(TemplateView):
+    pass
 
+
+class FinancesViewUpdate(TemplateView):
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['cancel_url'] = FinancesViewUpdate._cancel_url(kwargs)
+        context['cancel_url'] = grant_management_project_url(kwargs)
 
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
@@ -302,7 +298,7 @@ class FinancesViewUpdate(TemplateView):
     def post(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['cancel_url'] = FinancesViewUpdate._cancel_url(kwargs)
+        context['cancel_url'] = grant_management_project_url(kwargs)
 
         project = Project.objects.get(id=kwargs['project'])
 

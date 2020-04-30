@@ -19,6 +19,9 @@ urlpatterns = [
     path('logged/grant-management/project/<int:project>/blog_posts/update/',
          grant_management.views.BlogPostsUpdateView.as_view(),
          name='logged-grant_management-blog_posts-update'),
+    path('logged/grant-management/project/<int:project>/scientific_reports/update/',
+         grant_management.views.ScientificReportsUpdateView.as_view(),
+         name='logged-grant_management-scientific_reports-update'),
 
     path('logged/grant-management/project/<int:project>/grant-agreement/add/',
          grant_management.views.GrantAgreementAddView.as_view(),
