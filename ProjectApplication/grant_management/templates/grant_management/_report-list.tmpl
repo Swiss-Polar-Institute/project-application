@@ -1,0 +1,38 @@
+<table id="{{ report_name }}_table" class="table table-striped table-sm table-hover display">
+    <thead>
+    <tr>
+        <th>Due</th>
+        <th>Received</th>
+        <th>Sent for signing</th>
+        <th>Approval date</th>
+        <th>Approved by</th>
+        <th>File</th>
+    </tr>
+    </thead>
+    {% for report in reports %}
+        <tr>
+            <td data-sort="{{ report.due_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.due_date %}</td>
+            <td data-sort="{{ report.received_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.received_date %}</td>
+            <td data-sort="{{ report.sent_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.sent_date %}</td>
+            <td data-sort="{{ report.approval_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.approval_date %}</td>
+            <td data-sort="{{ report.approved_by }}">{% include 'common/_value-or-dash.tmpl' with value=report.approved_by %}</td>
+            <td>{% include 'common/_file_to_download.tmpl' with file_field=report.file %}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<script type="text/javascript" class="init">
+    $(document).ready(function () {
+        $('#{{ report_name }}_table').DataTable({
+                "pageLength": 100,
+                "order": [[1, "asc"]],
+                "bFilter": false,
+                "bPaginate": false,
+                "info": false,
+                "language": {
+                    "zeroRecords": "No {{ report_name }} reports have been created"
+                }
+            }
+        );
+    });
+</script>

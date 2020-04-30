@@ -29,14 +29,14 @@
             {% include 'grant_management/_invoice-list.tmpl' %}
             <p></p>
             <h3>Financial reports</h3>
-            {% include 'grant_management/_financial_report-list.tmpl' %}
+            {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}
 
             <p></p>
             <h2>Project follow-up</h2>
             <h3>Scientific reports
                 <a class="btn btn-primary btn-sm"
                    href="{% url 'logged-grant_management-scientific_reports-update' project=project.id %}">Edit</a></h3>
-            {% include 'grant_management/_scientific_report-list.tmpl' %}
+            {% include 'grant_management/_report-list.tmpl' with reports=project.scientificreport_set.all report_name='scientific' %}
             <p></p>
             <h2>Deliverables and media</h2>
             <h3>Lay summaries
