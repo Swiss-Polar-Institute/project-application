@@ -1,7 +1,7 @@
 from crispy_forms.helper import FormHelper
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
-from grant_management.models import FinancialReport, ScientificReport
+from grant_management.models import ScientificReport
 from project_core.models import Project
 from .abstract_reports import AbstractReportItemModelForm
 from .valid_if_empty import ValidIfEmpty
@@ -41,7 +41,7 @@ class ScientificReportsFormSet(BaseInlineFormSet):
         return super().get_queryset().order_by('received_date')
 
 
-FinancialReportsInlineFormSet = inlineformset_factory(Project, FinancialReport,
-                                                      form=ScientificReportItemModelForm,
-                                                      formset=ScientificReportsFormSet,
-                                                      min_num=1, extra=0, can_delete=True)
+ScientificReportsInlineFormSet = inlineformset_factory(Project, ScientificReport,
+                                                       form=ScientificReportItemModelForm,
+                                                       formset=ScientificReportsFormSet,
+                                                       min_num=1, extra=0, can_delete=True)

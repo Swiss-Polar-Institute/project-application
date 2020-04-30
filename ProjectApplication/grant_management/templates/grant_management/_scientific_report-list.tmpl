@@ -1,0 +1,40 @@
+{% with scientific_reports=project.scientificreport_set.all %}
+    <table id="scientific_reports_table" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Due</th>
+            <th>Received</th>
+            <th>Sent for signing</th>
+            <th>Approval date</th>
+            <th>Approved by</th>
+            <th>File</th>
+        </tr>
+        </thead>
+        {% for scientific_report in scientific_reports %}
+            <tr>
+                <td data-sort="{{ scientific_report.due_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=scientific_report.due_date %}</td>
+                <td data-sort="{{ scientific_report.received_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=scientific_report.received_date %}</td>
+                <td data-sort="{{ scientific_report.sent_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=scientific_report.sent_date %}</td>
+                <td data-sort="{{ scientific_report.approval_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=scientific_report.approval_date %}</td>
+                <td data-sort="{{ scientific_report.approved_by }}">{% include 'common/_value-or-dash.tmpl' with value=scientific_report.approved_by %}</td>
+                <td>{% include 'common/_file_to_download.tmpl' with file_field=scientific_report.file %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#scientific_reports_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[1, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                    "language": {
+                        "zeroRecords": "No scientific reports have been created"
+                    }
+                }
+            );
+        });
+    </script>
+{% endwith %}

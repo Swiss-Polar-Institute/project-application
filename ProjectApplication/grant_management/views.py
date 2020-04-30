@@ -10,6 +10,7 @@ from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
 from grant_management.forms.lay_summaries import LaySummariesFormSet, LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
+from grant_management.forms.scientific_reports import ScientificReportsFormSet, ScientificReportsInlineFormSet
 from grant_management.models import GrantAgreement
 from project_core.models import Project
 
@@ -247,7 +248,7 @@ class LaySummariesUpdateView(TemplateView):
         if lay_summaries_form.is_valid():
             lay_summaries_form.save()
             messages.success(request, 'Lay Summaries saved')
-            return grant_management_project_url(kwargs)
+            return redirect(grant_management_project_url(kwargs))
 
         messages.error(request, 'Lay Summaries not saved. Verify errors in the form')
 
@@ -257,7 +258,52 @@ class LaySummariesUpdateView(TemplateView):
 
 
 class ScientificReportsUpdateView(TemplateView):
-    pass
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['cancel_url'] = grant_management_project_url(kwargs)
+
+        project = Project.objects.get(id=kwargs['project'])
+
+        context['project'] = project
+
+        context.update({'active_section': 'grant_management',
+                        'active_subsection': 'project-list',
+                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
+                                 {'name': f'Project detail ({project.call_pi()})',
+                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
+                                 {'name': 'Scientific reports'}]
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        context[ScientificReportsFormSet.FORM_NAME] = ScientificReportsInlineFormSet(
+            prefix=ScientificReportsFormSet.FORM_NAME,
+            instance=context['project'])
+
+        return render(request, 'grant_management/scientific_reports-form.tmpl', context)
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        scientific_reports_form = ScientificReportsInlineFormSet(request.POST, request.FILES,
+                                                                 prefix=ScientificReportsFormSet.FORM_NAME,
+                                                                 instance=context['project'])
+
+        if scientific_reports_form.is_valid():
+            scientific_reports_form.save()
+            messages.success(request, 'Scientific Reports saved')
+            return redirect(grant_management_project_url(kwargs))
+
+        messages.error(request, 'Scientific reports not saved. Verify errors in the form')
+
+        context[ScientificReportsFormSet.FORM_NAME] = scientific_reports_form
+
+        return render(request, 'grant_management/scientific_reports-form.tmpl', context)
 
 
 class FinancesViewUpdate(TemplateView):
