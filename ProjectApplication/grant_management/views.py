@@ -5,12 +5,11 @@ from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
 from grant_management.forms.blog_posts import BlogPostsFormSet, BlogPostsInlineFormSet
-from grant_management.forms.financial_reports import FinancialReportsFormSet, FinancialReportsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
 from grant_management.forms.lay_summaries import LaySummariesFormSet, LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
-from grant_management.forms.scientific_reports import ScientificReportsFormSet, ScientificReportsInlineFormSet
+from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
 from grant_management.models import GrantAgreement
 from project_core.models import Project
 
@@ -258,6 +257,8 @@ class LaySummariesUpdateView(TemplateView):
 
 
 class ScientificReportsUpdateView(TemplateView):
+    FORM_NAME = 'scientific_reports_form'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -281,8 +282,8 @@ class ScientificReportsUpdateView(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
 
-        context[ScientificReportsFormSet.FORM_NAME] = ScientificReportsInlineFormSet(
-            prefix=ScientificReportsFormSet.FORM_NAME,
+        context[ScientificReportsUpdateView.FORM_NAME] = ScientificReportsInlineFormSet(
+            prefix=ScientificReportsUpdateView.FORM_NAME,
             instance=context['project'])
 
         return render(request, 'grant_management/scientific_reports-form.tmpl', context)
@@ -291,7 +292,7 @@ class ScientificReportsUpdateView(TemplateView):
         context = self.get_context_data(**kwargs)
 
         scientific_reports_form = ScientificReportsInlineFormSet(request.POST, request.FILES,
-                                                                 prefix=ScientificReportsFormSet.FORM_NAME,
+                                                                 prefix=ScientificReportsUpdateView.FORM_NAME,
                                                                  instance=context['project'])
 
         if scientific_reports_form.is_valid():
@@ -301,12 +302,14 @@ class ScientificReportsUpdateView(TemplateView):
 
         messages.error(request, 'Scientific reports not saved. Verify errors in the form')
 
-        context[ScientificReportsFormSet.FORM_NAME] = scientific_reports_form
+        context[ScientificReportsUpdateView.FORM_NAME] = scientific_reports_form
 
         return render(request, 'grant_management/scientific_reports-form.tmpl', context)
 
 
 class FinancesViewUpdate(TemplateView):
+    FORM_NAME = 'financial_reports_form'
+
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -319,8 +322,8 @@ class FinancesViewUpdate(TemplateView):
         project = Project.objects.get(id=kwargs['project'])
 
         context[InvoicesFormSet.FORM_NAME] = InvoicesInlineFormSet(prefix=InvoicesFormSet.FORM_NAME, instance=project)
-        context[FinancialReportsFormSet.FORM_NAME] = FinancialReportsInlineFormSet(
-            prefix=FinancialReportsFormSet.FORM_NAME, instance=project)
+        context[FinancesViewUpdate.FORM_NAME] = FinancialReportsInlineFormSet(
+            prefix='financial_reports_form', instance=project)
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
                                  {'name': f'Project detail ({project.call_pi()})',
@@ -340,7 +343,7 @@ class FinancesViewUpdate(TemplateView):
                                               prefix=InvoicesFormSet.FORM_NAME,
                                               instance=project)
         financial_reports_form = FinancialReportsInlineFormSet(request.POST, request.FILES,
-                                                               prefix=FinancialReportsFormSet.FORM_NAME,
+                                                               prefix='financial_reports_form',
                                                                instance=project)
 
         if all([invoices_form.is_valid(), financial_reports_form.is_valid()]):
@@ -362,7 +365,7 @@ class FinancesViewUpdate(TemplateView):
                                  {'name': 'Finances'}]
 
         context[InvoicesFormSet.FORM_NAME] = invoices_form
-        context[FinancialReportsFormSet.FORM_NAME] = financial_reports_form
+        context[FinancesViewUpdate.FORM_NAME] = financial_reports_form
 
         context['project'] = project
 

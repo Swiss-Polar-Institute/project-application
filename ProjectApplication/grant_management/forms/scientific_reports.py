@@ -25,25 +25,3 @@ class ScientificReportItemModelForm(AbstractReportItemModelForm):
 
     class Meta(AbstractReportItemModelForm.Meta):
         model = ScientificReport
-
-
-
-
-class ScientificReportsFormSet(BaseInlineFormSet):
-    FORM_NAME = 'scientific_reports_form'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.helper = FormHelper()
-        self.helper.form_tag = False
-        self.helper.form_id = ScientificReportsFormSet.FORM_NAME
-
-    def get_queryset(self):
-        return super().get_queryset().order_by('received_date')
-
-
-ScientificReportsInlineFormSet = inlineformset_factory(Project, ScientificReport,
-                                                       form=ScientificReportItemModelForm,
-                                                       formset=ScientificReportsFormSet,
-                                                       min_num=1, extra=0, can_delete=True)

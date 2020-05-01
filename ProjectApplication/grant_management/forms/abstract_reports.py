@@ -51,7 +51,7 @@ class AbstractReportItemModelForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('sent_date', css_class='col-4'),
+                Div('sent_for_approval_date', css_class='col-4'),
                 Div('approved_by', css_class='col-4'),
                 Div('approval_date', css_class='col-4'),
                 css_class='row'
