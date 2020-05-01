@@ -5,7 +5,7 @@
         {% for bread in breadcrumb %}
             {{ bread.name }}
             {% if not forloop.last %}
-                >
+                ·
             {% endif %}
         {% endfor %}
     {% endif %}
