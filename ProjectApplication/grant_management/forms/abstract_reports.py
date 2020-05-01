@@ -127,3 +127,4 @@ class AbstractReportItemModelForm(forms.ModelForm):
                   'received_date': 'Received',
                   'sent_for_approval_date': 'Sent for approval',
                   }
+        help_texts = {'due_date': 'Date the report is due', 'received_date': 'Date the report was received'}

@@ -62,6 +62,9 @@ class BlogPostModelForm(forms.ModelForm):
     class Meta:
         model = BlogPost
         fields = ['project', 'due_date', 'received_date', 'text', 'author']
+        labels = {'due_date': 'Due', 'received_date': 'Received'}
+        help_texts = {'text': None, 'due_date': 'Date the blog post is due',
+                      'received_date': 'Date the blog post was received'}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,

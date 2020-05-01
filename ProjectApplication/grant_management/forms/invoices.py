@@ -167,6 +167,7 @@ class InvoiceItemModelForm(forms.ModelForm):
                   'sent_for_payment_date': 'Sent for payment',
                   'paid_date': 'Paid'
                   }
+        help_texts = {'due_date': 'Date the invoice is due', 'received_date': 'Date the invoice was received'}
 
 
 class InvoicesFormSet(BaseInlineFormSet):
