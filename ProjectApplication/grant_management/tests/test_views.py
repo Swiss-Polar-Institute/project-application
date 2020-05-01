@@ -1,5 +1,6 @@
 from datetime import date
 
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
@@ -118,5 +119,29 @@ class GrantAgreementAddViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
-        # TODO
-        pass
+        project_id = self._project.id
+        signed_by_id = self._project.principal_investigator.person.id
+
+        self.assertFalse(hasattr(self._project, 'grantagreement'))
+
+        data = MultiValueDict(
+            {'project': [str(project_id)],
+             'signed_by': [str(signed_by_id)],
+             'signed_date': ['01-05-2020'],
+             'file': [SimpleUploadedFile('grant_agreement.txt',
+                                         b'This is the signed grant agreement. C.')]
+             })
+
+        response = self._client_management.post(
+            reverse('logged-grant_management-grant_agreement-add', kwargs={'project': project_id}),
+            data=data
+        )
+        self.assertEqual(response.status_code, 302)
+        self._project.refresh_from_db()
+
+        self.assertTrue(hasattr(self._project, 'grantagreement'))
+        grant_agreement = self._project.grantagreement
+
+        self.assertEqual(grant_agreement.signed_date, date(2020, 5, 1))
+        self.assertEqual(grant_agreement.signed_by, self._project.principal_investigator.person)
+        self.assertTrue(grant_agreement.file.name != '')
