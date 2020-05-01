@@ -101,7 +101,7 @@ class LaySummary(AbstractProjectDueReceivedDate):
 
 
 class BlogPost(AbstractProjectDueReceivedDate):
-    text = models.TextField(help_text='Blog post text', null=False, blank=False)
+    text = models.TextField(help_text='Blog post text', null=True, blank=True)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the blog post',
                                blank=True, null=True, on_delete=models.PROTECT)
 
