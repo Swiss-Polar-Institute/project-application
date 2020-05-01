@@ -102,6 +102,8 @@ def context_data_grant_greement(project):
                               'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                              {'name': 'Grant management'}]
 
+    context['project'] = project
+
     return context
 
 
@@ -310,49 +312,14 @@ class ScientificReportsUpdateView(TemplateView):
 class FinancesViewUpdate(TemplateView):
     FORM_NAME = 'financial_reports_form'
 
-    def get(self, request, *args, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
-        context['cancel_url'] = grant_management_project_url(kwargs)
-
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         project = Project.objects.get(id=kwargs['project'])
 
-        context[InvoicesFormSet.FORM_NAME] = InvoicesInlineFormSet(prefix=InvoicesFormSet.FORM_NAME, instance=project)
-        context[FinancesViewUpdate.FORM_NAME] = FinancialReportsInlineFormSet(
-            prefix='financial_reports_form', instance=project)
-
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.call_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                                 {'name': 'Finances'}]
-
-        return render(request, 'grant_management/finances-form.tmpl', context)
-
-    def post(self, request, *args, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context['project'] = project
 
         context['cancel_url'] = grant_management_project_url(kwargs)
-
-        project = Project.objects.get(id=kwargs['project'])
-
-        invoices_form = InvoicesInlineFormSet(request.POST, request.FILES,
-                                              prefix=InvoicesFormSet.FORM_NAME,
-                                              instance=project)
-        financial_reports_form = FinancialReportsInlineFormSet(request.POST, request.FILES,
-                                                               prefix='financial_reports_form',
-                                                               instance=project)
-
-        if all([invoices_form.is_valid(), financial_reports_form.is_valid()]):
-            invoices_form.save()
-            financial_reports_form.save()
-            messages.success(request, 'Finances updated')
-            return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': project.id}))
-
-        messages.error(request, 'Finances not saved. Verify errors in the forms.')
 
         context.update({'active_section': 'grant_management',
                         'active_subsection': 'project-list',
@@ -364,9 +331,37 @@ class FinancesViewUpdate(TemplateView):
                                                  kwargs={'pk': project.id})},
                                  {'name': 'Finances'}]
 
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        context[InvoicesFormSet.FORM_NAME] = InvoicesInlineFormSet(prefix=InvoicesFormSet.FORM_NAME,
+                                                                   instance=context['project'])
+        context[FinancesViewUpdate.FORM_NAME] = FinancialReportsInlineFormSet(
+            prefix='financial_reports_form', instance=context['project'])
+
+        return render(request, 'grant_management/finances-form.tmpl', context)
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data()
+
+        invoices_form = InvoicesInlineFormSet(request.POST, request.FILES,
+                                              prefix=InvoicesFormSet.FORM_NAME,
+                                              instance=context['project'])
+        financial_reports_form = FinancialReportsInlineFormSet(request.POST, request.FILES,
+                                                               prefix='financial_reports_form',
+                                                               instance=context['project'])
+
+        if all([invoices_form.is_valid(), financial_reports_form.is_valid()]):
+            invoices_form.save()
+            financial_reports_form.save()
+            messages.success(request, 'Finances updated')
+            return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': context['project'].id}))
+
+        messages.error(request, 'Finances not saved. Verify errors in the forms.')
+
         context[InvoicesFormSet.FORM_NAME] = invoices_form
         context[FinancesViewUpdate.FORM_NAME] = financial_reports_form
-
-        context['project'] = project
 
         return render(request, 'grant_management/finances-form.tmpl', context)

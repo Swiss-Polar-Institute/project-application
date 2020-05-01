@@ -4,8 +4,8 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            <h1>{{ project.title }}</h1>
-            <h2>Project information</h2>
+            {% include 'grant_management/_project_header-detail.tmpl' with project=project %}
+            <h3>Project information</h3>
             {% crispy form %}
         </div>
         <div class="col-2">

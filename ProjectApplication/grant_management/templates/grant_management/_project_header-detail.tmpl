@@ -1,0 +1,16 @@
+<h2>{{ project.title }}</h2>
+<div class="shadow-none p-1 bg-light rounded">
+    <div class="row">
+        <div class="col-8">
+            <strong>Principal
+                investigator:</strong> {% include 'common/_person_with_orcid.tmpl' with person=project.principal_investigator %}<br>
+            <b>Start date:</b> {{ project.start_date }}<br>
+            <b>End date:</b> {{ project.end_date }}
+        </div>
+        <div class="col-4">
+            <strong>Project Key:</strong> {{ project.key }}<br>
+            <strong>Status:</strong> {{ project.status }}<br>
+        </div>
+    </div>
+</div>
+<br>

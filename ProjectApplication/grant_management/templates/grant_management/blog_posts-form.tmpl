@@ -4,6 +4,7 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
+            {% include 'grant_management/_project_header-detail.tmpl' %}
             <form action="" enctype="multipart/form-data" method="post">
                 <h3>Blog Posts</h3>
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">

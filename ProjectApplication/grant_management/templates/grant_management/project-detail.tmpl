@@ -7,55 +7,55 @@
             <h2>{{ project.title }}</h2>
             {% include 'grant_management/_project_summary-detail.tmpl' %}
             <p></p>
-            <h2>Project information <a class="btn btn-primary btn-sm"
+            <h3>Project information <a class="btn btn-primary btn-sm"
                                        href="{% url 'logged-grant_management-project-update' pk=project.pk %}">Edit</a>
-            </h2>
+            </h3>
             <strong>Budget allocated:</strong> {{ project.allocated_budget }} CHF<br>
             <strong>Start date:</strong> {{ project.start_date }}<br>
             <strong>End date:</strong> {{ project.end_date }}<br>
             <p></p>
-            <h2>Grant agreement <a class="btn btn-primary btn-sm"
+            <h3>Grant agreement <a class="btn btn-primary btn-sm"
                                    href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
-            </h2>
+            </h3>
             <strong>Agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
             <strong>Signed
                 date:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_date %}<br>
             <strong>Signed
                 by:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_by %}<br>
             <p></p>
-            <h2>Finances <a class="btn btn-primary btn-sm"
-                            href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h2>
-            <h3>Invoices</h3>
+            <h3>Finances <a class="btn btn-primary btn-sm"
+                            href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h3>
+            <h4>Invoices</h4>
             {% include 'grant_management/_invoice-list.tmpl' %}
             <p></p>
-            <h3>Financial reports</h3>
+            <h4>Financial reports</h4>
             {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}
 
             <p></p>
-            <h2>Project follow-up</h2>
-            <h3>Scientific reports
+            <h3>Project follow-up</h3>
+            <h4>Scientific reports
                 <a class="btn btn-primary btn-sm"
-                   href="{% url 'logged-grant_management-scientific_reports-update' project=project.id %}">Edit</a></h3>
+                   href="{% url 'logged-grant_management-scientific_reports-update' project=project.id %}">Edit</a></h4>
             {% include 'grant_management/_report-list.tmpl' with reports=project.scientificreport_set.all report_name='scientific' %}
             <p></p>
-            <h2>Deliverables and media</h2>
-            <h3>Lay summaries
+            <h3>Deliverables and media</h3>
+            <h4>Lay summaries
                 <a class="btn btn-primary btn-sm"
                    href="{% url 'logged-grant_management-lay_summaries-update' project=project.id %}">Edit</a>
-            </h3>
+            </h4>
             {% include 'common/_accordion.tmpl' with prefix='lay_summaries' count=lay_summaries_count button_text_collapsed='View Lay Summaries' button_text_not_collapsed='Hide Blog Posts' template_file='grant_management/_lay_summary-list.tmpl' %}
 
-            <h3>Blog posts
+            <h4>Blog posts
                 <a class="btn btn-primary btn-sm"
                    href="{% url 'logged-grant_management-blog_posts-update' project=project.id %}">Edit</a>
-            </h3>
+            </h4>
             {% include 'common/_accordion.tmpl' with prefix='blog_posts' count=blog_posts_count button_text_collapsed='View Blog Posts' button_text_not_collapsed='Hide Blog Posts' template_file='grant_management/_blog_post-list.tmpl' %}
 
-            <h3>Photos and media
+            <h4>Photos and media
                 <div class="d-inline-block" data-toggle="tooltip" title="Not available yet"><a
                         class="btn btn-primary disabled btn-sm"
                         href="#">Edit</a></div>
-            </h3>
+            </h4>
             TODO
 
             <hr>
