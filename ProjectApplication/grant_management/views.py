@@ -205,7 +205,7 @@ class BlogPostsUpdateView(TemplateView):
 
         messages.error(request, 'Blog Posts not saved. Verify errors in the form')
 
-        context[LaySummariesFormSet.FORM_NAME] = blog_posts_form
+        context[BlogPostsFormSet.FORM_NAME] = blog_posts_form
 
         return render(request, 'grant_management/blog_posts-form.tmpl', context)
 
