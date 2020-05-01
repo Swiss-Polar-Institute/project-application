@@ -62,17 +62,11 @@ class ValidIfEmpty:
 
             return None
 
-        return super(self._form.__class__.__base__, self._form).save(*args, **kwargs)
+        return super(self._base_class, self._form).save(*args, **kwargs)
 
     def is_valid(self):
-        valid = super(self._form.__class__.__base__, self._form).is_valid()
+        valid = super(self._base_class, self._form).is_valid()
         return valid or self._is_empty()
-
-    def is_valid2(self, form):
-        valid = super(form.__class__, form).is_valid()
-
-        return valid or self._is_empty()
-
 
 
 class ValidIfEmptyModelForm(forms.ModelForm):
