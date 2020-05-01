@@ -200,10 +200,10 @@ class BlogPostsUpdateView(TemplateView):
 
         if blog_posts_form.is_valid():
             blog_posts_form.save()
-            messages.success(request, 'Blog Posts saved')
+            messages.success(request, 'Blog posts saved')
             return redirect(grant_management_project_url(kwargs))
 
-        messages.error(request, 'Blog Posts not saved. Verify errors in the form')
+        messages.error(request, 'Blog posts not saved. Verify errors in the form')
 
         context[BlogPostsFormSet.FORM_NAME] = blog_posts_form
 

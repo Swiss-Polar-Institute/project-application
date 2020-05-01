@@ -7,7 +7,7 @@
         <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}
     </div>
     <div class="col-4">
-        <strong>Project Key:</strong> {{ project.key }}
+        <strong>Project Key:</strong> {{ project.key }}<br>
         <strong>Status:</strong> {{ project.status }}<br>
         <strong>Call:</strong> <a
             href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
