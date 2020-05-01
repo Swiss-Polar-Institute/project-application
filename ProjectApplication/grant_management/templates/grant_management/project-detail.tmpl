@@ -62,7 +62,13 @@
             {#            {% include 'comments/_comments-attachments.tmpl' %}#}
         </div>
         <div class="col-2">
-            {% include 'logged/_proposal_button.tmpl' with project=project %}
+            <p>
+                {% include 'logged/_proposal_button.tmpl' with project=project %}
+            </p>
+            <p>
+                <a class="btn btn-primary" href="{% url 'logged-project-detail' pk=project.id %}" role="button">View
+                    Project</a>
+            </p>
         </div>
     </div>
 {% endblock %}
