@@ -12,8 +12,8 @@
             <tr>
                 <td data-sort="{{ blog_post.due_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=blog_post.due_date %}</td>
                 <td data-sort="{{ blog_post.received_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=blog_post.received_date %}</td>
-                <td>{{ blog_post.text|linebreaksbr }}</td>
-                <td>{{ blog_post.author }}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=blog_post.text|linebreaksbr %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=blog_post.author %}</td>
             </tr>
         {% endfor %}
     </table>
@@ -32,7 +32,7 @@
                     "columns": [
                         {"width": "15%"},
                         {"width": "15%"},
-                        {"width": "5%"},
+                        {"width": "55%"},
                         {"width": "15%"}
                     ],
                 }

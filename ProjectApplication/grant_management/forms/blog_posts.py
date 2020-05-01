@@ -48,12 +48,12 @@ class BlogPostModelForm(forms.ModelForm):
 
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
-        text = cd.get('text', None)
+        text = cd.get('text', '')
         author = cd.get('author', None)
 
         errors = {}
 
-        if author is None and text is not None:
+        if author is None and text != '':
             errors['author'] = 'Please select the author if there is text'
 
         if errors:
