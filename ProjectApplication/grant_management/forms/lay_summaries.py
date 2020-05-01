@@ -98,7 +98,7 @@ class LaySummariesFormSet(BaseInlineFormSet):
         self.helper.form_id = LaySummariesFormSet.FORM_NAME
 
     def get_queryset(self):
-        return super().get_queryset().order_by('received_date')
+        return super().get_queryset().order_by('due_date')
 
 
 LaySummariesInlineFormSet = inlineformset_factory(Project, LaySummary, form=LaySummaryModelForm,
