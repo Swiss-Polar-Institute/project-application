@@ -57,7 +57,7 @@ class ProjectDetail(DetailView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.call_pi()})'}]
+                                 {'name': f'Project detail ({project.key_pi()})'}]
 
         context['lay_summaries_count'] = project.laysummary_set.exclude(text='').count()
         context['blog_posts_count'] = project.blogpost_set.exclude(text='').count()
@@ -81,7 +81,7 @@ class ProjectBasicInformationUpdateView(SuccessMessageMixin, UpdateView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.call_pi()})',
+                                 {'name': f'Project detail ({project.key_pi()})',
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Project basic information Edit'}]
 
@@ -98,7 +98,7 @@ def context_data_grant_greement(project):
                'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'}
 
     context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                             {'name': f'Project detail ({project.call_pi()})',
+                             {'name': f'Project detail ({project.key_pi()})',
                               'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                              {'name': 'Grant management'}]
 
@@ -177,7 +177,7 @@ class BlogPostsUpdateView(TemplateView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.call_pi()})',
+                                 {'name': f'Project detail ({project.key_pi()})',
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Blog Posts'}]
 
@@ -225,7 +225,7 @@ class LaySummariesUpdateView(TemplateView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.call_pi()})',
+                                 {'name': f'Project detail ({project.key_pi()})',
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Lay Summaries'}]
 
@@ -275,7 +275,7 @@ class ScientificReportsUpdateView(TemplateView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.call_pi()})',
+                                 {'name': f'Project detail ({project.key_pi()})',
                                   'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                                  {'name': 'Scientific reports'}]
 
@@ -326,7 +326,7 @@ class FinancesViewUpdate(TemplateView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.call_pi()})',
+                                 {'name': f'Project detail ({project.key_pi()})',
                                   'url': reverse('logged-grant_management-project-detail',
                                                  kwargs={'pk': project.id})},
                                  {'name': 'Finances'}]

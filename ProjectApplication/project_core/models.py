@@ -1029,8 +1029,8 @@ class Project(CreateModifyOn):
     def __str__(self):
         return '{} - {}'.format(self.title, self.principal_investigator)
 
-    def call_pi(self):
-        return f'{self.call.short_name}-{self.principal_investigator.person.surname}'
+    def key_pi(self):
+        return f'{self.key} {self.principal_investigator.person.surname}'
 
     def keywords_enumeration(self):
         keywords = self.keywords.all().order_by('name')
