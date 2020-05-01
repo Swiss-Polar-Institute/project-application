@@ -85,8 +85,8 @@ class ProjectBasicInformationUpdateViewTest(TestCase):
     def test_post(self):
         project_id = self._project.id
 
-        self.assertEqual(self._project.start_date, date(2020, 1, 1))
-        self.assertEqual(self._project.end_date, date(2022, 10, 10))
+        self.assertEqual(self._project.start_date, date(2020, 1, 10))
+        self.assertEqual(self._project.end_date, date(2022, 5, 7))
 
         data = MultiValueDict(
             {'start_date': ['10-05-2020'],

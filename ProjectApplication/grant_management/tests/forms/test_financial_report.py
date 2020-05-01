@@ -13,7 +13,7 @@ class FinancialReportItemFormTest(TestCase):
 
     def test_valid_financial_report(self):
         data = {'project': self._project,
-                'due_date': datetime(2020, 1, 5)
+                'due_date': datetime(2020, 1, 12)
                 }
 
         self.assertEqual(FinancialReport.objects.all().count(), 0)

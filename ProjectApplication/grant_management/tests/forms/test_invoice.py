@@ -14,7 +14,7 @@ class InvoiceItemFormTest(TestCase):
 
     def test_valid_incomplete_invoice(self):
         data = {'project': self._project,
-                'due_date': date(2020, 1, 5)
+                'due_date': date(2020, 1, 12)
                 }
 
         self.assertEqual(Invoice.objects.all().count(), 0)
@@ -36,18 +36,18 @@ class InvoiceItemFormTest(TestCase):
 
     def test_valid_complete_invoice(self):
         grant_agreement = GrantAgreement(project=self._project,
-                                         signed_date=date(2020, 1, 4),
+                                         signed_date=date(2020, 1, 12),
                                          signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
 
         data = {'project': self._project,
-                'due_date': date(2020, 1, 5),
-                'received_date': date(2020, 1, 6),
-                'sent_date': date(2020, 1, 7),
+                'due_date': date(2020, 1, 13),
+                'received_date': date(2020, 1, 14),
+                'sent_date': date(2020, 1, 15),
                 'amount': 200,
-                'paid_date': date(2020, 1, 8)
+                'paid_date': date(2020, 1, 16)
                 }
         file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
 
