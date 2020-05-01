@@ -344,7 +344,7 @@ class FinancesViewUpdate(TemplateView):
         return render(request, 'grant_management/finances-form.tmpl', context)
 
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data()
+        context = self.get_context_data(**kwargs)
 
         invoices_form = InvoicesInlineFormSet(request.POST, request.FILES,
                                               prefix=InvoicesFormSet.FORM_NAME,
