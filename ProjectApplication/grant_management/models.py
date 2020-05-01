@@ -79,8 +79,12 @@ class ScientificReport(AbstractProjectReport):
 
 
 class LaySummaryType(CreateModifyOn):
-    name = models.CharField(max_length=10, unique=True)
-    description = models.CharField(max_length=100)
+    name = models.CharField(max_length=10,
+                            help_text='Type of lay summary which could be used within the application to decide how the'
+                                      ' summary is used',
+                            unique=True, blank=False, null=False)
+    description = models.CharField(max_length=100, help_text='Description of the type of lay summary', blank=False,
+                                   null=False)
 
     def __str__(self):
         return self.name
