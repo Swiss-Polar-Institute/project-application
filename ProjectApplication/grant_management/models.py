@@ -52,10 +52,10 @@ class Invoice(AbstractProjectDueReceivedDate):
 
 
 class AbstractProjectReport(AbstractProjectDueReceivedDate):
-    sent_for_approval_date = models.DateField(help_text='Date the report was sent to approved', null=True, blank=True)
+    sent_for_approval_date = models.DateField(help_text='Date the report was sent for approval', null=True, blank=True)
     approval_date = models.DateField(help_text='Date the report was approved',
                                      blank=True, null=True)
-    approved_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the report',
+    approved_by = models.ForeignKey(PhysicalPerson, help_text='Person who approved the report',
                                     on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
