@@ -84,7 +84,7 @@ class AbstractReportItemModelForm(forms.ModelForm):
             errors['received_date'] = utils.error_received_date_too_early(project.start_date)
 
         if sent_for_approval_date and received_date and sent_for_approval_date < received_date:
-            errors['sent_for_approval_date'] = 'Date sent for approval should be after the date the financial report was received'
+            errors['sent_for_approval_date'] = 'Date sent for approval should be after the date the report was received'
 
         if approval_date and sent_for_approval_date and approval_date < sent_for_approval_date:
             errors['approval_date'] = 'Date the report was approved should be after the date it was sent for approval.'
@@ -93,18 +93,18 @@ class AbstractReportItemModelForm(forms.ModelForm):
             errors['approved_by'] = 'Please enter who approved the report (the approval date has been entered).'
 
         if not file and received_date:
-            errors['file'] = 'Please attach the financial report file (the date received has been entered).'
+            errors['file'] = 'Please attach the report file (the date received has been entered).'
 
         if not received_date and sent_for_approval_date:
-            errors['received_date'] = 'Please enter the date the financial report was received (the date it was ' \
+            errors['received_date'] = 'Please enter the date the report was received (the date it was ' \
                                       'sent for approval has been entered).'
 
         if not sent_for_approval_date and approval_date:
-            errors['sent_for_approval_date'] = 'Please enter the date the financial report was sent for approval (the date it ' \
+            errors['sent_for_approval_date'] = 'Please enter the date the report was sent for approval (the date it ' \
                                   'was approved has been entered).'
 
         if not approval_date and approved_by:
-            errors['approval_date'] = 'Please enter the date the financial report was approved (the person who ' \
+            errors['approval_date'] = 'Please enter the date the report was approved (the person who ' \
                                       'approved it has been entered).'
 
         if errors:

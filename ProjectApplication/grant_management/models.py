@@ -79,16 +79,20 @@ class ScientificReport(AbstractProjectReport):
 
 
 class LaySummaryType(CreateModifyOn):
-    name = models.CharField(max_length=10, unique=True)
-    description = models.CharField(max_length=100)
+    name = models.CharField(max_length=10,
+                            help_text='Type of lay summary which could be used within the application to decide how the'
+                                      ' summary is used',
+                            unique=True, blank=False, null=False)
+    description = models.CharField(max_length=100, help_text='Description of the type of lay summary', blank=False,
+                                   null=False)
 
     def __str__(self):
         return self.name
 
 
 class LaySummary(AbstractProjectDueReceivedDate):
-    text = models.TextField(help_text='Lay summary text', null=False, blank=False)
-    lay_summary_type = models.ForeignKey(LaySummaryType, on_delete=models.PROTECT)
+    text = models.TextField(help_text='Lay summary text', null=True, blank=True)
+    lay_summary_type = models.ForeignKey(LaySummaryType, help_text='Type of the lay summary', blank=True, null=True,  on_delete=models.PROTECT)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the lay summary',
                                blank=True, null=True, on_delete=models.PROTECT)
 
