@@ -3,7 +3,7 @@
     <tr>
         <th>Due</th>
         <th>Received</th>
-        <th>Sent for signing</th>
+        <th>Sent for approval</th>
         <th>Approval date</th>
         <th>Approved by</th>
         <th>File</th>
@@ -13,7 +13,7 @@
         <tr>
             <td data-sort="{{ report.due_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.due_date %}</td>
             <td data-sort="{{ report.received_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.received_date %}</td>
-            <td data-sort="{{ report.sent_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.sent_date %}</td>
+            <td data-sort="{{ report.sent_for_approval_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.sent_for_approval_date %}</td>
             <td data-sort="{{ report.approval_date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=report.approval_date %}</td>
             <td data-sort="{{ report.approved_by }}">{% include 'common/_value-or-dash.tmpl' with value=report.approved_by %}</td>
             <td>{% include 'common/_file_to_download.tmpl' with file_field=report.file %}</td>
