@@ -104,3 +104,19 @@ class ProjectBasicInformationUpdateViewTest(TestCase):
 
         self.assertEqual(self._project.start_date, date(2020, 5, 10))
         self.assertEqual(self._project.end_date, date(2020, 10, 22))
+
+
+class GrantAgreementAddViewTest(TestCase):
+    def setUp(self):
+        self._project = database_population.create_project()
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get(self):
+        response = self._client_management.get(
+            reverse('logged-grant_management-grant_agreement-add', kwargs={'project': self._project.id})
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_post(self):
+        # TODO
+        pass
