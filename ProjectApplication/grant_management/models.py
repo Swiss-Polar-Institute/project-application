@@ -87,9 +87,9 @@ class LaySummaryType(CreateModifyOn):
 
 
 class LaySummary(AbstractProjectDueReceivedDate):
-    text = models.TextField(help_text='Lay Summary text', null=False, blank=False)
+    text = models.TextField(help_text='Lay summary text', null=False, blank=False)
     lay_summary_type = models.ForeignKey(LaySummaryType, on_delete=models.PROTECT)
-    author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the Lay Summary',
+    author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the lay summary',
                                blank=True, null=True, on_delete=models.PROTECT)
 
     def __str__(self):
@@ -97,14 +97,16 @@ class LaySummary(AbstractProjectDueReceivedDate):
 
 
 class BlogPost(AbstractProjectDueReceivedDate):
-    text = models.TextField(help_text='Blog post', null=False, blank=False)
+    text = models.TextField(help_text='Blog post text', null=False, blank=False)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the blog post',
                                blank=True, null=True, on_delete=models.PROTECT)
 
 
 class License(CreateModifyOn):
-    name = models.TextField(help_text='License name', null=False, blank=False)
-    public_text = models.TextField(help_text='Explanatory text for this license', null=True, blank=True)
+    name = models.CharField(max_length=30, help_text='License name', null=False, blank=False)
+    public_text = models.CharField(max_length=200,
+                                   help_text='Explanatory text for this license. Include the logo and URL to license text.',
+                                   null=True, blank=True)
 
     def __str__(self):
         return f'{self.name}'
