@@ -1,3 +1,5 @@
+from datetime import date
+
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
@@ -67,3 +69,38 @@ class FinancesViewUpdateTest(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Invoice.objects.all().count(), 1)
+
+
+class ProjectBasicInformationUpdateViewTest(TestCase):
+    def setUp(self):
+        self._project = database_population.create_project()
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get(self):
+        response = self._client_management.get(
+            reverse('logged-grant_management-project-update', kwargs={'pk': self._project.id})
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_post(self):
+        project_id = self._project.id
+
+        self.assertEqual(self._project.start_date, date(2020, 1, 1))
+        self.assertEqual(self._project.end_date, date(2022, 10, 10))
+
+        data = MultiValueDict(
+            {'start_date': ['10-05-2020'],
+             'end_date': ['22-10-2020'],
+             'save': ['Save Information']
+             })
+
+        response = self._client_management.post(
+            reverse('logged-grant_management-project-update', kwargs={'pk': project_id}),
+            data=data
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self._project.refresh_from_db()
+
+        self.assertEqual(self._project.start_date, date(2020, 5, 10))
+        self.assertEqual(self._project.end_date, date(2020, 10, 22))
