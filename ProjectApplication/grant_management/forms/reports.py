@@ -13,7 +13,8 @@ class ReportItemModelForm(AbstractReportItemModelForm):
 
         self._valid_if_empty = ValidIfEmpty(fields_allowed_empty=['due_date'],
                                             basic_fields=AbstractReportItemModelForm.BASIC_FIELDS,
-                                            form=self)
+                                            form=self,
+                                            form_base_class=self.__class__.__base__.__base__)
 
         self._valid_if_empty.update_required(self.fields)
 
@@ -21,9 +22,7 @@ class ReportItemModelForm(AbstractReportItemModelForm):
         return self._valid_if_empty.save(*args, **kwargs)
 
     def is_valid(self):
-        valid = super(__class__, self).is_valid()
-        return valid or self._valid_if_empty._is_empty()
-        # return self._valid_if_empty.is_valid()
+        return self._valid_if_empty.is_valid()
 
     class Meta(AbstractReportItemModelForm.Meta):
         pass

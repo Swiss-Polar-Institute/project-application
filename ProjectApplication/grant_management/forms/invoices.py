@@ -20,7 +20,8 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         self._valid_if_empty = ValidIfEmpty(fields_allowed_empty=['due_date'],
                                             basic_fields=['project', 'id', 'DELETE', 'can_be_deleted'],
-                                            form=self)
+                                            form=self,
+                                            form_base_class=self.__class__.__base__)
 
         self._valid_if_empty.update_required(self.fields)
 

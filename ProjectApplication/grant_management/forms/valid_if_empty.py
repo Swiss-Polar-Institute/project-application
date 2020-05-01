@@ -2,13 +2,11 @@ from django import forms
 
 
 class ValidIfEmpty:
-    def __init__(self, fields_allowed_empty, basic_fields, form):
+    def __init__(self, fields_allowed_empty, basic_fields, form, form_base_class):
         self._fields_allowed_empty = fields_allowed_empty
         self._basic_fields = basic_fields
         self._form = form
-
-        assert len(self.__class__.__bases__) == 1, 'form can inherit only from one class'
-        self._base_class = form.__class__.__base__
+        self._base_class = form_base_class
 
     def update_required(self, fields):
         # Fields that are allowed empty are not required
@@ -62,17 +60,11 @@ class ValidIfEmpty:
 
             return None
 
-        return super(self._form.__class__.__base__, self._form).save(*args, **kwargs)
+        return super(self._base_class, self._form).save(*args, **kwargs)
 
     def is_valid(self):
-        valid = super(self._form.__class__.__base__, self._form).is_valid()
+        valid = super(self._base_class, self._form).is_valid()
         return valid or self._is_empty()
-
-    def is_valid2(self, form):
-        valid = super(form.__class__, form).is_valid()
-
-        return valid or self._is_empty()
-
 
 
 class ValidIfEmptyModelForm(forms.ModelForm):
