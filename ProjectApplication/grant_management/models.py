@@ -25,7 +25,7 @@ class GrantAgreement(CreateModifyOn):
 class AbstractProjectDueReceivedDate(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',
                                 on_delete=models.PROTECT)
-    due_date = models.DateField(help_text='Date the document is expected to be received')
+    due_date = models.DateField(help_text='Date the document is due')
     received_date = models.DateField(help_text='Date the document was received', null=True, blank=True)
 
     def __str__(self):
