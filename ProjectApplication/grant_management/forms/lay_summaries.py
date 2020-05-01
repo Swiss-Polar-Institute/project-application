@@ -50,14 +50,25 @@ class LaySummaryModelForm(forms.ModelForm):
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
         sent_date = cd.get('sent_date', None)
-        text = cd.get('text', None)
+        text = cd.get('text', '')
         author = cd.get('author', None)
         lay_summary_type = cd.get('lay_summary_type', None)
 
         errors = {}
 
-        if author is None and text is not None:
+        if author is None and text != '':
             errors['author'] = 'Please select the author if there is text'
+        if author is None and received_date is not None:
+            errors['author'] = 'Please select the author if a received date has been entered'
+        if author is not None and text is None:
+            errors['text'] = 'Please enter the text if there is an author'
+        if text != '' and received_date is None:
+            errors['received_date'] = 'Please enter the date the lay summary was received if there is text'
+        if text != '' and lay_summary_type is None:
+            errors['lay_summary_type'] = 'Please enter the type of lay summary if there is text'
+        if received_date is not None and text is None:
+            errors['text'] = 'Please enter the text if the received date has been entered'
+
 
         if errors:
             raise forms.ValidationError(errors)
@@ -66,7 +77,8 @@ class LaySummaryModelForm(forms.ModelForm):
         model = LaySummary
         fields = ['project', 'lay_summary_type', 'due_date', 'received_date', 'text', 'author']
         labels = {'text': 'Lay summary', 'due_date': 'Due', 'received_date': 'Received'}
-        help_texts = {'due_date': 'Date the lay summary is due', 'received_date': 'Date the lay summary was received', 'text': None}
+        help_texts = {'due_date': 'Date the lay summary is due', 'received_date': 'Date the lay summary was received',
+                      'text': None}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'sent_for_approval_date': XDSoftYearMonthDayPickerInput,
