@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from grant_management.forms.financial_reports import FinancialReportItemModelForm
+from grant_management.forms.reports import FinancialReportItemModelForm
 from grant_management.models import FinancialReport
 from project_core.tests import database_population
 

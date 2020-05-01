@@ -110,6 +110,9 @@ class AbstractReportItemModelForm(forms.ModelForm):
         if errors:
             raise forms.ValidationError(errors)
 
+    def is_valid(self):
+        return super().is_valid()
+
     class Meta:
         # model = XXX  # : this needs to be defined by the subclass
         fields = ['project', 'due_date', 'received_date', 'sent_for_approval_date', 'approval_date', 'approved_by', 'file']
