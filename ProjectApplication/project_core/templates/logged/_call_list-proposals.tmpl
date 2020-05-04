@@ -45,7 +45,6 @@
         <a class="btn btn-primary btn-sm"
            href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
     </p>
-
     <script type="text/javascript" class="init">
         $(document).ready(function () {
             $('table.display').DataTable({
@@ -57,5 +56,4 @@
             );
         });
     </script>
-    <p></p>
 {% endblock %}
