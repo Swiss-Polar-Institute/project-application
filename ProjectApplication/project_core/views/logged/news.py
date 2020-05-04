@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
 
 from evaluation.models import CallEvaluation
-from grant_management.models import Invoice
+from grant_management.models import Invoice, FinancialReport, ScientificReport, LaySummary, BlogPost
 from project_core.models import Call, Project
 from project_core.templatetags.request_is_reviewer import request_is_reviewer
 
@@ -41,13 +41,13 @@ def get_project_news():
 
     news = []
 
-    for invoice in Project.objects.filter(start_date__gte=starts):
+    for project in Project.objects.filter(start_date__gte=starts):
         news.append(
-            create_news_project(invoice.start_date, f'Starts',
-                                invoice)
+            create_news_project(project.start_date, f'Starts',
+                                project)
         )
 
-    for project in Project.objects.filter(start_date__gte=starts):
+    for project in Project.objects.filter(end_date__gte=starts):
         news.append(
             create_news_project(project.end_date, f'Ends', project)
         )
@@ -55,6 +55,26 @@ def get_project_news():
     for invoice in Invoice.objects.filter(due_date__gte=starts):
         news.append(
             create_news_project(invoice.due_date, f'Invoice due', invoice.project)
+        )
+
+    for financial_report in FinancialReport.objects.filter(due_date__gte=starts):
+        news.append(
+            create_news_project(financial_report.due_date, f'Financial report due', financial_report.project)
+        )
+
+    for scientific_report in ScientificReport.objects.filter(due_date__gte=starts):
+        news.append(
+            create_news_project(scientific_report.due_date, f'Financial report due', scientific_report.project)
+        )
+
+    for lay_summary in LaySummary.objects.filter(due_date__gte=starts):
+        news.append(
+            create_news_project(lay_summary.due_date, f'Lay summary due', lay_summary.project)
+        )
+
+    for blog_post in BlogPost.objects.filter(due_date__gte=starts):
+        news.append(
+            create_news_project(blog_post.due_date, f'Blog post due', blog_post.project)
         )
 
     bold_today = mark_safe('<strong>TODAY</strong>')
