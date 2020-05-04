@@ -214,8 +214,8 @@ class ProposalListTest(TestCase):
             reverse('logged-call-evaluation-list-proposals', kwargs={'call_id': self._proposal.call.id}))
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context_data['call'], self._proposal.call)
-        self.assertEqual(response.context_data['proposals'].count(), 0)
+        self.assertEqual(response.context['call'], self._proposal.call)
+        self.assertEqual(response.context['proposals'].count(), 0)
 
 
 class ProposalEvaluationDetailTest(TestCase):
@@ -301,13 +301,13 @@ class CallEvaluationValidationTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        context_data = response.context_data
-        self.assertEqual(context_data['all_good'], False)
-        self.assertEqual(context_data['can_close'], False)
-        self.assertEqual(context_data['total_number_of_submitted'], 1)
-        self.assertEqual(context_data['total_number_of_eligible'], 0)
-        self.assertEqual(context_data['total_number_of_funded'], 0)
-        self.assertEqual(context_data['total_number_of_eligible_not_funded'], 0)
+        context = response.context
+        self.assertEqual(context['all_good'], False)
+        self.assertEqual(context['can_close'], False)
+        self.assertEqual(context['total_number_of_submitted'], 1)
+        self.assertEqual(context['total_number_of_eligible'], 0)
+        self.assertEqual(context['total_number_of_funded'], 0)
+        self.assertEqual(context['total_number_of_eligible_not_funded'], 0)
 
         # Makes the proposal eligible
         self._proposal.eligibility = Proposal.ELIGIBLE
@@ -319,13 +319,13 @@ class CallEvaluationValidationTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        context_data = response.context_data
-        self.assertEqual(context_data['all_good'], False)
-        self.assertEqual(context_data['can_close'], False)
-        self.assertEqual(context_data['total_number_of_submitted'], 1)
-        self.assertEqual(context_data['total_number_of_eligible'], 1)
-        self.assertEqual(context_data['total_number_of_funded'], 0)
-        self.assertEqual(context_data['total_number_of_eligible_not_funded'], 1)
+        context = response.context
+        self.assertEqual(context['all_good'], False)
+        self.assertEqual(context['can_close'], False)
+        self.assertEqual(context['total_number_of_submitted'], 1)
+        self.assertEqual(context['total_number_of_eligible'], 1)
+        self.assertEqual(context['total_number_of_funded'], 0)
+        self.assertEqual(context['total_number_of_eligible_not_funded'], 1)
 
         # Funds the proposal. In reality the form would force the attached letter before it's funded, etc.
         # but here accessing to the model straight away all the rest is not needed
@@ -340,13 +340,13 @@ class CallEvaluationValidationTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        context_data = response.context_data
-        self.assertEqual(context_data['all_good'], False)
-        self.assertEqual(context_data['can_close'], False)
-        self.assertEqual(context_data['total_number_of_submitted'], 1)
-        self.assertEqual(context_data['total_number_of_eligible'], 1)
-        self.assertEqual(context_data['total_number_of_funded'], 1)
-        self.assertEqual(context_data['total_number_of_eligible_not_funded'], 0)
+        context = response.context
+        self.assertEqual(context['all_good'], False)
+        self.assertEqual(context['can_close'], False)
+        self.assertEqual(context['total_number_of_submitted'], 1)
+        self.assertEqual(context['total_number_of_eligible'], 1)
+        self.assertEqual(context['total_number_of_funded'], 1)
+        self.assertEqual(context['total_number_of_eligible_not_funded'], 0)
 
 
 class CallCloseEvaluationTest(TestCase):
