@@ -310,6 +310,8 @@ class ProposalDetail(AbstractProposalDetailView):
 
         context.update(proposal_detail_eligibility_context(proposal))
 
+        context['force_eligibility_form_displayed'] = True
+
         return render(request, 'evaluation/proposal-detail.tmpl', context)
 
     def post(self, request, *args, **kwargs):

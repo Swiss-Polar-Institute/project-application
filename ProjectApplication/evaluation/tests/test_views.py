@@ -264,6 +264,7 @@ class ProposalDetailTest(TestCase):
             reverse('logged-call-evaluation-proposal-detail', kwargs={'pk': self._proposal.id}))
 
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['force_eligibility_form_displayed'])
 
 
 class CallEvaluationSummaryTest(TestCase):
