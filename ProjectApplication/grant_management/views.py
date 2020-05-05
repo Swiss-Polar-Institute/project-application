@@ -10,7 +10,7 @@ from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormS
 from grant_management.forms.lay_summaries import LaySummariesFormSet, LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
-from grant_management.models import GrantAgreement
+from grant_management.models import GrantAgreement, LaySummary
 from project_core.models import Project
 
 
@@ -365,3 +365,18 @@ class FinancesViewUpdate(TemplateView):
         context[FinancesViewUpdate.FORM_NAME] = financial_reports_form
 
         return render(request, 'grant_management/finances-form.tmpl', context)
+
+
+class LaySummariesRaw(TemplateView):
+    template_name = 'grant_management/lay_summaries-raw.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        call_id = kwargs['call']
+
+        projects = Project.objects.filter(call_id=call_id)
+
+        context['projects'] = projects
+
+        return context

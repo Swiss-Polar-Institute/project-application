@@ -32,5 +32,9 @@ urlpatterns = [
 
     path('logged/grant-management/project/<int:project>/finances/update/',
          grant_management.views.FinancesViewUpdate.as_view(),
-         name='logged-grant_management-finances-update')
+         name='logged-grant_management-finances-update'),
+
+    path('lay-summaries/<int:call>/raw/',
+         grant_management.views.LaySummariesRaw.as_view(),
+         name='lay-summaries-raw')
 ]
