@@ -1,11 +1,11 @@
 {% for project in projects %}
-    <h3>{{ project.title }}</h3>
-    <b>PI:</b> {{ project.principal_investigator }}<br>
-    <b>Keywords:</b> {{ project.keywords_enumeration }}<br>
-    <p></p>
+    <h4>{{ project.principal_investigator }}</h4><br>
+    <p>Project: {{ project.title }}</p>
+    <p>Keywords: {{ project.keywords_enumeration }}</p>
+    <h5>Summary</h5>
     {% if project.main_lay_summary_web %}
         {{ project.main_lay_summary_web|linebreaksbr }}
     {% else %}
-        Lay Summary not available yet
+        Lay summary not available yet
     {% endif %}
 {% endfor %}
