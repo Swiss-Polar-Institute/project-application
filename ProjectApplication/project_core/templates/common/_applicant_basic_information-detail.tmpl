@@ -2,7 +2,7 @@
 
 <h3>Applicant</h3>
 {% with applicant=proposal.applicant %}
-    {% include 'common/_person_with_orcid.tmpl' with person=applicant %}
+    {% include 'common/_person_position_with_orcid.tmpl' with person_position=applicant %}
     (Gender: {% include 'common/_value-or-dash.tmpl' with value=applicant.person.gender %})
     <br>
     <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=applicant.main_email %}

@@ -11,7 +11,7 @@
             <ul>
                 {% for project in projects_created %}
                     <li>
-                        {% include 'common/_person_with_orcid.tmpl' with person=project.principal_investigator %} - <a
+                        {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.principal_investigator %} - <a
                             href="{% url 'logged-grant_management-project-detail' pk=project.id %}">{{ project.title }}</a>
                     </li>
                 {% endfor %}

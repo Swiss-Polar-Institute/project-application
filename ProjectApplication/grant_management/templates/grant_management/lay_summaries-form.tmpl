@@ -6,7 +6,7 @@
         <div class="col-10">
             {% include 'grant_management/_project_header-detail.tmpl' with project=project %}
             <form action="" enctype="multipart/form-data" method="post">
-                <h3>Lay Summaries</h3>
+                <h3>Lay summaries</h3>
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
                 {% include 'common/_dynamic_formset.tmpl' with form_set=lay_summaries_form %}
 

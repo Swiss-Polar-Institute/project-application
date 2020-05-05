@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-8">
             <strong>Principal
-                investigator:</strong> {% include 'common/_person_with_orcid.tmpl' with person=project.principal_investigator %}<br>
+                investigator:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.principal_investigator %}<br>
             <b>Start date:</b> {{ project.start_date }}<br>
             <b>End date:</b> {{ project.end_date }}
         </div>

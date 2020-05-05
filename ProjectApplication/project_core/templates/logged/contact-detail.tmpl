@@ -5,7 +5,7 @@
         <div class="col-10">
             <h1>Person</h1>
             <p></p>
-            <strong>Name:</strong> {% include 'common/_person_with_orcid.tmpl' with person=person %}
+            <strong>Name:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=person %}
             <br>
             <strong>Organisations:</strong>
             {% for organisation in person.organisations_ordered_by_name %}{% if not forloop.first %}, {% endif %}

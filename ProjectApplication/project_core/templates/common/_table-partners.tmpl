@@ -4,7 +4,7 @@
         {% for partner in proposal.proposalpartner_set.all %}
             <tr>
                 <td>
-                    {% include 'common/_person_with_orcid.tmpl' with person=partner.person.person %}
+                    {% include 'common/_person_position_with_orcid.tmpl' with person_position=partner.person %}
                     <br>
                     <strong>Organisation:</strong> {% include 'common/_organisation-list.tmpl' with organisations=partner.person.organisations_ordered_by_name %}
                     <br>

@@ -1,5 +1,5 @@
 <strong>Title:</strong> {{ overarching_project.title }}<br>
-<strong>Leader:</strong> {% include 'common/_person_with_orcid.tmpl' with person=overarching_project.leader %}
+<strong>Leader:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=overarching_project.leader %}
 <br>
 <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=overarching_project.leader.organisations_ordered_by_name %}
 <br>
