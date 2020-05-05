@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th>PI Name</th>
-        <th>Institution</th>
+        <th>Key</th>
         <th>Project</th>
         <th>Description</th>
         <th>Date</th>
@@ -13,7 +13,7 @@
     {% for news in project_news %}
         <tr>
             <td>{{ news.pi_name }}</td>
-            <td>{{ news.institution }}</td>
+            <td>{{ news.key }}</td>
             <td>{{ news.project_title }}</td>
             <td>{{ news.description }}</td>
             <td data-sort="{{ news.date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=news.date %}</td>
