@@ -7,7 +7,7 @@ from project_core.models import CreateModifyOn, PhysicalPerson, Project
 
 
 def grant_agreement_file_rename(instance, filename):
-    return f'grant_management/GrantAgreement/Project-{instance.project.id}-{filename}'
+    return f'grant_management/GrantAgreement/Project-{instance.project.id:04}-{filename}'
 
 
 class GrantAgreement(CreateModifyOn):
@@ -36,7 +36,7 @@ class AbstractProjectDueReceivedDate(CreateModifyOn):
 
 
 def invoice_file_rename(instance, filename):
-    return f'grant_management/Invoice/ProjectId-{instance.project.id}-{filename}'
+    return f'grant_management/Invoice/Project-{instance.project.id:04}-{filename}'
 
 
 class Invoice(AbstractProjectDueReceivedDate):
@@ -63,7 +63,7 @@ class AbstractProjectReport(AbstractProjectDueReceivedDate):
 
 
 def finance_report_file_rename(instance, filename):
-    return f'grant_management/FinancialReport/ProjectId-{instance.project.id}-{filename}'
+    return f'grant_management/FinancialReport/Project-{instance.project.id:04}-{filename}'
 
 
 class FinancialReport(AbstractProjectReport):
@@ -71,7 +71,7 @@ class FinancialReport(AbstractProjectReport):
 
 
 def scientific_report_file_rename(instance, filename):
-    return f'grant_management/ScientificReport/ProjectId-{instance.project.id}-{filename}'
+    return f'grant_management/ScientificReport/Project-{instance.project.id:04}-{filename}'
 
 
 class ScientificReport(AbstractProjectReport):

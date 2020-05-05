@@ -1091,7 +1091,7 @@ class Project(CreateModifyOn):
         from grant_management.models import LaySummaryType
         lay_summary_type_web = LaySummaryType.objects.get(name='Web')
 
-        lay_summaries = self.laysummary_set.filter(lay_summary_type=lay_summary_type_web).order_by('created_on')
+        lay_summaries = self.laysummary_set.filter(lay_summary_type=lay_summary_type_web).order_by('-created_on')
 
         if lay_summaries:
             return lay_summaries[0].text

@@ -100,7 +100,7 @@ def context_data_grant_greement(project):
     context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
                              {'name': f'Project detail ({project.key_pi()})',
                               'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                             {'name': 'Grant management'}]
+                             {'name': 'Grant agreement'}]
 
     context['project'] = project
 
@@ -248,10 +248,10 @@ class LaySummariesUpdateView(TemplateView):
 
         if lay_summaries_form.is_valid():
             lay_summaries_form.save()
-            messages.success(request, 'Lay Summaries saved')
+            messages.success(request, 'Lay summaries saved')
             return redirect(grant_management_project_url(kwargs))
 
-        messages.error(request, 'Lay Summaries not saved. Verify errors in the form')
+        messages.error(request, 'Lay summaries not saved. Verify errors in the form')
 
         context[LaySummariesFormSet.FORM_NAME] = lay_summaries_form
 
@@ -299,7 +299,7 @@ class ScientificReportsUpdateView(TemplateView):
 
         if scientific_reports_form.is_valid():
             scientific_reports_form.save()
-            messages.success(request, 'Scientific Reports saved')
+            messages.success(request, 'Scientific reports saved')
             return redirect(grant_management_project_url(kwargs))
 
         messages.error(request, 'Scientific reports not saved. Verify errors in the form')
@@ -356,10 +356,10 @@ class FinancesViewUpdate(TemplateView):
         if all([invoices_form.is_valid(), financial_reports_form.is_valid()]):
             invoices_form.save()
             financial_reports_form.save()
-            messages.success(request, 'Finances updated')
+            messages.success(request, 'Finance details saved')
             return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': context['project'].id}))
 
-        messages.error(request, 'Finances not saved. Verify errors in the forms.')
+        messages.error(request, 'Finance details not saved. Verify errors in the forms')
 
         context[InvoicesFormSet.FORM_NAME] = invoices_form
         context[FinancesViewUpdate.FORM_NAME] = financial_reports_form
@@ -375,7 +375,7 @@ class LaySummariesRaw(TemplateView):
 
         call_id = kwargs['call']
 
-        projects = Project.objects.filter(call_id=call_id)
+        projects = Project.objects.filter(call_id=call_id).order_by('key')
 
         context['projects'] = projects
 
