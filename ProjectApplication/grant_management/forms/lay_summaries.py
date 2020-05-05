@@ -2,11 +2,16 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from dal import autocomplete
 from django import forms
-from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
+from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput, ModelChoiceField
 
 from grant_management.models import LaySummary
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
+
+
+class LaySummaryTypeWithDescription(ModelChoiceField):
+    def label_from_instance(self, obj):
+        return f'{obj.name} - {obj.description}'
 
 
 class LaySummaryModelForm(forms.ModelForm):
@@ -84,7 +89,11 @@ class LaySummaryModelForm(forms.ModelForm):
             'sent_for_approval_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput,
-            'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
+            'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'),
+        }
+
+        field_classes = {
+            'lay_summary_type': LaySummaryTypeWithDescription
         }
 
 
