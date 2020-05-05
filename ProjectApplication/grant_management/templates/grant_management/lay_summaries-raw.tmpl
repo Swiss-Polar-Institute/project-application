@@ -1,5 +1,18 @@
+<figure class="wp-block-table">
+    <table style="width: 100%;" width="100%">
+        <tbody>
+        {% for project in projects %}
+            <tr>
+                <td style="width: 28.19%"><a href="#{{ project.key }}">{{ project.principal_investigator }}</a></td>
+                <td style="width: 71.23%">{{ project.title }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</figure>
+
 {% for project in projects %}
-    <h4>{{ project.principal_investigator }}</h4><br>
+    <h4><a id="{{ project.key }}">{{ project.principal_investigator }}</a></h4>
     <p>Project: {{ project.title }}</p>
     <p>Keywords: {{ project.keywords_enumeration }}</p>
     <h5>Summary</h5>
