@@ -1,5 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
+from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 
@@ -69,7 +70,6 @@ class LaySummaryModelForm(forms.ModelForm):
         if received_date is not None and text is None:
             errors['text'] = 'Please enter the text if the received date has been entered'
 
-
         if errors:
             raise forms.ValidationError(errors)
 
@@ -83,7 +83,8 @@ class LaySummaryModelForm(forms.ModelForm):
             'due_date': XDSoftYearMonthDayPickerInput,
             'sent_for_approval_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
-            'project': NumberInput
+            'project': NumberInput,
+            'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
         }
 
 

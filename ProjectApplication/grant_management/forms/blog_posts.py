@@ -1,10 +1,11 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
+from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 
 from grant_management.models import BlogPost
-from project_core.models import Project
+from project_core.models import Project, PhysicalPerson
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -74,7 +75,8 @@ class BlogPostModelForm(forms.ModelForm):
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
-            'project': NumberInput
+            'project': NumberInput,
+            'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')
         }
 
 
