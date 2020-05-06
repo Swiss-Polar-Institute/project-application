@@ -26,7 +26,7 @@ def create_news_project(date, description, project):
 
     news['project_title'] = mark_safe(f'<a href="{project_url}">{project.title}</a>')
     news['pi_name'] = mark_safe(f'<a href="{pi_name_url}">{project.principal_investigator.person}</a>')
-    news['institution'] = project.principal_investigator.organisations_ordered_by_name_str()
+    news['key'] = project.key
 
     return news
 
@@ -81,7 +81,7 @@ def get_project_news():
     news.append({'date': today,
                  'project_title': bold_today,
                  'pi_name': bold_today,
-                 'institution': bold_today,
+                 'key': bold_today,
                  'description': bold_today})
 
     return news
