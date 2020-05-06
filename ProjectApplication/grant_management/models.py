@@ -47,6 +47,21 @@ class Invoice(AbstractProjectDueReceivedDate):
     amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice (CHF)', null=True,
                                  blank=True)
 
+    @staticmethod
+    def comment_object():
+        from comments.models import InvoiceComment
+        return InvoiceComment
+
+    @staticmethod
+    def attachment_object():
+        return None
+
+    def comments(self):
+        self.invoicecomment_set.all().order_by('created_on')
+
+    def attachments(self):
+        return None
+
     def __str__(self):
         return f'Id: {self.id} Amount: {self.amount}'
 
@@ -92,7 +107,8 @@ class LaySummaryType(CreateModifyOn):
 
 class LaySummary(AbstractProjectDueReceivedDate):
     text = models.TextField(help_text='Lay summary text', null=True, blank=True)
-    lay_summary_type = models.ForeignKey(LaySummaryType, help_text='Type of the lay summary', blank=True, null=True,  on_delete=models.PROTECT)
+    lay_summary_type = models.ForeignKey(LaySummaryType, help_text='Type of the lay summary', blank=True, null=True,
+                                         on_delete=models.PROTECT)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the lay summary',
                                blank=True, null=True, on_delete=models.PROTECT)
 

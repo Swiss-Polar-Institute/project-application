@@ -1,8 +1,8 @@
 <h2>Comments</h2>
-{% include 'common/_accordion.tmpl' with prefix='comments' button_text_collapsed='View Comments' button_text_not_collapsed='Hide Comments' template_file='comments/_comments.tmpl' %}
+{% include 'common/_accordion.tmpl' with prefix='comments' button_text_collapsed='View Comments' button_text_not_collapsed='Hide Comments' template_file='comments/_comment-list-form.tmpl' %}
 {% if not hide_attachments %}
     <br>
     <h2>Attachments</h2>
-    {% include 'common/_accordion.tmpl' with prefix='files' button_text_collapsed='View Attachments' button_text_not_collapsed='Hide Attachments' template_file='comments/_attachments.tmpl' %}
+    {% include 'common/_accordion.tmpl' with prefix='files' button_text_collapsed='View Attachments' button_text_not_collapsed='Hide Attachments' template_file='comments/_attachment-list-form.tmpl' %}
     <br>
 {% endif %}

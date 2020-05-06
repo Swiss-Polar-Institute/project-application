@@ -10,20 +10,28 @@ class CommentForm(forms.Form):
     def __init__(self, *args, **kwargs):
         comment_category = kwargs.pop('category_queryset')
         form_action = kwargs.pop('form_action')
+        form_tag = kwargs.pop('form_tag', True)
+        fields_required = kwargs.pop('fields_required', True)
 
         super().__init__(*args, **kwargs)
 
         self.fields['category'] = forms.ModelChoiceField(label='Category', queryset=comment_category,
-                                                         help_text='Select category of comment', )
+                                                         help_text='Select category of comment', required=fields_required)
         self.fields['text'] = forms.CharField(label='Text', max_length=10000,
                                               help_text='Write the comment (max length: 10000 characters)',
-                                              widget=forms.Textarea(attrs={'rows': 4}))
+                                              widget=forms.Textarea(attrs={'rows': 4}), required=fields_required)
 
         self.helper = FormHelper(self)
-        self.helper.form_action = form_action
-        self.helper.add_input(Submit('comment_form_submit', 'Save Comment', css_class='btn-primary'))
 
-        self.helper.layout = Layout(
+        self.divs = None    # defined later on
+
+        if form_tag:
+            self.helper.form_action = form_action
+            self.helper.add_input(Submit('comment_form_submit', 'Save Comment', css_class='btn-primary'))
+
+        self.helper.form_tag = form_tag
+
+        self.divs = [
             Div(
                 Div('category', css_class='col-12'),
                 css_class='row'
@@ -32,7 +40,9 @@ class CommentForm(forms.Form):
                 Div('text', css_class='col-12'),
                 css_class='row'
             )
-        )
+        ]
+
+        self.helper.layout = Layout(*self.divs)
 
     def save(self, parent, user):
         comment = parent.comment_object()()

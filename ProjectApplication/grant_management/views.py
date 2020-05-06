@@ -10,7 +10,7 @@ from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormS
 from grant_management.forms.lay_summaries import LaySummariesFormSet, LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
-from grant_management.models import GrantAgreement, LaySummary
+from grant_management.models import GrantAgreement
 from project_core.models import Project
 
 
@@ -348,10 +348,13 @@ class FinancesViewUpdate(TemplateView):
 
         invoices_form = InvoicesInlineFormSet(request.POST, request.FILES,
                                               prefix=InvoicesFormSet.FORM_NAME,
-                                              instance=context['project'])
+                                              instance=context['project'],
+                                              form_kwargs={'user': request.user})
+
         financial_reports_form = FinancialReportsInlineFormSet(request.POST, request.FILES,
                                                                prefix='financial_reports_form',
-                                                               instance=context['project'])
+                                                               instance=context['project'],
+                                                               form_kwargs={'user': request.user})
 
         if all([invoices_form.is_valid(), financial_reports_form.is_valid()]):
             invoices_form.save()

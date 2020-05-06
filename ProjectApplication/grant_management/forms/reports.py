@@ -9,6 +9,7 @@ from project_core.models import Project
 
 class ReportItemModelForm(AbstractReportItemModelForm):
     def __init__(self, *args, **kwargs):
+        self._user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
         self._valid_if_empty = ValidIfEmpty(fields_allowed_empty=['due_date'],

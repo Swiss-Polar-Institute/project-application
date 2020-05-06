@@ -6,6 +6,7 @@ from colours.models import ColourPair
 from evaluation.models import ProposalEvaluation, CallEvaluation
 from project_core.models import CreateModifyOn, Proposal, Call, Project
 
+from grant_management.models import Invoice
 
 # Models used by Proposal, Call...
 class Category(CreateModifyOn):
@@ -340,3 +341,36 @@ class CallEvaluationComment(AbstractComment):
 
     class Meta:
         unique_together = (('call_evaluation', 'created_on', 'created_by'),)
+
+# Invoice
+class InvoiceCommentCategory(CreateModifyOn):
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.category.name
+
+    class Meta:
+        verbose_name_plural = 'Invoice Comment Categories'
+
+
+class InvoiceComment(AbstractComment):
+    """Comments made about a Proposal Evaluation"""
+    invoice = models.ForeignKey(Invoice,
+                                        help_text='Call Evaluation about which the comment was made',
+                                        on_delete=models.PROTECT)
+
+    category = models.ForeignKey(InvoiceCommentCategory, help_text='Type of comment',
+                                 on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'Invoice:{self.invoice} Category:{self.category} Text: {self.truncate_text()}'
+
+    def set_parent(self, parent):
+        self.invoice = parent
+
+    @staticmethod
+    def category_queryset():
+        return InvoiceCommentCategory.objects.all()
+
+    class Meta:
+        unique_together = (('invoice', 'created_on', 'created_by'),)

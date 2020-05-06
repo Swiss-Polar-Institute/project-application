@@ -1,0 +1,6 @@
+{% load crispy_forms_tags %}
+
+{% for comment in comments %}
+    {% include 'comments/_comment-detail.tmpl' with value=comment %}
+    <p></p>
+{% endfor %}

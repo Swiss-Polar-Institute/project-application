@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field
+from crispy_forms.layout import Div, Field, Layout
 from django import forms
 from django.db.models import Sum
 from django.forms import inlineformset_factory, BaseInlineFormSet
@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils.formats import number_format
 from django.utils.safestring import mark_safe
 
+from comments.forms.comment import CommentForm
 from grant_management.forms.valid_if_empty import ValidIfEmpty
 from grant_management.models import Invoice
 from project_core.models import Project
@@ -16,7 +17,22 @@ from . import utils
 
 class InvoiceItemModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self.comment_saved = True
+        self._user = kwargs.pop('user', None)
+
         super().__init__(*args, **kwargs)
+
+        self._comment_form = None
+
+        if self.instance and self.instance.id:
+            self._comment_list = self.instance.comments()
+            self._comment_form = CommentForm(form_action=reverse('logged-proposal-evaluation-comment-add',
+                                                                 kwargs={'pk': self.instance.id}),
+                                             category_queryset=self.instance.comment_object().category_queryset(),
+                                             prefix=CommentForm.FORM_NAME,
+                                             form_tag=False,
+                                             fields_required=False)
+            self.fields.update(self._comment_form.fields)
 
         self._valid_if_empty = ValidIfEmpty(fields_allowed_empty=['due_date'],
                                             basic_fields=['project', 'id', 'DELETE', 'can_be_deleted'],
@@ -45,7 +61,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         # It's included in the main formset, it avoids problems when adding new invoices and the jquery.formset.js
         self.helper.disable_csrf = True
 
-        self.helper.layout = Layout(
+        divs = [
             Div(
                 Div('project', hidden=True),
                 Div('id', hidden=True),
@@ -65,7 +81,12 @@ class InvoiceItemModelForm(forms.ModelForm):
                 Div('paid_date', css_class='col-4'),
                 css_class='row'
             )
-        )
+        ]
+
+        if self._comment_form:
+            divs += self._comment_form.divs
+
+        self.helper.layout = Layout(*divs)
 
     @staticmethod
     def _total_amount_invoices_for_project(project, excluded_invoice):
@@ -148,6 +169,28 @@ class InvoiceItemModelForm(forms.ModelForm):
             raise forms.ValidationError(errors)
 
     def save(self, *args, **kwargs):
+        assert self._user
+
+        comment_category = self.cleaned_data.get('category', None)
+        comment_text = self.cleaned_data.get('text', None)
+
+        self.comment_saved = False
+
+        if comment_text:
+            data = {'category': comment_category,
+                    'text': comment_text}
+
+            comment_form = CommentForm(data=data,
+                                       form_action=reverse('logged-proposal-evaluation-comment-add',
+                                                           kwargs={'pk': self.instance.id}),
+                                       category_queryset=self.instance.comment_object().category_queryset(),
+                                       form_tag=False)
+
+            comment_form_is_valid = comment_form.is_valid()
+
+            comment_form.save(parent=self.instance,
+                              user=self._user)
+
         return self._valid_if_empty.save(*args, **kwargs)
 
     def is_valid(self):
