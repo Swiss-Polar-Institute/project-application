@@ -1,7 +1,8 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
+{% load thousands_separator %}
 
-Maximum budget: {{ maximum_budget }} CHF
+Maximum budget: {{ maximum_budget|thousands_separator }} CHF
 <p>
     For each cost category, please give details of all items and related costs.
 </p>

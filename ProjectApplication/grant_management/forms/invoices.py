@@ -11,6 +11,7 @@ from comments.forms.comment import CommentForm
 from grant_management.forms.valid_if_empty import ValidIfEmpty
 from grant_management.models import Invoice
 from project_core.models import Project
+from project_core.templatetags.thousands_separator import thousands_separator
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from . import utils
 
@@ -143,7 +144,7 @@ class InvoiceItemModelForm(forms.ModelForm):
             amount_invoices_to_now = InvoiceItemModelForm._total_amount_invoices_for_project(project, self.instance)
             if (amount_invoices_to_now + amount) > project.allocated_budget:
                 errors[
-                    'amount'] = f'The amount of this invoice will take this project over budget (Total invoiced until now: {number_format(amount_invoices_to_now)} CHF, Allocated budget: {number_format(project.allocated_budget)} CHF).'
+                    'amount'] = f'The amount of this invoice will take this project over budget (Total invoiced until now: {thousands_separator(amount_invoices_to_now)} CHF, Allocated budget: {thousands_separator(project.allocated_budget)} CHF).'
 
         if not file and received_date:
             errors['file'] = f'Please attach the invoice file (a date received has been entered).'

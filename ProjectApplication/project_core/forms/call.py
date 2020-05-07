@@ -5,6 +5,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
 
+from ..fields import AmountField
 from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory, FundingInstrument
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput
 
@@ -195,10 +196,12 @@ class CallForm(forms.ModelForm):
                   'call_open_date', 'submission_deadline', 'budget_categories', 'budget_maximum',
                   'other_funding_question', 'proposal_partner_question', 'overarching_project_question', ]
 
+        field_classes = {'budget_maximum': AmountField}
+
         widgets = {
             'call_open_date': XDSoftYearMonthDayHourMinutePickerInput,
             'submission_deadline': XDSoftYearMonthDayHourMinutePickerInput,
-            'budget_categories': forms.CheckboxSelectMultiple
+            'budget_categories': forms.CheckboxSelectMultiple,
         }
 
         help_texts = {'description': 'Brief description of the call (for display to management only)',

@@ -5,6 +5,7 @@ from django import forms
 from django.contrib.humanize.templatetags.humanize import number_format
 from django.forms import BaseFormSet, formset_factory
 
+from project_core.fields import AmountField
 from project_core.forms.utils import PlainTextWidget
 from project_core.models import BudgetCategory, ProposedBudgetItem
 
@@ -14,8 +15,8 @@ class BudgetItemForm(forms.Form):
 
     category = forms.CharField(widget=PlainTextWidget())
     details = forms.CharField(required=False, widget=forms.Textarea(attrs={'rows': 4}))
-    amount = forms.DecimalField(required=False, label='Total (CHF)', localize=True,
-                                widget=forms.TextInput(attrs={'size': '5'}))
+    amount = AmountField(required=False, label='Total (CHF)',
+                         widget=forms.TextInput(attrs={'size': '5'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

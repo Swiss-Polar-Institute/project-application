@@ -1,5 +1,6 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 {% load crispy_forms_tags %}
+{% load thousands_separator %}
 
 {% block contents %}
     <div class="row">
@@ -24,7 +25,7 @@
                     <strong>End date:</strong> {{ project.end_date }}<br>
                 </div>
             </div>
-            <strong>Allocated budget:</strong> {{ project.allocated_budget }} CHF<br>
+            <strong>Allocated budget:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
             <strong>Geographical focus:</strong> {{ project.geographical_areas_enumeration }}<br>
             <strong>Precise region:</strong> {{ project.location }}<br>
             <strong>Keywords:</strong> {{ project.keywords_enumeration }}<br>

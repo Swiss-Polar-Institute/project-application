@@ -1,3 +1,5 @@
+{% load thousands_separator %}
+
 {% with invoices=project.invoice_set.all %}
     <table id="invoices_table" class="table table-striped table-sm table-hover display">
         <thead>
@@ -16,7 +18,7 @@
                 <td data-sort="{{ invoice.received_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=invoice.received_date %}</td>
                 <td data-sort="{{ invoice.sent_for_payment_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=invoice.sent_for_payment_date %}</td>
                 <td data-sort="{{ invoice.paid_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=invoice.paid_date %}</td>
-                <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.amount %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.amount|thousands_separator %}</td>
                 <td>{% include 'common/_file_to_download.tmpl' with file_field=invoice.file %}</td>
             </tr>
         {% endfor %}

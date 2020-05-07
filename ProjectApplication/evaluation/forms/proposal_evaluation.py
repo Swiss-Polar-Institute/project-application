@@ -8,7 +8,9 @@ from django.urls import reverse
 from django.utils.formats import number_format
 
 from ProjectApplication import settings
+from project_core.fields import AmountField
 from project_core.forms.utils import cancel_edit_button
+from project_core.templatetags.thousands_separator import thousands_separator
 from project_core.utils.utils import user_is_in_group_name
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from ..models import ProposalEvaluation, Reviewer
@@ -39,8 +41,8 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.fields['proposal'].initial = self._proposal
         requested_budget = number_format(self._proposal.total_budget())
 
-        self.fields['allocated_budget'] = forms.DecimalField(localize=True, required=False)
-        self.fields['allocated_budget'].help_text = f'Requested: {requested_budget} CHF'
+        self.fields['allocated_budget'] = AmountField(required=False)
+        self.fields['allocated_budget'].help_text = f'Requested: {thousands_separator(requested_budget)} CHF'
         self.fields['allocated_budget'].label = 'Allocated budget (CHF)'
 
         if hasattr(self._proposal, 'proposalevaluation'):

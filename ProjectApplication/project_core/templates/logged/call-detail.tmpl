@@ -1,4 +1,5 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
+{% load thousands_separator %}
 {% load l10n %}
 
 {% block contents %}
@@ -35,7 +36,7 @@
                 </div>
             </div>
             <br>
-            <strong>Budget maximum:</strong> {{ call.budget_maximum }} CHF
+            <strong>Budget maximum:</strong> {{ call.budget_maximum|thousands_separator }} CHF
             <div class="row">
                 <div class="col-6">
                     <strong>Budget categories:</strong><br>

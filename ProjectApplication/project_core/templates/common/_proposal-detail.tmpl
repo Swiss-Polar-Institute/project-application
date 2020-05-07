@@ -1,3 +1,4 @@
+{% load thousands_separator %}
 {% include 'common/_proposal_basic_information-detail.tmpl' %}
 {% include 'common/_applicant_basic_information-detail.tmpl' %}
 <br>
@@ -29,8 +30,8 @@
 {% endif %}
 
 <h3>Budget requested</h3>
-<strong>Total requested budget:</strong> {{ proposal.total_budget }} CHF
-<p><strong>Maximum budget:</strong> {{ maximum_budget }} CHF</p>
+<strong>Total requested budget:</strong> {{ proposal.total_budget|thousands_separator }} CHF
+<p><strong>Maximum budget:</strong> {{ maximum_budget|thousands_separator }} CHF</p>
 
 {% include 'common/_accordion.tmpl' with prefix='budget' button_text='Budget details' template_file='common/_table-budget.tmpl' %}
 <br>
