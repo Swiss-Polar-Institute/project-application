@@ -30,7 +30,7 @@ class ProposalsExportCsvSummary(View):
 
         if call_id is not None:
             # We are filtering by a specific Call: we are exporting proposals for only call_id
-            proposals.filter(call_id=call_id)
+            proposals = proposals.filter(call_id=call_id)
         else:
             # We are adding the Call Name: we are exporting proposals for all the calls
             headers = ['Call Name'] + headers

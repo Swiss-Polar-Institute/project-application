@@ -30,6 +30,15 @@ class ManagementProposalTest(TestCase):
         filename = proposal.create_file_name('this-is-{}-something-{}.csv', self._call.id)
         self.assertRegex(filename, '^this-is-GLACE-something-[0-9]{8}-[0-9]{6}\.csv$')
 
+    def test_propsoals_export_csv_summary_for_a_specific_call(self):
+        call_no_proposals = database_population.create_call_long_name('This is a call without proposals')
+
+        response = self._client_management.get(
+            reverse('logged-export-proposals-csv-summary-call', args=[call_no_proposals.id]))
+
+        # Checks that only one line is in the response: the header
+        self.assertEqual(response.content.decode('utf-8').count('\n'), 1)
+
     def test_proposals_export_csv_summary(self):
         response = self._client_management.get(
             reverse('logged-export-proposals-csv-summary-call', args=[str(self._proposal.call.id)]))
@@ -74,6 +83,7 @@ class ManagementProposalTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_export_to_excel(self):
-        response = self._client_management.get(reverse('logged-export-proposals-for-call-excel', kwargs={'call': self._call.id}))
+        response = self._client_management.get(
+            reverse('logged-export-proposals-for-call-excel', kwargs={'call': self._call.id}))
 
         self.assertEqual(response.status_code, 200)
