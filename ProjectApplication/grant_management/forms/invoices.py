@@ -7,9 +7,10 @@ from django.urls import reverse
 from django.utils.formats import number_format
 from django.utils.safestring import mark_safe
 
+from ProjectApplication import settings
 from comments.forms.comment import CommentForm
 from grant_management.forms.valid_if_empty import ValidIfEmpty
-from grant_management.models import Invoice
+from grant_management.models import Invoice, LaySummary, LaySummaryType
 from project_core.models import Project
 from project_core.templatetags.thousands_separator import thousands_separator
 from project_core.widgets import XDSoftYearMonthDayPickerInput
@@ -166,6 +167,14 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors[
                 'sent_for_payment_date'] = mark_safe(
                 f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
+
+        internal_lay_summary = LaySummaryType.objects.get(name=settings.LAY_SUMMARY_ORIGINAL)
+        if sent_for_payment is not None and LaySummary.objects.filter(project=project).filter(lay_summary_type=internal_lay_summary).exists() is False:
+            sent_for_payemnt_error = 'Invoice cannot be sent for payment if the internal type summary has not been received'
+            if 'sent_for_payment_date' in errors:
+                errors['sent_for_payment_date'] += mark_safe(f'<br>Also: {sent_for_payemnt_error}')
+            else:
+                errors['sent_for_payment_date'] = sent_for_payemnt_error
 
         if DELETE and paid_date:
             errors['paid_date'] = 'A paid invoice cannot be deleted. Delete the date paid and try again.'

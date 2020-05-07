@@ -245,6 +245,7 @@ LOGGED_OUT_USERNAME = 'loggedout'
 
 PROPOSAL_STATUS_DRAFT = 'Draft'
 PROPOSAL_STATUS_SUBMITTED = 'Submitted'
+LAY_SUMMARY_ORIGINAL = 'Original'
 
 i = 1
 while f'ALLOWED_HOST_{i}' in os.environ:
