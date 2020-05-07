@@ -57,7 +57,7 @@ class Invoice(AbstractProjectDueReceivedDate):
         return None
 
     def comments(self):
-        self.invoicecomment_set.all().order_by('created_on')
+        return self.invoicecomment_set.all().order_by('created_on')
 
     def attachments(self):
         return None

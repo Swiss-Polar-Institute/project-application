@@ -26,7 +26,10 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         if self.instance and self.instance.id:
             self.comment_prefix = f'comment-invoice-{self.instance.id}'
-            self._comment_list = self.instance.comments()
+            self.comments = self.instance.comments()
+            self.comment_count = len(self.comments)
+            self.comments_save_text = 'Save Finances'
+
             self._comment_form = CommentForm(form_action=reverse('logged-proposal-evaluation-comment-add',
                                                                  kwargs={'pk': self.instance.id}),
                                              category_queryset=self.instance.comment_object().category_queryset(),
@@ -85,7 +88,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         ]
 
         if self._comment_form:
-            divs += Div(HTML("{% include 'comments/_accordion_new_comment-fields.tmpl' %}"))
+            divs += Div(HTML("{% include 'comments/_accordion-comment-list-fields-for-new.tmpl' %}"))
 
         self.helper.layout = Layout(*divs)
 

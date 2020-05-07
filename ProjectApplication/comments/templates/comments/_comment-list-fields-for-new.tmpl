@@ -1,0 +1,9 @@
+{% load crispy_forms_filters %}
+
+{% include 'comments/_comment-list.tmpl' with comments=form.comments %}
+
+<h3>Add new comment</h3>
+{{ form.category|as_crispy_field }}
+{{ form.text|as_crispy_field }}
+
+To save: click on "{{ form.comments_save_text }}" at the end of the page
