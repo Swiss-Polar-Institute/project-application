@@ -17,7 +17,7 @@
         <div id="{{ prefix }}" class="collapse hidden d-print-block"
              data-parent="#{{ prefix }}Accordion">
             <div class="well">
-                <div class="card-body {{ padding }}">
+                <div class="card-body {{ padding_body|default:padding }}">
                     {% include template_file %}
                 </div>
             </div>
