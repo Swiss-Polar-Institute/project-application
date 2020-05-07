@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, Field, Layout
+from crispy_forms.layout import Div, Field, Layout, HTML
 from django import forms
 from django.db.models import Sum
 from django.forms import inlineformset_factory, BaseInlineFormSet
@@ -25,6 +25,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         self._comment_form = None
 
         if self.instance and self.instance.id:
+            self.comment_prefix = f'comment-invoice-{self.instance.id}'
             self._comment_list = self.instance.comments()
             self._comment_form = CommentForm(form_action=reverse('logged-proposal-evaluation-comment-add',
                                                                  kwargs={'pk': self.instance.id}),
@@ -84,7 +85,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         ]
 
         if self._comment_form:
-            divs += self._comment_form.divs
+            divs += Div(HTML("{% include 'comments/_accordion_new_comment-fields.tmpl' %}"))
 
         self.helper.layout = Layout(*divs)
 
