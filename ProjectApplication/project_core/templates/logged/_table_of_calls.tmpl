@@ -26,7 +26,7 @@
                     {{ call.number_of_proposals }}
                 {% endif %}
             </td>
-            <td>{{ call.submission_deadline }} Swiss time</td>
+            <td>{{ call.submission_deadline }}</td>
             <td>
                 {% if view_button %}
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-call-detail' pk=call.id %}">View</a>
