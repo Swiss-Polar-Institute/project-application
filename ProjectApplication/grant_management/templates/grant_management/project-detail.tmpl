@@ -28,6 +28,7 @@
                             href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h3>
             <h4>Invoices</h4>
             {% include 'grant_management/_invoice-list.tmpl' %}
+            Total paid: {% include 'common/_value-or-zero.tmpl' with value=project.invoices_paid_amount|thousands_separator %} CHF
             <p></p>
             <h4>Financial reports</h4>
             {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}
@@ -44,13 +45,13 @@
                 <a class="btn btn-primary btn-sm"
                    href="{% url 'logged-grant_management-lay_summaries-update' project=project.id %}">Edit</a>
             </h4>
-            {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='lay_summaries' count=lay_summaries_count button_text_collapsed='View Lay Summaries' button_text_not_collapsed='Hide Lay Summaries' template_file='grant_management/_lay_summary-list.tmpl' %}
+            {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='lay_summaries' count=lay_summaries_count button_text_collapsed='View lay summaries' button_text_not_collapsed='Hide lay summaries' template_file='grant_management/_lay_summary-list.tmpl' %}
             <p></p>
             <h4>Blog posts
                 <a class="btn btn-primary btn-sm"
                    href="{% url 'logged-grant_management-blog_posts-update' project=project.id %}">Edit</a>
             </h4>
-            {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='blog_posts' count=blog_posts_count button_text_collapsed='View Blog Posts' button_text_not_collapsed='Hide Blog Posts' template_file='grant_management/_blog_post-list.tmpl' %}
+            {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='blog_posts' count=blog_posts_count button_text_collapsed='View blog posts' button_text_not_collapsed='Hide blog posts' template_file='grant_management/_blog_post-list.tmpl' %}
             <p></p>
             <h4>Photos and media
                 <div class="d-inline-block" data-toggle="tooltip" title="Not available yet"><a

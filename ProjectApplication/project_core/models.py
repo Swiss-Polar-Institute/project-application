@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, RegexValidator
 from django.core.validators import validate_email
 from django.db import models, transaction
-from django.db.models import Max
+from django.db.models import Max, Sum
 from django.urls import reverse
 from django.utils import timezone
 from simple_history.models import HistoricalRecords
@@ -1097,6 +1097,9 @@ class Project(CreateModifyOn):
             return lay_summaries[0].text
         else:
             return None
+
+    def invoices_paid_amount(self):
+        return self.invoice_set.filter(paid_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
 
     class Meta:
         unique_together = (('title', 'principal_investigator', 'call'),)
