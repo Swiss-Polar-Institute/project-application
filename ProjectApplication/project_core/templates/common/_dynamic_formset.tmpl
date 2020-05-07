@@ -103,6 +103,10 @@
         $(row).find(".invalid-feedback").remove();
     }
 
+    function clean_card(row) {
+        $(row).find("div.card-header").remove();
+    }
+
     {# This variable needs to be "var" (or nothing) but not const or let. The _dynamic_formset.tmpl can be included #}
     {# multiple times in the samge page. #}
     var jQueryForFormset = $.noConflict(true);
@@ -123,6 +127,7 @@
                 clean_autocomplete_fields(row);
                 clean_help_text_errors(row);
                 clean_combobox_fields(row);
+                clean_card(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
