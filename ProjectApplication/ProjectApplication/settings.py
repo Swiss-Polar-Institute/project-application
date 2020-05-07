@@ -170,9 +170,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Paris'
 
-USE_I18N = True
+USE_I18N = False
 
-USE_L10N = True
+# USE_L10N = True
 
 USE_TZ = True
 
@@ -227,6 +227,12 @@ if 'OBJECT_STORAGE_REGION_NAME' in os.environ:
 
 if 'OBJECT_STORAGE_ADDRESSING_STYLE' in os.environ:
     AWS_S3_ADDRESSING_STYLE = os.environ['OBJECT_STORAGE_ADDRESSING_STYLE']
+
+DATE_FORMAT = 'd F Y'
+DATETIME_FORMAT = 'd F Y H:i'
+
+SHORT_DATE_FORMAT = 'd-m-Y'
+SHORT_DATETIME_FORMAT = 'd-m-Y H:i'
 
 AWS_S3_FILE_OVERWRITE = False
 

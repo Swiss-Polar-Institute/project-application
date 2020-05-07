@@ -27,11 +27,11 @@
             <div class="row">
                 <div class="col-6">
                     <strong>Call Open
-                        Date:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call.call_open_date %}
+                        Date:</strong> {{ call.call_open_date }} Swiss time
                 </div>
                 <div class="col-6">
                     <strong>Call Submission
-                        deadline:</strong> {% include 'common/_date_time_swiss_time.tmpl' with value=call.submission_deadline %}
+                        deadline:</strong> {{ call.submission_deadline }} Swiss time
                 </div>
             </div>
             <br>

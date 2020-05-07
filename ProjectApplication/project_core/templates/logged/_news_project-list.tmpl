@@ -16,7 +16,7 @@
             <td>{{ news.key }}</td>
             <td>{{ news.project_title }}</td>
             <td>{{ news.description }}</td>
-            <td data-sort="{{ news.date|date:"Y-m-d" }}">{% include 'common/_date-or-dash.tmpl' with date=news.date %}</td>
+            <td data-sort="{{ news.date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=news.date %}</td>
         </tr>
     {% endfor %}
     </tbody>

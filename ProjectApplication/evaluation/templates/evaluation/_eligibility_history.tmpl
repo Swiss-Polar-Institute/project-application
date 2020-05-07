@@ -6,7 +6,7 @@
 
     {% include 'evaluation/_eligibility-detail.tmpl' with proposal=proposal_past %}
     <strong>Who: </strong> {% include 'common/_value-or-dash.tmpl' with value=proposal_past.history_user %}<br>
-    <strong>Date: </strong> {{ proposal_past.history_date|date:"m-d-Y H:i:s" }}<br>
+    <strong>Date: </strong> {{ proposal_past.history_date }}<br>
 
     {% if not forloop.last %}
         <hr>

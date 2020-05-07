@@ -11,6 +11,7 @@ from project_core.tests import database_population
 class InvoiceItemFormTest(TestCase):
     def setUp(self):
         self._project = database_population.create_project()
+        self._user = database_population.create_management_user()
 
     def test_valid_incomplete_invoice(self):
         data = {'project': self._project,
@@ -18,7 +19,7 @@ class InvoiceItemFormTest(TestCase):
                 }
 
         self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data)
+        invoice_item_form = InvoiceItemModelForm(data=data, user=self._user)
 
         self.assertTrue(invoice_item_form.is_valid())
         invoice_item_form.save()
@@ -28,7 +29,7 @@ class InvoiceItemFormTest(TestCase):
         data = {'project': self._project}
 
         self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data)
+        invoice_item_form = InvoiceItemModelForm(data=data, user=self._user)
 
         self.assertTrue(invoice_item_form.is_valid())
         invoice_item_form.save()
@@ -52,7 +53,7 @@ class InvoiceItemFormTest(TestCase):
         file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
 
         self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data, files=file)
+        invoice_item_form = InvoiceItemModelForm(data=data, files=file, user=self._user)
 
         self.assertTrue(invoice_item_form.is_valid())
         invoice_item_form.save()
