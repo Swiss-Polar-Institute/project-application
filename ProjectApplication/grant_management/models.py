@@ -35,6 +35,15 @@ class AbstractProjectDueReceivedDate(CreateModifyOn):
         abstract = True
 
 
+class Installment(CreateModifyOn):
+    project = models.ForeignKey(Project, help_text='Project that this installment refers to', on_delete=models.PROTECT)
+    due_date = models.DateField(help_text='Due date of this instalment')
+    amount = models.DecimalField(max_digits=11, decimal_places=2, help_text='Amount of this instalment')
+
+    def __str__(self):
+        return f'{self.project}-{self.due_date}-{self.amount}'
+
+
 def invoice_file_rename(instance, filename):
     return f'grant_management/Invoice/Project-{instance.project.id:04}-{filename}'
 
@@ -46,6 +55,8 @@ class Invoice(AbstractProjectDueReceivedDate):
     paid_date = models.DateField(help_text='Date the invoice was paid', null=True, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice (CHF)', null=True,
                                  blank=True)
+    installment = models.ForeignKey(Installment, help_text='Which installment this invoice refers to', null=True,
+                                    blank=True, on_delete=models.PROTECT)
 
     @staticmethod
     def comment_object():
