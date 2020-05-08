@@ -30,10 +30,14 @@
                 </div>
             </div>
             <p></p>
-            <h3>Installments <a class="btn btn-primary btn-sm"
-                                href="{% url 'logged-grant_management-installments-update' project=project.pk %}">Edit</a>
-            </h3>
-            {% include 'grant_management/_installment-list.tmpl' %}
+            <div class="row">
+                <div class="col-6">
+                    <h3>Installments <a class="btn btn-primary btn-sm"
+                                        href="{% url 'logged-grant_management-installments-update' project=project.pk %}">Edit</a>
+                    </h3>
+                    {% include 'grant_management/_installment-list.tmpl' %}
+                </div>
+            </div>
             <h3>Finances <a class="btn btn-primary btn-sm"
                             href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h3>
             <h4>Invoices</h4>

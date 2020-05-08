@@ -11,6 +11,7 @@ from comments.forms.comment import CommentForm
 from grant_management.forms.valid_if_empty import ValidIfEmpty
 from grant_management.models import Invoice, LaySummary, LaySummaryType, Installment
 from project_core.models import Project
+from project_core.templatetags.ordinal import ordinal
 from project_core.templatetags.thousands_separator import thousands_separator
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from . import utils
@@ -23,17 +24,17 @@ class InstallmentModelChoiceField(ModelChoiceField):
         self._sequence = 0
 
     def label_from_instance(self, obj):
-        from .installments import readable_sequence
-
         self._sequence += 1
         amount = thousands_separator(obj.amount)
-        return mark_safe(f'{readable_sequence(self._sequence)} - {obj.due_date} - {amount} CHF')
+        return mark_safe(f'{ordinal(self._sequence)} - {obj.due_date} - {amount} CHF')
 
 
 class InvoiceItemModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.comment_saved = True
         self._user = kwargs.pop('user', None)
+
+        project = kwargs.pop('project')
 
         super().__init__(*args, **kwargs)
 
@@ -60,8 +61,7 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         self._valid_if_empty.update_required(self.fields)
 
-        self.fields['installment'].queryset = Installment.objects.filter(project_id=self.initial['project']).order_by(
-            'due_date')
+        self.fields['installment'].queryset = Installment.objects.filter(project=project).order_by('due_date')
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_for_payment_date'])
@@ -266,6 +266,11 @@ class InvoicesFormSet(BaseInlineFormSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('received_date')
+
+    def get_form_kwargs(self, index):
+        kwargs = super().get_form_kwargs(index)
+        kwargs['project'] = self.instance
+        return kwargs
 
 
 InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemModelForm, formset=InvoicesFormSet,

@@ -1,9 +1,11 @@
 {% load thousands_separator %}
+{% load ordinal %}
 
 {% with installments=project.installment_set.all %}
     <table id="installments_table" class="table table-striped table-sm table-hover display">
         <thead>
         <tr>
+            <th>Installment</th>
             <th>Due</th>
             <th>Amount (CHF)</th>
         </tr>
@@ -11,6 +13,7 @@
         <tbody>
         {% for installment in installments %}
             <tr>
+                <td data-sort="{{ forloop.counter }}">{{ forloop.counter|ordinal }}</td>
                 <td data-sort="{{ installment.due_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=installment.due_date %}</td>
                 <td>{% include 'common/_value-or-dash.tmpl' with value=installment.amount|thousands_separator %}</td>
             </tr>
@@ -22,7 +25,7 @@
         $(document).ready(function () {
             $('#installments_table').DataTable({
                     "pageLength": 100,
-                    "order": [[0, "asc"]],
+                    "order": [[1, "asc"]],
                     "bFilter": false,
                     "bPaginate": false,
                     "info": false,
@@ -30,8 +33,9 @@
                         "zeroRecords": "No installments have been created"
                     },
                     "columns": [
-                        {"width": "50%"},
-                        {"width": "50%"},
+                        {"width": "33%"},
+                        {"width": "33%"},
+                        {"width": "33"},
                     ],
                 }
             );

@@ -67,6 +67,17 @@ class Invoice(AbstractProjectDueReceivedDate):
     def attachment_object():
         return None
 
+    def installment_number(self):
+        # This is not very efficient, but given the number of invoices and installments it's nice to not have to
+        # save this in the database
+
+        if self.installment is None:
+            return None
+
+        installments = list(Installment.objects.filter(project=self.project).order_by('due_date'))
+
+        return installments.index(self.installment)+1
+
     def comments(self):
         return self.invoicecomment_set.all().order_by('created_on')
 

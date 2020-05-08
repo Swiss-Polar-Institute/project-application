@@ -4,9 +4,9 @@ from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, ModelChoiceField
 
 from grant_management.models import Installment
+from project_core.fields import AmountField
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
-from django.contrib.humanize.templatetags.humanize import ordinal
 
 
 class InstallmentTypeWithDescription(ModelChoiceField):
@@ -46,11 +46,10 @@ class InstallmentModelForm(forms.ModelForm):
     class Meta:
         model = Installment
         fields = ['project', 'due_date', 'amount']
+        field_classes = {'amount': AmountField}
         labels = {'due_date': 'Due'}
         help_texts = {'due_date': 'Date the installment is due'}
-        widgets = {
-            'due_date': XDSoftYearMonthDayPickerInput,
-        }
+        widgets = {'due_date': XDSoftYearMonthDayPickerInput}
 
 
 class InstallmentsFormSet(BaseInlineFormSet):
@@ -65,24 +64,6 @@ class InstallmentsFormSet(BaseInlineFormSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('due_date')
-
-
-def readable_sequence(sequence):
-    humanized = {1: 'First',
-                 2: 'Second',
-                 3: 'Third',
-                 4: 'Fourth',
-                 5: 'Fifth',
-                 6: 'Sixth',
-                 7: 'Seventh',
-                 8: 'Eighth',
-                 9: 'Ninth',
-                 10: 'Tenth'}
-
-    if sequence in humanized:
-        return humanized[sequence]
-    else:
-        return ordinal(sequence)
 
 
 InstallmentsInlineFormSet = inlineformset_factory(Project, Installment, form=InstallmentModelForm,
