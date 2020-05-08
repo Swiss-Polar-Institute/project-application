@@ -8,12 +8,22 @@
             <h2>{{ project.title }}</h2>
             {% include 'grant_management/_project_summary-detail.tmpl' %}
             <p></p>
-            <h3>Project information <a class="btn btn-primary btn-sm"
-                                       href="{% url 'logged-grant_management-project-update' pk=project.pk %}">Edit</a>
-            </h3>
-            <strong>Budget allocated:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
-            <strong>Start date:</strong> {{ project.start_date }}<br>
-            <strong>End date:</strong> {{ project.end_date }}<br>
+            <div class="row">
+                <div class="col-6">
+                    <h3>Project information <a class="btn btn-primary btn-sm"
+                                               href="{% url 'logged-grant_management-project-update' project=project.pk %}">Edit</a>
+                    </h3>
+                    <strong>Budget allocated:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
+                    <strong>Start date:</strong> {{ project.start_date }}<br>
+                    <strong>End date:</strong> {{ project.end_date }}<br>
+                </div>
+                <div class="col-6">
+                    <h3>Installments <a class="btn btn-primary btn-sm"
+                                        href="{% url 'logged-grant_management-installments-update' project=project.pk %}">Edit</a>
+                    </h3>
+                    {% include 'grant_management/_installment-list.tmpl' %}
+                </div>
+            </div>
             <p></p>
             <h3>Grant agreement <a class="btn btn-primary btn-sm"
                                    href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
@@ -28,7 +38,9 @@
                             href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h3>
             <h4>Invoices</h4>
             {% include 'grant_management/_invoice-list.tmpl' %}
-            Total paid: {% include 'common/_value-or-zero.tmpl' with value=project.invoices_paid_amount|thousands_separator %} CHF
+            Total
+            paid: {% include 'common/_value-or-zero.tmpl' with value=project.invoices_paid_amount|thousands_separator %}
+            CHF
             <p></p>
             <h4>Financial reports</h4>
             {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}
@@ -54,9 +66,9 @@
             {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='blog_posts' count=blog_posts_count button_text_collapsed='View blog posts' button_text_not_collapsed='Hide blog posts' template_file='grant_management/_blog_post-list.tmpl' %}
             <p></p>
             <h4>Photos and media
-                <div class="d-inline-block" data-toggle="tooltip" title="Not available yet"><a
+                <span class="d-inline-block" data-toggle="tooltip" title="Not available yet"><a
                         class="btn btn-primary disabled btn-sm"
-                        href="#">Edit</a></div>
+                        href="#">Edit</a></span>
             </h4>
             TODO
 
