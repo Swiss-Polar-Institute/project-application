@@ -20,6 +20,7 @@ jobs:
       env:
         FORCE_SQLITE3_DATABASE: 1
       run: |
+        source tools/environment-variables-for-test.sh
         cd ProjectApplication
         coverage erase
         coverage run manage.py test
