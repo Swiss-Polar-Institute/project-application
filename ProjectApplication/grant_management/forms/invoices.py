@@ -137,6 +137,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         received_date = cd.get('received_date', None)
         sent_for_payment_date = cd.get('sent_for_payment_date', None)
         paid_date = cd.get('paid_date', None)
+        installment = cd.get('installment', None)
 
         amount = cd.get('amount', None)
         file = cd.get('file', None)
@@ -194,6 +195,14 @@ class InvoiceItemModelForm(forms.ModelForm):
                 lay_summary_type=original_lay_summary_type).exists() is False:
             sent_for_payment_errors.append(
                 'Invoice cannot be sent for payment if the internal type summary has not been received')
+
+        if amount and installment and self.instance:
+            total_amount_invoices_for_installment = Invoice.objects.filter(installment=installment).exclude(id=self.instance.id).aggregate(Sum('amount'))['amount__sum']
+            total_amount_invoices_for_installment = total_amount_invoices_for_installment or 0
+
+            if sum:
+                if total_amount_invoices_for_installment + amount > installment.amount:
+                    errors['amount'] = 'This amount is too high for the total installment amount'
 
         if sent_for_payment_date is None and paid_date:
             sent_for_payment_errors.append('Please fill in sent for payment if the invoice is paid')

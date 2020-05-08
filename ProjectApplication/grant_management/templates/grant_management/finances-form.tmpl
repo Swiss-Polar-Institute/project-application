@@ -9,6 +9,7 @@
                 <h3>Invoices</h3>
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
                 {% include 'common/_dynamic_formset.tmpl' with form_set=invoices_form %}
+                To delete an invoice: please make sure that it's not paid
                 <hr>
                 <h3>Financial reports</h3>
                 {% include 'common/_dynamic_formset.tmpl' with form_set=financial_reports_form %}
