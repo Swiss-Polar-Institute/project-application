@@ -20,7 +20,7 @@ class InvoiceItemFormTest(TestCase):
                 }
 
         self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data, user=self._user)
+        invoice_item_form = InvoiceItemModelForm(data=data, user=self._user, project=self._project)
 
         self.assertTrue(invoice_item_form.is_valid())
         invoice_item_form.save()
@@ -30,7 +30,7 @@ class InvoiceItemFormTest(TestCase):
         data = {'project': self._project}
 
         self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data, user=self._user)
+        invoice_item_form = InvoiceItemModelForm(data=data, user=self._user, project=self._project)
 
         self.assertTrue(invoice_item_form.is_valid())
         invoice_item_form.save()
@@ -62,7 +62,7 @@ class InvoiceItemFormTest(TestCase):
         file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
 
         self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data, files=file, user=self._user)
+        invoice_item_form = InvoiceItemModelForm(data=data, files=file, user=self._user, project=self._project)
 
         self.assertTrue(invoice_item_form.is_valid())
         invoice_item_form.save()
@@ -81,7 +81,7 @@ class InvoiceItemFormTest(TestCase):
                 }
 
         self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data)
+        invoice_item_form = InvoiceItemModelForm(data=data, project=self._project)
 
         invoice_item_form.is_valid()
         self.assertFalse(invoice_item_form.is_valid())
@@ -100,7 +100,7 @@ class InvoiceItemFormTest(TestCase):
                 }
 
         self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data)
+        invoice_item_form = InvoiceItemModelForm(data=data, project=self._project)
 
         invoice_item_form.is_valid()
         self.assertFalse(invoice_item_form.is_valid())
@@ -122,7 +122,7 @@ class InvoiceItemFormTest(TestCase):
                 }
         file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
 
-        invoice_item_form = InvoiceItemModelForm(data=data, files=file)
+        invoice_item_form = InvoiceItemModelForm(data=data, files=file, project=self._project)
 
         self.assertFalse(invoice_item_form.is_valid())
         self.assertIn('amount', invoice_item_form.errors)
@@ -134,7 +134,7 @@ class InvoiceItemFormTest(TestCase):
                 'sent_for_payment_date': date(2020, 1, 7),
                 }
 
-        invoice_item_form = InvoiceItemModelForm(data=data)
+        invoice_item_form = InvoiceItemModelForm(data=data, project=self._project)
 
         self.assertFalse(invoice_item_form.is_valid())
         # sent_date cannot be entered because the grant agreement is not signed

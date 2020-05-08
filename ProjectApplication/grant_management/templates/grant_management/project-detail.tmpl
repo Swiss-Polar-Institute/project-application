@@ -11,7 +11,7 @@
             <div class="row">
                 <div class="col-6">
                     <h3>Project information <a class="btn btn-primary btn-sm"
-                                               href="{% url 'logged-grant_management-project-update' project=project.pk %}">Edit</a>
+                                               href="{% url 'logged-grant_management-project-update' pk=project.pk %}">Edit</a>
                     </h3>
                     <strong>Budget allocated:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
                     <strong>Start date:</strong> {{ project.start_date }}<br>
