@@ -244,9 +244,6 @@ SHORT_DATETIME_FORMAT = 'd-m-Y H:i'
 
 AWS_S3_FILE_OVERWRITE = False
 
-DEMO_MANAGEMENT_USER = os.environ['DEMO_MANAGEMENT_USER']
-DEMO_MANAGEMENT_PASSWORD = os.environ['DEMO_MANAGEMENT_PASSWORD']
-
 SECRET_KEY = os.environ.get('SECRET_KEY', 'shfl_mdb^frjpk8@5@fsl(qm0^u0+--m6_x28lgbil*m&#+rvq')
 
 LOGGED_OUT_USERNAME = 'loggedout'
