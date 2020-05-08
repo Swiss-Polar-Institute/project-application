@@ -4,7 +4,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
 from grant_management.forms.invoices import InvoiceItemModelForm
-from grant_management.models import GrantAgreement, Invoice
+from grant_management.models import GrantAgreement, Invoice, LaySummary
 from project_core.tests import database_population
 
 
@@ -12,6 +12,7 @@ class InvoiceItemFormTest(TestCase):
     def setUp(self):
         self._project = database_population.create_project()
         self._user = database_population.create_management_user()
+        self._lay_summary_original_type = database_population.create_lay_summary_original()
 
     def test_valid_incomplete_invoice(self):
         data = {'project': self._project,
@@ -41,12 +42,20 @@ class InvoiceItemFormTest(TestCase):
                                          signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
+
         grant_agreement.save()
+
+        lay_summary = LaySummary(project=self._project,
+                                 due_date=date(2020, 1, 13),
+                                 text='test',
+                                 author=self._project.principal_investigator.person,
+                                 lay_summary_type=self._lay_summary_original_type)
+        lay_summary.save()
 
         data = {'project': self._project,
                 'due_date': date(2020, 1, 13),
                 'received_date': date(2020, 1, 14),
-                'sent_date': date(2020, 1, 15),
+                'sent_for_payment_date': date(2020, 1, 15),
                 'amount': 200,
                 'paid_date': date(2020, 1, 16)
                 }

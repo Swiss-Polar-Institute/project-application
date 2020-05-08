@@ -115,15 +115,16 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
-        sent_for_payment = cd.get('sent_for_payment_date', None)
+        sent_for_payment_date = cd.get('sent_for_payment_date', None)
         paid_date = cd.get('paid_date', None)
 
         amount = cd.get('amount', None)
         file = cd.get('file', None)
 
         errors = {}
+        sent_for_payment_errors = []
 
-        if not due_date and (due_date or received_date or sent_for_payment or paid_date or amount or file):
+        if not due_date and (due_date or received_date or sent_for_payment_date or paid_date or amount or file):
             errors['due_date'] = f'Due date is required to create an invoice'
 
         if due_date and due_date < project_starts:
@@ -132,10 +133,10 @@ class InvoiceItemModelForm(forms.ModelForm):
         if received_date and received_date < project_starts:
             errors['received_date'] = utils.error_received_date_too_early(project.start_date)
 
-        if sent_for_payment and received_date and sent_for_payment < received_date:
-            errors['sent_for_payment_date'] = f'Date sent for payment should be after the date the invoice was received'
+        if sent_for_payment_date and received_date and sent_for_payment_date < received_date:
+            sent_for_payment_errors.append(f'Date sent for payment should be after the date the invoice was received date')
 
-        if paid_date and sent_for_payment and paid_date < sent_for_payment:
+        if paid_date and sent_for_payment_date and paid_date < sent_for_payment_date:
             errors['paid_date'] = f'Date paid should be after the date the invoice was sent for payment'
 
         if due_date and due_date > project_ends:
@@ -150,7 +151,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         if not file and received_date:
             errors['file'] = f'Please attach the invoice file (a date received has been entered).'
 
-        if not received_date and sent_for_payment:
+        if not received_date and sent_for_payment_date:
             errors[
                 'received_date'] = f'Please enter the date the invoice was received (a date sent for payment has been entered).'
 
@@ -158,23 +159,23 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors[
                 'received_date'] = f'Please enter the date the invoice was recevived (a date paid has been entered).'
 
-        if not amount and sent_for_payment:
+        if not amount and sent_for_payment_date:
             errors['amount'] = f'Please enter the invoice amount (a date sent for payment has been entered).'
 
-        if sent_for_payment is not None and (
+        if sent_for_payment_date is not None and (
                 hasattr(project, 'grantagreement') is False or project.grantagreement.file is None):
             grant_agreement_url = reverse('logged-grant_management-grant_agreement-add', kwargs={'project': project.id})
-            errors[
-                'sent_for_payment_date'] = mark_safe(
-                f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
+            sent_for_payment_errors.append(f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
 
-        internal_lay_summary = LaySummaryType.objects.get(name=settings.LAY_SUMMARY_ORIGINAL)
-        if sent_for_payment is not None and LaySummary.objects.filter(project=project).filter(lay_summary_type=internal_lay_summary).exists() is False:
-            sent_for_payemnt_error = 'Invoice cannot be sent for payment if the internal type summary has not been received'
-            if 'sent_for_payment_date' in errors:
-                errors['sent_for_payment_date'] += mark_safe(f'<br>Also: {sent_for_payemnt_error}')
-            else:
-                errors['sent_for_payment_date'] = sent_for_payemnt_error
+        original_lay_summary_type = LaySummaryType.objects.get(name=settings.LAY_SUMMARY_ORIGINAL)
+        if sent_for_payment_date and LaySummary.objects.filter(project=project).filter(lay_summary_type=original_lay_summary_type).exists() is False:
+            sent_for_payment_errors.append('Invoice cannot be sent for payment if the internal type summary has not been received')
+
+        if sent_for_payment_date is None and paid_date:
+            sent_for_payment_errors.append('Please fill in sent for payment if the invoice is paid')
+
+        if sent_for_payment_errors:
+            errors['sent_for_payment_date'] = mark_safe('<br>'.join(sent_for_payment_errors))
 
         if DELETE and paid_date:
             errors['paid_date'] = 'A paid invoice cannot be deleted. Delete the date paid and try again.'

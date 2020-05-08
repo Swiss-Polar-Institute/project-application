@@ -39,6 +39,7 @@ class FinancesViewUpdateTest(TestCase):
     def setUp(self):
         self._project = database_population.create_project()
         self._client_management = database_population.create_management_logged_client()
+        database_population.create_lay_summary_original()
 
     def test_get(self):
         response = self._client_management.get(

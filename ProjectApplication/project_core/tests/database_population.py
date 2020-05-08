@@ -8,6 +8,7 @@ from django.utils.timezone import utc
 
 from ProjectApplication import settings
 from evaluation.models import Reviewer
+from grant_management.models import LaySummaryType
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
     Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role, Project
@@ -274,6 +275,11 @@ def create_project():
 
     return project
 
+
+def create_lay_summary_original():
+    lay_summary, _ = LaySummaryType.objects.get_or_create(name='Original', description='Original from the PI')
+
+    return lay_summary
 
 def create_file():
     a_file = StringIO('some file content')
