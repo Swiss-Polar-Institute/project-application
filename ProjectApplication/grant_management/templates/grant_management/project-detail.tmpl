@@ -18,22 +18,22 @@
                     <strong>End date:</strong> {{ project.end_date }}<br>
                 </div>
                 <div class="col-6">
-                    <h3>Installments <a class="btn btn-primary btn-sm"
-                                        href="{% url 'logged-grant_management-installments-update' project=project.pk %}">Edit</a>
+                    <h3>Grant agreement <a class="btn btn-primary btn-sm"
+                                           href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
                     </h3>
-                    {% include 'grant_management/_installment-list.tmpl' %}
+                    <strong>Agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
+                    <strong>Signed
+                        date:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_date %}<br>
+                    <strong>Signed
+                        by:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_by %}<br>
+                    <p></p>
                 </div>
             </div>
             <p></p>
-            <h3>Grant agreement <a class="btn btn-primary btn-sm"
-                                   href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
+            <h3>Installments <a class="btn btn-primary btn-sm"
+                                href="{% url 'logged-grant_management-installments-update' project=project.pk %}">Edit</a>
             </h3>
-            <strong>Agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
-            <strong>Signed
-                date:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_date %}<br>
-            <strong>Signed
-                by:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_by %}<br>
-            <p></p>
+            {% include 'grant_management/_installment-list.tmpl' %}
             <h3>Finances <a class="btn btn-primary btn-sm"
                             href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h3>
             <h4>Invoices</h4>

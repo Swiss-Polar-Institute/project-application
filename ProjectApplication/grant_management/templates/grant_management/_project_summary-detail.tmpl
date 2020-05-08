@@ -1,12 +1,12 @@
 <div class="row">
-    <div class="col-8">
+    <div class="col-6">
         <strong>Principal
             investigator:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.principal_investigator %}<br>
         <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=project.principal_investigator.main_email %}
         <br>
         <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}
     </div>
-    <div class="col-4">
+    <div class="col-6">
         <strong>Project Key:</strong> {{ project.key }}<br>
         <strong>Status:</strong> {{ project.status }}<br>
         <strong>Call:</strong> <a
