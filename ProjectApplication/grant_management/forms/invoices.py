@@ -2,19 +2,32 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, HTML
 from django import forms
 from django.db.models import Sum
-from django.forms import inlineformset_factory, BaseInlineFormSet
+from django.forms import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.urls import reverse
-from django.utils.formats import number_format
 from django.utils.safestring import mark_safe
 
 from ProjectApplication import settings
 from comments.forms.comment import CommentForm
 from grant_management.forms.valid_if_empty import ValidIfEmpty
-from grant_management.models import Invoice, LaySummary, LaySummaryType
+from grant_management.models import Invoice, LaySummary, LaySummaryType, Installment
 from project_core.models import Project
 from project_core.templatetags.thousands_separator import thousands_separator
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from . import utils
+
+
+class InstallmentModelChoiceField(ModelChoiceField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self._sequence = 0
+
+    def label_from_instance(self, obj):
+        from .installments import readable_sequence
+
+        self._sequence += 1
+        amount = thousands_separator(obj.amount)
+        return mark_safe(f'{readable_sequence(self._sequence)} - {obj.due_date} - {amount} CHF')
 
 
 class InvoiceItemModelForm(forms.ModelForm):
@@ -47,6 +60,9 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         self._valid_if_empty.update_required(self.fields)
 
+        self.fields['installment'].queryset = Installment.objects.filter(project_id=self.initial['project']).order_by(
+            'due_date')
+
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_for_payment_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
@@ -74,6 +90,10 @@ class InvoiceItemModelForm(forms.ModelForm):
                 Div(Field('DELETE', hidden=True)),
                 Div('can_be_deleted', hidden=True, css_class='can_be_deleted'),
                 css_class='row', hidden=True
+            ),
+            Div(
+                Div('installment', css_class='col-4'),
+                css_class='row'
             ),
             Div(
                 Div('due_date', css_class='col-4'),
@@ -134,7 +154,8 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors['received_date'] = utils.error_received_date_too_early(project.start_date)
 
         if sent_for_payment_date and received_date and sent_for_payment_date < received_date:
-            sent_for_payment_errors.append(f'Date sent for payment should be after the date the invoice was received date')
+            sent_for_payment_errors.append(
+                f'Date sent for payment should be after the date the invoice was received date')
 
         if paid_date and sent_for_payment_date and paid_date < sent_for_payment_date:
             errors['paid_date'] = f'Date paid should be after the date the invoice was sent for payment'
@@ -165,11 +186,14 @@ class InvoiceItemModelForm(forms.ModelForm):
         if sent_for_payment_date is not None and (
                 hasattr(project, 'grantagreement') is False or project.grantagreement.file is None):
             grant_agreement_url = reverse('logged-grant_management-grant_agreement-add', kwargs={'project': project.id})
-            sent_for_payment_errors.append(f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
+            sent_for_payment_errors.append(
+                f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
 
         original_lay_summary_type = LaySummaryType.objects.get(name=settings.LAY_SUMMARY_ORIGINAL)
-        if sent_for_payment_date and LaySummary.objects.filter(project=project).filter(lay_summary_type=original_lay_summary_type).exists() is False:
-            sent_for_payment_errors.append('Invoice cannot be sent for payment if the internal type summary has not been received')
+        if sent_for_payment_date and LaySummary.objects.filter(project=project).filter(
+                lay_summary_type=original_lay_summary_type).exists() is False:
+            sent_for_payment_errors.append(
+                'Invoice cannot be sent for payment if the internal type summary has not been received')
 
         if sent_for_payment_date is None and paid_date:
             sent_for_payment_errors.append('Please fill in sent for payment if the invoice is paid')
@@ -213,7 +237,9 @@ class InvoiceItemModelForm(forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ['project', 'due_date', 'received_date', 'sent_for_payment_date', 'paid_date', 'amount', 'file']
+        fields = ['project', 'installment', 'due_date', 'received_date', 'sent_for_payment_date', 'paid_date', 'amount',
+                  'file']
+        field_classes = {'installment': InstallmentModelChoiceField}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,

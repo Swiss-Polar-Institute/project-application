@@ -6,6 +6,7 @@ from django.forms import BaseInlineFormSet, inlineformset_factory, ModelChoiceFi
 from grant_management.models import Installment
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
+from django.contrib.humanize.templatetags.humanize import ordinal
 
 
 class InstallmentTypeWithDescription(ModelChoiceField):
@@ -64,6 +65,24 @@ class InstallmentsFormSet(BaseInlineFormSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('due_date')
+
+
+def readable_sequence(sequence):
+    humanized = {1: 'First',
+                 2: 'Second',
+                 3: 'Third',
+                 4: 'Fourth',
+                 5: 'Fifth',
+                 6: 'Sixth',
+                 7: 'Seventh',
+                 8: 'Eighth',
+                 9: 'Ninth',
+                 10: 'Tenth'}
+
+    if sequence in humanized:
+        return humanized[sequence]
+    else:
+        return ordinal(sequence)
 
 
 InstallmentsInlineFormSet = inlineformset_factory(Project, Installment, form=InstallmentModelForm,
