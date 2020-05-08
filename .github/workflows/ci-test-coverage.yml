@@ -17,8 +17,6 @@ jobs:
         python3 -m pip install --upgrade pip
         pip3 install -r requirements.txt
     - name: Test with pytest
-      env:
-        FORCE_SQLITE3_DATABASE: 1
       run: |
         source tools/environment-variables-for-test.sh
         cd ProjectApplication

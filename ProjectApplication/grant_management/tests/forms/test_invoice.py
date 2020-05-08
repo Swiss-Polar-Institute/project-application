@@ -3,6 +3,7 @@ from datetime import date
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
+from ProjectApplication import settings
 from grant_management.forms.invoices import InvoiceItemModelForm
 from grant_management.models import GrantAgreement, Invoice, LaySummary
 from project_core.tests import database_population
@@ -37,6 +38,9 @@ class InvoiceItemFormTest(TestCase):
         self.assertEqual(Invoice.objects.all().count(), 0)
 
     def test_valid_complete_invoice(self):
+        if settings.SKIP_S3_TESTS:
+            self.skipTest('No S3 tests')
+
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 12),
                                          signed_by=database_population.create_physical_person(),
@@ -69,6 +73,9 @@ class InvoiceItemFormTest(TestCase):
         self.assertEqual(Invoice.objects.all().count(), 1)
 
     def test_invalid_due_date_too_early(self):
+        if settings.SKIP_S3_TESTS:
+            self.skipTest('No S3 tests')
+
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
                                          signed_by=database_population.create_physical_person(),
@@ -88,6 +95,9 @@ class InvoiceItemFormTest(TestCase):
         self.assertIn('due_date', invoice_item_form.errors)
 
     def test_invalid_due_date_too_late(self):
+        if settings.SKIP_S3_TESTS:
+            self.skipTest('No S3 tests')
+
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
                                          signed_by=database_population.create_physical_person(),
@@ -107,6 +117,9 @@ class InvoiceItemFormTest(TestCase):
         self.assertIn('due_date', invoice_item_form.errors)
 
     def test_invalid_amount_missing(self):
+        if settings.SKIP_S3_TESTS:
+            self.skipTest('No S3 tests')
+
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
                                          signed_by=database_population.create_physical_person(),

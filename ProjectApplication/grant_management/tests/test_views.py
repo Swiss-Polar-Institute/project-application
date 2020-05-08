@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
+from ProjectApplication import settings
 from grant_management.models import Invoice, FinancialReport
 from project_core.tests import database_population
 
@@ -120,6 +121,9 @@ class GrantAgreementAddViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post(self):
+        if settings.SKIP_S3_TESTS:
+            self.skipTest('No S3 tests')
+
         project_id = self._project.id
         signed_by_id = self._project.principal_investigator.person.id
 

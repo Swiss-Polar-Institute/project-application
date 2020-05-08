@@ -3,6 +3,7 @@ from datetime import datetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
+from ProjectApplication import settings
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.models import GrantAgreement
 from project_core.tests import database_population
@@ -13,6 +14,9 @@ class GrantAgreementFormTest(TestCase):
         self._project = database_population.create_project()
 
     def test_grant_agreement_valid(self):
+        if settings.SKIP_S3_TESTS:
+            self.skipTest('Skipping S3 tests')
+
         data = {'project': self._project,
                 'signed_date': datetime(2020, 1, 10)
                 }
