@@ -27,7 +27,7 @@ jobs:
         source tools/environment-variables-for-test.sh
         export MINIO_ACCESS_KEY="$OBJECT_STORAGE_ACCESS_KEY_ID"
         export MINIO_SECRET_KEY="$OBJECT_STORAGE_SECRET_ACCESS_KEY"
-        mkdir minio_data
+        mkdir -p minio_data/projects
         ./minio server minio_data &
     - name: Test with pytest
       run: |
