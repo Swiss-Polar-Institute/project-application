@@ -44,7 +44,17 @@
             {% include 'comments/_comments-attachments.tmpl' %}
         </div>
         <div class="col-2">
-            {% include 'logged/_proposal_button.tmpl' with project=project %}
+            <p>
+                {% include 'logged/_proposal_button.tmpl' with project=project %}
+            </p>
+            <p>
+                <a class="btn btn-primary"
+                   href="{% url 'logged-grant_management-project-update' pk=project.id %}">Edit Project</a>
+            </p>
+            <p>
+                <a class="btn btn-primary"
+                   href="{% url 'logged-grant_management-project-detail' pk=project.id %}">Grant Management</a>
+            </p>
         </div>
     </div>
 

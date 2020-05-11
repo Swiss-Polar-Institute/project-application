@@ -9,6 +9,7 @@ from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.installments import InstallmentsFormSet, InstallmentsInlineFormSet
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
 from grant_management.forms.lay_summaries import LaySummariesFormSet, LaySummariesInlineFormSet
+from .forms.project import ProjectForm
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
 from grant_management.models import GrantAgreement
@@ -64,6 +65,30 @@ class ProjectDetail(DetailView):
         context['blog_posts_count'] = project.blogpost_set.exclude(text='').count()
 
         return context
+
+
+class ProjectUpdate(SuccessMessageMixin, UpdateView):
+    template_name = 'grant_management/project-form.tmpl'
+    form_class = ProjectForm
+    model = Project
+    success_message = 'Project updated'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        project = context['object']
+
+        context.update({'active_section': 'grant_management',
+                        'active_subsection': 'project-list',
+                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
+                                 {'name': f'Project update ({project.key_pi()})'}]
+
+        return context
+
+    def get_success_url(self):
+        return reverse('logged-grant_management-project-detail', kwargs={'pk': self.object.pk})
 
 
 class ProjectBasicInformationUpdateView(SuccessMessageMixin, UpdateView):

@@ -81,7 +81,7 @@ class ProjectBasicInformationUpdateViewTest(TestCase):
 
     def test_get(self):
         response = self._client_management.get(
-            reverse('logged-grant_management-project-update', kwargs={'pk': self._project.id})
+            reverse('logged-grant_management-project-basic-information-update', kwargs={'pk': self._project.id})
         )
         self.assertEqual(response.status_code, 200)
 
@@ -98,7 +98,7 @@ class ProjectBasicInformationUpdateViewTest(TestCase):
              })
 
         response = self._client_management.post(
-            reverse('logged-grant_management-project-update', kwargs={'pk': project_id}),
+            reverse('logged-grant_management-project-basic-information-update', kwargs={'pk': project_id}),
             data=data
         )
 
