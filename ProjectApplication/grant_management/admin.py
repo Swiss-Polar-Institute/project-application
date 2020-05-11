@@ -5,7 +5,10 @@ from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, Licen
 
 
 class GrantAgreementAdmin(admin.ModelAdmin):
-    list_display = ('project', 'signed_date', 'signed_by', 'file')
+    list_display = ('project', 'signed_date', 'signed_by_list', 'file')
+
+    def signed_by_list(self, obj):
+        return ', '.join(obj.signed_by.all())
 
 
 class InvoiceAdmin(admin.ModelAdmin):

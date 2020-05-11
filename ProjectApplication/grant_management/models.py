@@ -14,8 +14,7 @@ class GrantAgreement(CreateModifyOn):
     project = models.OneToOneField(Project, help_text='Project this Grant Agreement belongs to',
                                    on_delete=models.PROTECT)
     signed_date = models.DateField(help_text='Date the grant agreement was signed', null=True, blank=True)
-    signed_by = models.ForeignKey(PhysicalPerson, help_text='Person who signed the grant agreement', null=True,
-                                  blank=True, on_delete=models.PROTECT)
+    signed_by = models.ManyToManyField(PhysicalPerson, help_text='People who signed the grant agreement')
     file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename)
 
     def __str__(self):
@@ -76,7 +75,7 @@ class Invoice(AbstractProjectDueReceivedDate):
 
         installments = list(Installment.objects.filter(project=self.project).order_by('due_date'))
 
-        return installments.index(self.installment)+1
+        return installments.index(self.installment) + 1
 
     def comments(self):
         return self.invoicecomment_set.all().order_by('created_on')
