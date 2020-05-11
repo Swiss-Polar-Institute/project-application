@@ -17,6 +17,9 @@ class GrantAgreement(CreateModifyOn):
     signed_by = models.ManyToManyField(PhysicalPerson, help_text='People who signed the grant agreement')
     file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename)
 
+    def signed_by_string(self):
+        return ', '.join([f'{person.first_name} {person.surname}' for person in self.signed_by.all().order_by('first_name')])
+
     def __str__(self):
         return f'{self.project}'
 

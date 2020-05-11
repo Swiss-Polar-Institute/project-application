@@ -51,10 +51,3 @@ class KeywordsAutocompleteTest(TestCase):
         self._keywords_autocomplete.create_object(new_keyword)
 
         self.assertEqual(Keyword.objects.filter(name=new_keyword).count(), 1)
-
-# class KeywordsAutocompleteTest(TestCase):
-#     def setUp(self):
-#         pass
-#
-#     def test_get_query(self):
-#         pass
