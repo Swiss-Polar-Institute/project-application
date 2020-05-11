@@ -27,7 +27,7 @@
             </div>
             <strong>Allocated budget:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
             <strong>Geographical focus:</strong> {{ project.geographical_areas_enumeration }}<br>
-            <strong>Precise region:</strong> {{ project.location }}<br>
+            <strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.location %}<br>
             <strong>Keywords:</strong> {{ project.keywords_enumeration }}<br>
 
             <p></p>
