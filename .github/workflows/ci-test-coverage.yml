@@ -28,7 +28,7 @@ jobs:
         export MINIO_ACCESS_KEY="$OBJECT_STORAGE_ACCESS_KEY_ID"
         export MINIO_SECRET_KEY="$OBJECT_STORAGE_SECRET_ACCESS_KEY"
         mkdir minio_data
-        ./minio server minio_data
+        ./minio server minio_data &
     - name: Test with pytest
       run: |
         source tools/environment-variables-for-test.sh
