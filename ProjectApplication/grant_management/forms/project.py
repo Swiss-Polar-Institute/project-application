@@ -18,7 +18,7 @@ class ProjectForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
 
         self.helper = FormHelper(self)
-        cancel_url = reverse('logged-grant_management-project-detail', kwargs={'pk': self.instance.id})
+        cancel_url = reverse('logged-project-detail', kwargs={'pk': self.instance.id})
 
         self.helper.layout = Layout(
             Div(

@@ -76,19 +76,18 @@ class ProjectUpdate(SuccessMessageMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project = context['object']
-
-        context.update({'active_section': 'grant_management',
+        context.update({'active_section': 'lists',
                         'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project update ({project.key_pi()})'}]
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'Projects', 'url': reverse('logged-project-list')},
+                                 {'name': f'Project update ({context["object"].key_pi()})'}]
 
         return context
 
     def get_success_url(self):
-        return reverse('logged-grant_management-project-detail', kwargs={'pk': self.object.pk})
+        return reverse('logged-project-detail', kwargs={'pk': self.object.pk})
 
 
 class ProjectBasicInformationUpdateView(SuccessMessageMixin, UpdateView):
