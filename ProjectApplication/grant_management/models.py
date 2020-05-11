@@ -14,7 +14,7 @@ class GrantAgreement(CreateModifyOn):
     project = models.OneToOneField(Project, help_text='Project this Grant Agreement belongs to',
                                    on_delete=models.PROTECT)
     signed_date = models.DateField(help_text='Date the grant agreement was signed', null=True, blank=True)
-    signed_by = models.ManyToManyField(PhysicalPerson, help_text='People who signed the grant agreement')
+    signed_by = models.ManyToManyField(PhysicalPerson, help_text='People who signed the grant agreement', blank=True)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename)
 
     def signed_by_string(self):

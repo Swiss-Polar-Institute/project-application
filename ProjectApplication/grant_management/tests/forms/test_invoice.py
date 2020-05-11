@@ -43,11 +43,12 @@ class InvoiceItemFormTest(TestCase):
 
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 12),
-                                         signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
 
         grant_agreement.save()
+
+        grant_agreement.signed_by.set([database_population.create_physical_person()])
 
         lay_summary = LaySummary(project=self._project,
                                  due_date=date(2020, 1, 13),
@@ -78,10 +79,10 @@ class InvoiceItemFormTest(TestCase):
 
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
-                                         signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
+        grant_agreement.signed_by.set([database_population.create_physical_person()])
 
         data = {'project': self._project,
                 'due_date': date(2019, 12, 1),
@@ -100,10 +101,11 @@ class InvoiceItemFormTest(TestCase):
 
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
-                                         signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
+
+        grant_agreement.signed_by.set([database_population.create_physical_person()])
 
         data = {'project': self._project,
                 'due_date': date(2025, 12, 1),
@@ -122,10 +124,10 @@ class InvoiceItemFormTest(TestCase):
 
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
-                                         signed_by=database_population.create_physical_person(),
                                          file=SimpleUploadedFile('grant_agreement.txt',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
+        grant_agreement.signed_by.set([database_population.create_physical_person()])
 
         data = {'project': self._project,
                 'due_date': date(2020, 1, 5),

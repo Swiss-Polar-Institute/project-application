@@ -148,5 +148,5 @@ class GrantAgreementAddViewTest(TestCase):
         grant_agreement = self._project.grantagreement
 
         self.assertEqual(grant_agreement.signed_date, date(2020, 5, 1))
-        self.assertEqual(grant_agreement.signed_by, self._project.principal_investigator.person)
+        self.assertEqual(list(grant_agreement.signed_by.all()), [self._project.principal_investigator.person])
         self.assertTrue(grant_agreement.file.name != '')
