@@ -8,6 +8,7 @@
             <th>Installment</th>
             <th>Due</th>
             <th>Amount (CHF)</th>
+            <th>Sent for payment (CHF)</th>
         </tr>
         </thead>
         <tbody>
@@ -16,6 +17,7 @@
                 <td data-sort="{{ forloop.counter }}">{{ forloop.counter|ordinal }}</td>
                 <td data-sort="{{ installment.due_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=installment.due_date %}</td>
                 <td>{% include 'common/_value-or-dash.tmpl' with value=installment.amount|thousands_separator %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=installment.sent_for_payment|thousands_separator %}</td>
             </tr>
         {% endfor %}
         </tbody>

@@ -1,6 +1,7 @@
 from django.db import models
 # Create your models here.
 # add dates of review, signed date, who signed, grant agreement - need flexibilty in types of dates that are added
+from django.db.models import Sum
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from project_core.models import CreateModifyOn, PhysicalPerson, Project
@@ -41,6 +42,9 @@ class Installment(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that this installment refers to', on_delete=models.PROTECT)
     due_date = models.DateField(help_text='Due date of this instalment')
     amount = models.DecimalField(max_digits=11, decimal_places=2, help_text='Amount of this instalment')
+
+    def sent_for_payment(self):
+        return self.invoice_set.filter(sent_for_payment_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
 
     def __str__(self):
         return f'{self.project}-{self.due_date}-{self.amount}'
