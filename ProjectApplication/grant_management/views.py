@@ -312,7 +312,7 @@ class MediaUpdateView(TemplateView):
             prefix=MediaFormSet.FORM_NAME,
             instance=context['project'])
 
-        return render(request, 'grant_management/installments-form.tmpl', context)
+        return render(request, 'grant_management/media-form.tmpl', context)
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
@@ -330,7 +330,7 @@ class MediaUpdateView(TemplateView):
 
         context[MediaFormSet.FORM_NAME] = installments_form
 
-        return render(request, 'grant_management/installments-form.tmpl', context)
+        return render(request, 'grant_management/media-form.tmpl', context)
 
 
 class InstallmentsUpdateView(TemplateView):

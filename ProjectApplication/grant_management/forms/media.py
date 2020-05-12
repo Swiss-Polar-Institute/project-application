@@ -2,10 +2,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from dal import autocomplete
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.forms import BaseInlineFormSet, inlineformset_factory
+from django.forms import BaseInlineFormSet, inlineformset_factory, CheckboxSelectMultiple
 
-from grant_management.models import Medium, BlogPost
+from grant_management.models import Medium
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
@@ -18,6 +17,11 @@ class BlogPostMultipleChoiceField(forms.ModelMultipleChoiceField):
         return f'{obj.received_date} {obj.title}'
 
 
+class BlogPostCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
 class MediumModelForm(forms.ModelForm):
     FORM_NAME = 'medium'
 
@@ -28,13 +32,16 @@ class MediumModelForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
 
         initial_blog_posts = None
-        self.fields['blog_posts'] = BlogPostMultipleChoiceField(initial=initial_blog_posts,
-                                                                queryset=project.blogpost_set.all(),
-                                                                required=True,
-                                                                widget=FilteredSelectMultiple(
-                                                                    is_stacked=True,
-                                                                    verbose_name='blog posts'),
-                                                                help_text='Please select which blogpost this media belongs to')
+        self.fields['blog_posts'] = BlogPostMultipleChoiceField(queryset=project.blogpost_set.all(),
+                                                                widget=CheckboxSelectMultiple)
+        # self.fields['blog_posts'].widget = CheckboxSelectMultiple()
+        # self.fields['blog_posts'] = BlogPostMultipleChoiceField(initial=initial_blog_posts,
+        #                                                         queryset=project.blogpost_set.all(),
+        #                                                         required=True,
+        #                                                         widget=FilteredSelectMultiple(
+        #                                                             is_stacked=True,
+        #                                                             verbose_name='blog posts'),
+        #                                                         help_text='Please select which blogpost this media belongs to')
 
         self.helper = FormHelper()
         self.helper.form_tag = False
