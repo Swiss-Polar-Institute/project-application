@@ -24,26 +24,12 @@
 
 <script>
     function clean_up_file_fields(row) {
-        let file_inputs = $(row).find(".clearablefileinput");
+        let file_inputs = $(row).find(".clearable-file-input");
 
         $(file_inputs).each(function (i, file_input) {
-            let div = $(file_input).parent();
-
-            // Deletes all the text
-            $(div).contents()
-                .filter(function () {
-                    return this.nodeType === Node.TEXT_NODE;
-                }).remove();
-
-            $(div).find("a").remove();
-
-            $(div).find(":checkbox").remove();
-
-            $(div).find("label").remove();
-
-            $(div).find("br").remove();
-
-
+            $(file_input).find(".input-group.mb-2").remove();
+            $(file_input).find(".custom-file-input").prop('disabled', false)
+            $(file_input).find('.input-group-text').remove()
         });
     }
 

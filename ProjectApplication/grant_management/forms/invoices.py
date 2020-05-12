@@ -98,7 +98,7 @@ class InvoiceItemModelForm(forms.ModelForm):
             Div(
                 Div('due_date', css_class='col-4'),
                 Div('received_date', css_class='col-4'),
-                Div('file', css_class='col-4'),
+                Div('file', css_class='col-4 clearable-file-input'),
                 css_class='row'
             ),
             Div(
