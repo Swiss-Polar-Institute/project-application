@@ -12,13 +12,9 @@
         </thead>
         {% for medium in media %}
             <tr>
-                <td data-sort="{{ invoice.installment_number }}">{{ invoice.installment_number|ordinal }}</td>
-                <td data-sort="{{ invoice.due_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=invoice.due_date %}</td>
-                <td data-sort="{{ invoice.received_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=invoice.received_date %}</td>
-                <td data-sort="{{ invoice.sent_for_payment_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=invoice.sent_for_payment_date %}</td>
-                <td data-sort="{{ invoice.paid_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=invoice.paid_date %}</td>
-                <td>{% include 'common/_value-or-dash.tmpl' with value=invoice.amount|thousands_separator %}</td>
-                <td>{% include 'common/_file_to_download.tmpl' with file_field=invoice.file %}</td>
+                <td data-sort="{{ medium.received_date }}">{{ medium.received_date }}</td>
+                <td>{{ medium.photographer }}</td>
+                <td>{% include 'common/_file_to_download.tmpl' with file_field=medium.file %}</td>
             </tr>
         {% endfor %}
     </table>
