@@ -24,12 +24,13 @@
 
 <script>
     function clean_up_file_fields(row) {
-        let file_inputs = $(row).find(".clearable-file-input");
-
+        let file_inputs = $(row).find(".custom-file-input");
         $(file_inputs).each(function (i, file_input) {
-            $(file_input).find(".input-group.mb-2").remove();
-            $(file_input).find(".custom-file-input").prop('disabled', false)
-            $(file_input).find('.input-group-text').remove()
+            let container_for_file_input = $(file_input).closest('.mb-2');
+
+            $(container_for_file_input).find(".input-group.mb-2").remove();
+            $(container_for_file_input).find(".custom-file-input").prop('disabled', false)
+            $(container_for_file_input).find('.input-group-text').remove()
         });
     }
 
