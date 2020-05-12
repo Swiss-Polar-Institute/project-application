@@ -180,7 +180,7 @@ class Medium(models.Model):
                                 on_delete=models.PROTECT, null=True, blank=True)
     copyright = models.CharField(max_length=1024, help_text='Owner of copyright if it is not the photographer (e.g. institution)', null=True, blank=True)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename)
-    blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to')
+    blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to', blank=True)
     descriptive_text = models.TextField(
         help_text='Description of this media, if provided. Where was it taken, context, etc.', null=True, blank=True)
 
