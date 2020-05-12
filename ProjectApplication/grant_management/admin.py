@@ -36,7 +36,7 @@ class LicenseAdmin(admin.ModelAdmin):
 
 
 class MediumAdmin(admin.ModelAdmin):
-    list_display = ('author', 'license', 'copyright', 'project',)
+    list_display = ('photographer', 'license', 'copyright', 'project',)
 
 
 class ProjectSocialMediaAdmin(admin.ModelAdmin):

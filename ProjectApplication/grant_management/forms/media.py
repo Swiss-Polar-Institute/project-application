@@ -10,7 +10,7 @@ from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
 class MediumModelForm(forms.ModelForm):
-    FORM_NAME = 'installment'
+    FORM_NAME = 'medium'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,7 +29,7 @@ class MediumModelForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('author', css_class='col-3'),
+                Div('photographer', css_class='col-3'),
                 Div('license', css_class='col-3'),
                 Div('copyright', css_class='col-3'),
                 css_class='row'
@@ -46,13 +46,13 @@ class MediumModelForm(forms.ModelForm):
 
     class Meta:
         model = Medium
-        fields = ['project', 'received_date', 'author', 'license', 'copyright', 'blog_posts', 'file']
+        fields = ['project', 'received_date', 'photographer', 'license', 'copyright', 'blog_posts', 'file']
         widgets = {'due_date': XDSoftYearMonthDayPickerInput,
                    'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
 
 
 class MediaFormSet(BaseInlineFormSet):
-    FORM_NAME = 'installments_form'
+    FORM_NAME = 'media_form'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
