@@ -153,9 +153,13 @@ class BlogPost(AbstractProjectDueReceivedDate):
 
 
 class License(CreateModifyOn):
-    name = models.CharField(max_length=30, help_text='License name', null=False, blank=False)
-    public_text = models.CharField(max_length=200,
-                                   help_text='Explanatory text for this license. Include the logo and URL to license text.',
+    name = models.CharField(max_length=100,
+                            help_text='License name (e.g. Creative Commons Attribution Non Commercial Share Alike 4.0 International)',
+                            unique=True)
+    spdx_identifier = models.CharField(max_length=100,
+                                       help_text='Identifier as per https://spdx.org/licenses/ CC-BY-NC-SA-4.0',
+                                       unique=True)
+    public_text = models.TextField(help_text='Explanatory text for this license. Include the logo and URL to license text.',
                                    null=True, blank=True)
 
     def __str__(self):
@@ -172,7 +176,7 @@ class Medium(models.Model):
     author = models.ForeignKey(PhysicalPerson, help_text='Person who took the photo',
                                on_delete=models.PROTECT)
     license = models.ForeignKey(License, help_text='License',
-                                on_delete=models.PROTECT)
+                                on_delete=models.PROTECT, null=True, blank=True)
     copyright = models.TextField(help_text='Owner of copyright', null=True, blank=True)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename)
     blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to')

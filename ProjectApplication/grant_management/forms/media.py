@@ -1,5 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
+from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
 
@@ -46,7 +47,8 @@ class MediumModelForm(forms.ModelForm):
     class Meta:
         model = Medium
         fields = ['project', 'received_date', 'author', 'license', 'copyright', 'blog_posts', 'file']
-        widgets = {'due_date': XDSoftYearMonthDayPickerInput}
+        widgets = {'due_date': XDSoftYearMonthDayPickerInput,
+                   'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
 
 
 class MediaFormSet(BaseInlineFormSet):
