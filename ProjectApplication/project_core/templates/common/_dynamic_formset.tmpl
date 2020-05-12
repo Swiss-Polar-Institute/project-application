@@ -64,7 +64,7 @@
     }
 
     function clean_autocomplete_fields(row) {
-        $(row).find('.select2-selection').empty();
+        $(row).find(".select2-hidden-accessible").val(null).trigger("change")
     }
 
     function clean_combobox_fields(row) {
