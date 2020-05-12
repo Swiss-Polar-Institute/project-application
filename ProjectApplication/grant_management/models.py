@@ -146,6 +146,7 @@ class LaySummary(AbstractProjectDueReceivedDate):
 
 
 class BlogPost(AbstractProjectDueReceivedDate):
+    title = models.CharField(max_length=1024, help_text='Title of the blogpost')
     text = models.TextField(help_text='Blog post text', null=True, blank=True)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the blog post',
                                blank=True, null=True, on_delete=models.PROTECT)
@@ -167,15 +168,14 @@ def medium_file_rename(instance, filename):
 
 class Medium(models.Model):
     project = models.ForeignKey(Project, help_text='Project that this medium belongs to', on_delete=models.PROTECT)
+    received_date = models.DateField(help_text='Date that the medium was received')
     author = models.ForeignKey(PhysicalPerson, help_text='Person who took the photo',
                                on_delete=models.PROTECT)
     license = models.ForeignKey(License, help_text='License',
                                 on_delete=models.PROTECT)
     copyright = models.TextField(help_text='Owner of copyright', null=True, blank=True)
-
     file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename)
-
-    blog_post = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to')
+    blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to')
 
     def __str__(self):
         return f'{self.project}-{self.author}'
