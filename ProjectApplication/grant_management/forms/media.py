@@ -33,7 +33,8 @@ class MediumModelForm(forms.ModelForm):
 
         initial_blog_posts = None
         self.fields['blog_posts'] = BlogPostMultipleChoiceField(queryset=project.blogpost_set.all(),
-                                                                widget=CheckboxSelectMultiple)
+                                                                widget=CheckboxSelectMultiple,
+                                                                help_text='Please select the relevant blog posts for this media file')
         # self.fields['blog_posts'].widget = CheckboxSelectMultiple()
         # self.fields['blog_posts'] = BlogPostMultipleChoiceField(initial=initial_blog_posts,
         #                                                         queryset=project.blogpost_set.all(),
@@ -66,8 +67,8 @@ class MediumModelForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('blog_posts', css_class='col-6'),
                 Div('descriptive_text', css_class='col-6'),
+                Div('blog_posts', css_class='col-6'),
                 css_class='row'
             ),
         )
