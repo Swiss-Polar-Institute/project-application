@@ -19,7 +19,8 @@ class GrantAgreement(CreateModifyOn):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename)
 
     def signed_by_string(self):
-        return ', '.join([f'{person.first_name} {person.surname}' for person in self.signed_by.all().order_by('first_name')])
+        return ', '.join(
+            [f'{person.first_name} {person.surname}' for person in self.signed_by.all().order_by('first_name')])
 
     def __str__(self):
         return f'{self.project}'
@@ -160,14 +161,19 @@ class License(CreateModifyOn):
         return f'{self.name}'
 
 
-class Medium(AbstractProjectDueReceivedDate):
-    author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
+def medium_file_rename(instance, filename):
+    return f'grant_management/Medium/Project-{instance.project.id:04}-{filename}'
+
+
+class Medium(models.Model):
+    project = models.ForeignKey(Project, help_text='Project that this medium belongs to')
+    author = models.ForeignKey(PhysicalPerson, help_text='Person who took the photo',
                                on_delete=models.PROTECT)
-    license = models.ForeignKey(License, help_text='Type of license',
+    license = models.ForeignKey(License, help_text='License',
                                 on_delete=models.PROTECT)
     copyright = models.TextField(help_text='Owner of copyright', null=True, blank=True)
 
-    # TODO: add file to the media?
+    file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename)
 
     def __str__(self):
         return f'{self.project}-{self.author}'
