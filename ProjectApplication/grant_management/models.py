@@ -175,6 +175,8 @@ class Medium(models.Model):
 
     file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename)
 
+    blog_post = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to')
+
     def __str__(self):
         return f'{self.project}-{self.author}'
 
