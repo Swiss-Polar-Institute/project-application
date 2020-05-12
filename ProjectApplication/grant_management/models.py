@@ -159,8 +159,9 @@ class License(CreateModifyOn):
     spdx_identifier = models.CharField(max_length=100,
                                        help_text='Identifier as per https://spdx.org/licenses/ CC-BY-NC-SA-4.0',
                                        unique=True)
-    public_text = models.TextField(help_text='Explanatory text for this license. Include the logo and URL to license text.',
-                                   null=True, blank=True)
+    public_text = models.TextField(
+        help_text='Explanatory text for this license. Include the logo and URL to license text.',
+        null=True, blank=True)
 
     def __str__(self):
         return f'{self.name}'
@@ -174,15 +175,17 @@ class Medium(models.Model):
     project = models.ForeignKey(Project, help_text='Project that this medium belongs to', on_delete=models.PROTECT)
     received_date = models.DateField(help_text='Date that the medium was received')
     photographer = models.ForeignKey(PhysicalPerson, help_text='Person who took the photo/video',
-                               on_delete=models.PROTECT)
+                                     on_delete=models.PROTECT)
     license = models.ForeignKey(License, help_text='License',
                                 on_delete=models.PROTECT, null=True, blank=True)
-    copyright = models.TextField(help_text='Owner of copyright', null=True, blank=True)
+    copyright = models.CharField(max_length=1024, help_text='Owner of copyright if it is not the photographer (e.g. institution)', null=True, blank=True)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename)
     blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to')
+    descriptive_text = models.TextField(
+        help_text='Description of this media, if provided. Where was it taken, context, etc.', null=True, blank=True)
 
     def __str__(self):
-        return f'{self.project}-{self.author}'
+        return f'{self.project}-{self.photographer}'
 
 
 class SocialNetwork(CreateModifyOn):

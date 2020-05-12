@@ -8,7 +8,7 @@
             <form action="" enctype="multipart/form-data" method="post">
                 <h3>Installments</h3>
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
-                {% include 'common/_dynamic_formset.tmpl' with form_set=installments_form %}
+                {% include 'common/_dynamic_formset.tmpl' with form_set=media_form %}
 
                 {% include 'common/_submit-button.tmpl' with value="Save Installments" name="save_installments_summaries" %}
                 {% include 'common/_cancel-button.tmpl' with value="Cancel" url=cancel_url %}

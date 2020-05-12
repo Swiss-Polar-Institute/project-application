@@ -29,9 +29,9 @@ class MediumModelForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('photographer', css_class='col-3'),
-                Div('license', css_class='col-3'),
-                Div('copyright', css_class='col-3'),
+                Div('photographer', css_class='col-4'),
+                Div('license', css_class='col-4'),
+                Div('copyright', css_class='col-4'),
                 css_class='row'
             ),
             Div(
@@ -46,9 +46,10 @@ class MediumModelForm(forms.ModelForm):
 
     class Meta:
         model = Medium
-        fields = ['project', 'received_date', 'photographer', 'license', 'copyright', 'blog_posts', 'file']
+        fields = ['project', 'received_date', 'photographer', 'license', 'copyright', 'blog_posts', 'file',
+                  'descriptive_text']
         widgets = {'due_date': XDSoftYearMonthDayPickerInput,
-                   'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
+                   'photographer': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
 
 
 class MediaFormSet(BaseInlineFormSet):
