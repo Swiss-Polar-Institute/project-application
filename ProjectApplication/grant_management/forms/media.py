@@ -2,11 +2,20 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from dal import autocomplete
 from django import forms
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms import BaseInlineFormSet, inlineformset_factory
 
-from grant_management.models import Medium
+from grant_management.models import Medium, BlogPost
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
+
+
+class BlogPostMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def label_from_instance(self, obj):
+        return obj.title
 
 
 class MediumModelForm(forms.ModelForm):
@@ -16,6 +25,15 @@ class MediumModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
+
+        initial_blog_posts = None
+        self.fields['blog_posts'] = BlogPostMultipleChoiceField(initial=initial_blog_posts,
+                                                                queryset=BlogPost.objects.all(),
+                                                                required=True,
+                                                                widget=FilteredSelectMultiple(
+                                                                    is_stacked=True,
+                                                                    verbose_name='blog posts'),
+                                                                help_text='Select')
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -35,10 +53,15 @@ class MediumModelForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('blog_posts', css_class='col-6'),
-                Div('file', css_class='row-6'),
+                Div('file', css_class='col-4'),
+                Div('received_date', css_class='col-4'),
                 css_class='row'
-            )
+            ),
+            Div(
+                Div('blog_posts', css_class='col-6'),
+                Div('descriptive_text', css_class='col-6'),
+                css_class='row'
+            ),
         )
 
     def clean(self):
@@ -48,7 +71,7 @@ class MediumModelForm(forms.ModelForm):
         model = Medium
         fields = ['project', 'received_date', 'photographer', 'license', 'copyright', 'blog_posts', 'file',
                   'descriptive_text']
-        widgets = {'due_date': XDSoftYearMonthDayPickerInput,
+        widgets = {'received_date': XDSoftYearMonthDayPickerInput,
                    'photographer': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
 
 
