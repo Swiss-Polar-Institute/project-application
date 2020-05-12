@@ -5,7 +5,7 @@ from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 
 from grant_management.models import BlogPost
-from project_core.models import Project, PhysicalPerson
+from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -32,6 +32,10 @@ class BlogPostModelForm(forms.ModelForm):
             Div(
                 Div('due_date', css_class='col-4'),
                 Div('received_date', css_class='col-4'),
+                css_class='row'
+            ),
+            Div(
+                Div('title', css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -68,7 +72,7 @@ class BlogPostModelForm(forms.ModelForm):
 
     class Meta:
         model = BlogPost
-        fields = ['project', 'due_date', 'received_date', 'text', 'author']
+        fields = ['project', 'due_date', 'received_date', 'title', 'text', 'author']
         labels = {'due_date': 'Due', 'received_date': 'Received'}
         help_texts = {'text': None, 'due_date': 'Date the blog post is due',
                       'received_date': 'Date the blog post was received'}

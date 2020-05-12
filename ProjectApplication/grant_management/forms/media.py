@@ -15,25 +15,26 @@ class BlogPostMultipleChoiceField(forms.ModelMultipleChoiceField):
         super().__init__(*args, **kwargs)
 
     def label_from_instance(self, obj):
-        return obj.title
+        return f'{obj.received_date} {obj.title}'
 
 
 class MediumModelForm(forms.ModelForm):
     FORM_NAME = 'medium'
 
     def __init__(self, *args, **kwargs):
+        project = kwargs.pop('project')
         super().__init__(*args, **kwargs)
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
 
         initial_blog_posts = None
         self.fields['blog_posts'] = BlogPostMultipleChoiceField(initial=initial_blog_posts,
-                                                                queryset=BlogPost.objects.all(),
+                                                                queryset=project.blogpost_set.all(),
                                                                 required=True,
                                                                 widget=FilteredSelectMultiple(
                                                                     is_stacked=True,
                                                                     verbose_name='blog posts'),
-                                                                help_text='Select')
+                                                                help_text='Please select which blogpost this media belongs to')
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -87,6 +88,11 @@ class MediaFormSet(BaseInlineFormSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('received_date')
+
+    def get_form_kwargs(self, index):
+        kwargs = super().get_form_kwargs(index)
+        kwargs['project'] = self.instance
+        return kwargs
 
 
 MediaInlineFormSet = inlineformset_factory(Project, Medium, form=MediumModelForm,
