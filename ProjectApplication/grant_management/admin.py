@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Media, ProjectSocialMedia,
+from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Medium, ProjectSocialMedia,
                      Publication, Dataset, LaySummaryType, BlogPost)
 
 
@@ -58,7 +58,7 @@ admin.site.register(LaySummaryType, LaySummaryTypeAdmin)
 admin.site.register(LaySummary, LaySummaryAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(License, LicenseAdmin)
-admin.site.register(Media, MediaAdmin)
+admin.site.register(Medium, MediaAdmin)
 admin.site.register(ProjectSocialMedia, ProjectSocialMediaAdmin)
 admin.site.register(Publication, PublicationAdmin)
 admin.site.register(Dataset, DatasetAdmin)

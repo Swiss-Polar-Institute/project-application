@@ -160,7 +160,7 @@ class License(CreateModifyOn):
         return f'{self.name}'
 
 
-class Media(AbstractProjectDueReceivedDate):
+class Medium(AbstractProjectDueReceivedDate):
     author = models.ForeignKey(PhysicalPerson, help_text='Person who entered this summary',
                                on_delete=models.PROTECT)
     license = models.ForeignKey(License, help_text='Type of license',
