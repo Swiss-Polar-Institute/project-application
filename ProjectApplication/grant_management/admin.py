@@ -35,8 +35,8 @@ class LicenseAdmin(admin.ModelAdmin):
     list_display = ('name', 'public_text')
 
 
-class MediaAdmin(admin.ModelAdmin):
-    list_display = ('author', 'license', 'copyright', 'project', 'due_date')
+class MediumAdmin(admin.ModelAdmin):
+    list_display = ('author', 'license', 'copyright', 'project',)
 
 
 class ProjectSocialMediaAdmin(admin.ModelAdmin):
@@ -58,7 +58,7 @@ admin.site.register(LaySummaryType, LaySummaryTypeAdmin)
 admin.site.register(LaySummary, LaySummaryAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(License, LicenseAdmin)
-admin.site.register(Medium, MediaAdmin)
+admin.site.register(Medium, MediumAdmin)
 admin.site.register(ProjectSocialMedia, ProjectSocialMediaAdmin)
 admin.site.register(Publication, PublicationAdmin)
 admin.site.register(Dataset, DatasetAdmin)
