@@ -146,7 +146,7 @@ class LaySummary(AbstractProjectDueReceivedDate):
 
 
 class BlogPost(AbstractProjectDueReceivedDate):
-    title = models.CharField(max_length=1024, help_text='Title of the blogpost')
+    title = models.CharField(max_length=1024, help_text='Title of the blogpost', null=True, blank=True)
     text = models.TextField(help_text='Blog post text', null=True, blank=True)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the blog post',
                                blank=True, null=True, on_delete=models.PROTECT)
