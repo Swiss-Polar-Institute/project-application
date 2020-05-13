@@ -67,10 +67,11 @@
                 <a class="btn btn-primary btn-sm"
                    href="{% url 'logged-grant_management-blog_posts-update' project=project.id %}">Edit</a>
             </h4>
-            {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='blog_posts' count=blog_posts_count button_text_collapsed='View blog posts' button_text_not_collapsed='Hide blog posts' template_file='grant_management/_blog_post-list.tmpl' %}
+            {% include 'grant_management/_blog_post-list.tmpl' %}
             <p></p>
             <h4>Photos and media
-                <a class="btn btn-primary btn-sm" href="{% url 'logged-grant_management-media-update' project=project.id %}">Edit</a>
+                <a class="btn btn-primary btn-sm"
+                   href="{% url 'logged-grant_management-media-update' project=project.id %}">Edit</a>
             </h4>
             {% include 'grant_management/_medium-list.tmpl' %}
             <hr>

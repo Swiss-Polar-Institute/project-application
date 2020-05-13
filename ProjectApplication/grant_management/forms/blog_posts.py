@@ -53,8 +53,14 @@ class BlogPostModelForm(forms.ModelForm):
 
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
-        text = cd.get('text', '')
         author = cd.get('author', None)
+
+        text = cd.get('text', '')
+        if text is None:
+            text = ''
+        title = cd.get('title', '')
+        if title is None:
+            title = ''
 
         errors = {}
 
@@ -66,6 +72,8 @@ class BlogPostModelForm(forms.ModelForm):
             errors['text'] = 'Please enter the text if there is an author'
         if text != '' and received_date is None:
             errors['received_date'] = 'Please enter the date received if there is text'
+        if text != '' and title == '':
+            errors['title'] = 'Please enter a title for the blog post'
 
         if errors:
             raise forms.ValidationError(errors)
