@@ -178,7 +178,9 @@ class Medium(models.Model):
                                      on_delete=models.PROTECT)
     license = models.ForeignKey(License, help_text='License',
                                 on_delete=models.PROTECT, null=True, blank=True)
-    copyright = models.CharField(max_length=1024, help_text='Owner of copyright if it is not the photographer (e.g. institution)', null=True, blank=True)
+    copyright = models.CharField(max_length=1024,
+                                 help_text='Owner of copyright if it is not the photographer (e.g. institution)',
+                                 null=True, blank=True)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename)
     blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to', blank=True)
     descriptive_text = models.TextField(
@@ -189,18 +191,20 @@ class Medium(models.Model):
 
 
 class SocialNetwork(CreateModifyOn):
-    name = models.TextField(help_text='Please enter social network title', null=False, blank=False)
+    name = models.CharField(max_length=100,
+                            help_text='Please enter social network title (e.g. Twitter, Facebook, Instagram, Blog)')
 
     def __str__(self):
         return f'{self.name}'
 
 
-class ProjectSocialMedia(CreateModifyOn):
+class ProjectSocialNetwork(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Choose related project',
                                 on_delete=models.PROTECT)
     social_network = models.ForeignKey(SocialNetwork, help_text='Choose the related social network',
                                        on_delete=models.PROTECT)
-    url = models.URLField(help_text='Web address of social media entry', null=True, blank=True)
+    url = models.URLField(help_text='Address of social media entry (e.g. https://twitter.com/SwissPolar)', null=True,
+                          blank=True)
 
     def __str__(self):
         return f'{self.project}-{self.social_network}'
@@ -209,10 +213,10 @@ class ProjectSocialMedia(CreateModifyOn):
 class Publication(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Choose related project',
                                 on_delete=models.PROTECT)
-    doi = models.TextField(help_text='DOI reference for entry', null=True, blank=True)
-    reference = models.TextField(help_text='Journal reference for entry', null=True, blank=True)
-    title = models.TextField(help_text='Publication title', null=False, blank=False)
-    date_time_published = models.DateTimeField(help_text='Date of the publication', null=True, blank=True)
+    doi = models.CharField(max_length=100, help_text='DOI reference for entry', null=True, blank=True)
+    reference = models.CharField(max_length=1000, help_text='Journal reference for entry', null=True, blank=True)
+    title = models.CharField(max_length=1000, help_text='Publication title', null=False, blank=False)
+    published_date = models.DateField(help_text='Date of the publication', null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.title)
@@ -221,10 +225,10 @@ class Publication(CreateModifyOn):
 class Dataset(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Choose related project',
                                 on_delete=models.PROTECT)
-    doi = models.TextField(help_text='DOI reference for entry', null=True, blank=True)
+    doi = models.CharField(max_length=100, help_text='DOI reference for entry', null=True, blank=True)
     url = models.URLField(help_text='Web address for entry', null=True, blank=True)
-    title = models.TextField(help_text='Dataset title', null=False, blank=False)
-    date_published = models.DateField(help_text='Date of publication', null=True, blank=True)
+    title = models.CharField(max_length=1000, help_text='Dataset title', null=False, blank=False)
+    published_date = models.DateField(help_text='Date of publication', null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.title)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Medium, ProjectSocialMedia,
+from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Medium, ProjectSocialNetwork,
                      Publication, Dataset, LaySummaryType, BlogPost)
 
 
@@ -39,16 +39,16 @@ class MediumAdmin(admin.ModelAdmin):
     list_display = ('photographer', 'license', 'copyright', 'project',)
 
 
-class ProjectSocialMediaAdmin(admin.ModelAdmin):
+class ProjectSocialNetworkAdmin(admin.ModelAdmin):
     list_display = ('project', 'social_network', 'url')
 
 
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('project', 'doi', 'reference', 'title', 'date_time_published')
+    list_display = ('project', 'doi', 'reference', 'title', 'published_date')
 
 
 class DatasetAdmin(admin.ModelAdmin):
-    list_display = ('project', 'doi', 'url', 'title', 'date_published')
+    list_display = ('project', 'doi', 'url', 'title', 'published_date')
 
 
 admin.site.register(GrantAgreement, GrantAgreementAdmin)
@@ -59,6 +59,6 @@ admin.site.register(LaySummary, LaySummaryAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Medium, MediumAdmin)
-admin.site.register(ProjectSocialMedia, ProjectSocialMediaAdmin)
+admin.site.register(ProjectSocialNetwork, ProjectSocialNetworkAdmin)
 admin.site.register(Publication, PublicationAdmin)
 admin.site.register(Dataset, DatasetAdmin)
