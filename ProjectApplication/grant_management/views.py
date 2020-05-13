@@ -181,11 +181,10 @@ def grant_management_project_url(kwargs):
 
 class GrantManagementUpdateView(TemplateView):
     def __init__(self, *args, **kwargs):
-        self._breadcrumb_name = kwargs.pop('breadcrumb_name')
-        self._formset_name = kwargs.pop('formset_name')
         self._inline_formset = kwargs.pop('inline_formset')
-        self.template_name = kwargs.pop('template_name')
         self._human_type = kwargs.pop('human_type')
+
+        self.template_name = 'grant_management/generic-formset.tmpl'
 
         super().__init__(*args, **kwargs)
 
@@ -198,15 +197,17 @@ class GrantManagementUpdateView(TemplateView):
 
         context['project'] = project
 
-        context.update(basic_context_data_grant_agreement(project, self._breadcrumb_name))
+        context.update(basic_context_data_grant_agreement(project, self._human_type.capitalize()))
 
-        context[self._formset_name] = self._inline_formset(prefix=self._formset_name, instance=context['project'])
+        context['FORM_SET'] = self._inline_formset(prefix='FORM_SET', instance=context['project'])
+        context['title'] = self._human_type.capitalize()
+        context['save_text'] = f'Save {self._human_type.title()}'
 
         return context
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        forms = self._inline_formset(request.POST, request.FILES, prefix=self._formset_name,
+        forms = self._inline_formset(request.POST, request.FILES, prefix='FORM_SET',
                                      instance=context['project'])
 
         if forms.is_valid():
@@ -216,7 +217,7 @@ class GrantManagementUpdateView(TemplateView):
 
         messages.error(request, f'{self._human_type} not saved. Verify errors in the form')
 
-        context[self._formset_name] = forms
+        context['FORM_SET'] = forms
 
         return render(request, self.template_name, context)
 
@@ -224,32 +225,23 @@ class GrantManagementUpdateView(TemplateView):
 class BlogPostsUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
-                         breadcrumb_name='Blog posts',
-                         formset_name=BlogPostsFormSet.FORM_NAME,
                          inline_formset=BlogPostsInlineFormSet,
-                         template_name='grant_management/blog_posts-form.tmpl',
-                         human_type='Blog posts'
+                         human_type='blog posts'
                          )
 
 
 class LaySummariesUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
-                         breadcrumb_name='Lay summaries',
-                         formset_name=LaySummariesFormSet.FORM_NAME,
                          inline_formset=LaySummariesInlineFormSet,
-                         template_name='grant_management/lay_summaries-form.tmpl',
-                         human_type='Lay summaries'
+                         human_type='lay summaries'
                          )
 
 
 class DatasetUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
-                         breadcrumb_name='Data',
-                         formset_name=DatasetsFormSet.FORM_NAME,
                          inline_formset=DatasetInlineFormSet,
-                         template_name='grant_management/dataset-form.tmpl',
                          human_type='Data'
                          )
 
@@ -257,10 +249,7 @@ class DatasetUpdateView(GrantManagementUpdateView):
 class MediaUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
-                         breadcrumb_name='Media',
-                         formset_name=MediaFormSet.FORM_NAME,
                          inline_formset=MediaInlineFormSet,
-                         template_name='grant_management/media-form.tmpl',
                          human_type='Media'
                          )
 
@@ -268,10 +257,7 @@ class MediaUpdateView(GrantManagementUpdateView):
 class InstallmentsUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
-                         breadcrumb_name='Installments',
-                         formset_name=InstallmentsFormSet.FORM_NAME,
                          inline_formset=InstallmentsInlineFormSet,
-                         template_name='grant_management/installments-form.tmpl',
                          human_type='Installments'
                          )
 
@@ -279,10 +265,7 @@ class InstallmentsUpdateView(GrantManagementUpdateView):
 class ScientificReportsUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
-                         breadcrumb_name='Scientific reports',
-                         formset_name=ReportsFormSet.FORM_NAME,
                          inline_formset=ScientificReportsInlineFormSet,
-                         template_name='grant_management/scientific_reports-form.tmpl',
                          human_type='Scientific reports'
                          )
 

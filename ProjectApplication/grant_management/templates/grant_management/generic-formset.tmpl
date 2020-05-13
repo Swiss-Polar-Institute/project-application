@@ -4,13 +4,13 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            {% include 'grant_management/_project_header-detail.tmpl' with project=project %}
+            {% include 'grant_management/_project_header-detail.tmpl' %}
             <form action="" enctype="multipart/form-data" method="post">
-                <h3>Lay summaries</h3>
+                <h3>{{ title }}</h3>
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
-                {% include 'common/_dynamic_formset.tmpl' with form_set=lay_summaries_form %}
+                {% include 'common/_dynamic_formset.tmpl' with form_set=FORM_SET %}
 
-                {% include 'common/_submit-button.tmpl' with value="Save Lay Summaries" name="save_lay_summaries" %}
+                {% include 'common/_submit-button.tmpl' with value=save_text %}
                 {% include 'common/_cancel-button.tmpl' with value="Cancel" url=cancel_url %}
             </form>
             <p></p>
