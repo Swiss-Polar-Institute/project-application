@@ -34,6 +34,8 @@
                 if (elem.attr("for")) elem.attr("for", elem.attr("for").replace(idRegex, replacement));
                 if (elem.attr('id')) elem.attr('id', elem.attr('id').replace(idRegex, replacement));
                 if (elem.attr('name')) elem.attr('name', elem.attr('name').replace(idRegex, replacement));
+
+                if (elem.attr('data-select2-id')) elem.attr('data-select2-id', elem.attr('data-select2-id').replace(idRegex, replacement));   // SPI
             },
 
             hasChildElements = function(row) {

@@ -97,6 +97,34 @@
         $(row).find("div.card-header").remove();
     }
 
+    function setup_old_fields_completion_fields(row) {
+        // What's happening here is the result of misery of different parts (half) interacting
+        // select2 is used for finding authors, photographers, etc. jquery.formset.js has a small modification
+        // (search for SPI in jquery.formset.js) so the template and the added new has the correct data-select2-id
+
+        // select2 documentation says that before copying an element needs to be destroyed but this is not supported
+        // by jquery.formset.js at the moment.
+
+        // When a row is created by jquery.formset.js the original photographer is then converted to a non-select2
+        // field. Here it's converted back to a photographer, but then the added row is converted to a non-select2.
+        // Then it's added again.
+
+        // This code needs to be changed to be generalised a bit more and/or jquery.formset.js fixed in different
+        // ways how is interacting with select2.
+
+        $(document).find('.modelselect2').each(function (index, value) {
+            let id = value.id;
+            if (id.includes('photographer') || id.includes('author')) {
+                $(value).select2({
+                    ajax: {
+                        url: '/logged/autocomplete/physical_people',
+                        dataType: 'json'
+                    }
+                });
+            }
+        });
+    }
+
     {# This variable needs to be "var" (or nothing) but not const or let. The _dynamic_formset.tmpl can be included #}
     {# multiple times in the samge page. #}
     var jQueryForFormset = $.noConflict(true);
@@ -118,6 +146,7 @@
                 clean_help_text_errors(row);
                 clean_combobox_fields(row);
                 clean_card(row);
+                setup_old_fields_completion_fields(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
