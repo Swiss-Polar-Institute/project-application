@@ -346,53 +346,15 @@ class DatasetUpdateView(UpdateView):
                          )
 
 
-class MediaUpdateView(TemplateView):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['cancel_url'] = grant_management_project_url(kwargs)
-
-        project = Project.objects.get(id=kwargs['project'])
-
-        context['project'] = project
-
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.key_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                                 {'name': 'Media'}]
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        context[MediaFormSet.FORM_NAME] = MediaInlineFormSet(
-            prefix=MediaFormSet.FORM_NAME,
-            instance=context['project'])
-
-        return render(request, 'grant_management/media-form.tmpl', context)
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        installments_form = MediaInlineFormSet(request.POST, request.FILES,
-                                               prefix=MediaFormSet.FORM_NAME,
-                                               instance=context['project'])
-
-        if installments_form.is_valid():
-            installments_form.save()
-            messages.success(request, 'Media saved')
-            return redirect(grant_management_project_url(kwargs))
-
-        messages.error(request, 'Media not saved. Verify errors in the form')
-
-        context[MediaFormSet.FORM_NAME] = installments_form
-
-        return render(request, 'grant_management/media-form.tmpl', context)
+class MediaUpdateView(UpdateView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs,
+                         breadcrumb_name='Media',
+                         formset_name=MediaFormSet.FORM_NAME,
+                         inline_formset=MediaInlineFormSet,
+                         template_name='grant_management/media-form.tmpl',
+                         human_type='Media'
+                         )
 
 
 class InstallmentsUpdateView(TemplateView):
