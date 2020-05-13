@@ -13,6 +13,7 @@ from grant_management.forms.project_basic_information import ProjectBasicInforma
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
 from grant_management.models import GrantAgreement
 from project_core.models import Project
+from .forms.dataset import DatasetsFormSet, DatasetInlineFormSet
 from .forms.media import MediaInlineFormSet, MediaFormSet
 from .forms.project import ProjectForm
 
@@ -284,6 +285,55 @@ class LaySummariesUpdateView(TemplateView):
         return render(request, 'grant_management/lay_summaries-form.tmpl', context)
 
 
+class DatasetUpdateView(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['cancel_url'] = grant_management_project_url(kwargs)
+
+        project = Project.objects.get(id=kwargs['project'])
+
+        context['project'] = project
+
+        context.update({'active_section': 'grant_management',
+                        'active_subsection': 'project-list',
+                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
+                                 {'name': f'Project detail ({project.key_pi()})',
+                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
+                                 {'name': 'Data'}]
+
+        return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        context[DatasetsFormSet.FORM_NAME] = DatasetInlineFormSet(
+            prefix=DatasetsFormSet.FORM_NAME,
+            instance=context['project'])
+
+        return render(request, 'grant_management/dataset-form.tmpl', context)
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+
+        datasets_form = DatasetInlineFormSet(request.POST, request.FILES,
+                                             prefix=DatasetsFormSet.FORM_NAME,
+                                             instance=context['project'])
+
+        if datasets_form.is_valid():
+            datasets_form.save()
+            messages.success(request, 'Datasets saved')
+            return redirect(grant_management_project_url(kwargs))
+
+        messages.error(request, 'Datasets not saved. Verify errors in the form')
+
+        context[DatasetsFormSet.FORM_NAME] = datasets_form
+
+        return render(request, 'grant_management/dataset-form.tmpl', context)
+
+
 class MediaUpdateView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -318,8 +368,8 @@ class MediaUpdateView(TemplateView):
         context = self.get_context_data(**kwargs)
 
         installments_form = MediaInlineFormSet(request.POST, request.FILES,
-                                                      prefix=MediaFormSet.FORM_NAME,
-                                                      instance=context['project'])
+                                               prefix=MediaFormSet.FORM_NAME,
+                                               instance=context['project'])
 
         if installments_form.is_valid():
             installments_form.save()

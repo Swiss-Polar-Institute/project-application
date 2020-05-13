@@ -1,0 +1,46 @@
+{% with datasets=project.dataset_set.all %}
+    <table id="datasets_table" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Published date</th>
+            <th>Title</th>
+            <th>URL</th>
+            <th>DOI</th>
+        </tr>
+        </thead>
+        {% for dataset in datasets %}
+            <tr>
+                <td data-sort="{{ dataset.published_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=dataset.published_date %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=dataset.title %}</td>
+                <td>{% if dataset.url %}
+                    <a href="{{ dataset.url }}">{{ dataset.url|truncatechars:80 }}</a>
+                {% else %}
+                    -
+                {% endif %}
+                <td>{% include 'common/_value-or-dash.tmpl' with value=dataset.doi %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#datasets_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                    "language": {
+                        "zeroRecords": "No data has been created"
+                    },
+                    "columns": [
+                        {"width": "15%"},
+                        {"width": "55%"},
+                        {"width": "15%"},
+                        {"width": "15%"}
+                    ],
+                }
+            );
+        });
+    </script>
+{% endwith %}
