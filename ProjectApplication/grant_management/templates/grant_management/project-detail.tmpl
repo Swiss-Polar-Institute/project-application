@@ -82,7 +82,7 @@
             <h4>Publications <a class="btn btn-primary btn-sm"
                                 href="{% url 'logged-grant_management-publications-update' project=project.id %}">Edit</a>
             </h4>
-
+            {% include 'grant_management/_publication-list.tmpl' %}
             <hr>
             {#            {% include 'comments/_comments-attachments.tmpl' %}#}
         </div>
