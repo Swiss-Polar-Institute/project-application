@@ -46,14 +46,11 @@ class ScientificReportItemModelForm(ReportItemModelForm):
 
 
 class ReportsFormSet(BaseInlineFormSet):
-    FORM_NAME = 'scientific_reports_form'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_id = ReportsFormSet.FORM_NAME
 
     def get_queryset(self):
         return super().get_queryset().order_by('received_date')

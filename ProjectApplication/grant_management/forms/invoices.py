@@ -197,7 +197,9 @@ class InvoiceItemModelForm(forms.ModelForm):
                 'Invoice cannot be sent for payment if the internal type summary has not been received')
 
         if amount and installment and self.instance:
-            total_amount_invoices_for_installment = Invoice.objects.filter(installment=installment).exclude(id=self.instance.id).aggregate(Sum('amount'))['amount__sum']
+            total_amount_invoices_for_installment = \
+            Invoice.objects.filter(installment=installment).exclude(id=self.instance.id).aggregate(Sum('amount'))[
+                'amount__sum']
             total_amount_invoices_for_installment = total_amount_invoices_for_installment or 0
 
             if sum:
@@ -271,7 +273,6 @@ class InvoicesFormSet(BaseInlineFormSet):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_id = InvoicesFormSet.FORM_NAME
 
     def get_queryset(self):
         return super().get_queryset().order_by('received_date')

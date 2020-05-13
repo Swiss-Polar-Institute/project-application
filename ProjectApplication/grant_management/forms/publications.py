@@ -3,14 +3,12 @@ from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 
-from grant_management.models import Dataset
+from grant_management.models import Publication
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
-class DatasetModelForm(forms.ModelForm):
-    FORM_NAME = 'dataset_form'
-
+class PublicationModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -33,7 +31,7 @@ class DatasetModelForm(forms.ModelForm):
             ),
             Div(
                 Div('doi', css_class='col-6'),
-                Div('url', css_class='col-6'),
+                Div('reference', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -46,28 +44,25 @@ class DatasetModelForm(forms.ModelForm):
         cd = super().clean()
 
     class Meta:
-        model = Dataset
-        fields = ['project', 'doi', 'url', 'title', 'published_date']
+        model = Publication
+        fields = ['project', 'doi', 'reference', 'title', 'published_date']
         widgets = {
             'published_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput,
         }
 
 
-class DatasetsFormSet(BaseInlineFormSet):
-    FORM_NAME = 'datasets_form'
-
+class PublicationsFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_id = DatasetsFormSet.FORM_NAME
 
     def get_queryset(self):
         return super().get_queryset().order_by('published_date')
 
 
-DatasetInlineFormSet = inlineformset_factory(Project, Dataset, form=DatasetModelForm,
-                                             formset=DatasetsFormSet,
-                                             min_num=1, extra=0, can_delete=True)
+PublicationsInlineFormSet = inlineformset_factory(Project, Publication, form=PublicationModelForm,
+                                                 formset=PublicationsFormSet,
+                                                 min_num=1, extra=0, can_delete=True)

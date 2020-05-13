@@ -13,9 +13,10 @@ from grant_management.forms.project_basic_information import ProjectBasicInforma
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet, ReportsFormSet
 from grant_management.models import GrantAgreement
 from project_core.models import Project
-from .forms.dataset import DatasetsFormSet, DatasetInlineFormSet
+from .forms.datasets import DatasetsFormSet, DatasetInlineFormSet
 from .forms.media import MediaInlineFormSet, MediaFormSet
 from .forms.project import ProjectForm
+from .forms.publications import PublicationsInlineFormSet
 
 
 class ProjectList(TemplateView):
@@ -242,15 +243,21 @@ class DatasetUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          inline_formset=DatasetInlineFormSet,
-                         human_type='Data'
+                         human_type='data'
                          )
 
+class PublicationsUpdateView(GrantManagementUpdateView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs,
+                         inline_formset=PublicationsInlineFormSet,
+                         human_type='publications'
+                         )
 
 class MediaUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          inline_formset=MediaInlineFormSet,
-                         human_type='Media'
+                         human_type='media'
                          )
 
 
@@ -258,7 +265,7 @@ class InstallmentsUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          inline_formset=InstallmentsInlineFormSet,
-                         human_type='Installments'
+                         human_type='installments'
                          )
 
 
@@ -266,7 +273,7 @@ class ScientificReportsUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          inline_formset=ScientificReportsInlineFormSet,
-                         human_type='Scientific reports'
+                         human_type='scientific reports'
                          )
 
 

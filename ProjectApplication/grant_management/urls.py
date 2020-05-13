@@ -49,6 +49,10 @@ urlpatterns = [
          grant_management.views.DatasetUpdateView.as_view(),
          name='logged-grant_management-data-update'),
 
+    path('logged/grant-management/project/<int:project>/publications/update/',
+         grant_management.views.PublicationsUpdateView.as_view(),
+         name='logged-grant_management-publications-update'),
+
     path('lay-summaries/<int:call>/raw/',
          grant_management.views.LaySummariesRaw.as_view(),
          name='lay-summaries-raw'),

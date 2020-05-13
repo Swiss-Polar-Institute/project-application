@@ -19,8 +19,6 @@ class InstallmentTypeWithDescription(ModelChoiceField):
 
 
 class InstallmentModelForm(forms.ModelForm):
-    FORM_NAME = 'installment'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -114,14 +112,11 @@ class InstallmentModelForm(forms.ModelForm):
 
 
 class InstallmentsFormSet(BaseInlineFormSet):
-    FORM_NAME = 'installments_form'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_id = InstallmentsFormSet.FORM_NAME
 
     def get_queryset(self):
         return super().get_queryset().order_by('due_date')

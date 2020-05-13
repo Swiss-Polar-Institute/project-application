@@ -10,8 +10,6 @@ from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
 class BlogPostModelForm(forms.ModelForm):
-    FORM_NAME = 'blog_post'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -93,14 +91,11 @@ class BlogPostModelForm(forms.ModelForm):
 
 
 class BlogPostsFormSet(BaseInlineFormSet):
-    FORM_NAME = 'blog_posts_form'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_id = BlogPostsFormSet.FORM_NAME
 
     def get_queryset(self):
         return super().get_queryset().order_by('due_date')

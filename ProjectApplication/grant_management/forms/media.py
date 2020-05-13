@@ -23,8 +23,6 @@ class BlogPostCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
 
 
 class MediumModelForm(forms.ModelForm):
-    FORM_NAME = 'medium'
-
     def __init__(self, *args, **kwargs):
         project = kwargs.pop('project')
         super().__init__(*args, **kwargs)
@@ -78,14 +76,11 @@ class MediumModelForm(forms.ModelForm):
 
 
 class MediaFormSet(BaseInlineFormSet):
-    FORM_NAME = 'media_form'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_id = MediaFormSet.FORM_NAME
 
     def get_queryset(self):
         return super().get_queryset().order_by('received_date')

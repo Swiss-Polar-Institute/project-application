@@ -15,8 +15,6 @@ class LaySummaryTypeWithDescription(ModelChoiceField):
 
 
 class LaySummaryModelForm(forms.ModelForm):
-    FORM_NAME = 'lay_summary'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -101,14 +99,11 @@ class LaySummaryModelForm(forms.ModelForm):
 
 
 class LaySummariesFormSet(BaseInlineFormSet):
-    FORM_NAME = 'lay_summaries_form'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-        self.helper.form_id = LaySummariesFormSet.FORM_NAME
 
     def get_queryset(self):
         return super().get_queryset().order_by('due_date')

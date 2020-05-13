@@ -75,9 +75,13 @@
             </h4>
             {% include 'grant_management/_medium-list.tmpl' %}
             <p></p>
-            <h4>Datasets <a clasS="btn btn-primary btn-sm"
+            <h4>Datasets <a class="btn btn-primary btn-sm"
                             href="{% url 'logged-grant_management-data-update' project=project.id %}">Edit</a></h4>
             {% include 'grant_management/_dataset-list.tmpl' %}
+            <p></p>
+            <h4>Publications <a class="btn btn-primary btn-sm"
+                                href="{% url 'logged-grant_management-publications-update' project=project.id %}">Edit</a>
+            </h4>
 
             <hr>
             {#            {% include 'comments/_comments-attachments.tmpl' %}#}
