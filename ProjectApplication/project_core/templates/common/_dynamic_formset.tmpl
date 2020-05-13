@@ -114,7 +114,7 @@
 
         $(document).find('.modelselect2').each(function (index, value) {
             let id = value.id;
-            if (id.includes('photographer') || id.includes('author')) {
+            if (id.includes('photographer') || id.includes('author') || id.includes('approved_by')) {
                 $(value).select2({
                     ajax: {
                         url: '/logged/autocomplete/physical_people',
