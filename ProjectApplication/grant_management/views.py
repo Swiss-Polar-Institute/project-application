@@ -10,7 +10,7 @@ from grant_management.forms.installments import InstallmentsFormSet, Installment
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
 from grant_management.forms.lay_summaries import LaySummariesFormSet, LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
-from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
+from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet, ReportsFormSet
 from grant_management.models import GrantAgreement
 from project_core.models import Project
 from .forms.dataset import DatasetsFormSet, DatasetInlineFormSet
@@ -406,55 +406,15 @@ class InstallmentsUpdateView(TemplateView):
         return render(request, 'grant_management/installments-form.tmpl', context)
 
 
-class ScientificReportsUpdateView(TemplateView):
-    FORM_NAME = 'scientific_reports_form'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['cancel_url'] = grant_management_project_url(kwargs)
-
-        project = Project.objects.get(id=kwargs['project'])
-
-        context['project'] = project
-
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.key_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                                 {'name': 'Scientific reports'}]
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        context[ScientificReportsUpdateView.FORM_NAME] = ScientificReportsInlineFormSet(
-            prefix=ScientificReportsUpdateView.FORM_NAME,
-            instance=context['project'])
-
-        return render(request, 'grant_management/scientific_reports-form.tmpl', context)
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        scientific_reports_form = ScientificReportsInlineFormSet(request.POST, request.FILES,
-                                                                 prefix=ScientificReportsUpdateView.FORM_NAME,
-                                                                 instance=context['project'])
-
-        if scientific_reports_form.is_valid():
-            scientific_reports_form.save()
-            messages.success(request, 'Scientific reports saved')
-            return redirect(grant_management_project_url(kwargs))
-
-        messages.error(request, 'Scientific reports not saved. Verify errors in the form')
-
-        context[ScientificReportsUpdateView.FORM_NAME] = scientific_reports_form
-
-        return render(request, 'grant_management/scientific_reports-form.tmpl', context)
+class ScientificReportsUpdateView(UpdateView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs,
+                         breadcrumb_name='Scientific reports',
+                         formset_name=ReportsFormSet.FORM_NAME,
+                         inline_formset=ScientificReportsInlineFormSet,
+                         template_name='grant_management/scientific_reports-form.tmpl',
+                         human_type='Scientific reports'
+                         )
 
 
 class FinancesViewUpdate(TemplateView):

@@ -46,7 +46,7 @@ class ScientificReportItemModelForm(ReportItemModelForm):
 
 
 class ReportsFormSet(BaseInlineFormSet):
-    FORM_NAME = 'reports_form'
+    FORM_NAME = 'scientific_reports_form'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

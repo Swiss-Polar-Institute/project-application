@@ -13,7 +13,7 @@ class AbstractReportItemModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        final_fields = ['approved_by', 'approval_date']
+        final_fields = ['approval_date']
 
         for field_name, field in self.fields.items():
             if type(field) == forms.DateField:
