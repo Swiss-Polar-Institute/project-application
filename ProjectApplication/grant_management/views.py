@@ -216,7 +216,7 @@ class GrantManagementUpdateView(TemplateView):
             messages.success(request, f'{self._human_type} saved')
             return redirect(grant_management_project_url(kwargs))
 
-        messages.error(request, f'{self._human_type} not saved. Verify errors in the form')
+        messages.error(request, f'{self._human_type.capitalize()} not saved. Verify errors in the form')
 
         context['FORM_SET'] = forms
 
