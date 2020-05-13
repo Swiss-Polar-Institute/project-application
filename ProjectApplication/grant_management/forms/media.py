@@ -34,6 +34,7 @@ class MediumModelForm(forms.ModelForm):
         self.fields['blog_posts'] = BlogPostMultipleChoiceField(
             queryset=project.blogpost_set.all().order_by('received_date'),
             widget=CheckboxSelectMultiple,
+            required=False,
             help_text='Please select the relevant blog posts for this media file')
 
         self.helper = FormHelper()
