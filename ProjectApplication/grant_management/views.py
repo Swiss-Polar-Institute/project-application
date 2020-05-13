@@ -103,14 +103,7 @@ class ProjectBasicInformationUpdateView(SuccessMessageMixin, UpdateView):
 
         project = Project.objects.get(id=self.kwargs['pk'])
 
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.key_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                                 {'name': 'Project basic information Edit'}]
+        context.update(basic_context_data_grant_agreement(project, 'Edit project basic information'))
 
         context['project'] = project
         return context
@@ -119,7 +112,7 @@ class ProjectBasicInformationUpdateView(SuccessMessageMixin, UpdateView):
         return reverse('logged-grant_management-project-detail', kwargs={'pk': self.object.pk})
 
 
-def context_data_grant_greement(project):
+def basic_context_data_grant_agreement(project, active_page):
     context = {'active_section': 'grant_management',
                'active_subsection': 'project-list',
                'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'}
@@ -127,9 +120,7 @@ def context_data_grant_greement(project):
     context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
                              {'name': f'Project detail ({project.key_pi()})',
                               'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                             {'name': 'Grant agreement'}]
-
-    context['project'] = project
+                             {'name': active_page}]
 
     return context
 
@@ -144,8 +135,9 @@ class GrantAgreementAddView(SuccessMessageMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         project = Project.objects.get(id=self.kwargs['project'])
+        context['project'] = project
 
-        context.update(context_data_grant_greement(project))
+        context.update(basic_context_data_grant_agreement(project, 'Grant agreement'))
 
         return context
 
@@ -168,8 +160,9 @@ class GrantAgreementUpdateView(SuccessMessageMixin, UpdateView):
         context = super().get_context_data(**kwargs)
 
         project = context['grantagreement'].project
+        context['project'] = project
 
-        context.update(context_data_grant_greement(project))
+        context.update(basic_context_data_grant_agreement(project, 'Grant agreement'))
 
         return context
 
@@ -205,15 +198,7 @@ class GrantManagementUpdateView(TemplateView):
 
         context['project'] = project
 
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        context['breadcrumb'] = [
-            {'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-            {'name': f'Project detail ({project.key_pi()})',
-             'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-            {'name': self._breadcrumb_name}]
+        context.update(basic_context_data_grant_agreement(project, self._breadcrumb_name))
 
         context[self._formset_name] = self._inline_formset(prefix=self._formset_name, instance=context['project'])
 
@@ -314,15 +299,7 @@ class FinancesViewUpdate(TemplateView):
 
         context['cancel_url'] = grant_management_project_url(kwargs)
 
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.key_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail',
-                                                 kwargs={'pk': project.id})},
-                                 {'name': 'Finances'}]
+        context.update(basic_context_data_grant_agreement(project, 'Finances'))
 
         return context
 
