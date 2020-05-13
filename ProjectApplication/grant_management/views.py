@@ -357,53 +357,15 @@ class MediaUpdateView(UpdateView):
                          )
 
 
-class InstallmentsUpdateView(TemplateView):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['cancel_url'] = grant_management_project_url(kwargs)
-
-        project = Project.objects.get(id=kwargs['project'])
-
-        context['project'] = project
-
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.key_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                                 {'name': 'Installments'}]
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        context[InstallmentsFormSet.FORM_NAME] = InstallmentsInlineFormSet(
-            prefix=InstallmentsFormSet.FORM_NAME,
-            instance=context['project'])
-
-        return render(request, 'grant_management/installments-form.tmpl', context)
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        installments_form = InstallmentsInlineFormSet(request.POST, request.FILES,
-                                                      prefix=InstallmentsFormSet.FORM_NAME,
-                                                      instance=context['project'])
-
-        if installments_form.is_valid():
-            installments_form.save()
-            messages.success(request, 'Installments saved')
-            return redirect(grant_management_project_url(kwargs))
-
-        messages.error(request, 'Installments not saved. Verify errors in the form')
-
-        context[InstallmentsFormSet.FORM_NAME] = installments_form
-
-        return render(request, 'grant_management/installments-form.tmpl', context)
+class InstallmentsUpdateView(UpdateView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs,
+                         breadcrumb_name='Installments',
+                         formset_name=InstallmentsFormSet.FORM_NAME,
+                         inline_formset=InstallmentsInlineFormSet,
+                         template_name='grant_management/installments-form.tmpl',
+                         human_type='Installments'
+                         )
 
 
 class ScientificReportsUpdateView(UpdateView):
