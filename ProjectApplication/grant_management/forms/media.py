@@ -31,18 +31,10 @@ class MediumModelForm(forms.ModelForm):
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
 
-        initial_blog_posts = None
-        self.fields['blog_posts'] = BlogPostMultipleChoiceField(queryset=project.blogpost_set.all(),
-                                                                widget=CheckboxSelectMultiple,
-                                                                help_text='Please select the relevant blog posts for this media file')
-        # self.fields['blog_posts'].widget = CheckboxSelectMultiple()
-        # self.fields['blog_posts'] = BlogPostMultipleChoiceField(initial=initial_blog_posts,
-        #                                                         queryset=project.blogpost_set.all(),
-        #                                                         required=True,
-        #                                                         widget=FilteredSelectMultiple(
-        #                                                             is_stacked=True,
-        #                                                             verbose_name='blog posts'),
-        #                                                         help_text='Please select which blogpost this media belongs to')
+        self.fields['blog_posts'] = BlogPostMultipleChoiceField(
+            queryset=project.blogpost_set.all().order_by('received_date'),
+            widget=CheckboxSelectMultiple,
+            help_text='Please select the relevant blog posts for this media file')
 
         self.helper = FormHelper()
         self.helper.form_tag = False
