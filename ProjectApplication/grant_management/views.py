@@ -186,57 +186,6 @@ def grant_management_project_url(kwargs):
     return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['project']})
 
 
-class BlogPostsUpdateView(TemplateView):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['cancel_url'] = grant_management_project_url(kwargs)
-
-        project = Project.objects.get(id=kwargs['project'])
-
-        context['project'] = project
-
-        context[BlogPostsFormSet.FORM_NAME] = BlogPostsInlineFormSet(prefix=BlogPostsFormSet.FORM_NAME,
-                                                                     instance=project)
-
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.key_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                                 {'name': 'Blog Posts'}]
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        context[BlogPostsFormSet.FORM_NAME] = BlogPostsInlineFormSet(prefix=BlogPostsFormSet.FORM_NAME,
-                                                                     instance=context['project'])
-
-        return render(request, 'grant_management/blog_posts-form.tmpl', context)
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        blog_posts_form = BlogPostsInlineFormSet(request.POST, request.FILES,
-                                                 prefix=BlogPostsFormSet.FORM_NAME,
-                                                 instance=context['project'])
-
-        if blog_posts_form.is_valid():
-            blog_posts_form.save()
-            messages.success(request, 'Blog posts saved')
-            return redirect(grant_management_project_url(kwargs))
-
-        messages.error(request, 'Blog posts not saved. Verify errors in the form')
-
-        context[BlogPostsFormSet.FORM_NAME] = blog_posts_form
-
-        return render(request, 'grant_management/blog_posts-form.tmpl', context)
-
-
 class GrantManagementUpdateView(TemplateView):
     def __init__(self, *args, **kwargs):
         self._breadcrumb_name = kwargs.pop('breadcrumb_name')
@@ -285,6 +234,17 @@ class GrantManagementUpdateView(TemplateView):
         context[self._formset_name] = forms
 
         return render(request, self.template_name, context)
+
+
+class BlogPostsUpdateView(GrantManagementUpdateView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs,
+                         breadcrumb_name='Blog posts',
+                         formset_name=BlogPostsFormSet.FORM_NAME,
+                         inline_formset=BlogPostsInlineFormSet,
+                         template_name='grant_management/blog_posts-form.tmpl',
+                         human_type='Blog posts'
+                         )
 
 
 class LaySummariesUpdateView(GrantManagementUpdateView):
