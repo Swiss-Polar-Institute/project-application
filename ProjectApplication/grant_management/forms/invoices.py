@@ -194,7 +194,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         if sent_for_payment_date and LaySummary.objects.filter(project=project).filter(
                 lay_summary_type=original_lay_summary_type).exists() is False:
             sent_for_payment_errors.append(
-                'Invoice cannot be sent for payment if the internal type summary has not been received')
+                'Invoice cannot be sent for payment if a lay summary has not been received')
 
         if amount and installment and self.instance:
             total_amount_invoices_for_installment = \
@@ -204,7 +204,7 @@ class InvoiceItemModelForm(forms.ModelForm):
 
             if sum:
                 if total_amount_invoices_for_installment + amount > installment.amount:
-                    errors['amount'] = 'This amount is too high for the total installment amount'
+                    errors['amount'] = 'Invoice amount is greater than the installment amount'
 
         if sent_for_payment_date is None and paid_date:
             sent_for_payment_errors.append('Please fill in sent for payment if the invoice is paid')
