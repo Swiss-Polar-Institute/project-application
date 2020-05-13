@@ -12,7 +12,7 @@
         {% for social_network in social_networks %}
             <tr>
                 <td>{{ social_network.social_network.name }}</td>
-                <td>{{ social_network.url }}</td>
+                <td><a href="{{ social_network.url }}">{{ social_network.url }}</a></td>
             </tr>
         {% endfor %}
     </table>
