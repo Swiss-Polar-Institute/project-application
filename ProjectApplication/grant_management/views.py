@@ -4,19 +4,20 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
-from grant_management.forms.blog_posts import BlogPostsFormSet, BlogPostsInlineFormSet
+from grant_management.forms.blog_posts import BlogPostsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
-from grant_management.forms.installments import InstallmentsFormSet, InstallmentsInlineFormSet
+from grant_management.forms.installments import InstallmentsInlineFormSet
 from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
-from grant_management.forms.lay_summaries import LaySummariesFormSet, LaySummariesInlineFormSet
+from grant_management.forms.lay_summaries import LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
-from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet, ReportsFormSet
+from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
 from grant_management.models import GrantAgreement
 from project_core.models import Project
-from .forms.datasets import DatasetsFormSet, DatasetInlineFormSet
-from .forms.media import MediaInlineFormSet, MediaFormSet
+from .forms.datasets import DatasetInlineFormSet
+from .forms.media import MediaInlineFormSet
 from .forms.project import ProjectForm
 from .forms.publications import PublicationsInlineFormSet
+from .forms.social_network import SocialNetworksInlineFormSet
 
 
 class ProjectList(TemplateView):
@@ -246,12 +247,14 @@ class DatasetUpdateView(GrantManagementUpdateView):
                          human_type='data'
                          )
 
+
 class PublicationsUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          inline_formset=PublicationsInlineFormSet,
                          human_type='publications'
                          )
+
 
 class MediaUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
@@ -274,6 +277,14 @@ class ScientificReportsUpdateView(GrantManagementUpdateView):
         super().__init__(*args, **kwargs,
                          inline_formset=ScientificReportsInlineFormSet,
                          human_type='scientific reports'
+                         )
+
+
+class SocialMediaUpdateView(GrantManagementUpdateView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs,
+                         inline_formset=SocialNetworksInlineFormSet,
+                         human_type='social media'
                          )
 
 

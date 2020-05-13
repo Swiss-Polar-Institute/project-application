@@ -53,6 +53,10 @@ urlpatterns = [
          grant_management.views.PublicationsUpdateView.as_view(),
          name='logged-grant_management-publications-update'),
 
+    path('logged/grant-management/project/<int:project>/social_media/update/',
+         grant_management.views.SocialMediaUpdateView.as_view(),
+         name='logged-grant_management-social-media-update'),
+
     path('lay-summaries/<int:call>/raw/',
          grant_management.views.LaySummariesRaw.as_view(),
          name='lay-summaries-raw'),

@@ -83,6 +83,11 @@
                                 href="{% url 'logged-grant_management-publications-update' project=project.id %}">Edit</a>
             </h4>
             {% include 'grant_management/_publication-list.tmpl' %}
+            <p></p>
+            <h4>Social media <a class="btn btn-primary btn-sm"
+                                href="{% url 'logged-grant_management-social-media-update' project=project.id %}">Edit</a>
+            </h4>
+            {% include 'grant_management/_social_network-list.tmpl' %}
             <hr>
             {#            {% include 'comments/_comments-attachments.tmpl' %}#}
         </div>
