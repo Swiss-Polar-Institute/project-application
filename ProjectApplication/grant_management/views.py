@@ -237,55 +237,7 @@ class BlogPostsUpdateView(TemplateView):
         return render(request, 'grant_management/blog_posts-form.tmpl', context)
 
 
-class LaySummariesUpdateView(TemplateView):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        context['cancel_url'] = grant_management_project_url(kwargs)
-
-        project = Project.objects.get(id=kwargs['project'])
-
-        context['project'] = project
-
-        context.update({'active_section': 'grant_management',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
-
-        context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.key_pi()})',
-                                  'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
-                                 {'name': 'Lay Summaries'}]
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        context[LaySummariesFormSet.FORM_NAME] = LaySummariesInlineFormSet(prefix=LaySummariesFormSet.FORM_NAME,
-                                                                           instance=context['project'])
-
-        return render(request, 'grant_management/lay_summaries-form.tmpl', context)
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        lay_summaries_form = LaySummariesInlineFormSet(request.POST, request.FILES,
-                                                       prefix=LaySummariesFormSet.FORM_NAME,
-                                                       instance=context['project'])
-
-        if lay_summaries_form.is_valid():
-            lay_summaries_form.save()
-            messages.success(request, 'Lay summaries saved')
-            return redirect(grant_management_project_url(kwargs))
-
-        messages.error(request, 'Lay summaries not saved. Verify errors in the form')
-
-        context[LaySummariesFormSet.FORM_NAME] = lay_summaries_form
-
-        return render(request, 'grant_management/lay_summaries-form.tmpl', context)
-
-
-class UpdateView(TemplateView):
+class GrantManagementUpdateView(TemplateView):
     def __init__(self, *args, **kwargs):
         self._breadcrumb_name = kwargs.pop('breadcrumb_name')
         self._formset_name = kwargs.pop('formset_name')
@@ -335,7 +287,18 @@ class UpdateView(TemplateView):
         return render(request, self.template_name, context)
 
 
-class DatasetUpdateView(UpdateView):
+class LaySummariesUpdateView(GrantManagementUpdateView):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs,
+                         breadcrumb_name='Lay summaries',
+                         formset_name=LaySummariesFormSet.FORM_NAME,
+                         inline_formset=LaySummariesInlineFormSet,
+                         template_name='grant_management/lay_summaries-form.tmpl',
+                         human_type='Lay summaries'
+                         )
+
+
+class DatasetUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          breadcrumb_name='Data',
@@ -346,7 +309,7 @@ class DatasetUpdateView(UpdateView):
                          )
 
 
-class MediaUpdateView(UpdateView):
+class MediaUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          breadcrumb_name='Media',
@@ -357,7 +320,7 @@ class MediaUpdateView(UpdateView):
                          )
 
 
-class InstallmentsUpdateView(UpdateView):
+class InstallmentsUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          breadcrumb_name='Installments',
@@ -368,7 +331,7 @@ class InstallmentsUpdateView(UpdateView):
                          )
 
 
-class ScientificReportsUpdateView(UpdateView):
+class ScientificReportsUpdateView(GrantManagementUpdateView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs,
                          breadcrumb_name='Scientific reports',
