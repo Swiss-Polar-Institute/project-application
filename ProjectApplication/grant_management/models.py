@@ -146,7 +146,7 @@ class LaySummary(AbstractProjectDueReceivedDate):
 
 
 class BlogPost(AbstractProjectDueReceivedDate):
-    title = models.CharField(max_length=1024, help_text='Title of the blogpost', null=True, blank=True)
+    title = models.CharField(max_length=1024, help_text='Title of the blog post', null=True, blank=True)
     text = models.TextField(help_text='Blog post text', null=True, blank=True)
     author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the blog post',
                                blank=True, null=True, on_delete=models.PROTECT)
@@ -192,18 +192,18 @@ class Medium(models.Model):
 
 class SocialNetwork(CreateModifyOn):
     name = models.CharField(max_length=100,
-                            help_text='Please enter social network title (e.g. Twitter, Facebook, Instagram, Blog)')
+                            help_text='Social network name (e.g. Twitter, Facebook, Instagram, Blog)')
 
     def __str__(self):
         return f'{self.name}'
 
 
 class ProjectSocialNetwork(CreateModifyOn):
-    project = models.ForeignKey(Project, help_text='Choose related project',
+    project = models.ForeignKey(Project, help_text='Project to which this social network page is related',
                                 on_delete=models.PROTECT)
-    social_network = models.ForeignKey(SocialNetwork, help_text='Choose the related social network',
+    social_network = models.ForeignKey(SocialNetwork, help_text='Social network with information about the project',
                                        on_delete=models.PROTECT)
-    url = models.URLField(help_text='Address of social media entry (e.g. https://twitter.com/SwissPolar)', null=True,
+    url = models.URLField(help_text='URL of social network (e.g. https://twitter.com/SwissPolar)', null=True,
                           blank=True)
 
     def __str__(self):
@@ -211,24 +211,24 @@ class ProjectSocialNetwork(CreateModifyOn):
 
 
 class Publication(CreateModifyOn):
-    project = models.ForeignKey(Project, help_text='Choose related project',
+    project = models.ForeignKey(Project, help_text='Project to which the publication is related',
                                 on_delete=models.PROTECT)
-    doi = models.CharField(max_length=100, help_text='DOI reference for entry', null=True, blank=True)
-    reference = models.CharField(max_length=1000, help_text='Journal reference for entry', null=True, blank=True)
-    title = models.CharField(max_length=1000, help_text='Publication title', null=False, blank=False)
-    published_date = models.DateField(help_text='Date of the publication', null=True, blank=True)
+    doi = models.CharField(max_length=100, help_text='Digital object identifier of publication', null=True, blank=True)
+    reference = models.CharField(max_length=1000, help_text='Full reference of publication', null=True, blank=True)
+    title = models.CharField(max_length=1000, help_text='Title of publication', null=False, blank=False)
+    published_date = models.DateField(help_text='Date on which the resource was published', null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.title)
 
 
 class Dataset(CreateModifyOn):
-    project = models.ForeignKey(Project, help_text='Choose related project',
+    project = models.ForeignKey(Project, help_text='Project to which is the dataset is related',
                                 on_delete=models.PROTECT)
-    doi = models.CharField(max_length=100, help_text='DOI reference for entry', null=True, blank=True)
-    url = models.URLField(help_text='Web address for entry', null=True, blank=True)
-    title = models.CharField(max_length=1000, help_text='Dataset title', null=False, blank=False)
-    published_date = models.DateField(help_text='Date of publication', null=True, blank=True)
+    doi = models.CharField(max_length=100, help_text='Digital object identifier of dataset', null=True, blank=True)
+    url = models.URLField(help_text='URL of dataset if it does not have a DOI', null=True, blank=True)
+    title = models.CharField(max_length=1000, help_text='Title of dataset', null=False, blank=False)
+    published_date = models.DateField(help_text='Date on which dataset was published', null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.title)
