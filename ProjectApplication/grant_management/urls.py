@@ -33,9 +33,17 @@ urlpatterns = [
          grant_management.views.GrantAgreementUpdateView.as_view(),
          name='logged-grant_management-grant_agreement-update'),
 
-    path('logged/grant-management/project/<int:project>/finances/update/',
-         grant_management.views.FinancesViewUpdate.as_view(),
-         name='logged-grant_management-finances-update'),
+    path('logged/grant-management/project/<int:project>/invoices/update/',
+         grant_management.views.InvoicesUpdateView.as_view(),
+         name='logged-grant_management-invoices-update'),
+
+    path('logged/grant-management/project/<int:project>/financial_reports/update/',
+         grant_management.views.FinancialReportsUpdateView.as_view(),
+         name='logged-grant_management-financial_reports-update'),
+
+    # path('logged/grant-management/project/<int:project>/finances/update/',
+    #      grant_management.views.FinancesViewUpdate.as_view(),
+    #      name='logged-grant_management-finances-update'),
 
     path('logged/grant-management/project/<int:project>/installments/update/',
          grant_management.views.InstallmentsUpdateView.as_view(),

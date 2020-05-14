@@ -15,28 +15,6 @@ class InvoiceItemFormTest(TestCase):
         self._user = database_population.create_management_user()
         self._lay_summary_original_type = database_population.create_lay_summary_original()
 
-    def test_valid_incomplete_invoice(self):
-        data = {'project': self._project,
-                'due_date': date(2020, 1, 12)
-                }
-
-        self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data, user=self._user, project=self._project)
-
-        self.assertTrue(invoice_item_form.is_valid())
-        invoice_item_form.save()
-        self.assertEqual(Invoice.objects.all().count(), 1)
-
-    def test_valid_empty_invoice_no_save(self):
-        data = {'project': self._project}
-
-        self.assertEqual(Invoice.objects.all().count(), 0)
-        invoice_item_form = InvoiceItemModelForm(data=data, user=self._user, project=self._project)
-
-        self.assertTrue(invoice_item_form.is_valid())
-        invoice_item_form.save()
-        self.assertEqual(Invoice.objects.all().count(), 0)
-
     def test_valid_complete_invoice(self):
         if settings.SKIP_S3_TESTS:
             self.skipTest('No S3 tests')

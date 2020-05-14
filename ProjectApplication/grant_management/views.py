@@ -7,7 +7,7 @@ from django.views.generic import TemplateView, DetailView, UpdateView, CreateVie
 from grant_management.forms.blog_posts import BlogPostsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.installments import InstallmentsInlineFormSet
-from grant_management.forms.invoices import InvoicesInlineFormSet, InvoicesFormSet
+from grant_management.forms.invoices import InvoicesInlineFormSet
 from grant_management.forms.lay_summaries import LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
@@ -249,6 +249,16 @@ class MediaUpdateView(GrantManagementUpdateView):
     human_type = 'media'
 
 
+class InvoicesUpdateView(GrantManagementUpdateView):
+    inline_formset = InvoicesInlineFormSet
+    human_type = 'invoices'
+
+
+class FinancialReportsUpdateView(GrantManagementUpdateView):
+    inline_formset = FinancialReportsInlineFormSet
+    human_type = 'financial reports'
+
+
 class InstallmentsUpdateView(GrantManagementUpdateView):
     inline_formset = InstallmentsInlineFormSet
     human_type = 'installments'
@@ -262,59 +272,6 @@ class ScientificReportsUpdateView(GrantManagementUpdateView):
 class SocialMediaUpdateView(GrantManagementUpdateView):
     inline_formset = SocialNetworksInlineFormSet
     human_type = 'social media'
-
-
-class FinancesViewUpdate(TemplateView):
-    FORM_NAME = 'financial_reports_form'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        project = Project.objects.get(id=kwargs['project'])
-
-        context['project'] = project
-
-        context['cancel_url'] = grant_management_project_url(kwargs)
-
-        context.update(basic_context_data_grant_agreement(project, 'Finances'))
-
-        return context
-
-    def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        context[InvoicesFormSet.FORM_NAME] = InvoicesInlineFormSet(prefix=InvoicesFormSet.FORM_NAME,
-                                                                   instance=context['project'])
-        context[FinancesViewUpdate.FORM_NAME] = FinancialReportsInlineFormSet(
-            prefix='financial_reports_form', instance=context['project'])
-
-        return render(request, 'grant_management/finances-form.tmpl', context)
-
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-
-        invoices_form = InvoicesInlineFormSet(request.POST, request.FILES,
-                                              prefix=InvoicesFormSet.FORM_NAME,
-                                              instance=context['project'],
-                                              form_kwargs={'user': request.user})
-
-        financial_reports_form = FinancialReportsInlineFormSet(request.POST, request.FILES,
-                                                               prefix='financial_reports_form',
-                                                               instance=context['project'],
-                                                               form_kwargs={'user': request.user})
-
-        if all([invoices_form.is_valid(), financial_reports_form.is_valid()]):
-            invoices_form.save()
-            financial_reports_form.save()
-            messages.success(request, 'Finance details saved')
-            return redirect(reverse('logged-grant_management-project-detail', kwargs={'pk': context['project'].id}))
-
-        messages.error(request, 'Finance details not saved. Verify errors in the forms')
-
-        context[InvoicesFormSet.FORM_NAME] = invoices_form
-        context[FinancesViewUpdate.FORM_NAME] = financial_reports_form
-
-        return render(request, 'grant_management/finances-form.tmpl', context)
 
 
 class LaySummariesRaw(TemplateView):

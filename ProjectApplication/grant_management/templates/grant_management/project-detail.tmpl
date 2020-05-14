@@ -37,12 +37,13 @@
                     {% include 'grant_management/_installment-list.tmpl' %}
                 </div>
             </div>
-            <h3>Finances <a class="btn btn-primary btn-sm"
-                            href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h3>
-            <h4>Invoices</h4>
+            <h3>Invoices <a class="btn btn-primary btn-sm"
+                            href="{% url 'logged-grant_management-invoices-update' project=project.id %}">Edit</a></h3>
             {% include 'grant_management/_invoice-list.tmpl' %}
             <p></p>
-            <h4>Financial reports</h4>
+            <h4>Financial reports <a class="btn btn-primary btn-sm"
+                                     href="{% url 'logged-grant_management-financial_reports-update' project=project.id %}">Edit</a>
+            </h4>
             {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}
 
             <p></p>

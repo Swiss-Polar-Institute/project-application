@@ -2,7 +2,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, HTML
 from django import forms
 from django.db.models import Sum
-from django.db.models.functions import datetime
 from django.forms import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.urls import reverse
 from django.utils import timezone
@@ -10,7 +9,6 @@ from django.utils.safestring import mark_safe
 
 from ProjectApplication import settings
 from comments.forms.comment import CommentForm
-from grant_management.forms.valid_if_empty import ValidIfEmpty
 from grant_management.models import Invoice, LaySummary, LaySummaryType, Installment
 from project_core.models import Project
 from project_core.templatetags.ordinal import ordinal
@@ -55,13 +53,6 @@ class InvoiceItemModelForm(forms.ModelForm):
                                              form_tag=False,
                                              fields_required=False)
             self.fields.update(self._comment_form.fields)
-
-        self._valid_if_empty = ValidIfEmpty(fields_allowed_empty=['due_date'],
-                                            basic_fields=['project', 'id', 'DELETE', 'can_be_deleted'],
-                                            form=self,
-                                            form_base_class=self.__class__.__base__)
-
-        self._valid_if_empty.update_required(self.fields)
 
         self.fields['installment'].queryset = Installment.objects.filter(project=project).order_by('due_date')
 
@@ -211,8 +202,8 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         if amount and installment and self.instance:
             total_amount_invoices_for_installment = \
-            Invoice.objects.filter(installment=installment).exclude(id=self.instance.id).aggregate(Sum('amount'))[
-                'amount__sum']
+                Invoice.objects.filter(installment=installment).exclude(id=self.instance.id).aggregate(Sum('amount'))[
+                    'amount__sum']
             total_amount_invoices_for_installment = total_amount_invoices_for_installment or 0
 
             if sum:
@@ -249,15 +240,10 @@ class InvoiceItemModelForm(forms.ModelForm):
                                        category_queryset=self.instance.comment_object().category_queryset(),
                                        form_tag=False)
 
-            comment_form_is_valid = comment_form.is_valid()
-
             comment_form.save(parent=self.instance,
                               user=self._user)
 
-        return self._valid_if_empty.save(*args, **kwargs)
-
-    def is_valid(self):
-        return self._valid_if_empty.is_valid()
+        super().save(*args, **kwargs)
 
     class Meta:
         model = Invoice
@@ -279,8 +265,6 @@ class InvoiceItemModelForm(forms.ModelForm):
 
 
 class InvoicesFormSet(BaseInlineFormSet):
-    FORM_NAME = 'invoices_form'
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

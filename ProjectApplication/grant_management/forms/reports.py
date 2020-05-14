@@ -2,46 +2,23 @@ from crispy_forms.helper import FormHelper
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
 from grant_management.forms.abstract_reports import AbstractReportItemModelForm
-from grant_management.forms.valid_if_empty import ValidIfEmpty
 from grant_management.models import ScientificReport, FinancialReport
 from project_core.models import Project
 
 
-class ReportItemModelForm(AbstractReportItemModelForm):
+class FinancialReportItemModelForm(AbstractReportItemModelForm):
     def __init__(self, *args, **kwargs):
-        self._user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-
-        self._valid_if_empty = ValidIfEmpty(fields_allowed_empty=['due_date'],
-                                            basic_fields=AbstractReportItemModelForm.BASIC_FIELDS,
-                                            form=self,
-                                            form_base_class=self.__class__.__base__.__base__)
-
-        self._valid_if_empty.update_required(self.fields)
-
-    def save(self, *args, **kwargs):
-        return self._valid_if_empty.save(*args, **kwargs)
-
-    def is_valid(self):
-        return self._valid_if_empty.is_valid()
 
     class Meta(AbstractReportItemModelForm.Meta):
-        pass
-
-
-class FinancialReportItemModelForm(ReportItemModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    class Meta(ReportItemModelForm.Meta):
         model = FinancialReport
 
 
-class ScientificReportItemModelForm(ReportItemModelForm):
+class ScientificReportItemModelForm(AbstractReportItemModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    class Meta(ReportItemModelForm.Meta):
+    class Meta(AbstractReportItemModelForm.Meta):
         model = ScientificReport
 
 
