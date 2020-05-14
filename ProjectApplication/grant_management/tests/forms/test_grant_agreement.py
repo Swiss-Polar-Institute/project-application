@@ -6,6 +6,7 @@ from django.test import TestCase
 from ProjectApplication import settings
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.models import GrantAgreement
+from project_core.models import PhysicalPerson
 from project_core.tests import database_population
 
 
@@ -18,7 +19,8 @@ class GrantAgreementFormTest(TestCase):
             self.skipTest('Skipping S3 tests')
 
         data = {'project': self._project,
-                'signed_date': datetime(2020, 1, 10)
+                'signed_date': datetime(2020, 1, 10),
+                'signed_by': PhysicalPerson.objects.filter(id=self._project.principal_investigator.person.id)
                 }
         files = {'file': SimpleUploadedFile('grant_agreement.txt',
                                             b'This is the signed grant agreement. C.')
