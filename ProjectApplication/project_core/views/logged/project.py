@@ -40,7 +40,7 @@ class AbstractProjectView(DetailView):
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
                                  {'name': 'Projects', 'url': reverse('logged-project-list')},
-                                 {'name': f'Project detail ({context["project"].key_pi()})'}]
+                                 {'name': f'Details ({context["project"].key_pi()})'}]
 
         return context
 

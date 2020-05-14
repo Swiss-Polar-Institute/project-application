@@ -74,7 +74,7 @@ class FundingInstrumentView(TemplateView):
                             'active_subsection': 'funding-instrument-list',
                             'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
-            breadcrumb = 'Edit'
+            breadcrumb = f'Edit ({funding_instrument.short_name})'
 
         else:
             context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(prefix=FUNDING_INSTRUMENT_FORM_NAME)
@@ -143,6 +143,6 @@ class FundingInstrumentDetailView(FundingInstrumentMixin, DetailView):
         context['template_variables'] = get_template_variables_for_funding_instrument(kwargs['object'])
 
         context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('logged-funding-instrument-list')},
-                                 {'name': 'Details'}]
+                                 {'name': f'Details ({context["funding_instrument"].short_name})'}]
 
         return context

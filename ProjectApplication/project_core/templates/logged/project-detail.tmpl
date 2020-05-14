@@ -8,15 +8,8 @@
             <h2>{{ project.title }}</h2>
             {% include 'grant_management/_project_summary-detail.tmpl' with project=project %}
             <p></p>
-            <h3>Principal investigator</h3>
-            {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.principal_investigator %}<br>
-            <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=project.principal_investigator.main_email %}<br>
-            <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}
-
-            <p></p>
 
             <h3>Project details</h3>
-
             <div class="row">
                 <div class="col-5">
                     <strong>Start date:</strong> {{ project.start_date }}<br>

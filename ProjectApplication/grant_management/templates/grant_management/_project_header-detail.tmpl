@@ -1,15 +1,17 @@
 <h2>{{ project.title }}</h2>
 <div class="shadow-none p-1 bg-light rounded">
     <div class="row">
-        <div class="col-8">
+        <div class="col-6">
             <strong>Principal
                 investigator:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.principal_investigator %}<br>
             <b>Start date:</b> {{ project.start_date }}<br>
             <b>End date:</b> {{ project.end_date }}
         </div>
-        <div class="col-4"><br>
+        <div class="col-6">
             <strong>Project Key:</strong> {{ project.key }}<br>
             <strong>Status:</strong> {{ project.status }}<br>
+            <strong>Call:</strong> <a
+                href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
         </div>
     </div>
 </div>

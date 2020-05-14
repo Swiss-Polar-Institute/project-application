@@ -166,7 +166,7 @@ class CallEvaluationUpdate(TemplateView):
         context['call'] = call
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': 'Edit call evaluation'}]
+                                 {'name': f'Edit ({call.short_name})'}]
 
         call_evaluation_form = CallEvaluationForm(instance=call_evaluation, prefix=CallEvaluationForm.FORM_NAME,
                                                   call=call)
@@ -246,15 +246,15 @@ class CallEvaluationDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        call_evaluation = CallEvaluation.objects.get(id=self.kwargs['pk'])
+
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
                         })
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': 'View call evaluation'}]
-
-        call_evaluation = CallEvaluation.objects.get(id=self.kwargs['pk'])
+                                 {'name': f'Details ({call_evaluation.call.short_name})'}]
 
         context.update(comments_attachments_forms('logged-call-evaluation-comment-add', call_evaluation))
 

@@ -63,7 +63,7 @@ class ProjectDetail(DetailView):
                         'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                                 {'name': f'Project detail ({project.key_pi()})'}]
+                                 {'name': f'Details ({project.key_pi()})'}]
 
         context['lay_summaries_count'] = project.laysummary_set.exclude(text='').count()
         context['blog_posts_count'] = project.blogpost_set.exclude(text='').count()
@@ -86,7 +86,7 @@ class ProjectUpdate(SuccessMessageMixin, UpdateView):
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
                                  {'name': 'Projects', 'url': reverse('logged-project-list')},
-                                 {'name': f'Project update ({context["object"].key_pi()})'}]
+                                 {'name': f'Edit ({context["object"].key_pi()})'}]
 
         return context
 
@@ -120,7 +120,7 @@ def basic_context_data_grant_agreement(project, active_page):
                'sidebar_template': 'grant_management/_sidebar-grant_management.tmpl'}
 
     context['breadcrumb'] = [{'name': 'Grant management', 'url': reverse('logged-grant_management-project-list')},
-                             {'name': f'Project detail ({project.key_pi()})',
+                             {'name': f'Details ({project.key_pi()})',
                               'url': reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})},
                              {'name': active_page}]
 

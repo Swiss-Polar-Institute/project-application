@@ -79,7 +79,7 @@ class CallDetailView(AbstractCallView):
         context = self.prepare_context(request, *args, **kwargs)
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
-                                 {'name': 'Details'}]
+                                 {'name': f'Details ({context["call"].short_name})'}]
 
         return render(request, 'logged/call-detail.tmpl', context)
 
@@ -195,6 +195,7 @@ class CallView(TemplateView):
             context['call_action'] = 'Edit'
 
             context['active_subsection'] = 'call-list'
+            breadcrumb_page = f'{context["call_action"]} ({call.short_name})'
 
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
@@ -205,11 +206,13 @@ class CallView(TemplateView):
 
             context['active_subsection'] = 'call-add'
 
+            breadcrumb_page = 'Create'
+
         context['active_section'] = 'calls'
         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-                                 {'name': context['call_action']}]
+                                 {'name': breadcrumb_page}]
 
         return context
 
