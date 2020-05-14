@@ -1098,6 +1098,9 @@ class Project(CreateModifyOn):
         else:
             return None
 
+    def invoices_sent_for_payment_amount(self):
+        return self.invoice_set.filter(sent_for_payment_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
+
     def invoices_paid_amount(self):
         return self.invoice_set.filter(paid_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
 

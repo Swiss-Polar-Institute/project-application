@@ -41,9 +41,6 @@
                             href="{% url 'logged-grant_management-finances-update' project=project.id %}">Edit</a></h3>
             <h4>Invoices</h4>
             {% include 'grant_management/_invoice-list.tmpl' %}
-            Total
-            paid: {% include 'common/_value-or-zero.tmpl' with value=project.invoices_paid_amount|thousands_separator %}
-            CHF
             <p></p>
             <h4>Financial reports</h4>
             {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}

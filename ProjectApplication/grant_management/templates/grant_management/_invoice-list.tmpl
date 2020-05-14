@@ -25,6 +25,20 @@
                 <td>{% include 'common/_file_to_download.tmpl' with file_field=invoice.file %}</td>
             </tr>
         {% endfor %}
+        <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b>Total sent for payment:</b></td>
+            <td>
+                {% include 'common/_value-or-zero.tmpl' with value=project.invoices_sent_for_payment_amount|thousands_separator %}
+                CHF
+            </td>
+            <td></td>
+        </tr>
+        </tfoot>
     </table>
 
     <script type="text/javascript" class="init">
