@@ -74,7 +74,7 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         if self.instance and self.instance.paid_date is not None:
             self.fields['can_be_deleted'].initial = 0
-            for field_name in ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount']:
+            for field_name in ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount', 'installment']:
                 self.fields[field_name].disabled = True
                 self.fields[field_name].help_text = f'Invoice cannot be changed as it has already been paid. ' \
                                                     f'Delete the date it was paid and try again'
