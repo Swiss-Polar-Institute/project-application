@@ -1,9 +1,9 @@
-Media linked to this blogpost:
+Media linked to this blog post:
 <ul>
     {% for medium in form.instance.medium_set.all %}
         <li>{{ medium.descriptive_text|default:'No description'|truncatechars:100 }} - <a href="{{ medium.file.url }}">Preview</a>
         </li>
     {% empty %}
-        <li>No media for this blogpost</li>
+        <li>No media for this blog post</li>
     {% endfor %}
 </ul>
