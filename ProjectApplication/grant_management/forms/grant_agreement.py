@@ -41,9 +41,27 @@ class GrantAgreementForm(forms.ModelForm):
             )
         )
 
+    def clean(self):
+        cd = self.cleaned_data
+        signed_date = cd.get('signed_date', None)
+        signed_by = cd['signed_by']
+
+        errors = {}
+
+        if signed_date is None and signed_by.count() > 0:
+            errors['signed_date'] = 'Signed date is required if the grant agreement is signed'
+
+        if signed_by.count() == 0 and signed_date:
+            errors['signed_by'] = 'Signed by is required if signed date is entered'
+
+        if errors:
+            raise forms.ValidationError(errors)
+        pass
+
     class Meta:
         model = GrantAgreement
         fields = ['project', 'signed_date', 'signed_by', 'file']
-        help_texts = {'signed_by': 'People who signed the grant agreement. Please do not use spaces when searching, you can search by first name or surname'}
+        help_texts = {
+            'signed_by': 'People who signed the grant agreement. Please do not use spaces when searching, you can search by first name or surname'}
         widgets = {'signed_date': XDSoftYearMonthDayPickerInput,
                    'signed_by': autocomplete.ModelSelect2Multiple(url='logged-autocomplete-physical-people')}
