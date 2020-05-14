@@ -1,9 +1,13 @@
+import decimal
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models import Sum
 from django.forms import BaseInlineFormSet, inlineformset_factory, ModelChoiceField
+from django.utils.formats import number_format
+from django.utils.safestring import mark_safe
 
 from grant_management.forms import utils
 from grant_management.models import Installment, Invoice
@@ -62,25 +66,14 @@ class InstallmentModelForm(forms.ModelForm):
 
         errors = {}
 
+        if amount > project.allocated_budget:
+            errors['amount'] = 'This amount is greater than the total project allocated budget'
+
         if due_date < project_starts:
             errors['due_date'] = utils.error_due_date_too_early(project_starts)
 
         if due_date > project_ends:
             errors['due_date'] = utils.error_due_date_too_late(project_ends)
-
-        amount_installments_to_now = InstallmentModelForm._total_amount_installments_for_project(project, self.instance)
-        if (amount_installments_to_now + amount) > project.allocated_budget:
-            errors[
-                'amount'] = f'The amount of this installment will take this project over budget (Total installments until now: {thousands_separator(amount_installments_to_now)} CHF, Allocated budget: {thousands_separator(project.allocated_budget)} CHF).'
-
-        if amount and self.instance:
-            total_amount_invoices_for_installment = Invoice.objects.filter(installment=self.instance).aggregate(Sum('amount'))[
-                'amount__sum']
-            total_amount_invoices_for_installment = total_amount_invoices_for_installment or 0
-
-            if total_amount_invoices_for_installment > amount:
-                errors[
-                    'amount'] = f'The new amount is not allowed because invoices have been paid for this installment in a higher amount ({thousands_separator(total_amount_invoices_for_installment)} CHF)'
 
         if DELETE and Invoice.objects.filter(installment=self.instance).exists():
             errors['DELETE'] = 'Cannot delete Installment: there are invoices assigned to this installment'
@@ -118,8 +111,33 @@ class InstallmentsFormSet(BaseInlineFormSet):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
+    def clean(self):
+        super().clean()
+
+        budget_amount = decimal.Decimal('0.00')
+        maximum_budget = self.instance.allocated_budget
+
+        if not self.is_valid():
+            # if one of the budget items is not valid: doesn't validate the general form
+            # E.g. if an amount is negative it will have an error in the amount but the
+            # amount is removed from the form.cleaned_data
+            return
+
+        for installment_form in self.forms:
+            amount = installment_form.cleaned_data['amount'] or 0
+
+            budget_amount += amount
+
+        if budget_amount > maximum_budget:
+            raise forms.ValidationError(
+                f'Total installments introduced for this project is {number_format(maximum_budget)} CHF.'
+                f'Total allocated budget for the project is {number_format(budget_amount)} CHF')
+
     def get_queryset(self):
         return super().get_queryset().order_by('due_date')
+
+    def extra_information(self):
+        return mark_safe(f'<p><b>Budget allocated</b>: {thousands_separator(self.instance.allocated_budget)} CHF</p>')
 
 
 InstallmentsInlineFormSet = inlineformset_factory(Project, Installment, form=InstallmentModelForm,

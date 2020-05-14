@@ -219,6 +219,7 @@ class GrantManagementUpdateView(TemplateView):
         forms = self.inline_formset(request.POST, request.FILES, prefix='FORM_SET',
                                     instance=context['project'],
                                     form_kwargs=form_kwargs)
+
         if forms.is_valid():
             forms.save()
             messages.success(request, f'{self.human_type.capitalize()} saved')

@@ -1,7 +1,7 @@
 <table id="media_table_{{ form.instance.id|default:0 }}" class="table table-striped table-sm table-hover display">
     <thead>
     <tr>
-        <th>Received date</th>
+        <th>Date received</th>
         <th>Photographer</th>
         <th>File</th>
     </tr>
@@ -26,6 +26,11 @@
                 "language": {
                     "zeroRecords": "No media have been entered"
                 },
+                "columns": [
+                    {"width": "15%"},
+                    {"width": "70%"},
+                    {"width": "15%"}
+                ],
             }
         );
     });
