@@ -2,8 +2,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, HTML
 from django import forms
 from django.db.models import Sum
+from django.db.models.functions import datetime
 from django.forms import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 
 from ProjectApplication import settings
@@ -144,6 +146,17 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         errors = {}
         sent_for_payment_errors = []
+
+        today = timezone.now().date()
+
+        if received_date and received_date > today:
+            errors['received_date'] = 'Received date cannot be in the future'
+
+        if sent_for_payment_date and sent_for_payment_date > today:
+            errors['sent_for_payment_date'] = 'Sent for payment date cannot be in the future'
+
+        if paid_date and paid_date > today:
+            errors['paid_date'] = 'Paid date cannot be in the future'
 
         if not due_date and (due_date or received_date or sent_for_payment_date or paid_date or amount or file):
             errors['due_date'] = f'Due date is required to create an invoice'
