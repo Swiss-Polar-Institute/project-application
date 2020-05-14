@@ -3,6 +3,34 @@
 {% load thousands_separator %}
 
 {% block contents %}
+
+    <script type="text/javascript" class="init">
+        $(document).ready(() => {
+            // Enable tabs (as said in the Bootstrap documentation)
+            $('#grant-management-tab a').on('click', function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            });
+
+            // https://webdesign.tutsplus.com/tutorials/how-to-add-deep-linking-to-the-bootstrap-4-tabs-component--cms-31180
+            let url = location.href.replace(/\/$/, "");
+
+            if (location.hash) {
+                const hash = url.split("#");
+                $('#grant-management-tab a[href="#' + hash[1] + '"]').tab("show");
+                url = location.href.replace(/\/#/, "#");
+                history.replaceState(null, null, url);
+            }
+
+            $('a[data-toggle="tab"]').on("click", function () {
+                let newUrl;
+                const hash = $(this).attr("href");
+                newUrl = url.split("#")[0] + hash;
+                history.replaceState(null, null, newUrl);
+            });
+        });
+    </script>
+
     <div class="row">
         <div class="col-10">
             {% include 'grant_management/_project_header-detail.tmpl' %}
@@ -30,7 +58,7 @@
             <p></p>
 
             <div>
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-tabs" id="grant-management-tab">
                     <li class="nav-item">
                         <a class="nav-link active" id="finances-tab" data-toggle="tab" href="#finances" role="tab">Finances</a>
                     </li>
@@ -51,7 +79,7 @@
                 </div>
             </div>
             <p></p>
-{#            {% include 'comments/_comments-attachments.tmpl' %}#}
+            {#            {% include 'comments/_comments-attachments.tmpl' %}#}
 
         </div>
         <div class="col-2">
