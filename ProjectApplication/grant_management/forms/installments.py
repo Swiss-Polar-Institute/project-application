@@ -114,14 +114,14 @@ class InstallmentsFormSet(BaseInlineFormSet):
     def clean(self):
         super().clean()
 
-        budget_amount = decimal.Decimal('0.00')
-        maximum_budget = self.instance.allocated_budget
-
         if not self.is_valid():
             # if one of the budget items is not valid: doesn't validate the general form
             # E.g. if an amount is negative it will have an error in the amount but the
             # amount is removed from the form.cleaned_data
             return
+
+        budget_amount = decimal.Decimal('0.00')
+        maximum_budget = self.instance.allocated_budget
 
         for installment_form in self.forms:
             amount = installment_form.cleaned_data['amount'] or 0

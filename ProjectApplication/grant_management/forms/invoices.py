@@ -31,8 +31,8 @@ class InstallmentModelChoiceField(ModelChoiceField):
 
 class InvoiceItemModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        self._user = kwargs.pop('user', None)       # When the form is created to visualise user is not needed
-                                                    # user is used when saving comments at the moment
+        self._user = kwargs.pop('user', None)  # When the form is created to visualise user is not needed
+        # user is used when saving comments at the moment
 
         project = kwargs.pop('project')
 
@@ -168,12 +168,6 @@ class InvoiceItemModelForm(forms.ModelForm):
         if due_date and due_date > project_ends:
             errors['due_date'] = utils.error_due_date_too_late(project.end_date)
 
-        if amount:
-            amount_invoices_to_now = InvoiceItemModelForm._total_amount_invoices_for_project(project, self.instance)
-            if (amount_invoices_to_now + amount) > project.allocated_budget:
-                errors[
-                    'amount'] = f'The amount of this invoice will take this project over budget (Total invoiced until now: {thousands_separator(amount_invoices_to_now)} CHF, Allocated budget: {thousands_separator(project.allocated_budget)} CHF).'
-
         if not file and received_date:
             errors['file'] = f'Please attach the invoice file (a date received has been entered).'
 
@@ -200,15 +194,8 @@ class InvoiceItemModelForm(forms.ModelForm):
             sent_for_payment_errors.append(
                 'Invoice cannot be sent for payment if a lay summary has not been received')
 
-        if amount and installment and self.instance:
-            total_amount_invoices_for_installment = \
-                Invoice.objects.filter(installment=installment).exclude(id=self.instance.id).aggregate(Sum('amount'))[
-                    'amount__sum']
-            total_amount_invoices_for_installment = total_amount_invoices_for_installment or 0
-
-            if sum:
-                if total_amount_invoices_for_installment + amount > installment.amount:
-                    errors['amount'] = 'Invoice amount is greater than the installment amount'
+        if amount and installment and amount > installment.amount:
+            errors['amount'] = 'Invoice amount is greater than the installment amount'
 
         if sent_for_payment_date is None and paid_date:
             sent_for_payment_errors.append('Please fill in sent for payment if the invoice is paid')
@@ -275,6 +262,38 @@ class InvoicesFormSet(BaseInlineFormSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('received_date')
+
+    def clean(self):
+        super().clean()
+
+        if not self.is_valid():
+            # if one of the budget items is not valid: doesn't validate the general form
+            # E.g. if an amount is negative it will have an error in the amount but the
+            # amount is removed from the form.cleaned_data
+            return
+
+        installment_to_amounts = {}
+
+        for invoice_form in self.forms:
+            if not invoice_form.cleaned_data['installment']:
+                continue
+
+            if invoice_form.cleaned_data['installment'].id in installment_to_amounts:
+                installment_to_amounts[invoice_form.cleaned_data['installment'].id] += invoice_form.cleaned_data['amount']
+            else:
+                installment_to_amounts[invoice_form.cleaned_data['installment'].id] = invoice_form.cleaned_data['amount']
+
+        errors = []
+        for installment_id, invoiced_amount in installment_to_amounts.items():
+            installment = Installment.objects.get(id=installment_id)
+            installment_amount_allocated = installment.amount
+
+            if invoiced_amount > installment_amount_allocated:
+                errors.append(
+                    f'Over budget for installment due {installment.due_date}, total allocated {thousands_separator(installment.amount)} CHF. Total invoiced: {thousands_separator(invoiced_amount)} CHF')
+
+        if errors:
+            raise forms.ValidationError(errors)
 
     def get_form_kwargs(self, index):
         kwargs = super().get_form_kwargs(index)
