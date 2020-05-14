@@ -1,0 +1,7 @@
+{#Fixes sizes of columns if this table is going to appear in a non-active Bootstrap tab#}
+<script type="text/javascript" class="init">
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $($.fn.dataTable.tables(true)).css('width', '100%');
+        $($.fn.dataTable.tables(true)).DataTable().columns.adjust().draw();
+    });
+</script>

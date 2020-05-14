@@ -6,7 +6,6 @@
     <div class="row">
         <div class="col-10">
             {% include 'grant_management/_project_header-detail.tmpl' %}
-            <p></p>
             <div class="row">
                 <div class="col-6">
                     <h3>Project information <a class="btn btn-primary btn-sm"
@@ -29,64 +28,27 @@
                 </div>
             </div>
             <p></p>
-            <div class="row">
-                <div class="col-6">
-                    <h3>Installments <a class="btn btn-primary btn-sm"
-                                        href="{% url 'logged-grant_management-installments-update' project=project.pk %}">Edit</a>
-                    </h3>
-                    {% include 'grant_management/_installment-list.tmpl' %}
+
+            <div>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="finances-tab" data-toggle="tab" href="#finances" role="tab">Finances</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="deliverables-tab" data-toggle="tab" href="#deliverables" role="tab">Deliverables</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="finances" role="tabpanel">
+                    {% include 'grant_management/_project_finances.tmpl' %}
+                </div>
+                <div class="tab-pane fade" id="deliverables" role="tabpanel">
+                    {% include 'grant_management/_project_deliverables.tmpl' %}
                 </div>
             </div>
-            <h3>Invoices <a class="btn btn-primary btn-sm"
-                            href="{% url 'logged-grant_management-invoices-update' project=project.id %}">Edit</a></h3>
-            {% include 'grant_management/_invoice-list.tmpl' %}
-            <p></p>
-            <h4>Financial reports <a class="btn btn-primary btn-sm"
-                                     href="{% url 'logged-grant_management-financial_reports-update' project=project.id %}">Edit</a>
-            </h4>
-            {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}
 
-            <p></p>
-            <h3>Project follow-up</h3>
-            <h4>Scientific reports
-                <a class="btn btn-primary btn-sm"
-                   href="{% url 'logged-grant_management-scientific_reports-update' project=project.id %}">Edit</a></h4>
-            {% include 'grant_management/_report-list.tmpl' with reports=project.scientificreport_set.all report_name='scientific' %}
-            <p></p>
-            <h3>Deliverables and media</h3>
-            <h4>Lay summaries
-                <a class="btn btn-primary btn-sm"
-                   href="{% url 'logged-grant_management-lay_summaries-update' project=project.id %}">Edit</a>
-            </h4>
-            {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='lay_summaries' count=lay_summaries_count button_text_collapsed='View lay summaries' button_text_not_collapsed='Hide lay summaries' template_file='grant_management/_lay_summary-list.tmpl' %}
-            <p></p>
-            <h4>Blog posts
-                <a class="btn btn-primary btn-sm"
-                   href="{% url 'logged-grant_management-blog_posts-update' project=project.id %}">Edit</a>
-            </h4>
-            {% include 'grant_management/_blog_post-list.tmpl' %}
-            <p></p>
-            <h4>Photos and media
-                <a class="btn btn-primary btn-sm"
-                   href="{% url 'logged-grant_management-media-update' project=project.id %}">Edit</a>
-            </h4>
-            {% include 'grant_management/_medium-list.tmpl' with media=project.medium_set.all %}
-            <p></p>
-            <h4>Datasets <a class="btn btn-primary btn-sm"
-                            href="{% url 'logged-grant_management-data-update' project=project.id %}">Edit</a></h4>
-            {% include 'grant_management/_dataset-list.tmpl' %}
-            <p></p>
-            <h4>Publications <a class="btn btn-primary btn-sm"
-                                href="{% url 'logged-grant_management-publications-update' project=project.id %}">Edit</a>
-            </h4>
-            {% include 'grant_management/_publication-list.tmpl' %}
-            <p></p>
-            <h4>Social media <a class="btn btn-primary btn-sm"
-                                href="{% url 'logged-grant_management-social-media-update' project=project.id %}">Edit</a>
-            </h4>
-            {% include 'grant_management/_social_network-list.tmpl' %}
-            <hr>
-            {#            {% include 'comments/_comments-attachments.tmpl' %}#}
         </div>
         <div class="col-2">
             <p>
