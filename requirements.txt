@@ -6,7 +6,7 @@ coverage==5.0.3
 decorator==4.4.1
 Django==3.0.5
 django-autocomplete-light==3.5.1
-django-crispy-forms==1.9.0
+-e git://github.com/django-crispy-forms/django-crispy-forms.git@f93e9fad31902399472c0c676516eb5c31aeb2df#egg=django_crispy_forms
 django-simple-history==2.8.0
 django-storages==1.9.1
 docutils==0.15.2
