@@ -237,7 +237,9 @@ class InvoiceItemModelForm(forms.ModelForm):
                                                            kwargs={'pk': self.instance.id}),
                                        category_queryset=self.instance.comment_object().category_queryset(),
                                        form_tag=False)
-
+            comment_form.is_valid()
+            # TODO: as it is now: it's always valid (combobox mandatory selection for internal users). In the is_valid()
+            # of the Invoice it should reject it if it's not valid
             comment_form.save(parent=self.instance,
                               user=self._user)
 
