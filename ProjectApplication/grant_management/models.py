@@ -210,6 +210,9 @@ class ProjectSocialNetwork(CreateModifyOn):
         return f'{self.project}-{self.social_network}'
 
 
+def generate_doi_link(doi):
+    return f'https://doi.org/{doi}'
+
 class Publication(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project to which the publication is related',
                                 on_delete=models.PROTECT)
@@ -217,6 +220,9 @@ class Publication(CreateModifyOn):
     reference = models.CharField(max_length=1000, help_text='Full reference of publication', null=True, blank=True)
     title = models.CharField(max_length=1000, help_text='Title of publication', null=False, blank=False)
     published_date = models.DateField(help_text='Date on which the resource was published', null=True, blank=True)
+
+    def doi_link(self):
+        return generate_doi_link(self.doi)
 
     def __str__(self):
         return '{}'.format(self.title)
@@ -229,6 +235,9 @@ class Dataset(CreateModifyOn):
     url = models.URLField(help_text='URL of dataset if it does not have a DOI', null=True, blank=True)
     title = models.CharField(max_length=1000, help_text='Title of dataset', null=False, blank=False)
     published_date = models.DateField(help_text='Date on which dataset was published', null=True, blank=True)
+
+    def doi_link(self):
+        return generate_doi_link(self.doi)
 
     def __str__(self):
         return '{}'.format(self.title)

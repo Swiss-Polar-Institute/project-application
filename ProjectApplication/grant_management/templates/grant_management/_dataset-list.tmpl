@@ -4,20 +4,14 @@
         <tr>
             <th>Published date</th>
             <th>Title</th>
-            <th>URL</th>
             <th>DOI</th>
         </tr>
         </thead>
         {% for dataset in datasets %}
             <tr>
                 <td data-sort="{{ dataset.published_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=dataset.published_date %}</td>
-                <td>{% include 'common/_value-or-dash.tmpl' with value=dataset.title %}</td>
-                <td>{% if dataset.url %}
-                    <a href="{{ dataset.url }}">{{ dataset.url|truncatechars:80 }}</a>
-                {% else %}
-                    -
-                {% endif %}
-                <td>{% include 'common/_value-or-dash.tmpl' with value=dataset.doi %}</td>
+                <td>{% include 'grant_management/_text_with_link_or_dash.tmpl' with text=dataset.title url=dataset.url %}</td>
+                <td>{% include 'grant_management/_text_with_link_or_dash.tmpl' with text=dataset.doi url=dataset.doi_link %}</td>
             </tr>
         {% endfor %}
     </table>
@@ -35,8 +29,7 @@
                     },
                     "columns": [
                         {"width": "15%"},
-                        {"width": "55%"},
-                        {"width": "15%"},
+                        {"width": "70%"},
                         {"width": "15%"}
                     ],
                 }
