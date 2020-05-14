@@ -184,6 +184,7 @@ def grant_management_project_url(kwargs):
 class GrantManagementUpdateView(TemplateView):
     inline_formset = None
     human_type = None
+    tab = None
 
     def __init__(self, *args, **kwargs):
         self.template_name = 'grant_management/generic-formset.tmpl'
@@ -209,13 +210,19 @@ class GrantManagementUpdateView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        forms = self.inline_formset(request.POST, request.FILES, prefix='FORM_SET',
-                                    instance=context['project'])
 
+        form_kwargs = {}
+
+        if hasattr(self.inline_formset, 'wants_user') and self.inline_formset.wants_user:
+            form_kwargs = {'user': request.user}
+
+        forms = self.inline_formset(request.POST, request.FILES, prefix='FORM_SET',
+                                    instance=context['project'],
+                                    form_kwargs=form_kwargs)
         if forms.is_valid():
             forms.save()
             messages.success(request, f'{self.human_type.capitalize()} saved')
-            return redirect(grant_management_project_url(kwargs))
+            return redirect(f'{grant_management_project_url(kwargs)}#{self.tab}')
 
         messages.error(request, f'{self.human_type.capitalize()} not saved. Verify errors in the form')
 
@@ -227,51 +234,61 @@ class GrantManagementUpdateView(TemplateView):
 class BlogPostsUpdateView(GrantManagementUpdateView):
     inline_formset = BlogPostsInlineFormSet
     human_type = 'blog posts'
+    tab = 'deliverables'
 
 
 class LaySummariesUpdateView(GrantManagementUpdateView):
     inline_formset = LaySummariesInlineFormSet
     human_type = 'lay summaries'
+    tab = 'deliverables'
 
 
 class DatasetUpdateView(GrantManagementUpdateView):
     inline_formset = DatasetInlineFormSet
     human_type = 'data'
+    tab = 'deliverables'
 
 
 class PublicationsUpdateView(GrantManagementUpdateView):
     inline_formset = PublicationsInlineFormSet
     human_type = 'publications'
+    tab = 'deliverables'
 
 
 class MediaUpdateView(GrantManagementUpdateView):
     inline_formset = MediaInlineFormSet
     human_type = 'media'
+    tab = 'deliverables'
 
 
 class InvoicesUpdateView(GrantManagementUpdateView):
     inline_formset = InvoicesInlineFormSet
     human_type = 'invoices'
+    tab = 'finance'
 
 
 class FinancialReportsUpdateView(GrantManagementUpdateView):
     inline_formset = FinancialReportsInlineFormSet
     human_type = 'financial reports'
+    tab = 'finance'
 
 
 class InstallmentsUpdateView(GrantManagementUpdateView):
     inline_formset = InstallmentsInlineFormSet
     human_type = 'installments'
+    tab = 'finance'
 
 
 class ScientificReportsUpdateView(GrantManagementUpdateView):
     inline_formset = ScientificReportsInlineFormSet
     human_type = 'scientific reports'
+    tab = 'deliverables'
 
 
 class SocialMediaUpdateView(GrantManagementUpdateView):
     inline_formset = SocialNetworksInlineFormSet
     human_type = 'social media'
+    tab = 'deliverables'
 
 
 class LaySummariesRaw(TemplateView):

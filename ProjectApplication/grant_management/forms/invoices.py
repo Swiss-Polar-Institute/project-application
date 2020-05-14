@@ -31,8 +31,8 @@ class InstallmentModelChoiceField(ModelChoiceField):
 
 class InvoiceItemModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        self.comment_saved = True
-        self._user = kwargs.pop('user', None)
+        self._user = kwargs.pop('user', None)       # When the form is created to visualise user is not needed
+                                                    # user is used when saving comments at the moment
 
         project = kwargs.pop('project')
 
@@ -228,8 +228,6 @@ class InvoiceItemModelForm(forms.ModelForm):
         comment_category = self.cleaned_data.get('category', None)
         comment_text = self.cleaned_data.get('text', None)
 
-        self.comment_saved = False
-
         if comment_text:
             data = {'category': comment_category,
                     'text': comment_text}
@@ -265,6 +263,8 @@ class InvoiceItemModelForm(forms.ModelForm):
 
 
 class InvoicesFormSet(BaseInlineFormSet):
+    wants_user = True
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

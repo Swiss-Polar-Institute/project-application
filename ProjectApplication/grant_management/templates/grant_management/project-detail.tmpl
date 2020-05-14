@@ -3,34 +3,7 @@
 {% load thousands_separator %}
 
 {% block contents %}
-
-    <script type="text/javascript" class="init">
-        $(document).ready(() => {
-            // Enable tabs (as said in the Bootstrap documentation)
-            $('#grant-management-tab a').on('click', function (e) {
-                e.preventDefault()
-                $(this).tab('show')
-            });
-
-            // https://webdesign.tutsplus.com/tutorials/how-to-add-deep-linking-to-the-bootstrap-4-tabs-component--cms-31180
-            let url = location.href.replace(/\/$/, "");
-
-            if (location.hash) {
-                const hash = url.split("#");
-                $('#grant-management-tab a[href="#' + hash[1] + '"]').tab("show");
-                url = location.href.replace(/\/#/, "#");
-                history.replaceState(null, null, url);
-            }
-
-            $('a[data-toggle="tab"]').on("click", function () {
-                let newUrl;
-                const hash = $(this).attr("href");
-                newUrl = url.split("#")[0] + hash;
-                history.replaceState(null, null, newUrl);
-            });
-        });
-    </script>
-
+    {% include 'common/_bootstrap_tab_deep_linking.tmpl' with tab_name='grant-management-tab' %}
     <div class="row">
         <div class="col-10">
             {% include 'grant_management/_project_header-detail.tmpl' %}
