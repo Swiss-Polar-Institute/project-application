@@ -1,37 +1,32 @@
-{% load thousands_separator %}
-{% load ordinal %}
-
-{% with media=project.medium_set.all %}
-    <table id="media_table" class="table table-striped table-sm table-hover display">
-        <thead>
+<table id="media_table_{{ form.instance.id|default:0 }}" class="table table-striped table-sm table-hover display">
+    <thead>
+    <tr>
+        <th>Received date</th>
+        <th>Photographer</th>
+        <th>File</th>
+    </tr>
+    </thead>
+    {% for medium in media %}
         <tr>
-            <th>Received date</th>
-            <th>Photographer</th>
-            <th>File</th>
+            <td data-sort="{{ medium.received_date }}">{{ medium.received_date }}</td>
+            <td>{{ medium.photographer }}</td>
+            <td>{% include 'common/_file_to_download.tmpl' with file_field=medium.file %}</td>
         </tr>
-        </thead>
-        {% for medium in media %}
-            <tr>
-                <td data-sort="{{ medium.received_date }}">{{ medium.received_date }}</td>
-                <td>{{ medium.photographer }}</td>
-                <td>{% include 'common/_file_to_download.tmpl' with file_field=medium.file %}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    {% endfor %}
+</table>
 
-    <script type="text/javascript" class="init">
-        $(document).ready(function () {
-            $('#media_table').DataTable({
-                    "pageLength": 100,
-                    "order": [[1, "asc"]],
-                    "bFilter": false,
-                    "bPaginate": false,
-                    "info": false,
-                    "language": {
-                        "zeroRecords": "No media have been entered"
-                    },
-                }
-            );
-        });
-    </script>
-{% endwith %}
+<script type="text/javascript" class="init">
+    $(document).ready(function () {
+        $('#media_table_{{ form.instance.id|default:0 }}').DataTable({
+                "pageLength": 100,
+                "order": [[1, "asc"]],
+                "bFilter": false,
+                "bPaginate": false,
+                "info": false,
+                "language": {
+                    "zeroRecords": "No media have been entered"
+                },
+            }
+        );
+    });
+</script>

@@ -1,5 +1,9 @@
+Media linked to this blogpost:
 <ul>
     {% for medium in form.instance.medium_set.all %}
-        <li>{{ medium.descriptive_text }} <a href="{{ medium.file.url }}">Link</a></li>
+        <li>{{ medium.descriptive_text|default:'No description'|truncatechars:100 }} - <a href="{{ medium.file.url }}">Preview</a>
+        </li>
+    {% empty %}
+        <li>No media for this blogpost</li>
     {% endfor %}
 </ul>

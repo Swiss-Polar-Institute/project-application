@@ -69,7 +69,7 @@
                 <a class="btn btn-primary btn-sm"
                    href="{% url 'logged-grant_management-media-update' project=project.id %}">Edit</a>
             </h4>
-            {% include 'grant_management/_medium-list.tmpl' %}
+            {% include 'grant_management/_medium-list.tmpl' with media=project.medium_set.all %}
             <p></p>
             <h4>Datasets <a class="btn btn-primary btn-sm"
                             href="{% url 'logged-grant_management-data-update' project=project.id %}">Edit</a></h4>
