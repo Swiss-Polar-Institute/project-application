@@ -182,10 +182,10 @@ def grant_management_project_url(kwargs):
 
 
 class GrantManagementUpdateView(TemplateView):
-    def __init__(self, *args, **kwargs):
-        self._inline_formset = kwargs.pop('inline_formset')
-        self._human_type = kwargs.pop('human_type')
+    inline_formset = None
+    human_type = None
 
+    def __init__(self, *args, **kwargs):
         self.template_name = 'grant_management/generic-formset.tmpl'
 
         super().__init__(*args, **kwargs)
@@ -199,25 +199,25 @@ class GrantManagementUpdateView(TemplateView):
 
         context['project'] = project
 
-        context.update(basic_context_data_grant_agreement(project, self._human_type.capitalize()))
+        context.update(basic_context_data_grant_agreement(project, self.human_type.capitalize()))
 
-        context['FORM_SET'] = self._inline_formset(prefix='FORM_SET', instance=context['project'])
-        context['title'] = self._human_type.capitalize()
-        context['save_text'] = f'Save {self._human_type.title()}'
+        context['FORM_SET'] = self.inline_formset(prefix='FORM_SET', instance=context['project'])
+        context['title'] = self.human_type.capitalize()
+        context['save_text'] = f'Save {self.human_type.title()}'
 
         return context
 
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
-        forms = self._inline_formset(request.POST, request.FILES, prefix='FORM_SET',
-                                     instance=context['project'])
+        forms = self.inline_formset(request.POST, request.FILES, prefix='FORM_SET',
+                                    instance=context['project'])
 
         if forms.is_valid():
             forms.save()
-            messages.success(request, f'{self._human_type.capitalize()} saved')
+            messages.success(request, f'{self.human_type.capitalize()} saved')
             return redirect(grant_management_project_url(kwargs))
 
-        messages.error(request, f'{self._human_type.capitalize()} not saved. Verify errors in the form')
+        messages.error(request, f'{self.human_type.capitalize()} not saved. Verify errors in the form')
 
         context['FORM_SET'] = forms
 
@@ -225,67 +225,43 @@ class GrantManagementUpdateView(TemplateView):
 
 
 class BlogPostsUpdateView(GrantManagementUpdateView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         inline_formset=BlogPostsInlineFormSet,
-                         human_type='blog posts'
-                         )
+    inline_formset = BlogPostsInlineFormSet
+    human_type = 'blog posts'
 
 
 class LaySummariesUpdateView(GrantManagementUpdateView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         inline_formset=LaySummariesInlineFormSet,
-                         human_type='lay summaries'
-                         )
+    inline_formset = LaySummariesInlineFormSet
+    human_type = 'lay summaries'
 
 
 class DatasetUpdateView(GrantManagementUpdateView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         inline_formset=DatasetInlineFormSet,
-                         human_type='data'
-                         )
+    inline_formset = DatasetInlineFormSet
+    human_type = 'data'
 
 
 class PublicationsUpdateView(GrantManagementUpdateView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         inline_formset=PublicationsInlineFormSet,
-                         human_type='publications'
-                         )
+    inline_formset = PublicationsInlineFormSet
+    human_type = 'publications'
 
 
 class MediaUpdateView(GrantManagementUpdateView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         inline_formset=MediaInlineFormSet,
-                         human_type='media'
-                         )
+    inline_formset = MediaInlineFormSet
+    human_type = 'media'
 
 
 class InstallmentsUpdateView(GrantManagementUpdateView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         inline_formset=InstallmentsInlineFormSet,
-                         human_type='installments'
-                         )
+    inline_formset = InstallmentsInlineFormSet
+    human_type = 'installments'
 
 
 class ScientificReportsUpdateView(GrantManagementUpdateView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         inline_formset=ScientificReportsInlineFormSet,
-                         human_type='scientific reports'
-                         )
+    inline_formset = ScientificReportsInlineFormSet
+    human_type = 'scientific reports'
 
 
 class SocialMediaUpdateView(GrantManagementUpdateView):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs,
-                         inline_formset=SocialNetworksInlineFormSet,
-                         human_type='social media'
-                         )
+    inline_formset = SocialNetworksInlineFormSet
+    human_type = 'social media'
 
 
 class FinancesViewUpdate(TemplateView):
