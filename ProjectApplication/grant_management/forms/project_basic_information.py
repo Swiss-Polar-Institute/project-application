@@ -16,10 +16,17 @@ class ProjectBasicInformationForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
 
+        self.fields['allocated_budget'].disabled = True
+        self.fields['allocated_budget'].help_text = 'The allocated budget cannot be changed after the project is created'
+
         self.helper = FormHelper(self)
         cancel_url = reverse('logged-grant_management-project-detail', kwargs={'pk': self.instance.id})
 
         self.helper.layout = Layout(
+            Div(
+                Div('allocated_budget', css_class='col-6'),
+                css_class='row'
+            ),
             Div(
                 Div('start_date', css_class='col-6'),
                 css_class='row'
@@ -51,7 +58,7 @@ class ProjectBasicInformationForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ['start_date', 'end_date']
+        fields = ['start_date', 'end_date', 'allocated_budget']
         widgets = {'start_date': XDSoftYearMonthDayPickerInput,
                    'end_date': XDSoftYearMonthDayPickerInput
                    }
