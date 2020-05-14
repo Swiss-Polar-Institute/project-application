@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field
+from crispy_forms.layout import Layout, Div, Field, HTML
 from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
@@ -19,6 +19,8 @@ class BlogPostModelForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True  # checked in the higher form level
+
+        media = "{% include 'grant_management/_enumeration_of_media.tmpl' %}"
 
         self.helper.layout = Layout(
             Div(
@@ -42,6 +44,7 @@ class BlogPostModelForm(forms.ModelForm):
             ),
             Div(
                 Div('author', css_class='col-6'),
+                Div(HTML(media), css_class='col-6'),
                 css_class='row'
             )
         )

@@ -1,0 +1,5 @@
+<ul>
+    {% for medium in form.instance.medium_set.all %}
+        <li>{{ medium.descriptive_text }} <a href="{{ medium.file.url }}">Link</a></li>
+    {% endfor %}
+</ul>
