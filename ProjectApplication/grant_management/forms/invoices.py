@@ -186,7 +186,7 @@ class InvoiceItemModelForm(forms.ModelForm):
                 hasattr(project, 'grantagreement') is False or project.grantagreement.file is None):
             grant_agreement_url = reverse('logged-grant_management-grant_agreement-add', kwargs={'project': project.id})
             sent_for_payment_errors.append(
-                f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to send the invoice for payment')
+                f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
 
         original_lay_summary_type = LaySummaryType.objects.get(name=settings.LAY_SUMMARY_ORIGINAL)
         if sent_for_payment_date and LaySummary.objects.filter(project=project).filter(
