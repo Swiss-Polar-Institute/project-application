@@ -68,6 +68,11 @@ class ProjectDetail(DetailView):
         context['lay_summaries_count'] = project.laysummary_set.exclude(text='').count()
         context['blog_posts_count'] = project.blogpost_set.exclude(text='').count()
 
+        if 'tab' in self.request.GET:
+            context['active_tab'] = self.request.GET['tab']
+        else:
+            context['active_tab'] = 'finances'
+
         return context
 
 
@@ -223,7 +228,7 @@ class GrantManagementUpdateView(TemplateView):
         if forms.is_valid():
             forms.save()
             messages.success(request, f'{self.human_type.capitalize()} saved')
-            return redirect(f'{grant_management_project_url(kwargs)}#{self.tab}')
+            return redirect(f'{grant_management_project_url(kwargs)}?tab={self.tab}')
 
         messages.error(request, f'{self.human_type.capitalize()} not saved. Verify errors in the form')
 
@@ -265,19 +270,19 @@ class MediaUpdateView(GrantManagementUpdateView):
 class InvoicesUpdateView(GrantManagementUpdateView):
     inline_formset = InvoicesInlineFormSet
     human_type = 'invoices'
-    tab = 'finance'
+    tab = 'finances'
 
 
 class FinancialReportsUpdateView(GrantManagementUpdateView):
     inline_formset = FinancialReportsInlineFormSet
     human_type = 'financial reports'
-    tab = 'finance'
+    tab = 'finances'
 
 
 class InstallmentsUpdateView(GrantManagementUpdateView):
     inline_formset = InstallmentsInlineFormSet
     human_type = 'installments'
-    tab = 'finance'
+    tab = 'finances'
 
 
 class ScientificReportsUpdateView(GrantManagementUpdateView):

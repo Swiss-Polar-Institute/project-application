@@ -3,7 +3,6 @@
 {% load thousands_separator %}
 
 {% block contents %}
-    {% include 'common/_bootstrap_tab_deep_linking.tmpl' with tab_name='grant-management-tab' %}
     <div class="row">
         <div class="col-10">
             {% include 'grant_management/_project_header-detail.tmpl' %}
@@ -33,20 +32,22 @@
             <div>
                 <ul class="nav nav-tabs" id="grant-management-tab">
                     <li class="nav-item">
-                        <a class="nav-link active" id="finances-tab" data-toggle="tab" href="#finances" role="tab">Finances</a>
+                        <a class="nav-link {% if active_tab == 'finances' %}active{% endif %}" id="finances-tab"
+                           data-toggle="tab" href="#finances" role="tab">Finances</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="deliverables-tab" data-toggle="tab" href="#deliverables" role="tab">Deliverables</a>
+                        <a class="nav-link {% if active_tab == 'deliverables' %}active{% endif %}" id="deliverables-tab"
+                           data-toggle="tab" href="#deliverables" role="tab">Deliverables</a>
                     </li>
                 </ul>
             </div>
 
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="finances" role="tabpanel">
+                <div class="tab-pane fade {% if active_tab == 'finances' %}show active{% endif %}" id="finances" role="tabpanel">
                     <br>
                     {% include 'grant_management/_project_finances.tmpl' %}
                 </div>
-                <div class="tab-pane fade" id="deliverables" role="tabpanel">
+                <div class="tab-pane fade {% if active_tab == 'deliverables' %}show active{% endif %}" id="deliverables" role="tabpanel">
                     <br>
                     {% include 'grant_management/_project_deliverables.tmpl' %}
                 </div>
