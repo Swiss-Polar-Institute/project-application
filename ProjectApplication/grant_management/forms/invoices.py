@@ -191,8 +191,9 @@ class InvoiceItemModelForm(forms.ModelForm):
         original_lay_summary_type = LaySummaryType.objects.get(name=settings.LAY_SUMMARY_ORIGINAL)
         if sent_for_payment_date and LaySummary.objects.filter(project=project).filter(
                 lay_summary_type=original_lay_summary_type).exists() is False:
+            lay_summary_url = reverse('logged-grant_management-lay_summaries-update', kwargs={'project': project.id})
             sent_for_payment_errors.append(
-                'Invoice cannot be sent for payment if a lay summary has not been received')
+                f'Please attach the <a href="{lay_summary_url}">original lay summary</a> in ordre to enter the sent for payment date')
 
         if amount and installment and amount > installment.amount:
             errors['amount'] = 'Invoice amount is greater than the installment amount'
