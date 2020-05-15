@@ -251,7 +251,7 @@ class LaySummariesUpdateView(GrantManagementUpdateView):
 
 class DatasetUpdateView(GrantManagementUpdateView):
     inline_formset = DatasetInlineFormSet
-    human_type = 'data set'
+    human_type = 'dataset'
     tab = 'deliverables'
 
 
