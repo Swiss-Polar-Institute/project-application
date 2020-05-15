@@ -151,6 +151,12 @@ class BlogPost(AbstractProjectDueReceivedDate):
     author = models.ForeignKey(PhysicalPerson, help_text='Person who wrote the blog post',
                                blank=True, null=True, on_delete=models.PROTECT)
 
+    def media_list(self):
+        if self.id:
+            return self.medium_set.all().order_by('received_date')
+        else:
+            return []
+
 
 class License(CreateModifyOn):
     name = models.CharField(max_length=100,
