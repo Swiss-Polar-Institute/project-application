@@ -186,14 +186,14 @@ class InvoiceItemModelForm(forms.ModelForm):
                 hasattr(project, 'grantagreement') is False or project.grantagreement.file is None):
             grant_agreement_url = reverse('logged-grant_management-grant_agreement-add', kwargs={'project': project.id})
             sent_for_payment_errors.append(
-                f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
+                f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to send the invoice for payment')
 
         original_lay_summary_type = LaySummaryType.objects.get(name=settings.LAY_SUMMARY_ORIGINAL)
         if sent_for_payment_date and LaySummary.objects.filter(project=project).filter(
                 lay_summary_type=original_lay_summary_type).exists() is False:
             lay_summary_url = reverse('logged-grant_management-lay_summaries-update', kwargs={'project': project.id})
             sent_for_payment_errors.append(
-                f'Please attach the <a href="{lay_summary_url}">original lay summary</a> in ordre to enter the sent for payment date')
+                f'Please attach the <a href="{lay_summary_url}">original lay summary</a> in order to send the invoice for payment')
 
         if amount and installment and amount > installment.amount:
             errors['amount'] = 'Invoice amount is greater than the installment amount'
