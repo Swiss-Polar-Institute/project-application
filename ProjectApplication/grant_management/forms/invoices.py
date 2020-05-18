@@ -1,7 +1,6 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, HTML
 from django import forms
-from django.db.models import Sum
 from django.forms import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.urls import reverse
 from django.utils import timezone
@@ -106,16 +105,6 @@ class InvoiceItemModelForm(forms.ModelForm):
             divs += Div(HTML("{% include 'comments/_accordion-comment-list-fields-for-new.tmpl' %}"))
 
         self.helper.layout = Layout(*divs)
-
-    @staticmethod
-    def _total_amount_invoices_for_project(project, excluded_invoice):
-        excluded_invoice_id = None
-        if excluded_invoice:
-            excluded_invoice_id = excluded_invoice.id
-
-        amount = Invoice.objects.filter(project=project).exclude(id=excluded_invoice_id).aggregate(Sum('amount'))[
-            'amount__sum']
-        return amount or 0
 
     def clean(self):
         cd = super().clean()
@@ -280,9 +269,11 @@ class InvoicesFormSet(BaseInlineFormSet):
                 continue
 
             if invoice_form.cleaned_data['installment'].id in installment_to_amounts:
-                installment_to_amounts[invoice_form.cleaned_data['installment'].id] += invoice_form.cleaned_data['amount']
+                installment_to_amounts[invoice_form.cleaned_data['installment'].id] += invoice_form.cleaned_data[
+                    'amount']
             else:
-                installment_to_amounts[invoice_form.cleaned_data['installment'].id] = invoice_form.cleaned_data['amount']
+                installment_to_amounts[invoice_form.cleaned_data['installment'].id] = invoice_form.cleaned_data[
+                    'amount']
 
         errors = []
         for installment_id, invoiced_amount in installment_to_amounts.items():
