@@ -1,4 +1,3 @@
-# export SKIP_S3_TESTS=1
 export FORCE_SQLITE3_DATABASE=1
 
 export OBJECT_STORAGE_SECRET_ACCESS_KEY=this_is_used_for_the_unit_tests

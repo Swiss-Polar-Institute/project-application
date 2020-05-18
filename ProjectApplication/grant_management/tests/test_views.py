@@ -5,7 +5,6 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
-from ProjectApplication import settings
 from project_core.tests import database_population
 
 
@@ -108,3 +107,15 @@ class GrantAgreementAddViewTest(TestCase):
         self.assertEqual(grant_agreement.signed_date, date(2020, 5, 1))
         self.assertEqual(list(grant_agreement.signed_by.all()), [self._project.principal_investigator.person])
         self.assertTrue(grant_agreement.file.name != '')
+
+
+class ProjectUpdateTest(TestCase):
+    def setUp(self):
+        self._project = database_population.create_project()
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get(self):
+        response = self._client_management.get(
+            reverse('logged-grant_management-project-update', kwargs={'pk': self._project.id})
+        )
+        self.assertEqual(response.status_code, 200)
