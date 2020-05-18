@@ -4,8 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.core.exceptions import ValidationError
-from django.db.models import Sum
-from django.forms import BaseInlineFormSet, inlineformset_factory, ModelChoiceField
+from django.forms import BaseInlineFormSet, inlineformset_factory
 from django.utils.formats import number_format
 from django.utils.safestring import mark_safe
 
@@ -15,11 +14,6 @@ from project_core.fields import AmountField
 from project_core.models import Project
 from project_core.templatetags.thousands_separator import thousands_separator
 from project_core.widgets import XDSoftYearMonthDayPickerInput
-
-
-class InstallmentTypeWithDescription(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return f'{obj.name} - {obj.description}'
 
 
 class InstallmentModelForm(forms.ModelForm):
@@ -80,20 +74,6 @@ class InstallmentModelForm(forms.ModelForm):
 
         if errors:
             raise ValidationError(errors)
-
-    @staticmethod
-    def _total_amount_installments_for_project(project, excluded_installment):
-        excluded_installment_id = None
-
-        if excluded_installment:
-            excluded_installment_id = excluded_installment.id
-
-        amount = Installment.objects. \
-            filter(project=project). \
-            exclude(id=excluded_installment_id). \
-            aggregate(Sum('amount'))['amount__sum']
-
-        return amount or 0
 
     class Meta:
         model = Installment
