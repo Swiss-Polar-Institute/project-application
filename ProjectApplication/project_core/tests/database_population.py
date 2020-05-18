@@ -261,6 +261,8 @@ def create_proposal():
 
 def create_project():
     proposal = create_proposal()
+    antarctic, arctic, high_peaks = create_geographical_areas()
+    keywords = create_keywords()
 
     project, _ = Project.objects.get_or_create(key='SPI-2020-001',
                                                title='This is a test project',
@@ -273,6 +275,9 @@ def create_project():
                                                status=Project.ONGOING,
                                                principal_investigator=proposal.applicant)
 
+    project.geographical_areas.add(arctic)
+    project.keywords.add(keywords[0])
+
     return project
 
 
@@ -280,6 +285,7 @@ def create_lay_summary_original():
     lay_summary, _ = LaySummaryType.objects.get_or_create(name='Original', description='Original from the PI')
 
     return lay_summary
+
 
 def create_file():
     a_file = StringIO('some file content')
