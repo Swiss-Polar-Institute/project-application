@@ -5,7 +5,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
-from grant_management.models import GrantAgreement
+from grant_management.models import GrantAgreement, Installment
 from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
@@ -173,19 +173,21 @@ class InstallmentsUpdateViewTest(TestCase):
 
     def test_post(self):
         data = dict_to_multivalue_dict({'FORM_SET-TOTAL_FORMS': 1,
-                                        'FORM_SET-INITIAL_FORMS': 1,
+                                        'FORM_SET-INITIAL_FORMS': 0,
                                         'FORM_SET-MIN_NUM_FORMS': 1,
                                         'FORM_SET-MAX_NUM_FORMS': 1000,
                                         'FORM_SET-0-project': self._project.id,
-                                        'FORM_SET-0-id': 6,
+                                        'FORM_SET-0-id': '',
                                         'FORM_SET-0-DELETE': '',
                                         'FORM_SET-0-can_be_deleted': 0,
                                         'FORM_SET-0-due_date': date(2020, 5, 14).strftime('%d-%m-%Y'),
                                         'FORM_SET-0-amount': 50
                                         })
 
+        self.assertEqual(Installment.objects.all().count(), 0)
         response = self._client_management.post(
             reverse('logged-grant_management-installments-update', kwargs={'project': self._project.id}),
             data=data
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Installment.objects.all().count(), 1)
