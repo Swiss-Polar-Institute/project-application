@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
+from grant_management.models import GrantAgreement
 from project_core.tests import database_population
 
 
@@ -117,5 +118,20 @@ class ProjectUpdateTest(TestCase):
     def test_get(self):
         response = self._client_management.get(
             reverse('logged-grant_management-project-update', kwargs={'pk': self._project.id})
+        )
+        self.assertEqual(response.status_code, 200)
+
+
+class GrantAgreementUpdateViewTest(TestCase):
+    def setUp(self):
+        self._project = database_population.create_project()
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get(self):
+        grant_agreement = GrantAgreement(project=self._project)
+        grant_agreement.save()
+
+        response = self._client_management.get(
+            reverse('logged-grant_management-grant_agreement-update', kwargs={'pk': self._project.grantagreement.id})
         )
         self.assertEqual(response.status_code, 200)
