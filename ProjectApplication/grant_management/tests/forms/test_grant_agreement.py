@@ -15,9 +15,6 @@ class GrantAgreementFormTest(TestCase):
         self._project = database_population.create_project()
 
     def test_grant_agreement_valid(self):
-        if settings.SKIP_S3_TESTS:
-            self.skipTest('Skipping S3 tests')
-
         data = {'project': self._project,
                 'signed_date': datetime(2020, 1, 10),
                 'signed_by': PhysicalPerson.objects.filter(id=self._project.principal_investigator.person.id)

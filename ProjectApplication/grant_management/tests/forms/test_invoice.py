@@ -16,9 +16,6 @@ class InvoiceItemFormTest(TestCase):
         self._lay_summary_original_type = database_population.create_lay_summary_original()
 
     def test_valid_complete_invoice(self):
-        if settings.SKIP_S3_TESTS:
-            self.skipTest('No S3 tests')
-
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 12),
                                          file=SimpleUploadedFile('grant_agreement.txt',
@@ -52,9 +49,6 @@ class InvoiceItemFormTest(TestCase):
         self.assertEqual(Invoice.objects.all().count(), 1)
 
     def test_invalid_due_date_too_early(self):
-        if settings.SKIP_S3_TESTS:
-            self.skipTest('No S3 tests')
-
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
                                          file=SimpleUploadedFile('grant_agreement.txt',
@@ -74,9 +68,6 @@ class InvoiceItemFormTest(TestCase):
         self.assertIn('due_date', invoice_item_form.errors)
 
     def test_invalid_due_date_too_late(self):
-        if settings.SKIP_S3_TESTS:
-            self.skipTest('No S3 tests')
-
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
                                          file=SimpleUploadedFile('grant_agreement.txt',
@@ -97,9 +88,6 @@ class InvoiceItemFormTest(TestCase):
         self.assertIn('due_date', invoice_item_form.errors)
 
     def test_invalid_amount_missing(self):
-        if settings.SKIP_S3_TESTS:
-            self.skipTest('No S3 tests')
-
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
                                          file=SimpleUploadedFile('grant_agreement.txt',

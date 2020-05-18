@@ -281,4 +281,3 @@ REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
 
 DEBUG = os.environ['DEBUG'] == '1'
 NAVBAR_BACKGROUND_COLOR = os.getenv('NAVBAR_BACKGROUND_COLOR', 'bg-primary')
-SKIP_S3_TESTS = os.getenv('SKIP_S3_TESTS', False)
