@@ -1,7 +1,7 @@
 from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, Client
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
@@ -134,4 +134,14 @@ class GrantAgreementUpdateViewTest(TestCase):
         response = self._client_management.get(
             reverse('logged-grant_management-grant_agreement-update', kwargs={'pk': self._project.grantagreement.id})
         )
+        self.assertEqual(response.status_code, 200)
+
+
+class LaySummariesRawTest(TestCase):
+    def setUp(self):
+        self._project = database_population.create_project()
+
+    def test_get(self):
+        c = Client()
+        response = c.get(reverse('lay-summaries-raw', kwargs={'call': self._project.call.id}))
         self.assertEqual(response.status_code, 200)
