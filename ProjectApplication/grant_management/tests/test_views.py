@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
 from ProjectApplication import settings
-from grant_management.models import GrantAgreement, Installment, Invoice, LaySummaryType
+from grant_management.models import GrantAgreement, Installment, Invoice, LaySummaryType, LaySummary
 from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
@@ -264,3 +264,42 @@ class InvoicesUpdateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Invoice.objects.all().count(), 1)
+
+
+class LaySummariesUpdateViewTest(TestCase):
+    def setUp(self):
+        self._project = database_population.create_project()
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get(self):
+        response = self._client_management.get(
+            reverse('logged-grant_management-lay_summaries-update', kwargs={'project': self._project.id})
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_post(self):
+        # Lay Summary Type needs to exist because during the invoice checking it does
+        # a lookup for the settings.LAY_SUMMARY_ORIGINAL
+        lay_summary_type = LaySummaryType.objects.create(name=settings.LAY_SUMMARY_ORIGINAL,
+                                                         description='Original')
+
+        data = dict_to_multivalue_dict({'FORM_SET-TOTAL_FORMS': 1,
+                                        'FORM_SET-INITIAL_FORMS': 0,
+                                        'FORM_SET-MIN_NUM_FORMS': 1,
+                                        'FORM_SET-MAX_NUM_FORMS': 1000,
+                                        'FORM_SET-0-project': self._project.id,
+                                        'FORM_SET-0-id': '',
+                                        'FORM_SET-0-DELETE': '',
+                                        'FORM_SET-0-can_be_deleted': 0,
+                                        'FORM_SET-0-due_date': date(2020, 5, 14).strftime('%d-%m-%Y'),
+                                        'FORM_SET-0-lay_summary_type': lay_summary_type.id
+                                        })
+
+        self.assertEqual(LaySummary.objects.all().count(), 0)
+        response = self._client_management.post(
+            reverse('logged-grant_management-lay_summaries-update', kwargs={'project': self._project.id}),
+            data=data
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(LaySummary.objects.all().count(), 1)
