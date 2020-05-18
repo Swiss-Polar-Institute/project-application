@@ -145,3 +145,15 @@ class LaySummariesRawTest(TestCase):
         c = Client()
         response = c.get(reverse('lay-summaries-raw', kwargs={'call': self._project.call.id}))
         self.assertEqual(response.status_code, 200)
+
+
+class BlogPostsUpdateViewTest(TestCase):
+    def setUp(self):
+        self._project = database_population.create_project()
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get(self):
+        response = self._client_management.get(
+            reverse('logged-grant_management-blog_posts-update', kwargs={'project': self._project.id})
+        )
+        self.assertEqual(response.status_code, 200)
