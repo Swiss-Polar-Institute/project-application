@@ -7,7 +7,7 @@ from grant_management.models import Installment
 from project_core.tests import database_population
 
 
-class InstallmentsFormTest(TestCase):
+class InstallmentModelFormTest(TestCase):
     def setUp(self):
         self._project = database_population.create_project()
 
@@ -22,3 +22,6 @@ class InstallmentsFormTest(TestCase):
         self.assertTrue(installment_form.is_valid())
         installment_form.save()
         self.assertEqual(Installment.objects.all().count(), 1)
+
+# class InstallmentsFormSetTest(TestCase):
+# Currently tested from the view "unit" test
