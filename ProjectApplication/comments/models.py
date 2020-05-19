@@ -294,7 +294,7 @@ def project_attachment_rename(instance, filename):
 
 class ProjectAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
-                            upload_to=proposal_evaluation_rename)
+                            upload_to=project_attachment_rename)
     project = models.ForeignKey(Project,
                                 help_text='Project that this attachment belongs to',
                                 on_delete=models.PROTECT)

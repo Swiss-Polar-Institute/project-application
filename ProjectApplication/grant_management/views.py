@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
-from comments.utils import comments_attachments_forms
+from comments.utils import comments_attachments_forms, process_comment_attachment
 from grant_management.forms.blog_posts import BlogPostsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.installments import InstallmentsInlineFormSet
@@ -71,7 +71,7 @@ class ProjectDetail(DetailView):
         context['lay_summaries_count'] = project.laysummary_set.exclude(text='').count()
         context['blog_posts_count'] = project.blogpost_set.exclude(text='').count()
 
-        context.update(comments_attachments_forms('logged-grant_management-project-detail', project))
+        context.update(comments_attachments_forms('logged-grant_management-project-comment-add-detail', project))
 
         if 'tab' in self.request.GET:
             context['active_tab'] = self.request.GET['tab']
@@ -79,6 +79,19 @@ class ProjectDetail(DetailView):
             context['active_tab'] = 'finances'
 
         return context
+
+
+class ProjectDetailCommentAdd(ProjectDetail):
+    def post(self, request, *args, **kwargs):
+        self.object = Project.objects.get(pk=kwargs['pk'])
+        context = super().get_context_data(**kwargs)
+
+        result = process_comment_attachment(request, context, 'logged-grant_management-project-detail',
+                                            'logged-grant_management-project-comment-add-detail',
+                                            'grant_management/project-detail.tmpl',
+                                            context['project'])
+
+        return result
 
 
 class ProjectUpdate(SuccessMessageMixin, UpdateView):
