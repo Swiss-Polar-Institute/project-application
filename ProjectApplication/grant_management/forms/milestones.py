@@ -27,9 +27,9 @@ class MilestoneModelForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('due_date', css_class='col-4'),
+                Div('due_date', css_class='col-2'),
                 Div('category', css_class='col-4'),
-                Div('text', css_class='col-4'),
+                Div('text', css_class='col-6'),
                 css_class='row'
             ),
         )
