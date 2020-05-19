@@ -3,9 +3,8 @@ from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 
-from grant_management.models import SocialNetwork, ProjectSocialNetwork
+from grant_management.models import ProjectSocialNetwork
 from project_core.models import Project
-from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
 class SocialNetworkModelForm(forms.ModelForm):
