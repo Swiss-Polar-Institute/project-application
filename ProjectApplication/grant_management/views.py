@@ -215,6 +215,9 @@ class GrantManagementUpdateView(TemplateView):
 
         super().__init__(*args, **kwargs)
 
+        if self.human_type_plural is None:
+            self.human_type_plural = f'{self.human_type}s'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -228,14 +231,11 @@ class GrantManagementUpdateView(TemplateView):
 
         context['FORM_SET'] = self.inline_formset(prefix='FORM_SET', instance=context['project'])
 
-        if self.human_type_plural:
-            context['title'] = self.human_type_plural.capitalize()
-        else:
-            context['title'] = f'{self.human_type}s'.capitalize()
+        context['title'] = self.human_type_plural.capitalize()
 
         context['human_type'] = self.human_type
 
-        context['save_text'] = f'Save {self.human_type.title()}'
+        context['save_text'] = f'Save {self.human_type_plural.title()}'
 
         return context
 
@@ -253,10 +253,10 @@ class GrantManagementUpdateView(TemplateView):
 
         if forms.is_valid():
             forms.save()
-            messages.success(request, f'{self.human_type.capitalize()} saved')
+            messages.success(request, f'{self.human_type_plural.capitalize()} saved')
             return redirect(f'{grant_management_project_url(kwargs)}?tab={self.tab}')
 
-        messages.error(request, f'{self.human_type.capitalize()} not saved. Verify errors in the form')
+        messages.error(request, f'{self.human_type_plural.capitalize()} not saved. Verify errors in the form')
 
         context['FORM_SET'] = forms
 
