@@ -9,7 +9,7 @@
         </thead>
         {% for milestone in milestones %}
             <tr>
-                <td data-sort="{{ milene.due_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=milestone.due_date %}</td>
+                <td data-sort="{{ milestone.due_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=milestone.due_date %}</td>
                 <td>{{ milestone.category.name }}</td>
                 <td>{% include 'common/_value-or-dash.tmpl' with value=milestone.text %}</td>
             </tr>
