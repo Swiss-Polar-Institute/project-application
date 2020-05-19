@@ -3,13 +3,15 @@ from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 
-from grant_management.models import ProjectSocialNetwork
+from grant_management.models import ProjectSocialNetwork, SocialNetwork
 from project_core.models import Project
 
 
 class SocialNetworkModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.fields['social_network'].queryset = SocialNetwork.objects.order_by('name')
 
         self.helper = FormHelper()
         self.helper.form_tag = False
