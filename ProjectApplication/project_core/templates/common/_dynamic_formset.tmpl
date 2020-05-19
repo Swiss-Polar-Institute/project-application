@@ -114,10 +114,22 @@
 
         $(document).find('.modelselect2').each(function (index, value) {
             let id = value.id;
+
+            // Used for photographer, financial reports, etc.
             if (id.includes('photographer') || id.includes('author') || id.includes('approved_by')) {
                 $(value).select2({
                     ajax: {
-                        url: '/logged/autocomplete/physical_people',
+                        url: '{% url "logged-autocomplete-physical-people" %}',
+                        dataType: 'json'
+                    }
+                });
+            }
+
+            // Used for the Milestones category
+            if (id.includes('category')) {
+                $(value).select2({
+                    ajax: {
+                        url: '{% url "logged-grant_management-autocomplete-milestones-names" %}',
                         dataType: 'json'
                     }
                 });

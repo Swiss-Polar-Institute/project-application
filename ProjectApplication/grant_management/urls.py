@@ -78,7 +78,7 @@ urlpatterns = [
          grant_management.views.LaySummariesRaw.as_view(),
          name='lay-summaries-raw'),
 
-    path('logged/autocomplete/milestones/',
+    path('logged/autocomplete/milestones-category-names/',
          grant_management.views.MilestoneCategoriesAutocomplete.as_view(create_field='name'),
          name='logged-grant_management-autocomplete-milestones-names'),
 ]
