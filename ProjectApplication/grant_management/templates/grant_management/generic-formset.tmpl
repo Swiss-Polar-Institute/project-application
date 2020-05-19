@@ -9,7 +9,7 @@
             <form action="" enctype="multipart/form-data" method="post">
                 <h3>{{ title }}</h3>
                 <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
-                {% include 'common/_dynamic_formset.tmpl' with form_set=FORM_SET %}
+                {% include 'common/_dynamic_formset.tmpl' with form_set=FORM_SET human_type=human_type %}
 
                 {% include 'common/_submit-button.tmpl' with value=save_text %}
                 {% include 'common/_cancel-button.tmpl' with value="Cancel" url=cancel_url %}

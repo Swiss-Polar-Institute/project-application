@@ -207,6 +207,7 @@ def grant_management_project_url(kwargs):
 class GrantManagementUpdateView(TemplateView):
     inline_formset = None
     human_type = None
+    human_type_plural = None
     tab = None
 
     def __init__(self, *args, **kwargs):
@@ -226,7 +227,14 @@ class GrantManagementUpdateView(TemplateView):
         context.update(basic_context_data_grant_agreement(project, self.human_type.capitalize()))
 
         context['FORM_SET'] = self.inline_formset(prefix='FORM_SET', instance=context['project'])
-        context['title'] = self.human_type.capitalize()
+
+        if self.human_type_plural:
+            context['title'] = self.human_type_plural.capitalize()
+        else:
+            context['title'] = f'{self.human_type}s'.capitalize()
+
+        context['human_type'] = self.human_type
+
         context['save_text'] = f'Save {self.human_type.title()}'
 
         return context
@@ -257,13 +265,14 @@ class GrantManagementUpdateView(TemplateView):
 
 class BlogPostsUpdateView(GrantManagementUpdateView):
     inline_formset = BlogPostsInlineFormSet
-    human_type = 'blog posts'
+    human_type = 'blog post'
     tab = 'deliverables'
 
 
 class LaySummariesUpdateView(GrantManagementUpdateView):
     inline_formset = LaySummariesInlineFormSet
-    human_type = 'lay summaries'
+    human_type = 'lay summary'
+    human_type_plural = 'lay summaries'
     tab = 'deliverables'
 
 
@@ -275,49 +284,51 @@ class DatasetUpdateView(GrantManagementUpdateView):
 
 class PublicationsUpdateView(GrantManagementUpdateView):
     inline_formset = PublicationsInlineFormSet
-    human_type = 'publications'
+    human_type = 'publication'
     tab = 'deliverables'
 
 
 class MediaUpdateView(GrantManagementUpdateView):
     inline_formset = MediaInlineFormSet
-    human_type = 'media'
+    human_type = 'medium'
+    human_type_plural = 'media'
     tab = 'deliverables'
 
 
 class InvoicesUpdateView(GrantManagementUpdateView):
     inline_formset = InvoicesInlineFormSet
-    human_type = 'invoices'
+    human_type = 'invoice'
     tab = 'finances'
 
 
 class FinancialReportsUpdateView(GrantManagementUpdateView):
     inline_formset = FinancialReportsInlineFormSet
-    human_type = 'financial reports'
+    human_type = 'financial report'
     tab = 'finances'
 
 
 class InstallmentsUpdateView(GrantManagementUpdateView):
     inline_formset = InstallmentsInlineFormSet
-    human_type = 'installments'
+    human_type = 'installment'
     tab = 'finances'
 
 
 class ScientificReportsUpdateView(GrantManagementUpdateView):
     inline_formset = ScientificReportsInlineFormSet
-    human_type = 'scientific reports'
+    human_type = 'scientific report'
     tab = 'deliverables'
 
 
 class SocialMediaUpdateView(GrantManagementUpdateView):
     inline_formset = SocialNetworksInlineFormSet
-    human_type = 'social media'
+    human_type = 'social medium'
+    human_type_plural = 'social media'
     tab = 'deliverables'
 
 
 class MilestoneUpdateView(GrantManagementUpdateView):
     inline_formset = MilestoneInlineFormSet
-    human_type = 'milestones'
+    human_type = 'milestone'
     tab = 'deliverables'
 
 
