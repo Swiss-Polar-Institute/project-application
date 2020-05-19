@@ -1,3 +1,4 @@
+from dal import autocomplete
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.shortcuts import render, redirect
@@ -11,10 +12,11 @@ from grant_management.forms.invoices import InvoicesInlineFormSet
 from grant_management.forms.lay_summaries import LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
-from grant_management.models import GrantAgreement
+from grant_management.models import GrantAgreement, Milestone, MilestoneCategory
 from project_core.models import Project
 from .forms.datasets import DatasetInlineFormSet
 from .forms.media import MediaInlineFormSet
+from .forms.milestones import MilestoneInlineFormSet
 from .forms.project import ProjectForm
 from .forms.publications import PublicationsInlineFormSet
 from .forms.social_network import SocialNetworksInlineFormSet
@@ -297,6 +299,12 @@ class SocialMediaUpdateView(GrantManagementUpdateView):
     tab = 'deliverables'
 
 
+class MilestoneUpdateView(GrantManagementUpdateView):
+    inline_formset = MilestoneInlineFormSet
+    human_type = 'milestones'
+    tab = 'deliverables'
+
+
 class LaySummariesRaw(TemplateView):
     template_name = 'grant_management/lay_summaries-raw.tmpl'
 
@@ -310,3 +318,29 @@ class LaySummariesRaw(TemplateView):
         context['projects'] = projects
 
         return context
+
+
+class MilestoneCategoriesAutocomplete(autocomplete.Select2QuerySetView):
+    def create_object(self, text):
+        d = {self.create_field: text,
+             'created_by': self.request.user}
+
+        return self.get_queryset().get_or_create(**d)[0]
+
+    def get_result_label(self, result):
+        return result.name
+
+    def has_add_permission(self, *args, **kwargs):
+        # By default only authenticated users with permissions to add in the model
+        # have the option to create keywords. We allow any user (if it's logged-in, for the URL)
+        # to create milestones
+        return True
+
+    def get_queryset(self):
+        qs = MilestoneCategory.objects.all()
+
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        qs = qs.order_by('name')
+        return qs

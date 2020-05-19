@@ -65,8 +65,15 @@ urlpatterns = [
          grant_management.views.SocialMediaUpdateView.as_view(),
          name='logged-grant_management-social-media-update'),
 
+    path('logged/grant-management/project/<int:project>/milestones/update/',
+         grant_management.views.MilestoneUpdateView.as_view(),
+         name='logged-grant_management-milestones-update'),
+
     path('lay-summaries/<int:call>/raw/',
          grant_management.views.LaySummariesRaw.as_view(),
          name='lay-summaries-raw'),
 
+    path('logged/autocomplete/milestones/',
+         grant_management.views.MilestoneCategoriesAutocomplete.as_view(create_field='name'),
+         name='logged-grant_management-autocomplete-milestones-names'),
 ]

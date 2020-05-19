@@ -1,0 +1,47 @@
+{% with milestones=project.milestone_set.all %}
+    <table id="milestones_table" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Due</th>
+            <th>Category</th>
+            <th>Text</th>
+        </tr>
+        </thead>
+        {% for milestone in milestones %}
+            <tr>
+                <td data-sort="{{ milene.due_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=milestone.due_date %}</td>
+                <td>{{ milestone.category.name }}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=milestone.text %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#milestones_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                    "language": {
+                        "zeroRecords": "No milestones entered"
+                    },
+                    "columns": [
+                        {"width": "15%"},
+                        {"width": "15%"},
+                        {"width": "70%"}
+                    ],
+                }
+            );
+        });
+    </script>
+
+    <style>
+        #lay_summaries_tables > td:nth-child(1), #lay_summaries_tables > td:nth-child(2) {
+            white-space: nowrap;
+        }
+    </style>
+
+{% endwith %}
+<p></p>

@@ -1,7 +1,9 @@
+from django.contrib.auth.models import User
 from django.db import models
 # Create your models here.
 # add dates of review, signed date, who signed, grant agreement - need flexibilty in types of dates that are added
 from django.db.models import Sum
+from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from project_core.models import CreateModifyOn, PhysicalPerson, Project
@@ -219,6 +221,7 @@ class ProjectSocialNetwork(CreateModifyOn):
 def generate_doi_link(doi):
     return f'https://doi.org/{doi}'
 
+
 class Publication(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project to which the publication is related',
                                 on_delete=models.PROTECT)
@@ -247,3 +250,22 @@ class Dataset(CreateModifyOn):
 
     def __str__(self):
         return '{}'.format(self.title)
+
+
+class MilestoneCategory(CreateModifyOn):
+    name = models.CharField(max_length=20)
+    created_by = models.ForeignKey(User, help_text='User that created the category', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name
+
+
+class Milestone(CreateModifyOn):
+    project = models.ForeignKey(Project, help_text='Project to which the milestone is related',
+                                on_delete=models.PROTECT)
+    due_date = models.DateField()
+    category = models.ForeignKey(MilestoneCategory, help_text='Which category is this',
+                                 on_delete=models.PROTECT)
+    text = models.CharField(max_length=200, blank=True, null=True)
+
+    history = HistoricalRecords()

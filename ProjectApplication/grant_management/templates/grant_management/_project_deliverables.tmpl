@@ -1,35 +1,47 @@
+<h3>Milestones
+    <a class="btn btn-primary btn-sm"
+       href="{% url 'logged-grant_management-milestones-update' project=project.id %}">Edit</a></h3>
+{% include 'grant_management/_milestone-list.tmpl' %}
+<p></p>
+
 <h3>Scientific reports
     <a class="btn btn-primary btn-sm"
        href="{% url 'logged-grant_management-scientific_reports-update' project=project.id %}">Edit</a></h3>
 {% include 'grant_management/_report-list.tmpl' with reports=project.scientificreport_set.all report_name='scientific' %}
 <p></p>
+
 <h3>Lay summaries
     <a class="btn btn-primary btn-sm"
        href="{% url 'logged-grant_management-lay_summaries-update' project=project.id %}">Edit</a>
 </h3>
 {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='lay_summaries' count=lay_summaries_count button_text_collapsed='View lay summaries' button_text_not_collapsed='Hide lay summaries' template_file='grant_management/_lay_summary-list.tmpl' %}
 <p></p>
+
 <h3>Blog posts
     <a class="btn btn-primary btn-sm"
        href="{% url 'logged-grant_management-blog_posts-update' project=project.id %}">Edit</a>
 </h3>
 {% include 'grant_management/_blog_post-list.tmpl' %}
 <p></p>
+
 <h3>Photos and media
     <a class="btn btn-primary btn-sm"
        href="{% url 'logged-grant_management-media-update' project=project.id %}">Edit</a>
 </h3>
 {% include 'grant_management/_medium-list.tmpl' with media=project.medium_set.all %}
 <p></p>
+
 <h3>Datasets <a class="btn btn-primary btn-sm"
                 href="{% url 'logged-grant_management-data-update' project=project.id %}">Edit</a></h3>
 {% include 'grant_management/_dataset-list.tmpl' %}
 <p></p>
+
 <h3>Publications <a class="btn btn-primary btn-sm"
                     href="{% url 'logged-grant_management-publications-update' project=project.id %}">Edit</a>
 </h3>
 {% include 'grant_management/_publication-list.tmpl' %}
 <p></p>
+
 <h3>Social media <a class="btn btn-primary btn-sm"
                     href="{% url 'logged-grant_management-social-media-update' project=project.id %}">Edit</a>
 </h3>
