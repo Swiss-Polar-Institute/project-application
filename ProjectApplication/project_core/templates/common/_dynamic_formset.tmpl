@@ -121,7 +121,8 @@
                     ajax: {
                         url: '{% url "logged-autocomplete-physical-people" %}',
                         dataType: 'json'
-                    }
+                    },
+                    containerCssClass: 'form-control'
                 });
             }
 
@@ -131,7 +132,8 @@
                     ajax: {
                         url: '{% url "logged-grant_management-autocomplete-milestones-names" %}',
                         dataType: 'json'
-                    }
+                    },
+                    containerCssClass: 'form-control'
                 });
             }
         });
