@@ -43,17 +43,19 @@
             </div>
 
             <div class="tab-content">
-                <div class="tab-pane fade {% if active_tab == 'finances' %}show active{% endif %}" id="finances" role="tabpanel">
+                <div class="tab-pane fade {% if active_tab == 'finances' %}show active{% endif %}" id="finances"
+                     role="tabpanel">
                     <br>
                     {% include 'grant_management/_project_finances.tmpl' %}
                 </div>
-                <div class="tab-pane fade {% if active_tab == 'deliverables' %}show active{% endif %}" id="deliverables" role="tabpanel">
+                <div class="tab-pane fade {% if active_tab == 'deliverables' %}show active{% endif %}" id="deliverables"
+                     role="tabpanel">
                     <br>
                     {% include 'grant_management/_project_deliverables.tmpl' %}
                 </div>
             </div>
             <p></p>
-            {#            {% include 'comments/_comments-attachments.tmpl' %}#}
+            {% include 'comments/_comments-attachments.tmpl' %}
 
         </div>
         <div class="col-2">

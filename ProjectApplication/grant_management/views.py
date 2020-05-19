@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
+from comments.utils import comments_attachments_forms
 from grant_management.forms.blog_posts import BlogPostsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.installments import InstallmentsInlineFormSet
@@ -12,7 +13,7 @@ from grant_management.forms.invoices import InvoicesInlineFormSet
 from grant_management.forms.lay_summaries import LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
-from grant_management.models import GrantAgreement, Milestone, MilestoneCategory
+from grant_management.models import GrantAgreement, MilestoneCategory
 from project_core.models import Project
 from .forms.datasets import DatasetInlineFormSet
 from .forms.media import MediaInlineFormSet
@@ -69,6 +70,8 @@ class ProjectDetail(DetailView):
 
         context['lay_summaries_count'] = project.laysummary_set.exclude(text='').count()
         context['blog_posts_count'] = project.blogpost_set.exclude(text='').count()
+
+        context.update(comments_attachments_forms('logged-grant_management-project-detail', project))
 
         if 'tab' in self.request.GET:
             context['active_tab'] = self.request.GET['tab']
