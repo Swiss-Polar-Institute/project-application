@@ -7,7 +7,7 @@ from django.utils.safestring import mark_safe
 from django.views.generic import TemplateView
 
 from evaluation.models import CallEvaluation
-from grant_management.models import Invoice, FinancialReport, ScientificReport, LaySummary, BlogPost
+from grant_management.models import Invoice, FinancialReport, ScientificReport, LaySummary, BlogPost, Milestone
 from project_core.models import Call, Project
 from project_core.templatetags.request_is_reviewer import request_is_reviewer
 
@@ -75,6 +75,12 @@ def get_project_news():
     for blog_post in BlogPost.objects.filter(due_date__gte=starts):
         news.append(
             create_news_project(blog_post.due_date, f'Blog post due', blog_post.project)
+        )
+
+    for milestone in Milestone.objects.filter(due_date__gte=starts):
+        news.append(
+            create_news_project(milestone.due_date, f'Milestone: {milestone.category.name} - {milestone.text}',
+                                milestone.project)
         )
 
     bold_today = mark_safe('<strong>TODAY</strong>')
