@@ -1,35 +1,47 @@
-{% load thousands_separator %}
-{% load ordinal %}
+{% load static %}
 
-{% with social_networks=project.projectsocialnetwork_set.all %}
-    <table id="social_networks_table" class="table table-striped table-sm table-hover display">
-        <thead>
-        <tr>
-            <th>Network</th>
-            <th>Url</th>
-        </tr>
-        </thead>
-        {% for social_network in social_networks %}
-            <tr>
-                <td>{{ social_network.social_network.name }}</td>
-                <td><a href="{{ social_network.url }}">{{ social_network.url }}</a></td>
-            </tr>
-        {% endfor %}
-    </table>
+<div class="row">
+    <div class="col-6">
+        {% with social_networks=project.projectsocialnetwork_set.all %}
+            <table id="social_networks_table" class="table table-striped table-sm table-hover display">
+                <thead>
+                <tr>
+                    <th>Network</th>
+                    <th>Url</th>
+                </tr>
+                </thead>
+                {% for social_network in social_networks %}
+                    <tr>
+                        <td data-sort="{{ social_network.social_network.name }}">
+                            <img width=20
+                                 alt="Logo for {{ social_network.social_network.name }}"
+                                 src="{% static social_network.social_network.icon %}">
+                            {{ social_network.social_network.name }}
+                        </td>
+                        <td><a href="{{ social_network.url }}">{{ social_network.url }}</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
 
-    <script type="text/javascript" class="init">
-        $(document).ready(function () {
-            $('#social_networks_table').DataTable({
-                    "pageLength": 100,
-                    "order": [[0, "asc"]],
-                    "bFilter": false,
-                    "bPaginate": false,
-                    "info": false,
-                    "language": {
-                        "zeroRecords": "No social media have been entered"
-                    },
-                }
-            );
-        });
-    </script>
-{% endwith %}
+            <script type="text/javascript" class="init">
+                $(document).ready(function () {
+                    $('#social_networks_table').DataTable({
+                            "pageLength": 100,
+                            "order": [[0, "asc"]],
+                            "bFilter": false,
+                            "bPaginate": false,
+                            "info": false,
+                            "language": {
+                                "zeroRecords": "No social media have been entered"
+                            },
+                            "columns": [
+                                {"width": "30%"},
+                                {"width": "70%"}
+                            ]
+                        }
+                    );
+                });
+            </script>
+        {% endwith %}
+    </div>
+</div>

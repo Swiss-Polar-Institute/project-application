@@ -202,6 +202,9 @@ class SocialNetwork(CreateModifyOn):
     name = models.CharField(max_length=100,
                             help_text='Social network name (e.g. Twitter, Facebook, Instagram, Blog)')
 
+    def icon(self):
+        return f'external/icons/{self.name.lower()}.png'
+
     def __str__(self):
         return f'{self.name}'
 
