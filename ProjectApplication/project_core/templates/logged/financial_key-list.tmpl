@@ -8,6 +8,7 @@
             <tr>
                 <th>Key</th>
                 <th>Description</th>
+                <th>For funding instrument</th>
                 <th>Created at</th>
                 <th>Created by</th>
             </tr>
@@ -18,6 +19,7 @@
                 <tr>
                     <td>{{ financial_key.name }}</td>
                     <td>{{ financial_key.description }}</td>
+                    <td>{% include 'common/_check-icon.tmpl' with value=financial_key.funding_instrument %}</td>
                     <td data-sort="{{ financial_key_date|date:"Y-m-d" }}">{{ financial_key.created_on }}</td>
                     <td>{{ financial_key.created_by }}</td>
                 </tr>

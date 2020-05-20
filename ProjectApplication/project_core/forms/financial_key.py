@@ -16,6 +16,13 @@ class FinancialKeyForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('name', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                Div('funding_instrument', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
                 Div('description', css_class='col-12'),
                 css_class='row'
             ),
@@ -25,16 +32,6 @@ class FinancialKeyForm(forms.ModelForm):
             )
         )
 
-    # def save(self, *args, **kwargs):
-    #     user = kwargs.pop('user')
-    #     instance = super().save(*args, **kwargs)
-    #
-    #     instance.user = user
-    #     if kwargs['commit']:
-    #         instance.save()
-    #
-    #     return instance
-
     class Meta:
         model = FinancialKey
-        fields = ['name', 'description', ]
+        fields = ['name', 'description', 'funding_instrument', ]
