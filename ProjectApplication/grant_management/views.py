@@ -1,7 +1,5 @@
 from dal import autocomplete
-from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
@@ -15,6 +13,7 @@ from grant_management.forms.project_basic_information import ProjectBasicInforma
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
 from grant_management.models import GrantAgreement, MilestoneCategory
 from project_core.models import Project
+from project_core.views.common.formset_inline_view import InlineFormsetUpdateView
 from .forms.datasets import DatasetInlineFormSet
 from .forms.media import MediaInlineFormSet
 from .forms.milestones import MilestoneInlineFormSet
@@ -204,129 +203,95 @@ def grant_management_project_url(kwargs):
     return reverse('logged-grant_management-project-detail', kwargs={'pk': kwargs['project']})
 
 
-class GrantManagementUpdateView(TemplateView):
-    inline_formset = None
-    human_type = None
-    human_type_plural = None
-    tab = None
+class GrantManagementInlineFormset(InlineFormsetUpdateView):
+    parent = Project
+    url_id = 'project'
+    tab = 'None'
 
     def __init__(self, *args, **kwargs):
-        self.template_name = 'grant_management/generic-formset.tmpl'
-
         super().__init__(*args, **kwargs)
-
-        if self.human_type_plural is None:
-            self.human_type_plural = f'{self.human_type}s'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['cancel_url'] = grant_management_project_url(kwargs)
-
-        project = Project.objects.get(id=kwargs['project'])
-
-        context['project'] = project
+        project = self.parent.objects.get(id=kwargs['project'])
 
         context.update(basic_context_data_grant_agreement(project, self.human_type.capitalize()))
 
-        context['FORM_SET'] = self.inline_formset(prefix='FORM_SET', instance=context['project'])
+        context['project'] = project
 
-        context['title'] = self.human_type_plural.capitalize()
+        context['destination_url'] = reverse('logged-grant_management-project-detail',
+                                             kwargs={'pk': project.id}) + f'?tab={self.tab}'
 
-        context['human_type'] = self.human_type
-
-        context['save_text'] = f'Save {self.human_type_plural.title()}'
+        context['FORM_SET'] = self.inline_formset(prefix='FORM_SET', instance=project)
 
         return context
 
-    def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
 
-        form_kwargs = {}
-
-        if hasattr(self.inline_formset, 'wants_user') and self.inline_formset.wants_user:
-            form_kwargs = {'user': request.user}
-
-        forms = self.inline_formset(request.POST, request.FILES, prefix='FORM_SET',
-                                    instance=context['project'],
-                                    form_kwargs=form_kwargs)
-
-        if forms.is_valid():
-            forms.save()
-            messages.success(request, f'{self.human_type_plural.capitalize()} saved')
-            return redirect(f'{grant_management_project_url(kwargs)}?tab={self.tab}')
-
-        messages.error(request, f'{self.human_type_plural.capitalize()} not saved. Verify errors in the form')
-
-        context['FORM_SET'] = forms
-
-        return render(request, self.template_name, context)
-
-
-class BlogPostsUpdateView(GrantManagementUpdateView):
+class BlogPostsUpdateView(GrantManagementInlineFormset):
     inline_formset = BlogPostsInlineFormSet
     human_type = 'blog post'
     tab = 'deliverables'
 
 
-class LaySummariesUpdateView(GrantManagementUpdateView):
+class LaySummariesUpdateView(GrantManagementInlineFormset):
     inline_formset = LaySummariesInlineFormSet
     human_type = 'lay summary'
     human_type_plural = 'lay summaries'
     tab = 'deliverables'
 
 
-class DatasetUpdateView(GrantManagementUpdateView):
+class DatasetUpdateView(GrantManagementInlineFormset):
     inline_formset = DatasetInlineFormSet
     human_type = 'dataset'
     tab = 'deliverables'
 
 
-class PublicationsUpdateView(GrantManagementUpdateView):
+class PublicationsUpdateView(GrantManagementInlineFormset):
     inline_formset = PublicationsInlineFormSet
     human_type = 'publication'
     tab = 'deliverables'
 
 
-class MediaUpdateView(GrantManagementUpdateView):
+class MediaUpdateView(GrantManagementInlineFormset):
     inline_formset = MediaInlineFormSet
     human_type = 'medium'
     human_type_plural = 'media'
     tab = 'deliverables'
 
 
-class InvoicesUpdateView(GrantManagementUpdateView):
+class InvoicesUpdateView(GrantManagementInlineFormset):
     inline_formset = InvoicesInlineFormSet
     human_type = 'invoice'
     tab = 'finances'
 
 
-class FinancialReportsUpdateView(GrantManagementUpdateView):
+class FinancialReportsUpdateView(GrantManagementInlineFormset):
     inline_formset = FinancialReportsInlineFormSet
     human_type = 'financial report'
     tab = 'finances'
 
 
-class InstallmentsUpdateView(GrantManagementUpdateView):
+class InstallmentsUpdateView(GrantManagementInlineFormset):
     inline_formset = InstallmentsInlineFormSet
     human_type = 'installment'
     tab = 'finances'
 
 
-class ScientificReportsUpdateView(GrantManagementUpdateView):
+class ScientificReportsUpdateView(GrantManagementInlineFormset):
     inline_formset = ScientificReportsInlineFormSet
     human_type = 'scientific report'
     tab = 'deliverables'
 
 
-class SocialMediaUpdateView(GrantManagementUpdateView):
+class SocialMediaUpdateView(GrantManagementInlineFormset):
     inline_formset = SocialNetworksInlineFormSet
     human_type = 'social medium'
     human_type_plural = 'social media'
     tab = 'deliverables'
 
 
-class MilestoneUpdateView(GrantManagementUpdateView):
+class MilestoneUpdateView(GrantManagementInlineFormset):
     inline_formset = MilestoneInlineFormSet
     human_type = 'milestone'
     tab = 'deliverables'
