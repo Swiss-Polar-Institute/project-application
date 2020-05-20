@@ -43,13 +43,13 @@ def get_project_news():
 
     for project in Project.objects.filter(start_date__gte=starts):
         news.append(
-            create_news_project(project.start_date, f'Starts',
+            create_news_project(project.start_date, f'Project starts',
                                 project)
         )
 
     for project in Project.objects.filter(end_date__gte=starts):
         news.append(
-            create_news_project(project.end_date, f'Ends', project)
+            create_news_project(project.end_date, f'Project ends', project)
         )
 
     for invoice in Invoice.objects.filter(due_date__gte=starts):
