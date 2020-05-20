@@ -148,6 +148,14 @@ urlpatterns = [
          logged.project.ProjectCommentAdd.as_view(),
          name='logged-project-comment-add'),
 
+    path('logged/financial_keys/list/',
+         logged.project.FinancialKeyListView.as_view(),
+         name='logged-financial-key-list'),
+
+    path('logged/financial_keys/edit/',
+         logged.project.FinancialKeyUpdateView.as_view(),
+         name='logged-financial-key-update'),
+
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',
                                       extra_context={'contact': settings.LOGIN_CONTACT}),

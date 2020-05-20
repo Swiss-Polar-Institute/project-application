@@ -31,7 +31,7 @@
                 </a>
             </li>
         {% endif %}
-    
+
         {% if request|request_is_management %}
             <li class="nav-item">
                 <a class="nav-link {% if active == 'contact-list' %}active{% endif %}"
@@ -46,5 +46,15 @@
             {#            </a>#}
             {#        </li>#}
         {% endif %}
+        {% if request|request_is_management %}
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'financial_key-list' %}active{% endif %}"
+                   href="{% url 'logged-financial-key-list' %}">
+                    List financial keys
+                </a>
+            </li>
+        {% endif %}
+
+
     </ul>
 {% endblock %}

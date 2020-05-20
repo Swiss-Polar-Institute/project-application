@@ -7,6 +7,7 @@ import uuid as uuid_lib
 from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, RegexValidator
 from django.core.validators import validate_email
 from django.db import models, transaction
@@ -1117,3 +1118,9 @@ class ProjectPartner(Partner):
 
     class Meta:
         unique_together = (('person', 'role', 'project'),)
+
+
+class FinancialKey(CreateModifyOn):
+    name = models.CharField(max_length=20, help_text='Code used by finance (e.g. ECON, TRAVEL) or funding instrument')
+    description = models.CharField(max_length=200, help_text='Explanation of the code')
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT)

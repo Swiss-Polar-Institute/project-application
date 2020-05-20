@@ -1,0 +1,36 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% block contents %}
+    <h1>Financial keys <a href="{% url 'logged-financial-key-update' %}" class="btn btn-primary">Edit</a></h1>
+    {% if financial_keys %}
+        <table id="financial-keys" class="table table-stripped table-sm table-hover display">
+            <thead>
+            <tr>
+                <th>Key</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for financial_key in financial_keys %}
+                <tr>
+                    <td>{{ financial_key.name }}</td>
+                    <td>{{ financial_key.description }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        No financial keys entered in the system
+    {% endif %}
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('table.display').DataTable({
+                    "pageLength": 100,
+                    "searchHighlight": true
+                }
+            );
+        });
+    </script>
+    <br>
+{% endblock %}

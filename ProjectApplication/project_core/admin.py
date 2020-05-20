@@ -320,6 +320,11 @@ class ProjectPartnerAdmin(admin.ModelAdmin):
     ordering = ['project', 'person', 'role', ]
 
 
+class FinancialKey(admin.ModelAdmin):
+    list_display = ('name', 'description', 'created_by')
+    ordering = ['name', 'description']
+
+
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)

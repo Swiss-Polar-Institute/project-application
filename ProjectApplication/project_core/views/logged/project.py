@@ -3,7 +3,7 @@ from django.views.generic import DetailView, ListView
 
 from comments import utils
 from comments.utils import process_comment_attachment
-from project_core.models import Project
+from project_core.models import Project, FinancialKey
 
 
 class ProjectList(ListView):
@@ -61,3 +61,25 @@ class ProjectCommentAdd(AbstractProjectView):
                                             context['project'])
 
         return result
+
+
+class FinancialKeyListView(ListView):
+    template_name = 'logged/financial_key-list.tmpl'
+    context_object_name = 'financial_keys'
+    model = FinancialKey
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'lists',
+                        'active_subsection': 'financial_key-list',
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'Financial keys'}]
+
+        return context
+
+
+class FinancialKeyUpdateView(ListView):
+    pass
