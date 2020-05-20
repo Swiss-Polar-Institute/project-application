@@ -1125,3 +1125,6 @@ class FinancialKey(CreateModifyOn):
                             unique=True)
     description = models.CharField(max_length=200, help_text='Explanation of the code')
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name
