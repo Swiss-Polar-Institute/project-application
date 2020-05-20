@@ -1121,6 +1121,7 @@ class ProjectPartner(Partner):
 
 
 class FinancialKey(CreateModifyOn):
-    name = models.CharField(max_length=20, help_text='Code used by finance (e.g. ECON, TRAVEL) or funding instrument')
+    name = models.CharField(max_length=20, help_text='Code used by finance (e.g. ECON, TRAVEL) or funding instrument',
+                            unique=True)
     description = models.CharField(max_length=200, help_text='Explanation of the code')
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)

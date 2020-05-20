@@ -1,13 +1,15 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 
 {% block contents %}
-    <h1>Financial keys <a href="{% url 'logged-financial-key-update' %}" class="btn btn-primary">Edit</a></h1>
+    <h1>Financial keys</h1>
     {% if financial_keys %}
         <table id="financial-keys" class="table table-stripped table-sm table-hover display">
             <thead>
             <tr>
                 <th>Key</th>
                 <th>Description</th>
+                <th>Created at</th>
+                <th>Created by</th>
             </tr>
             </thead>
 
@@ -16,6 +18,8 @@
                 <tr>
                     <td>{{ financial_key.name }}</td>
                     <td>{{ financial_key.description }}</td>
+                    <td data-sort="{{ financial_key_date|date:"Y-m-d" }}">{{ financial_key.created_on }}</td>
+                    <td>{{ financial_key.created_by }}</td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -32,5 +36,6 @@
             );
         });
     </script>
-    <br>
+    <p></p>
+    <a href="{% url 'logged-financial-key-update' %}" class="btn btn-primary">Add New Financial Key</a>
 {% endblock %}

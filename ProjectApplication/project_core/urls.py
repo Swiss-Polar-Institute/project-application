@@ -152,8 +152,8 @@ urlpatterns = [
          logged.project.FinancialKeyListView.as_view(),
          name='logged-financial-key-list'),
 
-    path('logged/financial_keys/edit/',
-         logged.project.FinancialKeyUpdateView.as_view(),
+    path('logged/financial_keys/add/',
+         logged.project.FinancialKeyAdd.as_view(),
          name='logged-financial-key-update'),
 
     path('accounts/login/',

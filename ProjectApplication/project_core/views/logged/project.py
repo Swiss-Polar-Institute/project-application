@@ -1,8 +1,10 @@
-from django.urls import reverse
-from django.views.generic import DetailView, ListView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse, reverse_lazy
+from django.views.generic import DetailView, ListView, CreateView
 
 from comments import utils
 from comments.utils import process_comment_attachment
+from project_core.forms.financial_key import FinancialKeyForm
 from project_core.models import Project, FinancialKey
 
 
@@ -81,5 +83,26 @@ class FinancialKeyListView(ListView):
         return context
 
 
-class FinancialKeyUpdateView(ListView):
-    pass
+class FinancialKeyAdd(SuccessMessageMixin, CreateView):
+    template_name = 'logged/financial_key-form.tmpl'
+    model = FinancialKey
+    success_message = 'Financial key created'
+    form_class = FinancialKeyForm
+    success_url = reverse_lazy('logged-financial-key-list')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'lists',
+                        'active_subsection': 'financial_key-list',
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Template questions', 'url': reverse('logged-template-question-list')},
+                                 {'name': 'Create'}]
+
+        return context
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.created_by = self.request.user
+        return super().form_valid(form)

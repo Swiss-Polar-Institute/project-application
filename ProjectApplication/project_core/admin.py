@@ -320,9 +320,9 @@ class ProjectPartnerAdmin(admin.ModelAdmin):
     ordering = ['project', 'person', 'role', ]
 
 
-class FinancialKey(admin.ModelAdmin):
-    list_display = ('name', 'description', 'created_by')
-    ordering = ['name', 'description']
+class FinancialKeyAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description', 'created_on', 'created_by')
+    ordering = ['name', 'description', 'created_on']
 
 
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
@@ -360,3 +360,4 @@ admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
 admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)
 admin.site.register(project_core.models.Project, ProjectAdmin)
 admin.site.register(project_core.models.ProjectPartner, ProjectPartnerAdmin)
+admin.site.register(project_core.models.FinancialKey, FinancialKeyAdmin)
