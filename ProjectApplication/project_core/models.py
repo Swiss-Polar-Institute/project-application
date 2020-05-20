@@ -37,6 +37,16 @@ class CreateModifyOn(models.Model):
         abstract = True
 
 
+class FinancialKey(CreateModifyOn):
+    name = models.CharField(max_length=20, help_text='Code used by finance (e.g. ECON, TRAVEL) or funding instrument',
+                            unique=True)
+    description = models.CharField(max_length=200, help_text='Explanation of the code')
+    created_by = models.ForeignKey(User, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.name
+
+
 class BudgetCategory(models.Model):
     """Details of budget categories"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
@@ -66,8 +76,8 @@ class FundingInstrument(CreateModifyOn):
     of a call."""
     long_name = models.CharField(help_text='Full name of funding instrument', max_length=200, blank=False, null=False,
                                  unique=True)
-    short_name = models.CharField(help_text='Short name or acronym of the funding instrument', max_length=60,
-                                  blank=False, null=False, unique=True)
+    short_name = models.OneToOneField(FinancialKey, help_text='Short name or acronym of the funding instrument',
+                                      null=True, on_delete=models.PROTECT)
     description = models.TextField(
         help_text='Description of the funding instrument that can be used to distinguish it from others', blank=False,
         null=False)
@@ -1118,13 +1128,3 @@ class ProjectPartner(Partner):
 
     class Meta:
         unique_together = (('person', 'role', 'project'),)
-
-
-class FinancialKey(CreateModifyOn):
-    name = models.CharField(max_length=20, help_text='Code used by finance (e.g. ECON, TRAVEL) or funding instrument',
-                            unique=True)
-    description = models.CharField(max_length=200, help_text='Explanation of the code')
-    created_by = models.ForeignKey(User, on_delete=models.PROTECT)
-
-    def __str__(self):
-        return self.name
