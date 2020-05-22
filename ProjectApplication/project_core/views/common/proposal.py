@@ -396,6 +396,8 @@ class AbstractProposalView(TemplateView):
 
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
 
+        context['activity'] = get_template_value_for_call('activity', call)
+
         context['action'] = 'Edit'
 
         context.update(call_context_for_template(call))
