@@ -167,7 +167,15 @@ div.selector-filter {
 }
 
 .unstyled-button {
-  border: none;
-  padding: 0;
-  background: none;
+    border: none;
+    padding: 0;
+    background: none;
+}
+
+/** Forces Bootstrap4 tooltips to be in one line. Decided to do this way for the file name tooltips.
+    In other situations it might not be desired, will need to adapt creating a new CSS class.
+ */
+.tooltip-inner {
+    white-space: nowrap;
+    max-width: none;
 }

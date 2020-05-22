@@ -1,7 +1,9 @@
 {% load filename_from_path %}
 
 {% if file_field %}<a
-        href="{{ file_field.url }}">{{ file_field.name|filename_from_path }}</a> ({{ file_field.size|filesizeformat }})
+        data-toggle="tooltip" title="{{ file_field.name|filename_from_path }}"
+        href="{{ file_field.url }}"><i class="fas fa-download"></i> {{ file_field.name|short_filename_from_path }}</a> ({{ file_field.size|filesizeformat }}
+    )
 {% else %}
     -
 {% endif %}
