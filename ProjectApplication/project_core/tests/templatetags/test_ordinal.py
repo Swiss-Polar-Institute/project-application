@@ -7,7 +7,7 @@ class OrdinalTest(TestCase):
     def setUp(self):
         pass
 
-    def ordinal_test(self):
+    def test_ordinal(self):
         self.assertEqual(ordinal(1), 'First')
         self.assertEqual(ordinal(2), 'Second')
         self.assertEqual(ordinal(11), '11th')
