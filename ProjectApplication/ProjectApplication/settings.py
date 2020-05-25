@@ -124,10 +124,6 @@ def secrets_file(file_name, optional_path=None):
     raise FileNotFoundError("Configuration for {} doesn't exist".format(file_name))
 
 
-FORMAT_MODULE_PATH = [
-    'spiformat.formats'
-]
-
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
