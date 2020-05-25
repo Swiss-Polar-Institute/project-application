@@ -5,7 +5,7 @@ from project_core.models import FinancialKey
 from project_core.tests import database_population
 
 
-class FinancialKeyTest(TestCase):
+class FinancialKeyFormTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
 
