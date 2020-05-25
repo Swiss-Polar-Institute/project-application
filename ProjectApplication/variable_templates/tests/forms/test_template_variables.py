@@ -9,14 +9,14 @@ class TemplateVariableItemFormTest(TestCase):
     def setUp(self):
         self._call = database_population.create_call()
 
-    def save_into_funding_instrument_test(self):
+    def test_save_into_funding_instrument_test(self):
         template_variable_name, _ = TemplateVariableName.objects.get_or_create(name='activity', default='proposal')
         call_variable_template, _ = CallVariableTemplate.objects.get_or_create(call=self._call,
                                                                                name=template_variable_name,
                                                                                value='proposal2')
 
         data = {'name': template_variable_name.id,
-                'value': 'proposal'
+                'value': 'dish'
                 }
 
         initial = {'id': None,
@@ -32,5 +32,6 @@ class TemplateVariableItemFormTest(TestCase):
         self.assertEqual(self._call.callvariabletemplate_set.all().count(), 1)
 
         template_variable_item_form.save_template_variable_into_call(self._call)
-
+        self._call.refresh_from_db()
         self.assertEqual(self._call.callvariabletemplate_set.all().count(), 1)
+        self.assertEqual(self._call.callvariabletemplate_set.all()[0].value, 'dish')
