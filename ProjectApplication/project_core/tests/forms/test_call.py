@@ -2,7 +2,8 @@ import datetime
 
 from django.test import TestCase
 
-from project_core.forms.call import CallForm
+from project_core.forms.call import CallForm, CallQuestionItemForm
+from project_core.models import CallQuestion
 from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
@@ -54,3 +55,35 @@ class CallFormTest(TestCase):
 
         self.assertEqual(call_form.errors['call_open_date'],
                          ['Call open date needs to be before the submission deadline'])
+
+
+class CallQuestionItemFormTest(TestCase):
+    def setUp(self):
+        self._call = database_population.create_call()
+        self._template_questions = database_population.create_template_questions()
+
+    def test_create_question_item_form(self):
+        call_question = CallQuestion.objects.create(question_text='Original question',
+                                                    question_description='Original template question description',
+                                                    answer_max_length=50,
+                                                    answer_required=False,
+                                                    call=self._call,
+                                                    template_question=self._template_questions[0])
+
+        data = {'id': str(call_question.id),
+                'order': '1',
+                'question_text': 'Please write how do you plan to go to your destination.',
+                'question_description': 'This is in order to understand how do you plan to go',
+                'answer_max_length': '100',
+                'answer_required': 'on',
+                }
+
+        call_question_item_form = CallQuestionItemForm(data)
+
+        self.assertEqual(CallQuestion.objects.all().count(), 1)
+        call_question = call_question_item_form.save(False)
+
+        self.assertEqual(call_question.question_text, 'Please write how do you plan to go to your destination.')
+        self.assertEqual(call_question.question_description, 'This is in order to understand how do you plan to go')
+        self.assertEqual(call_question.answer_max_length, 100)
+        self.assertEqual(call_question.answer_required, True)
