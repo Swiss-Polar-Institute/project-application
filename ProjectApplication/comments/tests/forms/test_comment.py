@@ -28,7 +28,7 @@ class CommentFormTest(TestCase):
                                    category_queryset=ProposalCommentCategory.objects.all(),
                                    form_action='this-is-the-form-action',
                                    prefix=CommentForm.FORM_NAME)
-        comment_form.is_valid()
+        self.assertTrue(comment_form.is_valid())
         comment_form.save(self._proposal, None)
 
         self.assertEqual(ProposalComment.objects.all().count(), 1)
