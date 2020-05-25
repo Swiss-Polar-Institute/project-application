@@ -74,3 +74,16 @@ class UtilsTest(TestCase):
 
         self.assertNotIn('{{ activity }}', fields['title'].help_text)
         self.assertEqual('Name of the proposal', fields['title'].help_text)
+
+    def get_template_value_for_funding_instrument_from_default_test(self):
+        activity = utils.get_template_value_for_funding_instrument('activity', self._funding_instrument)
+        self.assertEqual(activity, 'proposal')
+
+    def get_template_value_for_funding_instrument_from_funding_instrument(self):
+        template_variable_name = TemplateVariableName.objects.get(name='activity')
+        FundingInstrumentVariableTemplate.objects.create(name=template_variable_name,
+                                                         value='dish',
+                                                         funding_instrument=self._funding_instrument)
+
+        activity = utils.get_template_value_for_funding_instrument('activity', self._funding_instrument)
+        self.assertEqual(activity, 'dish')
