@@ -19,7 +19,7 @@
                     <h3>Grant agreement <a class="btn btn-primary btn-sm"
                                            href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
                     </h3>
-                    <strong>Agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
+                    <strong>Grant agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
                     <strong>Signed
                         date:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_date %}<br>
                     <strong>Signed

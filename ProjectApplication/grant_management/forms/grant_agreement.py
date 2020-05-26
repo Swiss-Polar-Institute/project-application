@@ -24,7 +24,7 @@ class GrantAgreementForm(forms.ModelForm):
         self.helper.layout = Layout(
             Div(
                 Div('project', hidden=True),
-                Div('signed_by', css_class='col-6'),
+                Div('file', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -32,7 +32,7 @@ class GrantAgreementForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('file', css_class='col-6'),
+                Div('signed_by', css_class='col-6'),
                 css_class='row'
             ),
             FormActions(
@@ -61,6 +61,7 @@ class GrantAgreementForm(forms.ModelForm):
     class Meta:
         model = GrantAgreement
         fields = ['project', 'signed_date', 'signed_by', 'file']
+        labels = {'file': 'Grant agreement'}
         help_texts = {
             'signed_by': 'People who signed the grant agreement. Please do not use spaces when searching, you can search by first name or surname'}
         widgets = {'signed_date': XDSoftYearMonthDayPickerInput,
