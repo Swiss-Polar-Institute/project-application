@@ -110,7 +110,7 @@ class InstallmentsFormSet(BaseInlineFormSet):
 
         if budget_amount > maximum_budget:
             raise forms.ValidationError(
-                f'Total installments introduced for this project is {number_format(budget_amount)} CHF.'
+                f'Total of installments for this project is {number_format(budget_amount)} CHF.'
                 f' Total allocated budget for the project is {number_format(maximum_budget)} CHF.')
 
     def get_queryset(self):
