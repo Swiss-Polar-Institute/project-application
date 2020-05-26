@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field
+from crispy_forms.layout import Layout, Div, Field, HTML
 from dal import autocomplete
 from django import forms
 
@@ -13,7 +13,7 @@ class AbstractReportItemModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        final_fields = ['approval_date']
+        final_fields = ['approved_by', 'approval_date']
 
         for field_name, field in self.fields.items():
             if type(field) == forms.DateField:
@@ -21,14 +21,16 @@ class AbstractReportItemModelForm(forms.ModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
+        message = ''
         # Final fields are all or none - it checks for the first one
         if self.instance and getattr(self.instance, final_fields[0]) is not None:
+            message = '''<strong>This report has been signed and can no longer be changed. 
+            To edit any of the fields, delete the signed by and date signed, 
+            click on <em>Save Financial Reports</em> and come back again.</strong>'''
             self.fields['can_be_deleted'].initial = 0
             for field_name in self.fields:
                 if field_name not in AbstractReportItemModelForm.BASIC_FIELDS and field_name not in final_fields:
                     self.fields[field_name].disabled = True
-                    self.fields[field_name].help_text = 'The report can no longer can be changed as it has ' \
-                                                        'already been approved. Delete the date it was approved and try again.'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -43,6 +45,11 @@ class AbstractReportItemModelForm(forms.ModelForm):
                 Div(Field('DELETE', hidden=True)),
                 Div('can_be_deleted', hidden=True, css_class='can_be_deleted'),
                 css_class='row', hidden=True
+            ),
+            Div(
+                Div(
+                    HTML(message), css_class='col-12'),
+                css_class='row to-delete'
             ),
             Div(
                 Div('due_date', css_class='col-4'),
@@ -104,7 +111,7 @@ class AbstractReportItemModelForm(forms.ModelForm):
 
         if not sent_for_approval_date and approval_date:
             errors['sent_for_approval_date'] = 'Please enter the date the report was sent for approval (the date it ' \
-                                  'was approved has been entered).'
+                                               'was approved has been entered).'
 
         if not approval_date and approved_by:
             errors['approval_date'] = 'Please enter the date the report was approved (the person who ' \
@@ -120,7 +127,8 @@ class AbstractReportItemModelForm(forms.ModelForm):
 
     class Meta:
         # model = XXX  # : this needs to be defined by the subclass
-        fields = ['project', 'due_date', 'received_date', 'sent_for_approval_date', 'approval_date', 'approved_by', 'file']
+        fields = ['project', 'due_date', 'received_date', 'sent_for_approval_date', 'approval_date', 'approved_by',
+                  'file']
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
