@@ -14,7 +14,10 @@ class BlogPostMultipleChoiceField(forms.ModelMultipleChoiceField):
         super().__init__(*args, **kwargs)
 
     def label_from_instance(self, obj):
-        return f'{obj.received_date} {obj.title}'
+        if obj.title:
+            return f'{obj.received_date} - {obj.title}'
+        else:
+            return f'Due {obj.due_date}, not yet received'
 
 
 class BlogPostCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
