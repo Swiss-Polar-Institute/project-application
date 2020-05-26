@@ -269,12 +269,12 @@ class InvoicesFormSet(BaseInlineFormSet):
             if not invoice_form.cleaned_data['installment']:
                 continue
 
+            amount = invoice_form.cleaned_data['amount'] or 0   # It's None if the amount is not filled in
+
             if invoice_form.cleaned_data['installment'].id in installment_to_amounts:
-                installment_to_amounts[invoice_form.cleaned_data['installment'].id] += invoice_form.cleaned_data[
-                    'amount']
+                installment_to_amounts[invoice_form.cleaned_data['installment'].id] += amount
             else:
-                installment_to_amounts[invoice_form.cleaned_data['installment'].id] = invoice_form.cleaned_data[
-                    'amount']
+                installment_to_amounts[invoice_form.cleaned_data['installment'].id] = amount
 
         errors = []
         for installment_id, invoiced_amount in installment_to_amounts.items():
