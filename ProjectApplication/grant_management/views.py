@@ -216,7 +216,7 @@ class GrantManagementInlineFormset(InlineFormsetUpdateView):
 
         project = self.parent.objects.get(id=kwargs['project'])
 
-        context.update(basic_context_data_grant_agreement(project, self.human_type.capitalize()))
+        context.update(basic_context_data_grant_agreement(project, self.human_type_plural.capitalize()))
 
         context['project'] = project
 
