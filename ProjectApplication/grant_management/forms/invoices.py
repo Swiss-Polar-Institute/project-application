@@ -12,6 +12,7 @@ from grant_management.models import Invoice, LaySummary, LaySummaryType, Install
 from project_core.models import Project
 from project_core.templatetags.ordinal import ordinal
 from project_core.templatetags.thousands_separator import thousands_separator
+from project_core.utils.utils import format_date
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 from . import utils
 
@@ -25,7 +26,7 @@ class InstallmentModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         self._sequence += 1
         amount = thousands_separator(obj.amount)
-        return mark_safe(f'{ordinal(self._sequence)} - {obj.due_date} - {amount} CHF')
+        return mark_safe(f'{ordinal(self._sequence)} - {format_date(obj.due_date)} - {amount} CHF')
 
 
 class InvoiceItemModelForm(forms.ModelForm):
