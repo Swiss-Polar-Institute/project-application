@@ -63,12 +63,16 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
+        message = ''
+
         if self.instance and self.instance.paid_date is not None:
             self.fields['can_be_deleted'].initial = 0
+            message = '''<strong>This invoice has been paid and can no longer be changed.
+                    To edit any of the fields, delete the date paid, click on <em>Save Invoices</em> 
+                    and come back to the invoices page.</strong>'''
+
             for field_name in ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount', 'installment']:
                 self.fields[field_name].disabled = True
-                self.fields[field_name].help_text = f'Invoice cannot be changed as it has already been paid. ' \
-                                                    f'Delete the date it was paid and try again'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -83,6 +87,11 @@ class InvoiceItemModelForm(forms.ModelForm):
                 Div(Field('DELETE', hidden=True)),
                 Div('can_be_deleted', hidden=True, css_class='can_be_deleted'),
                 css_class='row', hidden=True
+            ),
+            Div(
+                Div(
+                    HTML(message), css_class='col-12'),
+                css_class='row to-delete'
             ),
             Div(
                 Div('installment', css_class='col-4'),
@@ -274,7 +283,7 @@ class InvoicesFormSet(BaseInlineFormSet):
             if not invoice_form.cleaned_data['installment']:
                 continue
 
-            amount = invoice_form.cleaned_data['amount'] or 0   # It's None if the amount is not filled in
+            amount = invoice_form.cleaned_data['amount'] or 0  # It's None if the amount is not filled in
 
             if invoice_form.cleaned_data['installment'].id in installment_to_amounts:
                 installment_to_amounts[invoice_form.cleaned_data['installment'].id] += amount

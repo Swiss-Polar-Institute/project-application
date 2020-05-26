@@ -139,6 +139,10 @@
         });
     }
 
+    function delete_message(row) {
+        $(row).find('.to-delete').remove();
+    }
+
     {# This variable needs to be "var" (or nothing) but not const or let. The _dynamic_formset.tmpl can be included #}
     {# multiple times in the samge page. #}
     var jQueryForFormset = $.noConflict(true);
@@ -164,6 +168,7 @@
                 clean_combobox_fields(row);
                 clean_card(row);
                 setup_old_fields_completion_fields(row);
+                delete_message(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
