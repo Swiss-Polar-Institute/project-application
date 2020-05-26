@@ -30,11 +30,11 @@ class PublicationModelForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('doi', css_class='col-6'),
-                Div('reference', css_class='col-6'),
+                Div('reference', css_class='col-12'),
                 css_class='row'
             ),
             Div(
+                Div('doi', css_class='col-6'),
                 Div('published_date', css_class='col-6'),
                 css_class='row'
             )
@@ -50,6 +50,7 @@ class PublicationModelForm(forms.ModelForm):
             'published_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput,
         }
+        labels = {'doi': 'DOI'}
 
 
 class PublicationsFormSet(BaseInlineFormSet):
@@ -64,5 +65,5 @@ class PublicationsFormSet(BaseInlineFormSet):
 
 
 PublicationsInlineFormSet = inlineformset_factory(Project, Publication, form=PublicationModelForm,
-                                                 formset=PublicationsFormSet,
-                                                 min_num=1, extra=0, can_delete=True)
+                                                  formset=PublicationsFormSet,
+                                                  min_num=1, extra=0, can_delete=True)

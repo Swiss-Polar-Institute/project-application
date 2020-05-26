@@ -50,6 +50,9 @@ class DatasetModelForm(forms.ModelForm):
             'published_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput,
         }
+        labels = {'doi': 'DOI',
+                  'url': 'URL'
+                  }
 
 
 class DatasetsFormSet(BaseInlineFormSet):
