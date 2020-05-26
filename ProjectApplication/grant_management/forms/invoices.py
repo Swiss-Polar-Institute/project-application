@@ -110,6 +110,9 @@ class InvoiceItemModelForm(forms.ModelForm):
     def clean(self):
         cd = super().clean()
 
+        if self.errors:
+            return cd
+
         project = cd['project']
         DELETE = cd.get('DELETE', None)
 
@@ -200,6 +203,8 @@ class InvoiceItemModelForm(forms.ModelForm):
         if errors:
             raise forms.ValidationError(errors)
 
+        return cd
+
     def save(self, *args, **kwargs):
         assert self._user
 
@@ -229,7 +234,7 @@ class InvoiceItemModelForm(forms.ModelForm):
                   'file']
         field_classes = {'installment': InstallmentModelChoiceField}
         widgets = {
-            'due_date': XDSoftYearMonthDayPickerInput,
+            # 'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
             'sent_for_payment_date': XDSoftYearMonthDayPickerInput,
             'paid_date': XDSoftYearMonthDayPickerInput,

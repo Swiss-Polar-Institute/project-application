@@ -48,6 +48,9 @@ class InstallmentModelForm(forms.ModelForm):
     def clean(self):
         cd = super().clean()
 
+        if self.errors:
+            return cd
+
         project = cd['project']
 
         project_starts = project.start_date
@@ -74,6 +77,8 @@ class InstallmentModelForm(forms.ModelForm):
 
         if errors:
             raise ValidationError(errors)
+
+        return cd
 
     class Meta:
         model = Installment

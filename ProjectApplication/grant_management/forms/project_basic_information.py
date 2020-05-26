@@ -42,9 +42,10 @@ class ProjectBasicInformationForm(forms.ModelForm):
         )
 
     def clean(self):
-        super().clean()
+        cd = super().clean()
 
-        cd = self.cleaned_data
+        if self.errors:
+            return cd
 
         errors = {}
 
@@ -55,6 +56,8 @@ class ProjectBasicInformationForm(forms.ModelForm):
 
         if errors:
             raise forms.ValidationError(errors)
+
+        return cd
 
     class Meta:
         model = Project

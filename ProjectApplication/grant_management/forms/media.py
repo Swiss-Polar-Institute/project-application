@@ -69,6 +69,7 @@ class MediumModelForm(forms.ModelForm):
 
     def clean(self):
         cd = super().clean()
+        return cd
 
     class Meta:
         model = Medium

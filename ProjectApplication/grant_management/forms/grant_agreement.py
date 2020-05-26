@@ -56,7 +56,8 @@ class GrantAgreementForm(forms.ModelForm):
 
         if errors:
             raise forms.ValidationError(errors)
-        pass
+
+        return cd
 
     class Meta:
         model = GrantAgreement

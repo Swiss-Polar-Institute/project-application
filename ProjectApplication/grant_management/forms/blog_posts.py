@@ -52,6 +52,9 @@ class BlogPostModelForm(forms.ModelForm):
     def clean(self):
         cd = super().clean()
 
+        if self.errors:
+            return cd
+
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
         author = cd.get('author', None)
@@ -78,6 +81,8 @@ class BlogPostModelForm(forms.ModelForm):
 
         if errors:
             raise forms.ValidationError(errors)
+
+        return cd
 
     class Meta:
         model = BlogPost

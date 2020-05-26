@@ -51,6 +51,9 @@ class LaySummaryModelForm(forms.ModelForm):
     def clean(self):
         cd = super().clean()
 
+        if self.errors:
+            return cd
+
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
         sent_date = cd.get('sent_date', None)
@@ -75,6 +78,8 @@ class LaySummaryModelForm(forms.ModelForm):
 
         if errors:
             raise forms.ValidationError(errors)
+
+        return cd
 
     class Meta:
         model = LaySummary

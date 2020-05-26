@@ -61,6 +61,9 @@ class AbstractReportItemModelForm(forms.ModelForm):
     def clean(self):
         cd = super().clean()
 
+        if self.errors:
+            return cd
+
         project = cd['project']
         project_starts = project.start_date
         project_ends = project.end_date
@@ -109,6 +112,8 @@ class AbstractReportItemModelForm(forms.ModelForm):
 
         if errors:
             raise forms.ValidationError(errors)
+
+        return cd
 
     def is_valid(self):
         return super().is_valid()
