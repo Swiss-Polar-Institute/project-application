@@ -43,8 +43,8 @@ class AbstractProjectDueReceivedDate(CreateModifyOn):
 
 class Installment(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that this installment refers to', on_delete=models.PROTECT)
-    due_date = models.DateField(help_text='Due date of this instalment')
-    amount = models.DecimalField(max_digits=11, decimal_places=2, help_text='Amount of this instalment')
+    due_date = models.DateField(help_text='Due date of this installment')
+    amount = models.DecimalField(max_digits=11, decimal_places=2, help_text='Installment amount')
 
     def sent_for_payment(self):
         return self.invoice_set.filter(sent_for_payment_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
