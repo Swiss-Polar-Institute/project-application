@@ -1,0 +1,39 @@
+{% load static %}
+
+<button id="{{ id }}" class="unstyled-button"
+        data-clipboard-text="{{ url }}"><i
+        class="far fa-clipboard"></i></button>
+
+<script type="text/javascript" src="{% static 'external/clipboard/clipboard.min.js' %}"></script>
+<script>
+    $('#{{ id }}').tooltip({
+        trigger: 'click',
+        placement: 'bottom'
+    });
+
+    function setTooltip(message) {
+        $('#{{ id }}').tooltip('hide')
+            .attr('data-original-title', message)
+            .tooltip('show');
+    }
+
+    function hideTooltip() {
+        setTimeout(function () {
+            $('#{{ id }}').tooltip('hide');
+        }, 1000);
+    }
+
+    // Clipboard
+    var clipboard = new ClipboardJS('#{{ id }}');
+
+    clipboard.on('success', function (e) {
+        setTooltip('Copied!');
+        hideTooltip();
+    });
+
+    clipboard.on('error', function (e) {
+        setTooltip('Failed!');
+        hideTooltip();
+    });
+
+</script>

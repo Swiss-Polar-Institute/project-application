@@ -19,6 +19,11 @@
             <br>
             <strong>Finance year:</strong> {{ call.finance_year|unlocalize }}
             <br>
+            {% if public_lay_summaries_raw_url %}
+                <strong>Public raw HTML:</strong>
+                {% include 'common/_clipboard_button.tmpl' with url=public_lay_summaries_raw_url id='public_lay_summaries_raw_url' %} (to be used in Wordpress)
+                <br>
+            {% endif %}
             <strong>Description:</strong>
             <div class="pre-with-newlines border p-1 bg-white rounded">{{ call.description }}</div>
             <br>

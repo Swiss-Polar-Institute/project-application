@@ -11,43 +11,6 @@
 {% endif %}<br>
 {% if external_url %}
     <strong>Link for applicant:</strong>
-    <button id="external_url" class="unstyled-button"
-            data-clipboard-text="{{ external_url }}"><i
-            class="far fa-clipboard"></i></button>
-
-    <script type="text/javascript" src="{% static 'external/clipboard/clipboard.min.js' %}"></script>
-    <script>
-        $('#external_url').tooltip({
-            trigger: 'click',
-            placement: 'bottom'
-        });
-
-        function setTooltip(message) {
-            $('#external_url').tooltip('hide')
-                .attr('data-original-title', message)
-                .tooltip('show');
-        }
-
-        function hideTooltip() {
-            setTimeout(function () {
-                $('#external_url').tooltip('hide');
-            }, 1000);
-        }
-
-        // Clipboard
-
-        var clipboard = new ClipboardJS('#external_url');
-
-        clipboard.on('success', function (e) {
-            setTooltip('Copied!');
-            hideTooltip();
-        });
-
-        clipboard.on('error', function (e) {
-            setTooltip('Failed!');
-            hideTooltip();
-        });
-
-    </script>
+    {% include 'common/_clipboard_button.tmpl' with url=external_url id='external_url' %}
 {% endif %}
 <p></p>

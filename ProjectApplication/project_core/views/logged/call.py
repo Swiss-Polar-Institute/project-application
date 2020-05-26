@@ -71,6 +71,10 @@ class AbstractCallView(TemplateView):
 
         context.update(comments_attachments_forms('logged-call-comment-add', call))
 
+        if call.evaluation_is_closed():
+            context['public_lay_summaries_raw_url'] = self.request.build_absolute_uri(
+                reverse('lay-summaries-raw', kwargs={'call': call.id}))
+
         return context
 
 
@@ -135,7 +139,7 @@ class ProposalDetail(AbstractProposalDetailView):
         proposal = Proposal.objects.get(id=kwargs['pk'])
 
         context['external_url'] = self.request.build_absolute_uri(
-            reverse('proposal-detail', kwargs={'uuid': proposal.uuid}))
+            reverse('proposal-update', kwargs={'uuid': proposal.uuid}))
 
         context.update(utils.comments_attachments_forms('logged-call-proposal-detail', proposal))
 
