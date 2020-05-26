@@ -127,7 +127,7 @@ class ProjectBasicInformationUpdateView(SuccessMessageMixin, UpdateView):
 
         project = Project.objects.get(id=self.kwargs['pk'])
 
-        context.update(basic_context_data_grant_agreement(project, 'Edit project basic information'))
+        context.update(basic_context_data_grant_agreement(project, 'Edit basic project information'))
 
         context['project'] = project
         return context
