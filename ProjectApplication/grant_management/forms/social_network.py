@@ -40,6 +40,9 @@ class SocialNetworkModelForm(forms.ModelForm):
         widgets = {
             'project': NumberInput,
         }
+        labels = {
+            'url': 'URL'
+        }
 
 
 class SocialNetworksFormSet(BaseInlineFormSet):
