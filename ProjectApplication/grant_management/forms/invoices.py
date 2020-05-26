@@ -140,7 +140,7 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors['sent_for_payment_date'] = 'Sent for payment date cannot be in the future'
 
         if paid_date and paid_date > today:
-            errors['paid_date'] = 'Paid date cannot be in the future'
+            errors['paid_date'] = 'Date paid cannot be in the future'
 
         if not due_date and (due_date or received_date or sent_for_payment_date or paid_date or amount or file):
             errors['due_date'] = f'Due date is required to create an invoice'
