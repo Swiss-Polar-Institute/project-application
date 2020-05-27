@@ -45,6 +45,7 @@ class GrantAgreementForm(forms.ModelForm):
         cd = self.cleaned_data
         signed_date = cd.get('signed_date', None)
         signed_by = cd['signed_by']
+        project = cd['project']
 
         errors = {}
 
@@ -53,6 +54,12 @@ class GrantAgreementForm(forms.ModelForm):
 
         if signed_by.count() == 0 and signed_date:
             errors['signed_by'] = 'Signee(s) is required if signed date is entered'
+
+        if signed_by.exists() is False and project.invoice_set.exists():
+            errors['signed_by'] = 'Signee(s) is required because invoice(s) are already assigned to this project'
+
+        if signed_date is None and project.invoice_set.exists():
+            errors['signed_date'] = 'Date signed is required because invoice(s) are already assigned to this project'
 
         if errors:
             raise forms.ValidationError(errors)
