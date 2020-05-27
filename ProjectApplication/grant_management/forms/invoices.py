@@ -72,6 +72,11 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
+        installment_url = reverse('logged-grant_management-installments-update', kwargs={'project': project.id})
+        self.fields['installment'].help_text = f'Select the installment to which this invoice is assigned. ' \
+                                               f'<a href="{installment_url}">Create an installment</a> if the one you ' \
+                                               f'require does not exist'
+
         message = ''
 
         if self.instance:
@@ -288,7 +293,9 @@ class InvoiceItemModelForm(forms.ModelForm):
                   'sent_for_payment_date': 'Sent for payment',
                   'paid_date': 'Paid'
                   }
-        help_texts = {'due_date': 'Date the invoice is due', 'received_date': 'Date the invoice was received'}
+        help_texts = {
+            'due_date': 'Date the invoice is due',
+            'received_date': 'Date the invoice was received'}
 
 
 class InvoicesFormSet(BaseInlineFormSet):
