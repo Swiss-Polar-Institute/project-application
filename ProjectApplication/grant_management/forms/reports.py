@@ -30,7 +30,7 @@ class ReportsFormSet(BaseInlineFormSet):
         self.helper.form_tag = False
 
     def get_queryset(self):
-        return super().get_queryset().order_by('received_date')
+        return super().get_queryset().order_by('due_date')
 
 
 ScientificReportsInlineFormSet = inlineformset_factory(Project, ScientificReport,
