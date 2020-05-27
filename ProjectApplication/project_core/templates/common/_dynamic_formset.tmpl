@@ -143,6 +143,26 @@
         $(row).find('.to-delete').remove();
     }
 
+    function update_and_setup_javascript_file_id_references(row) {
+        let ending = '-file';
+        let idRegex = new RegExp('(\\d+)' + ending + '$')
+        $(row).find('script').each(function (index, value) {
+            let match = idRegex.exec(value.id);
+            if (match) {
+                let oldId = parseInt(match[1]);
+                let newId = oldId + 1;
+
+                let oldIdEnding = oldId + '-file';
+                let newIdEnding = newId + '-file';
+                value.id = value.id.replace(oldIdEnding, newIdEnding);
+                value.text = value.text.replace(oldIdEnding, newIdEnding);
+
+                // Sad times, another reason to refactor all this file and the jquery.formset.js
+                eval(value.text);
+            }
+        });
+    }
+
     {# This variable needs to be "var" (or nothing) but not const or let. The _dynamic_formset.tmpl can be included #}
     {# multiple times in the samge page. #}
     var jQueryForFormset = $.noConflict(true);
@@ -170,6 +190,7 @@
                 clean_card(row);
                 setup_old_fields_completion_fields(row);
                 delete_message(row);
+                update_and_setup_javascript_file_id_references(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
