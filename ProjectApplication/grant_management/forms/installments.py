@@ -4,8 +4,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, HTML
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
 from django.forms import BaseInlineFormSet, inlineformset_factory
-from django.utils.formats import number_format
 from django.utils.safestring import mark_safe
 
 from grant_management.forms import utils
@@ -66,6 +66,15 @@ class InstallmentModelForm(forms.ModelForm):
         DELETE = cd.get('DELETE', None)
 
         errors = {}
+
+        total_invoiced = None
+
+        if self.instance:
+            total_invoiced = self.instance.invoice_set.all().aggregate(Sum('amount'))['amount__sum']
+
+        if amount and total_invoiced and amount < total_invoiced:
+            errors[
+                'amount'] = f'New installment amount {thousands_separator(amount)} CHF is lower than currently invoiced to this installment ({thousands_separator(total_invoiced)} CHF)'
 
         if amount > project.allocated_budget:
             errors['amount'] = 'This amount is greater than the total project allocated budget'
