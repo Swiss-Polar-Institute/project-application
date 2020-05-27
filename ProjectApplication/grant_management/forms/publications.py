@@ -52,6 +52,10 @@ class PublicationModelForm(forms.ModelForm):
             'project': NumberInput,
         }
         labels = {'doi': 'DOI'}
+        help_texts = {
+            'reference': 'Full reference of publication, eg. Leihy, R. I., Duffy, G. A., & Chown, S. L. (2018). Species richness and turnover among indigenous and introduced plants and insects of the Southern Ocean Islands. Ecosphere, 9(7).',
+            'doi': 'Digital object identifier of publication, eg. 10.1002/ecs2.2358'
+        }
 
 
 class PublicationsFormSet(BaseInlineFormSet):

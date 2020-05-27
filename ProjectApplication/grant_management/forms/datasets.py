@@ -54,6 +54,9 @@ class DatasetModelForm(forms.ModelForm):
         labels = {'doi': 'DOI',
                   'url': 'URL'
                   }
+        help_texts = {
+            'doi': 'Digital object identifier of dataset, eg. 10.5281/zenodo.3260616'
+        }
 
 
 class DatasetsFormSet(BaseInlineFormSet):

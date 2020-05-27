@@ -1,7 +1,7 @@
 import decimal
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field
+from crispy_forms.layout import Layout, Div, Field, HTML
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import BaseInlineFormSet, inlineformset_factory
@@ -9,6 +9,7 @@ from django.utils.formats import number_format
 from django.utils.safestring import mark_safe
 
 from grant_management.forms import utils
+from grant_management.forms.invoices import html_message
 from grant_management.models import Installment, Invoice
 from project_core.fields import AmountField
 from project_core.models import Project
@@ -22,8 +23,10 @@ class InstallmentModelForm(forms.ModelForm):
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
 
+        message = ''
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
         if self.instance and Invoice.objects.filter(installment=self.instance).exists():
+            message = 'This installment cannot be deleted because invoices are attached to it'
             self.fields['can_be_deleted'].initial = 0
 
         self.helper = FormHelper()
@@ -41,6 +44,7 @@ class InstallmentModelForm(forms.ModelForm):
             Div(
                 Div('due_date', css_class='col-4'),
                 Div('amount', css_class='col-4'),
+                Div(HTML(html_message(message)), css_class='col-4 to-delete'),
                 css_class='row'
             )
         )

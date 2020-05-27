@@ -172,16 +172,16 @@ class InvoiceItemModelForm(forms.ModelForm):
         today = timezone.now().date()
 
         if received_date and received_date > today:
-            errors['received_date'] = 'Received date cannot be in the future'
+            errors['received_date'] = 'Date received cannot be in the future'
 
         if sent_for_payment_date and sent_for_payment_date > today:
-            errors['sent_for_payment_date'] = 'Sent for payment date cannot be in the future'
+            errors['sent_for_payment_date'] = 'Date sent for payment cannot be in the future'
 
         if paid_date and paid_date > today:
             errors['paid_date'] = 'Date paid cannot be in the future'
 
         if not due_date and (due_date or received_date or sent_for_payment_date or paid_date or amount or file):
-            errors['due_date'] = f'Due date is required to create an invoice'
+            errors['due_date'] = f'An invoice must have a due date'
 
         if due_date and due_date < project_starts:
             errors['due_date'] = utils.error_due_date_too_early(project_starts)
@@ -191,7 +191,7 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         if sent_for_payment_date and received_date and sent_for_payment_date < received_date:
             sent_for_payment_errors.append(
-                f'Date sent for payment should be after the date the invoice was received date')
+                f'Date sent for payment should be after the date the invoice was received')
 
         if paid_date and sent_for_payment_date and paid_date < sent_for_payment_date:
             errors['paid_date'] = f'Date paid should be after the date the invoice was sent for payment'
