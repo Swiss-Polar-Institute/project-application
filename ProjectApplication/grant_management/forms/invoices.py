@@ -134,6 +134,8 @@ class InvoiceItemModelForm(forms.ModelForm):
     def title(self):
         if self.instance:
             invoice = self.instance
+            if invoice.paid_date:
+                return f'Invoice paid {format_date(invoice.paid_date)}'
             if invoice.sent_for_payment_date:
                 return f'Invoice sent for payment {format_date(invoice.sent_for_payment_date)}'
             elif invoice.received_date:
