@@ -243,7 +243,7 @@ class InvoiceItemModelForm(forms.ModelForm):
                   'file']
         field_classes = {'installment': InstallmentModelChoiceField}
         widgets = {
-            # 'due_date': XDSoftYearMonthDayPickerInput,
+            'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
             'sent_for_payment_date': XDSoftYearMonthDayPickerInput,
             'paid_date': XDSoftYearMonthDayPickerInput,
