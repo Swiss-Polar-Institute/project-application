@@ -153,8 +153,9 @@
         jQueryForFormset('#{{ form_set.prefix }} tbody tr').formset({
             prefix: '{{ form_set.prefix }}',
             {% if human_type %}
-                addText: 'add another {{ human_type }}',
+                addText: 'Add another {{ human_type }}',
             {% endif %}
+            deleteText: 'Remove',
             added: function (row) {
                 // Not in a function because multiple _dynamic_formset.tmpl might exist and hide_delete_links are
                 // different for each one. Javascript having a global scope for the functions is a reason to have
