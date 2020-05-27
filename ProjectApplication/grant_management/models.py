@@ -64,7 +64,7 @@ class Invoice(AbstractProjectDueReceivedDate):
     paid_date = models.DateField(help_text='Date the invoice was paid', null=True, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice (CHF)', null=True,
                                  blank=True)
-    installment = models.ForeignKey(Installment, help_text='Which installment this invoice refers to', null=True,
+    installment = models.ForeignKey(Installment, help_text='Installment to which the invoice is assigned', null=True,
                                     blank=True, on_delete=models.PROTECT)
 
     @staticmethod
