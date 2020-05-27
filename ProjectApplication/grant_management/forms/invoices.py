@@ -29,6 +29,15 @@ class InstallmentModelChoiceField(ModelChoiceField):
         return mark_safe(f'{ordinal(self._sequence)} - {format_date(obj.due_date)} - {amount} CHF')
 
 
+def html_message(message):
+    return f'''
+    <div class="form-group">
+        <label for="id_FORM_SET-1-installment" class="invisible">l</label>
+        <div class="">{message}</div>
+    </div>
+    '''
+
+
 class InvoiceItemModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self._user = kwargs.pop('user', None)  # When the form is created to visualise user is not needed
@@ -65,14 +74,20 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         message = ''
 
-        if self.instance and self.instance.paid_date is not None:
-            self.fields['can_be_deleted'].initial = 0
-            message = '''<strong>This invoice has been paid and can no longer be changed.
-                    To edit any of the fields, delete the date paid, click on <em>Save Invoices</em> 
-                    and come back to the invoices page.</strong>'''
+        if self.instance:
+            if self.instance.invoicecomment_set.exists():
+                self.fields['can_be_deleted'].initial = 0
+                message = 'This invoice cannot be removed because it has comments.'
 
-            for field_name in ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount', 'installment']:
-                self.fields[field_name].disabled = True
+            if self.instance.paid_date is not None:
+                self.fields['can_be_deleted'].initial = 0
+                message = '''<strong>This invoice has been paid and can no longer be changed.
+                        To edit any of the fields, delete the date paid, click on <em>Save Invoices</em> 
+                        and come back to the invoices page.</strong>'''
+
+                for field_name in ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount',
+                                   'installment']:
+                    self.fields[field_name].disabled = True
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -89,12 +104,12 @@ class InvoiceItemModelForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div(
-                    HTML(message), css_class='col-12'),
-                css_class='row to-delete'
+                Div(HTML(f'<h4>{self.title()}</h4>'), css_class='col-12'),
+                css_class='row'
             ),
             Div(
                 Div('installment', css_class='col-4'),
+                Div(HTML(html_message(message)), css_class='col-8 to-delete'),
                 css_class='row'
             ),
             Div(
@@ -115,6 +130,18 @@ class InvoiceItemModelForm(forms.ModelForm):
             divs += Div(HTML("{% include 'comments/_accordion-comment-list-fields-for-new.tmpl' %}"))
 
         self.helper.layout = Layout(*divs)
+
+    def title(self):
+        if self.instance:
+            invoice = self.instance
+            if invoice.sent_for_payment_date:
+                return f'Invoice sent for payment {format_date(invoice.sent_for_payment_date)}'
+            elif invoice.received_date:
+                return f'Invoice received {format_date(invoice.received_date)}'
+            elif invoice.due_date:
+                return f'Invoice due {format_date(invoice.due_date)}'
+
+        return 'Invoice'
 
     def clean(self):
         cd = super().clean()
