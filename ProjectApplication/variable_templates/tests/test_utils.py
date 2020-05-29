@@ -1,3 +1,4 @@
+import unittest
 from collections import OrderedDict
 
 from django import forms
@@ -103,6 +104,14 @@ class UtilsTest(TestCase):
         activity = utils.get_template_value_for_funding_instrument('activity', self._funding_instrument)
         self.assertEqual(activity, 'proposal')
 
+    @unittest.expectedFailure
+    def test_get_template_value_for_funding_instrument_test_does_not_exist(self):
+        utils.get_template_value_for_funding_instrument('does_not_exist', self._funding_instrument)
+
     def test_get_template_value_for_call(self):
         activity = utils.get_template_value_for_call('activity', self._call)
         self.assertEqual(activity, 'proposal')
+
+    @unittest.expectedFailure
+    def test_get_template_value_for_call_does_not_exist(self):
+        utils.get_template_value_for_call('does_not_exist', self._call)
