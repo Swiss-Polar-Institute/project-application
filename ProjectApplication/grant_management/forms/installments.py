@@ -25,7 +25,7 @@ class InstallmentModelForm(forms.ModelForm):
 
         message = ''
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
-        if self.instance and Invoice.objects.filter(installment=self.instance).exists():
+        if self.instance and self.instance.id and Invoice.objects.filter(installment=self.instance).exists():
             message = 'This installment cannot be deleted because invoices are attached to it'
             self.fields['can_be_deleted'].initial = 0
 
