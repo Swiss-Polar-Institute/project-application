@@ -88,7 +88,7 @@ class UtilsTest(TestCase):
         activity = utils.get_template_value_for_funding_instrument('activity', self._funding_instrument)
         self.assertEqual(activity, 'dish')
 
-    def copy_template_variables_from_funding_instrument_to_call_test(self):
+    def test_copy_template_variables_from_funding_instrument_to_call_test(self):
         template_variable_name = TemplateVariableName.objects.get(name='activity')
         FundingInstrumentVariableTemplate.objects.create(funding_instrument=self._funding_instrument,
                                                          name=template_variable_name,
