@@ -4,9 +4,9 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from colours.models import ColourPair
 from evaluation.models import ProposalEvaluation, CallEvaluation
+from grant_management.models import Invoice, GrantAgreement
 from project_core.models import CreateModifyOn, Proposal, Call, Project
 
-from grant_management.models import Invoice
 
 # Models used by Proposal, Call...
 class Category(CreateModifyOn):
@@ -342,6 +342,7 @@ class CallEvaluationComment(AbstractComment):
     class Meta:
         unique_together = (('call_evaluation', 'created_on', 'created_by'),)
 
+
 # Invoice
 class InvoiceCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
@@ -356,8 +357,8 @@ class InvoiceCommentCategory(CreateModifyOn):
 class InvoiceComment(AbstractComment):
     """Comments made about a Proposal Evaluation"""
     invoice = models.ForeignKey(Invoice,
-                                        help_text='Call Evaluation about which the comment was made',
-                                        on_delete=models.PROTECT)
+                                help_text='Call Evaluation about which the comment was made',
+                                on_delete=models.PROTECT)
 
     category = models.ForeignKey(InvoiceCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
@@ -374,3 +375,71 @@ class InvoiceComment(AbstractComment):
 
     class Meta:
         unique_together = (('invoice', 'created_on', 'created_by'),)
+
+
+# GrantAgreement
+class GrantAgreementCommentCategory(CreateModifyOn):
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.category.name
+
+    class Meta:
+        verbose_name_plural = 'Grant Agreement Comment Categories'
+
+
+class GrantAgreementComment(AbstractComment):
+    """Comments made about a Proposal Evaluation"""
+    grant_agreement = models.ForeignKey(GrantAgreement,
+                                        help_text='GrantAgreement about which the comment was made',
+                                        on_delete=models.PROTECT)
+
+    category = models.ForeignKey(GrantAgreementCommentCategory, help_text='Type of comment',
+                                 on_delete=models.PROTECT)
+
+    def set_parent(self, parent):
+        self.grant_agreement = parent
+
+    @staticmethod
+    def category_queryset():
+        return GrantAgreementCommentCategory.objects.all()
+
+    class Meta:
+        unique_together = (('grant_agreement', 'created_on', 'created_by'),)
+
+    class Meta:
+        verbose_name_plural = 'Grant Agreement Comments'
+
+
+class GrantAgreementAttachmentCategory(CreateModifyOn):
+    category = models.OneToOneField(Category, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.category.name
+
+    class Meta:
+        verbose_name_plural = 'Grant Agreement Attachment Categories'
+
+
+def grant_agreement_attachment_rename(instance, filename):
+    return f'comments/GrantAgreementAttachment/AttachmentGrantAgreement-{instance.grant_agreement.id}-{filename}'
+
+
+class GrantAgreementAttachment(AbstractAttachment):
+    file = models.FileField(storage=S3Boto3Storage(),
+                            upload_to=grant_agreement_attachment_rename)
+    grant_agreement = models.ForeignKey(GrantAgreement,
+                                        help_text='GrantAgreement that this attachment belongs to',
+                                        on_delete=models.PROTECT)
+    category = models.ForeignKey(GrantAgreementAttachmentCategory, help_text='Category of the attachment',
+                                 on_delete=models.PROTECT)
+
+    def set_parent(self, parent):
+        self.grant_agreement = parent
+
+    @staticmethod
+    def category_queryset():
+        return GrantAgreementAttachmentCategory.objects.all()
+
+    class Meta:
+        verbose_name_plural = 'Grant Agreement Attachments'

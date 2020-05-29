@@ -27,6 +27,22 @@ class GrantAgreement(CreateModifyOn):
     def __str__(self):
         return f'{self.project}'
 
+    @staticmethod
+    def comment_object():
+        from comments.models import GrantAgreementComment
+        return GrantAgreementComment
+
+    @staticmethod
+    def attachment_object():
+        from comments.models import GrantAgreementAttachment
+        return GrantAgreementAttachment
+
+    def attachments(self):
+        return self.grantagreementattachment_set.all().order_by('created_on')
+
+    def comments(self):
+        return self.grantagreementcomment_set.all().order_by('created_on')
+
 
 class AbstractProjectDueReceivedDate(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',

@@ -70,7 +70,7 @@ class ProjectDetail(DetailView):
         context['lay_summaries_count'] = project.laysummary_set.exclude(text='').count()
         context['blog_posts_count'] = project.blogpost_set.exclude(text='').count()
 
-        context.update(comments_attachments_forms('logged-grant_management-project-comment-add-detail', project))
+        context.update(comments_attachments_forms('logged-grant_management-project-comment-add', project))
 
         if 'tab' in self.request.GET:
             context['active_tab'] = self.request.GET['tab']
@@ -149,54 +149,60 @@ def basic_context_data_grant_agreement(project, active_page):
     return context
 
 
-class GrantAgreementAddView(SuccessMessageMixin, CreateView):
+class AbstractGrantAgreement(SuccessMessageMixin, CreateView):
     template_name = 'grant_management/grant_agreement-form.tmpl'
     form_class = GrantAgreementForm
     model = GrantAgreement
-    success_message = 'Grant agreement added'
+
+    def _get_project(self):
+        kwargs = self.kwargs
+
+        if 'pk' in kwargs:
+            project = GrantAgreement.objects.get(id=self.kwargs['pk']).project
+        elif 'project' in kwargs:
+            project = Project.objects.get(id=self.kwargs['project'])
+        else:
+            assert False
+
+        return project
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project = Project.objects.get(id=self.kwargs['project'])
-        context['project'] = project
+        context['project'] = self._get_project()
 
-        context.update(basic_context_data_grant_agreement(project, 'Grant agreement'))
+        context.update(basic_context_data_grant_agreement(context['project'], 'Grant agreement'))
 
         return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['project'] = Project.objects.get(id=self.kwargs['project'])
+        kwargs['project'] = self._get_project()
+
+        if 'pk' in self.kwargs:
+            kwargs['instance'] = GrantAgreement.objects.get(id=self.kwargs['pk'])
+
         return kwargs
 
     def get_success_url(self):
         return reverse('logged-grant_management-project-detail', kwargs={'pk': self.object.project.pk})
 
 
-class GrantAgreementUpdateView(SuccessMessageMixin, UpdateView):
-    template_name = 'grant_management/grant_agreement-form.tmpl'
-    form_class = GrantAgreementForm
-    model = GrantAgreement
+class GrantAgreementAddView(AbstractGrantAgreement):
+    success_message = 'Grant agreement added'
+
+
+class GrantAgreementUpdateView(AbstractGrantAgreement):
     success_message = 'Grant agreement updated'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project = context['grantagreement'].project
-        context['project'] = project
-
-        context.update(basic_context_data_grant_agreement(project, 'Grant agreement'))
+        if hasattr(context['project'], 'grantagreement'):
+            context.update(comments_attachments_forms('logged-grant_management-grant_agreement-comment-add',
+                                                      context['project'].grantagreement))
 
         return context
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['project'] = kwargs['instance'].project
-        return kwargs
-
-    def get_success_url(self):
-        return reverse('logged-grant_management-project-detail', kwargs={'pk': self.object.project.pk})
 
 
 def grant_management_project_url(kwargs):
@@ -336,3 +342,16 @@ class MilestoneCategoriesAutocomplete(autocomplete.Select2QuerySetView):
 
         qs = qs.order_by('name')
         return qs
+
+
+class GrantAgreementCommentAdd(AbstractGrantAgreement):
+    def post(self, request, *args, **kwargs):
+        self.object = Project.objects.get(pk=kwargs['pk'])
+        context = super().get_context_data(**kwargs)
+
+        result = process_comment_attachment(request, context, 'logged-grant_management-grant_agreement-update',
+                                            'logged-grant_management-grant_agreement-comment-add',
+                                            'grant_management/grant_agreement-form.tmpl',
+                                            context['project'].grantagreement)
+
+        return result

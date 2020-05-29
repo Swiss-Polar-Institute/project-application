@@ -12,7 +12,7 @@ urlpatterns = [
 
     path('logged/grant-management/project/<int:pk>/add-comment/',
          grant_management.views.ProjectDetailCommentAdd.as_view(),
-         name='logged-grant_management-project-comment-add-detail'),
+         name='logged-grant_management-project-comment-add'),
 
     path('logged/grant-management/project/<int:pk>/update/',
          grant_management.views.ProjectUpdate.as_view(),
@@ -37,6 +37,9 @@ urlpatterns = [
     path('logged/grant-management/grant-agreement/<int:pk>/update/',
          grant_management.views.GrantAgreementUpdateView.as_view(),
          name='logged-grant_management-grant_agreement-update'),
+    path('logged/grant-management/grant-agreement/<int:pk>/add-comment/',
+         grant_management.views.GrantAgreementCommentAdd.as_view(),
+         name='logged-grant_management-grant_agreement-comment-add'),
 
     path('logged/grant-management/project/<int:project>/invoices/update/',
          grant_management.views.InvoicesUpdateView.as_view(),

@@ -108,6 +108,26 @@ class InvoiceCommentAdmin(admin.ModelAdmin):
     ordering = ('invoice', 'text', 'created_by', 'created_on')
 
 
+class GrantAgreementAttachmentCategoryAdmin(admin.ModelAdmin):
+    list_display = ('category', 'created_on',)
+    ordering = ('category', 'created_on',)
+
+
+class GrantAgreementAttachmentAdmin(admin.ModelAdmin):
+    list_display = ('grant_agreement', 'file', 'created_by', 'created_on',)
+    ordering = ('grant_agreement', 'file', 'created_by', 'created_on',)
+
+
+class GrantAgreementCommentCategoryAdmin(admin.ModelAdmin):
+    list_display = ('category', 'created_on',)
+    ordering = ('category', 'created_on',)
+
+
+class GrantAgreementCommentAdmin(admin.ModelAdmin):
+    list_display = ('grant_agreement', 'text', 'created_by', 'created_on')
+    ordering = ('grant_agreement', 'text', 'created_by', 'created_on')
+
+
 admin.site.register(comments.models.Category, CategoryAdmin)
 
 admin.site.register(comments.models.ProposalCommentCategory, ProposalCommentCategoryAdmin)
@@ -135,3 +155,8 @@ admin.site.register(comments.models.CallEvaluationComment, CallEvaluationComment
 
 admin.site.register(comments.models.InvoiceCommentCategory, InvoiceCommentCategoryAdmin)
 admin.site.register(comments.models.InvoiceComment, InvoiceCommentAdmin)
+
+admin.site.register(comments.models.GrantAgreementCommentCategory, GrantAgreementCommentCategoryAdmin)
+admin.site.register(comments.models.GrantAgreementComment, GrantAgreementCommentAdmin)
+admin.site.register(comments.models.GrantAgreementAttachmentCategory, GrantAgreementAttachmentCategoryAdmin)
+admin.site.register(comments.models.GrantAgreementAttachment, GrantAgreementAttachmentAdmin)

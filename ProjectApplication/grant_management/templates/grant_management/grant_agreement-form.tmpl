@@ -7,6 +7,11 @@
             {% include 'grant_management/_project_header-detail.tmpl' with project=project %}
             <h3>Grant agreement</h3>
             {% crispy form %}
+            {% if comment_form %}
+                {# If the Grant Agreement has not been created yet: it's no showing the comments list #}
+                <hr>
+                {% include 'comments/_comments-attachments.tmpl' %}
+            {% endif %}
         </div>
         <div class="col-2">
         </div>
