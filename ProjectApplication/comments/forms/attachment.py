@@ -32,7 +32,7 @@ class AttachmentForm(forms.Form):
 
         self.helper = FormHelper(self)
         self.helper.form_action = form_action
-        self.helper.add_input(Submit('attachment_form_submit', 'Save file', css_class='btn-primary'))
+        self.helper.add_input(Submit('attachment_form_submit', 'Save File', css_class='btn-primary'))
 
         self.helper.layout = Layout(
             Div(

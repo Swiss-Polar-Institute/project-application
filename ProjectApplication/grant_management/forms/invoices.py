@@ -53,7 +53,7 @@ class InvoiceItemModelForm(forms.ModelForm):
             self.comment_prefix = f'comment-invoice-{self.instance.id}'
             self.comments = self.instance.comments()
             self.comment_count = len(self.comments)
-            self.comments_save_text = 'Save Finances'
+            self.comments_save_text = 'Save Invoices'
 
             self._comment_form = CommentForm(form_action=reverse('logged-proposal-evaluation-comment-add',
                                                                  kwargs={'pk': self.instance.id}),
