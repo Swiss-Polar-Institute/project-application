@@ -2,6 +2,10 @@
 
 {% block contents %}
     <h1>Financial keys</h1>
+    Financial keys are used by the billing system. They are the name of a funding instrument or a financial category.
+    To avoid miss-using keys they need to be added here: if a key is used for a financial category it cannot be used as
+    a funding instrument key.
+
     {% if financial_keys %}
         <table id="financial-keys" class="table table-stripped table-sm table-hover display">
             <thead>
@@ -26,18 +30,18 @@
             {% endfor %}
             </tbody>
         </table>
+        <script type="text/javascript" class="init">
+            $(document).ready(function () {
+                $('table.display').DataTable({
+                        "pageLength": 100,
+                        "searchHighlight": true
+                    }
+                );
+            });
+        </script>
     {% else %}
         No financial keys entered in the system
     {% endif %}
-    <script type="text/javascript" class="init">
-        $(document).ready(function () {
-            $('table.display').DataTable({
-                    "pageLength": 100,
-                    "searchHighlight": true
-                }
-            );
-        });
-    </script>
     <p></p>
     <a href="{% url 'logged-financial-key-update' %}" class="btn btn-primary">Add New Financial Key</a>
 {% endblock %}

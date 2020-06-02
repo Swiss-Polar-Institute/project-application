@@ -16,7 +16,7 @@ class FundingInstrumentForm(forms.ModelForm):
         self.fields['short_name'].queryset = FinancialKey.objects.filter(funding_instrument=True).filter(fundinginstrument__isnull=True)
 
         self.fields[
-            'short_name'].help_text = f'Select a funding instrument acronym. This needs to be a financial key. Please <a href="{reverse("logged-financial-key-list")}">create one if needed</a>'
+            'short_name'].help_text = f'Select a funding instrument acronym. This needs to be a financial key. Please <a href="{reverse("logged-financial-key-list")}">create one if needed</a> and refresh this page'
 
     class Meta:
         model = FundingInstrument
