@@ -97,7 +97,9 @@ class InstallmentModelForm(forms.ModelForm):
         model = Installment
         fields = ['project', 'due_date', 'amount']
         field_classes = {'amount': AmountField}
-        labels = {'due_date': 'Due'}
+        labels = {'due_date': 'Due',
+                  'amount': 'Amount (CHF)'
+                  }
         help_texts = {'due_date': 'Date the installment is due'}
         widgets = {'due_date': XDSoftYearMonthDayPickerInput}
 

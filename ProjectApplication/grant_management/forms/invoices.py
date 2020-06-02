@@ -226,7 +226,8 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         if sent_for_payment_date and \
                 hasattr(project, 'grantagreement') and project.grantagreement.signed_date is None:
-            grant_agreement_url = reverse('logged-grant_management-grant_agreement-update', kwargs={'pk': project.grantagreement.id})
+            grant_agreement_url = reverse('logged-grant_management-grant_agreement-update',
+                                          kwargs={'pk': project.grantagreement.id})
             sent_for_payment_errors.append(
                 f'Please add the signed by in the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
 
@@ -291,11 +292,14 @@ class InvoiceItemModelForm(forms.ModelForm):
         labels = {'due_date': 'Due',
                   'received_date': 'Received',
                   'sent_for_payment_date': 'Sent for payment',
-                  'paid_date': 'Paid'
+                  'paid_date': 'Paid',
+                  'amount': 'Amount (CHF)'
                   }
         help_texts = {
             'due_date': 'Date the invoice is due',
-            'received_date': 'Date the invoice was received'}
+            'received_date': 'Date the invoice was received',
+            'amount': 'Total of the invoice'
+        }
 
 
 class InvoicesFormSet(BaseInlineFormSet):
