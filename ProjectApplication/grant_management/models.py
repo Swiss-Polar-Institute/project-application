@@ -272,7 +272,7 @@ class Dataset(CreateModifyOn):
 
 
 class MilestoneCategory(CreateModifyOn):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=40)
     created_by = models.ForeignKey(User, help_text='User that created the category', on_delete=models.PROTECT)
 
     def __str__(self):
