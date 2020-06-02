@@ -13,8 +13,11 @@ SPI can create calls. Calls belong to a Funding Instrument and each Call has a c
 
 People identity is integrated with ORCID.
 
+![create_call](documentation/screenshots/017-create_call.png)
+
 ## Proposals
 Applicants create proposals for the existing calls. They can save as Draft or Submit. Email notifications to the applicants are sent. When creating the proposal there are lookups on ORCID, the budget is checked to not go over budget, keywords can be created, etc.
+![proposal_main_form](documentation/screenshots/020-proposal_main_form.png)
 
 ## Evaluation
 Once the Call is closed the Evaluation starts. SPI marks the proposals as eligible or not eligible. Reviewers have access to the eligible proposals of a given call. An Excel file is generated for the board to evaluate each proposal.
