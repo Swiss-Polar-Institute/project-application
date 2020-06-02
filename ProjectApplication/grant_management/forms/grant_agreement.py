@@ -71,6 +71,6 @@ class GrantAgreementForm(forms.ModelForm):
         fields = ['project', 'signed_date', 'signed_by', 'file']
         labels = {'file': 'Grant agreement'}
         help_texts = {
-            'signed_by': 'Add all people who signed the grant agreement. Please do not use spaces when searching; you can search by first name or surname'}
+            'signed_by': 'Add all people who signed the grant agreement'}
         widgets = {'signed_date': XDSoftYearMonthDayPickerInput,
                    'signed_by': autocomplete.ModelSelect2Multiple(url='logged-autocomplete-physical-people')}

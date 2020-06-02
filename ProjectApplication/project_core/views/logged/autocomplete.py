@@ -1,5 +1,6 @@
 from dal import autocomplete
-from django.db.models import Q
+from django.db.models import Value as V
+from django.db.models.functions import Concat
 
 from project_core.models import PhysicalPerson
 
@@ -12,7 +13,8 @@ class PhysicalPersonAutocomplete(autocomplete.Select2QuerySetView):
         qs = PhysicalPerson.objects.all()
 
         if self.q:
-            qs = qs.filter(Q(first_name__icontains=self.q) | Q(surname__icontains=self.q))
+            qs = PhysicalPerson.objects.annotate(full_name=Concat('first_name', V(' '), 'surname')).filter(
+                full_name__icontains=self.q)
 
         qs = qs.order_by('first_name')
         return qs
