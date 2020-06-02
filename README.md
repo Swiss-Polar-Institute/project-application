@@ -29,17 +29,26 @@ The last step of the evaluation happens when the application validates that all 
 This is a small project management system. SPI can enter information for:
 
 ### Finances
--Installments
--Invoices (with comments attach to each invoice if needed)
--Financial reports
+- Installments
+
+- Invoices (with comments attach to each invoice if needed)
+
+- Financial reports
 
 ### Deliverables
--Milestones of any time
--Scientific reports
--Lay summaries (integrated with Web)
--Blog posts (psosibility to integrate them at a later stage)
--Photos and media (holding the copyright, license, received date, etc.)
--Datasets
--Publications
--Social media links
+- Milestones of any time
+
+- Scientific reports
+
+- Lay summaries (integrated with Web)
+
+- Blog posts (psosibility to integrate them at a later stage)
+
+- Photos and media (holding the copyright, license, received date, etc.)
+
+- Datasets
+
+- Publications
+
+- Social media links
 
