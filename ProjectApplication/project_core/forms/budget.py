@@ -8,6 +8,7 @@ from django.forms import BaseFormSet, formset_factory
 from project_core.fields import AmountField
 from project_core.forms.utils import PlainTextWidget
 from project_core.models import BudgetCategory, ProposedBudgetItem
+from project_core.templatetags.thousands_separator import thousands_separator
 
 
 class BudgetItemForm(forms.Form):
@@ -116,8 +117,8 @@ class BudgetFormSet(BaseFormSet):
         if budget_amount > maximum_budget:
             raise forms.ValidationError(
                 'Maximum allowed budget for this call is {} CHF. Your total proposed budget is {} CHF'.format(
-                    number_format(maximum_budget),
-                    number_format(budget_amount)))
+                    thousands_separator(maximum_budget),
+                    thousands_separator(budget_amount)))
 
     def save_budgets(self, proposal):
         for form in self.forms:

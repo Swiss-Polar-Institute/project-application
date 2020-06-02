@@ -5,7 +5,6 @@ from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.urls import reverse
-from django.utils.formats import number_format
 
 from ProjectApplication import settings
 from project_core.fields import AmountField
@@ -39,7 +38,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['decision_letter_date'])
         self.fields['proposal'].initial = self._proposal
-        requested_budget = number_format(self._proposal.total_budget())
+        requested_budget = self._proposal.total_budget()
 
         self.fields['allocated_budget'] = AmountField(required=False)
         self.fields['allocated_budget'].help_text = f'Requested: {thousands_separator(requested_budget)} CHF'
