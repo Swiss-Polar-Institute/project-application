@@ -165,3 +165,6 @@ class ProposalEvaluationForm(forms.ModelForm):
             'decision_date': XDSoftYearMonthDayPickerInput,
             'decision_letter_date': XDSoftYearMonthDayPickerInput,
         }
+        labels = {
+            'decision_letter_date': 'Date decision letter sent'
+        }
