@@ -77,6 +77,10 @@ urlpatterns = [
          grant_management.views.MilestoneUpdateView.as_view(),
          name='logged-grant_management-milestones-update'),
 
+    path('logged/grant-management/project/<int:project>/close/',
+         grant_management.views.CloseProjectView.as_view(),
+         name='logged-grant_management-close_project'),
+
     path('lay-summaries/<int:call>/raw/',
          grant_management.views.LaySummariesRaw.as_view(),
          name='lay-summaries-raw'),

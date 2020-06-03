@@ -1,0 +1,6 @@
+<h3>Scientific reports</h3>
+{% if close_project_form.unsigned_scientific_reports_count %}
+    <i class="fa fa-times" style="color:red"></i> There are {{ close_project_form.unsigned_scientific_reports_count }} unsigned scientific reports.
+{% else %}
+    <i class="fa fa-check" style="color:green"></i> Good!
+{% endif %}

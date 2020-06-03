@@ -1,0 +1,6 @@
+<h3>Lay Summaries</h3>
+{% if close_project_form.empty_lay_summaries_count %}
+    <i class="fa fa-times" style="color:red"></i> There are {{ close_project_form.empty_lay_summaries_count }} empty lay summaries.
+{% else %}
+    <i class="fa fa-check" style="color:green"></i> Good!
+{% endif %}

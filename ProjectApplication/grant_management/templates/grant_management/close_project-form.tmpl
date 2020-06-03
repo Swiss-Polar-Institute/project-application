@@ -1,0 +1,14 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            {% include 'grant_management/_project_header-detail.tmpl' with project=project %}
+            <h3 style="color:red">Close Project</h3>
+            {% crispy close_project_form %}
+        </div>
+        <div class="col-2">
+        </div>
+    </div>
+{% endblock %}

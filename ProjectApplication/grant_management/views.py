@@ -14,6 +14,7 @@ from grant_management.forms.reports import FinancialReportsInlineFormSet, Scient
 from grant_management.models import GrantAgreement, MilestoneCategory
 from project_core.models import Project
 from project_core.views.common.formset_inline_view import InlineFormsetUpdateView
+from .forms.close_project import CloseProjectForm
 from .forms.datasets import DatasetInlineFormSet
 from .forms.media import MediaInlineFormSet
 from .forms.milestones import MilestoneInlineFormSet
@@ -301,6 +302,21 @@ class MilestoneUpdateView(GrantManagementInlineFormset):
     inline_formset = MilestoneInlineFormSet
     human_type = 'milestone'
     tab = 'deliverables'
+
+
+class CloseProjectView(TemplateView):
+    template_name = 'grant_management/close_project-form.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['project'] = Project.objects.get(id=kwargs['project'])
+
+        context.update(basic_context_data_grant_agreement(context['project'], 'Grant agreement'))
+
+        context['close_project_form'] = CloseProjectForm(project=context['project'])
+
+        return context
 
 
 class LaySummariesRaw(TemplateView):

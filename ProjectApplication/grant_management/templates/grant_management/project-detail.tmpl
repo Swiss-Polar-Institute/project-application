@@ -19,7 +19,8 @@
                     <h3>Grant agreement <a class="btn btn-primary btn-sm"
                                            href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
                     </h3>
-                    <strong>Grant agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
+                    <strong>Grant
+                        agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
                     <strong>Signed
                         date:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_date %}<br>
                     <strong>Signed
@@ -65,6 +66,10 @@
             </p>
             <p>
                 <a class="btn btn-primary" href="{% url 'logged-project-detail' pk=project.id %}" role="button">View
+                    Project</a>
+            </p>
+            <p>
+                <a class="btn btn-primary" href="{% url 'logged-grant_management-close_project' project=project.id %}">Close
                     Project</a>
             </p>
         </div>
