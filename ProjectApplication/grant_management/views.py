@@ -1,5 +1,7 @@
 from dal import autocomplete
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
@@ -314,9 +316,23 @@ class CloseProjectView(TemplateView):
 
         context.update(basic_context_data_grant_agreement(context['project'], 'Grant agreement'))
 
-        context['close_project_form'] = CloseProjectForm(project=context['project'])
+        context['close_project_form'] = CloseProjectForm(instance=context['project'])
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        project = Project.objects.get(id=kwargs['project'])
+        close_project_form = CloseProjectForm(request.POST, instance=project)
+
+        if close_project_form.is_valid():
+            close_project_form.save()
+            messages.success(request, 'The project has been closed')
+            return redirect(reverse('logged-grant_management-project-list'))
+
+        context = self.get_context_data(**kwargs)
+        context['close_project_form'] = close_project_form
+
+        return render(request, 'grant_management/close_project-form.tmpl', context)
 
 
 class LaySummariesRaw(TemplateView):
