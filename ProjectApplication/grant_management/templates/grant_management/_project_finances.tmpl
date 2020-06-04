@@ -1,19 +1,18 @@
 <div class="row">
     <div class="col-6">
-        <h3>Installments <a class="btn btn-primary btn-sm"
-                            href="{% url 'logged-grant_management-installments-update' project=project.pk %}">Edit</a>
+        <h3>
+            Installments {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-installments-update' project=project %}
         </h3>
         {% include 'grant_management/_installment-list.tmpl' %}
     </div>
 </div>
 <p></p>
-<h3>Invoices <a class="btn btn-primary btn-sm"
-                href="{% url 'logged-grant_management-invoices-update' project=project.id %}">Edit</a></h3>
+<h3>
+    Invoices {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-invoices-update' project=project %}</h3>
 {% include 'grant_management/_invoice-list.tmpl' %}
 <p></p>
-<h3>Financial reports <a class="btn btn-primary btn-sm"
-                         href="{% url 'logged-grant_management-financial_reports-update' project=project.id %}">Edit</a>
-</h3>
+<h3>Financial
+    reports {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-financial_reports-update' project=project %}</h3>
 {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}
 
 {% include 'common/_datatable_fix_column_sizes.tmpl' %}

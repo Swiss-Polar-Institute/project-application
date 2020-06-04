@@ -68,10 +68,14 @@
                 <a class="btn btn-primary" href="{% url 'logged-project-detail' pk=project.id %}" role="button">View
                     Project</a>
             </p>
-            <p>
-                <a class="btn btn-primary" href="{% url 'logged-grant_management-close_project' project=project.id %}">Close
-                    Project</a>
-            </p>
+            {% if project.is_active %}
+                <p>
+
+                    <a class="btn btn-primary"
+                       href="{% url 'logged-grant_management-close_project' project=project.id %}">Close
+                        Project</a>
+                </p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

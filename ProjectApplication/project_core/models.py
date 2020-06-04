@@ -1117,6 +1117,9 @@ class Project(CreateModifyOn):
     def invoices_paid_amount(self):
         return self.invoice_set.filter(paid_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
 
+    def is_active(self):
+        return self.status == Project.ONGOING
+
     class Meta:
         unique_together = (('title', 'principal_investigator', 'call'),)
 

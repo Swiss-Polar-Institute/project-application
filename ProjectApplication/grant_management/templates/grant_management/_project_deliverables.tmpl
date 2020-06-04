@@ -5,8 +5,7 @@
 <p></p>
 
 <h3>Scientific reports
-    <a class="btn btn-primary btn-sm"
-       href="{% url 'logged-grant_management-scientific_reports-update' project=project.id %}">Edit</a></h3>
+    {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-scientific_reports-update' project=project %}</h3>
 {% include 'grant_management/_report-list.tmpl' with reports=project.scientificreport_set.all report_name='scientific' %}
 <p></p>
 

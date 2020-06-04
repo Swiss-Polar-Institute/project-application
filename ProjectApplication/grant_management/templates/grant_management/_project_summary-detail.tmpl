@@ -10,7 +10,7 @@
         </div>
         <div class="col-6">
             <strong>Project Key:</strong> {{ project.key }}<br>
-            <strong>Status:</strong> {{ project.status }}<br>
+            <strong>Status:</strong> {% include 'grant_management/_project_status.tmpl' %}<br>
             <strong>Call:</strong> <a
                 href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
         </div>
