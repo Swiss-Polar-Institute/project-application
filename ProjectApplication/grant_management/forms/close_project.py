@@ -52,13 +52,16 @@ class CloseProjectForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div(self.checkbox_ignore_unreceived_blog_post(), css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div(HTML('<p></p>'), css_class='col-12'),
                 css_class='row'
             ),
         ]
 
         if self._can_be_closed():
-            cancel = ''
             divs += [
                 Div(
                     Div('status', css_class='col-3'),
@@ -90,7 +93,7 @@ class CloseProjectForm(forms.ModelForm):
 
     def _can_be_closed(self):
         return self.unpaid_invoices_count() == 0 and self.unsigned_financial_reports_count() == 0 and \
-               self.unsigned_scientific_reports_count() == 0 and self.unreceived_blog_posts_count() == 0
+               self.unsigned_scientific_reports_count() == 0
 
     def empty_lay_summaries_count(self):
         return self.instance.laysummary_set.filter(text='').count()
@@ -107,6 +110,14 @@ class CloseProjectForm(forms.ModelForm):
     def unreceived_blog_posts_count(self):
         return self.instance.blogpost_set.filter(text='').count()
 
+    def checkbox_ignore_unreceived_blog_post(self):
+        if self.instance.blogpost_set.filter(text='').exists():
+            self.fields['ignore_unreceived_blog_post'] = forms.BooleanField(label='Ignore missing blog posts',
+                                                                            help_text='Enable this option in order to close this project: it has unreceived blog posts')
+            return 'ignore_unreceived_blog_post'
+
+        return None
+
     def clean(self):
         cd = super().clean()
 
@@ -114,6 +125,10 @@ class CloseProjectForm(forms.ModelForm):
 
         if 'status' in cd and cd['status'] == Project.ABORTED and not cd['abortion_reason']:
             errors['abortion_reason'] = 'Abortion error is mandatory if the project is aborted'
+
+        if self.unreceived_blog_posts_count() and cd.get('ignore_unreceived_blog_post', False) is False:
+            errors[
+                'ignore_unreceived_blog_post'] = 'If the project needs to be closed please complete the blog posts or ignore them'
 
         if errors:
             raise ValidationError(errors)
