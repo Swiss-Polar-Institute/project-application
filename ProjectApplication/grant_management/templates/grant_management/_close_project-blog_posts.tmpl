@@ -1,6 +1,8 @@
-<h4>Blog posts</h4>
+<h5>Blog posts</h5>
 {% if close_project_form.unreceived_blog_posts_count %}
-    <i class="fas fa-question" style="color:gray"></i> There are {{ close_project_form.unreceived_blog_posts_count }} unreceived blog posts.
+    <i class="fas fa-question" style="color:gray"></i> {{ close_project_form.unreceived_blog_posts_count }} unreceived
+    blog post{{ close_project_form.unreceived_blog_posts_count|pluralize }}.
 {% else %}
-    <i class="fa fa-check" style="color:green"></i> Good!
+    <i class="fa fa-check" style="color:green"></i> {{ close_project_form.received_blog_posts_count }} blog
+    post{{ close_project_form.received_blog_posts_count|pluralize }}.
 {% endif %}

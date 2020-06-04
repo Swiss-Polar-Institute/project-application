@@ -1,7 +1,11 @@
-<h4>Invoices</h4>
-{% if close_project_form.unpaid_invoices_count %}
-    <i class="fa fa-times" style="color:red"></i> There are {{ close_project_form.unpaid_invoices_count }} unpaid
-    invoices.
+<h5>Invoices</h5>
+{% if close_project_form.unpaid_invoices_count > 0 %}
+    <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unpaid_invoices_count }} unpaid invoice
+    {{ close_project_form.unpaid_invoices_count|pluralize }}.
+{% elif close_project_form.paid_invoices_count > 0 %}
+    <i class="fa fa-check" style="color:green"></i> {{ close_project_form.paid_invoices_count }} paid invoice
+    {{ close_project_form.paid_invoices_count|pluralize }}.
 {% else %}
-    <i class="fa fa-check" style="color:green"></i> Good!
+    <i class="fa fa-check" style="color:green"></i> No invoices entered in the system.
 {% endif %}
+<p></p>

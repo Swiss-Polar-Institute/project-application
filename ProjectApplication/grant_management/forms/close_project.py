@@ -25,6 +25,11 @@ class CloseProjectForm(forms.ModelForm):
 
         divs = [
             Div(
+                Div(HTML('<h4>Finances</h4>'),
+                    css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div(HTML('{% include "grant_management/_close_project-invoice_summary.tmpl" %}'),
                     css_class='col-12'),
                 css_class='row'
@@ -35,7 +40,12 @@ class CloseProjectForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div(HTML('<h4>Milestones</h4>To do'), css_class='col-12'),
+                Div(HTML('<p></p><h4>Deliverables</h4>'),
+                    css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div(HTML('<h5>Milestones</h5>To do<p></p>'), css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -53,6 +63,10 @@ class CloseProjectForm(forms.ModelForm):
             ),
             Div(
                 Div(self.checkbox_ignore_unreceived_blog_post(), css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div(HTML('<p></p>'), css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -98,17 +112,32 @@ class CloseProjectForm(forms.ModelForm):
     def empty_lay_summaries_count(self):
         return self.instance.laysummary_set.filter(text='').count()
 
+    def non_empty_lay_summaries_count(self):
+        return self.instance.laysummary_set.exclude(text='').count()
+
     def unpaid_invoices_count(self):
         return self.instance.invoice_set.filter(paid_date__isnull=True).count()
+
+    def paid_invoices_count(self):
+        return self.instance.invoice_set.filter(paid_date__isnull=False).count()
 
     def unsigned_financial_reports_count(self):
         return self.instance.financialreport_set.filter(approval_date__isnull=True).count()
 
+    def signed_financial_reports_count(self):
+        return self.instance.financialreport_set.filter(approval_date__isnull=False).count()
+
     def unsigned_scientific_reports_count(self):
-        return self.instance.financialreport_set.filter(approval_date__isnull=True).count()
+        return self.instance.scientificreport_set.filter(approval_date__isnull=True).count()
+
+    def signed_scientific_reports_count(self):
+        return self.instance.scientificreport_set.filter(approval_date__isnull=False).count()
 
     def unreceived_blog_posts_count(self):
         return self.instance.blogpost_set.filter(text='').count()
+
+    def received_blog_posts_count(self):
+        return self.instance.blogpost_set.exclude(text='').count()
 
     def checkbox_ignore_unreceived_blog_post(self):
         if self.instance.blogpost_set.filter(text='').exists():

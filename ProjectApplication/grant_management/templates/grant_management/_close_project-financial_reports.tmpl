@@ -1,6 +1,10 @@
-<h4>Financial reports</h4>
-{% if close_project_form.unsigned_financial_reports_count %}
-    <i class="fa fa-times" style="color:red"></i> There are {{ close_project_form.unsigned_financial_reports_count }} non-signed financial reports.
+<h5>Financial reports</h5>
+{% if close_project_form.unsigned_financial_reports_count > 0 %}
+    <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unsigned_financial_reports_count }} non-signed
+    financial report{{ close_project_form.unsigned_financial_reports_count|pluralize }}.
+{% elif close_project_form.signed_financial_reports_count > 0 %}
+    <i class="fa fa-check" style="color:green"></i> {{ close_project_form.signed_financial_reports_count }} signed
+    financial report{{ close_project_form.signed_financial_reports_count|pluralize }}.
 {% else %}
-    <i class="fa fa-check" style="color:green"></i> Good!
+    <i class="fa fa-check" style="color:green"></i> No financial reports entered in the system.
 {% endif %}
