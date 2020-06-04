@@ -41,43 +41,43 @@ def get_project_news():
 
     news = []
 
-    for project in Project.objects.filter(start_date__gte=starts):
+    for project in Project.objects.filter(start_date__gte=starts).filter(status=Project.ONGOING):
         news.append(
             create_news_project(project.start_date, f'Project starts',
                                 project)
         )
 
-    for project in Project.objects.filter(end_date__gte=starts):
+    for project in Project.objects.filter(end_date__gte=starts).filter(status=Project.ONGOING):
         news.append(
             create_news_project(project.end_date, f'Project ends', project)
         )
 
-    for invoice in Invoice.objects.filter(due_date__gte=starts):
+    for invoice in Invoice.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
         news.append(
             create_news_project(invoice.due_date, f'Invoice due', invoice.project)
         )
 
-    for financial_report in FinancialReport.objects.filter(due_date__gte=starts):
+    for financial_report in FinancialReport.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
         news.append(
             create_news_project(financial_report.due_date, f'Financial report due', financial_report.project)
         )
 
-    for scientific_report in ScientificReport.objects.filter(due_date__gte=starts):
+    for scientific_report in ScientificReport.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
         news.append(
             create_news_project(scientific_report.due_date, f'Financial report due', scientific_report.project)
         )
 
-    for lay_summary in LaySummary.objects.filter(due_date__gte=starts):
+    for lay_summary in LaySummary.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
         news.append(
             create_news_project(lay_summary.due_date, f'Lay summary due', lay_summary.project)
         )
 
-    for blog_post in BlogPost.objects.filter(due_date__gte=starts):
+    for blog_post in BlogPost.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
         news.append(
             create_news_project(blog_post.due_date, f'Blog post due', blog_post.project)
         )
 
-    for milestone in Milestone.objects.filter(due_date__gte=starts):
+    for milestone in Milestone.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
         news.append(
             create_news_project(milestone.due_date,
                                 # TODO: this should do the same representation for a milestone as grant_management/_category-badge.tmpl
