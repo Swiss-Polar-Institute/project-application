@@ -8,16 +8,15 @@
             {% include 'grant_management/_project_header-detail.tmpl' %}
             <div class="row">
                 <div class="col-6">
-                    <h3>Project information <a class="btn btn-primary btn-sm"
-                                               href="{% url 'logged-grant_management-project-basic-information-update' pk=project.pk %}">Edit</a>
+                    <h3>Project
+                        information {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-project-basic-information-update' project=project %}
                     </h3>
                     <strong>Budget allocated:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
                     <strong>Start date:</strong> {{ project.start_date }}<br>
                     <strong>End date:</strong> {{ project.end_date }}<br>
                 </div>
                 <div class="col-6">
-                    <h3>Grant agreement <a class="btn btn-primary btn-sm"
-                                           href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
+                    <h3>Grant agreement {% include 'grant_management/_edit_button.tmpl' with viewname=grant_agreement_button_url project=project %}
                     </h3>
                     <strong>Grant
                         agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
