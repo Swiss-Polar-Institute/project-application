@@ -24,8 +24,10 @@ def create_news_project(date, description, project):
     project_url = reverse('logged-grant_management-project-detail', kwargs={'pk': project.id})
     pi_name_url = reverse('logged-person-position-detail', kwargs={'pk': project.principal_investigator.id})
 
-    news['project_title'] = mark_safe(f'<a href="{project_url}">{project.title}</a>')
-    news['pi_name'] = mark_safe(f'<a href="{pi_name_url}">{project.principal_investigator.person}</a>')
+    news['project_title'] = project.title
+    news['project_url'] = project_url
+    news['pi_name'] = project.principal_investigator.person
+    news['pi_url'] = pi_name_url
     news['key'] = project.key
 
     return news
@@ -57,12 +59,14 @@ def get_project_news():
             create_news_project(invoice.due_date, f'Invoice due', invoice.project)
         )
 
-    for financial_report in FinancialReport.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
+    for financial_report in FinancialReport.objects.filter(due_date__gte=starts).filter(
+            project__status=Project.ONGOING):
         news.append(
             create_news_project(financial_report.due_date, f'Financial report due', financial_report.project)
         )
 
-    for scientific_report in ScientificReport.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
+    for scientific_report in ScientificReport.objects.filter(due_date__gte=starts).filter(
+            project__status=Project.ONGOING):
         news.append(
             create_news_project(scientific_report.due_date, f'Financial report due', scientific_report.project)
         )

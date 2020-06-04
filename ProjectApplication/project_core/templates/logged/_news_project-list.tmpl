@@ -12,9 +12,9 @@
     <tbody>
     {% for news in project_news %}
         <tr>
-            <td>{{ news.pi_name }}</td>
+            <td><a href="{{ news.pi_url }}">{{ news.pi_name }}</a></td>
             <td>{{ news.key }}</td>
-            <td>{{ news.project_title }}</td>
+            <td><a href="{{ news.project_url }}">{{ news.project_title }}</a></td>
             <td>{{ news.description }}</td>
             <td data-sort="{{ news.date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=news.date %}</td>
         </tr>
