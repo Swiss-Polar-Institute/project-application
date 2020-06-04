@@ -2,7 +2,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, HTML, Layout, Submit
 from django import forms
 from django.core.exceptions import ValidationError
+from django.urls import reverse
 
+from project_core.forms.utils import cancel_button
 from project_core.models import Project
 
 
@@ -56,6 +58,7 @@ class CloseProjectForm(forms.ModelForm):
         ]
 
         if self._can_be_closed():
+            cancel = ''
             divs += [
                 Div(
                     Div('status', css_class='col-3'),
@@ -65,11 +68,20 @@ class CloseProjectForm(forms.ModelForm):
                     Div('abortion_reason', css_class='col-12'),
                     css_class='row'
                 ),
-                Div(Div(HTML(
-                    '<b>After closing a project: it is not possible anymore to change installments, invoices, '
-                    'financial or scientific reports</b>'),
-                    css_class='col-12'), css_class='row'),
-                Submit(name='close', value='Close')
+                Div(
+                    Div(HTML(
+                        '<b>After closing a project: it is not possible anymore to change installments, invoices, '
+                        'financial or scientific reports</b>'),
+                        css_class='col-12'),
+                    css_class='row'
+                ),
+                Div(
+                    Div(Submit(name='close', value='Close'),
+                        cancel_button(
+                            reverse('logged-grant_management-project-detail', kwargs={'pk': self.instance.id})),
+                        css_class='col-12'),
+                    css_class='row'
+                )
             ]
         else:
             divs.append(HTML('The project cannot be closed - fix things and try again'))
