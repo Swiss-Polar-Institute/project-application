@@ -13,29 +13,26 @@
         </div>
         <div class="col-2">
             {% if request|request_is_management %}
-                <p>
-                    {% if proposal.can_eligibility_be_created_or_changed %}
-                        {% include 'evaluation/_eligibility_decision-form.tmpl' with proposal=proposal %}
-                    {% else %}
-                        {% include 'evaluation/_eligibility-detail.tmpl' with proposal=proposal %}<br>
-                        <div class="border p-1 bg-light rounded">
-                            <em>{{ proposal.reason_eligibility_cannot_be_created_or_changed }}</em></div>
-                    {% endif %}
-                </p>
-                <p>
-                    {% if proposal.proposalevaluation %}
-                        <a class="btn btn-primary"
-                           href="{% url 'logged-proposal-evaluation-detail' pk=proposal.proposalevaluation.id %}"
-                           role="button">View Proposal Evaluation</a>
-                    {% elif proposal.can_create_evaluation %}
-                        <a class="btn btn-primary"
-                           href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
-                           role="button">Create Proposal Evaluation</a>
-                    {% else %}
-                        <div class="border p-1 bg-white rounded"><em>{{ proposal.reason_cannot_create_evaluation }}</em>
-                        </div>
-                    {% endif %}
-                </p>
+                {% if proposal.can_eligibility_be_created_or_changed %}
+                    {% include 'evaluation/_eligibility_decision-form.tmpl' with proposal=proposal %}
+                {% else %}
+                    {% include 'evaluation/_eligibility-detail.tmpl' with proposal=proposal %}<br>
+                    <div class="border p-1 bg-light rounded">
+                        <em>{{ proposal.reason_eligibility_cannot_be_created_or_changed }}</em></div>
+                {% endif %}
+                <p></p>
+                {% if proposal.proposalevaluation %}
+                    <a class="btn btn-primary"
+                       href="{% url 'logged-proposal-evaluation-detail' pk=proposal.proposalevaluation.id %}"
+                       role="button">View Proposal Evaluation</a>
+                {% elif proposal.can_create_evaluation %}
+                    <a class="btn btn-primary"
+                       href="{% url 'logged-proposal-evaluation-add' %}?proposal={{ proposal.id }}"
+                       role="button">Create Proposal Evaluation</a>
+                {% else %}
+                    <div class="border p-1 bg-white rounded"><em>{{ proposal.reason_cannot_create_evaluation }}</em>
+                    </div>
+                {% endif %}
             {% endif %}
         </div>
     </div>

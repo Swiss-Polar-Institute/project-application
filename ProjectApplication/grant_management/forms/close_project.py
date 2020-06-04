@@ -16,6 +16,9 @@ class CloseProjectForm(forms.ModelForm):
 
         self.fields['abortion_reason'].help_text = 'Mandatory if the Status is "Aborted"'
 
+        # Using Javascript it makes it optional if the status is completed
+        self.fields['abortion_reason'].label = 'Abortion reason<span class="asteriskField">*</span>'
+
         self.helper = FormHelper()
 
         divs = [
@@ -50,22 +53,24 @@ class CloseProjectForm(forms.ModelForm):
                 Div(HTML('<p></p>'), css_class='col-12'),
                 css_class='row'
             ),
-            Div(
-                Div('status', css_class='col-3'),
-                css_class='row'
-            ),
-            Div(
-                Div('abortion_reason', css_class='col-12'),
-                css_class='row'
-            ),
         ]
 
         if self._can_be_closed():
-            divs.append(Div(Div(HTML(
-                '<b>After closing a project: it is not possible anymore to change installments, invoices, '
-                'financial or scientific reports</b>'),
-                css_class='col-12'), css_class='row'))
-            divs.append(Submit(name='close', value='Close'))
+            divs += [
+                Div(
+                    Div('status', css_class='col-3'),
+                    css_class='row'
+                ),
+                Div(
+                    Div('abortion_reason', css_class='col-12'),
+                    css_class='row'
+                ),
+                Div(Div(HTML(
+                    '<b>After closing a project: it is not possible anymore to change installments, invoices, '
+                    'financial or scientific reports</b>'),
+                    css_class='col-12'), css_class='row'),
+                Submit(name='close', value='Close')
+            ]
         else:
             divs.append(HTML('The project cannot be closed - fix things and try again'))
 

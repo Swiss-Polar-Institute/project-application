@@ -39,7 +39,8 @@
             displayEligibilityForm();
         });
 
-        let required = $('#id_eligibility_decision_form-eligible_2').prop('checked');
+        let requiredSelector = $('#id_eligibility_decision_form-eligible_2')
+        let required = requiredSelector.prop('checked');
 
         {% if force_eligibility_form_displayed %}
             displayEligibilityForm();
@@ -52,7 +53,7 @@
         });
 
 
-        $('#id_eligibility_decision_form-eligible_2').change(function () {
+        requiredSelector.change(function () {
             commentIsRequired(this.checked);
         });
     });

@@ -7,6 +7,30 @@
             {% include 'grant_management/_project_header-detail.tmpl' with project=project %}
             <h3>Close Project</h3>
             {% crispy close_project_form %}
+
+            <script>
+                function hideAbortionReason() {
+                    $('#div_id_abortion_reason').hide(500);
+                    $("#id_abortion_reason").attr('required', false);
+                }
+
+                function showAbortionReason() {
+                    $('#div_id_abortion_reason').show(500);
+                    $("#id_abortion_reason").attr('required', true);
+                }
+
+                $(document).ready(function () {
+                    $('#id_status_1').click(function () {
+                        hideAbortionReason();
+                    });
+
+                    $('#id_status_2').click(function () {
+                        showAbortionReason();
+                    });
+
+                    hideAbortionReason();   // Initial state
+                });
+            </script>
             <br>
         </div>
         <div class="col-2">
