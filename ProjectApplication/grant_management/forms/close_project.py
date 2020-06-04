@@ -61,6 +61,10 @@ class CloseProjectForm(forms.ModelForm):
         ]
 
         if self._can_be_closed():
+            divs.append(Div(Div(HTML(
+                '<b>After closing a project: it is not possible anymore to change installments, invoices, '
+                'financial or scientific reports</b>'),
+                css_class='col-12'), css_class='row'))
             divs.append(Submit(name='close', value='Close'))
         else:
             divs.append(HTML('The project cannot be closed - fix things and try again'))
