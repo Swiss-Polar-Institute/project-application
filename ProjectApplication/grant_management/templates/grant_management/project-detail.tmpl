@@ -16,7 +16,17 @@
                     <strong>End date:</strong> {{ project.end_date }}<br>
                 </div>
                 <div class="col-6">
-                    <h3>Grant agreement {% include 'grant_management/_edit_button.tmpl' with viewname=grant_agreement_button_url project=project %}
+                    {# Grant agreement Edit Button is done differently (not using _edit_button.tmpl) because it needs to use pk instead of project #}
+                    {# it needs pk partially because of the comments and partially because it creates a new one (passing the project) or updating one #}
+                    {# this might need to be refactored... or perhaps de other one named project should be renamed pk #}
+                    <h3>Grant agreement {% if project.is_active %}<a class="btn btn-primary btn-sm"
+                                                                     href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
+                    {% else %}
+                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip"
+                              title="Cannot edit: project status is {{ project.status }}">
+        <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>Edit</button>
+    </span>
+                    {% endif %}
                     </h3>
                     <strong>Grant
                         agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>

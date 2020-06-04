@@ -124,11 +124,12 @@ class ProjectBasicInformationUpdateView(SuccessMessageMixin, UpdateView):
     form_class = ProjectBasicInformationForm
     model = Project
     success_message = 'Project information updated'
+    pk_url_kwarg = 'project'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        project = Project.objects.get(id=self.kwargs['pk'])
+        project = Project.objects.get(id=self.kwargs['project'])
 
         context.update(basic_context_data_grant_agreement(project, 'Basic project information'))
 

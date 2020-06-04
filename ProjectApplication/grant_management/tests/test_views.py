@@ -30,7 +30,7 @@ class ProjectDetailsTest(TestCase):
 
     def test_get(self):
         response = self._client_management.get(
-            reverse('logged-grant_management-project-detail', kwargs={'pk': self._project.id}))
+            reverse('logged-grant_management-project-detail', kwargs={'project': self._project.id}))
 
         self.assertEqual(response.status_code, 200)
 
