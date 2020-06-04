@@ -1,4 +1,5 @@
 from crispy_forms.helper import FormHelper
+from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory, BaseInlineFormSet
 
 from grant_management.forms.abstract_reports import AbstractReportItemModelForm
@@ -10,6 +11,14 @@ class FinancialReportItemModelForm(AbstractReportItemModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+    def clean(self, *args, **kwargs):
+        cd = super().clean()
+
+        project = cd['project']
+
+        if project.is_active() is False:
+            raise ValidationError(f'Cannot modify financial reports for this project: the status is {project.status}')
+
     class Meta(AbstractReportItemModelForm.Meta):
         model = FinancialReport
 
@@ -17,6 +26,14 @@ class FinancialReportItemModelForm(AbstractReportItemModelForm):
 class ScientificReportItemModelForm(AbstractReportItemModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+    def clean(self, *args, **kwargs):
+        cd = super().clean()
+
+        project = cd['project']
+
+        if project.is_active() is False:
+            raise ValidationError(f'Cannot modify scientific reports for this project: the status is {project.status}')
 
     class Meta(AbstractReportItemModelForm.Meta):
         model = ScientificReport

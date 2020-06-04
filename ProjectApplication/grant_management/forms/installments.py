@@ -88,6 +88,9 @@ class InstallmentModelForm(forms.ModelForm):
         if DELETE and Invoice.objects.filter(installment=self.instance).exists():
             errors['DELETE'] = 'Cannot delete Installment: there are invoices assigned to this installment'
 
+        if project.is_active() is False:
+            raise ValidationError(f'Cannot modify installments for this project: the status is {project.status}')
+
         if errors:
             raise ValidationError(errors)
 

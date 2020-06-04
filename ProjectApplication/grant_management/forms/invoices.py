@@ -250,6 +250,9 @@ class InvoiceItemModelForm(forms.ModelForm):
         if DELETE and paid_date:
             errors['paid_date'] = 'A paid invoice cannot be deleted. Delete the date paid and try again.'
 
+        if project.is_active() is False:
+            raise forms.ValidationError(f'Cannot modify installments for this project: the status is {project.status}')
+
         if errors:
             raise forms.ValidationError(errors)
 
