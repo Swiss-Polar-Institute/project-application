@@ -3,6 +3,7 @@ from crispy_forms.layout import Div, HTML, Layout, Submit
 from django import forms
 from django.core.exceptions import ValidationError
 from django.urls import reverse
+from django.utils import timezone
 
 from project_core.forms.utils import cancel_button
 from project_core.models import Project
@@ -45,7 +46,7 @@ class CloseProjectForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div(HTML('<h5>Milestones</h5>To do<p></p>'), css_class='col-12'),
+                Div(HTML('{% include "grant_management/_close_project-milestones.tmpl" %}'), css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -138,6 +139,9 @@ class CloseProjectForm(forms.ModelForm):
 
     def received_blog_posts_count(self):
         return self.instance.blogpost_set.exclude(text='').count()
+
+    def milestones_count(self):
+        return self.instance.milestone_set.filter(due_date__gte=timezone.now()).count()
 
     def checkbox_ignore_unreceived_blog_post(self):
         if self.instance.blogpost_set.filter(text='').exists():
