@@ -50,6 +50,10 @@ class CloseProjectForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div(self.checkbox_ignore_milestones_in_the_future(), css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div(HTML('{% include "grant_management/_close_project-scientific_reports.tmpl" %}'),
                     css_class='col-12'),
                 css_class='row'
@@ -66,18 +70,11 @@ class CloseProjectForm(forms.ModelForm):
                 Div(self.checkbox_ignore_unreceived_blog_post(), css_class='col-12'),
                 css_class='row'
             ),
-            Div(
-                Div(HTML('<p></p>'), css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('<p></p>'), css_class='col-12'),
-                css_class='row'
-            ),
         ]
 
         if self._can_be_closed():
             divs += [
+                Div(HTML('<hr>')),
                 Div(
                     Div('status', css_class='col-3'),
                     css_class='row'
@@ -140,7 +137,7 @@ class CloseProjectForm(forms.ModelForm):
     def received_blog_posts_count(self):
         return self.instance.blogpost_set.exclude(text='').count()
 
-    def milestones_count(self):
+    def milestones_in_the_future_count(self):
         return self.instance.milestone_set.filter(due_date__gte=timezone.now()).count()
 
     def checkbox_ignore_unreceived_blog_post(self):
@@ -148,6 +145,14 @@ class CloseProjectForm(forms.ModelForm):
             self.fields['ignore_unreceived_blog_post'] = forms.BooleanField(label='Ignore missing blog posts',
                                                                             help_text='Enable this option in order to close this project: it has unreceived blog posts')
             return 'ignore_unreceived_blog_post'
+
+        return None
+
+    def checkbox_ignore_milestones_in_the_future(self):
+        if self.instance.milestone_set.filter(due_date__gte=timezone.now()).exists():
+            self.fields['ignore_milestones_in_the_future'] = forms.BooleanField(label='Ignore milestones in the future',
+                                                                                help_text='Enable this option in order to close this project: it has milestones in the future')
+            return 'ignore_milestones_in_the_future'
 
         return None
 
@@ -162,6 +167,10 @@ class CloseProjectForm(forms.ModelForm):
         if self.unreceived_blog_posts_count() and cd.get('ignore_unreceived_blog_post', False) is False:
             errors[
                 'ignore_unreceived_blog_post'] = 'If the project needs to be closed please complete the blog posts or ignore them'
+
+        if self.milestones_in_the_future_count() and cd.get('ignore_milestones_in_the_future', False) is False:
+            errors[
+                'ignore_milestones_in_the_future'] = 'If the project needs to be closed please delete the milestones in the future or ignore them'
 
         if errors:
             raise ValidationError(errors)

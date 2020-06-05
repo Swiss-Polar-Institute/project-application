@@ -1,8 +1,7 @@
 <h5>Milestones</h5>
-{% if close_project_form.milestones_count > 0 %}
-    <i class="fa fa-question" style="color:grey"></i> {{ close_project_form.milestones_count }} future
+{% if close_project_form.milestones_in_the_future_count > 0 %}
+    <i class="fa fa-question" style="color:grey"></i> {{ close_project_form.milestones_in_the_future_count }} future
     milestone{{ close_project_form.milestones_count|pluralize }}.
 {% else %}
     <i class="fa fa-check" style="color:green"></i> There aren't any future milestones.
 {% endif %}
-<p></p>
