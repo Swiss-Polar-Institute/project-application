@@ -82,10 +82,6 @@ Here a few screenshots to see the look and feel:
 </td></tr></table>
 
 <table><tr><td>
-<img src="documentation/screenshots/060-list_of_proposals.png">
-</td></tr></table>
-
-<table><tr><td>
 <img src="documentation/screenshots/070-proposal_detail.png">
 </td></tr></table>
 
