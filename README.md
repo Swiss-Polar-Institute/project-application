@@ -57,19 +57,35 @@ The application is very interactive: validations happening with all the forms, a
 
 Here a few screenshots to see the look and feel:
 
-![funding_instruments](documentation/screenshots/010-funding_instruments.png)
+<table><tr><td>
+<img src="documentation/screenshots/010-funding_instruments.png">
+</td></tr></table>
 
-![template_questions](documentation/screenshots/015-template_questions.png)
+<table><tr><td>
+<img src="documentation/screenshots/015-template_questions.png">
+</td></tr></table>
 
-![create_call](documentation/screenshots/017-create_call.png)
+<table><tr><td>
+<img src="documentation/screenshots/017-create_call.png">
+</td></tr></table>
 
-![proposal main form](documentation/screenshots/020-proposal_main_form.png)
+<table><tr><td>
+<img src="documentation/screenshots/020-proposal_main_form.png">
+</td></tr></table>
 
-![funding_instruments](documentation/screenshots/030-funding_instruments.png)
+<table><tr><td>
+<img src="documentation/screenshots/030-funding_instruments.png">
+</td></tr></table>
 
-![list_of_calls](documentation/screenshot/050-list_of_calls.png)
+<table><tr><td>
+<img src="documentation/screenshots/050-list_of_calls.png">
+</td></tr></table>
 
-![list_of_proposals](documentation/screenshot/060-list_of_proposals.png)
+<table><tr><td>
+<img src="documentation/screenshots/060-list_of_proposals.png">
+</td></tr></table>
 
-![proposal_details](documentation/screenshot/070-proposal_detail.png)
+<table><tr><td>
+<img src="documentation/screenshots/070-proposal_detail.png">
+</td></tr></table>
 
