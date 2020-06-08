@@ -20,7 +20,7 @@ services:
       - database
 
   reverse-proxy:
-    image: nginx:1.17
+    image: nginx:1.19
     secrets:
       - project_application_htpasswd
     expose:
