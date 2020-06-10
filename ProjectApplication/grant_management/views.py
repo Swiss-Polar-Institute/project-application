@@ -16,7 +16,7 @@ from grant_management.forms.reports import FinancialReportsInlineFormSet, Scient
 from grant_management.models import GrantAgreement, MilestoneCategory
 from project_core.models import Project
 from project_core.views.common.formset_inline_view import InlineFormsetUpdateView
-from .forms.close_project import CloseProjectForm
+from .forms.close_project import CloseProjectModelForm
 from .forms.datasets import DatasetInlineFormSet
 from .forms.media import MediaInlineFormSet
 from .forms.milestones import MilestoneInlineFormSet
@@ -317,13 +317,13 @@ class CloseProjectView(TemplateView):
 
         context.update(basic_context_data_grant_agreement(context['project'], 'Grant agreement'))
 
-        context['close_project_form'] = CloseProjectForm(instance=context['project'])
+        context['close_project_form'] = CloseProjectModelForm(instance=context['project'])
 
         return context
 
     def post(self, request, *args, **kwargs):
         project = Project.objects.get(id=kwargs['project'])
-        close_project_form = CloseProjectForm(request.POST, instance=project)
+        close_project_form = CloseProjectModelForm(request.POST, instance=project)
 
         if close_project_form.is_valid():
             close_project_form.save()

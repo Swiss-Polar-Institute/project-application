@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from grant_management.forms.close_project import CloseProjectForm
+from grant_management.forms.close_project import CloseProjectModelForm
 from project_core.models import Project
 from project_core.tests import database_population
 
@@ -17,7 +17,7 @@ class CloseProjectFormTest(TestCase):
 
         self.assertEqual(self._project.status, Project.ONGOING)
 
-        close_project_form = CloseProjectForm(data=data, instance=self._project)
+        close_project_form = CloseProjectModelForm(data=data, instance=self._project)
 
         self.assertTrue(close_project_form.is_valid())
 

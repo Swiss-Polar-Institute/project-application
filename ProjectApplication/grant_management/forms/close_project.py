@@ -9,7 +9,7 @@ from project_core.forms.utils import cancel_button
 from project_core.models import Project
 
 
-class CloseProjectForm(forms.ModelForm):
+class CloseProjectModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
