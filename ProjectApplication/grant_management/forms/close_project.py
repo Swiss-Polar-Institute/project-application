@@ -172,6 +172,9 @@ class CloseProjectModelForm(forms.ModelForm):
             errors[
                 'ignore_milestones_in_the_future'] = 'If the project needs to be closed please delete the milestones in the future or ignore them'
 
+        if self.unpaid_invoices_count():
+            errors['status'] = 'Cannot be closed: there are unpaid invoices'
+
         if errors:
             raise ValidationError(errors)
 
