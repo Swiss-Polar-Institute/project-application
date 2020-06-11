@@ -65,6 +65,14 @@ class Installment(CreateModifyOn):
     def sent_for_payment(self):
         return self.invoice_set.filter(sent_for_payment_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
 
+    def number(self):
+        # This is not very efficient, but given the number of invoices and installments it's nice to not have to
+        # save this in the database
+
+        installments = list(Installment.objects.filter(project=self.project).order_by('due_date'))
+
+        return installments.index(self) + 1
+
     def __str__(self):
         return f'{self.project}-{self.due_date}-{self.amount}'
 
@@ -99,9 +107,7 @@ class Invoice(AbstractProjectDueReceivedDate):
         if self.installment is None:
             return None
 
-        installments = list(Installment.objects.filter(project=self.project).order_by('due_date'))
-
-        return installments.index(self.installment) + 1
+        return self.installment.number()
 
     def comments(self):
         return self.invoicecomment_set.all().order_by('created_on')
