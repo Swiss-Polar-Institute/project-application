@@ -6,22 +6,22 @@
         <ul class="nav nav-tabs">
             <li class="nav-item">
                 <a class="nav-link active" id="active-projects-tab" data-toggle="tab" href="#active-projects"
-                   role="tab">Active</a>
+                   role="tab">Ongoing</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="inactive-projects-tab" data-toggle="tab" href="#inactive-projects"
-                   role="tab">Inactive</a>
+                   role="tab">Closed</a>
             </li>
         </ul>
     </div>
 
     <div class="tab-content">
         <div class="tab-pane fade show active" id="active-projects" role="tabpanel">
-            <h1>Active projects</h1>
+            <h1>Ongoing projects</h1>
             {% include 'grant_management/_project-list-table.tmpl' with projects=projects_active table_id='active_projects' %}
         </div>
         <div class="tab-pane fade" id="inactive-projects" role="tabpanel">
-            <h1>Inactive projects</h1>
+            <h1>Closed projects</h1>
             {% include 'grant_management/_project-list-table.tmpl' with projects=projects_inactive table_id='inactive_projects' %}
         </div>
     </div>
