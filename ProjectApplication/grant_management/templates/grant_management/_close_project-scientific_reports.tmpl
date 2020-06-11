@@ -1,9 +1,9 @@
 <h5>Scientific reports</h5>
 {% if close_project_form.unsigned_scientific_reports_count > 0 %}
-    <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unsigned_scientific_reports_count }} unsigned
+    <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unsigned_scientific_reports_count }} not approved
     scientific report{{ close_project_form.unsigned_scientific_reports_count|pluralize }}.
 {% elif close_project_form.signed_scientific_reports_count > 0 %}
-    <i class="fa fa-check" style="color:green"></i> {{ close_project_form.signed_scientific_reports_count }} signed
+    <i class="fa fa-check" style="color:green"></i> {{ close_project_form.signed_scientific_reports_count }} approved
     scientific report{{ close_project_form.signed_scientific_reports_count|pluralize }}.
 {% else %}
     <i class="fa fa-check" style="color:green"></i> No scientific reports entered in the system.
