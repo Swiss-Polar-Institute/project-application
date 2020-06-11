@@ -379,7 +379,7 @@ class MilestoneCategoriesAutocomplete(autocomplete.Select2QuerySetView):
 
 class GrantAgreementCommentAdd(AbstractGrantAgreement):
     def post(self, request, *args, **kwargs):
-        self.object = Project.objects.get(pk=kwargs['pk'])
+        self.object = self._get_project()
         context = super().get_context_data(**kwargs)
 
         result = process_comment_attachment(request, context, 'logged-grant_management-grant_agreement-update',
