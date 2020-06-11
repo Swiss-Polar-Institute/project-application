@@ -97,7 +97,8 @@ class FinancialKeyAdd(SuccessMessageMixin, CreateView):
                         'active_subsection': 'financial_key-list',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Template questions', 'url': reverse('logged-template-question-list')},
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'Financial keys', 'url': reverse('logged-financial-key-list')},
                                  {'name': 'Create'}]
 
         return context
