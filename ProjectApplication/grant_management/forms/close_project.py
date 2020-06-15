@@ -31,6 +31,11 @@ class CloseProjectModelForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div(HTML('{% include "grant_management/_close_project-finances_summary.tmpl" %}'),
+                    css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div(HTML('{% include "grant_management/_close_project-invoice_summary.tmpl" %}'),
                     css_class='col-12'),
                 css_class='row'
@@ -150,8 +155,8 @@ class CloseProjectModelForm(forms.ModelForm):
 
     def checkbox_ignore_milestones_in_the_future(self):
         if self.instance.milestone_set.filter(due_date__gte=timezone.now()).exists():
-            self.fields['ignore_milestones_in_the_future'] = forms.BooleanField(label='Ignore milestones in the future',
-                                                                                help_text='Enable this option in order to close this project: it has milestones in the future')
+            self.fields['ignore_milestones_in_the_future'] = forms.BooleanField(label='Ignore forthcoming milestones',
+                                                                                help_text='This project has forthcoming milestones. Tick this box to close the project anyway.')
             return 'ignore_milestones_in_the_future'
 
         return None

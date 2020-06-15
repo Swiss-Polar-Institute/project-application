@@ -1,0 +1,5 @@
+{% load thousands_separator %}
+<h5>Summary</h5>
+<b>Allocated budget:</b> {{ project.allocated_budget|thousands_separator }} CHF<br>
+<b>Total paid:</b> {{ project.invoices_paid_amount|thousands_separator }} CHF
+<p></p>
