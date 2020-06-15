@@ -163,6 +163,15 @@
         });
     }
 
+    function replace_invoice_due_by_invoice_header(row) {
+        // When adding a new invoice the Header should be "Invoice", not "Invoice due $date_existing_invoice"
+        $(row).find('h4').each(function (index, value) {
+            if (value.innerText.startsWith('Invoice due ')) {
+                value.innerText = 'Invoice';
+            }
+        });
+    }
+
     {# This variable needs to be "var" (or nothing) but not const or let. The _dynamic_formset.tmpl can be included #}
     {# multiple times in the samge page. #}
     var jQueryForFormset = $.noConflict(true);
@@ -191,6 +200,7 @@
                 setup_old_fields_completion_fields(row);
                 delete_message(row);
                 update_and_setup_javascript_file_id_references(row);
+                replace_invoice_due_by_invoice_header(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
