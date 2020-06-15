@@ -14,7 +14,8 @@ class CloseProjectFormTest(TestCase):
     def test_aborted(self):
         data = {'status': 'Aborted',
                 'abortion_reason': 'Permit did not arrive on time',
-                'close': 'Close'
+                'close': 'Close',
+                'ignore_allocated_budget_not_fully_paid': True
                 }
 
         self.assertEqual(self._project.status, Project.ONGOING)

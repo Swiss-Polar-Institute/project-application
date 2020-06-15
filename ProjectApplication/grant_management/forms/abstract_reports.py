@@ -85,13 +85,13 @@ class AbstractReportItemModelForm(forms.ModelForm):
         errors = {}
 
         if due_date and due_date < project_starts:
-            errors['due_date'] = utils.error_due_date_too_early(project.start_date)
+            errors['due_date'] = utils.error_due_date_too_early(project)
 
         if due_date and due_date > project_ends:
-            errors['due_date'] = utils.error_due_date_too_late(project.end_date)
+            errors['due_date'] = utils.error_due_date_too_late(project)
 
         if received_date and received_date < project_starts:
-            errors['received_date'] = utils.error_received_date_too_early(project.start_date)
+            errors['received_date'] = utils.error_received_date_too_early(project)
 
         if sent_for_approval_date and received_date and sent_for_approval_date < received_date:
             errors['sent_for_approval_date'] = 'Date sent for approval should be after the date the report was received'

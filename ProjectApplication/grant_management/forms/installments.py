@@ -80,10 +80,10 @@ class InstallmentModelForm(forms.ModelForm):
             errors['amount'] = 'This amount is greater than the total project allocated budget'
 
         if due_date < project_starts:
-            errors['due_date'] = utils.error_due_date_too_early(project_starts)
+            errors['due_date'] = utils.error_due_date_too_early(project)
 
         if due_date > project_ends:
-            errors['due_date'] = utils.error_due_date_too_late(project_ends)
+            errors['due_date'] = utils.error_due_date_too_late(project)
 
         if DELETE and Invoice.objects.filter(installment=self.instance).exists():
             errors['DELETE'] = 'Cannot delete Installment: there are invoices assigned to this installment'

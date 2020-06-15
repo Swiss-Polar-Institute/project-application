@@ -189,10 +189,10 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors['due_date'] = f'An invoice must have a due date'
 
         if due_date and due_date < project_starts:
-            errors['due_date'] = utils.error_due_date_too_early(project_starts)
+            errors['due_date'] = utils.error_due_date_too_early(project)
 
         if received_date and received_date < project_starts:
-            errors['received_date'] = utils.error_received_date_too_early(project.start_date)
+            errors['received_date'] = utils.error_received_date_too_early(project)
 
         if sent_for_payment_date and received_date and sent_for_payment_date < received_date:
             sent_for_payment_errors.append(
@@ -202,7 +202,7 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors['paid_date'] = f'Date paid should be after the date the invoice was sent for payment'
 
         if due_date and due_date > project_ends:
-            errors['due_date'] = utils.error_due_date_too_late(project.end_date)
+            errors['due_date'] = utils.error_due_date_too_late(project)
 
         if not file and received_date:
             errors['file'] = f'Please attach the invoice file (a date received has been entered).'
