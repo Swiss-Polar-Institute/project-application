@@ -2,17 +2,21 @@
 
 {% block contents %}
     <h1>Financial keys</h1>
-    Financial keys are used by the billing system. They are the name of a funding instrument or a financial category.
-    To avoid miss-using keys they need to be added here: if a key is used for a financial category it cannot be used as
-    a funding instrument key.
-
+    <p>
+        Financial keys are used within SPI finance systems to categorise payments, including those to
+        SPI-funded projects. Each funding instrument is assigned a financial key in order to capture the payments made
+        to resulting projects, as well as assign each project a related project key.
+    </p>
+    <p>
+        This is the reference list to ensure financial keys are never duplicated across SPI.
+    </p>
     {% if financial_keys %}
         <table id="financial-keys" class="table table-stripped table-sm table-hover display">
             <thead>
             <tr>
                 <th>Key</th>
                 <th>Description</th>
-                <th>For funding instrument</th>
+                <th>Funding instrument key</th>
                 <th>Created at</th>
                 <th>Created by</th>
             </tr>
