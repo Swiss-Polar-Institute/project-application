@@ -326,7 +326,7 @@ class CloseProjectView(TemplateView):
         close_project_form = CloseProjectModelForm(request.POST, instance=project)
 
         if close_project_form.is_valid():
-            close_project_form.save()
+            close_project_form.close(user=request.user)
             messages.success(request, 'The project has been closed')
             return redirect(reverse('logged-grant_management-project-list'))
 

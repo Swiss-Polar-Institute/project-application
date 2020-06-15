@@ -23,7 +23,7 @@
                                                                      href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
                     {% else %}
                         <span class="d-inline-block" tabindex="0" data-toggle="tooltip"
-                              title="Cannot edit: project status is {{ project.status }}">
+                              title="This cannot be edited: the project has been closed">
         <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>Edit</button>
     </span>
                     {% endif %}
@@ -84,6 +84,12 @@
                        href="{% url 'logged-grant_management-close_project' project=project.id %}">Close
                         Project</a>
                 </p>
+            {% else %}
+                <div class="shadow-none p-1 bg-light rounded">
+                    <b>Project status: </b> {{ project.status }}<br>
+                    <b>Closed on:</b> {{ project.closed_on }}<br>
+                    <b>Closed by:</b> {{ project.closed_by }}
+                </div>
             {% endif %}
         </div>
     </div>

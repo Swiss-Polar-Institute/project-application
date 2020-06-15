@@ -10,6 +10,7 @@ from project_core.tests import database_population
 class CloseProjectFormTest(TestCase):
     def setUp(self):
         self._project = database_population.create_project()
+        self._user = database_population.create_management_user()
 
     def test_aborted(self):
         data = {'status': 'Aborted',
@@ -24,7 +25,7 @@ class CloseProjectFormTest(TestCase):
 
         self.assertTrue(close_project_form.is_valid())
 
-        close_project_form.save()
+        close_project_form.close(self._user)
 
         self.assertEqual(self._project.status, Project.ABORTED)
 
@@ -41,7 +42,7 @@ class CloseProjectFormTest(TestCase):
 
         self.assertTrue(close_project_form.is_valid())
 
-        close_project_form.save()
+        close_project_form.close(self._user)
 
         self.assertEqual(self._project.status, Project.COMPLETED)
 

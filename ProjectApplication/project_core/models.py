@@ -1037,6 +1037,9 @@ class Project(CreateModifyOn):
     abortion_reason = models.CharField(help_text='Reason that a project was aborted', max_length=50, blank=True,
                                        null=True)
 
+    closed_on = models.DateTimeField(help_text='When the project was closed', null=True)
+    closed_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+
     history = HistoricalRecords()
 
     def __str__(self):

@@ -205,9 +205,10 @@ class CloseProjectModelForm(forms.ModelForm):
 
         return cd
 
-    def save(self, commit=True):
-        if self._can_be_closed():
-            super().save(commit=commit)
+    def close(self, user):
+        self.instance.closed_on = timezone.now()
+        self.instance.closed_by = user
+        super().save()
 
     class Meta:
         model = Project
