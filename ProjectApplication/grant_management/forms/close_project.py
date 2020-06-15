@@ -41,6 +41,10 @@ class CloseProjectModelForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div(self.checkbox_ignore_allocated_budget_not_fully_paid(), css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div(HTML('{% include "grant_management/_close_project-financial_reports.tmpl" %}'),
                     css_class='col-12'),
                 css_class='row'
@@ -161,6 +165,18 @@ class CloseProjectModelForm(forms.ModelForm):
 
         return None
 
+    def allocated_budget_fully_paid(self):
+        return self.instance.invoices_paid_amount() >= self.instance.allocated_budget
+
+    def checkbox_ignore_allocated_budget_not_fully_paid(self):
+        if not self.allocated_budget_fully_paid():
+            self.fields['ignore_allocated_budget_not_fully_paid'] = forms.BooleanField(
+                label='Ignore allocated budget not fully paid',
+                help_text='This project full allocated budget has not been paid. Tick this box to close the project anyway.')
+            return 'ignore_allocated_budget_not_fully_paid'
+
+        return None
+
     def clean(self):
         cd = super().clean()
 
@@ -176,6 +192,10 @@ class CloseProjectModelForm(forms.ModelForm):
         if self.milestones_in_the_future_count() and cd.get('ignore_milestones_in_the_future', False) is False:
             errors[
                 'ignore_milestones_in_the_future'] = 'If the project needs to be closed please delete the milestones in the future or ignore them'
+
+        if not self.allocated_budget_fully_paid() and cd.get('ignore_allocated_budget_not_fully_paid', False) is False:
+            errors[
+                'ignore_allocated_budget_not_fully_paid'] = 'If the paid amount is not the allocated budget: please ignore the warning'
 
         if self.unpaid_invoices_count():
             errors['status'] = 'Cannot be closed: there are unpaid invoices'
