@@ -178,3 +178,7 @@ div.selector-filter {
     white-space: nowrap;
     max-width: none;
 }
+
+.due_date_passed {
+    background-color: rgba(255, 0, 0, 0.2);
+}

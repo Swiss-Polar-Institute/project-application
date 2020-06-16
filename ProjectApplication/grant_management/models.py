@@ -3,6 +3,8 @@ from django.db import models
 # Create your models here.
 # add dates of review, signed date, who signed, grant agreement - need flexibilty in types of dates that are added
 from django.db.models import Sum
+from django.utils import timezone
+from django.utils.datetime_safe import datetime
 from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
@@ -107,6 +109,9 @@ class Invoice(AbstractProjectDueReceivedDate):
             return None
 
         return self.installment.number()
+
+    def due_date_passed(self):
+        return self.due_date < datetime.today().date()
 
     def comments(self):
         return self.invoicecomment_set.all().order_by('created_on')
