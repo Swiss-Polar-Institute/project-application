@@ -1120,6 +1120,14 @@ class Project(CreateModifyOn):
     def invoices_paid_amount(self):
         return self.invoice_set.filter(paid_date__isnull=False).aggregate(Sum('amount'))['amount__sum'] or 0
 
+    def number_of_comments_in_invoices(self):
+        total = 0
+
+        for invoice in self.invoice_set.all():
+            total += len(invoice.comments())
+
+        return total
+
     def is_active(self):
         return self.status == Project.ONGOING
 

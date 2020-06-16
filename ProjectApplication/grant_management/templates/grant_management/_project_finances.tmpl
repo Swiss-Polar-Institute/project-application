@@ -7,8 +7,14 @@
     </div>
 </div>
 <p></p>
-<h3>
+<h3 style="display: inline-block;">
     Invoices {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-invoices-update' project=project %}</h3>
+{% with number_of_comments_in_invoices=project.number_of_comments_in_invoices %}
+    {% if number_of_comments_in_invoices %}
+        {% include 'grant_management/_badge_number_of_comments.tmpl' with number=number_of_comments_in_invoices %}
+    {% endif %}
+{% endwith %}
+<br>
 {% include 'grant_management/_invoice-list.tmpl' %}
 <p></p>
 <h3>Financial
