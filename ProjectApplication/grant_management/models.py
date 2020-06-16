@@ -47,7 +47,7 @@ class GrantAgreement(CreateModifyOn):
 class AbstractProjectDueReceivedDate(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',
                                 on_delete=models.PROTECT)
-    due_date = models.DateField(help_text='Date the document is due')
+    due_date = models.DateField(help_text='Date the document is due', null=True, blank=True)
     received_date = models.DateField(help_text='Date the document was received', null=True, blank=True)
 
     def __str__(self):
@@ -59,7 +59,6 @@ class AbstractProjectDueReceivedDate(CreateModifyOn):
 
 class Installment(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that this installment refers to', on_delete=models.PROTECT)
-    due_date = models.DateField(help_text='Due date of this installment')
     amount = models.DecimalField(max_digits=11, decimal_places=2, help_text='Installment amount')
 
     def sent_for_payment(self):
@@ -69,12 +68,12 @@ class Installment(CreateModifyOn):
         # This is not very efficient, but given the number of invoices and installments it's nice to not have to
         # save this in the database
 
-        installments = list(Installment.objects.filter(project=self.project).order_by('due_date'))
+        installments = list(Installment.objects.filter(project=self.project).order_by('id'))
 
         return installments.index(self) + 1
 
     def __str__(self):
-        return f'{self.project}-{self.due_date}-{self.amount}'
+        return f'{self.project}-{self.amount}'
 
 
 def invoice_file_rename(instance, filename):

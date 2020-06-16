@@ -241,7 +241,6 @@ class InvoicesUpdateViewTest(TestCase):
                                                          description='Original')
 
         installment = Installment.objects.create(project=self._project,
-                                                 due_date=date(2020, 5, 1),
                                                  amount=500)
 
         data = dict_to_multivalue_dict({'FORM_SET-TOTAL_FORMS': 1,

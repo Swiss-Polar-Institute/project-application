@@ -21,8 +21,6 @@ class InstallmentModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
-
         message = ''
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
         if self.instance and self.instance.id and Invoice.objects.filter(installment=self.instance).exists():
@@ -42,7 +40,6 @@ class InstallmentModelForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('due_date', css_class='col-4'),
                 Div('amount', css_class='col-4'),
                 Div(HTML(html_message(message)), css_class='col-4 to-delete'),
                 css_class='row'
@@ -60,7 +57,6 @@ class InstallmentModelForm(forms.ModelForm):
         project_starts = project.start_date
         project_ends = project.end_date
 
-        due_date = cd.get('due_date', None)
         amount = cd.get('amount', None)
 
         DELETE = cd.get('DELETE', None)
@@ -79,12 +75,6 @@ class InstallmentModelForm(forms.ModelForm):
         if amount > project.allocated_budget:
             errors['amount'] = 'This amount is greater than the total project allocated budget'
 
-        if due_date < project_starts:
-            errors['due_date'] = utils.error_due_date_too_early(project)
-
-        if due_date > project_ends:
-            errors['due_date'] = utils.error_due_date_too_late(project)
-
         if DELETE and Invoice.objects.filter(installment=self.instance).exists():
             errors['DELETE'] = 'Cannot delete Installment: there are invoices assigned to this installment'
 
@@ -98,13 +88,9 @@ class InstallmentModelForm(forms.ModelForm):
 
     class Meta:
         model = Installment
-        fields = ['project', 'due_date', 'amount']
+        fields = ['project', 'amount']
         field_classes = {'amount': AmountField}
-        labels = {'due_date': 'Due',
-                  'amount': 'Amount (CHF)'
-                  }
-        help_texts = {'due_date': 'Date the installment is due'}
-        widgets = {'due_date': XDSoftYearMonthDayPickerInput}
+        labels = {'amount': 'Amount (CHF)'}
 
 
 class InstallmentsFormSet(BaseInlineFormSet):
@@ -138,7 +124,7 @@ class InstallmentsFormSet(BaseInlineFormSet):
             )
 
     def get_queryset(self):
-        return super().get_queryset().order_by('due_date')
+        return super().get_queryset().order_by('id')
 
     def extra_information(self):
         return mark_safe(f'<p><b>Budget allocated</b>: {thousands_separator(self.instance.allocated_budget)} CHF</p>')

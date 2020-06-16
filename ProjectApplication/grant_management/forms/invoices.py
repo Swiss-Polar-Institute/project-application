@@ -26,7 +26,8 @@ class InstallmentModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         self._sequence += 1
         amount = thousands_separator(obj.amount)
-        return mark_safe(f'{ordinal(self._sequence)} - {format_date(obj.due_date)} - {amount} CHF')
+        due_date = format_date(obj.due_date) or 'N/A'
+        return mark_safe(f'{ordinal(self._sequence)} - {due_date} - {amount} CHF')
 
 
 def html_message(message):
@@ -63,7 +64,7 @@ class InvoiceItemModelForm(forms.ModelForm):
                                              fields_required=False)
             self.fields.update(self._comment_form.fields)
 
-        self.fields['installment'].queryset = Installment.objects.filter(project=project).order_by('due_date')
+        self.fields['installment'].queryset = Installment.objects.filter(project=project).order_by('id')
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_for_payment_date'])
@@ -147,6 +148,8 @@ class InvoiceItemModelForm(forms.ModelForm):
                 return f'Invoice received {format_date(invoice.received_date)}'
             elif invoice.due_date:
                 return f'Invoice due {format_date(invoice.due_date)}'
+            else:
+                return f'Invoice'
 
         return 'Invoice'
 
