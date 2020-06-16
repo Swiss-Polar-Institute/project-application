@@ -1,1 +1,1 @@
-{{ project.status }} {% if project.abortion_reason %}(reason: {{ project.abortion_reason }}){% endif %}
+{% include 'grant_management/_project_status_badge.tmpl' with status=project.status %} {% if project.abortion_reason %}(reason: {{ project.abortion_reason }}){% endif %}

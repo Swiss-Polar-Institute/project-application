@@ -93,7 +93,7 @@
                 </p>
             {% else %}
                 <div class="shadow-none p-1 bg-light rounded">
-                    <b>Project status: </b> {{ project.status }}<br>
+                    <b>Project status: </b> {% include 'grant_management/_project_status_badge.tmpl' with status=project.status %}<br>
                     <b>Closed on:</b> {{ project.closed_on }}<br>
                     <b>Closed by:</b> {{ project.closed_by }}
                 </div>
