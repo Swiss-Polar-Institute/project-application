@@ -26,8 +26,7 @@ class InstallmentModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         self._sequence += 1
         amount = thousands_separator(obj.amount)
-        due_date = format_date(obj.due_date) or 'N/A'
-        return mark_safe(f'{ordinal(self._sequence)} - {due_date} - {amount} CHF')
+        return mark_safe(f'{ordinal(self._sequence)} - {amount} CHF')
 
 
 def html_message(message):
