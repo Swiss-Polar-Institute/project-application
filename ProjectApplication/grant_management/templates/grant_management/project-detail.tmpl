@@ -19,8 +19,9 @@
                     {# Grant agreement Edit Button is done differently (not using _edit_button.tmpl) because it needs to use pk instead of project #}
                     {# it needs pk partially because of the comments and partially because it creates a new one (passing the project) or updating one #}
                     {# this might need to be refactored... or perhaps de other one named project should be renamed pk #}
-                    <h3>Grant agreement {% if project.is_active %}<a class="btn btn-primary btn-sm"
-                                                                     href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
+                    <h3 style="display: inline-block;">Grant agreement {% if project.is_active %}
+                        <a class="btn btn-primary btn-sm"
+                           href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
                     {% else %}
                         <span class="d-inline-block" tabindex="0" data-toggle="tooltip"
                               title="This cannot be edited: the project has been closed">
@@ -28,6 +29,12 @@
     </span>
                     {% endif %}
                     </h3>
+                    {% with number_of_grant_agreement_comments=project.grantagreement.comments|length %}
+                        {% if number_of_grant_agreement_comments %}
+                            {% include 'grant_management/_badge_number_of_comments.tmpl' with number=number_of_grant_agreement_comments %}
+                        {% endif %}
+                    {% endwith %}
+                    <br>
                     <strong>Grant
                         agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
                     <strong>Signed
