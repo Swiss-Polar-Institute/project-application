@@ -55,6 +55,9 @@ class AbstractProjectDueReceivedDate(CreateModifyOn):
     def __str__(self):
         return f'{self.project}'
 
+    def due_date_passed(self):
+        return self.due_date and self.due_date < datetime.today().date()
+
     class Meta:
         abstract = True
 
@@ -111,7 +114,7 @@ class Invoice(AbstractProjectDueReceivedDate):
         return self.installment.number()
 
     def due_date_passed(self):
-        return self.due_date < datetime.today().date()
+        return self.due_date and self.due_date < datetime.today().date() and self.paid_date is None
 
     def comments(self):
         return self.invoicecomment_set.all().order_by('created_on')
