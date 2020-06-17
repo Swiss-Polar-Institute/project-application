@@ -46,12 +46,14 @@ class InlineFormsetUpdateView(TemplateView):
         if hasattr(self.inline_formset, 'wants_user') and self.inline_formset.wants_user:
             form_kwargs = {'user': request.user}
 
-        if hasattr(self.inline_formset, 'can_force_save') and self.inline_formset.can_force_save:
-            form_kwargs = {'save_force': 'save_force' in request.POST}
+        inline_formset_kwargs = {'prefix': 'FORM_SET',
+                                 'instance': context['project'],
+                                 'form_kwargs': form_kwargs}
 
-        forms = self.inline_formset(request.POST, request.FILES, prefix='FORM_SET',
-                                    instance=context['project'],
-                                    form_kwargs=form_kwargs)
+        if hasattr(self.inline_formset, 'can_force_save') and self.inline_formset.can_force_save:
+            inline_formset_kwargs['save_force'] = 'save_force' in request.POST
+
+        forms = self.inline_formset(request.POST, request.FILES, **inline_formset_kwargs)
 
         if forms.is_valid():
             forms.save()
