@@ -233,7 +233,16 @@ class GrantManagementInlineFormset(InlineFormsetUpdateView):
         context['destination_url'] = reverse('logged-grant_management-project-detail',
                                              kwargs={'pk': project.id}) + f'?tab={self.tab}'
 
-        context['FORM_SET'] = self.inline_formset(prefix='FORM_SET', instance=project)
+        save_force = self.request.POST.get('save_force', False)
+
+        inline_formset_kwargs = {'prefix': 'FORM_SET', 'instance': project}
+
+        # if self.save_force_supported:
+        #     save_force = 'save_force' in self.request.POST
+        #
+        #     inline_formset_kwargs['save_force'] = save_force
+
+        context['FORM_SET'] = self.inline_formset(**inline_formset_kwargs)
 
         return context
 

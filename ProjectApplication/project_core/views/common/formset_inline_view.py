@@ -46,6 +46,9 @@ class InlineFormsetUpdateView(TemplateView):
         if hasattr(self.inline_formset, 'wants_user') and self.inline_formset.wants_user:
             form_kwargs = {'user': request.user}
 
+        if hasattr(self.inline_formset, 'can_force_save') and self.inline_formset.can_force_save:
+            form_kwargs = {'save_force': 'save_force' in request.POST}
+
         forms = self.inline_formset(request.POST, request.FILES, prefix='FORM_SET',
                                     instance=context['project'],
                                     form_kwargs=form_kwargs)
@@ -56,6 +59,9 @@ class InlineFormsetUpdateView(TemplateView):
             return redirect(context['destination_url'])
 
         messages.error(request, f'{self.human_type_plural.capitalize()} not saved. Verify errors in the form')
+
+        if hasattr(forms, 'force_save_text'):
+            context['force_save_text'] = forms.force_save_text()
 
         context['FORM_SET'] = forms
 

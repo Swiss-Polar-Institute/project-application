@@ -39,6 +39,8 @@ def html_message(message):
 
 
 class InvoiceItemModelForm(forms.ModelForm):
+    INVOICE_AMOUNT_IS_GREATER = 'Invoice amount is greater '
+
     def __init__(self, *args, **kwargs):
         self._user = kwargs.pop('user', None)  # When the form is created to visualise user is not needed
         # user is used when saving comments at the moment
@@ -130,6 +132,16 @@ class InvoiceItemModelForm(forms.ModelForm):
                 css_class='row'
             )
         ]
+
+        if 'amount' in self.errors and self.errors['amount'].startswith(InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER):
+            self.fields['ignore_overbudget'] = forms.BooleanField(
+                label='Ignore going overbudget',
+                help_text='This invoice amount is too big. Click to continue')
+
+            divs.append(Div(
+                Div('ignore_overbudget', css_class='col-4'),
+                css_class='row'
+            ))
 
         if self._comment_form:
             divs += Div(HTML("{% include 'comments/_accordion-comment-list-fields-for-new.tmpl' %}"))
@@ -240,8 +252,15 @@ class InvoiceItemModelForm(forms.ModelForm):
             sent_for_payment_errors.append(
                 f'Please attach the <a href="{lay_summary_url}">original lay summary</a> in order to send the invoice for payment')
 
-        if amount and installment and amount > installment.amount:
-            errors['amount'] = 'Invoice amount is greater than the installment amount'
+        if amount and installment and amount > installment.amount and cd.get('ignore_overbudget', False):
+            errors[
+                'amount'] = mark_safe(
+                f'{InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER} than the installment amount ({thousands_separator(installment.amount)}&nbsp;CHF)')
+
+        if amount and amount > project.allocated_budget and cd.get('ignore_overbudget', False):
+            errors[
+                'amount'] = mark_safe(
+                f'{InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER} than the project allocated budget ({thousands_separator(project.allocated_budget)}&nbsp;CHF)')
 
         if sent_for_payment_date is None and paid_date:
             sent_for_payment_errors.append('Please fill in sent for payment if the invoice is paid')
@@ -259,6 +278,17 @@ class InvoiceItemModelForm(forms.ModelForm):
             raise forms.ValidationError(errors)
 
         return cd
+
+    def is_overbudget(self):
+        if hasattr(self, 'cleaned_data') is False:
+            return False
+
+        project = self.cleaned_data['project']
+        amount = self.cleaned_data.get('amount', None)
+        installment = self.cleaned_data.get('installment', None)
+
+        return (amount and installment and amount > installment.amount) or (
+                amount and amount > project.allocated_budget)
 
     def save(self, *args, **kwargs):
         assert self._user
@@ -309,8 +339,11 @@ class InvoiceItemModelForm(forms.ModelForm):
 
 class InvoicesFormSet(BaseInlineFormSet):
     wants_user = True
+    can_force_save = True
 
     def __init__(self, *args, **kwargs):
+        self._save_force = kwargs.pop('save_force', False)
+
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper()
@@ -328,13 +361,16 @@ class InvoicesFormSet(BaseInlineFormSet):
             # amount is removed from the form.cleaned_data
             return
 
+        if self._save_force:
+            return
+
         installment_to_amounts = {}
 
         for invoice_form in self.forms:
             if not invoice_form.cleaned_data['installment']:
                 continue
 
-            amount = invoice_form.cleaned_data['amount'] or 0  # It's None if the amount is not filled in
+            amount = invoice_form.cleaned_data.get('amount', 0)  # It's None if the amount is not filled in
 
             if invoice_form.cleaned_data['installment'].id in installment_to_amounts:
                 installment_to_amounts[invoice_form.cleaned_data['installment'].id] += amount
@@ -348,7 +384,7 @@ class InvoicesFormSet(BaseInlineFormSet):
 
             if invoiced_amount > installment_amount_allocated:
                 errors.append(
-                    f'Over budget for installment due {installment.due_date}, total allocated {thousands_separator(installment.amount)} CHF. Total invoiced: {thousands_separator(invoiced_amount)} CHF')
+                    f'Over budget for installment due {ordinal(installment.number())}, total allocated {thousands_separator(installment.amount)} CHF. Total invoiced: {thousands_separator(invoiced_amount)} CHF')
 
         if errors:
             raise forms.ValidationError(errors)
@@ -357,6 +393,9 @@ class InvoicesFormSet(BaseInlineFormSet):
         kwargs = super().get_form_kwargs(index)
         kwargs['project'] = self.instance
         return kwargs
+
+    def force_save_text(self):
+        return 'Save Forcing Going Overbudget'
 
 
 InvoicesInlineFormSet = inlineformset_factory(Project, Invoice, form=InvoiceItemModelForm, formset=InvoicesFormSet,
