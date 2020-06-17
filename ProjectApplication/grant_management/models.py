@@ -3,7 +3,6 @@ from django.db import models
 # Create your models here.
 # add dates of review, signed date, who signed, grant agreement - need flexibilty in types of dates that are added
 from django.db.models import Sum
-from django.utils import timezone
 from django.utils.datetime_safe import datetime
 from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
@@ -54,9 +53,6 @@ class AbstractProjectDueReceivedDate(CreateModifyOn):
 
     def __str__(self):
         return f'{self.project}'
-
-    def due_date_passed(self):
-        return self.due_date and self.due_date < datetime.today().date()
 
     class Meta:
         abstract = True
@@ -132,6 +128,9 @@ class AbstractProjectReport(AbstractProjectDueReceivedDate):
                                      blank=True, null=True)
     approved_by = models.ForeignKey(PhysicalPerson, help_text='Person who approved the report',
                                     on_delete=models.PROTECT, blank=True, null=True)
+
+    def due_date_passed(self):
+        return self.due_date and self.due_date < datetime.today().date() and self.approval_date is None
 
     class Meta:
         abstract = True
