@@ -45,7 +45,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         self._user = kwargs.pop('user', None)  # When the form is created to visualise user is not needed
         # user is used when saving comments at the moment
 
-        project = kwargs.pop('project')
+        self._project = kwargs.pop('project')
 
         super().__init__(*args, **kwargs)
 
@@ -65,7 +65,7 @@ class InvoiceItemModelForm(forms.ModelForm):
                                              fields_required=False)
             self.fields.update(self._comment_form.fields)
 
-        self.fields['installment'].queryset = Installment.objects.filter(project=project).order_by('id')
+        self.fields['installment'].queryset = Installment.objects.filter(project=self._project).order_by('id')
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['due_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['sent_for_payment_date'])
@@ -74,7 +74,7 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
-        installment_url = reverse('logged-grant_management-installments-update', kwargs={'project': project.id})
+        installment_url = reverse('logged-grant_management-installments-update', kwargs={'project': self._project.id})
         self.fields['installment'].help_text = f'Select the installment to which this invoice is assigned. ' \
                                                f'<a href="{installment_url}">Create an installment</a> if the one you ' \
                                                f'require does not exist'
@@ -104,7 +104,6 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         divs = [
             Div(
-                Div('project', hidden=True),
                 Div('id', hidden=True),
                 Div(Field('DELETE', hidden=True)),
                 Div('can_be_deleted', hidden=True, css_class='can_be_deleted'),
@@ -177,11 +176,10 @@ class InvoiceItemModelForm(forms.ModelForm):
         if self.errors:
             return cd
 
-        project = cd['project']
         DELETE = cd.get('DELETE', None)
 
-        project_starts = project.start_date
-        project_ends = project.end_date
+        project_starts = self._project.start_date
+        project_ends = self._project.end_date
 
         due_date = cd.get('due_date', None)
         received_date = cd.get('received_date', None)
@@ -210,10 +208,10 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors['due_date'] = f'An invoice must have a due date'
 
         if due_date and due_date < project_starts:
-            errors['due_date'] = utils.error_due_date_too_early(project)
+            errors['due_date'] = utils.error_due_date_too_early(self._project)
 
         if received_date and received_date < project_starts:
-            errors['received_date'] = utils.error_received_date_too_early(project)
+            errors['received_date'] = utils.error_received_date_too_early(self._project)
 
         if sent_for_payment_date and received_date and sent_for_payment_date < received_date:
             sent_for_payment_errors.append(
@@ -223,7 +221,7 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors['paid_date'] = f'Date paid should be after the date the invoice was sent for payment'
 
         if due_date and due_date > project_ends:
-            errors['due_date'] = utils.error_due_date_too_late(project)
+            errors['due_date'] = utils.error_due_date_too_late(self._project)
 
         if not file and received_date:
             errors['file'] = f'Please attach the invoice file (a date received has been entered).'
@@ -240,22 +238,24 @@ class InvoiceItemModelForm(forms.ModelForm):
             errors['amount'] = f'Please enter the invoice amount (a date sent for payment has been entered).'
 
         if sent_for_payment_date and (
-                hasattr(project, 'grantagreement') is False):
-            grant_agreement_url = reverse('logged-grant_management-grant_agreement-add', kwargs={'project': project.id})
+                hasattr(self._project, 'grantagreement') is False):
+            grant_agreement_url = reverse('logged-grant_management-grant_agreement-add',
+                                          kwargs={'project': self._project.id})
             sent_for_payment_errors.append(
                 f'Please attach the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
 
         if sent_for_payment_date and \
-                hasattr(project, 'grantagreement') and project.grantagreement.signed_date is None:
+                hasattr(self._project, 'grantagreement') and self._project.grantagreement.signed_date is None:
             grant_agreement_url = reverse('logged-grant_management-grant_agreement-update',
-                                          kwargs={'pk': project.grantagreement.id})
+                                          kwargs={'pk': self._project.grantagreement.id})
             sent_for_payment_errors.append(
                 f'Please add the signed by in the <a href="{grant_agreement_url}">grant agreement<a> in order to enter the date the invoice was sent for payment')
 
         original_lay_summary_type = LaySummaryType.objects.get(name=settings.LAY_SUMMARY_ORIGINAL)
-        if sent_for_payment_date and LaySummary.objects.filter(project=project).filter(
+        if sent_for_payment_date and LaySummary.objects.filter(project=self._project).filter(
                 lay_summary_type=original_lay_summary_type).exists() is False:
-            lay_summary_url = reverse('logged-grant_management-lay_summaries-update', kwargs={'project': project.id})
+            lay_summary_url = reverse('logged-grant_management-lay_summaries-update',
+                                      kwargs={'project': self._project.id})
             sent_for_payment_errors.append(
                 f'Please attach the <a href="{lay_summary_url}">original lay summary</a> in order to send the invoice for payment')
 
@@ -264,10 +264,10 @@ class InvoiceItemModelForm(forms.ModelForm):
                 'amount'] = mark_safe(
                 f'{InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER} than the installment amount ({thousands_separator(installment.amount)}&nbsp;CHF)')
 
-        if amount and amount > project.allocated_budget and not cd.get('ignore_overbudget', False):
+        if amount and amount > self._project.allocated_budget and not cd.get('ignore_overbudget', False):
             errors[
                 'amount'] = mark_safe(
-                f'{InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER} than the project allocated budget ({thousands_separator(project.allocated_budget)}&nbsp;CHF)')
+                f'{InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER} than the project allocated budget ({thousands_separator(self._project.allocated_budget)}&nbsp;CHF)')
 
         if sent_for_payment_date is None and paid_date:
             sent_for_payment_errors.append('Please fill in sent for payment if the invoice is paid')
@@ -278,8 +278,9 @@ class InvoiceItemModelForm(forms.ModelForm):
         if DELETE and paid_date:
             errors['paid_date'] = 'A paid invoice cannot be deleted. Delete the date paid and try again.'
 
-        if project.is_active() is False:
-            raise forms.ValidationError(f'Cannot modify installments for this project: the status is {project.status}')
+        if self._project.is_active() is False:
+            raise forms.ValidationError(
+                f'Cannot modify installments for this project: the status is {self._project.status}')
 
         if errors:
             raise forms.ValidationError(errors)
@@ -290,12 +291,11 @@ class InvoiceItemModelForm(forms.ModelForm):
         if hasattr(self, 'cleaned_data') is False:
             return False
 
-        project = self.cleaned_data['project']
         amount = self.cleaned_data.get('amount', None)
         installment = self.cleaned_data.get('installment', None)
 
         return (amount and installment and amount > installment.amount) or (
-                amount and amount > project.allocated_budget)
+                amount and amount > self._project.allocated_budget)
 
     def save(self, *args, **kwargs):
         assert self._user
@@ -318,11 +318,13 @@ class InvoiceItemModelForm(forms.ModelForm):
             comment_form.save(parent=self.instance,
                               user=self._user)
 
-        super().save(*args, **kwargs)
+        invoice = super().save(commit=False)
+        invoice.project = self._project
+        invoice.save()
 
     class Meta:
         model = Invoice
-        fields = ['project', 'installment', 'due_date', 'received_date', 'sent_for_payment_date', 'paid_date', 'amount',
+        fields = ['installment', 'due_date', 'received_date', 'sent_for_payment_date', 'paid_date', 'amount',
                   'file']
         field_classes = {'installment': InstallmentModelChoiceField}
         widgets = {
