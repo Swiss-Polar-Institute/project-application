@@ -166,7 +166,8 @@
     function replace_invoice_due_by_invoice_header(row) {
         // When adding a new invoice the Header should be "Invoice", not "Invoice due $date_existing_invoice"
         $(row).find('h4').each(function (index, value) {
-            if (value.innerText.startsWith('Invoice due ')) {
+            let headerText = value.innerText;
+            if (headerText.startsWith('Invoice due ') || headerText.startsWith('Invoice received ')) {
                 value.innerText = 'Invoice';
             }
         });
