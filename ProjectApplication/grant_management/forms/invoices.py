@@ -380,7 +380,7 @@ class InvoicesFormSet(BaseInlineFormSet):
             if not invoice_form.cleaned_data['installment']:
                 continue
 
-            amount = invoice_form.cleaned_data.get('amount', 0)  # It's None if the amount is not filled in
+            amount = invoice_form.cleaned_data.get('amount', None) or 0  # It's None if the amount is not filled in
 
             if invoice_form.cleaned_data['installment'].id in installment_to_amounts:
                 installment_to_amounts[invoice_form.cleaned_data['installment'].id] += amount
