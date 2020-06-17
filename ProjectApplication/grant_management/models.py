@@ -91,6 +91,10 @@ class Invoice(AbstractProjectDueReceivedDate):
     installment = models.ForeignKey(Installment, help_text='Installment to which the invoice is assigned', null=True,
                                     blank=True, on_delete=models.PROTECT)
 
+    allow_overbudget = models.BooleanField(default=False, help_text='This invoice takes a payment overbudget')
+    overbudget_allowed_by = models.ForeignKey(User, null=True, help_text='User that allowed the overbudget',
+                                              on_delete=models.PROTECT)
+
     @staticmethod
     def comment_object():
         from comments.models import InvoiceComment
