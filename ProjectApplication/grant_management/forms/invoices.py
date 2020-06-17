@@ -135,13 +135,13 @@ class InvoiceItemModelForm(forms.ModelForm):
         if f'{self.prefix}-ignore_overbudget' in self.data:
             self.fields['ignore_overbudget'] = forms.BooleanField(
                 label='Ignore going overbudget',
-                help_text='This invoice amount is too big. Click to continue')
+                help_text='This invoice takes payments over the allocated budget or installment amount. Check the amount and tick the box to acknowledge it is ok to continue')
 
         if ('amount' in self.errors and self.errors['amount'][0].startswith(
                 InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER)):
             self.fields['ignore_overbudget'] = forms.BooleanField(
                 label='Ignore going overbudget',
-                help_text='This invoice amount is too big. Click to continue')
+                help_text='This invoice takes payments over the allocated budget or installment amount. Check the amount and tick the box to acknowledge it is ok to continue')
 
         if 'ignore_overbudget' in self.fields:
             divs.append(Div(
@@ -392,7 +392,7 @@ class InvoicesFormSet(BaseInlineFormSet):
             if invoiced_amount > installment_amount_allocated:
                 self._is_overbudget = True
                 errors.append(
-                    f'Over budget for installment due {ordinal(installment.number())}, total allocated {thousands_separator(installment.amount)} CHF. Total invoiced: {thousands_separator(invoiced_amount)} CHF')
+                    f'Invoices greater than {ordinal(installment.number())} installment. Installment amount: {thousands_separator(installment.amount)} CHF. Total invoiced: {thousands_separator(invoiced_amount)} CHF')
 
         if errors:
             raise forms.ValidationError(errors)
