@@ -204,9 +204,6 @@ class InvoiceItemModelForm(forms.ModelForm):
         if paid_date and paid_date > today:
             errors['paid_date'] = 'Date paid cannot be in the future'
 
-        if not due_date and (due_date or received_date or sent_for_payment_date or paid_date or amount or file):
-            errors['due_date'] = f'An invoice must have a due date'
-
         if due_date and due_date < project_starts:
             errors['due_date'] = utils.error_due_date_too_early(self._project)
 
