@@ -101,7 +101,7 @@ class InvoiceItemModelForm(forms.ModelForm):
                         and come back to the invoices page.</strong>'''
 
                 for field_name in ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount',
-                                   'installment']:
+                                   'installment', 'allow_overbudget']:
                     self.fields[field_name].disabled = True
 
         self.helper = FormHelper()
@@ -426,7 +426,10 @@ class InvoicesFormSet(BaseInlineFormSet):
             if invoiced_amount > installment_amount_allocated:
                 self._is_overbudget = True
                 errors.append(
-                    f'Invoices greater than {ordinal(installment.number())} installment. Installment amount: {thousands_separator(installment.amount)} CHF. Total invoiced: {thousands_separator(invoiced_amount)} CHF')
+                    f'Invoices greater than {ordinal(installment.number())} installment. Installment amount: '
+                    f'{thousands_separator(installment.amount)} CHF. '
+                    f'Total invoiced: {thousands_separator(invoiced_amount)} CHF'
+                    f'If you want to continue click on "Save Forcing Going Overbudget" button at the bottom of the page')
 
         if errors:
             raise forms.ValidationError(errors)
