@@ -32,8 +32,7 @@ class InvoiceItemFormTest(TestCase):
                                  lay_summary_type=self._lay_summary_original_type)
         lay_summary.save()
 
-        data = {'project': self._project,
-                'due_date': date(2020, 1, 13),
+        data = {'due_date': date(2020, 1, 13),
                 'received_date': date(2020, 1, 14),
                 'sent_for_payment_date': date(2020, 1, 15),
                 'amount': 200,

@@ -140,18 +140,57 @@ class InvoiceItemModelForm(forms.ModelForm):
             )
         ]
 
-        if (self.instance and self.instance.allow_overbudget) or \
-                ('amount' in self.errors and self.errors['amount'][0].startswith(
-                    InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER)):
-            divs.append(Div(
-                Div('allow_overbudget', css_class='col-4'),
-                css_class='row'
-            ))
+        self._add_allow_overbudget_checkbox(divs)
 
         if self._comment_form:
             divs += Div(HTML("{% include 'comments/_accordion-comment-list-fields-for-new.tmpl' %}"))
 
         self.helper.layout = Layout(*divs)
+
+    def _add_allow_overbudget_checkbox(self, divs):
+        # This is a non-straightforward way to decide if the invoice is overbudget or not at the time
+        # that the invoice has been submitted but not accepted yet.
+        #
+        # It's a sad way (because it access self.data) and it might be refactored. I also think that allow paying
+        # invoices that go overbudget is not the best way and the budget should be changed (with history). This
+        # needs to be discussed with the whole team.
+        #
+        # The reason of not accessing self.errors as initially done to decide if the invoice has been rejected because
+        # it would go overbudget (and then in the constructor it's showing the checkbox to confirm that this is ok):
+        # self.errors is BaseForm.errors which calls self.full_clean()
+        # only the first time (it's cached).
+        #
+        # This Invoice form is constructed by the Django BaseFormSet._construct_form. It does:
+        #         form = self.form(**defaults)
+        #         self.add_fields(form, i)
+        #
+        # self.add_fields(form, i) adds the 'DELETE' in the self.fields. But because BaseForm.errors calls
+        # fulL_clean, etc. and they cache results:
+        # if self.errors is called in the Invoice constructor (before self.add_fields) the deletion of invoices
+        # doesn't work anymore ('DELETE' never appears in the self.clean_fields)
+        #
+        # Another solution was to use self.errors and then self._errors = None to force the recalculation but other
+        # cached data might stay and I wanted to avoid changing internal variables.
+        #
+        # Doing, in the Invoice constructor: "self.fields['DELETE'] = BooleanField(required=False)" : this is similar
+        # to what's happening in BaseFormSet.add_fields and it fixes the deletion of invoices. But other
+        # code is executed, cached so I wanted to avoid this as well.
+        #
+        # The third and chosen option is to access self.data. A unit test will be added to see that this doesn't break.
+        amount = float(self.data.get(f'{self.prefix}-amount', None) or 0)
+
+        installment_data_name = f'{self.prefix}-installment'
+        installment = None
+
+        if installment_data_name in self.data and len(self.data[installment_data_name]) > 0:
+            installment = Installment.objects.get(id=self.data[installment_data_name])
+
+        if (self.instance and self.instance.allow_overbudget) or \
+                self.is_overbudget(amount, installment):
+            divs.append(Div(
+                Div('allow_overbudget', css_class='col-4'),
+                css_class='row'
+            ))
 
     def title(self):
         if self.instance:
@@ -281,21 +320,11 @@ class InvoiceItemModelForm(forms.ModelForm):
         if errors:
             raise forms.ValidationError(errors)
 
-        return cd
-
-    def is_overbudget(self):
-        if hasattr(self, 'cleaned_data') is False:
-            return False
-
-        amount = self.cleaned_data.get('amount', None)
-        installment = self.cleaned_data.get('installment', None)
-
+    def is_overbudget(self, amount, installment):
         return (amount and installment and amount > installment.amount) or (
                 amount and amount > self._project.allocated_budget)
 
     def save(self, *args, **kwargs):
-        assert self._user
-
         comment_category = self.cleaned_data.get('category', None)
         comment_text = self.cleaned_data.get('text', None)
 
@@ -316,13 +345,12 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         previous_allow_overbudget = self.instance.allow_overbudget
 
-        invoice = super().save(*args, **kwargs)
+        invoice = super().save(commit=False)
         invoice.project = self._project
 
-        super().save(commit=True)
+        invoice.save()
 
-        if (invoice.allow_overbudget is True and previous_allow_overbudget is False) or \
-                self.instance.id is None:
+        if 'allow_overbudget' in self.changed_data and invoice.allow_overbudget:
             invoice.overbudget_allowed_by = self._user
 
     class Meta:
@@ -364,9 +392,6 @@ class InvoicesFormSet(BaseInlineFormSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('due_date')
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
 
     def clean(self):
         super().clean()
