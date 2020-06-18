@@ -173,6 +173,10 @@
         });
     }
 
+    function delete_allow_overbudget_field(row) {
+        $(row).find('.allow-overbudget-field').remove()
+    }
+
     {# This variable needs to be "var" (or nothing) but not const or let. The _dynamic_formset.tmpl can be included #}
     {# multiple times in the samge page. #}
     var jQueryForFormset = $.noConflict(true);
@@ -202,6 +206,7 @@
                 delete_message(row);
                 update_and_setup_javascript_file_id_references(row);
                 replace_invoice_due_by_invoice_header(row);
+                delete_allow_overbudget_field(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");

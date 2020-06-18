@@ -188,7 +188,7 @@ class InvoiceItemModelForm(forms.ModelForm):
                                                                            'continue')
 
             divs.append(Div(
-                Div('allow_overbudget', css_class='col-4'),
+                Div('allow_overbudget', css_class='col-4 allow-overbudget-field'),
                 css_class='row'
             ))
 
