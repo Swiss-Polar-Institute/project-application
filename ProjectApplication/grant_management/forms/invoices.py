@@ -94,8 +94,13 @@ class InvoiceItemModelForm(forms.ModelForm):
                         To edit any of the fields, delete the date paid, click on <em>Save Invoices</em> 
                         and come back to the invoices page.</strong>'''
 
-                for field_name in ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount',
-                                   'installment', 'allow_overbudget']:
+                field_names_to_disable = ['due_date', 'received_date', 'sent_for_payment_date', 'file', 'amount',
+                                          'installment']
+
+                if 'allow_overbudget' in self.fields:
+                    field_names_to_disable.append('allow_overbudget')
+
+                for field_name in field_names_to_disable:
                     self.fields[field_name].disabled = True
 
         self.helper = FormHelper()
