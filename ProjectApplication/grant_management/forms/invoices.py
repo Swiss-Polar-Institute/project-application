@@ -186,7 +186,8 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         if (self.instance and self.instance.allow_overbudget) or \
                 self.is_overbudget(amount, installment):
-            self.fields['allow_overbudget'] = forms.BooleanField(label='Ignore going overbudget', required=True,
+            self.fields['allow_overbudget'] = forms.BooleanField(label='Ignore going overbudget',
+                                                                 required=False,
                                                                  initial=self.instance.allow_overbudget,
                                                                  help_text='This invoice takes payments over the allocated budget or installment ' \
                                                                            'amount. Check the amount and tick the box to acknowledge it is ok to ' \
