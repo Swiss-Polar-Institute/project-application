@@ -1,6 +1,6 @@
 <h5>Financial reports</h5>
 {% if close_project_form.unsigned_financial_reports_count > 0 %}
-    <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unsigned_financial_reports_count }} not approved
+    <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unsigned_financial_reports_count }} unapproved
     financial report{{ close_project_form.unsigned_financial_reports_count|pluralize }}.
 {% elif close_project_form.signed_financial_reports_count > 0 %}
     <i class="fa fa-check" style="color:green"></i> {{ close_project_form.signed_financial_reports_count }} approved
@@ -8,3 +8,4 @@
 {% else %}
     <i class="fa fa-check" style="color:green"></i> No financial reports entered in the system.
 {% endif %}
+<p></p>
