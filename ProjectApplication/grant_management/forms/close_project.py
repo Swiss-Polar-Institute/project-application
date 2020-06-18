@@ -94,8 +94,8 @@ class CloseProjectModelForm(forms.ModelForm):
                 ),
                 Div(
                     Div(HTML(
-                        '<b>After closing a project: it is not possible anymore to change installments, invoices, '
-                        'financial or scientific reports</b>'),
+                        '<strong>After closing a project: it is no longer possible to change installments, invoices, '
+                        'financial or scientific reports</strong>'),
                         css_class='col-12'),
                     css_class='row'
                 ),
@@ -108,7 +108,7 @@ class CloseProjectModelForm(forms.ModelForm):
                 )
             ]
         else:
-            divs.append(HTML('The project cannot be closed - fix things and try again'))
+            divs.append(HTML('<strong>The project cannot be closed - fix the issues and try again</strong>'))
 
         self.helper.layout = Layout(*divs)
 
