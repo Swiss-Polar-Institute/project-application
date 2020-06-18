@@ -94,8 +94,8 @@
             {% else %}
                 <div class="shadow-none p-1 bg-light rounded">
                     <b>Project status: </b> {% include 'grant_management/_project_status_badge.tmpl' with status=project.status %}<br>
-                    <b>Closed on:</b> {{ project.closed_on }}<br>
-                    <b>Closed by:</b> {{ project.closed_by }}
+                    <b>Closed on:</b> {% include 'common/_value-or-dash.tmpl' with value=project.closed_on %}<br>
+                    <b>Closed by:</b> {% include 'common/_value-or-dash.tmpl' with value=project.closed_by %}
                 </div>
             {% endif %}
         </div>
