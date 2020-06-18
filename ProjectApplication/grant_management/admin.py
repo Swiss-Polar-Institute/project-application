@@ -12,7 +12,8 @@ class GrantAgreementAdmin(admin.ModelAdmin):
 
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('project', 'amount', 'sent_for_payment_date', 'received_date', 'due_date', 'paid_date', 'file')
+    list_display = ('project', 'amount', 'sent_for_payment_date', 'received_date', 'due_date', 'paid_date',
+                    'allow_overbudget', 'overbudget_allowed_by', 'file')
 
 
 class FinancialReportAdmin(admin.ModelAdmin):

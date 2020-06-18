@@ -81,12 +81,6 @@ class InvoiceItemModelForm(forms.ModelForm):
                                                f'<a href="{installment_url}">Create an installment</a> if the one you ' \
                                                f'require does not exist'
 
-        self.fields['allow_overbudget'].label = 'Ignore going overbudget'
-        self.fields[
-            'allow_overbudget'].help_text = 'This invoice takes payments over the allocated budget or installment ' \
-                                            'amount. Check the amount and tick the box to acknowledge it is ok to ' \
-                                            'continue'
-
         message = ''
 
         if self.instance:
@@ -187,6 +181,12 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         if (self.instance and self.instance.allow_overbudget) or \
                 self.is_overbudget(amount, installment):
+            self.fields['allow_overbudget'] = forms.BooleanField(label='Ignore going overbudget', required=True,
+                                                                 initial=self.instance.allow_overbudget,
+                                                                 help_text='This invoice takes payments over the allocated budget or installment ' \
+                                                                           'amount. Check the amount and tick the box to acknowledge it is ok to ' \
+                                                                           'continue')
+
             divs.append(Div(
                 Div('allow_overbudget', css_class='col-4'),
                 css_class='row'
@@ -317,6 +317,9 @@ class InvoiceItemModelForm(forms.ModelForm):
             raise forms.ValidationError(
                 f'Cannot modify installments for this project: the status is {self._project.status}')
 
+        if 'allow_overbudget' in self.cleaned_data and cd['allow_overbudget'] is False:
+            errors['allow_overbudget'] = 'Click to proceed'
+
         if errors:
             raise forms.ValidationError(errors)
 
@@ -343,20 +346,21 @@ class InvoiceItemModelForm(forms.ModelForm):
             comment_form.save(parent=self.instance,
                               user=self._user)
 
-        previous_allow_overbudget = self.instance.allow_overbudget
-
         invoice = super().save(commit=False)
         invoice.project = self._project
 
-        invoice.save()
+        if 'allow_overbudget' in self.cleaned_data:
+            invoice.allow_overbudget = self.cleaned_data['allow_overbudget']
 
-        if 'allow_overbudget' in self.changed_data and invoice.allow_overbudget:
-            invoice.overbudget_allowed_by = self._user
+            if 'allow_overbudget' in self.changed_data and invoice.allow_overbudget:
+                invoice.overbudget_allowed_by = self._user
+
+        invoice.save()
 
     class Meta:
         model = Invoice
         fields = ['installment', 'due_date', 'received_date', 'sent_for_payment_date', 'paid_date', 'amount',
-                  'file', 'allow_overbudget']
+                  'file']
         field_classes = {'installment': InstallmentModelChoiceField}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
