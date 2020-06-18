@@ -74,10 +74,18 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
+        # self.fields['DELETE'] = forms.BooleanField()
+
         installment_url = reverse('logged-grant_management-installments-update', kwargs={'project': self._project.id})
         self.fields['installment'].help_text = f'Select the installment to which this invoice is assigned. ' \
                                                f'<a href="{installment_url}">Create an installment</a> if the one you ' \
                                                f'require does not exist'
+
+        self.fields['allow_overbudget'].label = 'Ignore going overbudget'
+        self.fields[
+            'allow_overbudget'].help_text = 'This invoice takes payments over the allocated budget or installment ' \
+                                            'amount. Check the amount and tick the box to acknowledge it is ok to ' \
+                                            'continue'
 
         message = ''
 
@@ -132,20 +140,11 @@ class InvoiceItemModelForm(forms.ModelForm):
             )
         ]
 
-        if f'{self.prefix}-ignore_overbudget' in self.data:
-            self.fields['ignore_overbudget'] = forms.BooleanField(
-                label='Ignore going overbudget',
-                help_text='This invoice takes payments over the allocated budget or installment amount. Check the amount and tick the box to acknowledge it is ok to continue')
-
-        if ('amount' in self.errors and self.errors['amount'][0].startswith(
-                InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER)):
-            self.fields['ignore_overbudget'] = forms.BooleanField(
-                label='Ignore going overbudget',
-                help_text='This invoice takes payments over the allocated budget or installment amount. Check the amount and tick the box to acknowledge it is ok to continue')
-
-        if 'ignore_overbudget' in self.fields:
+        if (self.instance and self.instance.allow_overbudget) or \
+                ('amount' in self.errors and self.errors['amount'][0].startswith(
+                    InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER)):
             divs.append(Div(
-                Div('ignore_overbudget', css_class='col-4'),
+                Div('allow_overbudget', css_class='col-4'),
                 css_class='row'
             ))
 
@@ -256,12 +255,12 @@ class InvoiceItemModelForm(forms.ModelForm):
             sent_for_payment_errors.append(
                 f'Please attach the <a href="{lay_summary_url}">original lay summary</a> in order to send the invoice for payment')
 
-        if amount and installment and amount > installment.amount and not cd.get('ignore_overbudget', False):
+        if amount and installment and amount > installment.amount and not cd.get('allow_overbudget', False):
             errors[
                 'amount'] = mark_safe(
                 f'{InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER} than the installment amount ({thousands_separator(installment.amount)}&nbsp;CHF)')
 
-        if amount and amount > self._project.allocated_budget and not cd.get('ignore_overbudget', False):
+        if amount and amount > self._project.allocated_budget and not cd.get('allow_overbudget', False):
             errors[
                 'amount'] = mark_safe(
                 f'{InvoiceItemModelForm.INVOICE_AMOUNT_IS_GREATER} than the project allocated budget ({thousands_separator(self._project.allocated_budget)}&nbsp;CHF)')
@@ -315,14 +314,21 @@ class InvoiceItemModelForm(forms.ModelForm):
             comment_form.save(parent=self.instance,
                               user=self._user)
 
-        invoice = super().save(commit=False)
+        previous_allow_overbudget = self.instance.allow_overbudget
+
+        invoice = super().save(*args, **kwargs)
         invoice.project = self._project
-        invoice.save()
+
+        super().save(commit=True)
+
+        if (invoice.allow_overbudget is True and previous_allow_overbudget is False) or \
+                self.instance.id is None:
+            invoice.overbudget_allowed_by = self._user
 
     class Meta:
         model = Invoice
         fields = ['installment', 'due_date', 'received_date', 'sent_for_payment_date', 'paid_date', 'amount',
-                  'file']
+                  'file', 'allow_overbudget']
         field_classes = {'installment': InstallmentModelChoiceField}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
@@ -358,6 +364,9 @@ class InvoicesFormSet(BaseInlineFormSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('due_date')
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     def clean(self):
         super().clean()
