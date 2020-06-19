@@ -1,4 +1,4 @@
-<h5>Financial reports</h5>
+<h5>Financial reports {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-financial_reports-update' project=project %}</h5>
 {% if close_project_form.unsigned_financial_reports_count > 0 %}
     <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unsigned_financial_reports_count }} unapproved
     financial report{{ close_project_form.unsigned_financial_reports_count|pluralize }}.

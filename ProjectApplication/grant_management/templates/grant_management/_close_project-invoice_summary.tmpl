@@ -1,5 +1,5 @@
-<h5 style="display: inline-block;">
-    Invoices {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-invoices-update' project=project %}</h5><br>
+<h5>
+    Invoices {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-invoices-update' project=project %}</h5>
 {% if close_project_form.unpaid_invoices_count > 0 %}
     <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unpaid_invoices_count }} unpaid
     invoice{{ close_project_form.unpaid_invoices_count|pluralize }}.

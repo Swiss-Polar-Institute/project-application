@@ -1,4 +1,4 @@
-<h5>Scientific reports</h5>
+<h5>Scientific reports {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-scientific_reports-update' project=project %}</h5>
 {% if close_project_form.unsigned_scientific_reports_count > 0 %}
     <i class="fa fa-times" style="color:red"></i> {{ close_project_form.unsigned_scientific_reports_count }} unapproved
     scientific report{{ close_project_form.unsigned_scientific_reports_count|pluralize }}.

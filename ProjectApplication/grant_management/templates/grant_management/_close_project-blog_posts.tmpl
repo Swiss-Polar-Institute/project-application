@@ -1,4 +1,4 @@
-<h5>Blog posts</h5>
+<h5>Blog posts {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-blog_posts-update' project=project %}</h5>
 {% if close_project_form.unreceived_blog_posts_count %}
     <i class="fas fa-question" style="color:gray"></i> {{ close_project_form.unreceived_blog_posts_count }} unreceived
     blog post{{ close_project_form.unreceived_blog_posts_count|pluralize }}.
