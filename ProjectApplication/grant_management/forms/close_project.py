@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Div, HTML, Layout, Submit
+from crispy_forms.layout import Layout, HTML, Div, Submit
 from django import forms
 from django.core.exceptions import ValidationError
 from django.urls import reverse
@@ -27,58 +27,21 @@ class CloseProjectModelForm(forms.ModelForm):
         divs = [
             Div(
                 Div(HTML('<h4>Finances</h4>'),
-                    css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('{% include "grant_management/_close_project-finances_summary.tmpl" %}'),
-                    css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('{% include "grant_management/_close_project-invoice_summary.tmpl" %}'),
-                    css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(self.checkbox_ignore_allocated_budget_not_fully_paid(), css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('{% include "grant_management/_close_project-financial_reports.tmpl" %}'),
-                    css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('<p></p><h4>Deliverables</h4>'),
-                    css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('{% include "grant_management/_close_project-milestones.tmpl" %}'), css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(self.checkbox_ignore_milestones_in_the_future(), css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('{% include "grant_management/_close_project-scientific_reports.tmpl" %}'),
-                    css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('{% include "grant_management/_close_project-lay_summaries.tmpl" %}'), css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(HTML('{% include "grant_management/_close_project-blog_posts.tmpl" %}'), css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div(self.checkbox_ignore_unreceived_blog_post(), css_class='col-12'),
-                css_class='row'
-            ),
+                    HTML('{% include "grant_management/_close_project-finances_summary.tmpl" %}'),
+                    HTML('{% include "grant_management/_close_project-invoice_summary.tmpl" %}'),
+                    self.checkbox_ignore_allocated_budget_not_fully_paid(),
+                    HTML('{% include "grant_management/_close_project-financial_reports.tmpl" %}'),
+                    css_class='col-6')
+                ,
+                Div(HTML('<h4>Deliverables</h4>'),
+                    HTML('{% include "grant_management/_close_project-milestones.tmpl" %}'),
+                    self.checkbox_ignore_milestones_in_the_future(),
+                    HTML('{% include "grant_management/_close_project-scientific_reports.tmpl" %}'),
+                    HTML('{% include "grant_management/_close_project-lay_summaries.tmpl" %}'),
+                    HTML('{% include "grant_management/_close_project-blog_posts.tmpl" %}'),
+                    self.checkbox_ignore_unreceived_blog_post(),
+                    css_class='col-6')
+                , css_class='row')
         ]
 
         if self._can_be_closed():
