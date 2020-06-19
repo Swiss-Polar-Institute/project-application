@@ -20,12 +20,12 @@
                     {# it needs pk partially because of the comments and partially because it creates a new one (passing the project) or updating one #}
                     {# this might need to be refactored... or perhaps de other one named project should be renamed pk #}
                     <h3 style="display: inline-block;">Grant agreement {% if project.is_active %}
-                        <a class="btn btn-primary btn-sm"
+                        <a class="btn btn-primary btn-xs"
                            href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
                     {% else %}
                         <span class="d-inline-block" tabindex="0" data-toggle="tooltip"
                               title="This cannot be edited: the project has been closed">
-        <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>Edit</button>
+        <button class="btn btn-primary btn-xs" style="pointer-events: none;" type="button" disabled>Edit</button>
     </span>
                     {% endif %}
                     </h3>

@@ -1,8 +1,8 @@
-{% if project.is_active %}
-    <a class="btn btn-primary btn-sm" href="{% url viewname project=project.id %}">Edit</a>
+{% if force_edit_enabled or project.is_active %}
+    <a class="btn btn-primary btn-xs" href="{% url viewname project=project.id %}">Edit</a>
 {% else %}
     <span class="d-inline-block" tabindex="0" data-toggle="tooltip"
           title="This cannot be edited: the project has been closed">
-        <button class="btn btn-primary btn-sm" style="pointer-events: none;" type="button" disabled>Edit</button>
+        <button class="btn btn-primary btn-xs" style="pointer-events: none;" type="button" disabled>Edit</button>
     </span>
 {% endif %}
