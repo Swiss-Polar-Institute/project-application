@@ -3,7 +3,6 @@ from datetime import date
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
-from ProjectApplication import settings
 from grant_management.forms.invoices import InvoiceItemModelForm
 from grant_management.models import GrantAgreement, Invoice, LaySummary
 from project_core.tests import database_population
@@ -119,3 +118,34 @@ class InvoiceItemFormTest(TestCase):
         self.assertFalse(invoice_item_form.is_valid())
         # sent_date cannot be entered because the grant agreement is not signed
         self.assertIn('sent_for_payment_date', invoice_item_form.errors)
+
+    def test_invalid_invoice_amount_bigger_than_project(self):
+        grant_agreement = GrantAgreement(project=self._project,
+                                         signed_date=date(2020, 1, 12),
+                                         file=SimpleUploadedFile('grant_agreement.txt',
+                                                                 b'This is the signed grant agreement. C.'))
+
+        grant_agreement.save()
+
+        grant_agreement.signed_by.set([database_population.create_physical_person()])
+
+        lay_summary = LaySummary(project=self._project,
+                                 due_date=date(2020, 1, 13),
+                                 text='test',
+                                 author=self._project.principal_investigator.person,
+                                 lay_summary_type=self._lay_summary_original_type)
+        lay_summary.save()
+
+        data = {'due_date': date(2020, 1, 13),
+                'received_date': date(2020, 1, 14),
+                'sent_for_payment_date': date(2020, 1, 15),
+                'amount': 25_000,
+                'paid_date': date(2020, 1, 16)
+                }
+        file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
+
+        self.assertEqual(Invoice.objects.all().count(), 0)
+        invoice_item_form = InvoiceItemModelForm(data=data, files=file, user=self._user, project=self._project)
+
+        self.assertFalse(invoice_item_form.is_valid())
+        self.assertIn('amount', invoice_item_form.errors)
