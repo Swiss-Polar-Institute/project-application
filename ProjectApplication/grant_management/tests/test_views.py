@@ -264,6 +264,63 @@ class InvoicesUpdateViewTest(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Invoice.objects.all().count(), 1)
 
+    def _data_two_invoices(self, installment, amount):
+        return dict_to_multivalue_dict({'FORM_SET-TOTAL_FORMS': 2,
+                                        'FORM_SET-INITIAL_FORMS': 0,
+                                        'FORM_SET-MIN_NUM_FORMS': 1,
+                                        'FORM_SET-MAX_NUM_FORMS': 1000,
+                                        'FORM_SET-0-project': self._project.id,
+                                        'FORM_SET-0-id': '',
+                                        'FORM_SET-0-DELETE': '',
+                                        'FORM_SET-0-can_be_deleted': 0,
+                                        'FORM_SET-0-due_date': date(2020, 5, 14).strftime('%d-%m-%Y'),
+                                        'FORM_SET-0-amount': 12_000,
+                                        'FORM_SET-0-installment': installment.id,
+                                        'FORM_SET-1-project': self._project.id,
+                                        'FORM_SET-1-id': '',
+                                        'FORM_SET-1-DELETE': '',
+                                        'FORM_SET-1-can_be_deleted': 0,
+                                        'FORM_SET-1-due_date': date(2020, 5, 14).strftime('%d-%m-%Y'),
+                                        'FORM_SET-1-amount': 12_000,
+                                        'FORM_SET-1-installment': installment.id,
+                                        })
+
+    def test_post_invoices_too_big(self):
+        lay_summary_type = LaySummaryType.objects.create(name=settings.LAY_SUMMARY_ORIGINAL,
+                                                         description='Original')
+
+        installment = Installment.objects.create(project=self._project,
+                                                 amount=20_000)
+
+        data = self._data_two_invoices(installment, 12_000)
+
+        self.assertEqual(Invoice.objects.all().count(), 0)
+        response = self._client_management.post(
+            reverse('logged-grant_management-invoices-update', kwargs={'project': self._project.id}),
+            data=data
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Save Force Going Overbudget')
+        self.assertEqual(Invoice.objects.all().count(), 0)
+
+    def test_post_invoices_too_big_force(self):
+        lay_summary_type = LaySummaryType.objects.create(name=settings.LAY_SUMMARY_ORIGINAL,
+                                                         description='Original')
+
+        installment = Installment.objects.create(project=self._project,
+                                                 amount=20_000)
+
+        data = self._data_two_invoices(installment, 12_000)
+        data['save_force'] = 'Save Force Going Overbudget'
+
+        self.assertEqual(Invoice.objects.all().count(), 0)
+        response = self._client_management.post(
+            reverse('logged-grant_management-invoices-update', kwargs={'project': self._project.id}),
+            data=data
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Invoice.objects.all().count(), 2)
+
 
 class LaySummariesUpdateViewTest(TestCase):
     def setUp(self):
