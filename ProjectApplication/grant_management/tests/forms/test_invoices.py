@@ -173,3 +173,5 @@ class InvoiceItemFormTest(TestCase):
 
         self.assertEqual(invoice.amount, 25_000)
         self.assertEqual(invoice.project.allocated_budget, 20_000)
+
+# InvoicesFormSet tested via the view

@@ -319,7 +319,8 @@ class InvoiceItemModelForm(forms.ModelForm):
             raise forms.ValidationError(
                 f'Cannot modify installments for this project: the status is {self._project.status}')
 
-        if 'allow_overbudget' in self.cleaned_data and cd['allow_overbudget'] is False:
+        if 'allow_overbudget' in self.cleaned_data and cd['allow_overbudget'] is False and \
+                self.is_overbudget(amount, installment):
             errors['allow_overbudget'] = 'Click to proceed'
 
         if errors:
@@ -413,10 +414,28 @@ class InvoicesFormSet(BaseInlineFormSet):
         if self._save_force:
             return
 
+        self._raise_errors_invoice_amounts_installments()
+        self._raise_errors_invoice_amounts_project_budget()
+
+    def _raise_errors_invoice_amounts_project_budget(self):
+        invoiced_amount = 0
+        for invoice_form in self.forms:
+            amount = invoice_form.cleaned_data.get('amount', None) or 0  # It's None if the amount is not filled in
+
+            invoiced_amount += amount
+
+        allocated_budget = self.instance.allocated_budget
+        if invoiced_amount > allocated_budget:
+            self._is_overbudget = True
+            raise forms.ValidationError(
+                f'The total amount of the invoices {thousands_separator(invoiced_amount)} CHF is greater than the allocated project budget {thousands_separator(allocated_budget)} CHF')
+
+    def _raise_errors_invoice_amounts_installments(self):
         installment_to_amounts = {}
 
         for invoice_form in self.forms:
             if not invoice_form.cleaned_data['installment']:
+                # Invoices without an installment are checked separately
                 continue
 
             amount = invoice_form.cleaned_data.get('amount', None) or 0  # It's None if the amount is not filled in
