@@ -85,3 +85,10 @@ Here a few screenshots to see the look and feel:
 <img src="documentation/screenshots/070-proposal_detail.png">
 </td></tr></table>
 
+<table><tr><td>
+<img src="documentation/screenshots/080-grant_management-finances.png">
+</td></tr></table>
+
+<table><tr><td>
+<img src="documentation/screenshots/090-grant_management-deliverables.png">
+</td></tr></table>
