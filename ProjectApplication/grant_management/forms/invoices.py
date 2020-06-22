@@ -72,8 +72,6 @@ class InvoiceItemModelForm(forms.ModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
-        # self.fields['DELETE'] = forms.BooleanField()
-
         installment_url = reverse('logged-grant_management-installments-update', kwargs={'project': self._project.id})
         self.fields['installment'].help_text = f'Select the installment to which this invoice is assigned. ' \
                                                f'<a href="{installment_url}">Create an installment</a> if the one you ' \
@@ -360,6 +358,8 @@ class InvoiceItemModelForm(forms.ModelForm):
                 invoice.overbudget_allowed_by = self._user
 
         invoice.save()
+
+        return invoice
 
     class Meta:
         model = Invoice

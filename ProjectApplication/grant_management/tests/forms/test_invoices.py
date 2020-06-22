@@ -43,8 +43,10 @@ class InvoiceItemFormTest(TestCase):
         invoice_item_form = InvoiceItemModelForm(data=data, files=file, user=self._user, project=self._project)
 
         self.assertTrue(invoice_item_form.is_valid())
-        invoice_item_form.save()
+        invoice = invoice_item_form.save()
         self.assertEqual(Invoice.objects.all().count(), 1)
+
+        self.assertEqual(invoice.amount, 200)
 
     def test_invalid_due_date_too_early(self):
         grant_agreement = GrantAgreement(project=self._project,
@@ -149,3 +151,40 @@ class InvoiceItemFormTest(TestCase):
 
         self.assertFalse(invoice_item_form.is_valid())
         self.assertIn('amount', invoice_item_form.errors)
+
+    def test_valid_invoice_amount_bigger_than_project_check(self):
+        grant_agreement = GrantAgreement(project=self._project,
+                                         signed_date=date(2020, 1, 12),
+                                         file=SimpleUploadedFile('grant_agreement.txt',
+                                                                 b'This is the signed grant agreement. C.'))
+
+        grant_agreement.save()
+
+        grant_agreement.signed_by.set([database_population.create_physical_person()])
+
+        lay_summary = LaySummary(project=self._project,
+                                 due_date=date(2020, 1, 13),
+                                 text='test',
+                                 author=self._project.principal_investigator.person,
+                                 lay_summary_type=self._lay_summary_original_type)
+        lay_summary.save()
+
+        data = {'test-due_date': date(2020, 1, 13),
+                'test-received_date': date(2020, 1, 14),
+                'test-sent_for_payment_date': date(2020, 1, 15),
+                'test-amount': 25_000,
+                'test-paid_date': date(2020, 1, 16),
+                'test-allow_overbudget': True
+                }
+        file = {'test-file': SimpleUploadedFile('file.txt', b'some file content')}
+
+        self.assertEqual(Invoice.objects.all().count(), 0)
+        invoice_item_form = InvoiceItemModelForm(data=data, files=file, user=self._user, project=self._project,
+                                                 prefix='test')
+
+        self.assertTrue(invoice_item_form.is_valid())
+        invoice = invoice_item_form.save()
+        self.assertEqual(Invoice.objects.all().count(), 1)
+
+        self.assertEqual(invoice.amount, 25_000)
+        self.assertEqual(invoice.project.allocated_budget, 20_000)
