@@ -1031,8 +1031,8 @@ class Project(CreateModifyOn):
                                             help_text='Overarching project to which this project contributes',
                                             blank=True, null=True, on_delete=models.PROTECT)
     allocated_budget = models.DecimalField(help_text='Budget allocated to project', decimal_places=2, max_digits=10,
-                                           validators=[MinValueValidator(0)], blank=False, null=True)
-    status = models.CharField(help_text='Status of a project', max_length=30, default='ONGOING', choices=STATUS,
+                                           validators=[MinValueValidator(0)], blank=False, null=False)
+    status = models.CharField(help_text='Status of a project', max_length=30, default=ONGOING, choices=STATUS,
                               blank=False, null=False)
     abortion_reason = models.CharField(help_text='Reason that a project was aborted', max_length=50, blank=True,
                                        null=True)
