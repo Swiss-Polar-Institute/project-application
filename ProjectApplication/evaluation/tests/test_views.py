@@ -137,6 +137,7 @@ class ProposalEvaluationUpdateTest(TestCase):
         proposal_evaluation.proposal = proposal
         proposal_evaluation.board_decision = ProposalEvaluation.BOARD_DECISION_FUND
         proposal_evaluation.panel_recommendation = ProposalEvaluation.PANEL_RECOMMENDATION_FUND
+        proposal_evaluation.allocated_budget = 20_000
         proposal_evaluation.save()
 
 
