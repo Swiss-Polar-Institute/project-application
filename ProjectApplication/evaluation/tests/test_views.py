@@ -369,6 +369,7 @@ class CallCloseEvaluationTest(TestCase):
         proposal_evaluation = ProposalEvaluation()
         proposal_evaluation.proposal = self._proposal
         proposal_evaluation.board_decision = ProposalEvaluation.BOARD_DECISION_FUND
+        proposal_evaluation.allocated_budget = 20_000
         proposal_evaluation.save()
 
         self.assertEqual(Project.objects.all().count(), 0)
