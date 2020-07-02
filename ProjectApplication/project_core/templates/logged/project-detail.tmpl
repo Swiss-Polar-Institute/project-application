@@ -22,8 +22,13 @@
             <strong>Geographical focus:</strong> {{ project.geographical_areas_enumeration }}<br>
             <strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.location %}<br>
             <strong>Keywords:</strong> {{ project.keywords_enumeration }}<br>
-
             <p></p>
+
+            {% if project.overarching_project %}
+                <h3>Overarching project</h3>
+                {% include 'common/_project_overarching.tmpl' with overarching_project=project.overarching_project %}
+                <p></p>
+            {% endif %}
 
             {% if project.proposal and project.call.overarching_project_question %}
                 <h3>Overarching project</h3>

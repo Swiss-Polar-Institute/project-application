@@ -3,4 +3,4 @@
 <br>
 <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=overarching_project.leader.organisations_ordered_by_name %}
 <br>
-<strong>Group / lab:</strong> {{ overarching_project.leader.group }}
+<strong>Group / lab:</strong> {% include 'common/_value-or-dash.tmpl' with value=overarching_project.leader.group %}

@@ -6,7 +6,7 @@
             <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=project.principal_investigator.main_email %}
             <br>
             <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}<br>
-            <strong>Group:</strong> {{ project.principal_investigator.group }}
+            <strong>Group:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.principal_investigator.group %}
         </div>
         <div class="col-6">
             <strong>Project Key:</strong> {{ project.key }}<br>
