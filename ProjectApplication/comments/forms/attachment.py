@@ -6,6 +6,8 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 
+from ProjectApplication import settings
+
 logger = logging.getLogger('comments')
 
 
@@ -15,7 +17,7 @@ class AttachmentForm(forms.Form):
     # Note that Comments are not editable, so initial is always empty, always a new comment
     def __init__(self, *args, **kwargs):
         form_action = kwargs.pop('form_action')
-        category_queryset = kwargs.pop('category_queryset')
+        category_queryset = kwargs.pop('category_queryset').exclude(category__name=settings.DATA_IMPORT_CATEGORY_NAME)
 
         super().__init__(*args, **kwargs)
 
