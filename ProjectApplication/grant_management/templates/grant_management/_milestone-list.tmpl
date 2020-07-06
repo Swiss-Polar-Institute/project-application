@@ -9,7 +9,8 @@
         </thead>
         {% for milestone in milestones %}
             <tr>
-                <td data-sort="{{ milestone.due_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=milestone.due_date %}</td>
+                {#                Milestone id in the sort: to sort consistently milestones in the same day#}
+                <td data-sort="{{ milestone.due_date|date:"Y-m-d" }}-{{ milestone.id }}">{% include 'common/_value-or-dash.tmpl' with value=milestone.due_date %}</td>
                 <td>{% include 'grant_management/_category-badge.tmpl' with category=milestone.category %}</td>
                 <td>{% include 'common/_value-or-dash.tmpl' with value=milestone.text %}</td>
             </tr>
