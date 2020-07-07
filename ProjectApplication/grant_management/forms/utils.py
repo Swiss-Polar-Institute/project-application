@@ -9,7 +9,7 @@ def error_due_date_too_early(project):
                                              kwargs={'project': project.id})
 
     return mark_safe(f'Due date should be after project start date ({format_date(project.start_date)}). '
-                     f'If needed <a href="{project_basic_information_edit}">edit the project start date</a>.')
+                     f'If needed <a href="{project_basic_information_edit}">edit the project start date</a>')
 
 
 def error_due_date_too_late(project):
@@ -17,7 +17,7 @@ def error_due_date_too_late(project):
                                              kwargs={'project': project.id})
     return mark_safe(
         f'Due date should be before the project end date ({format_date(project.end_date)}). '
-        f'If needed <a href="{project_basic_information_edit}">edit the project end date</a>.')
+        f'If needed <a href="{project_basic_information_edit}">edit the project end date</a>')
 
 
 def error_received_date_too_early(project):
@@ -25,4 +25,4 @@ def error_received_date_too_early(project):
                                              kwargs={'project': project.id})
 
     return mark_safe(f'Date received should be after project start date ({format_date(project.start_date)}). '
-                     f'If needed <a href="{project_basic_information_edit}">edit the project start date</a>.')
+                     f'If needed <a href="{project_basic_information_edit}">edit the project start date</a>')

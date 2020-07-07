@@ -22,6 +22,7 @@
             <strong>Geographical focus:</strong> {{ project.geographical_areas_enumeration }}<br>
             <strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.location %}<br>
             <strong>Keywords:</strong> {{ project.keywords_enumeration }}<br>
+            <strong>Supervisor:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.supervisor %}<br>
             <p></p>
 
             {% if project.overarching_project %}

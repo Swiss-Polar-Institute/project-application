@@ -1,6 +1,7 @@
 ProjectApplication/.idea/
 ProjectApplication/.coverage
 ProjectApplication/import_data/
+ProjectApplication/project_core/management/commands/importpastprojects.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

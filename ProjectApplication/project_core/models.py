@@ -1040,6 +1040,9 @@ class Project(CreateModifyOn):
     closed_on = models.DateTimeField(help_text='When the project was closed', null=True)
     closed_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
+    supervisor = models.ForeignKey(PersonPosition, help_text='Supervisor', blank=True, null=True,
+                                   on_delete=models.PROTECT, related_name='supervisor')
+
     history = HistoricalRecords()
 
     def __str__(self):
