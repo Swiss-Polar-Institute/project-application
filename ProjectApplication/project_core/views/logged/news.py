@@ -82,10 +82,15 @@ def get_project_news():
         )
 
     for milestone in Milestone.objects.filter(due_date__gte=starts).filter(project__status=Project.ONGOING):
+        if milestone.text:
+            milestone_explanation = f' - {milestone.text}'
+        else:
+            milestone_explanation = ''
+
         news.append(
             create_news_project(milestone.due_date,
                                 # TODO: this should do the same representation for a milestone as grant_management/_category-badge.tmpl
-                                f'Milestone due: <span class="badge badge-secondary">{milestone.category.name}</span> - {milestone.text}',
+                                f'Milestone due: <span class="badge badge-secondary">{milestone.category.name}</span> {milestone_explanation}',
                                 milestone.project)
         )
 
