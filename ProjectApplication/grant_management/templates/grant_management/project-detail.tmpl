@@ -19,15 +19,18 @@
                     {# Grant agreement Edit Button is done differently (not using _edit_button.tmpl) because it needs to use pk instead of project #}
                     {# it needs pk partially because of the comments and partially because it creates a new one (passing the project) or updating one #}
                     {# this might need to be refactored... or perhaps de other one named project should be renamed pk #}
-                    <h3 style="display: inline-block;">Grant agreement {% if project.is_active %}
+                    <h3 style="display: inline-block;">Grant agreement
+                        {#                        At the moment it's possible to click the "Edit" button with a non-active project in order to let#}
+                        {#                        the user see the comments and attachments of the Grant Agreement#}
+                        {#                        {% if project.is_active %}#}
                         <a class="btn btn-primary btn-xs"
                            href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
-                    {% else %}
-                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip"
-                              title="This cannot be edited: the project has been closed">
-        <button class="btn btn-primary btn-xs" style="pointer-events: none;" type="button" disabled>Edit</button>
+                        {#                    {% else %}#}
+{#                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip"#}
+{#                              title="This cannot be edited: the project has been closed">#}
+{#        <button class="btn btn-primary btn-xs" style="pointer-events: none;" type="button" disabled>Edit</button>#}
     </span>
-                    {% endif %}
+                        {#                        {% endif %}#}
                     </h3>
                     {% with number_of_grant_agreement_comments=project.grantagreement.comments|length %}
                         {% if number_of_grant_agreement_comments %}
@@ -93,7 +96,8 @@
                 </p>
             {% else %}
                 <div class="shadow-none p-1 bg-light rounded">
-                    <b>Project status: </b> {% include 'grant_management/_project_status_badge.tmpl' with status=project.status %}<br>
+                    <b>Project
+                        status: </b> {% include 'grant_management/_project_status_badge.tmpl' with status=project.status %}<br>
                     <b>Closed on:</b> {% include 'common/_value-or-dash.tmpl' with value=project.closed_on %}<br>
                     <b>Closed by:</b> {% include 'common/_value-or-dash.tmpl' with value=project.closed_by %}
                 </div>
