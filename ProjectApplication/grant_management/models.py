@@ -11,7 +11,7 @@ from project_core.models import CreateModifyOn, PhysicalPerson, Project
 
 
 def grant_agreement_file_rename(instance, filename):
-    return f'grant_management/GrantAgreement/Project-{instance.project.id:04}-{filename}'
+    return f'grant_management/GrantAgreement/Project-{instance.project.key}-{filename}'
 
 
 class GrantAgreement(CreateModifyOn):
@@ -78,7 +78,7 @@ class Installment(CreateModifyOn):
 
 
 def invoice_file_rename(instance, filename):
-    return f'grant_management/Invoice/Project-{instance.project.id:04}-{filename}'
+    return f'grant_management/Invoice/Project-{instance.project.key}-{filename}'
 
 
 class Invoice(AbstractProjectDueReceivedDate):
@@ -141,7 +141,7 @@ class AbstractProjectReport(AbstractProjectDueReceivedDate):
 
 
 def finance_report_file_rename(instance, filename):
-    return f'grant_management/FinancialReport/Project-{instance.project.id:04}-{filename}'
+    return f'grant_management/FinancialReport/Project-{instance.project.key}-{filename}'
 
 
 class FinancialReport(AbstractProjectReport):
@@ -149,7 +149,7 @@ class FinancialReport(AbstractProjectReport):
 
 
 def scientific_report_file_rename(instance, filename):
-    return f'grant_management/ScientificReport/Project-{instance.project.id:04}-{filename}'
+    return f'grant_management/ScientificReport/Project-{instance.project.key}-{filename}'
 
 
 class ScientificReport(AbstractProjectReport):
@@ -208,7 +208,7 @@ class License(CreateModifyOn):
 
 
 def medium_file_rename(instance, filename):
-    return f'grant_management/Medium/Project-{instance.project.id:04}-{filename}'
+    return f'grant_management/Medium/Project-{instance.project.key}-{filename}'
 
 
 class Medium(models.Model):
