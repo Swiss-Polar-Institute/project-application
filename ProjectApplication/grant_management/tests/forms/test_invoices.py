@@ -57,7 +57,7 @@ class InvoiceItemFormTest(TestCase):
 
         self.assertEqual(invoice.amount, 200)
 
-    def test_invalid_due_date_too_early(self):
+    def test_valid_due_date_earlier_project_starts(self):
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
                                          file=SimpleUploadedFile('grant_agreement.txt',
@@ -73,8 +73,8 @@ class InvoiceItemFormTest(TestCase):
         invoice_item_form = InvoiceItemModelForm(data=data, project=self._project)
 
         invoice_item_form.is_valid()
-        self.assertFalse(invoice_item_form.is_valid())
-        self.assertIn('due_date', invoice_item_form.errors)
+        self.assertTrue(invoice_item_form.is_valid())
+        # self.assertIn('due_date', invoice_item_form.errors)
 
     def test_invalid_due_date_too_late(self):
         grant_agreement = GrantAgreement(project=self._project,
