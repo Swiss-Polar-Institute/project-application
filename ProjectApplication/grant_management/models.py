@@ -92,7 +92,7 @@ class Invoice(AbstractProjectDueReceivedDate):
                                     blank=True, on_delete=models.PROTECT)
 
     allow_overbudget = models.BooleanField(default=False, help_text='This invoice takes a payment overbudget')
-    overbudget_allowed_by = models.ForeignKey(User, null=True, help_text='User that allowed the overbudget',
+    overbudget_allowed_by = models.ForeignKey(User, null=True, blank=True, help_text='User that allowed the overbudget',
                                               on_delete=models.PROTECT)
 
     @staticmethod
