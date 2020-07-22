@@ -1,0 +1,5 @@
+{% for attachment in attachments %}
+    {% include 'comments/_comment-detail.tmpl' with value=attachment %}
+    {% include 'common/_file_to_download.tmpl' with file_field=attachment.file %}
+    <p></p>
+{% endfor %}

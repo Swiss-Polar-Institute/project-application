@@ -89,7 +89,7 @@ class ProjectDetailCommentAdd(ProjectDetail):
         context = super().get_context_data(**kwargs)
 
         result = process_comment_attachment(request, context, 'logged-grant_management-project-detail',
-                                            'logged-grant_management-project-comment-add-detail',
+                                            'logged-grant_management-project-comment-add',
                                             'grant_management/project-detail.tmpl',
                                             context['project'])
 

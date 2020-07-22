@@ -81,7 +81,6 @@
             </p>
             {% if project.is_active %}
                 <p>
-
                     <a class="btn btn-primary"
                        href="{% url 'logged-grant_management-close_project' project=project.id %}">Close
                         Project</a>
@@ -94,6 +93,27 @@
                     <b>Closed by:</b> {% include 'common/_value-or-dash.tmpl' with value=project.closed_by %}
                 </div>
             {% endif %}
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            {% if comments %}
+                <strong>Comments</strong><br>
+            {% else %}
+                <strong>No comments</strong><br>
+            {% endif %}
+
+            <div id="smaller_text">
+                {% include 'comments/_comment-list.tmpl' %}
+            </div>
+            <p></p>
+
+            {% if attachments %}
+                <strong>Attachments</strong><br>
+            {% else %}
+                <strong>No attachments</strong><br>
+            {% endif %}
+            <div id="smaller_text">
+                {% include 'comments/_attachment-list.tmpl' %}
+            </div>
         </div>
     </div>
 {% endblock %}
