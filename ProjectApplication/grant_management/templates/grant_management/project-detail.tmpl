@@ -21,14 +21,11 @@
                         {#                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip"#}
                         {#                              title="This cannot be edited: the project has been closed">#}
                         {#        <button class="btn btn-primary btn-xs" style="pointer-events: none;" type="button" disabled>Edit</button>#}
-                        </span>
+                        {#                        </span>#}
                         {#                        {% endif %}#}
                     </h3>
-                    {% with number_of_grant_agreement_comments=project.grantagreement.comments|length %}
-                        {% if number_of_grant_agreement_comments %}
-                            {% include 'grant_management/_badge_number_of_comments.tmpl' with number=number_of_grant_agreement_comments %}
-                        {% endif %}
-                    {% endwith %}
+                    {% include 'grant_management/_badge_number_of_comments_if_not_zero.tmpl' with number=project.grantagreement.comments|length %}
+                    {% include 'grant_management/_badge_number_of_attachments_if_not_zero.tmpl' with number=project.grantagreement.attachments|length %}
                     <br>
                     <strong>Grant
                         agreement:</strong> {% include 'common/_file_to_download.tmpl' with file_field=project.grantagreement.file %}<br>
