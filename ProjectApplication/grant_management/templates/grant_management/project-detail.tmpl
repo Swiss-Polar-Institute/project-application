@@ -8,14 +8,6 @@
             {% include 'grant_management/_project_header-detail.tmpl' %}
             <div class="row">
                 <div class="col-6">
-                    <h3>Project
-                        information {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-project-basic-information-update' project=project %}
-                    </h3>
-                    <strong>Budget allocated:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
-                    <strong>Start date:</strong> {{ project.start_date }}<br>
-                    <strong>End date:</strong> {{ project.end_date }}<br>
-                </div>
-                <div class="col-6">
                     {# Grant agreement Edit Button is done differently (not using _edit_button.tmpl) because it needs to use pk instead of project #}
                     {# it needs pk partially because of the comments and partially because it creates a new one (passing the project) or updating one #}
                     {# this might need to be refactored... or perhaps de other one named project should be renamed pk #}
@@ -26,10 +18,10 @@
                         <a class="btn btn-primary btn-xs"
                            href="{{ grant_agreement_button_url }}">{{ grant_agreement_button_text }}</a>
                         {#                    {% else %}#}
-{#                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip"#}
-{#                              title="This cannot be edited: the project has been closed">#}
-{#        <button class="btn btn-primary btn-xs" style="pointer-events: none;" type="button" disabled>Edit</button>#}
-    </span>
+                        {#                        <span class="d-inline-block" tabindex="0" data-toggle="tooltip"#}
+                        {#                              title="This cannot be edited: the project has been closed">#}
+                        {#        <button class="btn btn-primary btn-xs" style="pointer-events: none;" type="button" disabled>Edit</button>#}
+                        </span>
                         {#                        {% endif %}#}
                     </h3>
                     {% with number_of_grant_agreement_comments=project.grantagreement.comments|length %}
@@ -45,6 +37,9 @@
                     <strong>Signed
                         by:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.grantagreement.signed_by_string %}<br>
                     <p></p>
+                </div>
+                <div class="col-6">
+                    {#                    Space available next to Grant Agreement#}
                 </div>
             </div>
             <p></p>

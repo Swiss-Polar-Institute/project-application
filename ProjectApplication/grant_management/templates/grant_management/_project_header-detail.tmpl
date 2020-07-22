@@ -1,11 +1,13 @@
+{% load thousands_separator %}
+
 <h2>{{ project.title }}</h2>
 <div class="shadow-none p-1 bg-light rounded">
     <div class="row">
         <div class="col-6">
             <strong>Principal
                 investigator:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.principal_investigator %}<br>
-            <b>Start date:</b> {{ project.start_date }}<br>
-            <b>End date:</b> {{ project.end_date }}
+            <strong>Project dates:</strong> {{ project.start_date }} - {{ project.end_date }}<br>
+            <strong>Allocated budget:</strong> {{ project.allocated_budget|thousands_separator }} CHF
         </div>
         <div class="col-6">
             <strong>Project Key:</strong> {{ project.key }}<br>

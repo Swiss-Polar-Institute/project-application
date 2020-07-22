@@ -5,43 +5,43 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            <h2>{{ project.title }}</h2>
-            {% include 'grant_management/_project_summary-detail.tmpl' with project=project %}
-            <p></p>
+            {% include 'grant_management/_project_header-detail.tmpl' with project=project %}
 
-            <h3>Project details</h3>
             <div class="row">
-                <div class="col-5">
-                    <strong>Start date:</strong> {{ project.start_date }}<br>
+                <div class="col-6">
+                    <h3>Grantee</h3>
+                    <strong>Principal
+                        investigator:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.principal_investigator %}<br>
+                    <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=project.principal_investigator.main_email %}<br>
+                    <strong>Organisations:</strong> {% include 'common/_organisation-list.tmpl' with organisations=project.principal_investigator.organisations_ordered_by_name %}<br>
+                    <strong>Group:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.principal_investigator.group %}<br>
                 </div>
-                <div class="col-5">
-                    <strong>End date:</strong> {{ project.end_date }}<br>
+                <div class="col-6">
+                    <h3>Project Information</h3>
+                    <strong>Geographical focus:</strong> {{ project.geographical_areas_enumeration }}<br>
+                    <strong>Precise
+                        region:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.location %}<br>
+                    <strong>Keywords:</strong> {{ project.keywords_enumeration }}<br>
+                    {% if project.supervisor %}
+                        <strong>Supervisor:</strong>
+                        {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.supervisor %}
+                        <br>
+                    {% endif %}
+                    <p></p>
+
+                    {% if project.overarching_project %}
+                        <h3>Overarching project</h3>
+                        {% include 'common/_project_overarching.tmpl' with overarching_project=project.overarching_project %}
+                        <p></p>
+                    {% endif %}
+
+                    {% if project.proposal and project.call.overarching_project_question %}
+                        <h3>Overarching project</h3>
+                        {% include 'common/_project_overarching.tmpl' with overarching_project=project.proposal.overarching_project %}
+                    {% endif %}
                 </div>
             </div>
-            <strong>Allocated budget:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
-            <strong>Geographical focus:</strong> {{ project.geographical_areas_enumeration }}<br>
-            <strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=project.location %}<br>
-            <strong>Keywords:</strong> {{ project.keywords_enumeration }}<br>
-            {% if project.supervisor %}
-                <strong>Supervisor:</strong>
-                {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.supervisor %}<br>
-            {% endif %}
             <p></p>
-
-            {% if project.overarching_project %}
-                <h3>Overarching project</h3>
-                {% include 'common/_project_overarching.tmpl' with overarching_project=project.overarching_project %}
-                <p></p>
-            {% endif %}
-
-            {% if project.proposal and project.call.overarching_project_question %}
-                <h3>Overarching project</h3>
-                {% include 'common/_project_overarching.tmpl' with overarching_project=project.proposal.overarching_project %}
-            {% endif %}
-
-            <p></p>
-
-            <strong>Project created:</strong> {{ project.created_on }}<br>
             <hr>
             {% include 'comments/_comments-attachments.tmpl' %}
         </div>
