@@ -27,17 +27,16 @@
                         {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.supervisor %}
                         <br>
                     {% endif %}
-                    <p></p>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-6">
 
                     {% if project.overarching_project %}
                         <h3>Overarching project</h3>
                         {% include 'common/_project_overarching.tmpl' with overarching_project=project.overarching_project %}
                         <p></p>
-                    {% endif %}
-
-                    {% if project.proposal and project.call.overarching_project_question %}
-                        <h3>Overarching project</h3>
-                        {% include 'common/_project_overarching.tmpl' with overarching_project=project.proposal.overarching_project %}
                     {% endif %}
                 </div>
             </div>
