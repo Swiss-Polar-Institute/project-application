@@ -21,8 +21,10 @@ def comments_attachments_forms(submit_viewname, parent):
                                                            prefix=AttachmentForm.FORM_NAME)
 
     context['comments'] = parent.comments()
+    context['comments_reversed'] = parent.comments(old_to_new=False)
 
     context['attachments'] = parent.attachments()
+    context['attachments_reversed'] = parent.attachments(old_to_new=False)
 
     return context
 

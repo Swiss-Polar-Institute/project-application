@@ -1100,11 +1100,21 @@ class Project(CreateModifyOn):
 
         return project
 
-    def attachments(self):
-        return self.projectattachment_set.all().order_by('created_on')
+    def attachments(self, old_to_new=True):
+        if old_to_new:
+            order_by = 'created_on'
+        else:
+            order_by = '-created_on'
 
-    def comments(self):
-        return self.projectcomment_set.all().order_by('created_on')
+        return self.projectattachment_set.all().order_by(order_by)
+
+    def comments(self, old_to_new=True):
+        if old_to_new:
+            order_by = 'created_on'
+        else:
+            order_by = '-created_on'
+
+        return self.projectcomment_set.all().order_by(order_by)
 
     def main_lay_summary_web(self):
         from grant_management.models import LaySummaryType

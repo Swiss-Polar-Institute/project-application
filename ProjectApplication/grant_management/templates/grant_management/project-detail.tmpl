@@ -102,7 +102,7 @@
             {% endif %}
 
             <div id="smaller_text">
-                {% include 'comments/_comment-list.tmpl' %}
+                {% include 'comments/_comment-list.tmpl' with comments=comments_reversed %}
             </div>
             <p></p>
 
@@ -112,7 +112,7 @@
                 <strong>No attachments</strong><br>
             {% endif %}
             <div id="smaller_text">
-                {% include 'comments/_attachment-list.tmpl' %}
+                {% include 'comments/_attachment-list.tmpl' with attachments=attachments_reversed %}
             </div>
         </div>
     </div>
