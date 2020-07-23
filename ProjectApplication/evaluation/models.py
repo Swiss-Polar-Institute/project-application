@@ -181,7 +181,7 @@ class CallEvaluation(CreateModifyOn):
         return self.callevaluationcomment_set.all().order_by('created_on')
 
     def attachments(self):
-        return None
+        return []
 
     def __str__(self):
         return f'CallEvaluation: {self.id} for call: {self.call.little_name()}'

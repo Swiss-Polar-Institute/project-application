@@ -20,11 +20,11 @@ def comments_attachments_forms(submit_viewname, parent):
                                                            category_queryset=parent.attachment_object().category_queryset(),
                                                            prefix=AttachmentForm.FORM_NAME)
 
-    context['comments'] = parent.comments()
-    context['comments_reversed'] = parent.comments(old_to_new=False)
+    context['comments'] = list(parent.comments())
+    context['comments_reversed'] = context['comments'][::-1]
 
-    context['attachments'] = parent.attachments()
-    context['attachments_reversed'] = parent.attachments(old_to_new=False)
+    context['attachments'] = list(parent.attachments())
+    context['attachments_reversed'] = context['attachments'][::-1]
 
     return context
 
