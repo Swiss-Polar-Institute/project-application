@@ -4,9 +4,9 @@ boto3==1.11.16
 botocore==1.14.16
 coverage==5.0.3
 decorator==4.4.1
-Django==3.0.7
+Django==3.0.8
 django-autocomplete-light==3.5.1
--e git://github.com/django-crispy-forms/django-crispy-forms.git@692d16fe75fc67aa00fab72d5258062e98b810b3#egg=django_crispy_forms
+django-crispy-forms==1.9.2
 django-simple-history==2.8.0
 django-storages==1.9.1
 docutils==0.15.2
