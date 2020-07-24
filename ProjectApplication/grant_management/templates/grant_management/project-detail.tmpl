@@ -95,25 +95,7 @@
             {% endif %}
             <p>&nbsp;</p>
             <p>&nbsp;</p>
-            {% if comments %}
-                <strong>Comments</strong><br>
-            {% else %}
-                <strong>No comments</strong><br>
-            {% endif %}
-
-            <div id="smaller_text">
-                {% include 'comments/_comment-list.tmpl' with comments=comments_reversed %}
-            </div>
-            <p></p>
-
-            {% if attachments %}
-                <strong>Attachments</strong><br>
-            {% else %}
-                <strong>No attachments</strong><br>
-            {% endif %}
-            <div id="smaller_text">
-                {% include 'comments/_attachment-list.tmpl' with attachments=attachments_reversed %}
-            </div>
+            {% include 'comments/_comments-attachments-compact-list.tmpl' %}
         </div>
     </div>
 {% endblock %}

@@ -28,6 +28,10 @@
         <div class="col-2">
             <a class="btn btn-primary d-print-none"
                href="{% url 'logged-call-evaluation-update' pk=call_evaluation.id %}">Edit Call Evaluation</a>
+
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            {% include 'comments/_comments-attachments-compact-list.tmpl' with hide_attachments=True %}
         </div>
         &nbsp;
         <br>

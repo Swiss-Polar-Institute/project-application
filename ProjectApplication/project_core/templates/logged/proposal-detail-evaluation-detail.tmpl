@@ -31,6 +31,9 @@
                 <a class="btn btn-primary" href="{% url 'logged-call-evaluation-proposal-detail' pk=proposal.id %}"
                    role="button">View Proposal</a>
             </p>
+            <p>&nbsp;</p>
+            <p>&nbsp;</p>
+            {% include 'comments/_comments-attachments-compact-list.tmpl' %}
         </div>
     </div>
 {% endblock %}
