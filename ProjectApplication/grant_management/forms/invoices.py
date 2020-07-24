@@ -324,6 +324,17 @@ class InvoiceItemModelForm(forms.ModelForm):
                 self.is_overbudget(amount, installment):
             errors['allow_overbudget'] = 'Click to proceed'
 
+        comment_form = CommentForm(data=self.data,
+                                   form_action=None,  # Because form_tag=False it's not needed
+                                   category_queryset=self.instance.comment_object().category_queryset(),
+                                   prefix=self.prefix,
+                                   form_tag=False)
+
+        comment_form.is_valid()
+
+        comment_forms_errors = comment_form.get_errors()
+        errors.update(comment_forms_errors)
+
         if errors:
             raise forms.ValidationError(errors)
 
@@ -345,10 +356,10 @@ class InvoiceItemModelForm(forms.ModelForm):
                                        category_queryset=self.instance.comment_object().category_queryset(),
                                        form_tag=False)
             comment_form.is_valid()
-            # TODO: as it is now: it's always valid (combobox mandatory selection for internal users). In the is_valid()
-            # of the Invoice it should reject it if it's not valid
-            comment_form.save(parent=self.instance,
-                              user=self._user)
+
+            if comment_form.is_empty() is False:
+                comment_form.save(parent=self.instance,
+                                  user=self._user)
 
         invoice = super().save(commit=False)
         invoice.project = self._project

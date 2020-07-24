@@ -14,6 +14,7 @@ class CommentForm(forms.Form):
         form_action = kwargs.pop('form_action')
         form_tag = kwargs.pop('form_tag', True)
         fields_required = kwargs.pop('fields_required', True)
+        self.form_errors = None
 
         super().__init__(*args, **kwargs)
 
@@ -46,6 +47,36 @@ class CommentForm(forms.Form):
         ]
 
         self.helper.layout = Layout(*self.divs)
+
+    def get_errors(self):
+        assert self.form_errors is not None, 'clean() needs to be called before'
+
+        return self.form_errors
+
+    def clean(self):
+        cd = super().clean()
+
+        category = cd.get('category', None)
+        text = cd.get('text', None)
+
+        self.form_errors = {}
+
+        if category is None and text:
+            self.form_errors['category'] = 'Please select a category'
+
+        if text is None and category:
+            self.form_errors['text'] = 'Please write a comment'
+
+        if self.form_errors:
+            raise forms.ValidationError(self.form_errors)
+
+        return cd
+
+    def is_empty(self):
+        # A comment form might have self.fields_required == False when is part of another form.
+        # In this case if category is None and text is empty the form is valid: no error would occur
+        # But the form is empty: save should not be called (reponsability of the user of this class)
+        return 'category' not in self.cleaned_data and 'text' not in self.cleaned_data
 
     def save(self, parent, user):
         comment = parent.comment_object()()
