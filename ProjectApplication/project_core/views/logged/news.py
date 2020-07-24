@@ -38,7 +38,7 @@ def date_1_week_ago(date):
 
 
 def get_project_news():
-    today = datetime.today()
+    today = datetime.today().date()
     starts = date_1_week_ago(today)
 
     news = []
@@ -105,7 +105,7 @@ def get_project_news():
 
 
 def get_call_news():
-    today = datetime.today()
+    today = datetime.today().date()
     starts = date_1_week_ago(today)
 
     news = []
