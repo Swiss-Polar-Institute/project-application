@@ -26,10 +26,10 @@
                 <br>
             {% endif %}
             <strong>Description:</strong>
-            <div class="pre-with-newlines border p-1 bg-white rounded">{{ call.description }}</div>
+            <div class="pre-with-newlines border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=call.description %}</div>
             <br>
             <strong>Introductory message:</strong>
-            <div class="pre-with-newlines border p-1 bg-white rounded">{{ call.introductory_message }}</div>
+            <div class="pre-with-newlines border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=call.introductory_message %}</div>
             <br>
             <div class="row">
                 <div class="col-6">
@@ -64,7 +64,7 @@
                         question:</strong> {% include 'common/_check-icon.tmpl' with value=call.proposal_partner_question %}
                 </div>
                 <div class="col-12">
-                    <strong>Overarching question</strong>
+                    <strong>Overarching project question:</strong>
                     {% include 'common/_check-icon.tmpl' with value=call.overarching_project_question %}
                 </div>
             </div>
