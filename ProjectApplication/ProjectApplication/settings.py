@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'evaluation',
     'comments',
     'colours',
-    'grant_management'
+    'grant_management',
+    'reporting'
 ]
 
 MIDDLEWARE = [

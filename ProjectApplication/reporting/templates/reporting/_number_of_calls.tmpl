@@ -1,0 +1,23 @@
+<h1>Number of calls</h1>
+
+<div class="row">
+    <div class="col-6">
+        <table class="table table-striped table-sm table-hover display">
+            <thead>
+            <tr>
+                <td><strong>Year</strong></td>
+                <td><strong>Calls</strong></td>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for call_year in calls_per_year %}
+                <tr>
+                    <td>{{ call_year.finance_year }}</td>
+                    <td>{{ call_year.number_of_calls }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
