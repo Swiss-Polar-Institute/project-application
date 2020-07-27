@@ -3,14 +3,21 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
+            <div class="alert alert-danger" role="alert">
+                This section is under development and is not validated yet. Reports might be wrong or might be based on
+                incomplete data.
+            </div>
             <h1>Number of calls</h1>
-            {% include 'reporting/_year_values.tmpl' with table=calls_per_year title='Calls' %}
+            {% include 'reporting/_year_values.tmpl' with table=calls_per_year title_col2='Calls' %}
 
             <h1>Allocated budget per year</h1>
-            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_year title='Grants (CHF)' thousands_separator=1 %}
+            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_year title_col2='Grants (CHF)' thousands_separator=1 %}
 
             <h1>Allocated budget per call</h1>
-            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_call title='Grants (CHF)' thousands_separator=1 %}
+            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_call title_col1='Call' title_col2='Grants (CHF)' thousands_separator=1 %}
+
+            <h1>Gender</h1>
+            {% include 'reporting/_gender_table.tmpl' with table=call_genders %}
         </div>
         <div class="col-2">
         </div>
