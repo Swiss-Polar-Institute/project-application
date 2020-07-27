@@ -90,11 +90,7 @@
 
             <h2>Template variables</h2>
             {% if template_variables %}
-                <div class="row">
-                    <div class="col-6">
-                        {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}
-                    </div>
-                </div>
+                {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}
             {% else %}
                 No template variables in this call
             {% endif %}
