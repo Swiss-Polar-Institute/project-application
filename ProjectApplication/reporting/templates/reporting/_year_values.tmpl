@@ -1,0 +1,29 @@
+{% load thousands_separator %}
+
+<div class="row">
+    <div class="col-6">
+        <table class="table table-striped table-sm table-hover display">
+            <thead>
+            <tr>
+                <th style="width: 50%;">Year</th>
+                <th>{{ title }}</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            {% for row in table %}
+                <tr>
+                    <td>{{ row.year }}</td>
+                    <td>
+                        {% if thousands_separator %}
+                            {{ row.aggregated|thousands_separator }}
+                        {% else %}
+                            {{ row.aggregated }}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

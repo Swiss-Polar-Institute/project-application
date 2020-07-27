@@ -3,7 +3,14 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            {% include 'reporting/_number_of_calls.tmpl' %}
+            <h1>Number of calls</h1>
+            {% include 'reporting/_year_values.tmpl' with table=calls_per_year title='Calls' %}
+
+            <h1>Allocated budget per year</h1>
+            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_year title='Grants (CHF)' thousands_separator=1 %}
+
+            <h1>Allocated budget per call</h1>
+            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_call title='Grants (CHF)' thousands_separator=1 %}
         </div>
         <div class="col-2">
         </div>
