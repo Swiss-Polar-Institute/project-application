@@ -9,10 +9,13 @@ from project_core.models import Call, Project, Gender, CareerStage, Proposal
 def calculate_number_of_calls():
     result = {}
 
-    result['calls_per_year'] = Call.objects.filter(submission_deadline__lte=timezone.now()). \
-        values(year=F('finance_year')). \
-        annotate(aggregated=Count('*')). \
+    calls_per_year = Call.objects.filter(submission_deadline__lte=timezone.now()). \
+        values(Year=F('finance_year')). \
+        annotate(Calls=Count('*')). \
         order_by('finance_year')
+
+    result['data'] = calls_per_year
+    result['headers'] = ['Year', 'Calls']
 
     return result
 
@@ -251,7 +254,7 @@ class Reporting(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update(calculate_number_of_calls())
+        context['calls_per_year'] = calculate_number_of_calls()
 
         context.update(allocated_budget_per_year())
 
