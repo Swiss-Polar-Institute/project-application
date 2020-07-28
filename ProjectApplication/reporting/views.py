@@ -3,7 +3,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 from django.db.models import Avg, Max, Min, Count, F, Sum, Q
 
-from project_core.models import Call, Project, Gender
+from project_core.models import Call, Project, Gender, CareerStage, Proposal
 
 
 def calculate_number_of_calls():
@@ -41,9 +41,9 @@ def allocated_budget_per_call():
 
 class GenderPercentageCalculator:
     def __init__(self, gender_field):
-        self.gender_field = gender_field
+        self._gender_field = gender_field
 
-        self.genders = None
+        self._genders = None
 
     def _get_genders(self):
         genders = {}
@@ -56,16 +56,16 @@ class GenderPercentageCalculator:
         return genders
 
     def calculate_gender_percentages(self, generic_queryset):
-        if self.genders is None:
-            self.genders = self._get_genders()
+        if self._genders is None:
+            self._genders = self._get_genders()
 
         total = generic_queryset.count()
 
-        female = generic_queryset.filter(**{self.gender_field: self.genders['female']}).count()
-        male = generic_queryset.filter(**{self.gender_field: self.genders['male']}).count()
-        other = generic_queryset.filter(**{self.gender_field: self.genders['other']}).count()
-        prefer_not_to_say = generic_queryset.filter(**{self.gender_field: self.genders['prefer_not_to_say']}).count()
-        not_in_db = generic_queryset.filter(**{f'{self.gender_field}__isnull': True}).count()
+        female = generic_queryset.filter(**{self._gender_field: self._genders['female']}).count()
+        male = generic_queryset.filter(**{self._gender_field: self._genders['male']}).count()
+        other = generic_queryset.filter(**{self._gender_field: self._genders['other']}).count()
+        prefer_not_to_say = generic_queryset.filter(**{self._gender_field: self._genders['prefer_not_to_say']}).count()
+        not_in_db = generic_queryset.filter(**{f'{self._gender_field}__isnull': True}).count()
 
         if total != female + male + other + prefer_not_to_say + not_in_db:
             # The total should be the same as adding the other categories. It wouldn't be the same
@@ -96,6 +96,27 @@ class GenderPercentageCalculator:
                 'prefer_not_to_say_percentage': prefer_not_to_say_percentage,
                 'not_in_db_percentage': not_in_db_percentage,
                 }
+
+
+class CareerStagePercentageCalculator():
+    def __init__(self, career_stage_field):
+        self._career_stage_field = career_stage_field
+        self._career_stages = None
+
+    def calculate_career_stage_percentages(self, generic_queryset):
+        if self._career_stages is None:
+            self._career_stages = CareerStage.objects.all()
+
+        result = {}
+        for career_stage in self._career_stages:
+            result[career_stage.name] = generic_queryset.filter(**{self._career_stage_field: career_stage}).count()
+            result['Unknown'] = generic_queryset.filter(**{f'{self._career_stage_field}__isnull': True}).count()
+
+        return result
+
+    def header_names(self):
+        return ["Undergraduate / master's student", 'PhD student', 'Post-doc or established scientist', 'Other',
+                'Unknown']
 
 
 def gender_proposal_applicants_per_call():
@@ -132,6 +153,98 @@ def gender_project_principal_investigator_per_call():
     return result
 
 
+def career_stage_proposal_applicants_per_year():
+    result = {}
+
+    career_stages = CareerStage.objects.all().order_by('name')
+
+    data = []
+    for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
+        row = {}
+        row['Year'] = year
+        for career_stage in career_stages:
+            row[career_stage.name] = Proposal.objects. \
+                filter(call__finance_year=year). \
+                filter(applicant__career_stage=career_stage). \
+                count()
+
+            row['Unknown'] = Project.objects. \
+                filter(call__finance_year=year). \
+                filter(principal_investigator__career_stage__isnull=True). \
+                count()
+
+        data.append(row)
+
+    result['headers'] = ['Year'] + [career_stage.name for career_stage in career_stages] + ['Unknown']
+    result['data'] = data
+
+    return result
+
+
+def career_stage_projects_principal_investigators_per_year():
+    result = {}
+
+    career_stages = CareerStage.objects.all().order_by('name')
+
+    data = []
+    for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
+        row = {}
+        row['Year'] = year
+        for career_stage in career_stages:
+            row[career_stage.name] = Project.objects. \
+                filter(call__finance_year=year). \
+                filter(principal_investigator__career_stage=career_stage). \
+                count()
+
+        row['Unknown'] = Project.objects. \
+            filter(call__finance_year=year). \
+            filter(principal_investigator__career_stage__isnull=True). \
+            count()
+
+        data.append(row)
+
+    result['headers'] = ['Year'] + [career_stage.name for career_stage in career_stages] + ['Unknown']
+    result['data'] = data
+
+    return result
+
+
+def career_stage_proposal_applicants_per_call():
+    career_stage_percentage_calculator = CareerStagePercentageCalculator('applicant__career_stage')
+
+    data = []
+    for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
+            order_by('long_name'):
+        generic_queryset = call.proposal_set
+
+        percentages = career_stage_percentage_calculator.calculate_career_stage_percentages(generic_queryset)
+        percentages['Call Name'] = call.long_name
+        data.append(percentages)
+
+    result = {}
+    result['headers'] = ['Call Name'] + career_stage_percentage_calculator.header_names()
+    result['data'] = data
+    return result
+
+
+def career_stage_project_principal_investigator_per_call():
+    career_stage_percentage_calculator = CareerStagePercentageCalculator('principal_investigator__career_stage')
+
+    data = []
+    for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
+            order_by('long_name'):
+        generic_queryset = call.project_set
+
+        percentages = career_stage_percentage_calculator.calculate_career_stage_percentages(generic_queryset)
+        percentages['Call Name'] = call.long_name
+        data.append(percentages)
+
+    result = {}
+    result['headers'] = ['Call Name'] + career_stage_percentage_calculator.header_names()
+    result['data'] = data
+    return result
+
+
 class Reporting(TemplateView):
     template_name = 'reporting/reporting.tmpl'
 
@@ -147,6 +260,16 @@ class Reporting(TemplateView):
         context.update(gender_proposal_applicants_per_call())
 
         context.update(gender_project_principal_investigator_per_call())
+
+        context['career_stage_proposal_applicants_per_year'] = career_stage_proposal_applicants_per_year()
+
+        context[
+            'career_stage_projects_principal_investigators_per_year'] = career_stage_projects_principal_investigators_per_year()
+
+        context['career_stage_proposal_applicants_per_call'] = career_stage_proposal_applicants_per_call()
+
+        context[
+            'career_stage_project_principal_investigator_per_call'] = career_stage_project_principal_investigator_per_call()
 
         context.update({'active_section': 'reporting',
                         'active_subsection': 'reporting',

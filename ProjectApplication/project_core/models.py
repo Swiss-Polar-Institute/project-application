@@ -567,9 +567,6 @@ class PersonPosition(CreateModifyOn):
 
         return ', '.join(organisations)
 
-    class Meta:
-        verbose_name_plural = 'People from organisation(s)'
-
 
 class Contact(CreateModifyOn):
     """Contact details of a person"""

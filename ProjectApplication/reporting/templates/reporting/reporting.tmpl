@@ -7,25 +7,44 @@
                 This section is under development and is not validated yet. Reports might be wrong or might be based on
                 incomplete data.
             </div>
-            <h1>Number of calls</h1>
+            <h1>Calls</h1>
+            <strong>Number of closed calls</strong>
             {% include 'reporting/_year_values.tmpl' with table=calls_per_year title_col2='Calls' %}
-            Number of closed calls.
 
-            <h1>Allocated budget per year</h1>
-            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_year title_col2='Grants (CHF)' thousands_separator=1 %}
-            CHF for approved projects per year.
+            <h1>Financial support</h1>
+            <strong>Annual financial support for funded projects</strong>
+            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_year title_col2='Financial support (CHF)' thousands_separator=1 %}
+            <p></p>
 
-            <h1>Allocated budget per call</h1>
-            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_call title_col1='Call' title_col2='Grants (CHF)' thousands_separator=1 %}
-            CHF for approved projects per call.
+            <strong>Annual financial support for funded projects by grant scheme</strong>
+            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_call title_col1='Grant scheme' title_col2='Financial support (CHF)' thousands_separator=1 %}
+            <p></p>
 
-            <h1>Gender of the proposals applicants</h1>
+            <h1>Gender</h1>
+            <strong>Gender of applicants of submitted proposals</strong>
             {% include 'reporting/_gender_table.tmpl' with table=proposals_genders %}
-            Gender of the applicant of the submitted proposals.
+            <p></p>
 
-            <h1>Gender of the projects principal investigators</h1>
+            <strong>Gender of principal investigators of funded projects</strong>
             {% include 'reporting/_gender_table.tmpl' with table=projects_genders %}
-            Gender of the principal investigator of the projects.
+            <p></p>
+
+            <h1>Career stage</h1>
+            <strong>Career stage of submitted proposal applicants</strong>
+            {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_year %}
+            <p></p>
+
+            <strong>Career stage of funded project principal investigators</strong>
+            {% include 'reporting/_table.tmpl' with table=career_stage_projects_principal_investigators_per_year %}
+            <p></p>
+
+            <strong>Career stage of submitted proposal applicants by grant scheme</strong>
+            {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_call %}
+            <p></p>
+
+            <strong>Career stage of funded project principal investigators by grant scheme</strong>
+            {% include 'reporting/_table.tmpl' with table=career_stage_project_principal_investigator_per_call %}
+            <p></p>
         </div>
         <div class="col-2">
         </div>
