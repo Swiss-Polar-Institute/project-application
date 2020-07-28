@@ -45,17 +45,18 @@ def allocated_budget_per_call():
     result = {}
 
     allocated_budget_per_call = Project.objects. \
-        values(call_name=F('call__long_name')). \
+        values(call_name=F('call__funding_instrument__long_name'), finance_year=F('call__finance_year')). \
         annotate(financial_support=Sum('allocated_budget')). \
         order_by('call__finance_year')
 
     data = []
     for row in allocated_budget_per_call:
         data.append({'Grant Scheme': row['call_name'],
+                     'Year': row['finance_year'],
                      'Financial Support (CHF)': thousands_separator(row['financial_support'])
                      })
 
-    result['headers'] = ['Grant Scheme', 'Financial Support (CHF)']
+    result['headers'] = ['Grant Scheme', 'Year', 'Financial Support (CHF)']
     result['data'] = data
 
     return result
