@@ -7,44 +7,29 @@
                 This section is under development and is not validated yet. Reports might be wrong or might be based on
                 incomplete data.
             </div>
-            <h1>Calls</h1>
-            <strong>Number of closed calls</strong>
-            {% include 'reporting/_year_values.tmpl' with table=calls_per_year title_col2='Calls' %}
 
-            <h1>Financial support</h1>
-            <strong>Annual financial support for funded projects</strong>
-            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_year title_col2='Financial support (CHF)' thousands_separator=1 %}
-            <p></p>
+            <div>
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="reporting_finance-tab" data-toggle="tab"
+                           href="#reporting_finance"
+                           role="tab">Finance</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="reporting_diversity-tab" data-toggle="tab" href="#reporting_diversity"
+                           role="tab">Diversity</a>
+                    </li>
+                </ul>
+            </div>
 
-            <strong>Annual financial support for funded projects by grant scheme</strong>
-            {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_call title_col1='Grant scheme' title_col2='Financial support (CHF)' thousands_separator=1 %}
-            <p></p>
-
-            <h1>Gender</h1>
-            <strong>Gender of applicants of submitted proposals</strong>
-            {% include 'reporting/_gender_table.tmpl' with table=proposals_genders %}
-            <p></p>
-
-            <strong>Gender of principal investigators of funded projects</strong>
-            {% include 'reporting/_gender_table.tmpl' with table=projects_genders %}
-            <p></p>
-
-            <h1>Career stage</h1>
-            <strong>Career stage of submitted proposal applicants</strong>
-            {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_year %}
-            <p></p>
-
-            <strong>Career stage of funded project principal investigators</strong>
-            {% include 'reporting/_table.tmpl' with table=career_stage_projects_principal_investigators_per_year %}
-            <p></p>
-
-            <strong>Career stage of submitted proposal applicants by grant scheme</strong>
-            {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_call %}
-            <p></p>
-
-            <strong>Career stage of funded project principal investigators by grant scheme</strong>
-            {% include 'reporting/_table.tmpl' with table=career_stage_project_principal_investigator_per_call %}
-            <p></p>
+            <div class="tab-content">
+                <div class="tab-pane fade show active" id="reporting_finance" role="tabpanel">
+                    {% include 'reporting/_reporting_finance.tmpl' %}
+                </div>
+                <div class="tab-pane fade" id="reporting_diversity" role="tabpanel">
+                    {% include 'reporting/_reporting_diversity.tmpl' %}
+                </div>
+            </div>
         </div>
         <div class="col-2">
         </div>

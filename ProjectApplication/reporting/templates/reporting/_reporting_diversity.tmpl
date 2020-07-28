@@ -1,0 +1,35 @@
+<h2>Career stage</h2>
+<div class="row">
+    <div class="col-6">
+        <strong>Career stage of submitted proposal applicants</strong>
+        {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_year %}
+    </div>
+    <div class="col-6">
+        <strong>Career stage of funded project principal investigators</strong>
+        {% include 'reporting/_table.tmpl' with table=career_stage_projects_principal_investigators_per_year %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        <strong>Career stage of submitted proposal applicants by grant scheme</strong>
+        {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_call %}
+    </div>
+    <div class="col-6">
+        <strong>Career stage of funded project principal investigators by grant scheme</strong>
+        {% include 'reporting/_table.tmpl' with table=career_stage_project_principal_investigator_per_call %}
+    </div>
+</div>
+<p></p>
+
+<h2>Gender</h2>
+<div class="row">
+    <div class="col-6">
+        <strong>Gender of applicants of submitted proposals</strong>
+        {% include 'reporting/_gender_table.tmpl' with table=proposals_genders %}
+    </div>
+    <div class="col-6">
+        <strong>Gender of principal investigators of funded projects</strong>
+        {% include 'reporting/_gender_table.tmpl' with table=projects_genders %}
+    </div>
+</div>
