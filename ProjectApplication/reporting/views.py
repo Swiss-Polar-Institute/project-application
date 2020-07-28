@@ -139,7 +139,8 @@ class CareerStagePercentageCalculator():
 
         return result
 
-    def header_names(self):
+    @staticmethod
+    def header_names():
         return ["Undergraduate / master's student", 'PhD student', 'Post-doc or established scientist', 'Other',
                 'Unknown']
 
@@ -202,7 +203,7 @@ def career_stage_proposal_applicants_per_year():
 
         data.append(row)
 
-    result['headers'] = ['Year'] + [career_stage.name for career_stage in career_stages] + ['Unknown']
+    result['headers'] = ['Year'] + CareerStagePercentageCalculator.header_names()
     result['data'] = data
 
     return result
@@ -230,7 +231,7 @@ def career_stage_projects_principal_investigators_per_year():
 
         data.append(row)
 
-    result['headers'] = ['Year'] + [career_stage.name for career_stage in career_stages] + ['Unknown']
+    result['headers'] = result['headers'] = ['Year'] + CareerStagePercentageCalculator.header_names()
     result['data'] = data
 
     return result
