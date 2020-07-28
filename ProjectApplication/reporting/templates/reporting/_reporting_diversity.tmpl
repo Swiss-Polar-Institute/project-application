@@ -2,22 +2,22 @@
 <div class="row">
     <div class="col-6">
         <strong>Career stage of submitted proposal applicants</strong>
-        {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_year %}
+        {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_year table_id='career_stage_proposal_applicants_per_year' %}
     </div>
     <div class="col-6">
         <strong>Career stage of funded project principal investigators</strong>
-        {% include 'reporting/_table.tmpl' with table=career_stage_projects_principal_investigators_per_year %}
+        {% include 'reporting/_table.tmpl' with table=career_stage_projects_principal_investigators_per_year table_id='career_stage_projects_principal_investigators_per_year' %}
     </div>
 </div>
 
 <div class="row">
     <div class="col-6">
         <strong>Career stage of submitted proposal applicants by grant scheme</strong>
-        {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_call %}
+        {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_call table_id='career_stage_proposal_applicants_per_call' %}
     </div>
     <div class="col-6">
         <strong>Career stage of funded project principal investigators by grant scheme</strong>
-        {% include 'reporting/_table.tmpl' with table=career_stage_project_principal_investigator_per_call %}
+        {% include 'reporting/_table.tmpl' with table=career_stage_project_principal_investigator_per_call table_id='career_stage_project_principal_investigator_per_call' %}
     </div>
 </div>
 <p></p>
@@ -26,10 +26,10 @@
 <div class="row">
     <div class="col-6">
         <strong>Gender of applicants of submitted proposals</strong>
-        {% include 'reporting/_table.tmpl' with table=proposals_genders %}
+        {% include 'reporting/_table.tmpl' with table=proposals_genders table_id='proposals_genders' %}
     </div>
     <div class="col-6">
         <strong>Gender of principal investigators of funded projects</strong>
-        {% include 'reporting/_table.tmpl' with table=projects_genders %}
+        {% include 'reporting/_table.tmpl' with table=projects_genders table_id='projects_genders' %}
     </div>
 </div>
