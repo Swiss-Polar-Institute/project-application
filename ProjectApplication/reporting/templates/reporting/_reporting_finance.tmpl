@@ -1,12 +1,14 @@
 <h2>Calls</h2>
 <strong>Number of closed calls</strong>
 {% include 'reporting/_table.tmpl' with table=calls_per_year %}
+<p></p>
 
 <h2>Financial support</h2>
 <strong>Annual financial support for funded projects</strong>
-{% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_year title_col2='Financial support (CHF)' thousands_separator=1 %}
+{% include 'reporting/_table.tmpl' with table=allocated_budget_per_year %}
 <p></p>
 
 <strong>Annual financial support for funded projects by grant scheme</strong>
+{% include 'reporting/_table.tmpl' with table=allocated_budget_per_call %}
 {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_call title_col1='Grant scheme' title_col2='Financial support (CHF)' thousands_separator=1 %}
 <p></p>

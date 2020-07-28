@@ -14,13 +14,7 @@
             {% for row in table %}
                 <tr>
                     <td>{{ row.year }}</td>
-                    <td>
-                        {% if thousands_separator %}
-                            {{ row.aggregated|thousands_separator }}
-                        {% else %}
-                            {{ row.aggregated }}
-                        {% endif %}
-                    </td>
+                    <td>{{ row.aggregated }}</td>
                 </tr>
             {% endfor %}
             </tbody>

@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.db.models import Avg, Max, Min, Count, F, Sum, Q
 
 from project_core.models import Call, Project, Gender, CareerStage, Proposal
+from project_core.templatetags.thousands_separator import thousands_separator
 
 
 def calculate_number_of_calls():
@@ -23,23 +24,48 @@ def calculate_number_of_calls():
 def allocated_budget_per_year():
     result = {}
 
-    result['allocated_budget_per_year'] = Project.objects. \
+    financial_support_per_year = Project.objects. \
         values(year=F('call__finance_year')). \
-        annotate(aggregated=Sum('allocated_budget')). \
+        annotate(financial_support=Sum('allocated_budget')). \
         order_by('call__finance_year')
 
+    data = []
+
+    for row in financial_support_per_year:
+        data.append({'Year': row['year'],
+                     'Financial Support (CHF)': thousands_separator(row['financial_support'])
+                     })
+
+    result['data'] = data
+    result['headers'] = ['Year', 'Financial Support (CHF)']
     return result
 
 
 def allocated_budget_per_call():
     result = {}
 
-    result['allocated_budget_per_call'] = Project.objects. \
-        values(year=F('call__long_name')). \
-        annotate(aggregated=Sum('allocated_budget')). \
+    allocated_budget_per_call = Project.objects. \
+        values(call_name=F('call__long_name')). \
+        annotate(financial_support=Sum('allocated_budget')). \
         order_by('call__finance_year')
 
+    data = []
+    for row in allocated_budget_per_call:
+        data.append({'Grant Scheme': row['call_name'],
+                     'Financial Support (CHF)': thousands_separator(row['financial_support'])
+                     })
+
+    result['headers'] = ['Grant Scheme', 'Financial Support (CHF)']
+    result['data'] = data
+
     return result
+
+
+def percentage(number, total):
+    if total == 0:
+        return 'N/A'
+
+    return f'{(number / total) * 100:.2f}%'
 
 
 class GenderPercentageCalculator:
@@ -74,30 +100,25 @@ class GenderPercentageCalculator:
             # The total should be the same as adding the other categories. It wouldn't be the same
             # if a category is added but this function is not updated. If this function is updated
             # the template needs to be updated as well (it's not dynamic at the moment)
-            return {'female_percentage': '?',
-                    'male_percentage': '?',
-                    'other_percentage': '?',
-                    'prefer_not_to_say_percentage': '?',
-                    'not_in_db_percentage': '?',
+            return {'Female': '?',
+                    'Male': '?',
+                    'Other': '?',
+                    'Prefer not to say': '?',
+                    'Not in DB': '?',
                     }
 
-        if total == 0:
-            female_percentage = male_percentage = other_percentage = \
-                prefer_not_to_say_percentage = not_in_db_percentage = None
-        else:
-            female_percentage = (female / total) * 100
-            male_percentage = (male / total) * 100
-            other_percentage = (other / total) * 100
-            prefer_not_to_say_percentage = (prefer_not_to_say / total) * 100
-            not_in_db_percentage = (not_in_db / total) * 100
+        female_percentage = percentage(female, total)
+        male_percentage = percentage(male, total)
+        other_percentage = percentage(other, total)
+        prefer_not_to_say_percentage = percentage(prefer_not_to_say, total)
+        not_in_db_percentage = percentage(not_in_db, total)
 
-        print(female_percentage)
-
-        return {'female_percentage': female_percentage,
-                'male_percentage': male_percentage,
-                'other_percentage': other_percentage,
-                'prefer_not_to_say_percentage': prefer_not_to_say_percentage,
-                'not_in_db_percentage': not_in_db_percentage,
+        return {'Female': female_percentage,
+                'Male': male_percentage,
+                'Other': other_percentage,
+                'Prefer not to say': prefer_not_to_say_percentage,
+                'Not in DB': not_in_db_percentage,
+                'Total': total
                 }
 
 
@@ -131,11 +152,12 @@ def gender_proposal_applicants_per_call():
         generic_queryset = call.proposal_set
 
         percentages = gender_percentage_calculator.calculate_gender_percentages(generic_queryset)
-        percentages['call_name'] = call.long_name
+        percentages['Call'] = call.long_name
         proposals_genders.append(percentages)
 
     result = {}
-    result['proposals_genders'] = proposals_genders
+    result['data'] = proposals_genders
+    result['headers'] = ['Call', 'Female', 'Male', 'Other', 'Prefer not to say', 'Not in DB', 'Total']
     return result
 
 
@@ -256,11 +278,11 @@ class Reporting(TemplateView):
 
         context['calls_per_year'] = calculate_number_of_calls()
 
-        context.update(allocated_budget_per_year())
+        context['allocated_budget_per_year'] = allocated_budget_per_year()
 
-        context.update(allocated_budget_per_call())
+        context['allocated_budget_per_call'] = allocated_budget_per_call()
 
-        context.update(gender_proposal_applicants_per_call())
+        context['proposals_genders'] = gender_proposal_applicants_per_call()
 
         context.update(gender_project_principal_investigator_per_call())
 
