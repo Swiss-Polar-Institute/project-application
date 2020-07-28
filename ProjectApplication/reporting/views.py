@@ -170,11 +170,12 @@ def gender_project_principal_investigator_per_call():
         generic_queryset = call.project_set
 
         percentages = gender_percentage_calculator.calculate_gender_percentages(generic_queryset)
-        percentages['call_name'] = call.long_name
+        percentages['Call'] = call.long_name
         proposals_genders.append(percentages)
 
     result = {}
-    result['projects_genders'] = proposals_genders
+    result['headers'] = ['Call', 'Female', 'Male', 'Other', 'Prefer not to say', 'Not in DB', 'Total']
+    result['data'] = proposals_genders
     return result
 
 
@@ -284,7 +285,7 @@ class Reporting(TemplateView):
 
         context['proposals_genders'] = gender_proposal_applicants_per_call()
 
-        context.update(gender_project_principal_investigator_per_call())
+        context['projects_genders'] = gender_project_principal_investigator_per_call()
 
         context['career_stage_proposal_applicants_per_year'] = career_stage_proposal_applicants_per_year()
 
