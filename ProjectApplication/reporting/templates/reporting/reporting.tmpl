@@ -9,15 +9,23 @@
             </div>
             <h1>Number of calls</h1>
             {% include 'reporting/_year_values.tmpl' with table=calls_per_year title_col2='Calls' %}
+            Number of closed calls.
 
             <h1>Allocated budget per year</h1>
             {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_year title_col2='Grants (CHF)' thousands_separator=1 %}
+            CHF for approved projects per year.
 
             <h1>Allocated budget per call</h1>
             {% include 'reporting/_year_values.tmpl' with table=allocated_budget_per_call title_col1='Call' title_col2='Grants (CHF)' thousands_separator=1 %}
+            CHF for approved projects per call.
 
-            <h1>Gender</h1>
-            {% include 'reporting/_gender_table.tmpl' with table=call_genders %}
+            <h1>Gender of the proposals applicants</h1>
+            {% include 'reporting/_gender_table.tmpl' with table=proposals_genders %}
+            Gender of the applicant of the submitted proposals.
+
+            <h1>Gender of the projects principal investigators</h1>
+            {% include 'reporting/_gender_table.tmpl' with table=projects_genders %}
+            Gender of the principal investigator of the projects.
         </div>
         <div class="col-2">
         </div>

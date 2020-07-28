@@ -39,13 +39,43 @@ def allocated_budget_per_call():
     return result
 
 
+def calculate_gender_percentages(total, female, male, other, prefer_not_to_say, not_in_db):
+    if total != female + male + other + prefer_not_to_say + not_in_db:
+        # The total should be the same as adding the other categories. It wouldn't be the same
+        # if a category is added but this function is not updated. If this function is updated
+        # the template needs to be updated as well (it's not dynamic at the moment)
+        return {'female_percentage': '?',
+                'male_percentage': '?',
+                'other_percentage': '?',
+                'prefer_not_to_say_percentage': '?',
+                'not_in_db_percentage': '?',
+                }
+
+    if total == 0:
+        female_percentage = male_percentage = other_percentage = \
+            prefer_not_to_say_percentage = not_in_db_percentage = None
+    else:
+        female_percentage = (female / total) * 100
+        male_percentage = (male / total) * 100
+        other_percentage = (other / total) * 100
+        prefer_not_to_say_percentage = (prefer_not_to_say / total) * 100
+        not_in_db_percentage = (not_in_db / total) * 100
+
+    return {'female_percentage': female_percentage,
+            'male_percentage': male_percentage,
+            'other_percentage': other_percentage,
+            'prefer_not_to_say_percentage': prefer_not_to_say_percentage,
+            'not_in_db_percentage': not_in_db_percentage,
+            }
+
+
 def gender_proposal_applicants_per_call():
     female_gender = Gender.objects.get(name='Female')
     male_gender = Gender.objects.get(name='Male')
     other_gender = Gender.objects.get(name='Other')
     prefer_not_to_say_gender = Gender.objects.get(name='Prefer not to say')
 
-    call_genders = []
+    proposals_genders = []
     for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
             order_by('long_name'):
         total_applicants = call.proposal_set.count()
@@ -56,29 +86,12 @@ def gender_proposal_applicants_per_call():
         prefer_not_to_say = call.proposal_set.filter(applicant__person__gender=prefer_not_to_say_gender).count()
         not_in_db = call.proposal_set.filter(applicant__person__gender__isnull=True).count()
 
-        if total_applicants == 0:
-            female_percentage = male_percentage = other_percentage = \
-                prefer_not_to_say_percentage = not_in_db_percentage = None
-        else:
-            female_percentage = (female / total_applicants) * 100
-            male_percentage = (male / total_applicants) * 100
-            other_percentage = (other / total_applicants) * 100
-            prefer_not_to_say_percentage = (prefer_not_to_say / total_applicants) * 100
-            not_in_db_percentage = (not_in_db / total_applicants) * 100
-
-        if prefer_not_to_say_percentage:
-            print('test')
-
-        call_genders.append({'call_name': call.long_name,
-                             'female_percentage': female_percentage,
-                             'male_percentage': male_percentage,
-                             'other_percentage': other_percentage,
-                             'prefer_not_to_say_percentage': prefer_not_to_say_percentage,
-                             'not_in_db_percentage': not_in_db_percentage,
-                             })
+        percentages = calculate_gender_percentages(total_applicants, female, male, other, prefer_not_to_say, not_in_db)
+        percentages['call_name'] = call.long_name
+        proposals_genders.append(percentages)
 
     result = {}
-    result['call_genders'] = call_genders
+    result['proposals_genders'] = proposals_genders
     return result
 
 
