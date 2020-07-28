@@ -1,29 +1,25 @@
 {% load thousands_separator %}
 {% load get_dictionary_value %}
 
-<div class="row">
-    <div class="col-6">
-        <table id="{{ table_id }}" class="table table-striped table-sm table-hover display">
-            <thead>
-            <tr>
-                {% for header in table.headers %}
-                    <th>{{ header }}</th>
-                {% endfor %}
-            </tr>
-            </thead>
+<table id="{{ table_id }}" class="table table-striped table-sm table-hover display">
+    <thead>
+    <tr>
+        {% for header in table.headers %}
+            <th>{{ header }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
 
-            <tbody>
-            {% for row in table.data %}
-                <tr>
-                    {% for header in table.headers %}
-                        <td>{{ row|get_dictionary_value:header }}</td>
-                    {% endfor %}
-                </tr>
+    <tbody>
+    {% for row in table.data %}
+        <tr>
+            {% for header in table.headers %}
+                <td>{{ row|get_dictionary_value:header }}</td>
             {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
 
 
 <script type="text/javascript" class="init">
