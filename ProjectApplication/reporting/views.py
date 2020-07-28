@@ -39,7 +39,20 @@ def allocated_budget_per_call():
     return result
 
 
-def calculate_gender_percentages(total, female, male, other, prefer_not_to_say, not_in_db):
+def calculate_gender_percentages(generic_queryset, gender_field):
+    female_gender = Gender.objects.get(name='Female')
+    male_gender = Gender.objects.get(name='Male')
+    other_gender = Gender.objects.get(name='Other')
+    prefer_not_to_say_gender = Gender.objects.get(name='Prefer not to say')
+
+    total = generic_queryset.count()
+
+    female = generic_queryset.filter(**{gender_field: female_gender}).count()
+    male = generic_queryset.filter(**{gender_field: male_gender}).count()
+    other = generic_queryset.filter(**{gender_field: other_gender}).count()
+    prefer_not_to_say = generic_queryset.filter(**{gender_field: prefer_not_to_say_gender}).count()
+    not_in_db = generic_queryset.filter(**{f'{gender_field}__isnull': True}).count()
+
     if total != female + male + other + prefer_not_to_say + not_in_db:
         # The total should be the same as adding the other categories. It wouldn't be the same
         # if a category is added but this function is not updated. If this function is updated
@@ -61,6 +74,8 @@ def calculate_gender_percentages(total, female, male, other, prefer_not_to_say, 
         prefer_not_to_say_percentage = (prefer_not_to_say / total) * 100
         not_in_db_percentage = (not_in_db / total) * 100
 
+    print(female_percentage)
+
     return {'female_percentage': female_percentage,
             'male_percentage': male_percentage,
             'other_percentage': other_percentage,
@@ -70,23 +85,12 @@ def calculate_gender_percentages(total, female, male, other, prefer_not_to_say, 
 
 
 def gender_proposal_applicants_per_call():
-    female_gender = Gender.objects.get(name='Female')
-    male_gender = Gender.objects.get(name='Male')
-    other_gender = Gender.objects.get(name='Other')
-    prefer_not_to_say_gender = Gender.objects.get(name='Prefer not to say')
-
     proposals_genders = []
     for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
             order_by('long_name'):
-        total_applicants = call.proposal_set.count()
+        generic_queryset = call.proposal_set
 
-        female = call.proposal_set.filter(applicant__person__gender=female_gender).count()
-        male = call.proposal_set.filter(applicant__person__gender=male_gender).count()
-        other = call.proposal_set.filter(applicant__person__gender=other_gender).count()
-        prefer_not_to_say = call.proposal_set.filter(applicant__person__gender=prefer_not_to_say_gender).count()
-        not_in_db = call.proposal_set.filter(applicant__person__gender__isnull=True).count()
-
-        percentages = calculate_gender_percentages(total_applicants, female, male, other, prefer_not_to_say, not_in_db)
+        percentages = calculate_gender_percentages(generic_queryset, 'applicant__person__gender')
         percentages['call_name'] = call.long_name
         proposals_genders.append(percentages)
 
