@@ -3,6 +3,7 @@ from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
+from django.urls import reverse
 from django.utils import timezone
 
 from ..fields import AmountField
@@ -89,11 +90,15 @@ class CallForm(forms.ModelForm):
                                                                            widget=FilteredSelectMultiple(
                                                                                is_stacked=True,
                                                                                verbose_name='questions'),
-                                                                           help_text=self.Meta.help_texts[
-                                                                               'template_questions'],
                                                                            label=self.Meta.labels['template_questions'])
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
+
+        self.fields[
+            'template_questions'].help_text = f'Select the questions that you would like to add to this call and move them to the box below using the arrow. ' \
+                                              f'Check the full details of the question are correct by <a href="{reverse("logged-template-question-list")}">viewing ' \
+                                              f'the template questions</a>, or <a href="{reverse("logged-template-question-add")}">create a new template ' \
+                                              f'question</a> if necessary.'
 
         XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['call_open_date'])
         XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['submission_deadline'])
@@ -211,7 +216,6 @@ class CallForm(forms.ModelForm):
                                               '<strong>application</strong> and <strong>submission</strong>',
                       'call_open_date': 'Enter the date and time at which the call opens (Swiss time)',
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
-                      'template_questions': 'Select the questions that you would like to add to this call',
                       'other_funding_question': 'Tick this box if you would like the call to ask about other funding that will contribute to the proposal',
                       'proposal_partner_question': 'Tick this box if you would like the call to ask about proposal partners',
                       'overarching_project_question': 'Tick this box if you would like the call to ask about the overarching project'}
