@@ -80,6 +80,14 @@
                     row.append(delButtonHTML);
                 }
 
+                $('.' + options.deleteCssClass).hover(                          //  SPI
+                    function () {                                               //  SPI
+                        $(this).parent().addClass('highlighted-to-remove');     //  SPI
+                    }, function () {                                            //  SPI
+                        $(this).parent().removeClass('highlighted-to-remove');  //  SPI
+                    }
+                );
+
                 // Check if we're under the minimum number of forms - not to display delete link at rendering
                 if (!showDeleteLinks()){
                     row.find('a.' + delCssSelector).hide();
