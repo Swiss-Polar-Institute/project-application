@@ -147,7 +147,7 @@ class ProposalForm(ModelForm):
                                         If a calendar doesn't appear when clicking on this field, please enter the date in the format dd-mm-yyyy. If all else fails, please use another browser, such as Firefox",
             'end_date': "Date on which the {{ activity }} to be funded by SPI, is expected to end. \
                                         If a calendar doesn't appear when clicking on this field, please enter the date in the format dd-mm-yyyy. If all else fails, please use another browser, such as Firefox",
-            'duration_months': 'Expected duration of the field trip in months'}
+            'duration_months': 'Expected duration of the {{ activity }} in months'}
 
         labels = {'location': 'Precise region',
                   'geographical_areas': 'Geographical focus'}
