@@ -13,17 +13,17 @@ class CommentForm(forms.Form):
         comment_category = kwargs.pop('category_queryset').exclude(category__name=settings.DATA_IMPORT_CATEGORY_NAME)
         form_action = kwargs.pop('form_action')
         form_tag = kwargs.pop('form_tag', True)
-        fields_required = kwargs.pop('fields_required', True)
-        self.form_errors = None
+        self._fields_required = kwargs.pop('fields_required', True)
+        self._form_errors = None
 
         super().__init__(*args, **kwargs)
 
         self.fields['category'] = forms.ModelChoiceField(label='Category', queryset=comment_category,
                                                          help_text='Select category of comment',
-                                                         required=fields_required)
+                                                         required=self._fields_required)
         self.fields['text'] = forms.CharField(label='Text', max_length=10000,
                                               help_text='Write the comment (max length: 10000 characters)',
-                                              widget=forms.Textarea(attrs={'rows': 4}), required=fields_required)
+                                              widget=forms.Textarea(attrs={'rows': 4}), required=self._fields_required)
 
         self.helper = FormHelper(self)
 
@@ -49,9 +49,9 @@ class CommentForm(forms.Form):
         self.helper.layout = Layout(*self.divs)
 
     def get_errors(self):
-        assert self.form_errors is not None, 'clean() needs to be called before'
+        assert self._form_errors is not None, 'clean() needs to be called before'
 
-        return self.form_errors
+        return self._form_errors
 
     def clean(self):
         cd = super().clean()
@@ -59,26 +59,31 @@ class CommentForm(forms.Form):
         category = cd.get('category', None)
         text = cd.get('text', None)
 
-        self.form_errors = {}
+        self._form_errors = {}
 
         if category is None and text:
-            self.form_errors['category'] = 'Please select a category'
+            self._form_errors['category'] = 'Please select a category'
 
         if text is None and category:
-            self.form_errors['text'] = 'Please write a comment'
+            self._form_errors['text'] = 'Please write a comment'
 
-        if self.form_errors:
-            raise forms.ValidationError(self.form_errors)
+        if self._form_errors:
+            raise forms.ValidationError(self._form_errors)
 
         return cd
 
-    def is_empty(self):
-        # A comment form might have self.fields_required == False when is part of another form.
+    def _is_empty(self):
+        # A comment form might have self._fields_required == False when is part of another form.
         # In this case if category is None and text is empty the form is valid: no error would occur
         # But the form is empty: save should not be called (reponsability of the user of this class)
         return 'category' not in self.cleaned_data and 'text' not in self.cleaned_data
 
     def save(self, parent, user):
+        if self._fields_required is False and self._is_empty():
+            # For places like invoices where the fields are not required and the comment can be empty
+            # (when this form is part of another form)
+            return
+
         comment = parent.comment_object()()
 
         comment.set_parent(parent)

@@ -355,11 +355,8 @@ class InvoiceItemModelForm(forms.ModelForm):
                                                            kwargs={'pk': self.instance.id}),
                                        category_queryset=self.instance.comment_object().category_queryset(),
                                        form_tag=False)
-            comment_form.is_valid()
-
-            if comment_form.is_empty() is False:
-                comment_form.save(parent=self.instance,
-                                  user=self._user)
+            comment_form.save(parent=self.instance,
+                              user=self._user)
 
         invoice = super().save(commit=False)
         invoice.project = self._project
