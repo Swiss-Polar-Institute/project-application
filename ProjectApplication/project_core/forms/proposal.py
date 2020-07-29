@@ -143,11 +143,10 @@ class ProposalForm(ModelForm):
             'title': 'Name of the proposed {{ activity }}',
             'location': 'Name of more precise location of where the proposed {{ activity }} would take place (not coordinates)',
             'keywords': 'Please select at least 5 keywords that describe the proposed {{ activity }}. If the keywords you are looking for do not exist, then add each term separately',
-            'start_date': "Date on which the {{ activity }} to be funded by SPI, is expected to start. \
-                                        If a calendar doesn't appear when clicking on this field, please enter the date in the format dd-mm-yyyy. If all else fails, please use another browser, such as Firefox",
-            'end_date': "Date on which the {{ activity }} to be funded by SPI, is expected to end. \
-                                        If a calendar doesn't appear when clicking on this field, please enter the date in the format dd-mm-yyyy. If all else fails, please use another browser, such as Firefox",
-            'duration_months': 'Expected duration of the {{ activity }} in months'}
+            'start_date': 'Date on which the {{ activity }} to be funded by SPI, is expected to start',
+            'end_date': 'Date on which the {{ activity }} to be funded by SPI, is expected to end',
+            'duration_months': 'Expected duration of the {{ activity }} in months'
+        }
 
         labels = {'location': 'Precise region',
                   'geographical_areas': 'Geographical focus'}
