@@ -22,6 +22,8 @@ class ProposalFormTest(TestCase):
         self._geographical_areas = database_population.create_geographical_areas()
         self._keywords = database_population.create_keywords()
         self._career_stage = database_population.create_career_stage()
+        self._role = database_population.create_role()
+
         database_population.create_proposal_status()
         database_population_variable_templates.create_default_variables()
 
@@ -139,3 +141,112 @@ class ProposalFormTest(TestCase):
         self.assertEqual('/proposal/cannot-modify/', response.url)
 
         self.assertIn('deadline has now passed', response.cookies['messages'].value)
+
+    def test_only_one_partner(self):
+        c = Client()
+
+        data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
+        data['proposal_form-title'] = ['Collect algae again']
+
+        data.update(MultiValueDict({'proposal_partners_form-0-person__physical_person__orcid': ['0000-0001-8672-0508'],
+                                    'proposal_partners_form-0-person__academic_title': [self._person_titles[0].id],
+                                    'proposal_partners_form-0-person__physical_person__first_name': ['John'],
+                                    'proposal_partners_form-0-person__physical_person__surname': ['Doe'],
+                                    'proposal_partners_form-0-person__group': ['Some group'],
+                                    'proposal_partners_form-0-person__career_stage': [self._career_stage.id],
+                                    'proposal_partners_form-0-person__organisations': [self._organisation_names[0].id],
+                                    'proposal_partners_form-0-role': [self._role.id],
+                                    'proposal_partners_form-0-role_description': ['Will help loads'],
+                                    'proposal_partners_form-0-competences': ['Many'],
+                                    'proposal_partners_form-0-DELETE': ['']
+                                    }))
+
+        response = c.post(reverse('proposal-add'), data=data)
+        self.assertEqual(response.status_code, 302)
+
+        proposal = Proposal.objects.get(title='Collect algae again')
+        self.assertEqual(proposal.proposalpartner_set.count(), 1)
+        self.assertEqual(proposal.proposalpartner_set.all()[0].person.person.first_name, 'John')
+
+    def test_only_two_partners_duplicated(self):
+        c = Client()
+
+        data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
+        data['proposal_form-title'] = ['Collect algae again']
+
+        data.update(MultiValueDict({'proposal_partners_form-0-person__physical_person__orcid': ['0000-0001-8672-0508'],
+                                    'proposal_partners_form-0-person__academic_title': [self._person_titles[0].id],
+                                    'proposal_partners_form-0-person__physical_person__first_name': ['John'],
+                                    'proposal_partners_form-0-person__physical_person__surname': ['Doe'],
+                                    'proposal_partners_form-0-person__group': ['Some group'],
+                                    'proposal_partners_form-0-person__career_stage': [self._career_stage.id],
+                                    'proposal_partners_form-0-person__organisations': [self._organisation_names[0].id],
+                                    'proposal_partners_form-0-role': [self._role.id],
+                                    'proposal_partners_form-0-role_description': ['Will help loads'],
+                                    'proposal_partners_form-0-competences': ['Many'],
+                                    'proposal_partners_form-0-DELETE': [''],
+
+                                    'proposal_partners_form-1-person__physical_person__orcid': ['0000-0001-8672-0508'],
+                                    'proposal_partners_form-1-person__academic_title': [self._person_titles[0].id],
+                                    'proposal_partners_form-1-person__physical_person__first_name': ['John'],
+                                    'proposal_partners_form-1-person__physical_person__surname': ['Doe'],
+                                    'proposal_partners_form-1-person__group': ['Some group'],
+                                    'proposal_partners_form-1-person__career_stage': [self._career_stage.id],
+                                    'proposal_partners_form-1-person__organisations': [self._organisation_names[0].id],
+                                    'proposal_partners_form-1-role': [self._role.id],
+                                    'proposal_partners_form-1-role_description': ['Will help loads'],
+                                    'proposal_partners_form-1-competences': ['Many'],
+                                    'proposal_partners_form-1-DELETE': [''],
+
+                                    'proposal_partners_form-TOTAL_FORMS': ['2'],
+                                    }))
+
+        response = c.post(reverse('proposal-add'), data=data)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertContains(response, 'Call name:')
+        self.assertContains(response, 'GreenLAnd Circumnavigation Expedition')
+        self.assertContains(response,
+                            'A proposal partner has been entered more than once. Use the remove button to delete the duplicated partner.')
+
+        self.assertEqual(Proposal.objects.all().count(), 0)
+
+    def test_only_two_partners_duplicated_deleted(self):
+        c = Client()
+
+        data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
+        data['proposal_form-title'] = ['Collect algae again']
+
+        data.update(MultiValueDict({'proposal_partners_form-0-person__physical_person__orcid': ['0000-0001-8672-0508'],
+                                    'proposal_partners_form-0-person__academic_title': [self._person_titles[0].id],
+                                    'proposal_partners_form-0-person__physical_person__first_name': ['John'],
+                                    'proposal_partners_form-0-person__physical_person__surname': ['Doe'],
+                                    'proposal_partners_form-0-person__group': ['Some group'],
+                                    'proposal_partners_form-0-person__career_stage': [self._career_stage.id],
+                                    'proposal_partners_form-0-person__organisations': [self._organisation_names[0].id],
+                                    'proposal_partners_form-0-role': [self._role.id],
+                                    'proposal_partners_form-0-role_description': ['Will help loads'],
+                                    'proposal_partners_form-0-competences': ['Many'],
+                                    'proposal_partners_form-0-DELETE': [''],
+
+                                    'proposal_partners_form-1-person__physical_person__orcid': ['0000-0001-8672-0508'],
+                                    'proposal_partners_form-1-person__academic_title': [self._person_titles[0].id],
+                                    'proposal_partners_form-1-person__physical_person__first_name': ['John'],
+                                    'proposal_partners_form-1-person__physical_person__surname': ['Doe'],
+                                    'proposal_partners_form-1-person__group': ['Some group'],
+                                    'proposal_partners_form-1-person__career_stage': [self._career_stage.id],
+                                    'proposal_partners_form-1-person__organisations': [self._organisation_names[0].id],
+                                    'proposal_partners_form-1-role': [self._role.id],
+                                    'proposal_partners_form-1-role_description': ['Will help loads'],
+                                    'proposal_partners_form-1-competences': ['Many'],
+                                    'proposal_partners_form-1-DELETE': ['on'],
+
+                                    'proposal_partners_form-TOTAL_FORMS': ['2'],
+                                    }))
+
+        response = c.post(reverse('proposal-add'), data=data)
+        self.assertEqual(response.status_code, 302)
+
+        proposal = Proposal.objects.get(title='Collect algae again')
+        self.assertEqual(proposal.proposalpartner_set.count(), 1)
+        self.assertEqual(proposal.proposalpartner_set.all()[0].person.person.first_name, 'John')
