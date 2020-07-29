@@ -136,7 +136,7 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
         orcids = set()
 
         for form_data in self.cleaned_data:
-            if not form_data:
+            if not form_data or form_data['DELETE']:
                 continue
 
             partner_orcid = form_data['person__physical_person__orcid']
