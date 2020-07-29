@@ -62,6 +62,7 @@ class ProposalPartnerItemForm(ModelForm):
             orcid_div('person__physical_person__orcid'),
             Div(
                 Div('id', hidden=True),
+                Div(Field('DELETE'), hidden=True),
                 Div('person__physical_person__first_name', css_class='col-4'),
                 Div('person__physical_person__surname', css_class='col-4'),
                 Div('person__academic_title', css_class='col-2'),
@@ -87,11 +88,7 @@ class ProposalPartnerItemForm(ModelForm):
             Div(
                 Div('competences', css_class='col-12'),
                 css_class='row'
-            ),
-            Div(
-                Div(Field('DELETE'), css_class='col-12'),
-                css_class='row'
-            ),
+            )
         )
 
     def save_partner(self, proposal):
@@ -142,7 +139,8 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
             partner_orcid = form_data['person__physical_person__orcid']
 
             if partner_orcid in orcids:
-                raise forms.ValidationError('A proposal partner has been entered more than once. Use the remove button to delete the duplicated partner.')
+                raise forms.ValidationError(
+                    'A proposal partner has been entered more than once. Use the remove button to delete the duplicated partner.')
 
             orcids.add(partner_orcid)
 
