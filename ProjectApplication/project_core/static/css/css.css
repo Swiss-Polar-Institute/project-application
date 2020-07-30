@@ -188,7 +188,7 @@ div.selector-filter {
 }
 
 /**** From here... */
-/* dal bootstrap css fix */
+/* DAL bootstrap css fix */
 .select2-container {
     width: 100% !important;
     min-width: 10em !important;
@@ -236,5 +236,8 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
  */
 
 .highlighted-to-remove {
-    background: #f8c5c5;
+    /** If not having the !important the funding organisations
+        in the zebra table in dark the highlight doesn't work.
+     */
+    background-color: #f8c5c5 !important;
 }

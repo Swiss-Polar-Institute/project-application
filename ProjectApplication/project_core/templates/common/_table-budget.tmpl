@@ -1,18 +1,21 @@
 {% load thousands_separator %}
 <table class="table table-striped table-sm">
     <thead>
-        <tr>
-            <th>Category</th>
-            <th>Details</th>
-            <th>Total (CHF)</th>
-        </tr>
+    <tr>
+        <th>Category</th>
+        <th>Details</th>
+        <th>Total (CHF)</th>
+    </tr>
     </thead>
     <tbody>
     {% for proposed_budget_item in proposal.proposedbudgetitem_set.all %}
         <tr>
-            <td>{{ proposed_budget_item.category }}</td>
-            <td><div class="pre-with-newlines border p-3 bg-white rounded">{{ proposed_budget_item.details }}</div></td>
-            <td>{% if proposed_budget_item.amount %}{{ proposed_budget_item.amount|thousands_separator}}{% endif %}</td>
+            <td>{{ proposed_budget_item.category }} {{ proposed_budget_item.description }}</td>
+            <td>
+                <div class="pre-with-newlines border p-3 bg-white rounded">{{ proposed_budget_item.details }}</div>
+            </td>
+            <td>{% if proposed_budget_item.amount %}
+                {{ proposed_budget_item.amount|thousands_separator }}{% endif %}</td>
         </tr>
     {% endfor %}
     </tbody>

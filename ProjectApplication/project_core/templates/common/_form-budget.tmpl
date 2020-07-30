@@ -24,17 +24,21 @@ Maximum budget: {{ maximum_budget|thousands_separator }} CHF
             <thead>
             <tr>
                 {% for field in form.visible_fields %}
-                    <th>
-                        {% comment %}
+                    {% if forloop.first %}
+                        <th style="width:30%;">
+                            {% else %}
+                        <th>
+                    {% endif %}
+                {% comment %}
                             This is a copy-paste from https://django-crispy-forms.readthedocs.io/en/latest/form_helper.html
                             on rendering labels. The Asterisk field is removed because it's only needed for the category.
                             The rendering is consistent with other tables
                             {% endcomment %}
-                        <span class="control-label {% if field.field.required %}requiredField{% endif %}">
+                <span class="control-label {% if field.field.required %}requiredField{% endif %}">
                                 {{ field.label|safe }}{% if field.field.required %}
                                     <span class="asteriskField"><!-- * --></span>{% endif %}
                             </span>
-                    </th>
+                </th>
                 {% endfor %}
             </tr>
             </thead>

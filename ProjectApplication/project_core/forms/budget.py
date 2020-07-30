@@ -2,7 +2,6 @@ import decimal
 
 from crispy_forms.helper import FormHelper
 from django import forms
-from django.contrib.humanize.templatetags.humanize import number_format
 from django.forms import BaseFormSet, formset_factory
 
 from project_core.fields import AmountField
@@ -30,7 +29,7 @@ class BudgetItemForm(forms.Form):
             category_id = self.cleaned_data['category']
             category = BudgetCategory.objects.get(id=category_id)
 
-        self.fields['category'].help_text = category.name
+        self.fields['category'].help_text = f'<strong>{category.name}</strong><br>{category.description}'
         self.fields['category'].value = category.id
 
         self.fields['amount'].widget.attrs['min'] = 0
