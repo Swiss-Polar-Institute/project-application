@@ -1,0 +1,15 @@
+{% with postal_address=proposal.postal_address %}
+    <div class="row">
+        <div class="col-6">
+            {#            If changing the width: see what happens in the application when the proposal view is displayed in a widther format#}
+            <div class="border p-1 bg-white rounded" style="width: 400px">
+                {{ proposal.postal_address.address|linebreaksbr }}
+            </div>
+        </div>
+        <div class="col-6">
+            <strong>City:</strong> {{ postal_address.city }}<br>
+            <strong>Postcode:</strong> {{ postal_address.postcode }}<br>
+            <strong>Country:</strong> {{ postal_address.country }}
+        </div>
+    </div>
+{% endwith %}
