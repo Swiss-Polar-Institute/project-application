@@ -14,6 +14,7 @@ class PostalAddressForm(ModelForm):
         self.fields['country'].initial = Country.objects.get(name='Switzerland')
 
         self.helper = FormHelper(self)
+        self.helper.form_tag = False
 
         self.helper.layout = Layout(
             Div(
@@ -27,9 +28,7 @@ class PostalAddressForm(ModelForm):
         super().clean()
 
     def save(self, commit=True):
-        model = super().save()
-
-        return model
+        return super().save(commit=True)
 
     class Meta:
         model = PostalAddress

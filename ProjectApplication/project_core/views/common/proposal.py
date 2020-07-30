@@ -365,6 +365,10 @@ class AbstractProposalView(TemplateView):
                 project_overarching = proposal_project_overarching_form.save()
                 proposal.overarching_project = project_overarching
 
+            postal_address = postal_address_form.save()
+
+            proposal.postal_address = postal_address
+
             proposal.save()
             proposal_form.save(commit=True)
 

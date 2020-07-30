@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
-from project_core.models import Proposal
+from project_core.models import Proposal, Country
 from project_core.tests import database_population
 from variable_templates.tests import database_population as database_population_variable_templates
 
@@ -77,7 +77,11 @@ class ProposalFormTest(TestCase):
                 'funding_form-0-funding_status': ['1'], 'funding_form-0-amount': ['5000'],
                 'funding_form-0-proposal': [''],
                 'funding_form-0-id': [''], 'funding_form-0-DELETE': [''], 'data_collection_form-privacy_policy': ['on'],
-                'data_collection_form-contact_newsletter': ['on'], 'submit': ['Submit']
+                'data_collection_form-contact_newsletter': ['on'], 'submit': ['Submit'],
+                'postal_address_form-address': ['5th Avenue, 87'],
+                'postal_address_form-city': ['New York'],
+                'postal_address_form-postcode': ['429ZKDKZMM'],
+                'postal_address_form-country': [Country.objects.get(name='Switzerland').id]
             }
         )
 
