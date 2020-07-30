@@ -7,7 +7,7 @@
 on {{ value.created_on }}<br>
 
 {% if value.text %}
-    <div class="pre-with-newlines p-1 border bg-white rounded">{{ value.text }}</div>
+    <div class="p-1 border bg-white rounded">{{ value.text|linebreaksbr }}</div>
 {% else %}
     <br>
 {% endif %}

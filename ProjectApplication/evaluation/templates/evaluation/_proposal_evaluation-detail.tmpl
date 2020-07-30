@@ -6,9 +6,9 @@
     {{ reviewer.person }}{% if not forloop.last %},{% endif %}
 {% endfor %}<br>
     <strong>Panel remarks:</strong>
-    <div class="pre-with-newlines border p-1 bg-white rounded">{{ proposalevaluation.panel_remarks }}</div><br>
+    <div class="border p-1 bg-white rounded">{{ proposalevaluation.panel_remarks|linebreaksbr }}</div><br>
     <strong>Feedback to applicant:</strong>
-    <div class="pre-with-newlines border p-1 bg-white rounded">{{ proposalevaluation.feedback_to_applicant }}</div>
+    <div class="border p-1 bg-white rounded">{{ proposalevaluation.feedback_to_applicant|linebreaksbr }}</div>
     <br>
     <div class="row">
         <div class="col-8">
