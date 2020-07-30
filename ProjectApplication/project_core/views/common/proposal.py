@@ -20,6 +20,7 @@ from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
 from project_core.forms.partners import ProposalPartnersInlineFormSet
 from project_core.forms.person import PersonForm
+from project_core.forms.postal_address import PostalAddressForm
 from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
@@ -28,6 +29,7 @@ from variable_templates.utils import get_template_value_for_call
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
+POSTAL_ADDRESS_FORM_NAME = 'postal_address_form'
 QUESTIONS_FORM_NAME = 'questions_form'
 BUDGET_FORM_NAME = 'budget_form'
 FUNDING_FORM_NAME = 'funding_form'
@@ -149,6 +151,8 @@ class AbstractProposalView(TemplateView):
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
+            postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME, instance=proposal.postal_address)
+
             questions_form = Questions(proposal=proposal,
                                        prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
@@ -162,7 +166,6 @@ class AbstractProposalView(TemplateView):
                                                       person_position=proposal.applicant)
             overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME,
                                                       instance=proposal.overarching_project)
-
             context['proposal_action_url'] = reverse(self.action_url_update, kwargs={'uuid': proposal.uuid})
 
             context['action'] = 'Edit'
@@ -175,6 +178,7 @@ class AbstractProposalView(TemplateView):
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME)
+            postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)
 
@@ -196,6 +200,7 @@ class AbstractProposalView(TemplateView):
         context.update(call_context_for_template(call))
 
         context[PROPOSAL_FORM_NAME] = proposal_form
+        context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PERSON_FORM_NAME] = person_form
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
@@ -225,7 +230,7 @@ class AbstractProposalView(TemplateView):
             proposal = Proposal.objects.get(uuid=proposal_uuid)
             call = proposal.call
 
-            if not request.user.groups.filter(name='anagement').exists():
+            if not request.user.groups.filter(name='management').exists():
                 proposal_status = proposal.proposal_status
                 proposal_status_draft = ProposalStatus.objects.get(name='Draft')
 
@@ -263,6 +268,8 @@ class AbstractProposalView(TemplateView):
         if proposal:
             # Editing an existing proposal
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
+            postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
+                                                    prefix=POSTAL_ADDRESS_FORM_NAME)
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
@@ -290,6 +297,7 @@ class AbstractProposalView(TemplateView):
         else:
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
+            postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
@@ -310,8 +318,8 @@ class AbstractProposalView(TemplateView):
 
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
-        forms_to_validate = [person_form, proposal_form, questions_form, budget_form,
-                             data_collection_form]
+        forms_to_validate = [person_form, postal_address_form, proposal_form, questions_form,
+                             budget_form, data_collection_form]
 
         if call.other_funding_question:
             forms_to_validate.append(funding_form)
@@ -381,6 +389,7 @@ class AbstractProposalView(TemplateView):
             )
 
         context[PERSON_FORM_NAME] = person_form
+        context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
@@ -404,7 +413,7 @@ class AbstractProposalView(TemplateView):
 
         messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again.')
 
-        return render(request, 'common/proposal-form.tmpl', context)
+        return render(request, 'common/_form-proposal.tmpl', context)
 
     def _validate_project_title_applicant(self, proposal_form, person_form):
         proposal_title = proposal_form.cleaned_data['title']

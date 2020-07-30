@@ -636,6 +636,15 @@ class ExternalProject(CreateModifyOn):
         return f'{self.title} - {self.leader}'
 
 
+class PostalAddress(CreateModifyOn):
+    # We've decided to not normalise this model
+    address = models.TextField(help_text='Include street/avenue, block, building, floor, door, etc.')
+
+    city = models.CharField(max_length=256)
+    postcode = models.CharField(max_length=128)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+
+
 class Proposal(CreateModifyOn):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
@@ -653,6 +662,10 @@ class Proposal(CreateModifyOn):
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
 
     title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=False, null=False)
+    postal_address = models.ForeignKey(PostalAddress,
+                                       help_text='Address to where the grant agreement is going to be sent',
+                                       null=True,
+                                       on_delete=models.PROTECT)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the proposal',
                                       blank=False)
     geographical_areas = models.ManyToManyField(GeographicalArea,

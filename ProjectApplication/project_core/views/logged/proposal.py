@@ -155,7 +155,7 @@ class ProposalDetailView(AbstractProposalDetailView):
 
 class ProposalView(AbstractProposalView):
     created_or_updated_url = 'logged-proposal-detail'
-    form_template = 'logged/proposal-form.tmpl'
+    form_template = 'logged/_form-proposal.tmpl'
 
     action_url_update = 'logged-proposal-update'
     action_url_add = 'logged-proposal-add'

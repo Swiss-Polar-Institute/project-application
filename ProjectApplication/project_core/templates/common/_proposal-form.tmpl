@@ -25,6 +25,8 @@
     <h3>Applicant</h3>
     {% include 'common/person-form.tmpl' %}
 
+    {% include 'common/_form-postal_address.tmpl' %}
+
     <h2>Proposed {{ activity }}</h2>
     {% crispy proposal_form %}
 

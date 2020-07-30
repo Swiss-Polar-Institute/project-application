@@ -1,0 +1,36 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div
+from django.forms import ModelForm
+
+from ..models import PostalAddress, Country
+
+
+class PostalAddressForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['address'].widget.attrs['rows'] = 7
+        self.fields['country'].queryset = self.fields['country'].queryset.order_by('name')
+        self.fields['country'].initial = Country.objects.get(name='Switzerland')
+
+        self.helper = FormHelper(self)
+
+        self.helper.layout = Layout(
+            Div(
+                Div(Div('address'), css_class='col-6'),
+                Div(Div('city', 'postcode', 'country'), css_class='col-6'),
+                css_class='row'
+            )
+        )
+
+    def clean(self):
+        super().clean()
+
+    def save(self, commit=True):
+        model = super().save()
+
+        return model
+
+    class Meta:
+        model = PostalAddress
+        fields = ['address', 'city', 'postcode', 'country']
