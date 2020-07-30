@@ -325,6 +325,11 @@ class FinancialKeyAdmin(admin.ModelAdmin):
     ordering = ['name', 'description', 'created_on']
 
 
+class PostalAddressAdmin(admin.ModelAdmin):
+    list_display = ('address', 'city', 'postcode', 'country')
+    ordering = ['address', 'city', 'postcode', 'country__name']
+
+
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
@@ -361,3 +366,4 @@ admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)
 admin.site.register(project_core.models.Project, ProjectAdmin)
 admin.site.register(project_core.models.ProjectPartner, ProjectPartnerAdmin)
 admin.site.register(project_core.models.FinancialKey, FinancialKeyAdmin)
+admin.site.register(project_core.models.PostalAddress, PostalAddressAdmin)
