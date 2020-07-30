@@ -20,6 +20,7 @@
 </table>
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 
 <script>
@@ -207,8 +208,10 @@
                 update_and_setup_javascript_file_id_references(row);
                 replace_invoice_due_by_invoice_header(row);
                 delete_allow_overbudget_field(row);
+                highlight_row_delete_link_hover(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
+        highlight_row_delete_link_hover('#{{ form_set.prefix }}');
     });
 </script>

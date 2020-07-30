@@ -236,5 +236,5 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
  */
 
 .highlighted-to-remove {
-    background: rgba(240, 128, 128, 0.46);
+    background: #f8c5c5;
 }

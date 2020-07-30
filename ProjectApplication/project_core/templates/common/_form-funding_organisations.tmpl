@@ -15,11 +15,15 @@
 </script>
 
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
+<script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>
+
 <script>
     jQueryForFormset(function () {
         jQueryForFormset('#funding_form_table tbody tr').formset({
-            prefix: 'funding_form'
-        })
+            prefix: 'funding_form',
+            added: highlight_row_delete_link_hover
+        });
+        highlight_row_delete_link_hover('#funding_form_table');
     })
 </script>
 

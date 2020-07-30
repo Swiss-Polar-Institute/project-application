@@ -34,7 +34,9 @@
 
 <script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
 
+<script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
+
 <script>
     function setupOrcidLookupForIndex(index) {
         let orcid = index + "-person__physical_person__orcid";
@@ -47,6 +49,7 @@
     function addedProposalPartner(partner_row) {
         let index = parseInt(partner_row[0].sectionRowIndex);
         setupOrcidLookupForIndex(index);
+        highlight_row_delete_link_hover(partner_row);
     }
 
     function removedProposalPartner() {
@@ -61,6 +64,7 @@
             prefix: '{{ proposal_partners_form.prefix }}',
             added: addedProposalPartner,
             removed: removedProposalPartner
-        })
+        });
+        highlight_row_delete_link_hover('#proposal_partners_form_table');
     })
 </script>
