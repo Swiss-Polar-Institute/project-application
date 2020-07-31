@@ -263,7 +263,7 @@ class CallQuestion(AbstractQuestion):
     template_question = models.ForeignKey(TemplateQuestion,
                                           help_text='Template question on which this call question is based',
                                           on_delete=models.PROTECT)
-    order = models.PositiveIntegerField(help_text='Use the integer order to order the questions', blank=False,
+    order = models.PositiveIntegerField(help_text='Use this number to order the questions', blank=False,
                                         null=False)
 
     @staticmethod

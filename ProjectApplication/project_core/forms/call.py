@@ -17,11 +17,15 @@ class CallQuestionItemForm(forms.ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
+        self.fields['question_text'].widget.attrs = {'rows': 2}
+        self.fields['question_description'].widget.attrs = {'rows': 2}
+        self.fields['order'].label = 'Question number'
+
         divs = []
 
         divs.append(Div(
             Div('id', css_class='col-12', hidden=True),
-            Div('order', css_class='col-12'),
+            Div('order', css_class='col-6'),
             css_class='row')
         )
 
@@ -37,7 +41,10 @@ class CallQuestionItemForm(forms.ModelForm):
 
         if self.instance.answer_type == CallQuestion.TEXT:
             divs.append(Div(
-                Div('answer_max_length', css_class='col-12'),
+                Div(HTML(
+                    f'Answer type: {{% include  "common/_answer_type-icon.tmpl" with type="{self.instance.answer_type}" %}}'),
+                    css_class='col-6'),
+                Div('answer_max_length', css_class='col-6'),
                 css_class='row'
             )
             )
