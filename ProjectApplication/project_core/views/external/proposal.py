@@ -91,6 +91,6 @@ class ProposalDetailView(AbstractProposalDetailView):
 
 class ProposalView(AbstractProposalView):
     created_or_updated_url = 'proposal-thank-you'
-    form_template = 'common/_form-proposal.tmpl'
+    form_template = 'common/form-proposal.tmpl'
     action_url_update = 'proposal-update'
     action_url_add = 'proposal-add'

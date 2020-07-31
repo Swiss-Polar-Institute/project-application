@@ -119,7 +119,7 @@ class ProposalFormTest(TestCase):
         data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Collect algae']
 
-        response = c.post(reverse('proposal-add'), data=data)
+        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(response.status_code, 302)
         reg_exp = '/proposal/thank-you/([0-9a-z-]+)/'
         self.assertRegex(response.url, reg_exp)
@@ -140,7 +140,7 @@ class ProposalFormTest(TestCase):
         data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Too late?']
 
-        response = c.post(reverse('proposal-add'), data=data)
+        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(302, response.status_code)
         self.assertEqual('/proposal/cannot-modify/', response.url)
 
@@ -165,7 +165,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-0-DELETE': ['']
                                     }))
 
-        response = c.post(reverse('proposal-add'), data=data)
+        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(response.status_code, 302)
 
         proposal = Proposal.objects.get(title='Collect algae again')
@@ -205,7 +205,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-TOTAL_FORMS': ['2'],
                                     }))
 
-        response = c.post(reverse('proposal-add'), data=data)
+        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, 'Call name:')
@@ -248,7 +248,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-TOTAL_FORMS': ['2'],
                                     }))
 
-        response = c.post(reverse('proposal-add'), data=data)
+        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(response.status_code, 302)
 
         proposal = Proposal.objects.get(title='Collect algae again')

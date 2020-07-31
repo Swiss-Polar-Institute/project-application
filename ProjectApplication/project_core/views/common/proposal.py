@@ -193,7 +193,7 @@ class AbstractProposalView(TemplateView):
             overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
 
-            context['proposal_action_url'] = reverse(self.action_url_add)
+            context['proposal_action_url'] = f'{reverse(self.action_url_add)}?call={call.id}'
 
             context['action'] = 'New'
 
@@ -256,7 +256,7 @@ class AbstractProposalView(TemplateView):
 
         else:
             # New proposal
-            call = Call.objects.get(id=int(request.POST['proposal_form-call_id']))
+            call = Call.objects.get(id=int(self.request.GET['call']))
 
             if timezone.now() > call.submission_deadline:
                 messages.error(request,
@@ -417,7 +417,7 @@ class AbstractProposalView(TemplateView):
 
         messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again.')
 
-        return render(request, 'common/_form-proposal.tmpl', context)
+        return render(request, 'common/form-proposal.tmpl', context)
 
     def _validate_project_title_applicant(self, proposal_form, person_form):
         proposal_title = proposal_form.cleaned_data['title']
