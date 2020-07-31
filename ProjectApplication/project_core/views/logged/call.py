@@ -7,7 +7,7 @@ from django.views.generic import TemplateView, ListView
 from comments import utils
 from comments.utils import process_comment_attachment, comments_attachments_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
-from project_core.models import Call, BudgetCategory, Proposal
+from project_core.models import Call, BudgetCategory, Proposal, FundingInstrument
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call
@@ -172,6 +172,17 @@ class ProposalDetail(AbstractProposalDetailView):
         return result
 
 
+def get_funding_instruments_data():
+    funding_instruments_data = {}
+
+    for funding_instrument in FundingInstrument.objects.all():
+        funding_instruments_data[funding_instrument.id] = {'long_name': funding_instrument.long_name,
+                                                           'short_name': funding_instrument.short_name.name
+                                                           }
+
+    return funding_instruments_data
+
+
 class CallView(TemplateView):
     template_name = 'logged/call-form.tmpl'
 
@@ -212,6 +223,7 @@ class CallView(TemplateView):
 
             breadcrumb_page = 'Create'
 
+        context['funding_instruments_data'] = get_funding_instruments_data()
         context['active_section'] = 'calls'
         context['sidebar_template'] = 'logged/_sidebar-calls.tmpl'
 

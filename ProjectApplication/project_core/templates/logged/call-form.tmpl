@@ -26,4 +26,25 @@
             {% endif %}
         </div>
     </div>
+
+    {{ funding_instruments_data|json_script:"funding_instruments_data" }}
+
+    <script>
+        var funding_instruments_data = JSON.parse(document.getElementById('funding_instruments_data').textContent);
+        $('#id_call_form-long_name').prop('readonly', true);
+        $('#id_call_form-short_name').prop('readonly', true);
+
+        $('#id_call_form-funding_instrument').change(function () {
+            var selected_id = $(this).val();
+            if (selected_id === '') {
+                $('#id_call_form-long_name').val('');
+                $('#id_call_form-short_name').val('');
+            } else {
+                var funding_instrument_data = funding_instruments_data[selected_id];
+
+                $('#id_call_form-long_name').val(funding_instrument_data.long_name);
+                $('#id_call_form-short_name').val(funding_instrument_data.short_name);
+            }
+        });
+    </script>
 {% endblock %}
