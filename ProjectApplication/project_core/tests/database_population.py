@@ -11,7 +11,7 @@ from evaluation.models import Reviewer
 from grant_management.models import LaySummaryType
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
-    Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role, Project
+    Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role, Project, FinancialKey
 
 
 def create_call_long_name(long_name, funding_instrument=None):
@@ -34,7 +34,15 @@ def create_call(funding_instrument=None):
 
 
 def create_funding_instrument():
-    funding_instrument, created = FundingInstrument.objects.get_or_create(long_name='Big Expeditions')
+    user = create_management_user()
+
+    financial_key, created = FinancialKey.objects.get_or_create(name='BE',
+                                                                description='Related to Big Expeditions',
+                                                                funding_instrument=True,
+                                                                created_by=user)
+
+    funding_instrument, created = FundingInstrument.objects.get_or_create(long_name='Big Expeditions',
+                                                                          short_name=financial_key)
 
     return funding_instrument
 
