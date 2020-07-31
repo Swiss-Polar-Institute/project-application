@@ -11,6 +11,7 @@ from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion
 
 logger = logging.getLogger('project_core')
 
+
 class Questions(Form):
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
@@ -101,10 +102,12 @@ class Questions(Form):
                             defaults={'file': answer})
                     except EndpointConnectionError:
                         all_good = False
-                        logger.warning(f'NOTIFY: Saving file for question failed (proposal: {proposal.id} call_question: {call_question.id}) -EndpointConnectionError')
+                        logger.warning(
+                            f'NOTIFY: Saving file for question failed (proposal: {proposal.id} call_question: {call_question.id}) -EndpointConnectionError')
                     except botocore.exceptions.ClientError:
                         all_good = False
-                        logger.warning(f'NOTIFY: Saving file for question failed (proposal: {proposal.id} call_question: {call_question.id}) -ClientError')
+                        logger.warning(
+                            f'NOTIFY: Saving file for question failed (proposal: {proposal.id} call_question: {call_question.id}) -ClientError')
 
         return all_good
 

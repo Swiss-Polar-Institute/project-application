@@ -1,6 +1,6 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit
+from crispy_forms.layout import Layout, Div, Submit, HTML
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
 from django.views.generic import CreateView, UpdateView, DetailView, ListView
@@ -44,6 +44,9 @@ class CrispyNoFormTag:
         else:
             cancel_edit_url = reverse('logged-template-question-add')
 
+        form.fields['question_text'].widget.attrs = {'rows': 2}
+        form.fields['question_description'].widget.attrs = {'rows': 2}
+
         form.helper.layout = Layout(
             Div(
                 Div('question_text', css_class='col-12'),
@@ -54,15 +57,16 @@ class CrispyNoFormTag:
                 css_class='row'
             ),
             Div(
-                Div('answer_type', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('answer_max_length', css_class='col-12'),
+                Div('answer_type', css_class='col-6'),
+                Div('answer_max_length', css_class='col-6'),
                 css_class='row'
             ),
             Div(
                 Div('answer_required', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div(HTML('<br>'), css_class='col-12'),
                 css_class='row'
             ),
             FormActions(
