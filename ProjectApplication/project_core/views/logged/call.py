@@ -173,7 +173,7 @@ class ProposalDetail(AbstractProposalDetailView):
 
 
 class CallView(TemplateView):
-    template_name = 'logged/call.tmpl'
+    template_name = 'logged/call-form.tmpl'
 
     @staticmethod
     def _cancel_url(kwargs):
@@ -287,4 +287,4 @@ class CallView(TemplateView):
 
         messages.error(request, 'Call not saved. Please correct the errors in the form and try again.')
 
-        return render(request, 'logged/call.tmpl', context)
+        return render(request, 'logged/call-form.tmpl', context)
