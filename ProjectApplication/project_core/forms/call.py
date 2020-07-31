@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
@@ -87,6 +89,7 @@ class CallForm(forms.ModelForm):
             questions = self.instance.callquestion_set.all().values_list('template_question', flat=True)
             used_questions = TemplateQuestion.objects.filter(id__in=questions)
         else:
+            self.fields['finance_year'].initial = datetime.now().year
             used_questions = []
 
         self.fields['budget_categories'].queryset = BudgetCategory.all_ordered()

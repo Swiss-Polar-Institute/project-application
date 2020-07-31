@@ -30,21 +30,31 @@
     {{ funding_instruments_data|json_script:"funding_instruments_data" }}
 
     <script>
-        var funding_instruments_data = JSON.parse(document.getElementById('funding_instruments_data').textContent);
-        $('#id_call_form-long_name').prop('readonly', true);
-        $('#id_call_form-short_name').prop('readonly', true);
+        const call_long_name_selector = '#id_call_form-long_name';
+        const call_short_name_selector = '#id_call_form-short_name';
+        const funding_instrument_selector = '#id_call_form-funding_instrument';
+        const finance_year_selector = '#id_call_form-finance_year';
 
-        $('#id_call_form-funding_instrument').change(function () {
-            var selected_id = $(this).val();
+        function update_call_name() {
+            const funding_instruments_data = JSON.parse(document.getElementById('funding_instruments_data').textContent);
+
+            let selected_id = $(funding_instrument_selector).val();
             if (selected_id === '') {
-                $('#id_call_form-long_name').val('');
-                $('#id_call_form-short_name').val('');
+                $(call_long_name_selector).val('');
+                $(call_short_name_selector).val('');
             } else {
-                var funding_instrument_data = funding_instruments_data[selected_id];
+                let funding_instrument_data = funding_instruments_data[selected_id];
+                let finance_year = $(finance_year_selector).val();
 
-                $('#id_call_form-long_name').val(funding_instrument_data.long_name);
-                $('#id_call_form-short_name').val(funding_instrument_data.short_name);
+                $(call_long_name_selector).val(funding_instrument_data.long_name + ' ' + finance_year);
+                $(call_short_name_selector).val(funding_instrument_data.short_name + ' ' + finance_year);
             }
-        });
+        }
+
+        $(call_long_name_selector).prop('readonly', true);
+        $(call_short_name_selector).prop('readonly', true);
+
+        $(funding_instrument_selector).change(update_call_name);
+        $(finance_year_selector).on('input', update_call_name);
     </script>
 {% endblock %}
