@@ -15,7 +15,14 @@
             <br>
             <strong>Group:</strong> {% include 'common/_value-or-dash.tmpl' with value=person.group %}
             <br>
-            <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=person.main_email %}
+            <div class="row">
+                <div class="col-6">
+                    <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=person.main_email %}
+                </div>
+                <div class="col-6">
+                    <strong>Phone:</strong> {% include 'common/_link_or_dash.tmpl' with phone=person.main_phone phone_uri=person.main_phone_uri %}
+                </div>
+            </div>
             <p></p>
             <div class="row">
                 <div class="col-6">
