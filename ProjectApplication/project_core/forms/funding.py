@@ -9,9 +9,9 @@ from project_core.models import OrganisationName, ProposalFundingItem, Proposal
 class ProposalFundingItemForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['organisation_name'] = OrganisationNameChoiceField(queryset=OrganisationName.objects.all(),
-                                                                       widget=autocomplete.ModelSelect2(
-                                                                       url='autocomplete-organisation-names'))
+
+        self.fields['organisation_name'].widget = autocomplete.ModelSelect2(url='autocomplete-organisation-names')
+        self.fields['organisation_name'].queryset = OrganisationName.objects.all()
 
         self.fields['amount'].widget.attrs['min'] = 0
 
@@ -23,7 +23,8 @@ class ProposalFundingItemForm(ModelForm):
         fields = ['organisation_name', 'funding_status', 'amount', 'proposal', ]
         labels = {'amount': 'Total (CHF)'}
         localized_fields = ('amount',)
-        help_texts = {'amount': ''}
+        help_texts = {'amount': '',
+                      'organisation_name': 'Select an organisation name or type the full name of the organisation<br> if it does not exist, then click on "Create"'}
 
 
 class ProposalFundingFormSet(BaseInlineFormSet):
