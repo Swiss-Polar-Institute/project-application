@@ -557,7 +557,6 @@ class PersonPosition(CreateModifyOn):
             return None
 
     def main_phone_uri(self):
-        # https://tools.ietf.org/html/rfc3966 says to not use spaces but dashes for the URI
         phone = self.main_phone()
         if phone:
             return PhoneNumber.from_string(phone).as_rfc3966
