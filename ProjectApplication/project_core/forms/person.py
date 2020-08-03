@@ -4,6 +4,7 @@ from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.validators import RegexValidator, ValidationError
 from django.forms import Form
+from phonenumber_field.formfields import PhoneNumberField
 
 from project_core.models import PersonTitle, Gender, PhysicalPerson, PersonPosition, Contact, CareerStage
 from project_core.utils.orcid import orcid_div, field_set_read_only
@@ -18,7 +19,7 @@ class PersonForm(Form):
         super().__init__(*args, **kwargs)
 
         orcid_initial = first_name_initial = surname_initial = organisations_initial = group_initial = \
-            academic_title_initial = email_initial = gender_initial = career_stage_initial = phd_date_initial = None
+            academic_title_initial = email_initial = phone_initial = gender_initial = career_stage_initial = phd_date_initial = None
 
         if self.person_position:
             orcid_initial = self.person_position.person.orcid
@@ -30,6 +31,7 @@ class PersonForm(Form):
             career_stage_initial = self.person_position.career_stage
             gender_initial = self.person_position.person.gender
             email_initial = self.person_position.main_email()
+            phone_initial = self.person_position.main_phone()
 
             if self.person_position.person.phd_date:
                 # In the database is always saved as yyyy-mm (validator in the model) but it's visualized as mm-yyyy
@@ -61,7 +63,11 @@ class PersonForm(Form):
 
         field_set_read_only([self.fields['first_name'], self.fields['surname']])
 
-        self.fields['email'] = forms.EmailField(initial=email_initial, help_text='Please write a valid email address. You will receive a confirmation email when saving and submitting your application form. This email address will also be used for communication purposes')
+        self.fields['email'] = forms.EmailField(initial=email_initial,
+                                                help_text='Please write a valid email address. You will receive a confirmation email when saving and submitting your application form. This email address will also be used for communication purposes')
+
+        self.fields['phone'] = PhoneNumberField(initial=phone_initial,
+                                                help_text='Phone number e.g.: +41222222222 . Extension can be added with xNN at the end')
 
         self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
                                                   label='Date of PhD',
@@ -93,7 +99,8 @@ class PersonForm(Form):
                 css_class='row'
             ),
             Div(
-                Div('email', css_class='col-12'),
+                Div('email', css_class='col-6'),
+                Div('phone', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -159,14 +166,28 @@ class PersonForm(Form):
                                                  group=cd['group'], career_stage=cd['career_stage'],
                                                  organisation_names=cd['organisation_names'])
 
-        try:
-            email_contact = person_position.contact_set.get(method=Contact.EMAIL)
-        except ObjectDoesNotExist:
+        # Should this be in the model?
+        # TODO: discuss how to replace emails
+        email_contact = person_position.main_email_model()
+
+        if email_contact is None:
             email_contact = Contact()
             email_contact.method = Contact.EMAIL
             email_contact.person_position = person_position
 
         email_contact.entry = self.cleaned_data['email']
         email_contact.save()
+
+        # Like before, should this be in the model and consolidated?
+        # TODO: discuss how to replace phones and handling of multiple phones
+        phone_contact = person_position.main_phone_model()
+
+        if phone_contact is None:
+            phone_contact = Contact()
+            phone_contact.method = Contact.PHONE
+            phone_contact.person_position = person_position
+
+        phone_contact.entry = self.cleaned_data['phone'].as_international
+        phone_contact.save()
 
         return person_position

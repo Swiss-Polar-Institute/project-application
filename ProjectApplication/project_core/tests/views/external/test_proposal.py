@@ -40,6 +40,7 @@ class ProposalFormTest(TestCase):
                 'person_form-orcid': [orcid],
                 'person_form-gender': [self._genders[0].id],
                 'person_form-email': ['test@example.com'],
+                'person_form-phone': ['+41 22 222 33 33'],
                 'person_form-organisation_names': [self._organisation_names[0].id],
                 'person_form-group': ['A new group'],
                 'person_form-career_stage': [self._career_stage.id],

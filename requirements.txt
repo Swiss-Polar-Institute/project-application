@@ -1,4 +1,5 @@
 asgiref==3.2.3
+Babel==2.8.0
 backcall==0.1.0
 boto3==1.11.16
 botocore==1.14.16
@@ -7,6 +8,7 @@ decorator==4.4.1
 Django==3.0.8
 django-autocomplete-light==3.5.1
 django-crispy-forms==1.9.2
+django-phonenumber-field==4.0.0
 django-simple-history==2.8.0
 django-storages==1.9.1
 docutils==0.15.2
@@ -18,6 +20,7 @@ jmespath==0.9.4
 mysqlclient==1.4.6
 parso==0.6.1
 pexpect==4.8.0
+phonenumbers==8.12.7
 pickleshare==0.7.5
 prompt-toolkit==3.0.3
 ptyprocess==0.6.0

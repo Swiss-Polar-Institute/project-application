@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'simple_history',
+    'phonenumber_field',
     'project_core',
     'variable_templates',
     'evaluation',

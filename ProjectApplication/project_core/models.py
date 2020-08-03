@@ -263,8 +263,10 @@ class CallQuestion(AbstractQuestion):
     template_question = models.ForeignKey(TemplateQuestion,
                                           help_text='Template question on which this call question is based',
                                           on_delete=models.PROTECT)
-    order = models.PositiveIntegerField(help_text='Use this number to order the questions', blank=False,
-                                        null=False)
+    order = models.PositiveIntegerField(
+        help_text='Use this number to order the questions',
+        blank=False,
+        null=False)
 
     @staticmethod
     def from_template(template_question):
@@ -545,11 +547,27 @@ class PersonPosition(CreateModifyOn):
         else:
             return None
 
+    def main_phone(self):
+        phone = self.main_phone_model()
+
+        if phone:
+            return phone.entry
+        else:
+            return None
+
     def main_email_model(self):
         emails = self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')
 
         if emails:
             return emails[0]
+        else:
+            return None
+
+    def main_phone_model(self):
+        phones = self.contact_set.filter(method=Contact.PHONE).order_by('created_on')
+
+        if phones:
+            return phones[0]
         else:
             return None
 
@@ -575,11 +593,13 @@ class Contact(CreateModifyOn):
     OFFICE = 'Office'
     MOBILE = 'Mobile'
     EMAIL = 'Email'
+    PHONE = 'Phone'
 
     METHOD = (
         (OFFICE, 'Office'),
         (MOBILE, 'Mobile'),
         (EMAIL, 'Email'),
+        (PHONE, 'Phone')
     )
 
     person_position = models.ForeignKey(PersonPosition, help_text='Person to whom the contact details belong',
@@ -601,7 +621,7 @@ class Contact(CreateModifyOn):
         return '{} - {}: {}'.format(self.person_position, self.method, self.entry)
 
     class Meta:
-        unique_together = (('person_position', 'entry'),)
+        unique_together = (('person_position', 'method'),)
 
 
 class GeographicalAreaUid(Uid):
