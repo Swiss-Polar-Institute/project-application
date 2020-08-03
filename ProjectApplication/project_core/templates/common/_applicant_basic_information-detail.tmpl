@@ -19,10 +19,10 @@
     <br>
     <strong>Group / lab:</strong> {{ applicant.group }}<br>
     <div class="row">
-        <div class="col-8">
+        <div class="col-6">
             <strong>Career stage:</strong> {{ applicant.career_stage }}
         </div>
-        <div class="col-4">
+        <div class="col-6">
             <strong>Date of
                 PhD:</strong> {% include 'common/_value-or-dash.tmpl' with value=applicant.person.phd_date_formatted %}
         </div>
