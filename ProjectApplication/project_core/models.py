@@ -628,7 +628,7 @@ class Contact(CreateModifyOn):
         return '{} - {}: {}'.format(self.person_position, self.method, self.entry)
 
     class Meta:
-        unique_together = (('person_position', 'method'),)
+        unique_together = (('person_position', 'entry', 'method'),)
 
 
 class GeographicalAreaUid(Uid):
