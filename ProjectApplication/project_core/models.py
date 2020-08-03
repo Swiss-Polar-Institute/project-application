@@ -14,6 +14,7 @@ from django.db import models, transaction
 from django.db.models import Max, Sum
 from django.urls import reverse
 from django.utils import timezone
+from phonenumber_field.phonenumber import PhoneNumber
 from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
@@ -554,6 +555,13 @@ class PersonPosition(CreateModifyOn):
             return phone.entry
         else:
             return None
+
+    def main_phone_uri(self):
+        # https://tools.ietf.org/html/rfc3966 says to not use spaces but dashes for the URI
+        phone = self.main_phone()
+        if phone:
+            return PhoneNumber.from_string(phone).as_rfc3966
+        return None
 
     def main_email_model(self):
         emails = self.contact_set.filter(method=Contact.EMAIL).order_by('created_on')
