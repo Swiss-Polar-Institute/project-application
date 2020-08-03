@@ -65,6 +65,8 @@ class CallQuestionItemForm(forms.ModelForm):
             'question_text': forms.Textarea(attrs={'rows': 4}),
             'question_description': forms.Textarea(attrs={'rows': 4})
         }
+        help_texts = {
+            'order': 'The question number is used to order the questions in the proposal form. Questions will be ordered in ascending order of the integer in this box.'}
 
 
 class CallQuestionFormSet(BaseInlineFormSet):
