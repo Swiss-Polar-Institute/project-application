@@ -141,7 +141,7 @@ class CareerStagePercentageCalculator():
 
     @staticmethod
     def header_names():
-        return ["Undergraduate / master's student", 'PhD student', 'Post-doc or established scientist', 'Other',
+        return ["Undergraduate / master's student", 'PhD student', 'Post-doc < 3 years since PhD award date', 'Established scientist', 'Other',
                 'Unknown']
 
 
