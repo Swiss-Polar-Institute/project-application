@@ -277,13 +277,14 @@ class AbstractProposalView(TemplateView):
         if proposal:
             # Editing an existing proposal
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
-            postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
-                                                    prefix=POSTAL_ADDRESS_FORM_NAME)
-            head_of_research_unit_form = PersonForm(request.POST, instance=proposal.head_of_research_unit,
+            person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
+            head_of_research_unit_form = PersonForm(request.POST,
+                                                    person_position=proposal.head_of_research_unit,
                                                     prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
                                                     help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
                                                     only_basic_fields=True)
-            person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
+            postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
+                                                    prefix=POSTAL_ADDRESS_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
                                        proposal=proposal,
