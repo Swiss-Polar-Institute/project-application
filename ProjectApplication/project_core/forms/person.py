@@ -16,6 +16,7 @@ from ..widgets import XDSoftYearMonthPickerInput
 class PersonForm(Form):
     def __init__(self, *args, **kwargs):
         self.person_position = kwargs.pop('person_position', None)
+        self._only_basic_fields = kwargs.pop('only_basic_fields', False)
         super().__init__(*args, **kwargs)
 
         orcid_initial = first_name_initial = surname_initial = organisations_initial = group_initial = \
@@ -47,12 +48,6 @@ class PersonForm(Form):
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
                                                                initial=academic_title_initial)
 
-        self.fields['gender'] = forms.ModelChoiceField(queryset=Gender.objects.all(),
-                                                       initial=gender_initial)
-
-        self.fields['career_stage'] = forms.ModelChoiceField(queryset=CareerStage.objects.all(),
-                                                             initial=career_stage_initial)
-
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,
                                                     label='First name(s)',
                                                     help_text='Your name is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>.')
@@ -63,28 +58,35 @@ class PersonForm(Form):
 
         field_set_read_only([self.fields['first_name'], self.fields['surname']])
 
-        self.fields['email'] = forms.EmailField(initial=email_initial,
-                                                help_text='Please write a valid email address. You will receive a confirmation email when saving and submitting your application form. This email address will also be used for communication purposes')
+        if self._only_basic_fields == False:
+            self.fields['gender'] = forms.ModelChoiceField(queryset=Gender.objects.all(),
+                                                           initial=gender_initial)
 
-        self.fields['phone'] = PhoneNumberField(initial=phone_initial,
-                                                help_text='Phone number e.g.: +41222222222 . Extension can be added with xNN at the end')
+            self.fields['career_stage'] = forms.ModelChoiceField(queryset=CareerStage.objects.all(),
+                                                                 initial=career_stage_initial)
 
-        self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
-                                                  label='Date of PhD',
-                                                  help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm-yyyy)',
-                                                  required=False,
-                                                  widget=XDSoftYearMonthPickerInput,
-                                                  validators=[RegexValidator(regex='^[0-9]{2}-[0-9]{4}$',
-                                                                             message='Format is mm-yyyy',
-                                                                             code='Invalid format')])
+            self.fields['email'] = forms.EmailField(initial=email_initial,
+                                                    help_text='Please write a valid email address. You will receive a confirmation email when saving and submitting your application form. This email address will also be used for communication purposes')
 
-        self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
-                                                                            help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
+            self.fields['phone'] = PhoneNumberField(initial=phone_initial,
+                                                    help_text='Phone number e.g.: +41222222222 . Extension can be added with xNN at the end')
 
-        self.fields['group'] = forms.CharField(initial=group_initial,
-                                               help_text='Please type the names of the group(s) or laboratories to which you are affiliated for the purposes of this proposal',
-                                               label='Group / lab',
-                                               required=False)
+            self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
+                                                      label='Date of PhD',
+                                                      help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm-yyyy)',
+                                                      required=False,
+                                                      widget=XDSoftYearMonthPickerInput,
+                                                      validators=[RegexValidator(regex='^[0-9]{2}-[0-9]{4}$',
+                                                                                 message='Format is mm-yyyy',
+                                                                                 code='Invalid format')])
+
+            self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
+                                                                                help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
+
+            self.fields['group'] = forms.CharField(initial=group_initial,
+                                                   help_text='Please type the names of the group(s) or laboratories to which you are affiliated for the purposes of this proposal',
+                                                   label='Group / lab',
+                                                   required=False)
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -161,33 +163,36 @@ class PersonForm(Form):
     def save_person(self):
         cd = self.cleaned_data
 
-        person_position = create_person_position(cd['orcid'], cd['first_name'], cd['surname'], gender=cd['gender'],
-                                                 phd_date=cd['phd_date'], academic_title=cd['academic_title'],
-                                                 group=cd['group'], career_stage=cd['career_stage'],
-                                                 organisation_names=cd['organisation_names'])
+        person_position = create_person_position(cd['orcid'], cd['first_name'], cd['surname'],
+                                                 gender=cd.get('gender', None), phd_date=cd.get('phd_date', None),
+                                                 academic_title=cd.get('academic_title'), group=cd.get('group'),
+                                                 career_stage=cd.get('career_stage'),
+                                                 organisation_names=cd.get('organisation_names', None))
 
-        # Should this be in the model?
-        # TODO: discuss how to replace emails
-        email_contact = person_position.main_email_model()
+        if cd.get('email', None):
+            # Should this be in the model?
+            # TODO: discuss how to replace emails
+            email_contact = person_position.main_email_model()
 
-        if email_contact is None:
-            email_contact = Contact()
+            if email_contact is None:
+                email_contact = Contact()
             email_contact.method = Contact.EMAIL
             email_contact.person_position = person_position
 
-        email_contact.entry = self.cleaned_data['email']
-        email_contact.save()
+            email_contact.entry = cd.get('email')
+            email_contact.save()
 
-        # Like before, should this be in the model and consolidated?
-        # TODO: discuss how to replace phones and handling of multiple phones
-        phone_contact = person_position.main_phone_model()
+        if cd.get('phone', None):
+            # Like before, should this be in the model and consolidated?
+            # TODO: discuss how to replace phones and handling of multiple phones
+            phone_contact = person_position.main_phone_model()
 
-        if phone_contact is None:
-            phone_contact = Contact()
+            if phone_contact is None:
+                phone_contact = Contact()
             phone_contact.method = Contact.PHONE
             phone_contact.person_position = person_position
 
-        phone_contact.entry = self.cleaned_data['phone'].as_international
-        phone_contact.save()
+            phone_contact.entry = cd.get('phone').as_international
+            phone_contact.save()
 
         return person_position

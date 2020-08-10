@@ -711,6 +711,9 @@ class Proposal(CreateModifyOn):
         decimal_places=1, max_digits=5, validators=[MinValueValidator(0)], blank=False, null=False)
     applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal', blank=False, null=False,
                                   on_delete=models.PROTECT)
+    head_of_research_unit = models.ForeignKey(PersonPosition, help_text='Head of the research unit of this application',
+                                              blank=False, null=True, on_delete=models.PROTECT,
+                                              related_name='head_of_research_unit')
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal', blank=False,
                                         null=False, on_delete=models.PROTECT)
     eligibility = models.CharField(help_text='Status of eligibility of proposal', max_length=30,

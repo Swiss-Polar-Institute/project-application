@@ -68,7 +68,8 @@ def create_person_position(orcid, first_name, surname, gender=None, phd_date=Non
                                                         academic_title=academic_title,
                                                         group=group,
                                                         career_stage=career_stage)
-        person_position.organisation_names.set(organisation_names)
+        if organisation_names:
+            person_position.organisation_names.set(organisation_names)
 
     assert person_position
 

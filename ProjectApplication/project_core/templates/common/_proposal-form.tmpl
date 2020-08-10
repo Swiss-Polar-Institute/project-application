@@ -23,15 +23,19 @@
     <h1>Application form</h1>
     <h2>Part 1: General Information</h2>
     <h3>Applicant</h3>
-    {% include 'common/person-form.tmpl' %}
+    {% include 'common/_person-form.tmpl' with person_form=person_form %}
 
+    <h3>Address of your research unit</h3>
     {% include 'common/_form-postal_address.tmpl' %}
 
-    <h2>Proposed {{ activity }}</h2>
+    <h3>Head of your research</h3>
+    {% include 'common/_person-form.tmpl' with person_form=head_of_research_unit_form %}
+
+    <h3>Proposed {{ activity }}</h3>
     {% crispy proposal_form %}
 
     {% if overarching_project_question %}
-        <h2>Overarching project</h2>
+        <h3>Overarching project</h3>
         {% include 'common/_form-project_overarching.tmpl' %}
     {% endif %}
 
