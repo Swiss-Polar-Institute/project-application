@@ -11,9 +11,9 @@
             </div>
         </div>
         <div class="col-6">
-            <strong>City:</strong> {{ postal_address.city }}<br>
-            <strong>Postcode:</strong> {{ postal_address.postcode }}<br>
-            <strong>Country:</strong> {{ postal_address.country }}
+            <strong>City:</strong> {% include 'common/_value-or-dash.tmpl' with value=postal_address.city %}<br>
+            <strong>Postcode:</strong> {% include 'common/_value-or-dash.tmpl' with value=postal_address.postcode %}<br>
+            <strong>Country:</strong> {% include 'common/_value-or-dash.tmpl' with value=postal_address.country %}
         </div>
     </div>
 {% endwith %}
