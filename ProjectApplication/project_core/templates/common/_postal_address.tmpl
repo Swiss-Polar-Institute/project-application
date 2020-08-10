@@ -3,7 +3,11 @@
         <div class="col-6">
             {#            If changing the width: see what happens in the application when the proposal view is displayed in a widther format#}
             <div class="border p-1 bg-white rounded" style="width: 400px">
-                {{ proposal.postal_address.address|linebreaksbr }}
+                {% if proposal.postal_address.address %}
+                    {{ proposal.postal_address.address|linebreaksbr }}
+                {% else %}
+                    -
+                {% endif %}
             </div>
         </div>
         <div class="col-6">
