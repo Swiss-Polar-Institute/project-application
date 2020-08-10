@@ -19,7 +19,7 @@ from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
 from project_core.forms.partners import ProposalPartnersInlineFormSet
-from project_core.forms.person import PersonForm
+from project_core.forms.person import PersonForm, HELP_TEXTS_HEAD_OF_YOUR_RESEARCH
 from project_core.forms.postal_address import PostalAddressForm
 from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
@@ -155,6 +155,7 @@ class AbstractProposalView(TemplateView):
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME, instance=proposal.postal_address)
             head_of_research_unit_form = PersonForm(prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
                                                     person_position=proposal.head_of_research_unit,
+                                                    help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
                                                     only_basic_fields=True)
 
             questions_form = Questions(proposal=proposal,
@@ -184,6 +185,7 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(prefix=PERSON_FORM_NAME, only_basic_fields=False)
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
             head_of_research_unit_form = PersonForm(prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
+                                                    help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
                                                     only_basic_fields=True)
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)
@@ -279,6 +281,7 @@ class AbstractProposalView(TemplateView):
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
             head_of_research_unit_form = PersonForm(request.POST, instance=proposal.head_of_research_unit,
                                                     prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
+                                                    help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
                                                     only_basic_fields=True)
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
@@ -309,6 +312,7 @@ class AbstractProposalView(TemplateView):
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
             head_of_research_unit_form = PersonForm(request.POST, prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
+                                                    help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
                                                     only_basic_fields=True)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
@@ -409,6 +413,7 @@ class AbstractProposalView(TemplateView):
 
         context[PERSON_FORM_NAME] = person_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
+        context[HEAD_OF_RESEARCH_UNIT_FORM_NAME] = head_of_research_unit_form
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form

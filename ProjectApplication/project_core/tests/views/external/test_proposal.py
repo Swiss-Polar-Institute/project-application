@@ -82,7 +82,11 @@ class ProposalFormTest(TestCase):
                 'postal_address_form-address': ['5th Avenue, 87'],
                 'postal_address_form-city': ['New York'],
                 'postal_address_form-postcode': ['429ZKDKZMM'],
-                'postal_address_form-country': [Country.objects.get(name='Switzerland').id]
+                'postal_address_form-country': [Country.objects.get(name='Switzerland').id],
+                'head_of_research_unit_form-academic_title': [self._person_titles[0].id],
+                'head_of_research_unit_form-first_name': ['John'],
+                'head_of_research_unit_form-surname': ['Doe'],
+                'head_of_research_unit_form-orcid': [orcid],
             }
         )
 
