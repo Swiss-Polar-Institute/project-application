@@ -156,6 +156,7 @@ class AbstractProposalView(TemplateView):
             head_of_research_unit_form = PersonForm(prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
                                                     person_position=proposal.head_of_research_unit,
                                                     help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
+                                                    all_fields_are_optional=True,
                                                     only_basic_fields=True)
 
             questions_form = Questions(proposal=proposal,
@@ -186,6 +187,7 @@ class AbstractProposalView(TemplateView):
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
             head_of_research_unit_form = PersonForm(prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
                                                     help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
+                                                    all_fields_are_optional=True,
                                                     only_basic_fields=True)
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)
@@ -282,6 +284,7 @@ class AbstractProposalView(TemplateView):
                                                     person_position=proposal.head_of_research_unit,
                                                     prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
                                                     help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
+                                                    all_fields_are_optional=True,
                                                     only_basic_fields=True)
             postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
@@ -314,6 +317,7 @@ class AbstractProposalView(TemplateView):
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
             head_of_research_unit_form = PersonForm(request.POST, prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
                                                     help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
+                                                    all_fields_are_optional=True,
                                                     only_basic_fields=True)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
@@ -386,8 +390,9 @@ class AbstractProposalView(TemplateView):
 
             proposal.postal_address = postal_address
 
-            head_of_research_unit = head_of_research_unit_form.save_person()
-            proposal.head_of_research_unit = head_of_research_unit
+            if head_of_research_unit_form.cleaned_data['orcid']:
+                head_of_research_unit = head_of_research_unit_form.save_person()
+                proposal.head_of_research_unit = head_of_research_unit
 
             proposal.save()
             proposal_form.save(commit=True)

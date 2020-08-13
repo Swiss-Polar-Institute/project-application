@@ -15,15 +15,17 @@ from ..widgets import XDSoftYearMonthPickerInput
 HELP_TEXTS_HEAD_OF_YOUR_RESEARCH = {'orcid': 'Enter the ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
                                              'Please ask your head of research if unknown.',
                                     'first_name': 'Populated from ORCID iD',
-                                    'surname': 'Populated from ORCID iD'
-                                    }
+                                    'surname': 'Populated from ORCID iD',
+                                    'academic_title': 'Mandatory if ORCID iD is entered'}
 
 
 class PersonForm(Form):
     def __init__(self, *args, **kwargs):
         self.person_position = kwargs.pop('person_position', None)
         self._only_basic_fields = kwargs.pop('only_basic_fields', False)
+        self._all_fields_are_optional = kwargs.pop('all_fields_are_optional', False)
         help_texts = kwargs.pop('help_texts', {})
+
         super().__init__(*args, **kwargs)
 
         orcid_initial = first_name_initial = surname_initial = organisations_initial = group_initial = \
@@ -95,8 +97,12 @@ class PersonForm(Form):
                                                    label='Group / lab',
                                                    required=False)
 
-        for field_str, help_text in help_texts.items():
-            self.fields[field_str].help_text = help_text
+        for field_str, field in self.fields.items():
+            if self._all_fields_are_optional:
+                field.required = False
+
+            if field_str in help_texts:
+                self.fields[field_str].help_text = help_texts[field_str]
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -168,7 +174,14 @@ class PersonForm(Form):
         return f'{year}-{month}'
 
     def clean(self):
-        super().clean()
+        cd = super().clean()
+
+        if self._all_fields_are_optional:
+            for field_str, field in self.fields.items():
+                if field_str not in cd or cd[field_str] is None:
+                    self.add_error(field_str, 'Mandatory field if ORCiD iD is filled in')
+
+        return cd
 
     def save_person(self):
         cd = self.cleaned_data
