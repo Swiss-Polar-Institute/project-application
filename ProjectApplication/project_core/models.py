@@ -672,6 +672,40 @@ class PostalAddress(CreateModifyOn):
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
 
 
+class Role(models.Model):
+    """Role a person can take in a variety of different circumstances."""
+    PROPOSAL = 'Proposal'
+    PROJECT = 'Project'
+    EXPEDITION = 'Expedition'
+
+    TYPES = (
+        (PROPOSAL, 'Proposal'),
+        (PROJECT, 'Project'),
+        (EXPEDITION, 'Expedition'),
+    )
+
+    name = models.CharField(help_text='Name of role', max_length=50, null=False, blank=False)
+    description = models.CharField(help_text='Description of role to distinguish it from others', max_length=200,
+                                   null=False, blank=False)
+    type = models.CharField(
+        help_text='Part of the application to which the role refers, determining where it can be used in some cases',
+        choices=TYPES, max_length=25, null=False, blank=False)
+
+    def __str__(self):
+        return '{} ({}): {}'.format(self.name, self.type, self.description)
+
+    class Meta:
+        unique_together = (('name', 'type'),)
+
+
+class RoleDescription(CreateModifyOn):
+    # It holds the description of a Role for a Partner, Applicant, etc. (a person with a role)
+    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT)
+    description = models.TextField(help_text="Description of the role", null=False,
+                                   blank=False)
+    competences = models.TextField(help_text="Description of the key competences", null=False, blank=False)
+
+
 class Proposal(CreateModifyOn):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
     ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
@@ -711,6 +745,9 @@ class Proposal(CreateModifyOn):
         decimal_places=1, max_digits=5, validators=[MinValueValidator(0)], blank=False, null=False)
     applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal', blank=False, null=False,
                                   on_delete=models.PROTECT)
+    applicant_role_description = models.ForeignKey(RoleDescription, help_text='Main applicant role', blank=True,
+                                                   null=True,
+                                                   on_delete=models.PROTECT)
     head_of_research_unit = models.ForeignKey(PersonPosition, help_text='Head of the research unit of this application',
                                               blank=False, null=True, on_delete=models.PROTECT,
                                               related_name='head_of_research_unit')
@@ -973,32 +1010,6 @@ class ProposalFundingItem(FundingItem):
 
     class Meta:
         unique_together = (('organisation_name', 'funding_status', 'proposal', 'amount'),)
-
-
-class Role(models.Model):
-    """Role a person can take in a variety of different circumstances."""
-    PROPOSAL = 'Proposal'
-    PROJECT = 'Project'
-    EXPEDITION = 'Expedition'
-
-    TYPES = (
-        (PROPOSAL, 'Proposal'),
-        (PROJECT, 'Project'),
-        (EXPEDITION, 'Expedition'),
-    )
-
-    name = models.CharField(help_text='Name of role', max_length=50, null=False, blank=False)
-    description = models.CharField(help_text='Description of role to distinguish it from others', max_length=200,
-                                   null=False, blank=False)
-    type = models.CharField(
-        help_text='Part of the application to which the role refers, determining where it can be used in some cases',
-        choices=TYPES, max_length=25, null=False, blank=False)
-
-    def __str__(self):
-        return '{} ({}): {}'.format(self.name, self.type, self.description)
-
-    class Meta:
-        unique_together = (('name', 'type'),)
 
 
 class Partner(models.Model):
