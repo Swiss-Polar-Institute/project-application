@@ -1,4 +1,5 @@
 {% load static %}
+{% load  goat_counter_code %}
 <!DOCTYPE html>
 
 <html lang="en">
@@ -75,11 +76,12 @@
 <script type="text/javascript" src="{% static 'js/initialise_tooltips_popovers.js' %}"></script>
 
 <script>
+    window.goatcounter = {allow_local: true}
     // Only load on production environment and only for external pages
-    if (window.location.host !== 'projects.swisspolar.ch' || window.location.pathname.startsWith('/logged/'))
-        window.goatcounter = {no_onload: true}
+    if (window.location.pathname.startsWith('/logged/'))
+        window.goatcounter['no_onload'] = true;
 </script>
-<script data-goatcounter="https://projects-swisspolar-ch-2.goatcounter.com/count"
+<script data-goatcounter="https://{% goat_counter_code %}.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

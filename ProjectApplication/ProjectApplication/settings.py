@@ -280,3 +280,4 @@ REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
 DEBUG = os.environ['DEBUG'] == '1'
 NAVBAR_BACKGROUND_COLOR = os.getenv('NAVBAR_BACKGROUND_COLOR', 'bg-primary')
 DATA_IMPORT_CATEGORY_NAME = 'Data Import'
+GOAT_COUNTER_CODE = os.getenv('GOAT_COUNTER_CODE', None)
