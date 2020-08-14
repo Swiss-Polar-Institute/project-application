@@ -87,6 +87,10 @@ class ProposalFormTest(TestCase):
                 'head_of_research_unit_form-first_name': ['John'],
                 'head_of_research_unit_form-surname': ['Doe'],
                 'head_of_research_unit_form-orcid': [orcid],
+
+                'applicant_role_description_form-role': [self._role.id],
+                'applicant_role_description_form-description': ['Very important role!'],
+                'applicant_role_description_form-competences': ['Very important competences'],
             }
         )
 
@@ -100,7 +104,8 @@ class ProposalFormTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Call name:')
         self.assertContains(response, 'GreenLAnd Circumnavigation Expedition')
-        self.assertContains(response, 'Proposal partners')
+        self.assertContains(response, 'Roles and competences')
+        self.assertContains(response, 'Partners')
 
     def test_proposal_no_partners_get(self):
         c = Client()
@@ -167,7 +172,8 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-0-role': [self._role.id],
                                     'proposal_partners_form-0-role_description': ['Will help loads'],
                                     'proposal_partners_form-0-competences': ['Many'],
-                                    'proposal_partners_form-0-DELETE': ['']
+                                    'proposal_partners_form-0-DELETE': [''],
+
                                     }))
 
         response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
@@ -206,8 +212,8 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-1-role_description': ['Will help loads'],
                                     'proposal_partners_form-1-competences': ['Many'],
                                     'proposal_partners_form-1-DELETE': [''],
-
                                     'proposal_partners_form-TOTAL_FORMS': ['2'],
+
                                     }))
 
         response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)

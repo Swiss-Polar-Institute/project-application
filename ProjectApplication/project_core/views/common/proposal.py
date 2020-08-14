@@ -441,10 +441,10 @@ class AbstractProposalView(TemplateView):
         context[BUDGET_FORM_NAME] = budget_form
 
         if call.other_funding_question:
-            context[APPLICANT_ROLE_DESCRIPTION_FORM_NAME] = applicant_role_description_form
             context[FUNDING_FORM_NAME] = funding_form
 
         if call.proposal_partner_question:
+            context[APPLICANT_ROLE_DESCRIPTION_FORM_NAME] = applicant_role_description_form
             context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
 
         if call.overarching_project_question:
