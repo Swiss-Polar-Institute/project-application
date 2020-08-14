@@ -15,6 +15,7 @@ from django.views.generic import TemplateView
 
 from ProjectApplication import settings
 from comments.utils import comments_attachments_forms
+from project_core.forms.applicant_role import ApplicantRole
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
@@ -36,6 +37,7 @@ BUDGET_FORM_NAME = 'budget_form'
 FUNDING_FORM_NAME = 'funding_form'
 DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
+APPLICANT_ROLE_FORM_NAME = 'applicant_role_form'
 PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
 
 
@@ -165,6 +167,7 @@ class AbstractProposalView(TemplateView):
 
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
                                                       instance=proposal)
+            applicant_role_form = ApplicantRole(prefix=APPLICANT_ROLE_FORM_NAME)
             proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                    instance=proposal,
                                                                    form_kwargs={'call': call})
@@ -198,6 +201,7 @@ class AbstractProposalView(TemplateView):
 
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
+            applicant_role_form = ApplicantRole(prefix=APPLICANT_ROLE_FORM_NAME)
             proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                    form_kwargs={'call': call})
             overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
@@ -216,6 +220,7 @@ class AbstractProposalView(TemplateView):
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
         context[FUNDING_FORM_NAME] = funding_form
+        context[APPLICANT_ROLE_FORM_NAME] = applicant_role_form
         context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
@@ -233,7 +238,7 @@ class AbstractProposalView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         # Optional form, depending on call.other_funding_question
-        funding_form = proposal_partners_form = proposal_project_overarching_form = None
+        funding_form = applicant_role_form = proposal_partners_form = proposal_project_overarching_form = None
 
         if 'uuid' in kwargs:
             # Editing an existing proposal
@@ -298,9 +303,12 @@ class AbstractProposalView(TemplateView):
                                                           instance=proposal)
 
             if call.proposal_partner_question:
+                applicant_role_form = ApplicantRole(request.POST,
+                                                    prefix=APPLICANT_ROLE_FORM_NAME)  # TODO pass the current values
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        instance=proposal,
-                                                                       form_kwargs={'call': proposal.call})
+                                                                       form_kwargs={
+                                                                           'call': proposal.call})  # TODO exclude the values
 
             if call.overarching_project_question:
                 proposal_project_overarching_form = ProjectOverarchingForm(request.POST,
@@ -330,6 +338,7 @@ class AbstractProposalView(TemplateView):
                 funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
 
             if call.proposal_partner_question:
+                applicant_role_form = ApplicantRole(request.POST, prefix=APPLICANT_ROLE_FORM_NAME)
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        form_kwargs={'call': call})
 
@@ -346,6 +355,7 @@ class AbstractProposalView(TemplateView):
             forms_to_validate.append(funding_form)
 
         if call.proposal_partner_question:
+            forms_to_validate.append(applicant_role_form)
             forms_to_validate.append(proposal_partners_form)
 
         if call.overarching_project_question:
@@ -425,6 +435,7 @@ class AbstractProposalView(TemplateView):
         context[BUDGET_FORM_NAME] = budget_form
 
         if call.other_funding_question:
+            context[APPLICANT_ROLE_FORM_NAME] = applicant_role_form
             context[FUNDING_FORM_NAME] = funding_form
 
         if call.proposal_partner_question:

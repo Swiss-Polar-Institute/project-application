@@ -2,12 +2,16 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 <p>
-    Please enter the details of all partners involved in the {{ activity }}. Include the applicant.<br>
+    Please enter the details of all partners involved in the {{ activity }}.<br>
     <strong>If a partner changes: please remove the partner and add a new one instead of editing the partner.</strong>
 </p>
 
-{{ proposal_partners_form.management_form }}
+<h3>Applicant role</h3>
+{{ applicant_role_form.management_form }}
+{% crispy applicant_role_form %}
 
+{{ proposal_partners_form.management_form }}
+<hr>
 {% if proposal_partners_form.non_form_errors %}
     {{ proposal_partners_form|as_crispy_errors }}
 {% endif %}
