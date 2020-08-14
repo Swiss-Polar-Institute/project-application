@@ -30,8 +30,10 @@
 {% include 'common/_accordion.tmpl' with prefix='project_description' button_text='Project description details' template_file='common/_project_description.tmpl' %}
 <br>
 {% if proposal_partner_question %}
-    <h3>Partners</h3>
-    {% include 'common/_accordion.tmpl' with prefix='partners' button_text='Partner details' template_file='common/_table-partners.tmpl' %}
+    <h3>Roles and competences</h3>
+    {% include 'common/_accordion.tmpl' with prefix='applicant_role' button_text='Applicant' template_file='common/_role_description.tmpl' role_description=proposal.applicant_role_description %}
+    <br>
+    {% include 'common/_accordion.tmpl' with prefix='partners' button_text='Partner' template_file='common/_table-partners.tmpl' %}
     <br>
 {% endif %}
 
