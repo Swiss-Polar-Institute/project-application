@@ -72,6 +72,8 @@
                             Validation</a>
                     {% endif %}
                 {% endif %}
+                <a class="btn btn-primary btn-xs" href="{% url 'logged-proposal-preview' %}?call={{ call.id }}">Proposal
+                    preview</a>
             </td>
         </tr>
     {% endfor %}

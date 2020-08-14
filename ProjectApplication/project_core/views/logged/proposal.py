@@ -165,3 +165,8 @@ class ProposalView(AbstractProposalView):
     extra_context = {'active_section': 'lists',
                      'active_subsection': 'proposal-list',
                      'sidebar_template': 'logged/_sidebar-lists.tmpl'}
+
+
+class ProposalPreview(AbstractProposalView):
+    preview = True
+    form_template = 'common/form-proposal.tmpl'

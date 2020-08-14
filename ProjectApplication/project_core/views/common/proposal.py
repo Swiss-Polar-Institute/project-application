@@ -208,7 +208,11 @@ class AbstractProposalView(TemplateView):
             overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
             data_collection_form = DataCollectionForm(prefix=DATA_COLLECTION_FORM_NAME)
 
-            context['proposal_action_url'] = f'{reverse(self.action_url_add)}?call={call.id}'
+            if getattr(self, 'preview', False):
+                context['proposal_action_url'] = None
+                context['preview'] = True
+            else:
+                context['proposal_action_url'] = f'{reverse(self.action_url_add)}?call={call.id}'
 
             context['action'] = 'New'
 

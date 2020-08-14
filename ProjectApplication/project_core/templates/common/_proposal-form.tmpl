@@ -2,6 +2,11 @@
 {% load in_management %}
 
 {% include 'common/_messages-box.tmpl' %}
+{% if preview %}
+    <div class="alert alert-primary" role="alert">
+        This is a preview of the proposal: it cannot be saved but it can be used to see how it looks to the applicants.
+    </div>
+{% endif %}
 <br>
 {% if proposal_status_is_draft %}
     <div class="alert alert-secondary" role="alert"><i class="fas fa-info-circle"></i> This proposal is a draft and will
@@ -58,18 +63,23 @@
 
     {% crispy data_collection_form %}
 
-    {% if request|in_management %}
-        {% include 'common/_submit-button.tmpl' with value='Save' name='save_changes' %}
-    {% else %}
-        {% include 'common/_submit-button.tmpl' with value='Save Draft' name='save_draft' %}
-        {% include 'common/_submit-button.tmpl' with value='Submit' name='submit' %}
+    {% if not preview %}
+        {% if request|in_management %}
+            {% include 'common/_submit-button.tmpl' with value='Save' name='save_changes' %}
+        {% else %}
+            {% include 'common/_submit-button.tmpl' with value='Save Draft' name='save_draft' %}
+            {% include 'common/_submit-button.tmpl' with value='Submit' name='submit' %}
 
-        <p>
-            After saving your draft proposal you will be able to edit the proposal until the call deadline. Unsubmitted
-            drafts will not be evaluated. <br>
-            Please make sure to submit the final version of your proposal before the call deadline.
-            {% include 'common/_submitted_cannot_modify_text.tmpl' %}
-        </p>
+            <p>
+                After saving your draft proposal you will be able to edit the proposal until the call deadline.
+                Unsubmitted
+                drafts will not be evaluated. <br>
+                Please make sure to submit the final version of your proposal before the call deadline.
+                {% include 'common/_submitted_cannot_modify_text.tmpl' %}
+            </p>
+        {% endif %}
+    {% else %}
+        <strong>This is a proposal preview: it cannot be saved.</strong>
     {% endif %}
     <p></p>
 </form>
