@@ -330,6 +330,11 @@ class PostalAddressAdmin(admin.ModelAdmin):
     ordering = ['address', 'city', 'postcode', 'country__name']
 
 
+class RoleDescriptionAdmin(admin.ModelAdmin):
+    list_display = ('role', 'description', 'competences',)
+    ordering = ('role', 'description', 'competences',)
+
+
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
@@ -367,3 +372,4 @@ admin.site.register(project_core.models.Project, ProjectAdmin)
 admin.site.register(project_core.models.ProjectPartner, ProjectPartnerAdmin)
 admin.site.register(project_core.models.FinancialKey, FinancialKeyAdmin)
 admin.site.register(project_core.models.PostalAddress, PostalAddressAdmin)
+admin.site.register(project_core.models.RoleDescription, RoleDescriptionAdmin)

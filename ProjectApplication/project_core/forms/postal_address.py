@@ -18,8 +18,8 @@ class PostalAddressForm(ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                Div(Div('address'), css_class='col-6'),
-                Div(Div('city', 'postcode', 'country'), css_class='col-6'),
+                Div('address', css_class='col-6'),
+                Div('city', 'postcode', 'country', css_class='col-6'),
                 css_class='row'
             )
         )

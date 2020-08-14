@@ -1,17 +1,18 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
+
+<h3>Applicant</h3>
+{{ applicant_role_description_form.management_form }}
+{% crispy applicant_role_description_form %}
+
+{{ proposal_partners_form.management_form }}
+<h3>Partners</h3>
 <p>
     Please enter the details of all partners involved in the {{ activity }}.<br>
     <strong>If a partner changes: please remove the partner and add a new one instead of editing the partner.</strong>
 </p>
 
-<h3>Applicant role</h3>
-{{ applicant_role_form.management_form }}
-{% crispy applicant_role_form %}
-
-{{ proposal_partners_form.management_form }}
-<hr>
 {% if proposal_partners_form.non_form_errors %}
     {{ proposal_partners_form|as_crispy_errors }}
 {% endif %}
@@ -24,12 +25,11 @@
                 {% crispy proposal_partner_form %}
             </td>
         </tr>
-
     {% endfor %}
     </tbody>
 </table>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="{% static 'external/jquery/jquery-2.1.3-min.js' %}"></script>
 <script>
     var jQueryForFormset = $.noConflict();
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
