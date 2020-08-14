@@ -15,7 +15,15 @@ function setupOrcidLookup(formPrefix, orcidFieldName, firstNameFieldName, surnam
 
     let startLookup = function () {
         function success(orcidRecord) {
-            let familyName = orcidRecord['person']['name']['family-name'].value;
+            // In Orcid the family name can be none
+            // For now it fills in N/A but perhaps in the future it should say
+            // amend Orcid? Or allow in the database that familyName can be NULL
+            let familyName = 'N/A';
+            let orcidRecordFamilyName = orcidRecord['person']['name']['family-name'];
+            if (orcidRecordFamilyName) {
+                familyName = orcidRecordFamilyName.value;
+            }
+
             let givenNames = orcidRecord['person']['name']['given-names'].value;
 
             $(firstNameSelector).val(givenNames);
