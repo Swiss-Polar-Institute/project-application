@@ -665,7 +665,7 @@ class ExternalProject(CreateModifyOn):
 
 class PostalAddress(CreateModifyOn):
     # We've decided to not normalise this model
-    address = models.TextField(help_text='Include department name, street/avenue, block, building, floor, door, etc.')
+    address = models.TextField(help_text='Department name, street/avenue, block, building, floor, door, etc.')
 
     city = models.CharField(max_length=256)
     postcode = models.CharField(max_length=128)

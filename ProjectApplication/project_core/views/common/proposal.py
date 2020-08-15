@@ -168,7 +168,8 @@ class AbstractProposalView(TemplateView):
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
                                                       instance=proposal)
             applicant_role_description_form = RoleDescriptionForm(prefix=APPLICANT_ROLE_DESCRIPTION_FORM_NAME,
-                                                                  instance=proposal.applicant_role_description)
+                                                                  instance=proposal.applicant_role_description,
+                                                                  call=call)
             proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                    instance=proposal,
                                                                    form_kwargs={'call': call})
@@ -202,7 +203,8 @@ class AbstractProposalView(TemplateView):
 
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
-            applicant_role_description_form = RoleDescriptionForm(prefix=APPLICANT_ROLE_DESCRIPTION_FORM_NAME)
+            applicant_role_description_form = RoleDescriptionForm(prefix=APPLICANT_ROLE_DESCRIPTION_FORM_NAME,
+                                                                  call=call)
             proposal_partners_form = ProposalPartnersInlineFormSet(prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                    form_kwargs={'call': call})
             overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
@@ -310,7 +312,8 @@ class AbstractProposalView(TemplateView):
             if call.proposal_partner_question:
                 applicant_role_description_form = RoleDescriptionForm(request.POST,
                                                                       prefix=APPLICANT_ROLE_DESCRIPTION_FORM_NAME,
-                                                                      instance=proposal.applicant_role_description)
+                                                                      instance=proposal.applicant_role_description,
+                                                                      call=call)
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        instance=proposal,
                                                                        form_kwargs={
@@ -345,7 +348,8 @@ class AbstractProposalView(TemplateView):
 
             if call.proposal_partner_question:
                 applicant_role_description_form = RoleDescriptionForm(request.POST,
-                                                                      prefix=APPLICANT_ROLE_DESCRIPTION_FORM_NAME)
+                                                                      prefix=APPLICANT_ROLE_DESCRIPTION_FORM_NAME,
+                                                                      call=call)
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        form_kwargs={'call': call})
 

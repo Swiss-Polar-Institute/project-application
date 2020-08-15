@@ -33,3 +33,6 @@ class PostalAddressForm(ModelForm):
     class Meta:
         model = PostalAddress
         fields = ['address', 'city', 'postcode', 'country']
+        help_texts = {
+            'address': 'Please enter the professional postal address to which correspondence related to this proposal can be sent. Correspondence will be addressed to the applicant'}
+        labels = {'address': 'Professional postal address'}

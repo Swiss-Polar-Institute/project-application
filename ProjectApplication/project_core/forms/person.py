@@ -13,7 +13,7 @@ from ..utils.utils import create_person_position
 from ..widgets import XDSoftYearMonthPickerInput
 
 HELP_TEXTS_HEAD_OF_YOUR_RESEARCH = {'orcid': 'Enter the ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
-                                             'Please ask your head of research if unknown.',
+                                             'Please ask your head of research unit if unknown',
                                     'first_name': 'Populated from ORCID iD',
                                     'surname': 'Populated from ORCID iD',
                                     'academic_title': 'Mandatory if ORCID iD is entered'}
@@ -117,6 +117,11 @@ class PersonForm(Form):
                 css_class='row'
             ),
             Div(
+                Div('career_stage', css_class='col-8'),
+                Div('phd_date', css_class='col-4'),
+                css_class='row'
+            ),
+            Div(
                 Div('email', css_class='col-6'),
                 Div('phone', css_class='col-6'),
                 css_class='row'
@@ -127,11 +132,6 @@ class PersonForm(Form):
             ),
             Div(
                 Div('group', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('career_stage', css_class='col-8'),
-                Div('phd_date', css_class='col-4'),
                 css_class='row'
             ),
         )

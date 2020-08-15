@@ -3,11 +3,15 @@ from crispy_forms.layout import Layout, Div
 from django import forms
 
 from project_core.models import RoleDescription
+from variable_templates.utils import apply_templates
 
 
 class RoleDescriptionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        call = kwargs.pop('call', None)
         super().__init__(*args, **kwargs)
+
+        apply_templates(self.fields, call)
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
@@ -33,3 +37,7 @@ class RoleDescriptionForm(forms.ModelForm):
     class Meta:
         model = RoleDescription
         fields = ['role', 'description', 'competences']
+        help_texts = {'role': 'Select the role of the applicant in the proposed {{ activity }}',
+                      'description': "Description of the applicant's role",
+                      'competences': "Description of the applicant's key competences"
+                      }
