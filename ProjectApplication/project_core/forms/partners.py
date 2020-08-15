@@ -139,7 +139,7 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
         principal_investigators_count = 0
         co_principal_investigators_count = 0
 
-        principal_investigator = Role.objects.get(name='Principal investigator')
+        principal_investigator = Role.objects.get(name='Principal Investigator')
         co_principal_investigator = Role.objects.get(name='Co-Principal Investigator')
 
         applicant_orcid = None
