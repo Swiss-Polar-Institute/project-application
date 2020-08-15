@@ -2,6 +2,10 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 
+{% if proposal_partners_form.non_form_errors %}
+    {{ proposal_partners_form|as_crispy_errors }}
+{% endif %}
+
 <h3>Applicant</h3>
 {{ applicant_role_description_form.management_form }}
 {% crispy applicant_role_description_form %}
@@ -11,10 +15,6 @@
 <p>
     Please enter the details of all partners involved in the {{ activity }}.
 </p>
-
-{% if proposal_partners_form.non_form_errors %}
-    {{ proposal_partners_form|as_crispy_errors }}
-{% endif %}
 
 <table id="proposal_partners_form_table" class="table table-striped table-sm">
     <tbody>

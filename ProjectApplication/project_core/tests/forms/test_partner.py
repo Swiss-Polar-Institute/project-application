@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 from project_core.forms.partners import ProposalPartnerItemForm
-from project_core.models import PhysicalPerson
+from project_core.models import PhysicalPerson, Role
 from project_core.tests import database_population
 
 
@@ -12,7 +12,7 @@ class PartnerFormTest(TestCase):
         self._academic_title = database_population.create_academic_title()
         self._career_stage = database_population.create_career_stage()
         self._organisations = database_population.create_organisation_names()
-        self._role = database_population.create_role()
+        self._role = database_population.create_roles()[0]
 
     def test_save_partner(self):
         data = {'person__physical_person__orcid': '1111-0002-1825-0097',
@@ -21,7 +21,7 @@ class PartnerFormTest(TestCase):
                 'person__academic_title': self._academic_title,
                 'person__group': 'Lab of Science',
                 'person__career_stage': self._career_stage.id,
-                'role': self._role.id,
+                'role': Role.objects.get(name='Principal Investigator').id,
                 'role_description': 'Very useful!',
                 'competences': 'Many',
                 'person__organisations': [self._organisations[0].id],

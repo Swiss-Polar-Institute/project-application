@@ -209,9 +209,14 @@ def create_organisations():
     return organisation1, organisation2
 
 
-def create_role():
-    role, created = Role.objects.get_or_create(name='Collaborator', description='Collaborates')
-    return role
+def create_roles():
+    collaborator = Role.objects.get_or_create(name='Collaborator', description='Collaborates')
+    principal_investigator = Role.objects.get_or_create(name='Principal Investigator',
+                                                        description='Principal Investigator')
+    co_principal_investigator = Role.objects.get_or_create(name='Co-Principal Investigator',
+                                                           description='Co-Principal Investigator')
+
+    return collaborator, principal_investigator, co_principal_investigator
 
 
 def create_organisation_names():

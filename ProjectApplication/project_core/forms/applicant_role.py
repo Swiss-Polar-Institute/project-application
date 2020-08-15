@@ -2,6 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div
 from django import forms
 
+from project_core.forms.utils import LabelAndOrderNameChoiceField
 from project_core.models import RoleDescription
 from variable_templates.utils import apply_templates
 
@@ -41,3 +42,4 @@ class RoleDescriptionForm(forms.ModelForm):
                       'description': "Description of the applicant's role",
                       'competences': "Description of the applicant's key competences"
                       }
+        field_classes = {'role': LabelAndOrderNameChoiceField}

@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
 
-from project_core.models import Proposal, Country
+from project_core.models import Proposal, Country, Role
 from project_core.tests import database_population
 from variable_templates.tests import database_population as database_population_variable_templates
 
@@ -22,7 +22,7 @@ class ProposalFormTest(TestCase):
         self._geographical_areas = database_population.create_geographical_areas()
         self._keywords = database_population.create_keywords()
         self._career_stage = database_population.create_career_stage()
-        self._role = database_population.create_role()
+        self._role = database_population.create_roles()[0]
 
         database_population.create_proposal_status()
         database_population_variable_templates.create_default_variables()
@@ -88,7 +88,7 @@ class ProposalFormTest(TestCase):
                 'head_of_research_unit_form-surname': ['Doe'],
                 'head_of_research_unit_form-orcid': [orcid],
 
-                'applicant_role_description_form-role': [self._role.id],
+                'applicant_role_description_form-role': [Role.objects.get(name='Principal Investigator').id],
                 'applicant_role_description_form-description': ['Very important role!'],
                 'applicant_role_description_form-competences': ['Very important competences'],
             }
@@ -169,7 +169,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-0-person__group': ['Some group'],
                                     'proposal_partners_form-0-person__career_stage': [self._career_stage.id],
                                     'proposal_partners_form-0-person__organisations': [self._organisation_names[0].id],
-                                    'proposal_partners_form-0-role': [self._role.id],
+                                    'proposal_partners_form-0-role': [Role.objects.get(name='Collaborator').id],
                                     'proposal_partners_form-0-role_description': ['Will help loads'],
                                     'proposal_partners_form-0-competences': ['Many'],
                                     'proposal_partners_form-0-DELETE': [''],
@@ -196,7 +196,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-0-person__group': ['Some group'],
                                     'proposal_partners_form-0-person__career_stage': [self._career_stage.id],
                                     'proposal_partners_form-0-person__organisations': [self._organisation_names[0].id],
-                                    'proposal_partners_form-0-role': [self._role.id],
+                                    'proposal_partners_form-0-role': [Role.objects.get(name='Principal Investigator').id],
                                     'proposal_partners_form-0-role_description': ['Will help loads'],
                                     'proposal_partners_form-0-competences': ['Many'],
                                     'proposal_partners_form-0-DELETE': [''],
@@ -208,7 +208,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-1-person__group': ['Some group'],
                                     'proposal_partners_form-1-person__career_stage': [self._career_stage.id],
                                     'proposal_partners_form-1-person__organisations': [self._organisation_names[0].id],
-                                    'proposal_partners_form-1-role': [self._role.id],
+                                    'proposal_partners_form-1-role': [Role.objects.get(name='Collaborator').id],
                                     'proposal_partners_form-1-role_description': ['Will help loads'],
                                     'proposal_partners_form-1-competences': ['Many'],
                                     'proposal_partners_form-1-DELETE': [''],
@@ -239,7 +239,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-0-person__group': ['Some group'],
                                     'proposal_partners_form-0-person__career_stage': [self._career_stage.id],
                                     'proposal_partners_form-0-person__organisations': [self._organisation_names[0].id],
-                                    'proposal_partners_form-0-role': [self._role.id],
+                                    'proposal_partners_form-0-role': [Role.objects.get(name='Collaborator').id],
                                     'proposal_partners_form-0-role_description': ['Will help loads'],
                                     'proposal_partners_form-0-competences': ['Many'],
                                     'proposal_partners_form-0-DELETE': [''],
@@ -251,7 +251,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-1-person__group': ['Some group'],
                                     'proposal_partners_form-1-person__career_stage': [self._career_stage.id],
                                     'proposal_partners_form-1-person__organisations': [self._organisation_names[0].id],
-                                    'proposal_partners_form-1-role': [self._role.id],
+                                    'proposal_partners_form-1-role': [Role.objects.get(name='Collaborator').id],
                                     'proposal_partners_form-1-role_description': ['Will help loads'],
                                     'proposal_partners_form-1-competences': ['Many'],
                                     'proposal_partners_form-1-DELETE': ['on'],

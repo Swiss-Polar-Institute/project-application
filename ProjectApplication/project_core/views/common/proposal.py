@@ -316,6 +316,8 @@ class AbstractProposalView(TemplateView):
                                                                       call=call)
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        instance=proposal,
+                                                                       applicant_role_description_form=applicant_role_description_form,
+                                                                       person_form=person_form,
                                                                        form_kwargs={
                                                                            'call': proposal.call})  # TODO exclude the values
 
@@ -351,6 +353,8 @@ class AbstractProposalView(TemplateView):
                                                                       prefix=APPLICANT_ROLE_DESCRIPTION_FORM_NAME,
                                                                       call=call)
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
+                                                                       applicant_role_description_form=applicant_role_description_form,
+                                                                       person_form=person_form,
                                                                        form_kwargs={'call': call})
 
             if call.overarching_project_question:

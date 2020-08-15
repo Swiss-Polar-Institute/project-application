@@ -96,6 +96,7 @@ class PersonForm(Form):
                                                    help_text='Please type the names of the group(s) or laboratories to which you are affiliated for the purposes of this proposal',
                                                    label='Group / lab',
                                                    required=False)
+            # If adding fields here: see below to remove them from the self.helper.layout
 
         for field_str, field in self.fields.items():
             if self._all_fields_are_optional:
@@ -135,6 +136,25 @@ class PersonForm(Form):
                 css_class='row'
             ),
         )
+
+        if self._only_basic_fields:
+            # The Layout always includes all the fields. Now it's better to remove the fields that don't exist
+            # to avoid django-crispy-forms warnings (not fatal)
+            PersonForm._delete_field_from_layout(self.helper.layout.fields, 'gender')
+            PersonForm._delete_field_from_layout(self.helper.layout.fields, 'career_stage')
+            PersonForm._delete_field_from_layout(self.helper.layout.fields, 'email')
+            PersonForm._delete_field_from_layout(self.helper.layout.fields, 'phone')
+            PersonForm._delete_field_from_layout(self.helper.layout.fields, 'phd_date')
+            PersonForm._delete_field_from_layout(self.helper.layout.fields, 'organisation_names')
+            PersonForm._delete_field_from_layout(self.helper.layout.fields, 'group')
+
+    @staticmethod
+    def _delete_field_from_layout(container, field_str):
+        for item in container:
+            if type(item) == Div:
+                PersonForm._delete_field_from_layout(item, field_str)
+            elif type(item) == str and item == field_str:
+                container.remove(field_str)
 
     def get_person_positions(self):
         """ Matches and returns the person_position from the database. """

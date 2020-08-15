@@ -5,7 +5,8 @@ from django.db import transaction
 from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
-from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
+from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage, \
+    Role
 from variable_templates.utils import apply_templates
 from .utils import organisations_name_autocomplete
 from ..utils.orcid import field_set_read_only, orcid_div
@@ -119,6 +120,9 @@ class ProposalPartnerItemForm(ModelForm):
 
 class ProposalPartnersFormSet(BaseInlineFormSet):
     def __init__(self, *args, **kwargs):
+        self._applicant_role_description_form = kwargs.pop('applicant_role_description_form', None)
+        self._applicant_person_form = kwargs.pop('person_form', None)
+
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -132,6 +136,25 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
 
         orcids = set()
 
+        principal_investigators_count = 0
+        co_principal_investigators_count = 0
+
+        principal_investigator = Role.objects.get(name='Principal investigator')
+        co_principal_investigator = Role.objects.get(name='Co-Principal Investigator')
+
+        applicant_orcid = None
+
+        if self._applicant_role_description_form.is_valid():
+            applicant_role = self._applicant_role_description_form.cleaned_data['role']
+
+            if applicant_role == principal_investigator:
+                principal_investigators_count += 1
+            elif applicant_role == co_principal_investigator:
+                co_principal_investigators_count += 1
+
+        if self._applicant_person_form.is_valid():
+            applicant_orcid = self._applicant_person_form.cleaned_data['orcid']
+
         for form_data in self.cleaned_data:
             if not form_data or form_data['DELETE']:
                 continue
@@ -142,7 +165,29 @@ class ProposalPartnersFormSet(BaseInlineFormSet):
                 raise forms.ValidationError(
                     'A proposal partner has been entered more than once. Use the remove button to delete the duplicated partner.')
 
+            if applicant_orcid is not None and partner_orcid == applicant_orcid:
+                raise forms.ValidationError(
+                    'A proposal partner has the same ORCID iD as the applicant. Please do not include the applicant as a partner.'
+                )
+
+            partner_role = form_data['role']
+
+            if partner_role == principal_investigator:
+                principal_investigators_count += 1
+            elif partner_role == co_principal_investigator:
+                co_principal_investigators_count += 1
+
             orcids.add(partner_orcid)
+
+        if principal_investigators_count > 1:
+            raise forms.ValidationError(
+                'Only one person can be a Principal Investigator. If two or more people are sharing this role please enter them as Co-Principal Investigators.'
+            )
+
+        if principal_investigators_count == 0 and co_principal_investigators_count < 2:
+            raise forms.ValidationError(
+                'Please make sure that there is at least one Principal Investigator or at least two Co-Principal Investigators.'
+            )
 
     @staticmethod
     def _delete_proposal_partner(proposal_partner):
