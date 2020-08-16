@@ -55,7 +55,8 @@ class PersonForm(Form):
                                                                                  'Please create an <a href="https://orcid.org">ORCID iD</a> if you do not already have one'))
 
         self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(),
-                                                               initial=academic_title_initial)
+                                                               initial=academic_title_initial,
+                                                               required=not self._only_basic_fields)
 
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,
                                                     label='First name(s)',
@@ -96,6 +97,7 @@ class PersonForm(Form):
                                                    help_text='Please type the names of the group(s) or laboratories to which you are affiliated for the purposes of this proposal',
                                                    label='Group / lab',
                                                    required=False)
+
             # If adding fields here: see below to remove them from the self.helper.layout
 
         for field_str, field in self.fields.items():
@@ -196,10 +198,16 @@ class PersonForm(Form):
     def clean(self):
         cd = super().clean()
 
-        if self._all_fields_are_optional:
+        # If ORCID iD is filled in: other fields are mandatory
+        if self._all_fields_are_optional and cd['orcid']:
             for field_str, field in self.fields.items():
-                if field_str not in cd or cd[field_str] is None:
+                if field_str not in cd or not cd[field_str]:  # It needs to be in cd and have a value
                     self.add_error(field_str, 'Mandatory field if ORCiD iD is filled in')
+
+        if self._all_fields_are_optional and not cd['orcid']:
+            for field_str, field in self.fields.items():
+                if field_str in cd and cd[field_str]:
+                    self.add_error(field_str, 'It cannot contain any information if ORCiD ID is empty')
 
         return cd
 
