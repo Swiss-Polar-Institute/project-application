@@ -35,6 +35,8 @@
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-call-update' pk=call.id %}">Edit</a>
                 {% endif %}
                 {% if proposal_call_list_button %}
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-proposal-preview' %}?call={{ call.id }}">Form
+                        Preview</a>
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-call-list-proposals' call_id=call.id %}">List
                         Proposals</a>
                 {% endif %}
@@ -72,8 +74,6 @@
                             Validation</a>
                     {% endif %}
                 {% endif %}
-                <a class="btn btn-primary btn-xs" href="{% url 'logged-proposal-preview' %}?call={{ call.id }}">Proposal
-                    preview</a>
             </td>
         </tr>
     {% endfor %}
