@@ -13,7 +13,7 @@ from ..utils.utils import create_person_position
 from ..widgets import XDSoftYearMonthPickerInput
 
 HELP_TEXTS_HEAD_OF_YOUR_RESEARCH = {'orcid': 'Enter the ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
-                                             'Please ask your head of research unit if unknown',
+                                             'Please your head of research unit if unknown',
                                     'first_name': 'Populated from ORCID iD',
                                     'surname': 'Populated from ORCID iD',
                                     'academic_title': 'Mandatory if ORCID iD is entered'}
