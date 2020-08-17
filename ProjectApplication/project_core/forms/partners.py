@@ -28,7 +28,8 @@ class ProposalPartnerItemForm(ModelForm):
     person__physical_person__surname = forms.CharField(**get_field_information(PhysicalPerson, 'surname', help_text=''),
                                                        label='Surname(s)')
     person__academic_title = forms.ModelChoiceField(PersonTitle.objects.all().order_by('title'), label='Academic title')
-    person__career_stage = forms.ModelChoiceField(CareerStage.objects.all().order_by('name'), label='Career stage')
+    person__career_stage = forms.ModelChoiceField(CareerStage.objects.all().order_by('list_order'),
+                                                  label='Career stage')
     person__group = forms.CharField(**get_field_information(PersonPosition, 'group', label='Group / lab',
                                                             help_text='Please type the names of the group(s) or laboratories to which the partner belongs for the purposes of this proposal'))
 

@@ -505,6 +505,7 @@ class CareerStage(models.Model):
     name = models.CharField(help_text='Name of career stage', max_length=50, null=False, blank=False, unique=True)
     description = models.CharField(help_text='Description of the career stage', max_length=100, null=False,
                                    blank=False)
+    list_order = models.IntegerField(help_text='Order that this field is displayed', null=True, blank=True)
 
     def __str__(self):
         return '{}'.format(self.name)

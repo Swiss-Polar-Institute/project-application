@@ -72,8 +72,9 @@ class PersonForm(Form):
             self.fields['gender'] = forms.ModelChoiceField(queryset=Gender.objects.all(),
                                                            initial=gender_initial)
 
-            self.fields['career_stage'] = forms.ModelChoiceField(queryset=CareerStage.objects.all(),
-                                                                 initial=career_stage_initial)
+            self.fields['career_stage'] = forms.ModelChoiceField(
+                queryset=CareerStage.objects.all().order_by('list_order', 'name'),
+                initial=career_stage_initial)
 
             self.fields['email'] = forms.EmailField(initial=email_initial,
                                                     help_text='Please write a valid email address. You will receive a confirmation email when saving and submitting your application form. This email address will also be used for communication purposes')
