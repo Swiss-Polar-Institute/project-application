@@ -198,6 +198,12 @@ class PersonForm(Form):
     def clean(self):
         cd = super().clean()
 
+        if self.errors:
+            # If there are errors they might be related to orcid (e.g. using the example
+            # ORCID iD, so cd['orcid'] doesn't exist. At this point we don't do further cleaning:
+            # the user needs to fix the errors in the form before further cleaning is done.
+            return cd
+
         # If ORCID iD is filled in: other fields are mandatory
         if self._all_fields_are_optional and cd['orcid']:
             for field_str, field in self.fields.items():
