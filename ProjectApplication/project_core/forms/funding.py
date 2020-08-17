@@ -24,7 +24,7 @@ class ProposalFundingItemForm(ModelForm):
         labels = {'amount': 'Total (CHF)'}
         localized_fields = ('amount',)
         help_texts = {'amount': '',
-                      'organisation_name': 'Please select the organisation from which funding has been sought.<br> If it is not available amongst the options provided, type the name and click on “Create”'}
+                      'organisation_name': 'Please select the organisation from which funding has been sought.<br> If it is not available amongst the options provided, type the full name and click on “Create”'}
 
 
 class ProposalFundingFormSet(BaseInlineFormSet):
