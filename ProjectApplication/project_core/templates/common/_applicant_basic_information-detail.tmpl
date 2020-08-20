@@ -4,20 +4,7 @@
 {% with applicant=proposal.applicant %}
     {% include 'common/_person_position_with_orcid.tmpl' with person_position=applicant %}
     (Gender: {% include 'common/_value-or-dash.tmpl' with value=applicant.person.gender %})
-    <br>
-    <div class="row">
-        <div class="col-6">
-            <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=applicant.main_email %}
-        </div>
-        <div class="col-6">
-            <strong>Phone:</strong> {% include 'common/_link_or_dash.tmpl' with phone=applicant.main_phone phone_uri=applicant.main_phone_uri %}
-        </div>
-    </div>
-    <br>
-    <strong>Organisations:</strong>
-    {% include 'common/_organisation-list.tmpl' with organisations=applicant.organisations_ordered_by_name %}
-    <br>
-    <strong>Group / lab:</strong> {{ applicant.group }}<br>
+
     <div class="row">
         <div class="col-6">
             <strong>Career stage:</strong> {{ applicant.career_stage }}
@@ -27,4 +14,17 @@
                 PhD:</strong> {% include 'common/_value-or-dash.tmpl' with value=applicant.person.phd_date_formatted %}
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-6">
+            <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=applicant.main_email %}
+        </div>
+        <div class="col-6">
+            <strong>Phone:</strong> {% include 'common/_link_or_dash.tmpl' with phone=applicant.main_phone phone_uri=applicant.main_phone_uri %}
+        </div>
+    </div>
+    <strong>Organisations:</strong>
+    {% include 'common/_organisation-list.tmpl' with organisations=applicant.organisations_ordered_by_name %}
+    <br>
+    <strong>Group / lab:</strong> {{ applicant.group }}<br>
 {% endwith %}
