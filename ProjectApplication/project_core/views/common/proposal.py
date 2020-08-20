@@ -20,7 +20,7 @@ from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
 from project_core.forms.partners import ProposalPartnersInlineFormSet
-from project_core.forms.person import PersonForm, HELP_TEXTS_HEAD_OF_YOUR_RESEARCH
+from project_core.forms.person import PersonForm
 from project_core.forms.postal_address import PostalAddressForm
 from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
@@ -31,7 +31,6 @@ from variable_templates.utils import get_template_value_for_call
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
 POSTAL_ADDRESS_FORM_NAME = 'postal_address_form'
-HEAD_OF_RESEARCH_UNIT_FORM_NAME = 'head_of_research_unit_form'
 QUESTIONS_FORM_NAME = 'questions_form'
 BUDGET_FORM_NAME = 'budget_form'
 FUNDING_FORM_NAME = 'funding_form'
@@ -155,11 +154,6 @@ class AbstractProposalView(TemplateView):
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME, instance=proposal.postal_address)
-            head_of_research_unit_form = PersonForm(prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
-                                                    person_position=proposal.head_of_research_unit,
-                                                    help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
-                                                    all_fields_are_optional=True,
-                                                    only_basic_fields=True)
 
             questions_form = Questions(proposal=proposal,
                                        prefix=QUESTIONS_FORM_NAME)
@@ -190,10 +184,6 @@ class AbstractProposalView(TemplateView):
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, only_basic_fields=False)
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
-            head_of_research_unit_form = PersonForm(prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
-                                                    help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
-                                                    all_fields_are_optional=True,
-                                                    only_basic_fields=True)
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)
 
@@ -222,7 +212,6 @@ class AbstractProposalView(TemplateView):
 
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
-        context[HEAD_OF_RESEARCH_UNIT_FORM_NAME] = head_of_research_unit_form
         context[PERSON_FORM_NAME] = person_form
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form
@@ -292,12 +281,6 @@ class AbstractProposalView(TemplateView):
             # Editing an existing proposal
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
-            head_of_research_unit_form = PersonForm(request.POST,
-                                                    person_position=proposal.head_of_research_unit,
-                                                    prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
-                                                    help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
-                                                    all_fields_are_optional=True,
-                                                    only_basic_fields=True)
             postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
             questions_form = Questions(request.POST,
@@ -334,10 +317,6 @@ class AbstractProposalView(TemplateView):
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
-            head_of_research_unit_form = PersonForm(request.POST, prefix=HEAD_OF_RESEARCH_UNIT_FORM_NAME,
-                                                    help_texts=HELP_TEXTS_HEAD_OF_YOUR_RESEARCH,
-                                                    all_fields_are_optional=True,
-                                                    only_basic_fields=True)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
@@ -363,7 +342,7 @@ class AbstractProposalView(TemplateView):
 
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
-        forms_to_validate = [person_form, postal_address_form, head_of_research_unit_form, proposal_form,
+        forms_to_validate = [person_form, postal_address_form, proposal_form,
                              questions_form, budget_form, data_collection_form]
 
         if call.other_funding_question:
@@ -415,10 +394,6 @@ class AbstractProposalView(TemplateView):
 
             proposal.postal_address = postal_address
 
-            if head_of_research_unit_form.cleaned_data['orcid']:
-                head_of_research_unit = head_of_research_unit_form.save_person()
-                proposal.head_of_research_unit = head_of_research_unit
-
             proposal.save()
             proposal_form.save(commit=True)
 
@@ -447,7 +422,6 @@ class AbstractProposalView(TemplateView):
 
         context[PERSON_FORM_NAME] = person_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
-        context[HEAD_OF_RESEARCH_UNIT_FORM_NAME] = head_of_research_unit_form
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[QUESTIONS_FORM_NAME] = questions_form
         context[BUDGET_FORM_NAME] = budget_form

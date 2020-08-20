@@ -83,10 +83,6 @@ class ProposalFormTest(TestCase):
                 'postal_address_form-city': ['New York'],
                 'postal_address_form-postcode': ['429ZKDKZMM'],
                 'postal_address_form-country': [Country.objects.get(name='Switzerland').id],
-                'head_of_research_unit_form-academic_title': [self._person_titles[0].id],
-                'head_of_research_unit_form-first_name': ['John'],
-                'head_of_research_unit_form-surname': ['Doe'],
-                'head_of_research_unit_form-orcid': [orcid],
 
                 'applicant_role_description_form-role': [Role.objects.get(name='Principal Investigator').id],
                 'applicant_role_description_form-description': ['Very important role!'],

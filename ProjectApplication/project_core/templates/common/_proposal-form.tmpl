@@ -32,10 +32,6 @@
 
     {% include 'common/_form-postal_address.tmpl' %}
 
-    <h3>Head of research unit</h3>
-    Include the details of the head of the research unit
-    {% include 'common/_person-form.tmpl' with person_form=head_of_research_unit_form %}
-
     <h3>Proposed {{ activity }}</h3>
     {% crispy proposal_form %}
 
