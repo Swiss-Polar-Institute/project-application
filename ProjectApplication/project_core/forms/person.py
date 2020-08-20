@@ -60,11 +60,11 @@ class PersonForm(Form):
 
         self.fields['first_name'] = forms.CharField(initial=first_name_initial,
                                                     label='First name(s)',
-                                                    help_text='Your name is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>.')
+                                                    help_text='Your name is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>')
 
         self.fields['surname'] = forms.CharField(initial=surname_initial,
                                                  label='Surname(s)',
-                                                 help_text='Your surname is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>.')
+                                                 help_text='Your surname is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>')
 
         field_set_read_only([self.fields['first_name'], self.fields['surname']])
 
