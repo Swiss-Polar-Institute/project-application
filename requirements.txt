@@ -5,7 +5,7 @@ boto3==1.11.16
 botocore==1.14.16
 coverage==5.0.3
 decorator==4.4.1
-Django==3.0.8
+Django==3.0.10
 django-autocomplete-light==3.5.1
 django-crispy-forms==1.9.2
 django-phonenumber-field==4.0.0
