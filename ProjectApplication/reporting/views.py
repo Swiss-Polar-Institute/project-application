@@ -1,4 +1,3 @@
-from django.utils import timezone
 from django.db.models import Count, F, Sum
 from django.utils import timezone
 from django.views.generic import TemplateView
@@ -6,6 +5,8 @@ from django.views.generic import TemplateView
 from project_core.models import Call, Project, Gender, CareerStage, Proposal
 from project_core.templatetags.thousands_separator import thousands_separator
 
+
+NOT_IN_DB_TOOLTIP = 'Probably data imported before the Projects Application existed'
 
 def calculate_number_of_calls():
     result = {}
@@ -85,7 +86,7 @@ class GenderPercentageCalculator:
 
         return genders
 
-    def calculate_gender_percentages(self, generic_queryset):
+    def calculate_gender_totals(self, generic_queryset):
         if self._genders is None:
             self._genders = self._get_genders()
 
@@ -108,18 +109,11 @@ class GenderPercentageCalculator:
                     'Not in DB': '?',
                     }
 
-        female_percentage = percentage(female, total)
-        male_percentage = percentage(male, total)
-        other_percentage = percentage(other, total)
-        prefer_not_to_say_percentage = percentage(prefer_not_to_say, total)
-        not_in_db_percentage = percentage(not_in_db, total)
-
-        return {'Female': female_percentage,
-                'Male': male_percentage,
-                'Other': other_percentage,
-                'Prefer not to say': prefer_not_to_say_percentage,
-                'Not in DB': not_in_db_percentage,
-                'Total': total
+        return {'Female': female,
+                'Male': male,
+                'Other': other,
+                'Prefer not to say': prefer_not_to_say,
+                'Not in DB': not_in_db,
                 }
 
 
@@ -135,7 +129,7 @@ class CareerStagePercentageCalculator():
         result = {}
         for career_stage in self._career_stages:
             result[career_stage.name] = generic_queryset.filter(**{self._career_stage_field: career_stage}).count()
-            result['Unknown'] = generic_queryset.filter(**{f'{self._career_stage_field}__isnull': True}).count()
+            result['Not in DB'] = generic_queryset.filter(**{f'{self._career_stage_field}__isnull': True}).count()
 
         return result
 
@@ -143,7 +137,7 @@ class CareerStagePercentageCalculator():
     def header_names():
         return ["Undergraduate / master's student", 'PhD student', 'Post-doc < 3 years since PhD award date',
                 'Established scientist', 'Other',
-                'Unknown']
+                'Not in DB']
 
 
 def gender_proposal_applicants_per_call():
@@ -154,14 +148,15 @@ def gender_proposal_applicants_per_call():
             order_by('long_name'):
         generic_queryset = call.proposal_set
 
-        percentages = gender_percentage_calculator.calculate_gender_percentages(generic_queryset)
+        percentages = gender_percentage_calculator.calculate_gender_totals(generic_queryset)
         percentages['Grant Scheme'] = call.funding_instrument.long_name
         percentages['Year'] = call.finance_year
         proposals_genders.append(percentages)
 
     result = {}
     result['data'] = proposals_genders
-    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', 'Not in DB', 'Total']
+    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', 'Not in DB']
+    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
     return result
 
 
@@ -173,14 +168,15 @@ def gender_project_principal_investigator_per_call():
             order_by('long_name'):
         generic_queryset = call.project_set
 
-        percentages = gender_percentage_calculator.calculate_gender_percentages(generic_queryset)
+        percentages = gender_percentage_calculator.calculate_gender_totals(generic_queryset)
         percentages['Grant Scheme'] = call.funding_instrument.long_name
         percentages['Year'] = call.finance_year
         proposals_genders.append(percentages)
 
     result = {}
-    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', 'Not in DB', 'Total']
+    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', 'Not in DB']
     result['data'] = proposals_genders
+    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
     return result
 
 
@@ -199,7 +195,7 @@ def career_stage_proposal_applicants_per_year():
                 filter(applicant__career_stage=career_stage). \
                 count()
 
-            row['Unknown'] = Project.objects. \
+            row['Not in DB'] = Project.objects. \
                 filter(call__finance_year=year). \
                 filter(principal_investigator__career_stage__isnull=True). \
                 count()
@@ -208,6 +204,7 @@ def career_stage_proposal_applicants_per_year():
 
     result['headers'] = ['Year'] + CareerStagePercentageCalculator.header_names()
     result['data'] = data
+    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
 
     return result
 
@@ -227,7 +224,7 @@ def career_stage_projects_principal_investigators_per_year():
                 filter(principal_investigator__career_stage=career_stage). \
                 count()
 
-        row['Unknown'] = Project.objects. \
+        row['Not in DB'] = Project.objects. \
             filter(call__finance_year=year). \
             filter(principal_investigator__career_stage__isnull=True). \
             count()
@@ -236,6 +233,7 @@ def career_stage_projects_principal_investigators_per_year():
 
     result['headers'] = result['headers'] = ['Year'] + CareerStagePercentageCalculator.header_names()
     result['data'] = data
+    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
 
     return result
 
@@ -256,6 +254,8 @@ def career_stage_proposal_applicants_per_call():
     result = {}
     result['headers'] = ['Grant Scheme', 'Year'] + career_stage_percentage_calculator.header_names()
     result['data'] = data
+    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
+
     return result
 
 
@@ -275,6 +275,8 @@ def career_stage_project_principal_investigator_per_call():
     result = {}
     result['headers'] = ['Grant Scheme', 'Year'] + career_stage_percentage_calculator.header_names()
     result['data'] = data
+    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
+
     return result
 
 
