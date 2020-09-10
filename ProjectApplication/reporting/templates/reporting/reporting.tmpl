@@ -11,12 +11,12 @@
             <div>
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link active" id="reporting_finance-tab" data-toggle="tab"
+                        <a class="nav-link {% if active_tab == 'finance' %}active{% endif %}" id="reporting_finance-tab" data-toggle="tab"
                            href="#reporting_finance"
                            role="tab">Finance</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="reporting_diversity-tab" data-toggle="tab" href="#reporting_diversity"
+                        <a class="nav-link {% if active_tab == 'diversity' %}active{% endif %}" id="reporting_diversity-tab" data-toggle="tab" href="#reporting_diversity"
                            role="tab">Diversity</a>
                     </li>
                 </ul>

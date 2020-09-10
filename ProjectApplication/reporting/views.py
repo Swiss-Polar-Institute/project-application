@@ -1,7 +1,7 @@
-from django.shortcuts import render
+from django.utils import timezone
+from django.db.models import Count, F, Sum
 from django.utils import timezone
 from django.views.generic import TemplateView
-from django.db.models import Avg, Max, Min, Count, F, Sum, Q
 
 from project_core.models import Call, Project, Gender, CareerStage, Proposal
 from project_core.templatetags.thousands_separator import thousands_separator
@@ -141,7 +141,8 @@ class CareerStagePercentageCalculator():
 
     @staticmethod
     def header_names():
-        return ["Undergraduate / master's student", 'PhD student', 'Post-doc < 3 years since PhD award date', 'Established scientist', 'Other',
+        return ["Undergraduate / master's student", 'PhD student', 'Post-doc < 3 years since PhD award date',
+                'Established scientist', 'Other',
                 'Unknown']
 
 
@@ -307,5 +308,10 @@ class Reporting(TemplateView):
                         'active_subsection': 'reporting',
                         'sidebar_template': 'reporting/_sidebar-reporting.tmpl',
                         'breadcrumb': [{'name': 'Reporting'}]})
+
+        if 'tab' in self.request.GET:
+            context['active_tab'] = self.request.GET['tab']
+        else:
+            context['active_tab'] = 'finance'
 
         return context
