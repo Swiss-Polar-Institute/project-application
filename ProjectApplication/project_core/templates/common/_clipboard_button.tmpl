@@ -11,29 +11,30 @@
         placement: 'bottom'
     });
 
-    function setTooltip(message) {
-        $('#{{ id }}').tooltip('hide')
+    function setTooltip(button, message) {
+        $(button).tooltip('hide')
             .attr('data-original-title', message)
             .tooltip('show');
     }
 
-    function hideTooltip() {
+    function hideTooltip(button) {
         setTimeout(function () {
-            $('#{{ id }}').tooltip('hide');
+            $(button).tooltip('hide');
         }, 1000);
     }
 
-    // Clipboard
-    var clipboard = new ClipboardJS('#{{ id }}');
+    var options = {};
 
-    clipboard.on('success', function (e) {
-        setTooltip('Copied!');
-        hideTooltip();
+    {% if container %}
+        alert('this has container');
+        options['container'] = document.getElementById('{{ container }}');
+    {% endif %}
+    console.log(options);
+    new ClipboardJS('#{{ id }}', options).on('success', function (e) {
+        setTooltip(e.trigger, 'Copied!');
+        hideTooltip(e.trigger);
+    }).on('error', function (e) {
+        setTooltip(e.trigger, 'Failed!');
+        hideTooltip(e.trigger);
     });
-
-    clipboard.on('error', function (e) {
-        setTooltip('Failed!');
-        hideTooltip();
-    });
-
 </script>
