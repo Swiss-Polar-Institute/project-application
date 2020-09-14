@@ -1,10 +1,12 @@
+{% load spi_linebreaksbr %}
+
 {% with postal_address=proposal.postal_address %}
     <div class="row">
         <div class="col-6">
             {#            If changing the width: see what happens in the application when the proposal view is displayed in a widther format#}
             <div class="border p-1 bg-white rounded" style="width: 400px">
                 {% if proposal.postal_address.address %}
-                    {{ proposal.postal_address.address|linebreaksbr }}
+                    {{ proposal.postal_address.address|spi_linebreaksbr }}
                 {% else %}
                     -
                 {% endif %}

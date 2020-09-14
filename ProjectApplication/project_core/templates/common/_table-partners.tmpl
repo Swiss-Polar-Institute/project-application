@@ -1,3 +1,5 @@
+{% load spi_linebreaksbr %}
+{% load get_dictionary_value %}
 {% if proposal.proposalpartner_set.all %}
     <table class="table table-striped table-sm">
         <tbody>
@@ -16,10 +18,10 @@
                     <strong>Role:</strong> {{ partner.role.name }}
                     <br>
                     <strong>Role description:</strong>
-                    <div class="border p-1 rounded">{{ partner.role_description|linebreaksbr }}</div>
+                    <div class="border p-1 rounded">{{ partner.role_description|spi_linebreaksbr }}</div>
                     <br>
                     <strong>Competences:</strong>
-                    <div class="border p-1 rounded">{{ partner.competences|linebreaksbr }}</div>
+                    <div class="border p-1 rounded">{{ partner.competences|spi_linebreaksbr }}</div>
                 </td>
             </tr>
         {% endfor %}
