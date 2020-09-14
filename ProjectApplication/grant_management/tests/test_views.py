@@ -145,7 +145,7 @@ class LaySummariesRawTest(TestCase):
 
     def test_get(self):
         c = Client()
-        response = c.get(reverse('lay-summaries-raw', kwargs={'call': self._project.call.id}))
+        response = c.get(reverse('lay-summaries-for_website', kwargs={'call': self._project.call.id}))
         self.assertEqual(response.status_code, 200)
 
 
