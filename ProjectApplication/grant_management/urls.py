@@ -81,9 +81,9 @@ urlpatterns = [
          grant_management.views.CloseProjectView.as_view(),
          name='logged-grant_management-close_project'),
 
-    path('lay-summaries/<int:call>/raw/',
+    path('lay-summaries/<int:call>/for_website/',
          grant_management.views.LaySummariesRaw.as_view(),
-         name='lay-summaries-raw'),
+         name='lay-summaries-for_website'),
 
     path('logged/autocomplete/milestones-category-names/',
          grant_management.views.MilestoneCategoriesAutocomplete.as_view(create_field='name'),

@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView, ListView
 
+from ProjectApplication import settings
 from comments import utils
 from comments.utils import process_comment_attachment, comments_attachments_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
@@ -72,8 +73,13 @@ class AbstractCallView(TemplateView):
         context.update(comments_attachments_forms('logged-call-comment-add', call))
 
         if call.evaluation_is_closed():
-            context['public_lay_summaries_raw_url'] = self.request.build_absolute_uri(
-                reverse('lay-summaries-raw', kwargs={'call': call.id}))
+            url = self.request.build_absolute_uri(reverse('lay-summaries-for_website', kwargs={'call': call.id}))
+            if settings.HTTP_AUTH_INCOMING_LINKS:
+                username_password_tag = f' userpwd="{settings.HTTP_AUTH_INCOMING_LINKS}"'
+            else:
+                username_password_tag = ''
+
+            context['public_lay_summaries_for_website_url'] = f'[remote_content url="{url}"{username_password_tag}]'
 
         return context
 

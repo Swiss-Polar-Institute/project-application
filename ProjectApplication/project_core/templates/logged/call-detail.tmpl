@@ -19,10 +19,10 @@
             <br>
             <strong>Finance year:</strong> {{ call.finance_year|unlocalize }}
             <br>
-            {% if public_lay_summaries_raw_url %}
-                <strong>Public raw HTML:</strong>
-                {% include 'common/_clipboard_button.tmpl' with url=public_lay_summaries_raw_url id='public_lay_summaries_raw_url' %}
-                (to be used in Wordpress)
+            {% if public_lay_summaries_for_website_url %}
+                <strong>Lay summary website integration:</strong>
+                {% include 'common/_clipboard_button.tmpl' with text=public_lay_summaries_for_website_url id='xxx' %} -
+                {% include 'logged/_instructions_lay_summaries_wordpress-button-model.tmpl' with code=public_lay_summaries_for_website_url %}
                 <br>
             {% endif %}
             <strong>Description:</strong>
