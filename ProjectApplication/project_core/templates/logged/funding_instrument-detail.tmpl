@@ -1,6 +1,5 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 {% load crispy_forms_tags %}
-{% load spi_linebreaksbr %}
 
 {% block contents %}
     <div class="row">
@@ -10,7 +9,7 @@
             <p><strong>Short
                 name: </strong>{% include 'common/_value-or-dash.tmpl' with value=funding_instrument.short_name %}<br>
             <p><strong>Description: </strong>
-            <div class="border p-1 bg-white rounded">{{ funding_instrument.description|spi_linebreaksbr }}</div>
+            <div class="border p-1 bg-white rounded">{{ funding_instrument.description|linebreaksbr }}</div>
             <p></p>
             <h1>Template variables</h1>
             {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}

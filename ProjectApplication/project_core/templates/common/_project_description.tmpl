@@ -1,9 +1,7 @@
-{% load spi_linebreaksbr %}
-
 {% for question_answer in questions_answers %}
     <strong>{{ question_answer.question }}</strong><br>
     {#    @formatter:off#}
-    <div class="border p-1 bg-white rounded">{% if question_answer.answer %}{{ question_answer.answer|spi_linebreaksbr }}{% else %}This question has not been answered{% endif %}</div>
+    <div class="border p-1 bg-white rounded">{% if question_answer.answer %}{{ question_answer.answer|linebreaksbr }}{% else %}This question has not been answered{% endif %}</div>
     {#    @formatter:on#}
     <br>
 {% endfor %}

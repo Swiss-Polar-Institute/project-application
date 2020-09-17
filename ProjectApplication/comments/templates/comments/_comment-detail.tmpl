@@ -1,5 +1,3 @@
-{% load spi_linebreaksbr %}
-
 {% include 'colours/_badge_color.tmpl' with colour=value.category.category.colour text=value.category %}
 {% if value.created_by.first_name %}
     {{ value.created_by.first_name }} {{ value.created_by.last_name }}
@@ -9,7 +7,7 @@
 on {{ value.created_on }}<br>
 
 {% if value.text %}
-    <div class="p-1 border bg-white rounded">{{ value.text|spi_linebreaksbr }}</div>
+    <div class="p-1 border bg-white rounded">{{ value.text|linebreaksbr }}</div>
 {% else %}
     <br>
 {% endif %}
