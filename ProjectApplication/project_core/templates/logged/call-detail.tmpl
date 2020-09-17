@@ -1,6 +1,5 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 {% load thousands_separator %}
-{% load spi_linebreaksbr %}
 {% load l10n %}
 
 {% block contents %}
@@ -30,7 +29,7 @@
             <div class="border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=call.description|linebreaksbr %}</div>
             <br>
             <strong>Introductory message:</strong>
-            <div class="border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=call.introductory_message|spi_linebreaksbr %}</div>
+            <div class="border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=call.introductory_message|linebreaksbr %}</div>
             <br>
             <div class="row">
                 <div class="col-6">
