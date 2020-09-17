@@ -1,3 +1,4 @@
+import logging
 import mimetypes
 import os
 
@@ -38,6 +39,8 @@ DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
 APPLICANT_ROLE_DESCRIPTION_FORM_NAME = 'applicant_role_description_form'
 PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
+
+logger = logging.getLogger('comments')
 
 
 class AbstractProposalDetailView(TemplateView):
@@ -178,8 +181,19 @@ class AbstractProposalView(TemplateView):
             context['proposal_status_is_draft'] = proposal.status_is_draft()
 
         else:
+            if request.GET.get('call', None) is None:
+                logger.warning(
+                    f'NOTIFY: User tried to access to {request.build_absolute_uri()}: call parameter is missing')
+                return redirect(reverse('call-list'))
+
             call_pk = context['call_pk'] = request.GET.get('call')
-            call = Call.objects.get(pk=call_pk)
+
+            try:
+                call = Call.objects.get(pk=call_pk)
+            except ObjectDoesNotExist:
+                logger.warning(f'NOTIFY: User tried to access to {request.build_absolute_uri()}: call does not exist')
+                messages.warning(request, 'This call does not exist. Please see the list of open calls below')
+                return redirect(reverse('call-list'))
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, only_basic_fields=False)
