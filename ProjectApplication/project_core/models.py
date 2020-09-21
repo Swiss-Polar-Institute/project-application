@@ -20,7 +20,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
 from .utils.orcid import raise_error_if_orcid_invalid
-from .utils.utils import bytes_to_human_readable, ProjectApplicationExternalFileValidator
+from .utils.utils import bytes_to_human_readable, external_file_validator
 
 logger = logging.getLogger('project_core')
 
@@ -894,7 +894,7 @@ class ProposalQAFile(CreateModifyOn):
     call_question = models.ForeignKey(CallQuestion, help_text='Question from the call', on_delete=models.PROTECT)
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to='proposals_qa/',
-                            validators=[ProjectApplicationExternalFileValidator()])
+                            validators=[*external_file_validator()])
     # Using md5 so it matches (usually) ETags
     md5 = models.CharField(db_index=True, max_length=32)
 

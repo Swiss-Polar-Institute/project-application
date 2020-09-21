@@ -7,7 +7,7 @@ from evaluation.models import ProposalEvaluation, CallEvaluation
 from grant_management.models import Invoice, GrantAgreement
 from project_core.models import CreateModifyOn, Proposal, Call, Project
 # Models used by Proposal, Call...
-from project_core.utils.utils import ProjectApplicationManagementFileValidator
+from project_core.utils.utils import management_file_validator
 
 
 class Category(CreateModifyOn):
@@ -104,7 +104,7 @@ def proposal_attachment_rename(instance, filename):
 class ProposalAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to=proposal_attachment_rename,
-                            validators=[ProjectApplicationManagementFileValidator()])
+                            validators=[*management_file_validator()])
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal that this attachments belongs to',
                                  on_delete=models.PROTECT)
@@ -171,7 +171,7 @@ def call_attachment_rename(instance, filename):
 class CallAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to=call_attachment_rename,
-                            validators=[ProjectApplicationManagementFileValidator()])
+                            validators=[*management_file_validator()])
     call = models.ForeignKey(Call, help_text='Call that this attachment belongs to',
                              on_delete=models.PROTECT)
     category = models.ForeignKey(CallAttachmentCategory, help_text='Category of the attachment',
@@ -236,7 +236,7 @@ def proposal_evaluation_rename(instance, filename):
 class ProposalEvaluationAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to=proposal_evaluation_rename,
-                            validators=[ProjectApplicationManagementFileValidator()])
+                            validators=[*management_file_validator()])
     proposal_evaluation = models.ForeignKey(ProposalEvaluation,
                                             help_text='Proposal Evaluation that this attachment belongs to',
                                             on_delete=models.PROTECT)
@@ -299,7 +299,7 @@ def project_attachment_rename(instance, filename):
 class ProjectAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to=project_attachment_rename,
-                            validators=[ProjectApplicationManagementFileValidator()])
+                            validators=[*management_file_validator()])
     project = models.ForeignKey(Project,
                                 help_text='Project that this attachment belongs to',
                                 on_delete=models.PROTECT)
@@ -433,7 +433,7 @@ def grant_agreement_attachment_rename(instance, filename):
 class GrantAgreementAttachment(AbstractAttachment):
     file = models.FileField(storage=S3Boto3Storage(),
                             upload_to=grant_agreement_attachment_rename,
-                            validators=[ProjectApplicationManagementFileValidator()])
+                            validators=[*management_file_validator()])
     grant_agreement = models.ForeignKey(GrantAgreement,
                                         help_text='GrantAgreement that this attachment belongs to',
                                         on_delete=models.PROTECT)

@@ -1,4 +1,4 @@
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import FileExtensionValidator
 
 
@@ -83,11 +83,19 @@ def format_date(date):
     return f'{date:%d-%m-%Y}'
 
 
-class ProjectApplicationManagementFileValidator(FileExtensionValidator):
-    def __init__(self):
-        super().__init__(allowed_extensions=['pdf', 'docx', 'jpg', 'jpeg', 'png', 'msg'])
+def file_size_validator(file):
+    file_size = file.file.size
+    limit = 150 * 1024 * 1024
+
+    if file_size > limit:
+        raise ValidationError(f'Maximum file size is {bytes_to_human_readable(limit)}')
 
 
-class ProjectApplicationExternalFileValidator(FileExtensionValidator):
-    def __init__(self):
-        super().__init__(allowed_extensions=['pdf'])
+def management_file_validator():
+    return [FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'jpg', 'jpeg', 'png', 'msg']),
+            file_size_validator]
+
+
+def external_file_validator():
+    return [FileExtensionValidator(allowed_extensions=['pdf']),
+            file_size_validator]
