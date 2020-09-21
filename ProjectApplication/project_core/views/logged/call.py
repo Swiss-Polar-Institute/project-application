@@ -216,7 +216,7 @@ class CallView(TemplateView):
             context['call_action'] = 'Edit'
 
             context['active_subsection'] = 'call-list'
-            breadcrumb_page = f'{context["call_action"]} ({call.short_name})'
+            breadcrumb_page = f'{context["call_action"]} ({call.little_name})'
 
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
