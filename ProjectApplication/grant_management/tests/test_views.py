@@ -93,7 +93,7 @@ class GrantAgreementAddViewTest(TestCase):
             {'project': [str(project_id)],
              'signed_by': [str(signed_by_id)],
              'signed_date': ['01-05-2020'],
-             'file': [SimpleUploadedFile('grant_agreement.txt',
+             'file': [SimpleUploadedFile('grant_agreement.pdf',
                                          b'This is the signed grant agreement. C.')]
              })
 

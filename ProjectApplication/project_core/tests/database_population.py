@@ -302,6 +302,6 @@ def create_lay_summary_original():
 
 def create_file():
     a_file = StringIO('some file content')
-    a_file.name = 'a_file.txt'
+    a_file.name = 'a_file.pdf'
 
     return a_file

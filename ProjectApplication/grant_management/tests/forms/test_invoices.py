@@ -17,7 +17,7 @@ class InvoiceItemFormTest(TestCase):
     def _create_invoice_form(self, amount, allow_overbudget=None):
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 12),
-                                         file=SimpleUploadedFile('grant_agreement.txt',
+                                         file=SimpleUploadedFile('grant_agreement.pdf',
                                                                  b'This is the signed grant agreement. C.'))
 
         grant_agreement.save()
@@ -41,7 +41,7 @@ class InvoiceItemFormTest(TestCase):
         if allow_overbudget is not None:
             data['test-allow_overbudget'] = allow_overbudget
 
-        file = {'test-file': SimpleUploadedFile('file.txt', b'some file content')}
+        file = {'test-file': SimpleUploadedFile('file.pdf', b'some file content')}
 
         return InvoiceItemModelForm(data=data, files=file, user=self._user, project=self._project, prefix='test')
 
@@ -60,7 +60,7 @@ class InvoiceItemFormTest(TestCase):
     def test_valid_due_date_earlier_project_starts(self):
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
-                                         file=SimpleUploadedFile('grant_agreement.txt',
+                                         file=SimpleUploadedFile('grant_agreement.pdf',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
         grant_agreement.signed_by.set([database_population.create_physical_person()])
@@ -79,7 +79,7 @@ class InvoiceItemFormTest(TestCase):
     def test_invalid_due_date_too_late(self):
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
-                                         file=SimpleUploadedFile('grant_agreement.txt',
+                                         file=SimpleUploadedFile('grant_agreement.pdf',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
 
@@ -99,7 +99,7 @@ class InvoiceItemFormTest(TestCase):
     def test_invalid_amount_missing(self):
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 4),
-                                         file=SimpleUploadedFile('grant_agreement.txt',
+                                         file=SimpleUploadedFile('grant_agreement.pdf',
                                                                  b'This is the signed grant agreement. C.'))
         grant_agreement.save()
         grant_agreement.signed_by.set([database_population.create_physical_person()])
@@ -110,7 +110,7 @@ class InvoiceItemFormTest(TestCase):
                 'sent_for_payment_date': date(2020, 1, 7),
                 'paid_date': date(2020, 1, 8)
                 }
-        file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
+        file = {'file': SimpleUploadedFile('file.pdf', b'some file content')}
 
         invoice_item_form = InvoiceItemModelForm(data=data, files=file, project=self._project)
 
@@ -133,7 +133,7 @@ class InvoiceItemFormTest(TestCase):
     def test_invalid_invoice_amount_bigger_than_project(self):
         grant_agreement = GrantAgreement(project=self._project,
                                          signed_date=date(2020, 1, 12),
-                                         file=SimpleUploadedFile('grant_agreement.txt',
+                                         file=SimpleUploadedFile('grant_agreement.pdf',
                                                                  b'This is the signed grant agreement. C.'))
 
         grant_agreement.save()
@@ -153,7 +153,7 @@ class InvoiceItemFormTest(TestCase):
                 'amount': 25_000,
                 'paid_date': date(2020, 1, 16)
                 }
-        file = {'file': SimpleUploadedFile('file.txt', b'some file content')}
+        file = {'file': SimpleUploadedFile('file.pdf', b'some file content')}
 
         self.assertEqual(Invoice.objects.all().count(), 0)
         invoice_item_form = InvoiceItemModelForm(data=data, files=file, user=self._user, project=self._project)

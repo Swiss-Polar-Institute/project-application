@@ -8,6 +8,7 @@ from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from project_core.models import CreateModifyOn, PhysicalPerson, Project
+from project_core.utils.utils import ProjectApplicationManagementFileValidator
 
 
 def grant_agreement_file_rename(instance, filename):
@@ -19,7 +20,8 @@ class GrantAgreement(CreateModifyOn):
                                    on_delete=models.PROTECT)
     signed_date = models.DateField(help_text='Date the grant agreement was signed', null=True, blank=True)
     signed_by = models.ManyToManyField(PhysicalPerson, help_text='People who signed the grant agreement', blank=True)
-    file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename)
+    file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename,
+                            validators=[ProjectApplicationManagementFileValidator()])
 
     def signed_by_string(self):
         return ', '.join(
@@ -84,7 +86,9 @@ def invoice_file_rename(instance, filename):
 class Invoice(AbstractProjectDueReceivedDate):
     sent_for_payment_date = models.DateField(help_text='Date the invoice was sent for payment', null=True, blank=True)
 
-    file = models.FileField(storage=S3Boto3Storage(), upload_to=invoice_file_rename, null=True, blank=True)
+    file = models.FileField(storage=S3Boto3Storage(), upload_to=invoice_file_rename, null=True,
+                            validators=[ProjectApplicationManagementFileValidator()],
+                            blank=True)
     paid_date = models.DateField(help_text='Date the invoice was paid', null=True, blank=True)
     amount = models.DecimalField(max_digits=20, decimal_places=2, help_text='Total of the invoice (CHF)', null=True,
                                  blank=True)
@@ -145,7 +149,9 @@ def finance_report_file_rename(instance, filename):
 
 
 class FinancialReport(AbstractProjectReport):
-    file = models.FileField(storage=S3Boto3Storage(), upload_to=finance_report_file_rename, blank=True, null=True)
+    file = models.FileField(storage=S3Boto3Storage(), upload_to=finance_report_file_rename,
+                            validators=[ProjectApplicationManagementFileValidator()],
+                            blank=True, null=True)
 
 
 def scientific_report_file_rename(instance, filename):
@@ -153,7 +159,9 @@ def scientific_report_file_rename(instance, filename):
 
 
 class ScientificReport(AbstractProjectReport):
-    file = models.FileField(storage=S3Boto3Storage(), upload_to=scientific_report_file_rename, blank=True, null=True)
+    file = models.FileField(storage=S3Boto3Storage(), upload_to=scientific_report_file_rename,
+                            validators=[ProjectApplicationManagementFileValidator()],
+                            blank=True, null=True)
 
 
 class LaySummaryType(CreateModifyOn):
@@ -221,7 +229,8 @@ class Medium(models.Model):
     copyright = models.CharField(max_length=1024,
                                  help_text='Owner of copyright if it is not the photographer (e.g. institution)',
                                  null=True, blank=True)
-    file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename)
+    file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename,
+                            validators=[ProjectApplicationManagementFileValidator()])
     blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to', blank=True)
     descriptive_text = models.TextField(
         help_text='Description of this media, if provided. Where was it taken, context, etc.', null=True, blank=True)

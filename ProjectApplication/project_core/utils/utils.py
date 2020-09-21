@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.validators import FileExtensionValidator
 
 
 def bytes_to_human_readable(num: int) -> str:
@@ -80,3 +81,13 @@ def create_person_position(orcid, first_name, surname, gender=None, phd_date=Non
 
 def format_date(date):
     return f'{date:%d-%m-%Y}'
+
+
+class ProjectApplicationManagementFileValidator(FileExtensionValidator):
+    def __init__(self):
+        super().__init__(allowed_extensions=['pdf', 'docx', 'jpg', 'jpeg', 'png', 'msg'])
+
+
+class ProjectApplicationExternalFileValidator(FileExtensionValidator):
+    def __init__(self):
+        super().__init__(allowed_extensions=['pdf'])

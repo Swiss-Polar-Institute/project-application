@@ -19,7 +19,7 @@ class GrantAgreementFormTest(TestCase):
                 'signed_date': datetime(2020, 1, 10),
                 'signed_by': PhysicalPerson.objects.filter(id=self._project.principal_investigator.person.id)
                 }
-        files = {'file': SimpleUploadedFile('grant_agreement.txt',
+        files = {'file': SimpleUploadedFile('grant_agreement.pdf',
                                             b'This is the signed grant agreement. C.')
                  }
 

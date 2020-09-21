@@ -78,7 +78,7 @@ class UtilsTest(TestCase):
         attachment_text = 'This is a test'
 
         file = SimpleUploadedFile(
-            'correspondence.txt',
+            'correspondence.pdf',
             b'This is an email received. C.')
 
         response = self._user_management.post(url,

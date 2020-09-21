@@ -26,7 +26,7 @@ class AttachmentFormTest(TestCase):
                 f'{AttachmentForm.FORM_NAME}-text': 'This is a comment',
                 }
 
-        files = {f'{AttachmentForm.FORM_NAME}-file': SimpleUploadedFile('correspondence.txt',
+        files = {f'{AttachmentForm.FORM_NAME}-file': SimpleUploadedFile('correspondence.pdf',
                                                                         b'This is an email received. C.')}
 
         attachment_form = AttachmentForm(post,
