@@ -269,7 +269,6 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 
 if SECURE_SSL_REDIRECT:
-
     SECURE_HSTS_SECONDS = 3600
 
 # Project Application specific settings
