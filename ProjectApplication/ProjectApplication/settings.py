@@ -242,13 +242,7 @@ SHORT_DATETIME_FORMAT = 'd-m-Y H:i'
 
 AWS_S3_FILE_OVERWRITE = False
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'shfl_mdb^frjpk8@5@fsl(qm0^u0+--m6_x28lgbil*m&#+rvq')
-
-LOGGED_OUT_USERNAME = 'loggedout'
-
-PROPOSAL_STATUS_DRAFT = 'Draft'
-PROPOSAL_STATUS_SUBMITTED = 'Submitted'
-LAY_SUMMARY_ORIGINAL = 'Original'
+SECRET_KEY = os.environ['SECRET_KEY']
 
 i = 1
 while f'ALLOWED_HOST_{i}' in os.environ:
@@ -269,6 +263,21 @@ EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_SUBJECT_PREFIX = os.environ['EMAIL_SUBJECT_PREFIX']
 EMAIL_USE_TLS = True
 
+DEBUG = os.environ['DEBUG'] == '1'
+SECURE_SSL_REDIRECT = os.environ['SECURE_SSL_REDIRECT'] == 1
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+if SECURE_SSL_REDIRECT:
+
+    SECURE_HSTS_SECONDS = 3600
+
+# Project Application specific settings
+# These settings are specific by the Project Application code. They are not Django settings
+HTTP_AUTH_INCOMING_LINKS = os.getenv('HTTP_AUTH_INCOMING_LINKS', '')
+NAVBAR_BACKGROUND_COLOR = os.getenv('NAVBAR_BACKGROUND_COLOR', 'bg-primary')
+DATA_IMPORT_CATEGORY_NAME = 'Data Import'
+GOAT_COUNTER_CODE = os.getenv('GOAT_COUNTER_CODE', None)
 REVIEWER_GROUP_NAME = 'reviewer'
 MANAGEMENT_GROUP_NAME = 'management'
 
@@ -276,9 +285,7 @@ REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-proposal-detail',
                                   'logged-export-proposals-csv-summary-all',
                                   'logged-export-proposals-csv-summary-call']
-
-DEBUG = os.environ['DEBUG'] == '1'
-NAVBAR_BACKGROUND_COLOR = os.getenv('NAVBAR_BACKGROUND_COLOR', 'bg-primary')
-DATA_IMPORT_CATEGORY_NAME = 'Data Import'
-GOAT_COUNTER_CODE = os.getenv('GOAT_COUNTER_CODE', None)
-HTTP_AUTH_INCOMING_LINKS = os.getenv('HTTP_AUTH_INCOMING_LINKS', '')
+LOGGED_OUT_USERNAME = 'loggedout'
+PROPOSAL_STATUS_DRAFT = 'Draft'
+PROPOSAL_STATUS_SUBMITTED = 'Submitted'
+LAY_SUMMARY_ORIGINAL = 'Original'
