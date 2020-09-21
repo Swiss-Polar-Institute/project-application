@@ -3,7 +3,7 @@
 
 {% block contents %}
     <div class="row">
-        <div col="col-10">
+        <div class="col-10">
             <h1>Changelog</h1>
             <h2>Version deployed on 10/08/2020</h2>
             <ul>
@@ -156,12 +156,10 @@
             <h2>Version deployed on 31/03/2020</h2>
             <ul>
                 <li>Internal change: improves how to define which pages reviewers have access too. Easier to add pages
-                    and
-                    harder to make mistakes
+                    and harder to make mistakes
                 </li>
                 <li>Fixed problem on the the list of proposals for reviewers: displays the reviewer name and list the
-                    list of
-                    calls the reviewer has access to
+                    list of calls the reviewer has access to
                 </li>
             </ul>
 
@@ -183,13 +181,11 @@
                 <li>Fixed creation of keywords in the proposals
                 </li>
                 <li>Improved title of the public Proposal page (it was "Project Management" now is "Swiss Polar
-                    Institute -
-                    Proposal")
+                    Institute - Proposal")
                 </li>
                 <li>Improved title of management pages. Before it in the shape of "Project management > Calls > List of
                     Proposals (PAF2020)" now it has "Calls > List of Proposals (PAF2020) | Project Management" so it's
-                    easier to
-                    read it on the tabs
+                    easier to read it on the tabs
                 </li>
             </ul>
 
@@ -241,8 +237,7 @@
                     future)
                 </li>
                 <li>Internal code refactoring (to implement the breadcrumbs and also to have a more consistent visual
-                    style on
-                    all the pages)
+                    style on all the pages)
                 </li>
             </ul>
 
@@ -252,8 +247,7 @@
                 <li>Adds different navigational links from details to forms, lists, etc.</li>
                 <li>Internal refactoring: it moves "form" code from the templates to the forms</li>
                 <li>Doesn't show the "Evaluate Proposal" button if the proposal cannot be evaluated (no Call Evaluation
-                    happened
-                    yet). Also adds explanation of why certain actions cannot be done
+                    happened yet). Also adds explanation of why certain actions cannot be done
                 </li>
             </ul>
 
@@ -272,8 +266,7 @@
             <ul>
                 <li>Makes the navigation bar on staging grey. This is to differentiate easily staging and live</li>
                 <li>Fixes presentation of Open/Future/Closed calls (sometimes Closed and Future sections appeared on the
-                    screen
-                    at the same time)
+                    screen at the same time)
                 </li>
                 <li>Adds "Cancel Edit" to Funding Instrument pages</li>
             </ul>
@@ -281,14 +274,11 @@
             Backend improvements:
             <ul>
                 <li>Fixes "Create Call" - it was broken since some changes last week. Added unit test to prevent this
-                    happening
-                    again (and for other parts of the system as well)
+                    happening again (and for other parts of the system as well)
                 </li>
                 <li>Keep track of who, when and what information is changed. E.g. if a management user makes a change on
-                    the
-                    Call it's easier now for John, Carles or Jen to see what changed and when. If wanted this tracking
-                    can be
-                    exposed to management
+                    the Call it's easier now for John, Carles or Jen to see what changed and when. If wanted this tracking
+                    can be exposed to management
                 </li>
                 <li>Simplifies database for fields that are superseded by the previous change</li>
                 <li>Updates Bootstrap (internal library) from v4.3.1 to v4.4.1</li>
@@ -306,12 +296,10 @@
                     this)
                 </li>
                 <li>Adds button on the proposal to go to the evaluation, from the evaluation to the proposal and similar
-                    with
-                    the call (any missing buttons let us know)
+                    with the call (any missing buttons let us know)
                 </li>
                 <li>Adds "Cancel" button on the Proposal Evaluation, Call and Eligibility forms (some other places like
-                    Template
-                    Questions will be done soon)
+                    Template Questions will be done soon)
                 </li>
             </ul>
             We are back on the 26th February.
@@ -320,28 +308,21 @@
             New features:
             <ul>
                 <li>Added possibility of changing the text of titles/descriptions in the proposal form depending on the
-                    Funding
-                    Instrument and Call. For example some funding instruments might ask "Describe your proposal" and
-                    some other
-                    ones
-                    "Describe your field trip", or "Describe your event".
+                    Funding Instrument and Call. For example some funding instruments might ask "Describe your proposal" and
+                    some other ones "Describe your field trip", or "Describe your event".
                 </li>
                 <li>Added internal (SPI only) comments and attachments to proposals</li>
                 <li>Added internal (SPI only) comments and attachments to calls</li>
                 <li>Added "Project Eligibility": Yes/No and eligibility comment</li>
                 <li>Reviewer mode: reviewers can only see the proposals of calls to which they have access. Creating and
-                    assigning
-                    reviewers to calls can be done only by John, Jen or Carles at the moment.
+                    assigning reviewers to calls can be done only by John, Jen or Carles at the moment.
                 </li>
                 <li>Improved screen layout: previously there were blank spaces around some of the lists, now it uses all
-                    the
-                    screen (important to have space for the eligibility side column).
+                    the screen (important to have space for the eligibility side column).
                 </li>
                 <li>Major update of the framework (Django) that the Projects application is built on (from version 2.2.6
-                    to
-                    3.0.3). Minor updates of libraries that are used by the application (database, object storage, Excel
-                    writer,
-                    etc.)
+                    to 3.0.3). Minor updates of libraries that are used by the application (database, object storage, Excel
+                    writer, etc.)
                 </li>
             </ul>
 
@@ -360,15 +341,13 @@
             <h2>Version deployed on 20/01/2020 and 21/01/2020</h2>
             <ul>
                 <li>Fixed application error when the amount column in the budget was an invalid number (e.g. text or
-                    using wrong
-                    thousands separator). Now it returns a form error and the applicant can fix it.
+                    using wrong thousands separator). Now it returns a form error and the applicant can fix it.
                 </li>
                 <li>
                     Fixed: after the previous fix when the amount was empty it returned an application error.
                 </li>
                 <li>Fixed text in the proposal view: Agree to data policy -> privacy policy, displays the keywords in
-                    the view,
-                    consolidates some more text between the form and the display view.
+                    the view, consolidates some more text between the form and the display view.
                 </li>
                 <li>
                     Fixed email link on the application error pages.
@@ -380,8 +359,7 @@
             <ul>
                 <li>Fixed "Date of PhD" not appearing on the proposal view</li>
                 <li>Fixed problem that would have prevented an applicant creating a proposal if there were previously
-                    two
-                    proposals with the same applicant name with two different career stages and now this name is an
+                    two proposals with the same applicant name with two different career stages and now this name is an
                     Overarching project supervisor
                 </li>
                 <li>
@@ -392,27 +370,22 @@
             Improvements:
             <ul>
                 <li>Date/date time picker widgets to select a date: using a Javascript widget instead of the browser's
-                    native
-                    widget. This works the same across all browsers (previously we had problems on Safari, Internet
-                    Explorer)
-                    and different operating
-                    systems. As well as being more intuitive now, it also gives us more control on how it looks
+                    native widget. This works the same across all browsers (previously we had problems on Safari,
+                    Internet Explorer) and different operating systems. As well as being more intuitive now, it also
+                    gives us more control on how it looks
                 </li>
                 <li>Send mail notifications on Draft Saved or Draft Submitted to the applicant email address (thanks
-                    John for
-                    helping to create the <a href="mailto:spi-notifications@epfl.ch">spi-notifications@epfl.ch</a> email
+                    John for helping to create the <a
+                            href="mailto:spi-notifications@epfl.ch">spi-notifications@epfl.ch</a> email
                     address)
                 </li>
                 <li>Added email alerts to Carles/Jen (John to be added) when certain events happen. For example if a
-                    file
-                    attachment
-                    should be available on the object storage but it's not currently accessible
+                    file attachment should be available on the object storage but it's not currently accessible
                 </li>
                 <li>Improves "Date of PhD" month validator. "Date of PhD" is not of a date type because it doesn't
-                    include
-                    the day (it's saved as a string) so it needs special validation instead of the standard from the
-                    system. All
-                    done now.
+                    include the day (it's saved as a string) so it needs special validation instead of the standard from
+                    the
+                    system. All done now.
                 </li>
                 <li>
                     We've written <a
@@ -431,8 +404,7 @@
             Minor changes only
             <ul>
                 <li>Fixed "Overarching project" checkbox on the Call view in the management panel (was always disabled
-                    even
-                    though it was enabled. Cosmic change of the view only)
+                    even though it was enabled. Cosmic change of the view only)
                 </li>
                 <li>Improved logo: white background and high quality logo in the management</li>
                 <li>(Backend, not affecting users) Fixed unit tests after last week's changes</li>
@@ -445,8 +417,7 @@
                 <li>Changed formatting of external homepage</li>
                 <li>Changed name of budget category total in view</li>
                 <li>Error validation added: if a proposal for the same call with the same title and applicant exists
-                    informs the
-                    user
+                    informs the user
                 </li>
                 <li>Improved formatting of Budget details</li>
                 <li>Added validation to ensure 5 keywords added</li>
@@ -472,8 +443,7 @@
                 <li>Fixed problems with editing of applicant / overarching person</li>
                 <li>Fixed problem of large file upload</li>
                 <li>Added link to the proposal from the Management - Proposal View. SPI can send the link to applicants
-                    if they
-                    lose it
+                    if they lose it
                 </li>
             </ul>
             Still to do:
@@ -501,8 +471,7 @@
                 <li>Added "organisation" in the Proposal Partners</li>
                 <li>Improved "Save Draft" / "Submit" or "Save" to avoid confusions when testing</li>
                 <li>Fixed error when a Proposal Partner required field was empty and the applicant pressed "Submit" or
-                    "Save
-                    Draft"
+                    "Save Draft"
                 </li>
                 <li>Uses consistent format of dates and specifies "Swiss time"</li>
             </ul>
@@ -515,31 +484,24 @@
             <ul>
                 <li>New organisation list available</li>
                 <li>Now an applicant can create organisation names (an organisation can have multiple names). This
-                    allows
-                    applicants to enter organisations that are not in the system, and it will also allow us to create
-                    reports
-                    (the management part to link organisation names and organisations is not done yet, it will be done
-                    after
-                    the release for the Polar Access Fund).
+                    allows applicants to enter organisations that are not in the system, and it will also allow us to
+                    create reports (the management part to link organisation names and organisations is not done yet, it
+                    will be done after the release for the Polar Access Fund).
                 </li>
                 <li>Improved texts after the application Submission or Save Draft</li>
                 <li>For the budget: thousands separator as ' is accepted (and displayed)</li>
                 <li>"<strong>*</strong>" are not displayed in the Funding organisations table column names (it was
-                    confusing
-                    because
-                    it's not a mandatory field)
+                    confusing because it's not a mandatory field)
                 </li>
                 <li>Better error handling for files (if the object storage is not available it saves the application and
-                    shows a
-                    message to the user regarding the file)
+                    shows a message to the user regarding the file)
                 </li>
                 <li>Added overarching project for calls such as Polar Access Fund</li>
                 <li>High-altitude typo corrected</li>
                 <li>When creating a call, data policy changed to privacy policy</li>
 
                 <li>Known bug: if an applicant attaches a file into a proposal and the proposal cannot be validated
-                    (e.g. wrong
-                    dates, missing fields, etc): the applicant might need to attach the file again
+                    (e.g. wrong dates, missing fields, etc): the applicant might need to attach the file again
                 </li>
                 <li>Known bug: (thanks Basil!) it's not possible to create a call using Microsoft Edge
                 </li>
