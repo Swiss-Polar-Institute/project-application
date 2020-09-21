@@ -7,7 +7,7 @@
             {% for proposal in item.proposals %}
                 <li>
                 {% include 'common/_person_position_with_orcid.tmpl' with person_position=proposal.applicant %} -
-                <a href="{{ proposal.url_fix_validation_error }}">{{ proposal.title }}</a>
+                    <a href="{{ proposal.url_fix_validation_error }}">{{ proposal.title }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
