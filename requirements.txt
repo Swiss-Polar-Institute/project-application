@@ -1,9 +1,12 @@
 asgiref==3.2.3
+attrs==20.2.0
 Babel==2.8.0
 backcall==0.1.0
 boto3==1.11.16
 botocore==1.14.16
+click==7.1.2
 coverage==5.0.3
+curlylint==0.12.0
 decorator==4.4.1
 Django==3.0.10
 django-autocomplete-light==3.5.1
@@ -19,6 +22,8 @@ jedi==0.16.0
 jmespath==0.9.4
 mysqlclient==1.4.6
 parso==0.6.1
+parsy==1.1.0
+pathspec==0.8.0
 pexpect==4.8.0
 phonenumbers==8.12.7
 pickleshare==0.7.5
@@ -30,6 +35,7 @@ pytz==2019.3
 s3transfer==0.3.3
 six==1.14.0
 sqlparse==0.3.0
+toml==0.10.1
 traitlets==4.3.3
 urllib3==1.25.8
 wcwidth==0.1.8

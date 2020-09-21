@@ -28,6 +28,9 @@ jobs:
         export MINIO_SECRET_KEY="$OBJECT_STORAGE_SECRET_ACCESS_KEY"
         mkdir -p minio_data/projects
         ./minio server minio_data &
+    - name: curlylint
+      run: |
+        tools/curlylint.sh
     - name: Test with pytest
       run: |
         source tools/environment-variables-for-test.sh
