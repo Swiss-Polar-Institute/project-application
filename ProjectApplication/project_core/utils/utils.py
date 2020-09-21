@@ -92,7 +92,7 @@ def file_size_validator(file):
 
 
 def management_file_validator():
-    return [FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'jpg', 'jpeg', 'png', 'msg']),
+    return [FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'jpg', 'jpeg', 'png']),
             file_size_validator]
 
 
