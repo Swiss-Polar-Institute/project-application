@@ -5,10 +5,10 @@
     <div class="row">
         <div class="col-10">
             <h1>Funding instrument details</h1>
-            <p><strong>Long name:</strong> {{ funding_instrument.long_name }}<br>
-            <p><strong>Short
+            <strong>Long name:</strong> {{ funding_instrument.long_name }}<br>
+            <strong>Short
                 name: </strong>{% include 'common/_value-or-dash.tmpl' with value=funding_instrument.short_name %}<br>
-            <p><strong>Description: </strong>
+            <strong>Description: </strong>
             <div class="border p-1 bg-white rounded">{{ funding_instrument.description|linebreaksbr }}</div>
             <p></p>
             <h1>Template variables</h1>
@@ -17,8 +17,7 @@
 
         <div class="col-2">
             <a class="btn btn-primary" href="{% url 'logged-funding-instrument-update' pk=funding_instrument.id %}">Edit
-                Funding
-                Instrument</a>
+                Funding Instrument</a>
         </div>
     </div>
 {% endblock %}
