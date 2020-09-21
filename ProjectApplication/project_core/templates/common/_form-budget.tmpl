@@ -18,17 +18,12 @@ Maximum budget: {{ maximum_budget|thousands_separator }} CHF
         {{ hidden }}
     {% endfor %}
 {% endfor %}
+
 <table class="table table-striped table-sm">
-    {% for form in budget_form.forms %}
-        {% if forloop.first %}
-            <thead>
-            <tr>
-                {% for field in form.visible_fields %}
-                    {% if forloop.first %}
-                        <th style="width:30%;">
-                            {% else %}
-                        <th>
-                    {% endif %}
+    <thead>
+    <tr>
+        {% for field in budget_form.forms.0.visible_fields %}
+            <th {% if forloop.first %}style="width:30%;"{% endif %}>
                 {% comment %}
                             This is a copy-paste from https://django-crispy-forms.readthedocs.io/en/latest/form_helper.html
                             on rendering labels. The Asterisk field is removed because it's only needed for the category.
@@ -38,13 +33,12 @@ Maximum budget: {{ maximum_budget|thousands_separator }} CHF
                                 {{ field.label|safe }}{% if field.field.required %}
                                     <span class="asteriskField"><!-- * --></span>{% endif %}
                             </span>
-                </th>
-                {% endfor %}
-            </tr>
-            </thead>
-
-            <tbody>
-        {% endif %}
+            </th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for form in budget_form.forms %}
         <tr>
             {% for field in form.visible_fields %}
                 <td>
