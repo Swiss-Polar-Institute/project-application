@@ -13,3 +13,6 @@ export DEBUG=1
 export ALLOWED_HOST_1=127.0.0.1
 export OBJECT_STORAGE_ACCESS_KEY_ID=used_for_the_unit_tests
 export OBJECT_STORAGE_ENDPOINT_URL=http://localhost:9000
+
+export SECRET_KEY="x36a#I9R;+u]?q2p%0nfY+Q/GkrD0A)a&Q9hzNNA-4*Vb4%_lWvI?,]K+_IN"
+export SECURE_SSL_REDIRECT=0
