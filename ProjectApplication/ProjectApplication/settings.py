@@ -23,11 +23,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -243,6 +238,8 @@ SHORT_DATETIME_FORMAT = 'd-m-Y H:i'
 AWS_S3_FILE_OVERWRITE = False
 
 SECRET_KEY = os.environ['SECRET_KEY']
+
+ALLOWED_HOSTS = []
 
 i = 1
 while f'ALLOWED_HOST_{i}' in os.environ:
