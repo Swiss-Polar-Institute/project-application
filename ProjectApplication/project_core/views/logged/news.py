@@ -129,7 +129,7 @@ def get_call_news():
 
         news.append(
             create_news(call_evaluation.panel_date,
-                        f'Panel for call <a href="{url}">{call_evaluation.call.little_name}</a>')
+                        f'Panel for call <a href="{url}">{call_evaluation.call.little_name()}</a>')
 
         )
 
