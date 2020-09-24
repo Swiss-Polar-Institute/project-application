@@ -166,7 +166,7 @@ class CallEvaluationUpdate(TemplateView):
         context['call'] = call
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                                 {'name': f'Edit ({call.little_name})'}]
+                                 {'name': f'Edit ({call.little_name()})'}]
 
         call_evaluation_form = CallEvaluationForm(instance=call_evaluation, prefix=CallEvaluationForm.FORM_NAME,
                                                   call=call)
@@ -289,7 +289,7 @@ def proposal_detail_eligibility_context(proposal):
                     })
 
     context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
-                             {'name': f'List of proposals ({proposal.call.little_name})',
+                             {'name': f'List of proposals ({proposal.call.little_name()})',
                               'url': reverse('logged-call-evaluation-list-proposals',
                                              kwargs={'call_id': proposal.call.id})},
                              {'name': 'Proposal'}]
