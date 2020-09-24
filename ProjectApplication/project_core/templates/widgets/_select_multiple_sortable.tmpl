@@ -1,0 +1,22 @@
+<div class="form-group">
+    <ul id="{{ widget.name }}" class="list-group list-unstyled">
+        {% for group, options, index in widget.optgroups %}
+            {% with option=options.0 %}
+                <li class="list-group-item">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" name="{{ option.name }}" id="{{ option.attrs.id }}"
+                               value="{{ option.value }}" class="custom-control-input"
+                               {% if option.selected %}checked="checked"{% endif %}>
+                        <label class="custom-control-label" for="{{ option.attrs.id }}">{{ option.label }}</label>
+                    </div>
+                </li>
+            {% endwith %}
+        {% endfor %}
+    </ul>
+</div>
+
+<script>
+    $("#{{ widget.name }}").sortable({
+        placeholder: 'drop-placeholder'
+    });
+</script>

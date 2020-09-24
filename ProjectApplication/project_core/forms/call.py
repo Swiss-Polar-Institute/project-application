@@ -10,7 +10,7 @@ from django.utils import timezone
 
 from ..fields import AmountField
 from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory, FundingInstrument
-from ..widgets import XDSoftYearMonthDayHourMinutePickerInput
+from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
 
 
 class CallQuestionItemForm(forms.ModelForm):
@@ -150,7 +150,7 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('budget_categories', css_class='col-12'),
+                Div('budget_categories', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -218,7 +218,7 @@ class CallForm(forms.ModelForm):
         widgets = {
             'call_open_date': XDSoftYearMonthDayHourMinutePickerInput,
             'submission_deadline': XDSoftYearMonthDayHourMinutePickerInput,
-            'budget_categories': forms.CheckboxSelectMultiple,
+            'budget_categories': CheckboxSelectMultipleSortable,
         }
 
         help_texts = {'description': 'Brief description of the call (for display to management only)',

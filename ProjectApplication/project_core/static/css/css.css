@@ -236,3 +236,11 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
      */
     background-color: #f8c5c5 !important;
 }
+
+.drop-placeholder {
+    background-color: lightgray;
+    height: 3.5em;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    line-height: 1.2em;
+}
