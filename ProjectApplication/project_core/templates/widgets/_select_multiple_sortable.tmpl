@@ -1,4 +1,6 @@
 <div class="form-group">
+    <input type="hidden" id="{{ widget.name }}-order_of_values" name="{{ widget.name }}-order_of_values">
+
     <ul id="{{ widget.name }}" class="list-group list-unstyled">
         {% for group, options, index in widget.optgroups %}
             {% with option=options.0 %}
@@ -17,6 +19,15 @@
 
 <script>
     $("#{{ widget.name }}").sortable({
-        placeholder: 'drop-placeholder'
+        placeholder: 'drop-placeholder',
+        update: function () {
+            let order_of_values = Array();
+
+            $(this).find('input').each(function (index, item) {
+                order_of_values.push(item.value);
+            });
+
+            $('#{{ widget.name }}-order_of_values').val(order_of_values.join(','));
+        }
     });
 </script>
