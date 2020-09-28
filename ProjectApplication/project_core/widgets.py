@@ -65,6 +65,9 @@ class XDSoftYearMonthPickerInput(DateInput):
 
 
 class CheckboxSelectMultipleSortable(ChoiceWidget):
+    # See https://djangosnippets.org/snippets/1053/
+    # See https://github.com/ciaron/sortable
+    # See
     allow_multiple_selected = True
     input_type = 'checkbox'
     template_name = 'widgets/_select_multiple_sortable.tmpl'
