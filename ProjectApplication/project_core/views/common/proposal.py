@@ -225,7 +225,7 @@ class AbstractProposalView(TemplateView):
                                        prefix=QUESTIONS_FORM_NAME)
 
             initial_budget = []
-            for budget_category in call.budgetcategorycall_set.order_by('order', 'budget_category__name'):
+            for budget_category in call.budgetcategorycall_set.filter(enabled=True).order_by('order', 'budget_category__name'):
                 initial_budget.append({'category': budget_category.budget_category, 'amount': None, 'details': None})
 
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
