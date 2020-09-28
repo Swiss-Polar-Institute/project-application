@@ -2,6 +2,8 @@ from django import forms
 from django.forms import DateTimeInput, DateInput
 from django.forms.widgets import ChoiceWidget
 
+from project_core.models import BudgetCategoryCall
+
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
     def __init__(self, *args, **kwargs):
@@ -66,11 +68,10 @@ class XDSoftYearMonthPickerInput(DateInput):
 
 class CheckboxSelectMultipleSortable(ChoiceWidget):
     # See https://djangosnippets.org/snippets/1053/
-    # See https://github.com/ciaron/sortable
-    # See
     allow_multiple_selected = True
     input_type = 'checkbox'
     template_name = 'widgets/_select_multiple_sortable.tmpl'
+    order_of_values_name = 'order_of_values'
 
     def use_required_attribute(self, initial):
         # Don't use the 'required' attribute because browser validation would
@@ -90,3 +91,20 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
         if index is None:
             return ''
         return super().id_for_label(id_, index)
+
+    def value_from_datadict(self, data, files, name):
+        return super().value_from_datadict(data, files, name)
+
+    @staticmethod
+    def save_order_call_budget_categories(call, order_data):
+        # This should not be here and should be automatic for the users of this Widget
+        # TODO: make it automatic
+
+        order = 1
+        for category in order_data.split(','):
+            budget_category_call, created = BudgetCategoryCall.objects.get_or_create(call=call,
+                                                                                     budget_category_id=category)
+            budget_category_call.order = order
+            budget_category_call.save()
+
+            order += 1

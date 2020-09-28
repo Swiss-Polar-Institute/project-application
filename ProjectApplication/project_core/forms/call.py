@@ -94,6 +94,7 @@ class CallForm(forms.ModelForm):
             self.fields['finance_year'].initial = datetime.now().year
             used_questions = []
 
+        # TODO: Get the sorting from the Existing call (it it exist!) not from the BudgetCategory
         self.fields['budget_categories'].queryset = BudgetCategory.all_ordered()
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
@@ -185,6 +186,9 @@ class CallForm(forms.ModelForm):
 
     def save(self, commit=True):
         instance = super().save(commit)
+
+        order_data = self.data[f'{self.prefix}-budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}']
+        CheckboxSelectMultipleSortable.save_order_call_budget_categories(instance, order_data)
 
         if commit:
             template_questions_wanted = []
