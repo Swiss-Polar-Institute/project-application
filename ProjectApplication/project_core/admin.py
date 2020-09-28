@@ -78,6 +78,11 @@ class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
         return questions
 
 
+class BudgetCategoryCallAdmin(admin.ModelAdmin):
+    list_display = ('call', 'budget_category', 'order')
+    ordering = ('call', 'budget_category', 'order')
+
+
 class KeywordAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'uid', 'created_on', 'modified_on',)
     ordering = ['name', 'description', 'uid', 'created_on', 'modified_on', ]
@@ -340,6 +345,7 @@ admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
 admin.site.register(project_core.models.FundingInstrument, FundingInstrumentAdmin)
 admin.site.register(project_core.models.Call, CallAdmin)
+admin.site.register(project_core.models.BudgetCategoryCall, BudgetCategoryCallAdmin)
 admin.site.register(project_core.models.Keyword, KeywordAdmin)
 admin.site.register(project_core.models.KeywordUid, KeywordUidAdmin)
 admin.site.register(project_core.models.ProposalStatus, ProposalStatusAdmin)
