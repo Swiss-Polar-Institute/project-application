@@ -180,6 +180,21 @@ class Call(CreateModifyOn):
         return result
 
 
+class BudgetCategoryCall(CreateModifyOn):
+    call = models.ForeignKey(Call, blank=False, null=False,
+                             help_text='Call where this category is used in',
+                             on_delete=models.PROTECT)
+
+    budget_category = models.ForeignKey(BudgetCategory, blank=False, null=False,
+                                        help_text='Budget category for this category',
+                                        on_delete=models.PROTECT)
+
+    order = models.PositiveIntegerField(blank=True, null=True)
+
+    class Meta:
+        unique_together = (('call', 'budget_category'),)
+
+
 class StepType(models.Model):
     """Notable steps during the process"""
     objects = models.Manager()  # Helps Pycharm CE auto-completion
