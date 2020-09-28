@@ -1,6 +1,7 @@
 import logging
 import mimetypes
 import os
+import re
 
 from botocore.exceptions import EndpointConnectionError
 from django.contrib import messages
@@ -135,6 +136,21 @@ def action_is_save(post_vars):
     return 'save_changes' in post_vars
 
 
+def get_number(string):
+    # If string is a number: returns the number (as int)
+    # If string is not a number but starts as a number: returns the number until the non-number part
+    # If string does not start as a number: returns None
+    # Examples: '2424' return 2424
+    #           '13[0]' returns 13
+
+    m = re.match('^([0-9]+)', string)
+
+    if m:
+        return int(m[1])
+
+    return None
+
+
 class AbstractProposalView(TemplateView):
     created_or_updated_url = ''
     form_template = ''
@@ -186,12 +202,19 @@ class AbstractProposalView(TemplateView):
                     f'NOTIFY: User tried to access to {request.build_absolute_uri()}: call parameter is missing')
                 return redirect(reverse('call-list'))
 
-            call_pk = context['call_pk'] = request.GET.get('call')
+            call_pk = context['call_pk'] = get_number(request.GET.get('call'))
+
+            if call_pk is None:
+                logger.warning(
+                    f'NOTIFY: User tried to access to {request.build_absolute_uri()}: call expected to be a number')
+                messages.warning(request, 'This call does not exist. Please see the list of open calls below')
+                return redirect(reverse('call-list'))
 
             try:
                 call = Call.objects.get(pk=call_pk)
             except ObjectDoesNotExist:
-                logger.warning(f'NOTIFY: User tried to access to {request.build_absolute_uri()}: call does not exist')
+                logger.warning(
+                    f'NOTIFY: User tried to access to {request.build_absolute_uri()}: call does not exist')
                 messages.warning(request, 'This call does not exist. Please see the list of open calls below')
                 return redirect(reverse('call-list'))
 
