@@ -62,11 +62,10 @@ class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     readonly_fields = ('created_on', 'modified_on',)
 
     def budget_categories_list(self, obj):
+        return 'TODO'
         budget_categories = obj.budget_categories.all()
 
         return ", ".join([budget_category.name for budget_category in budget_categories])
-
-    filter_vertical = ('budget_categories',)
 
     def call_questions_list(self, obj):
         call_questions = obj.callquestion_set.all()
@@ -79,7 +78,7 @@ class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
 
 
 class BudgetCategoryCallAdmin(admin.ModelAdmin):
-    list_display = ('call', 'budget_category', 'order')
+    list_display = ('call', 'budget_category', 'enabled', 'order')
     ordering = ('call', 'budget_category', 'order')
 
 

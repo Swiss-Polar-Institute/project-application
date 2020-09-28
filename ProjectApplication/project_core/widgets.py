@@ -103,7 +103,8 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
         order = 1
         for category in order_data.split(','):
             budget_category_call, created = BudgetCategoryCall.objects.get_or_create(call=call,
-                                                                                     budget_category_id=category)
+                                                                                     budget_category_id=category,
+                                                                                     defaults={'enabled': False})
             budget_category_call.order = order
             budget_category_call.save()
 

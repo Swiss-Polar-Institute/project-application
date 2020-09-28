@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from ..fields import AmountField
-from ..models import Call, TemplateQuestion, CallQuestion, BudgetCategory, FundingInstrument
+from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
 
 
@@ -94,8 +94,21 @@ class CallForm(forms.ModelForm):
             self.fields['finance_year'].initial = datetime.now().year
             used_questions = []
 
-        # TODO: Get the sorting from the Existing call (it it exist!) not from the BudgetCategory
-        self.fields['budget_categories'].queryset = BudgetCategory.all_ordered()
+        choices = []
+        enabled_budget_categories = []
+
+        for budget_category_call in BudgetCategoryCall.objects.filter(call=self.instance).order_by('order'):
+            choices.append((budget_category_call.budget_category.id, budget_category_call.budget_category.name))
+
+            if budget_category_call.enabled:
+                enabled_budget_categories.append(budget_category_call.budget_category.id)
+
+        self.fields['budget_categories'] = forms.MultipleChoiceField(choices=choices,
+                                                                     initial=enabled_budget_categories,
+                                                                     widget=CheckboxSelectMultipleSortable,
+                                                                     )
+        # queryset=BudgetCategoryCall.objects.filter(call=self.instance).order_by('order'),
+        # self.fields['budget_categories'].widget = CheckboxSelectMultiple
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
                                                                            queryset=TemplateQuestion.objects.all(),
@@ -187,8 +200,18 @@ class CallForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit)
 
-        order_data = self.data[f'{self.prefix}-budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}']
-        CheckboxSelectMultipleSortable.save_order_call_budget_categories(instance, order_data)
+        # Marks all as do not enable
+        BudgetCategoryCall.objects.filter(call=instance).update(enabled=False)
+
+        # Enable the ones that are enabled
+        BudgetCategoryCall.objects.filter(call=instance).filter(
+            budget_category__in=self.cleaned_data['budget_categories']).update(enabled=True)
+
+        order_data_str = f'{self.prefix}-budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
+
+        if order_data_str in self.data:
+            CheckboxSelectMultipleSortable.save_order_call_budget_categories(instance,
+                                                                             self.data[order_data_str])
 
         if commit:
             template_questions_wanted = []
@@ -214,7 +237,7 @@ class CallForm(forms.ModelForm):
         model = Call
         fields = ['funding_instrument', 'long_name', 'short_name', 'finance_year', 'description',
                   'introductory_message',
-                  'call_open_date', 'submission_deadline', 'budget_categories', 'budget_maximum',
+                  'call_open_date', 'submission_deadline', 'budget_maximum',
                   'other_funding_question', 'proposal_partner_question', 'overarching_project_question', ]
 
         field_classes = {'budget_maximum': AmountField}
@@ -222,7 +245,6 @@ class CallForm(forms.ModelForm):
         widgets = {
             'call_open_date': XDSoftYearMonthDayHourMinutePickerInput,
             'submission_deadline': XDSoftYearMonthDayHourMinutePickerInput,
-            'budget_categories': CheckboxSelectMultipleSortable,
         }
 
         help_texts = {'description': 'Brief description of the call (for display to management only)',

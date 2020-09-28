@@ -8,7 +8,7 @@ from ProjectApplication import settings
 from comments import utils
 from comments.utils import process_comment_attachment, comments_attachments_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
-from project_core.models import Call, BudgetCategory, Proposal, FundingInstrument
+from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call
@@ -59,14 +59,12 @@ class AbstractCallView(TemplateView):
 
         context['template_variables'] = get_template_variables_for_call(call)
 
-        call_budget_categories_names = list(call.budget_categories.all().values_list('name', flat=True))
-
         budget_categories_status = []
 
-        for budget_category_name in BudgetCategory.all_ordered().values_list('name', flat=True):
-            in_call = budget_category_name in call_budget_categories_names
+        for budget_category_call in BudgetCategoryCall.objects.filter(call=call).order_by('order', 'budget_category__name'):
+            in_call = budget_category_call.enabled
             budget_categories_status.append({'in_call': in_call,
-                                             'name': budget_category_name})
+                                             'name': budget_category_call.budget_category.name})
 
         context['budget_categories_status'] = budget_categories_status
 

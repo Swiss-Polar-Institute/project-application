@@ -111,8 +111,6 @@ class Call(CreateModifyOn):
                                             null=True)
     call_open_date = models.DateTimeField(help_text='Date on which the call is opened', blank=False, null=False)
     submission_deadline = models.DateTimeField(help_text='Submission deadline of the call', blank=False, null=False)
-    budget_categories = models.ManyToManyField(BudgetCategory,
-                                               help_text='Categories required for the budget for a call')
     budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget',
                                          decimal_places=2, max_digits=10, validators=[MinValueValidator(0)],
                                          blank=False, null=False)
@@ -189,7 +187,12 @@ class BudgetCategoryCall(CreateModifyOn):
                                         help_text='Budget category for this category',
                                         on_delete=models.PROTECT)
 
+    enabled = models.BooleanField(help_text='Appears in the proposal form', default=False)
+
     order = models.PositiveIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.budget_category.name
 
     class Meta:
         unique_together = (('call', 'budget_category'),)
