@@ -8,7 +8,7 @@
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" name="{{ option.name }}" id="{{ option.attrs.id }}"
                                value="{{ option.value }}" class="custom-control-input"
-                               {% if option.selected %}checked="checked"{% endif %}>
+                               {% if option.selected %}checked{% endif %}>
                         <label class="custom-control-label" for="{{ option.attrs.id }}">{{ option.label }}</label>
                     </div>
                 </li>
