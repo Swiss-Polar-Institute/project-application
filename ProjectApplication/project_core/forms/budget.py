@@ -6,7 +6,7 @@ from django.forms import BaseFormSet, formset_factory
 
 from project_core.fields import AmountField
 from project_core.forms.utils import PlainTextWidget
-from project_core.models import BudgetCategory, ProposedBudgetItem
+from project_core.models import BudgetCategory, ProposedBudgetItem, BudgetCategoryCall
 from project_core.templatetags.thousands_separator import thousands_separator
 
 
@@ -83,10 +83,14 @@ class BudgetFormSet(BaseFormSet):
         if proposal:
             initial_budget = []
 
-            for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal).order_by('category__order',
-                                                                                                      'category__name'):
+            for proposed_item_budget in ProposedBudgetItem.objects.filter(proposal=proposal):
+                order = BudgetCategoryCall.objects.get(call=proposal.call,
+                                                       budget_category=proposed_item_budget.category).order
                 initial_budget.append({'id': proposed_item_budget.id, 'category': proposed_item_budget.category,
-                                       'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details})
+                                       'amount': proposed_item_budget.amount, 'details': proposed_item_budget.details,
+                                       'order': order})
+
+            initial_budget.sort(key=lambda budget: budget['order'])
 
             kwargs['initial'] = initial_budget
 
