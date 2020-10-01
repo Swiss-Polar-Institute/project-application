@@ -9,7 +9,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 from ..fields import AmountField
-from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall
+from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory
 from ..utils.budget_categories import add_missing_budget_categories_call
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
 
@@ -97,14 +97,18 @@ class CallForm(forms.ModelForm):
 
         choices = []
         enabled_budget_categories = []
-
-        add_missing_budget_categories_call(call=self.instance)
+        general_categories_added = set()
 
         for budget_category_call in BudgetCategoryCall.objects.filter(call=self.instance).order_by('order'):
             choices.append((budget_category_call.budget_category.id, budget_category_call.budget_category.name))
+            general_categories_added.add(budget_category_call.budget_category.id)
 
             if budget_category_call.enabled:
                 enabled_budget_categories.append(budget_category_call.budget_category.id)
+
+        for budget_category_general in BudgetCategory.objects.all().order_by('order'):
+            if budget_category_general.id not in general_categories_added:
+                choices.append((budget_category_general.id, budget_category_general.name))
 
         self.fields['budget_categories'] = forms.MultipleChoiceField(choices=choices,
                                                                      initial=enabled_budget_categories,
@@ -203,8 +207,15 @@ class CallForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit)
 
+        add_missing_budget_categories_call(call=instance)
+
         # Marks all as do not enable
         BudgetCategoryCall.objects.filter(call=instance).update(enabled=False)
+
+        for category_id in self.cleaned_data['budget_categories']:
+            budget_category_call = BudgetCategoryCall.objects.get(call=instance, budget_category__id=category_id)
+            budget_category_call.enabled = True
+            budget_category_call.save()
 
         # Enable the ones that are enabled
         BudgetCategoryCall.objects.filter(call=instance).filter(
@@ -212,7 +223,7 @@ class CallForm(forms.ModelForm):
 
         order_data_str = f'{self.prefix}-budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
-        if order_data_str in self.data:
+        if self.cleaned_data.get(order_data_str, None):
             CheckboxSelectMultipleSortable.save_order_call_budget_categories(instance,
                                                                              self.data[order_data_str])
 
