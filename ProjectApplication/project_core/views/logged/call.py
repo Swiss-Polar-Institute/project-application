@@ -14,6 +14,7 @@ from variable_templates.utils import copy_template_variables_from_funding_instru
     get_template_variables_for_call
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
 from ..common.proposal import AbstractProposalDetailView
+from ...utils.budget_categories import add_missing_budget_categories_call
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -58,6 +59,8 @@ class AbstractCallView(TemplateView):
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['template_variables'] = get_template_variables_for_call(call)
+
+        add_missing_budget_categories_call(call=call)
 
         budget_categories_status = []
 

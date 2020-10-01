@@ -10,6 +10,7 @@ from django.utils import timezone
 
 from ..fields import AmountField
 from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall
+from ..utils.budget_categories import add_missing_budget_categories_call
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
 
 
@@ -96,6 +97,8 @@ class CallForm(forms.ModelForm):
 
         choices = []
         enabled_budget_categories = []
+
+        add_missing_budget_categories_call(call=self.instance)
 
         for budget_category_call in BudgetCategoryCall.objects.filter(call=self.instance).order_by('order'):
             choices.append((budget_category_call.budget_category.id, budget_category_call.budget_category.name))
