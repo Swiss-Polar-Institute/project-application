@@ -38,6 +38,7 @@ class ProposalForm(ModelForm):
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
+        self.fields['duration_months'].help_text = 'Expected duration of the {{ activity }} in months'
         apply_templates(self.fields, call)
 
         divs = []
@@ -145,7 +146,6 @@ class ProposalForm(ModelForm):
             'keywords': 'Please select at least 5 keywords that describe the proposed {{ activity }}. If the keywords you are looking for do not exist, then add each term separately',
             'start_date': 'Date on which the {{ activity }} to be funded by SPI, is expected to start',
             'end_date': 'Date on which the {{ activity }} to be funded by SPI, is expected to end',
-            'duration_months': 'Expected duration of the {{ activity }} in months'
         }
 
         labels = {'location': 'Precise region',

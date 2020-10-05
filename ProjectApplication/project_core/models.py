@@ -761,7 +761,7 @@ class Proposal(CreateModifyOn):
         blank=False, null=False)
     duration_months = models.DecimalField(
         help_text='Expected duration of the proposed project in months',
-        decimal_places=1, max_digits=5, validators=[MinValueValidator(0)], blank=False, null=False)
+        decimal_places=2, max_digits=5, validators=[MinValueValidator(0)], blank=False, null=False)
     applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal', blank=False, null=False,
                                   on_delete=models.PROTECT)
     applicant_role_description = models.ForeignKey(RoleDescription, help_text='Main applicant role', blank=True,

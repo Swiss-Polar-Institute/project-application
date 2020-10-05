@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.forms import TextInput
 
 
 class FlexibleDecimalField(forms.DecimalField):
@@ -8,7 +9,18 @@ class FlexibleDecimalField(forms.DecimalField):
     # treats '.' and ',' as decimal separators and forces maximum two decimal fields. Makes sure that there
     # are in the "correct" place: at the end of the string
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, localize=True, **kwargs)
+        # DecimalField inherits of IntegerField. In the constructor of IntegerField if localize=False
+        # it uses a numeric HTML widget (easy to see: it has the arrows up and down... and it accepts either
+        # '.' or ',' depending on the browser's locale for the comma separation. Doing this we force to use a
+        # TextInput: the FlexibleDecimalField cannot use a NumericWidget because the browser validation is too strict
+        # (regarding , and .)
+        # We could complement this with Javascript code to validate in our case (and validate again in the server)
+        # for simplicity we are doing it on the server side only.
+        # Users of FlexibleDecimalField can set the widget with the attributes that they wish.
+        if 'widget' not in kwargs:
+            kwargs['widget'] = TextInput()
+
+        super().__init__(*args, **kwargs)
 
     def clean(self, value):
         if value.count(',') > 1:
