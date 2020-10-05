@@ -223,7 +223,9 @@ class CallForm(forms.ModelForm):
 
         order_data_str = f'{self.prefix}-budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
-        if self.cleaned_data.get(order_data_str, None):
+        # Currently it needs to be in self.data.
+        # TODO: make it in self.cleaned_data
+        if self.data.get(order_data_str, None):
             CheckboxSelectMultipleSortable.save_order_call_budget_categories(instance,
                                                                              self.data[order_data_str])
 

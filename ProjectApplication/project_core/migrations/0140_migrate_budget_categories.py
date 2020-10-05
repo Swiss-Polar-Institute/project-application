@@ -9,7 +9,12 @@ def create_budget_category_calls(apps, schema_editor):
         order_number = 1
 
         with connection.cursor() as cursor:
-            cursor.execute('SELECT budgetcategory_id FROM project_core_call_budget_categories WHERE call_id=%s', [18])
+            # Raw SQL needed: The models in models.py might not have the fields (as they are removed at a later point)
+            cursor.execute('''SELECT budgetcategory_id, name, project_core_budgetcategory.order FROM 
+                    project_core_call_budget_categories 
+                    LEFT JOIN project_core_budgetcategory 
+                        ON project_core_call_budget_categories.budgetcategory_id=project_core_budgetcategory.id 
+                    WHERE call_id=%s ORDER BY project_core_budgetcategory.order ASC, name ASC''', [call.id])
             for row in cursor.fetchall():
                 budget_category_id = row[0]
                 BudgetCategoryCall.objects.create(call=call, budget_category_id=budget_category_id, order=order_number)
