@@ -1,9 +1,12 @@
+import logging
+import re
 from datetime import datetime
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.core.exceptions import ValidationError
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.urls import reverse
 from django.utils import timezone
@@ -12,6 +15,8 @@ from ..fields import AmountField
 from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory
 from ..utils.budget_categories import add_missing_budget_categories_call
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
+
+logger = logging.getLogger('project_core')
 
 
 class CallQuestionItemForm(forms.ModelForm):
@@ -94,6 +99,8 @@ class CallForm(forms.ModelForm):
         else:
             self.fields['finance_year'].initial = datetime.now().year
             used_questions = []
+
+        self.budget_categories_order_key = f'budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
         choices = []
         enabled_budget_categories = []
@@ -203,6 +210,25 @@ class CallForm(forms.ModelForm):
         if cleaned_data['submission_deadline'] < timezone.now():
             self.add_error('submission_deadline', 'Call submission deadline needs to be in the future')
 
+        data_budget_categories_order_key = f'{self.prefix}-{self.budget_categories_order_key}'
+
+        if data_budget_categories_order_key in self.data:
+            order_data = self.data[data_budget_categories_order_key]
+
+            if order_data == '':
+                self.cleaned_data[self.budget_categories_order_key] = None
+            elif re.search(r'^(\d+,)*\d+$', order_data):
+                self.cleaned_data[self.budget_categories_order_key] = order_data
+            else:
+                logger.warning(
+                    f'NOTIFY: Error when parsing order of the budget categories. Received: {order_data}')
+
+                raise ValidationError(
+                    'Error when parsing order of the budget categories. Try again or contact Project Application administrators')
+
+        else:
+            self.cleaned_data[self.budget_categories_order_key] = None
+
         return cleaned_data
 
     def save(self, commit=True):
@@ -222,13 +248,10 @@ class CallForm(forms.ModelForm):
         BudgetCategoryCall.objects.filter(call=instance).filter(
             budget_category__in=self.cleaned_data['budget_categories']).update(enabled=True)
 
-        order_data_str = f'{self.prefix}-budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
-
-        # Currently it needs to be in self.data.
-        # TODO: make it in self.cleaned_data
-        if self.data.get(order_data_str, None):
+        if self.cleaned_data.get(self.budget_categories_order_key, None):
             CheckboxSelectMultipleSortable.save_order_call_budget_categories(instance,
-                                                                             self.data[order_data_str])
+                                                                             self.cleaned_data[
+                                                                                 self.budget_categories_order_key])
 
         if commit:
             template_questions_wanted = []
