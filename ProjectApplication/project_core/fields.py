@@ -23,24 +23,28 @@ class FlexibleDecimalField(forms.DecimalField):
         super().__init__(*args, **kwargs)
 
     def clean(self, value):
-        if value.count(',') > 1:
-            raise ValidationError('Invalid number: it contains too many commas (,)')
 
-        if value.count('.') > 1:
-            raise ValidationError('Invalid number: it contains too many full stops (.)')
+        if type(value) == str:
+            # From unit tests the value can be an integer or other types
+            # Here I'm consistent with what Decimal.clean() does: it doesn't fail
+            if value.count(',') > 1:
+                raise ValidationError('Invalid number: it contains too many commas (,)')
 
-        if value.count('.') == 1 and value.count(',') == 1:
-            raise ValidationError('Invalid number: do not mix commas (,) and full stops (.) in the same number')
+            if value.count('.') > 1:
+                raise ValidationError('Invalid number: it contains too many full stops (.)')
 
-        value = value.replace(",", '.')  # some users use "," to separate decimals
+            if value.count('.') == 1 and value.count(',') == 1:
+                raise ValidationError('Invalid number: do not mix commas (,) and full stops (.) in the same number')
 
-        if value.count('.') == 1 and len(value) - 2 > value.index('.') + 1:
-            # ',' or '.' are decimal separators and we only accept one or two decimals. If it's not at the end of the
-            # string it is an error. The user might have tried to use ',' or '.' as a thousands separator
-            raise ValidationError(
-                'Please use comma (,) or full stops (.) to separate decimals and write maximum one or two decimals')
+            value = value.replace(",", '.')  # some users use "," to separate decimals
 
-        value = value.replace("'", '')  # thousands separator
-        value = value.replace("‘", '')  # typographic thousands separator
+            if value.count('.') == 1 and len(value) - 2 > value.index('.') + 1:
+                # ',' or '.' are decimal separators and we only accept one or two decimals. If it's not at the end of the
+                # string it is an error. The user might have tried to use ',' or '.' as a thousands separator
+                raise ValidationError(
+                    'Please use comma (,) or full stops (.) to separate decimals and write maximum one or two decimals')
+
+            value = value.replace("'", '')  # thousands separator
+            value = value.replace("‘", '')  # typographic thousands separator
 
         return super().clean(value)
