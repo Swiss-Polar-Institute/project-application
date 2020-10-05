@@ -126,6 +126,7 @@ class CallForm(forms.ModelForm):
                                                                            label=self.Meta.labels['template_questions'])
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
+        self.fields['budget_categories'].label = 'Budget categories (drag and drop to sort them)'
 
         self.fields[
             'template_questions'].help_text = f'Select the questions that you would like to add to this call and move them to the box below using the arrow. ' \
