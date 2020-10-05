@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 from grant_management.forms import utils
 from grant_management.forms.invoices import html_message
 from grant_management.models import Installment, Invoice
-from project_core.fields import SpiNumberField
+from project_core.fields import FlexibleDecimalField
 from project_core.models import Project
 from project_core.templatetags.thousands_separator import thousands_separator
 from project_core.widgets import XDSoftYearMonthDayPickerInput
@@ -89,7 +89,7 @@ class InstallmentModelForm(forms.ModelForm):
     class Meta:
         model = Installment
         fields = ['project', 'amount']
-        field_classes = {'amount': SpiNumberField}
+        field_classes = {'amount': FlexibleDecimalField}
         labels = {'amount': 'Amount (CHF)'}
 
 

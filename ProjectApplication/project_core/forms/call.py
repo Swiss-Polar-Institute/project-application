@@ -11,7 +11,7 @@ from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.urls import reverse
 from django.utils import timezone
 
-from ..fields import SpiNumberField
+from ..fields import FlexibleDecimalField
 from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory
 from ..utils.budget_categories import add_missing_budget_categories_call
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
@@ -281,7 +281,7 @@ class CallForm(forms.ModelForm):
                   'call_open_date', 'submission_deadline', 'budget_maximum',
                   'other_funding_question', 'proposal_partner_question', 'overarching_project_question', ]
 
-        field_classes = {'budget_maximum': SpiNumberField}
+        field_classes = {'budget_maximum': FlexibleDecimalField}
 
         widgets = {
             'call_open_date': XDSoftYearMonthDayHourMinutePickerInput,

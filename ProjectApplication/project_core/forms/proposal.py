@@ -9,14 +9,14 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import utc
 
 from variable_templates.utils import apply_templates
-from ..fields import SpiNumberField
+from ..fields import FlexibleDecimalField
 from ..models import Proposal, Call
 from ..widgets import XDSoftYearMonthDayPickerInput
 
 
 class ProposalForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput())
-    duration_months = SpiNumberField()
+    duration_months = FlexibleDecimalField()
 
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
