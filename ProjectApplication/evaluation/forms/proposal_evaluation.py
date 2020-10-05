@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist, PermissionDenied
 from django.urls import reverse
 
 from ProjectApplication import settings
-from project_core.fields import AmountField
+from project_core.fields import SpiNumberField
 from project_core.forms.utils import cancel_edit_button
 from project_core.templatetags.thousands_separator import thousands_separator
 from project_core.utils.utils import user_is_in_group_name
@@ -40,7 +40,7 @@ class ProposalEvaluationForm(forms.ModelForm):
         self.fields['proposal'].initial = self._proposal
         requested_budget = self._proposal.total_budget()
 
-        self.fields['allocated_budget'] = AmountField(required=False)
+        self.fields['allocated_budget'] = SpiNumberField(required=False)
         self.fields['allocated_budget'].help_text = f'Requested: {thousands_separator(requested_budget)} CHF'
         self.fields['allocated_budget'].label = 'Allocated budget (CHF)'
 

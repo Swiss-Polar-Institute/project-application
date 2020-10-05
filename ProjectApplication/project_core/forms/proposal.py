@@ -9,12 +9,14 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import utc
 
 from variable_templates.utils import apply_templates
+from ..fields import SpiNumberField
 from ..models import Proposal, Call
 from ..widgets import XDSoftYearMonthDayPickerInput
 
 
 class ProposalForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput())
+    duration_months = SpiNumberField()
 
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
@@ -35,8 +37,6 @@ class ProposalForm(ModelForm):
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
-
-        self.fields['duration_months'].widget.attrs['min'] = 0
 
         apply_templates(self.fields, call)
 
@@ -135,7 +135,7 @@ class ProposalForm(ModelForm):
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': forms.CheckboxSelectMultiple,
                    'start_date': XDSoftYearMonthDayPickerInput,
-                   'end_date': XDSoftYearMonthDayPickerInput
+                   'end_date': XDSoftYearMonthDayPickerInput,
                    }
 
         help_texts = {
