@@ -218,6 +218,7 @@ class CallForm(forms.ModelForm):
             if order_data == '':
                 self.cleaned_data[self.budget_categories_order_key] = None
             elif re.search(r'^(\d+,)*\d+$', order_data):
+                # The order for the list is like '4,3,1,10' (starts with a number, has commas, ends with a number)
                 self.cleaned_data[self.budget_categories_order_key] = order_data
             else:
                 logger.warning(
