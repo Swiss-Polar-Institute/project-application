@@ -219,7 +219,7 @@ def medium_file_rename(instance, filename):
     return f'grant_management/Medium/Project-{instance.project.key}-{filename}'
 
 
-class Medium(models.Model):
+class Medium(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that this medium belongs to', on_delete=models.PROTECT)
     received_date = models.DateField(help_text='Date that the medium was received')
     photographer = models.ForeignKey(PhysicalPerson, help_text='Person who took the photo/video',
@@ -237,6 +237,9 @@ class Medium(models.Model):
 
     def __str__(self):
         return f'{self.project}-{self.photographer}'
+
+    class Meta:
+        verbose_name_plural = 'Media'
 
 
 class SocialNetwork(CreateModifyOn):

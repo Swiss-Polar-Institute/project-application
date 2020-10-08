@@ -88,4 +88,7 @@ urlpatterns = [
     path('logged/autocomplete/milestones-category-names/',
          grant_management.views.MilestoneCategoriesAutocomplete.as_view(create_field='name'),
          name='logged-grant_management-autocomplete-milestones-names'),
+
+    path('api/media/list/', grant_management.views.ApiListMediaView.as_view(),
+         name='api-list-media-view'),
 ]

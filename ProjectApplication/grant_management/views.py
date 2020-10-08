@@ -1,8 +1,12 @@
+from datetime import datetime
+
 from dal import autocomplete
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
+from django.views import View
 from django.views.generic import TemplateView, DetailView, UpdateView, CreateView
 
 from comments.utils import comments_attachments_forms, process_comment_attachment
@@ -13,7 +17,8 @@ from grant_management.forms.invoices import InvoicesInlineFormSet
 from grant_management.forms.lay_summaries import LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
-from grant_management.models import GrantAgreement, MilestoneCategory
+from grant_management.models import GrantAgreement, MilestoneCategory, Medium
+from project_core.decorators import api_key_required
 from project_core.models import Project
 from project_core.views.common.formset_inline_view import InlineFormsetUpdateView
 from .forms.close_project import CloseProjectModelForm
@@ -390,3 +395,47 @@ class GrantAgreementCommentAdd(AbstractGrantAgreement):
                                             context['project'].grantagreement)
 
         return result
+
+
+class ApiListMediaView(View):
+    @api_key_required
+    def get(self, request, *args, **kwargs):
+        modified_since_str = request.GET['modified_since']
+        modified_since_str = modified_since_str.replace(' ', '+')
+
+        try:
+            modified_since = datetime.strptime(modified_since_str, '%Y-%m-%dT%H:%M:%S%z')
+        except ValueError:
+            return HttpResponse(status=400,
+                                content='Invalid date format, please use %Y-%m-%dT%H:%M:%S%z E.g.: 2017-01-28T21:00:00+00:00')
+
+        media = Medium.objects.filter(modified_on__gte=modified_since).order_by('modified_on')
+
+        data = []
+        for medium in media:
+            medium_info = {}
+            medium_info['id'] = medium.id
+            medium_info['received_date'] = medium.received_date
+            medium_info['photographer'] = medium.photographer.full_name()
+            medium_info['license'] = medium.license.spdx_identifier
+            medium_info['copyright'] = medium.copyright
+            # medium_info['file_url'] = self.request.build_absolute_uri(
+            #     reverse('api-medium-view', kwargs={'medium_id': medium.id}))
+            medium_info['file_url'] = medium.file.url
+            medium_info['modified_on'] = medium.modified_on
+            medium_info['descriptive_text'] = medium.descriptive_text
+
+            project_info = {}
+            project_info['key'] = medium.project.key
+            project_info['title'] = medium.project.title
+            project_info['pi'] = medium.project.principal_investigator.person.full_name()
+
+            medium_info['project'] = project_info
+
+            data.append(medium_info)
+
+        # safe=False... but it's safe in this case. See:
+        # https://docs.djangoproject.com/en/3.1/ref/request-response/#serializing-non-dictionary-objects
+        # Besides it's safe in modern browsers: this call is only used internally (it's protected) and the
+        # consumer is another Django application, not a browser
+        return JsonResponse(data=data, status=200, json_dumps_params={'indent': 2}, safe=False)
