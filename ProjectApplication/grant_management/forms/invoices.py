@@ -1,6 +1,7 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Field, Layout, HTML
 from django import forms
+from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory, BaseInlineFormSet, ModelChoiceField
 from django.urls import reverse
 from django.utils import timezone
@@ -9,6 +10,7 @@ from django.utils.safestring import mark_safe
 from ProjectApplication import settings
 from comments.forms.comment import CommentForm
 from grant_management.models import Invoice, LaySummary, LaySummaryType, Installment
+from project_core.fields import FlexibleDecimalField
 from project_core.models import Project
 from project_core.templatetags.ordinal import ordinal
 from project_core.templatetags.thousands_separator import thousands_separator
@@ -172,7 +174,12 @@ class InvoiceItemModelForm(forms.ModelForm):
         # code is executed, cached so I wanted to avoid this as well.
         #
         # The third and chosen option is to access self.data. A unit test will be added to see that this doesn't break.
-        amount = float(self.data.get(f'{self.prefix}-amount', None) or 0)
+
+        decimal_field = FlexibleDecimalField()
+        try:
+            amount = decimal_field.clean(self.data.get(f'{self.prefix}-amount', None))
+        except ValidationError:
+            amount = None
 
         installment_data_name = f'{self.prefix}-installment'
         installment = None
@@ -393,6 +400,8 @@ class InvoiceItemModelForm(forms.ModelForm):
             'received_date': 'Date the invoice was received',
             'amount': 'Total of the invoice'
         }
+
+        field_classes = {'amount': FlexibleDecimalField}
 
 
 class InvoicesFormSet(BaseInlineFormSet):

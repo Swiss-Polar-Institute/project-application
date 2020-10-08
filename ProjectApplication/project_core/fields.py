@@ -23,7 +23,6 @@ class FlexibleDecimalField(forms.DecimalField):
         super().__init__(*args, **kwargs)
 
     def clean(self, value):
-
         if type(value) == str:
             # From unit tests the value can be an integer or other types
             # Here I'm consistent with what Decimal.clean() does: it doesn't fail
