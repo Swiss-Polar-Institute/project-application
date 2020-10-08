@@ -409,7 +409,7 @@ class ApiListMediaView(View):
             return HttpResponse(status=400,
                                 content='Invalid date format, please use %Y-%m-%dT%H:%M:%S%z E.g.: 2017-01-28T21:00:00+00:00')
 
-        media = Medium.objects.filter(modified_on__gte=modified_since).order_by('modified_on')
+        media = Medium.objects.filter(modified_on__gt=modified_since).order_by('modified_on')
 
         data = []
         for medium in media:
@@ -419,9 +419,8 @@ class ApiListMediaView(View):
             medium_info['photographer'] = medium.photographer.full_name()
             medium_info['license'] = medium.license.spdx_identifier
             medium_info['copyright'] = medium.copyright
-            # medium_info['file_url'] = self.request.build_absolute_uri(
-            #     reverse('api-medium-view', kwargs={'medium_id': medium.id}))
             medium_info['file_url'] = medium.file.url
+            medium_info['original_file_path'] = medium.file.name
             medium_info['modified_on'] = medium.modified_on
             medium_info['descriptive_text'] = medium.descriptive_text
 
@@ -429,7 +428,6 @@ class ApiListMediaView(View):
             project_info['key'] = medium.project.key
             project_info['title'] = medium.project.title
             project_info['pi'] = medium.project.principal_investigator.person.full_name()
-
             medium_info['project'] = project_info
 
             data.append(medium_info)
