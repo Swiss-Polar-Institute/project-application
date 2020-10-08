@@ -21,7 +21,7 @@ jobs:
         pip3 install -r requirements.txt
     - name: Install minio
       run: |
-        wget --no-verbose https://dl.min.io/server/minio/release/linux-amd64/minio
+        wget --no-verbose https://github.com/Swiss-Polar-Institute/tools-mirror/raw/main/minio/minio
         chmod +x minio
         source tools/environment-variables-for-test.sh
         export MINIO_ACCESS_KEY="$OBJECT_STORAGE_ACCESS_KEY_ID"
