@@ -404,7 +404,7 @@ class ApiListMediaView(View):
         modified_since_str = modified_since_str.replace(' ', '+')
 
         try:
-            modified_since = datetime.strptime(modified_since_str, '%Y-%m-%dT%H:%M:%S%z')
+            modified_since = datetime.fromisoformat(modified_since_str)
         except ValueError:
             return HttpResponse(status=400,
                                 content='Invalid date format, please use %Y-%m-%dT%H:%M:%S%z E.g.: 2017-01-28T21:00:00+00:00')
@@ -416,7 +416,6 @@ class ApiListMediaView(View):
             medium_info = {}
             medium_info['id'] = medium.id
             medium_info['received_date'] = medium.received_date
-            medium_info['photographer'] = medium.photographer.full_name()
             medium_info['license'] = medium.license.spdx_identifier
             medium_info['copyright'] = medium.copyright
             medium_info['file_url'] = medium.file.url
@@ -429,6 +428,12 @@ class ApiListMediaView(View):
             project_info['title'] = medium.project.title
             project_info['pi'] = medium.project.principal_investigator.person.full_name()
             medium_info['project'] = project_info
+
+            photographer_info = {}
+            photographer_info['first_name'] = medium.photographer.first_name
+            photographer_info['last_name'] = medium.photographer.surname
+
+            medium_info['photographer'] = photographer_info
 
             data.append(medium_info)
 
