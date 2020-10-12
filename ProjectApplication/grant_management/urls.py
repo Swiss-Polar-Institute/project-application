@@ -91,4 +91,6 @@ urlpatterns = [
 
     path('api/media/list/', grant_management.views.ApiListMediaView.as_view(),
          name='api-list-media-view'),
+    path('api/media/list/deleted/', grant_management.views.ApiListMediaDeletedView.as_view(),
+         name='api-list-media-deleted-view'),
 ]

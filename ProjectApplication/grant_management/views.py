@@ -1,3 +1,4 @@
+import abc
 from datetime import datetime
 
 from dal import autocomplete
@@ -17,7 +18,7 @@ from grant_management.forms.invoices import InvoicesInlineFormSet
 from grant_management.forms.lay_summaries import LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
-from grant_management.models import GrantAgreement, MilestoneCategory, Medium
+from grant_management.models import GrantAgreement, MilestoneCategory, Medium, MediumDeleted
 from project_core.decorators import api_key_required
 from project_core.models import Project
 from project_core.views.common.formset_inline_view import InlineFormsetUpdateView
@@ -397,7 +398,7 @@ class GrantAgreementCommentAdd(AbstractGrantAgreement):
         return result
 
 
-class ApiListMediaView(View):
+class ApiList(View):
     @api_key_required
     def get(self, request, *args, **kwargs):
         modified_since_str = request.GET['modified_since']
@@ -409,6 +410,15 @@ class ApiListMediaView(View):
             return HttpResponse(status=400,
                                 content='Invalid date format, please use %Y-%m-%dT%H:%M:%S%z E.g.: 2017-01-28T21:00:00+00:00')
 
+        return self.generate_json(modified_since)
+
+    @abc.abstractmethod
+    def generate_json(self, modified_since):
+        """ Subclass should implement and return a JsonResponse """
+
+
+class ApiListMediaView(ApiList):
+    def generate_json(self, modified_since):
         media = Medium.objects.filter(modified_on__gt=modified_since).order_by('modified_on')
 
         data = []
@@ -437,6 +447,26 @@ class ApiListMediaView(View):
             medium_info['photographer'] = photographer_info
 
             data.append(medium_info)
+
+        # safe=False... but it's safe in this case. See:
+        # https://docs.djangoproject.com/en/3.1/ref/request-response/#serializing-non-dictionary-objects
+        # Besides it's safe in modern browsers: this call is only used internally (it's protected) and the
+        # consumer is another Django application, not a browser
+        return JsonResponse(data=data, status=200, json_dumps_params={'indent': 2}, safe=False)
+
+
+class ApiListMediaDeletedView(ApiList):
+    def generate_json(self, modified_since):
+        media_deleted = MediumDeleted.objects.filter(modified_on__gt=modified_since).order_by('created_on')
+
+        data = []
+
+        for medium_deleted in media_deleted:
+            medium_deleted_info = {}
+
+            medium_deleted_info['id'] = medium_deleted.original_id
+
+            data.append(medium_deleted_info)
 
         # safe=False... but it's safe in this case. See:
         # https://docs.djangoproject.com/en/3.1/ref/request-response/#serializing-non-dictionary-objects

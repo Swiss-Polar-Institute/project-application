@@ -1,5 +1,7 @@
+import copy
+
 from django.contrib.auth.models import User
-from django.db import models
+from django.db import models, transaction
 # Create your models here.
 # add dates of review, signed date, who signed, grant agreement - need flexibilty in types of dates that are added
 from django.db.models import Sum
@@ -241,11 +243,35 @@ class Medium(CreateModifyOn):
         self.file_md5 = calculate_md5_from_file_field(self.file)
         super().save(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        with transaction.atomic():
+            MediumDeleted.create_from_medium(self)
+            super().delete(*args, **kwargs)
+
     def __str__(self):
         return f'{self.project}-{self.photographer}'
 
     class Meta:
         verbose_name_plural = 'Media'
+
+
+class MediumDeleted(Medium):
+    original_id = models.IntegerField(help_text='ID of the delete Medium.ID. Used to return them to the '
+                                                'SPI Media Gallery or other software')
+
+    @staticmethod
+    def create_from_medium(medium):
+        medium_dictionary = copy.copy(medium.__dict__)
+
+        for exclude in ['_state', 'id', 'created_on', 'modified_on']:
+            medium_dictionary.pop(exclude, None)
+
+        medium_dictionary['original_id'] = medium.id
+
+        return MediumDeleted.objects.create(**medium_dictionary)
+
+    class Meta:
+        verbose_name_plural = 'MediaDeleted'
 
 
 class SocialNetwork(CreateModifyOn):
