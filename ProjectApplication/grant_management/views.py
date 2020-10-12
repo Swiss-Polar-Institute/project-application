@@ -419,6 +419,7 @@ class ApiListMediaView(View):
             medium_info['license'] = medium.license.spdx_identifier
             medium_info['copyright'] = medium.copyright
             medium_info['file_url'] = medium.file.url
+            medium_info['file_md5'] = medium.file_md5
             medium_info['original_file_path'] = medium.file.name
             medium_info['modified_on'] = medium.modified_on
             medium_info['descriptive_text'] = medium.descriptive_text

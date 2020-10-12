@@ -1,3 +1,6 @@
+import hashlib
+import io
+
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import FileExtensionValidator
 
@@ -99,3 +102,22 @@ def management_file_validator():
 def external_file_validator():
     return [FileExtensionValidator(allowed_extensions=['pdf']),
             file_size_validator]
+
+
+def calculate_md5_from_file_field(file_field):
+    # initial_position = file_field.file.file.pos()
+    # file_field.file.file.seek(0)
+
+    if type(file_field.file.file) == io.BytesIO:
+        file_contents = file_field.file.file.getvalue()
+    else:
+        # This is horrible. It happens when the file is updated
+        # (at least in our flow)
+        file_contents = file_field.file.read()
+
+    hash_md5 = hashlib.md5(file_contents)
+
+    # file_field.file.file.seek(initial_position)
+
+    return hash_md5.hexdigest()
+

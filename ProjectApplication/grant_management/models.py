@@ -8,7 +8,7 @@ from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from project_core.models import CreateModifyOn, PhysicalPerson, Project
-from project_core.utils.utils import management_file_validator
+from project_core.utils.utils import management_file_validator, calculate_md5_from_file_field
 
 
 def grant_agreement_file_rename(instance, filename):
@@ -231,9 +231,15 @@ class Medium(CreateModifyOn):
                                  null=True, blank=True)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename,
                             validators=[*management_file_validator()])
+    file_md5 = models.CharField(max_length=32, null=True, blank=True)
+
     blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to', blank=True)
     descriptive_text = models.TextField(
         help_text='Description of this media, if provided. Where was it taken, context, etc.', null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        self.file_md5 = calculate_md5_from_file_field(self.file)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.project}-{self.photographer}'

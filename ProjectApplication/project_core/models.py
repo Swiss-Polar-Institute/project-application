@@ -20,7 +20,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
 from .utils.orcid import raise_error_if_orcid_invalid
-from .utils.utils import bytes_to_human_readable, external_file_validator
+from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field
 
 logger = logging.getLogger('project_core')
 
@@ -928,29 +928,12 @@ class ProposalQAFile(CreateModifyOn):
 
     def save(self, *args, **kwargs):
         if self.file:
-            self.md5 = self._calculate_md5()
+            self.md5 = calculate_md5_from_file_field(self.file)
         else:
             # Actually if there is no file this should not be called
             self.md5 = None
 
         super().save(*args, **kwargs)
-
-    def _calculate_md5(self):
-        # initial_position = self.file.file.file.pos()
-        # self.file.file.file.seek(0)
-
-        if type(self.file.file.file) == io.BytesIO:
-            file_contents = self.file.file.file.getvalue()
-        else:
-            # This is horrible. It happens when the file is updated
-            # (at least in our flow)
-            file_contents = self.file.file.read()
-
-        hash_md5 = hashlib.md5(file_contents)
-
-        # self.file.file.file.seek(initial_position)
-
-        return hash_md5.hexdigest()
 
     def __str__(self):
         return 'Q: {}; A: file'.format(self.call_question)
