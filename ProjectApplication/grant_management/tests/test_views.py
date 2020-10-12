@@ -390,7 +390,7 @@ class TestApiListMediaView(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, '[]')
+        self.assertEqual(response.content, b'[]')
 
     def test_get_one_medium(self):
         project = database_population.create_project()
