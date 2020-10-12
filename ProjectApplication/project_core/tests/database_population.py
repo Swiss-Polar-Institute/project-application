@@ -3,12 +3,14 @@ from io import StringIO
 
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
+from django.utils import timezone
 from django.utils.timezone import utc
 
 from ProjectApplication import settings
 from evaluation.models import Reviewer
-from grant_management.models import LaySummaryType
+from grant_management.models import LaySummaryType, Medium
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
     Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role, Project, FinancialKey
@@ -305,3 +307,17 @@ def create_file():
     a_file.name = 'a_file.pdf'
 
     return a_file
+
+
+def create_medium(project):
+    photographer = create_physical_person()
+    medium, _ = Medium.objects.get_or_create(project=project,
+                                             received_date=timezone.now(),
+                                             copyright='The copyright of the photo',
+                                             file=SimpleUploadedFile('photo_expedition.jpg',
+                                                                     b'This is a JPEG photo of an expedition'),
+                                             descriptive_text='Photo taken in an expedition',
+                                             photographer=photographer
+                                             )
+
+    return medium

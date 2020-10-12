@@ -1,3 +1,4 @@
+import json
 from datetime import date
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -359,3 +360,56 @@ class LaySummariesUpdateViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(LaySummary.objects.all().count(), 1)
+
+
+class TestApiListMediaView(TestCase):
+    def setUp(self):
+        self._project = database_population.create_project()
+        self._client = Client()
+
+    def test_get_no_api_key(self):
+        response = self._client.get(
+            f'{reverse("api-list-media-view")}?modified_since=2017-01-28T21:00:00+00:00'
+        )
+
+        self.assertContains(response, '"ApiKey" HTTP header is required', status_code=400)
+
+    def test_get_invalid_api_key(self):
+        response = self._client.get(
+            f'{reverse("api-list-media-view")}?modified_since=2017-01-28T21:00:00+00:00',
+            HTTP_ApiKey='test'
+        )
+
+        self.assertContains(response, 'Received ApiKey header (test) does not match settings.API_SECRET_KEY',
+                            status_code=403)
+
+    def test_get_media_empty(self):
+        response = self._client.get(
+            f'{reverse("api-list-media-view")}?modified_since=2017-01-28T21:00:00+00:00',
+            HTTP_ApiKey=settings.API_SECRET_KEY
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, '[]')
+
+    def test_get_one_medium(self):
+        project = database_population.create_project()
+        medium = database_population.create_medium(project)
+
+        response = self._client.get(
+            f'{reverse("api-list-media-view")}?modified_since=2017-01-28T21:00:00+00:00',
+            HTTP_ApiKey=settings.API_SECRET_KEY
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        json_body = json.loads(response.content)
+
+        self.assertEqual(len(json_body), 1)
+
+        medium_json = json_body[0]
+
+        self.assertEqual(medium_json['license'], None)
+        self.assertEqual(medium_json['copyright'], medium.copyright)
+        self.assertEqual(medium_json['file_md5'], medium.file_md5)
+        self.assertEqual(medium_json['descriptive_text'], medium.descriptive_text)

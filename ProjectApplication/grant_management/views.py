@@ -426,7 +426,12 @@ class ApiListMediaView(ApiList):
             medium_info = {}
             medium_info['id'] = medium.id
             medium_info['received_date'] = medium.received_date
-            medium_info['license'] = medium.license.spdx_identifier
+
+            if medium.license:
+                medium_info['license'] = medium.license.spdx_identifier
+            else:
+                medium_info['license'] = None
+
             medium_info['copyright'] = medium.copyright
             medium_info['file_url'] = medium.file.url
             medium_info['file_md5'] = medium.file_md5
