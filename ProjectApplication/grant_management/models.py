@@ -245,8 +245,11 @@ class Medium(CreateModifyOn):
 
     def delete(self, *args, **kwargs):
         with transaction.atomic():
-            MediumDeleted.create_from_medium(self)
-            super().delete(*args, **kwargs)
+            MediumDeleted.objects.create(**{'original_id': self.id})
+            delete_result = super().delete(*args, **kwargs)
+
+        return delete_result
+
 
     def __str__(self):
         return f'{self.project}-{self.photographer}'
@@ -255,20 +258,27 @@ class Medium(CreateModifyOn):
         verbose_name_plural = 'Media'
 
 
-class MediumDeleted(Medium):
+class MediumDeleted(CreateModifyOn):
     original_id = models.IntegerField(help_text='ID of the delete Medium.ID. Used to return them to the '
-                                                'SPI Media Gallery or other software')
+                                                'SPI Media Gallery or other software',
+                                      null=False, blank=False,
+                                      unique=True       # The same ID cannot be deleted twice
+                                      )
 
-    @staticmethod
-    def create_from_medium(medium):
-        medium_dictionary = copy.copy(medium.__dict__)
-
-        for exclude in ['_state', 'id', 'created_on', 'modified_on']:
-            medium_dictionary.pop(exclude, None)
-
-        medium_dictionary['original_id'] = medium.id
-
-        return MediumDeleted.objects.create(**medium_dictionary)
+    # @staticmethod
+    # def create_from_medium(medium):
+    #     # medium_dictionary = copy.copy(medium.__dict__)
+    #     #
+    #     # for exclude in ['_state', 'id', 'created_on', 'modified_on']:
+    #     #     medium_dictionary.pop(exclude, None)
+    #
+    #     medium_dictionary = {}
+    #
+    #     for field in ['project_id', 'received_date', 'photographer_id', 'license_id', 'copyright', ]
+    #
+    #     medium_dictionary['original_id'] = medium.id
+    #
+    #     return MediumDeleted.objects.create(**medium_dictionary)
 
     class Meta:
         verbose_name_plural = 'MediaDeleted'

@@ -50,7 +50,7 @@ class MediumAdmin(admin.ModelAdmin):
 
 
 class MediumDeletedAdmin(admin.ModelAdmin):
-    list_display = ('photographer', 'license', 'copyright', 'project', 'file_md5', 'created_on', 'modified_on',)
+    list_display = ('original_id', 'created_on', 'modified_on',)
 
 
 class ProjectSocialNetworkAdmin(admin.ModelAdmin):

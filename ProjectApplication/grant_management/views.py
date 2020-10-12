@@ -465,6 +465,7 @@ class ApiListMediaDeletedView(ApiList):
             medium_deleted_info = {}
 
             medium_deleted_info['id'] = medium_deleted.original_id
+            medium_deleted_info['deleted_on'] = medium_deleted.created_on
 
             data.append(medium_deleted_info)
 
