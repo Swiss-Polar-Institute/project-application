@@ -1,12 +1,18 @@
+import logging
+
+import requests
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, CheckboxSelectMultiple
 
+from ProjectApplication import settings
 from grant_management.models import Medium
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
+
+logger = logging.getLogger('grant_management')
 
 
 class BlogPostMultipleChoiceField(forms.ModelMultipleChoiceField):
@@ -85,6 +91,19 @@ class MediaFormSet(BaseInlineFormSet):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    def save(self, *args, **kwargs):
+        result = super().save(*args, **kwargs)
+
+        if settings.SPI_MEDIA_GALLERY_IMPORT_CALLBACK is not None:
+            try:
+                # TODO: use Celery/some way to schedule a ping
+                headers = {'ApiKey': settings.API_SECRET_KEY}
+                requests.get(settings.SPI_MEDIA_GALLERY_IMPORT_CALLBACK, headers=headers)
+            except ConnectionError:
+                logger.warning('NOTIFY: Notifying SPI Media Gallery for new media failed -ConnectionError')
+
+        return result
 
     def get_queryset(self):
         return super().get_queryset().order_by('received_date')
