@@ -13,7 +13,6 @@ from django.utils import timezone
 
 from ..fields import FlexibleDecimalField
 from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory
-from ..utils.budget_categories import add_missing_budget_categories_call
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
 
 logger = logging.getLogger('project_core')
@@ -107,7 +106,8 @@ class CallForm(forms.ModelForm):
         general_categories_added = set()
 
         for budget_category_call in BudgetCategoryCall.objects.filter(call=self.instance).order_by('order'):
-            budget_category_choices.append((budget_category_call.budget_category.id, budget_category_call.budget_category.name))
+            budget_category_choices.append(
+                (budget_category_call.budget_category.id, budget_category_call.budget_category.name))
             general_categories_added.add(budget_category_call.budget_category.id)
 
             if budget_category_call.enabled:
@@ -235,7 +235,9 @@ class CallForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit)
 
-        add_missing_budget_categories_call(call=instance)
+        CheckboxSelectMultipleSortable.add_missing_related_objects(BudgetCategoryCall, instance, 'call',
+                                                                   BudgetCategory, 'budget_category')
+        # add_missing_budget_categories_call(call=instance)
 
         # Marks all as do not enable
         BudgetCategoryCall.objects.filter(call=instance).update(enabled=False)
@@ -249,10 +251,8 @@ class CallForm(forms.ModelForm):
         BudgetCategoryCall.objects.filter(call=instance).filter(
             budget_category__in=self.cleaned_data['budget_categories']).update(enabled=True)
 
-        if self.cleaned_data.get(self.budget_categories_order_key, None):
-            CheckboxSelectMultipleSortable.save_order_call_budget_categories(instance,
-                                                                             self.cleaned_data[
-                                                                                 self.budget_categories_order_key])
+        CheckboxSelectMultipleSortable.save_order(BudgetCategoryCall, instance, 'call', 'budget_category',
+                                                  self.cleaned_data.get(self.budget_categories_order_key, None))
 
         if commit:
             template_questions_wanted = []

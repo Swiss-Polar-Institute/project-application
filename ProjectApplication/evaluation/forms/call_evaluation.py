@@ -31,9 +31,12 @@ def add_missing_criterion_call_evaluation(call_evaluation):
 
     # New items are listed at the bottom. The order only appears if the user changes the order.
     # current_maximum is used to ensure that the new ones are added at the bottom: same as they are displayed
-    current_maximum = CriterionCallEvaluation.objects.\
-        filter(call_evaluation=call_evaluation).\
+    current_maximum = CriterionCallEvaluation.objects. \
+        filter(call_evaluation=call_evaluation). \
         aggregate(Max('order'))['order__max']
+
+    if current_maximum is None:
+        current_maximum = 1
 
     for missing_id in missing_ids:
         try:
@@ -176,10 +179,9 @@ class CallEvaluationForm(forms.ModelForm):
             criterion_call_evaluation.enabled = True
             criterion_call_evaluation.save()
 
-        if self.cleaned_data.get(self.criteria_order_key, None):
-            CheckboxSelectMultipleSortable.save_order_criterion_evaluation_categories(call_evaluation,
-                                                                                      self.cleaned_data[
-                                                                                          self.criteria_order_key])
+        CheckboxSelectMultipleSortable.save_order(CriterionCallEvaluation, call_evaluation,
+                                                  'call_evaluation', 'criterion',
+                                                  self.cleaned_data.get(self.criteria_order_key, None))
 
         call_evaluation.call.reviewer_set.set(reviewers)
 

@@ -8,13 +8,13 @@ from ProjectApplication import settings
 from comments import utils
 from comments.utils import process_comment_attachment, comments_attachments_forms
 from project_core.forms.call import CallForm, CallQuestionItemFormSet
-from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall
+from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall, BudgetCategory
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
 from ..common.proposal import AbstractProposalDetailView
-from ...utils.budget_categories import add_missing_budget_categories_call
+from ...widgets import CheckboxSelectMultipleSortable
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -60,11 +60,13 @@ class AbstractCallView(TemplateView):
 
         context['template_variables'] = get_template_variables_for_call(call)
 
-        add_missing_budget_categories_call(call=call)
+        CheckboxSelectMultipleSortable.add_missing_related_objects(BudgetCategoryCall, call,
+                                                                   'call', BudgetCategory, 'budget_category')
 
         budget_categories_status = []
 
-        for budget_category_call in BudgetCategoryCall.objects.filter(call=call).order_by('order', 'budget_category__name'):
+        for budget_category_call in BudgetCategoryCall.objects.filter(call=call).order_by('order',
+                                                                                          'budget_category__name'):
             in_call = budget_category_call.enabled
             budget_categories_status.append({'in_call': in_call,
                                              'name': budget_category_call.budget_category.name})

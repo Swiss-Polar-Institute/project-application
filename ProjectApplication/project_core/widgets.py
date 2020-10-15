@@ -1,9 +1,8 @@
 from django import forms
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Max
 from django.forms import DateTimeInput, DateInput
 from django.forms.widgets import ChoiceWidget
-
-from evaluation.models import CriterionCallEvaluation
-from project_core.models import BudgetCategoryCall
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -97,32 +96,48 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
         return super().value_from_datadict(data, files, name)
 
     @staticmethod
-    def save_order_call_budget_categories(call, order_data):
-        # This should not be here and should be automatic for the users of this Widget
-        # TODO: make it automatic
+    def save_order(model, parent_object, parent_object_field: str, related_object_field: str, order_data):
+        if order_data is None:
+            return
 
         order = 1
-        for category in order_data.split(','):
-            budget_category_call, created = BudgetCategoryCall.objects.get_or_create(call=call,
-                                                                                     budget_category_id=category,
-                                                                                     defaults={'enabled': False})
-            budget_category_call.order = order
-            budget_category_call.save()
+
+        for related_object_id in order_data.split(','):
+            filter = {parent_object_field: parent_object,
+                      f'{related_object_field}_id': related_object_id}
+
+            item, created = model.objects.get_or_create(**filter, defaults={'enabled': False})
+            item.order = order
+            item.save()
 
             order += 1
 
     @staticmethod
-    def save_order_criterion_evaluation_categories(call_evaluation, order_data):
-        # This should not be here and should be automatic for the users of this Widget
-        # TODO: make it automatic
+    def add_missing_related_objects(model, parent_object, parent_object_field: str, related_model,
+                                    related_object_field: str):
+        all_related_model_ids = related_model.objects.all().values_list('id', flat=True)
+        current_object_ids = model.objects.filter(**{parent_object_field: parent_object}).values_list(
+            f'{related_object_field}_id', flat=True)
 
-        order = 1
-        for criterion_id in order_data.split(','):
-            criterion_call_evaluation, created = CriterionCallEvaluation.objects.get_or_create(
-                call_evaluation=call_evaluation,
-                criterion_id=criterion_id,
-                defaults={'enabled': False})
-            criterion_call_evaluation.order = order
-            criterion_call_evaluation.save()
+        missing_ids = set(all_related_model_ids) - set(current_object_ids)
 
-            order += 1
+        # New items added at the bottom - consistent with how they are displayed
+        current_maximum = model.objects. \
+            filter(**{parent_object_field: parent_object}). \
+            aggregate(Max('order'))['order__max']
+
+        if current_maximum is None:
+            current_maximum = 1
+
+        for missing_id in missing_ids:
+            try:
+                item = related_model.objects.get(id=missing_id)
+            except ObjectDoesNotExist:
+                # This category has been deleted between the time that the form was presented to now
+                continue
+
+            model.objects.create(**{parent_object_field: parent_object,
+                                    f'{related_object_field}_id': missing_id,
+                                    'enabled': False,
+                                    'order': current_maximum})
+            current_maximum += 1
