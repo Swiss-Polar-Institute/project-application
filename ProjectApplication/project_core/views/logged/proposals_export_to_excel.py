@@ -273,11 +273,13 @@ class ProposalsExportExcel(View):
         italic_format = self._workbook.add_format({'italic': True})
         self._worksheet.write_rich_string(4, 0, 'Name of the reviewer: ', italic_format, 'please fill in')
 
-        row_initial_proposal = 10
-
         # Criterion headers
         criterion_header_texts = call_evaluation.criterioncallevaluation_set.filter(enabled=True).order_by(
             'order').values_list('criterion__name', flat=True)
+
+        # It never starts in the row less than 10: needs space for the MARKING SCALEE
+        # It starts a few rows after the evaluation criteria number
+        row_initial_proposal = max(2 + len(criterion_header_texts) + 3, 10)
 
         # Writes the information for each proposal
         for index, proposal in enumerate(proposals):
