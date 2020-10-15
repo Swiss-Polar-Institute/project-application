@@ -2,7 +2,7 @@ from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
 from project_core.admin import SimpleHistoryAdminFieldChanges
-from .models import Reviewer, ProposalEvaluation, CallEvaluation
+from .models import Reviewer, ProposalEvaluation, CallEvaluation, Criterion, CriterionCallEvaluation
 
 
 class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
@@ -28,6 +28,16 @@ class CallEvaluationAdmin(admin.ModelAdmin):
     list_display = ('call', 'panel_date', 'post_panel_management_table', 'closed_date', 'closed_user')
 
 
+class CriterionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+
+
+class CriterionCallEvaluationAdmin(admin.ModelAdmin):
+    list_display = ('call_evaluation', 'criterion', 'enabled', 'order')
+
+
 admin.site.register(Reviewer, ReviewerAdmin)
 admin.site.register(ProposalEvaluation, ProposalEvaluationAdmin)
 admin.site.register(CallEvaluation, CallEvaluationAdmin)
+admin.site.register(Criterion, CriterionAdmin)
+admin.site.register(CriterionCallEvaluation, CriterionCallEvaluationAdmin)

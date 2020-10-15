@@ -2,6 +2,7 @@ from django import forms
 from django.forms import DateTimeInput, DateInput
 from django.forms.widgets import ChoiceWidget
 
+from evaluation.models import CriterionCallEvaluation
 from project_core.models import BudgetCategoryCall
 
 
@@ -107,5 +108,21 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
                                                                                      defaults={'enabled': False})
             budget_category_call.order = order
             budget_category_call.save()
+
+            order += 1
+
+    @staticmethod
+    def save_order_criterion_evaluation_categories(call_evaluation, order_data):
+        # This should not be here and should be automatic for the users of this Widget
+        # TODO: make it automatic
+
+        order = 1
+        for criterion_id in order_data.split(','):
+            criterion_call_evaluation, created = CriterionCallEvaluation.objects.get_or_create(
+                call_evaluation=call_evaluation,
+                criterion_id=criterion_id,
+                defaults={'enabled': False})
+            criterion_call_evaluation.order = order
+            criterion_call_evaluation.save()
 
             order += 1

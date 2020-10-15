@@ -221,7 +221,7 @@ class Criterion(CreateModifyOn):
         return self.name
 
     class Meta:
-        verbose_name_plural = 'CallEvaluationCriteria'
+        verbose_name_plural = 'Criteria'
 
 
 class CriterionCallEvaluation(CreateModifyOn):
@@ -242,3 +242,4 @@ class CriterionCallEvaluation(CreateModifyOn):
 
     class Meta:
         unique_together = (('call_evaluation', 'criterion'),)
+        verbose_name_plural = 'Criterion call evaluations'

@@ -11,9 +11,15 @@
             <strong>Reviewers:</strong> {% for reviewer in call_evaluation.call.reviewer_set.all %}
             {{ reviewer.person }}{% if not forloop.last %},{% endif %}
         {% endfor %}<br>
-
             <strong>Panel date:</strong> {{ call_evaluation.panel_date }}<br>
 
+            <b>Call Evaluation Criteria:</b>
+            <div style="margin-left: 2em;">
+                {% for criterion in criteria %}
+                    {% include 'common/_check-icon.tmpl' with value=criterion.in_call_evaluation only %}{{ criterion.name }}
+                    <br>
+                {% endfor %}
+            </div>
             <strong>Evaluation
                 sheet:</strong> {% include 'common/_file_to_download.tmpl' with file_field=call_evaluation.post_panel_management_table %}<br>
             <strong>Closed

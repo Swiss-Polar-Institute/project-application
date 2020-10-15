@@ -102,12 +102,12 @@ class CallForm(forms.ModelForm):
 
         self.budget_categories_order_key = f'budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
-        choices = []
+        budget_category_choices = []
         enabled_budget_categories = []
         general_categories_added = set()
 
         for budget_category_call in BudgetCategoryCall.objects.filter(call=self.instance).order_by('order'):
-            choices.append((budget_category_call.budget_category.id, budget_category_call.budget_category.name))
+            budget_category_choices.append((budget_category_call.budget_category.id, budget_category_call.budget_category.name))
             general_categories_added.add(budget_category_call.budget_category.id)
 
             if budget_category_call.enabled:
@@ -115,9 +115,9 @@ class CallForm(forms.ModelForm):
 
         for budget_category_general in BudgetCategory.objects.all().order_by('order'):
             if budget_category_general.id not in general_categories_added:
-                choices.append((budget_category_general.id, budget_category_general.name))
+                budget_category_choices.append((budget_category_general.id, budget_category_general.name))
 
-        self.fields['budget_categories'] = forms.MultipleChoiceField(choices=choices,
+        self.fields['budget_categories'] = forms.MultipleChoiceField(choices=budget_category_choices,
                                                                      initial=enabled_budget_categories,
                                                                      widget=CheckboxSelectMultipleSortable,
                                                                      )

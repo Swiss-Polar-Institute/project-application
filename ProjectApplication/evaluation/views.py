@@ -248,6 +248,14 @@ class CallEvaluationDetail(DetailView):
 
         call_evaluation = CallEvaluation.objects.get(id=self.kwargs['pk'])
 
+        criteria = []
+        for criterion in call_evaluation.criterioncallevaluation_set.order_by('order'):
+            criteria.append(({'in_call_evaluation': criterion.enabled,
+                              'name': criterion.criterion.name})
+                            )
+
+        context['criteria'] = criteria
+
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'

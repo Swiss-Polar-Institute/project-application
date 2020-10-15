@@ -1,16 +1,42 @@
+import logging
+import re
+
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.urls import reverse
 
 from ProjectApplication import settings
-from evaluation.models import CallEvaluation, Reviewer
+from evaluation.models import CallEvaluation, Reviewer, CriterionCallEvaluation, Criterion
 from evaluation.utils import ReviewerMultipleChoiceField
 from project_core.forms.utils import cancel_edit_button
 from project_core.utils.utils import user_is_in_group_name
-from project_core.widgets import XDSoftYearMonthDayPickerInput
+from project_core.widgets import XDSoftYearMonthDayPickerInput, CheckboxSelectMultipleSortable
+
+logger = logging.getLogger('evaluation')
+
+
+def add_missing_criterion_call_evaluation(call_evaluation):
+    # TODO: refactor with add_missing_budget_categories
+    all_criterion_ids = Criterion.objects.all().values_list('id', flat=True)
+    criterion_call_evaluation_ids = CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation).values_list(
+        'criterion__id',
+        flat=True)
+
+    missing_ids = set(all_criterion_ids) - set(criterion_call_evaluation_ids)
+
+    for missing_id in missing_ids:
+        try:
+            criterion = Criterion.objects.get(id=missing_id)
+        except ObjectDoesNotExist:
+            # This criterion has been deleted between the time that the form was presented to now
+            continue
+
+        CriterionCallEvaluation.objects.create(call_evaluation=call_evaluation, criterion_id=missing_id, enabled=False,
+                                               order=None)
 
 
 class CallEvaluationForm(forms.ModelForm):
@@ -46,6 +72,31 @@ class CallEvaluationForm(forms.ModelForm):
                                                                    verbose_name='reviewers'),
                                                                help_text=self.Meta.help_texts['reviewers'])
 
+        criterion_choices = []
+        enabled_criterion_categories = []
+        general_criterion_added = set()
+
+        for criterion_call_evaluation in CriterionCallEvaluation.objects.filter(call_evaluation=self.instance).order_by(
+                'order'):
+            criterion_choices.append((criterion_call_evaluation.criterion.id, criterion_call_evaluation.criterion.name))
+            general_criterion_added.add(criterion_call_evaluation.criterion.id)
+
+            if criterion_call_evaluation.enabled:
+                enabled_criterion_categories.append(criterion_call_evaluation.criterion.id)
+
+        for criterion_category_general in Criterion.objects.all().order_by('name'):
+            if criterion_category_general.id not in general_criterion_added:
+                criterion_choices.append((criterion_category_general.id, criterion_category_general.name))
+
+        self.fields['criteria'] = forms.MultipleChoiceField(choices=criterion_choices,
+                                                            initial=enabled_criterion_categories,
+                                                            widget=CheckboxSelectMultipleSortable,
+                                                            label='Criteria (drag and drop to sort them)',
+                                                            help_text='These criteria are used in the Excel Evaluation sheet'
+                                                            )
+
+        self.criteria_order_key = f'criteria-{CheckboxSelectMultipleSortable.order_of_values_name}'
+
         self.helper.layout = Layout(
             Div(
                 Div('call', css_class='col-12', hidden=True),
@@ -60,6 +111,10 @@ class CallEvaluationForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('criteria', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
                 Div('post_panel_management_table', css_class='col-12'),
                 css_class='row'
             ),
@@ -70,7 +125,28 @@ class CallEvaluationForm(forms.ModelForm):
         )
 
     def clean(self):
-        super().clean()
+        cleaned_data = super().clean()
+
+        data_evaluation_criteria_order_key = f'{self.prefix}-{self.criteria_order_key}'
+
+        if data_evaluation_criteria_order_key in self.data:
+            order_data = self.data[data_evaluation_criteria_order_key]
+
+            if order_data == '':
+                self.cleaned_data[self.criteria_order_key] = None
+            elif re.search(r'^(\d+,)*\d+$', order_data):
+                # The order for the list is like '4,3,1,10' (starts with a number, has commas, ends with a number)
+                self.cleaned_data[self.criteria_order_key] = order_data
+            else:
+                logger.warning(
+                    f'NOTIFY: Error when parsing order of the criterion categories. Received: {order_data}')
+
+                raise ValidationError(
+                    'Error when parsing order of the criterion categories. Try again or contact Project Application administrators')
+        else:
+            self.cleaned_data[self.criteria_order_key] = None
+
+        return cleaned_data
 
     def save_call_evaluation(self, user, *args, **kwargs):
         if not user_is_in_group_name(user, settings.MANAGEMENT_GROUP_NAME):
@@ -79,6 +155,23 @@ class CallEvaluationForm(forms.ModelForm):
         reviewers = self.cleaned_data['reviewers']
 
         call_evaluation = super().save(*args, **kwargs)
+
+        # Mark all criterion categories as not enabled
+        add_missing_criterion_call_evaluation(call_evaluation=call_evaluation)
+
+        CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation).update(enabled=False)
+
+        # Enabled the correct ones
+        for criterion_id in self.cleaned_data['criteria']:
+            criterion_call_evaluation = CriterionCallEvaluation.objects.get(call_evaluation=call_evaluation,
+                                                                            criterion_id=criterion_id)
+            criterion_call_evaluation.enabled = True
+            criterion_call_evaluation.save()
+
+        if self.cleaned_data.get(self.criteria_order_key, None):
+            CheckboxSelectMultipleSortable.save_order_criterion_evaluation_categories(call_evaluation,
+                                                                                      self.cleaned_data[
+                                                                                          self.criteria_order_key])
 
         call_evaluation.call.reviewer_set.set(reviewers)
 
