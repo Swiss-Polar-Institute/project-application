@@ -7,6 +7,7 @@ from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.db.models import Max
 from django.urls import reverse
 
 from ProjectApplication import settings
@@ -28,6 +29,12 @@ def add_missing_criterion_call_evaluation(call_evaluation):
 
     missing_ids = set(all_criterion_ids) - set(criterion_call_evaluation_ids)
 
+    # New items are listed at the bottom. The order only appears if the user changes the order.
+    # current_maximum is used to ensure that the new ones are added at the bottom: same as they are displayed
+    current_maximum = CriterionCallEvaluation.objects.\
+        filter(call_evaluation=call_evaluation).\
+        aggregate(Max('order'))['order__max']
+
     for missing_id in missing_ids:
         try:
             criterion = Criterion.objects.get(id=missing_id)
@@ -36,7 +43,8 @@ def add_missing_criterion_call_evaluation(call_evaluation):
             continue
 
         CriterionCallEvaluation.objects.create(call_evaluation=call_evaluation, criterion_id=missing_id, enabled=False,
-                                               order=None)
+                                               order=current_maximum)
+        current_maximum += 1
 
 
 class CallEvaluationForm(forms.ModelForm):
