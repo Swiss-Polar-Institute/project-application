@@ -166,6 +166,7 @@ class CallEvaluation(CreateModifyOn):
     closed_user = models.ForeignKey(User, help_text='User by which the Call Evaluation was closed',
                                     blank=True, null=True,
                                     on_delete=models.PROTECT)
+
     history = HistoricalRecords()
 
     @staticmethod
@@ -208,3 +209,36 @@ class CallEvaluation(CreateModifyOn):
             self.save()
 
         return created_projects
+
+
+class Criterion(CreateModifyOn):
+    name = models.CharField(max_length=128,
+                            help_text='Name of the criteria such as "Originality of the project" or "Impact of the requested funding"',
+                            unique=True)
+    description = models.TextField(help_text='One line explanation of the criteria')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'CallEvaluationCriteria'
+
+
+class CriterionCallEvaluation(CreateModifyOn):
+    call_evaluation = models.ForeignKey(CallEvaluation,
+                                        help_text='Call Evaluation that this Criterion is included in',
+                                        on_delete=models.PROTECT)
+
+    criterion = models.ForeignKey(Criterion,
+                                  help_text='Call Evaluation Criterion that this is referred to',
+                                  on_delete=models.PROTECT)
+
+    enabled = models.BooleanField(help_text='Appears in the Call Evaluation', default=False)
+
+    order = models.PositiveIntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.criterion.name
+
+    class Meta:
+        unique_together = (('call_evaluation', 'criterion'),)
