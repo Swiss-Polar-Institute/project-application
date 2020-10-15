@@ -13,11 +13,13 @@ class CallEvaluationFormTest(TestCase):
         self._reviewer = database_population.create_reviewer()
         self._management_user = database_population.create_management_user()
         self._reviewer_user = database_population.create_reviewer_user()
+        self._criteria = database_population.create_evaluation_criteria()
 
     def test_save_call_evaluation(self):
         data = {'call': self._proposal.call,
                 'panel_date': datetime.today(),
-                'reviewers': [self._reviewer.id]
+                'reviewers': [self._reviewer.id],
+                'criteria': [self._criteria[0].id]
                 }
 
         self.assertEqual(CallEvaluation.objects.all().count(), 0)

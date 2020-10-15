@@ -158,6 +158,7 @@ class CallEvaluationUpdateTest(TestCase):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
         self._reviewer = database_population.create_reviewer()
+        self._criteria = database_population.create_evaluation_criteria()
 
     def test_get(self):
         call_evaluation = CallEvaluation()
@@ -175,6 +176,7 @@ class CallEvaluationUpdateTest(TestCase):
                                         'call_evaluation_form-panel_date': '16-03-2020',
                                         'call_evaluation_form-evaluation_sheet': [''],
                                         'call_evaluation_form-reviewers': [self._reviewer.id],
+                                        'call_evaluation_form-criteria': [self._criteria[0].id],
                                         'save': 'Save Call Evaluation'})
 
         self.assertEqual(CallEvaluation.objects.all().count(), 0)

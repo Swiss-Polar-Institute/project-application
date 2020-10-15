@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.timezone import utc
 
 from ProjectApplication import settings
-from evaluation.models import Reviewer
+from evaluation.models import Reviewer, Criterion
 from grant_management.models import LaySummaryType, Medium
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
@@ -168,6 +168,11 @@ def create_reviewer_user():
 
     return user
 
+def create_evaluation_criteria():
+    criterion1, created = Criterion.objects.get_or_create(name='Software is open', description='Evaluate if the software is open or not')
+    criterion2, created = Criterion.objects.get_or_create(name='Data management completed', description='Does this contain data management')
+
+    return criterion1, criterion2
 
 def create_reviewer():
     reviewer_user = create_reviewer_user()
