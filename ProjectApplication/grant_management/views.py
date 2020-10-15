@@ -398,7 +398,7 @@ class GrantAgreementCommentAdd(AbstractGrantAgreement):
         return result
 
 
-class ApiList(View):
+class ApiList(abc.ABC, View):
     @api_key_required
     def get(self, request, *args, **kwargs):
         modified_since_str = request.GET['modified_since']
