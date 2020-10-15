@@ -289,7 +289,7 @@ class ProposalsExportExcel(View):
             self._write_call(proposal, row_initial_proposal + (index * 7), len(criterion_header_texts))
 
         # Adds headers of the criterion
-        criterion_last_column = None
+        criterion_last_column = 0
         for index, criterion_header_text in enumerate(criterion_header_texts):
             column = self._column_criterion_1 + index * 2
             self._worksheet.merge_range(row_initial_proposal - 1, column, row_initial_proposal - 1,
