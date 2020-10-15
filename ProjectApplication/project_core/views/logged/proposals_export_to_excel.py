@@ -2,12 +2,13 @@ import io
 import textwrap
 
 import xlsxwriter
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.views import View
 
-from evaluation.models import Reviewer
+from evaluation.models import Reviewer, CallEvaluation
 from project_core.models import Proposal, Call
 from project_core.views.logged.proposal import create_file_name
 
@@ -198,18 +199,16 @@ class ProposalsExportExcel(View):
         self._worksheet.write(last_row, initial_column, '', self._centered_border_top)
         self._worksheet.write(last_row, initial_column + 1, '', self._centered_border_top)
 
-    def _write_evaluation_criteria(self, initial_row, initial_column, border_right_column):
-        evaluation_criteria = [('1', 'SCIENTIFIC MERIT OF THE PROJECT',
-                                'What is the scientific merit of the proposed project? Does the project contribute to relevant scientific questions?'),
-                               ('2', 'ORIGINALITY OF THE PROJECT',
-                                'Novelty and originality of the approach and proposed activities'),
-                               ('3', 'FEASIBILITY OF THE PROJECT',
-                                'Is the proposed scientific methodology feasible under the given environmental, financial and logistic context? What are the risks and how important are they? Is the proposed timeframe and budget realistic?'),
-                               ('4', 'EXPERIENCE AND EXPERTISE OF THE PI AND PARTNERS',
-                                'What is the applicant’s track record so far (academic excellence)?; What is the potential for the applicant to benefit from this field trip?; Is the applicant’s environment (institute/lab) and support appropriate for the success of the proposed activity?'),
-                               ('5', 'IMPACT OF THE REQUESTED FUNDING',
-                                'How important is the additional funding provided by the SPI Exploratory Grant for the successful undertaking of the proposed project? What does the additional funding enable to do and to which extend is this instrumental for the project? Does it add value to the project?')
-                               ]
+    def _write_evaluation_criteria(self, initial_row, initial_column, border_right_column, call_evaluation):
+        if call_evaluation is None:
+            return
+
+        evaluation_criteria = []
+        index = 1
+        for criterion in call_evaluation.criterioncallevaluation_set.filter(enabled=True).order_by('order'):
+            evaluation_criteria.append(
+                (index, criterion.criterion.name, criterion.criterion.description))
+            index += 1
 
         self._worksheet.write(initial_row, initial_column, 'EVALUATION CRITERIA', self._bold_border_left)
 
@@ -247,8 +246,13 @@ class ProposalsExportExcel(View):
             call = Call.objects.get(id=call_id)
             filename = create_file_name('proposals-{}-{}.xlsx', call_id)
             proposals = proposals.filter(call=call)
+            try:
+                call_evaluation = CallEvaluation.objects.get(call=call)
+            except ObjectDoesNotExist:
+                call_evaluation = None
         else:
             filename = 'proposals-all-{}.xlsx'.format(date)
+            call_evaluation = None
 
         output = io.BytesIO()
         self._workbook = xlsxwriter.Workbook(output)
@@ -275,11 +279,12 @@ class ProposalsExportExcel(View):
         criterion_header_texts = ['SCIENTIFIC MERIT OF THE PROJECT', 'ORIGINALITY OF THE PROJECT',
                                   'FEASIBILITY OF THE PROJECT', 'EXPERIENCE AND EXPERTISE OF THE APPLICANT',
                                   'IMPACT OF THE REQUESTED FUNDING']
+        criterion_header_texts = call_evaluation.criterioncallevaluation_set.filter(enabled=True).order_by(
+            'order').values_list('criterion__name', flat=True)
 
         # Writes the information for each proposal
         for index, proposal in enumerate(proposals):
             self._write_call(proposal, row_initial_proposal + (index * 7), len(criterion_header_texts))
-            # self.worksheet.write(num + 2, 0, proposal.title)
 
         # Adds headers of the criterion
         criterion_last_column = None
@@ -295,7 +300,7 @@ class ProposalsExportExcel(View):
 
         self._write_marking_scale_box(1, 5)
 
-        self._write_evaluation_criteria(1, 8, self._proposal_last_column)
+        self._write_evaluation_criteria(1, 8, self._proposal_last_column, call_evaluation)
 
         self._worksheet.freeze_panes(10, 6)
 
