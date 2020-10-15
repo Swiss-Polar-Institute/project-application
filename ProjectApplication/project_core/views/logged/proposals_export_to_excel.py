@@ -276,9 +276,6 @@ class ProposalsExportExcel(View):
         row_initial_proposal = 10
 
         # Criterion headers
-        criterion_header_texts = ['SCIENTIFIC MERIT OF THE PROJECT', 'ORIGINALITY OF THE PROJECT',
-                                  'FEASIBILITY OF THE PROJECT', 'EXPERIENCE AND EXPERTISE OF THE APPLICANT',
-                                  'IMPACT OF THE REQUESTED FUNDING']
         criterion_header_texts = call_evaluation.criterioncallevaluation_set.filter(enabled=True).order_by(
             'order').values_list('criterion__name', flat=True)
 
