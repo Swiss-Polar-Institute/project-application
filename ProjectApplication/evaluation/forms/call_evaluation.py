@@ -1,12 +1,9 @@
-import logging
-import re
-
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Max
 from django.urls import reverse
 
@@ -16,8 +13,6 @@ from evaluation.utils import ReviewerMultipleChoiceField
 from project_core.forms.utils import cancel_edit_button
 from project_core.utils.utils import user_is_in_group_name
 from project_core.widgets import XDSoftYearMonthDayPickerInput, CheckboxSelectMultipleSortable
-
-logger = logging.getLogger('evaluation')
 
 
 def add_missing_criterion_call_evaluation(call_evaluation):
@@ -129,22 +124,8 @@ class CallEvaluationForm(forms.ModelForm):
 
         data_evaluation_criteria_order_key = f'{self.prefix}-{self.criteria_order_key}'
 
-        if data_evaluation_criteria_order_key in self.data:
-            order_data = self.data[data_evaluation_criteria_order_key]
-
-            if order_data == '':
-                self.cleaned_data[self.criteria_order_key] = None
-            elif re.search(r'^(\d+,)*\d+$', order_data):
-                # The order for the list is like '4,3,1,10' (starts with a number, has commas, ends with a number)
-                self.cleaned_data[self.criteria_order_key] = order_data
-            else:
-                logger.warning(
-                    f'NOTIFY: Error when parsing order of the criterion categories. Received: {order_data}')
-
-                raise ValidationError(
-                    'Error when parsing order of the criterion categories. Try again or contact Project Application administrators')
-        else:
-            self.cleaned_data[self.criteria_order_key] = None
+        self.cleaned_data[self.criteria_order_key] = CheckboxSelectMultipleSortable.get_clean_order(self.data,
+                                                                                                    data_evaluation_criteria_order_key)
 
         return cleaned_data
 
@@ -159,7 +140,7 @@ class CallEvaluationForm(forms.ModelForm):
         CheckboxSelectMultipleSortable.save(CriterionCallEvaluation, call_evaluation,
                                             'call_evaluation', Criterion, 'criterion',
                                             self.cleaned_data['criteria'],
-                                            self.cleaned_data.get(self.criteria_order_key, None)
+                                            self.cleaned_data[self.criteria_order_key]
                                             )
 
         call_evaluation.call.reviewer_set.set(reviewers)

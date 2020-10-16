@@ -1,12 +1,10 @@
 import logging
-import re
 from datetime import datetime
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
-from django.core.exceptions import ValidationError
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.urls import reverse
 from django.utils import timezone
@@ -199,24 +197,8 @@ class CallForm(forms.ModelForm):
 
         data_budget_categories_order_key = f'{self.prefix}-{self.budget_categories_order_key}'
 
-        if data_budget_categories_order_key in self.data:
-            order_data = self.data[data_budget_categories_order_key]
-
-            if order_data == '':
-                self.cleaned_data[self.budget_categories_order_key] = None
-            elif re.search(r'^(\d+,)*\d+$', order_data):
-                # The order for the list is like '4,3,1,10' (starts with a number, has commas, ends with a number)
-                self.cleaned_data[self.budget_categories_order_key] = order_data
-            else:
-                logger.warning(
-                    f'NOTIFY: Error when parsing order of the budget categories. Received: {order_data}')
-
-                raise ValidationError(
-                    'Error when parsing order of the budget categories. Try again or contact Project Application administrators')
-
-        else:
-            self.cleaned_data[self.budget_categories_order_key] = None
-
+        self.cleaned_data[self.budget_categories_order_key] = CheckboxSelectMultipleSortable.get_clean_order(self.data,
+                                                                                                             data_budget_categories_order_key)
         return cleaned_data
 
     def save(self, commit=True):
@@ -224,7 +206,7 @@ class CallForm(forms.ModelForm):
 
         CheckboxSelectMultipleSortable.save(BudgetCategoryCall, instance, 'call', BudgetCategory, 'budget_category',
                                             self.cleaned_data['budget_categories'],
-                                            self.cleaned_data.get(self.budget_categories_order_key, None))
+                                            self.cleaned_data[self.budget_categories_order_key])
 
         if commit:
             template_questions_wanted = []

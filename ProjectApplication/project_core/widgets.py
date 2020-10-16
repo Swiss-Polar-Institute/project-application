@@ -1,8 +1,13 @@
+import logging
+import re
+
 from django import forms
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db.models import Max
 from django.forms import DateTimeInput, DateInput
 from django.forms.widgets import ChoiceWidget
+
+logger = logging.getLogger('project_core')
 
 
 class DateTimePickerWidget(forms.SplitDateTimeWidget):
@@ -183,3 +188,24 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
                                           f'{related_object_field}_id': related_object_id})
             object.enabled = True
             object.save()
+
+    @staticmethod
+    def get_clean_order(data, data_evaluation_criteria_order_key):
+        if data_evaluation_criteria_order_key in data:
+            order_data = data[data_evaluation_criteria_order_key]
+
+            if order_data == '':
+                cleaned_order = None
+            elif re.search(r'^(\d+,)*\d+$', order_data):
+                # The order for the list is like '4,3,1,10' (starts with a number, has commas, ends with a number)
+                cleaned_order = order_data
+            else:
+                logger.warning(
+                    f'NOTIFY: Error when parsing order. Received: {order_data}')
+
+                raise ValidationError(
+                    'Error when parsing sortable field. Try again or contact Project Application administrators')
+        else:
+            cleaned_order = None
+
+        return cleaned_order
