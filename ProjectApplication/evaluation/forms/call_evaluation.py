@@ -83,24 +83,13 @@ class CallEvaluationForm(forms.ModelForm):
                                                                    verbose_name='reviewers'),
                                                                help_text=self.Meta.help_texts['reviewers'])
 
-        criterion_choices = []
-        enabled_criterion_categories = []
-        general_criterion_added = set()
-
-        for criterion_call_evaluation in CriterionCallEvaluation.objects.filter(call_evaluation=self.instance).order_by(
-                'order'):
-            criterion_choices.append((criterion_call_evaluation.criterion.id, criterion_call_evaluation.criterion.name))
-            general_criterion_added.add(criterion_call_evaluation.criterion.id)
-
-            if criterion_call_evaluation.enabled:
-                enabled_criterion_categories.append(criterion_call_evaluation.criterion.id)
-
-        for criterion_category_general in Criterion.objects.all().order_by('name'):
-            if criterion_category_general.id not in general_criterion_added:
-                criterion_choices.append((criterion_category_general.id, criterion_category_general.name))
+        criterion_choices, criterion_initial = CheckboxSelectMultipleSortable.get_choices_initial(
+            CriterionCallEvaluation,
+            CallEvaluation, self.instance, 'call_evaluation',
+            Criterion, 'criterion')
 
         self.fields['criteria'] = forms.MultipleChoiceField(choices=criterion_choices,
-                                                            initial=enabled_criterion_categories,
+                                                            initial=criterion_initial,
                                                             widget=CheckboxSelectMultipleSortable,
                                                             label='Criteria (drag and drop to sort them)',
                                                             help_text='These criteria are used in the Excel Evaluation sheet'

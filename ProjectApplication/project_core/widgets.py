@@ -153,11 +153,22 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
             object.enabled = True
             object.save()
 
-        # CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation).update(enabled=False)
-        #
-        # # Enabled the correct ones
-        # for criterion_id in self.cleaned_data['criteria']:
-        #     criterion_call_evaluation = CriterionCallEvaluation.objects.get(call_evaluation=call_evaluation,
-        #                                                                     criterion_id=criterion_id)
-        #     criterion_call_evaluation.enabled = True
-        #     criterion_call_evaluation.save()
+    @staticmethod
+    def get_choices_initial(model, parent_model, parent_object, parent_object_field, related_model, related_object_field: str):
+        choices = []
+        initial_ids = []
+        parent_object_added_ids = set()
+
+        for choice in model.objects.filter(**{parent_object_field: parent_object}).order_by('order'):
+            object = getattr(choice, related_object_field)
+            choices.append((object.id, object.name))
+            parent_object_added_ids.add(object.id)
+
+            if choice.enabled:
+                initial_ids.append(object.id)
+
+        for criterion_category_general in related_model.objects.all().order_by('name'):
+            if criterion_category_general.id not in parent_object_added_ids:
+                choices.append((criterion_category_general.id, criterion_category_general.name))
+
+        return choices, initial_ids

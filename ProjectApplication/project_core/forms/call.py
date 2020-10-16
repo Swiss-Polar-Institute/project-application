@@ -101,28 +101,15 @@ class CallForm(forms.ModelForm):
 
         self.budget_categories_order_key = f'budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
-        budget_category_choices = []
-        enabled_budget_categories = []
-        general_categories_added = set()
-
-        for budget_category_call in BudgetCategoryCall.objects.filter(call=self.instance).order_by('order'):
-            budget_category_choices.append(
-                (budget_category_call.budget_category.id, budget_category_call.budget_category.name))
-            general_categories_added.add(budget_category_call.budget_category.id)
-
-            if budget_category_call.enabled:
-                enabled_budget_categories.append(budget_category_call.budget_category.id)
-
-        for budget_category_general in BudgetCategory.objects.all().order_by('order'):
-            if budget_category_general.id not in general_categories_added:
-                budget_category_choices.append((budget_category_general.id, budget_category_general.name))
+        budget_category_choices, enabled_budget_categories = CheckboxSelectMultipleSortable.get_choices_initial(
+            BudgetCategoryCall,
+            Call, self.instance, 'call',
+            BudgetCategory, 'budget_category')
 
         self.fields['budget_categories'] = forms.MultipleChoiceField(choices=budget_category_choices,
                                                                      initial=enabled_budget_categories,
                                                                      widget=CheckboxSelectMultipleSortable,
                                                                      )
-        # queryset=BudgetCategoryCall.objects.filter(call=self.instance).order_by('order'),
-        # self.fields['budget_categories'].widget = CheckboxSelectMultiple
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
                                                                            queryset=TemplateQuestion.objects.all(),
