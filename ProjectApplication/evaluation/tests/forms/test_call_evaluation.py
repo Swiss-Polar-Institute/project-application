@@ -3,7 +3,7 @@ from datetime import datetime
 from django.test import TestCase
 
 from evaluation.forms.call_evaluation import CallEvaluationForm
-from evaluation.models import CallEvaluation
+from evaluation.models import CallEvaluation, CriterionCallEvaluation
 from project_core.tests import database_population
 
 
@@ -29,6 +29,13 @@ class CallEvaluationFormTest(TestCase):
 
         self.assertRaises(PermissionError, call_evaluation_form.save_call_evaluation, self._reviewer_user)
 
-        call_evaluation_form.save_call_evaluation(self._management_user)
+        call_evaluation = call_evaluation_form.save_call_evaluation(self._management_user)
 
         self.assertEqual(CallEvaluation.objects.all().count(), 1)
+
+        self.assertEqual(CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation).count(), 7)
+        self.assertEqual(CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation, enabled=True).count(),
+                         1)
+        self.assertEqual(
+            CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation, enabled=True)[0].criterion.id,
+            self._criteria[0].id)
