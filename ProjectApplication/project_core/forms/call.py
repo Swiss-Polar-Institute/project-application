@@ -237,20 +237,10 @@ class CallForm(forms.ModelForm):
 
         CheckboxSelectMultipleSortable.add_missing_related_objects(BudgetCategoryCall, instance, 'call',
                                                                    BudgetCategory, 'budget_category')
-        # add_missing_budget_categories_call(call=instance)
-
-        # Marks all as do not enable
-        BudgetCategoryCall.objects.filter(call=instance).update(enabled=False)
-
-        for category_id in self.cleaned_data['budget_categories']:
-            budget_category_call = BudgetCategoryCall.objects.get(call=instance, budget_category__id=category_id)
-            budget_category_call.enabled = True
-            budget_category_call.save()
-
-        # Enable the ones that are enabled
-        BudgetCategoryCall.objects.filter(call=instance).filter(
-            budget_category__in=self.cleaned_data['budget_categories']).update(enabled=True)
-
+        CheckboxSelectMultipleSortable.save_enabled_disabled(BudgetCategoryCall,
+                                                             Call, instance, 'call',
+                                                             'budget_category',
+                                                             self.cleaned_data['budget_categories'])
         CheckboxSelectMultipleSortable.save_order(BudgetCategoryCall, instance, 'call', 'budget_category',
                                                   self.cleaned_data.get(self.budget_categories_order_key, None))
 

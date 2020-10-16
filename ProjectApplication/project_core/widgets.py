@@ -136,8 +136,28 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
                 # This category has been deleted between the time that the form was presented to now
                 continue
 
+            current_maximum += 1
             model.objects.create(**{parent_object_field: parent_object,
                                     f'{related_object_field}_id': missing_id,
                                     'enabled': False,
                                     'order': current_maximum})
-            current_maximum += 1
+
+    @staticmethod
+    def save_enabled_disabled(model, parent_model, parent_object, parent_object_field: str, related_object_field: str,
+                              enabled_ids):
+        model.objects.filter(**{parent_object_field: parent_object}).update(enabled=False)
+
+        for related_object_id in enabled_ids:
+            object = model.objects.get(**{parent_object_field: parent_object,
+                                          f'{related_object_field}_id': related_object_id})
+            object.enabled = True
+            object.save()
+
+        # CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation).update(enabled=False)
+        #
+        # # Enabled the correct ones
+        # for criterion_id in self.cleaned_data['criteria']:
+        #     criterion_call_evaluation = CriterionCallEvaluation.objects.get(call_evaluation=call_evaluation,
+        #                                                                     criterion_id=criterion_id)
+        #     criterion_call_evaluation.enabled = True
+        #     criterion_call_evaluation.save()

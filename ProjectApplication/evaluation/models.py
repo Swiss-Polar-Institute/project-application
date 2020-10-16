@@ -1,6 +1,6 @@
 import storages
 from django.contrib.auth.models import User
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models, transaction
 from django.utils import timezone
@@ -210,12 +210,16 @@ class CallEvaluation(CreateModifyOn):
 
         return created_projects
 
+def one_line_only(value):
+    if isinstance(value, str) and '\n' in value:
+        raise ValidationError('Only one line descriptions. It is used in a spreadsheet cell')
+
 
 class Criterion(CreateModifyOn):
     name = models.CharField(max_length=128,
                             help_text='Name of the criteria such as "Originality of the project" or "Impact of the requested funding"',
                             unique=True)
-    description = models.TextField(help_text='One line explanation of the criteria')
+    description = models.TextField(help_text='One line explanation of the criteria', validators=[one_line_only])
 
     def __str__(self):
         return self.name

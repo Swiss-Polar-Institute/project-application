@@ -65,8 +65,7 @@ class AbstractCallView(TemplateView):
 
         budget_categories_status = []
 
-        for budget_category_call in BudgetCategoryCall.objects.filter(call=call).order_by('order',
-                                                                                          'budget_category__name'):
+        for budget_category_call in BudgetCategoryCall.objects.filter(call=call).order_by('order'):
             in_call = budget_category_call.enabled
             budget_categories_status.append({'in_call': in_call,
                                              'name': budget_category_call.budget_category.name})

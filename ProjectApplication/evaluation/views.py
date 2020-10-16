@@ -13,11 +13,12 @@ from evaluation.forms.call_evaluation import CallEvaluationForm
 from evaluation.forms.close_call_evaluation import CloseCallEvaluation
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
-from evaluation.models import CallEvaluation, ProposalEvaluation
+from evaluation.models import CallEvaluation, ProposalEvaluation, CriterionCallEvaluation, Criterion
 from project_core.models import Proposal, Call, ProposalStatus
 from project_core.utils.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 from project_core.views.logged.proposal import get_eligibility_history
+from project_core.widgets import CheckboxSelectMultipleSortable
 
 
 def add_proposal_evaluation_form(context, proposal):
@@ -247,6 +248,10 @@ class CallEvaluationDetail(DetailView):
         context = super().get_context_data(**kwargs)
 
         call_evaluation = CallEvaluation.objects.get(id=self.kwargs['pk'])
+
+        CheckboxSelectMultipleSortable.add_missing_related_objects(CriterionCallEvaluation, call_evaluation,
+                                                                   'call_evaluation', Criterion,
+                                                                   'criterion')
 
         criteria = []
         for criterion in call_evaluation.criterioncallevaluation_set.order_by('order'):
