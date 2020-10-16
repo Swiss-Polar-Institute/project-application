@@ -154,7 +154,7 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
             object.save()
 
     @staticmethod
-    def get_choices_initial(model, parent_model, parent_object, parent_object_field, related_model, related_object_field: str):
+    def get_choices_initial(model, parent_object, parent_object_field, related_model, related_object_field: str):
         choices = []
         initial_ids = []
         parent_object_added_ids = set()

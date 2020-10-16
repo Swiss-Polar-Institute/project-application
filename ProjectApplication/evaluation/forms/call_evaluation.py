@@ -85,7 +85,7 @@ class CallEvaluationForm(forms.ModelForm):
 
         criterion_choices, criterion_initial = CheckboxSelectMultipleSortable.get_choices_initial(
             CriterionCallEvaluation,
-            CallEvaluation, self.instance, 'call_evaluation',
+            self.instance, 'call_evaluation',
             Criterion, 'criterion')
 
         self.fields['criteria'] = forms.MultipleChoiceField(choices=criterion_choices,

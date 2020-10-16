@@ -103,7 +103,7 @@ class CallForm(forms.ModelForm):
 
         budget_category_choices, enabled_budget_categories = CheckboxSelectMultipleSortable.get_choices_initial(
             BudgetCategoryCall,
-            Call, self.instance, 'call',
+            self.instance, 'call',
             BudgetCategory, 'budget_category')
 
         self.fields['budget_categories'] = forms.MultipleChoiceField(choices=budget_category_choices,
