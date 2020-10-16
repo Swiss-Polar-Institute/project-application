@@ -96,21 +96,35 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
         return super().value_from_datadict(data, files, name)
 
     @staticmethod
-    def save_order(model, parent_object, parent_object_field: str, related_object_field: str, order_data):
-        if order_data is None:
-            return
+    def get_choices_initial(model, parent_object, parent_object_field, related_model, related_object_field: str):
+        choices = []
+        initial_ids = []
+        parent_object_added_ids = set()
 
-        order = 1
+        for choice in model.objects.filter(**{parent_object_field: parent_object}).order_by('order'):
+            object = getattr(choice, related_object_field)
+            choices.append((object.id, object.name))
+            parent_object_added_ids.add(object.id)
 
-        for related_object_id in order_data.split(','):
-            filter = {parent_object_field: parent_object,
-                      f'{related_object_field}_id': related_object_id}
+            if choice.enabled:
+                initial_ids.append(object.id)
 
-            item, created = model.objects.get_or_create(**filter, defaults={'enabled': False})
-            item.order = order
-            item.save()
+        for criterion_category_general in related_model.objects.all().order_by('name'):
+            if criterion_category_general.id not in parent_object_added_ids:
+                choices.append((criterion_category_general.id, criterion_category_general.name))
 
-            order += 1
+        return choices, initial_ids
+
+    @staticmethod
+    def save(model, parent_object, parent_object_field: str, related_model, related_object_field: str,
+             enabled_ids, order_data):
+        CheckboxSelectMultipleSortable.add_missing_related_objects(model, parent_object, parent_object_field,
+                                                                   related_model, related_object_field)
+
+        CheckboxSelectMultipleSortable._save_enabled_disabled(model, parent_object, parent_object_field,
+                                                              related_object_field, enabled_ids)
+        CheckboxSelectMultipleSortable._save_order(model, parent_object,
+                                                   parent_object_field, related_object_field, order_data)
 
     @staticmethod
     def add_missing_related_objects(model, parent_object, parent_object_field: str, related_model,
@@ -143,8 +157,25 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
                                     'order': current_maximum})
 
     @staticmethod
-    def save_enabled_disabled(model, parent_model, parent_object, parent_object_field: str, related_object_field: str,
-                              enabled_ids):
+    def _save_order(model, parent_object, parent_object_field: str, related_object_field: str, order_data):
+        if order_data is None:
+            return
+
+        order = 1
+
+        for related_object_id in order_data.split(','):
+            filter = {parent_object_field: parent_object,
+                      f'{related_object_field}_id': related_object_id}
+
+            item, created = model.objects.get_or_create(**filter, defaults={'enabled': False})
+            item.order = order
+            item.save()
+
+            order += 1
+
+    @staticmethod
+    def _save_enabled_disabled(model, parent_object, parent_object_field: str, related_object_field: str,
+                               enabled_ids):
         model.objects.filter(**{parent_object_field: parent_object}).update(enabled=False)
 
         for related_object_id in enabled_ids:
@@ -152,23 +183,3 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
                                           f'{related_object_field}_id': related_object_id})
             object.enabled = True
             object.save()
-
-    @staticmethod
-    def get_choices_initial(model, parent_object, parent_object_field, related_model, related_object_field: str):
-        choices = []
-        initial_ids = []
-        parent_object_added_ids = set()
-
-        for choice in model.objects.filter(**{parent_object_field: parent_object}).order_by('order'):
-            object = getattr(choice, related_object_field)
-            choices.append((object.id, object.name))
-            parent_object_added_ids.add(object.id)
-
-            if choice.enabled:
-                initial_ids.append(object.id)
-
-        for criterion_category_general in related_model.objects.all().order_by('name'):
-            if criterion_category_general.id not in parent_object_added_ids:
-                choices.append((criterion_category_general.id, criterion_category_general.name))
-
-        return choices, initial_ids

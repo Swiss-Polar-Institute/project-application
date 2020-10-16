@@ -156,16 +156,11 @@ class CallEvaluationForm(forms.ModelForm):
 
         call_evaluation = super().save(*args, **kwargs)
 
-        CheckboxSelectMultipleSortable.add_missing_related_objects(CriterionCallEvaluation, call_evaluation,
-                                                                   'call_evaluation', Criterion,
-                                                                   'criterion')
-        CheckboxSelectMultipleSortable.save_enabled_disabled(CriterionCallEvaluation, CallEvaluation,
-                                                             call_evaluation, 'call_evaluation',
-                                                             'criterion',
-                                                             self.cleaned_data['criteria'])
-        CheckboxSelectMultipleSortable.save_order(CriterionCallEvaluation, call_evaluation,
-                                                  'call_evaluation', 'criterion',
-                                                  self.cleaned_data.get(self.criteria_order_key, None))
+        CheckboxSelectMultipleSortable.save(CriterionCallEvaluation, call_evaluation,
+                                            'call_evaluation', Criterion, 'criterion',
+                                            self.cleaned_data['criteria'],
+                                            self.cleaned_data.get(self.criteria_order_key, None)
+                                            )
 
         call_evaluation.call.reviewer_set.set(reviewers)
 

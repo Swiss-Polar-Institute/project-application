@@ -222,14 +222,9 @@ class CallForm(forms.ModelForm):
     def save(self, commit=True):
         instance = super().save(commit)
 
-        CheckboxSelectMultipleSortable.add_missing_related_objects(BudgetCategoryCall, instance, 'call',
-                                                                   BudgetCategory, 'budget_category')
-        CheckboxSelectMultipleSortable.save_enabled_disabled(BudgetCategoryCall,
-                                                             Call, instance, 'call',
-                                                             'budget_category',
-                                                             self.cleaned_data['budget_categories'])
-        CheckboxSelectMultipleSortable.save_order(BudgetCategoryCall, instance, 'call', 'budget_category',
-                                                  self.cleaned_data.get(self.budget_categories_order_key, None))
+        CheckboxSelectMultipleSortable.save(BudgetCategoryCall, instance, 'call', BudgetCategory, 'budget_category',
+                                            self.cleaned_data['budget_categories'],
+                                            self.cleaned_data.get(self.budget_categories_order_key, None))
 
         if commit:
             template_questions_wanted = []
