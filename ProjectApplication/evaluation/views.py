@@ -256,7 +256,8 @@ class CallEvaluationDetail(DetailView):
         criteria = []
         for criterion in call_evaluation.criterioncallevaluation_set.order_by('order'):
             criteria.append(({'in_call_evaluation': criterion.enabled,
-                              'name': criterion.criterion.name})
+                              'name': criterion.criterion.name,
+                              'description': criterion.criterion.description})
                             )
 
         context['criteria'] = criteria
@@ -468,8 +469,8 @@ class CallEvaluationValidation(TemplateView):
     @staticmethod
     def _check_call_evaluation_is_completed(call_evaluation):
         required_fields = CallEvaluationForm(call=call_evaluation.call).fields
-        del required_fields['reviewers']    # reviewers is required but it's checked on the form
-        del required_fields['criteria']     # not part of the model, checked in the form
+        del required_fields['reviewers']  # reviewers is required but it's checked on the form
+        del required_fields['criteria']  # not part of the model, checked in the form
         # below check using getattr would always fail because
         # it's a Many to Many
 

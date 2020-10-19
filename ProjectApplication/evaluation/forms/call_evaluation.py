@@ -6,6 +6,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Max
 from django.urls import reverse
+from django.utils.html import format_html
 
 from ProjectApplication import settings
 from evaluation.models import CallEvaluation, Reviewer, CriterionCallEvaluation, Criterion
@@ -81,7 +82,9 @@ class CallEvaluationForm(forms.ModelForm):
         criterion_choices, criterion_initial = CheckboxSelectMultipleSortable.get_choices_initial(
             CriterionCallEvaluation,
             self.instance, 'call_evaluation',
-            Criterion, 'criterion')
+            Criterion, 'criterion',
+            label_from_instance=lambda obj: format_html('{} <small>({})</small>', obj.name, obj.description)
+        )
 
         self.fields['criteria'] = forms.MultipleChoiceField(choices=criterion_choices,
                                                             initial=criterion_initial,
@@ -106,7 +109,7 @@ class CallEvaluationForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('criteria', css_class='col-6'),
+                Div('criteria', css_class='col-12'),
                 css_class='row'
             ),
             Div(

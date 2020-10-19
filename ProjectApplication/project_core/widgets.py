@@ -101,18 +101,24 @@ class CheckboxSelectMultipleSortable(ChoiceWidget):
         return super().value_from_datadict(data, files, name)
 
     @staticmethod
-    def get_choices_initial(model, parent_object, parent_object_field, related_model, related_object_field: str):
+    def get_choices_initial(model, parent_object, parent_object_field, related_model, related_object_field: str,
+                            label_from_instance=None):
         choices = []
         initial_ids = []
         parent_object_added_ids = set()
 
         for choice in model.objects.filter(**{parent_object_field: parent_object}).order_by('order'):
-            object = getattr(choice, related_object_field)
-            choices.append((object.id, object.name))
-            parent_object_added_ids.add(object.id)
+            obj = getattr(choice, related_object_field)
+            if label_from_instance:
+                label = label_from_instance(obj)
+            else:
+                label = obj.name
+
+            choices.append((obj.id, label))
+            parent_object_added_ids.add(obj.id)
 
             if choice.enabled:
-                initial_ids.append(object.id)
+                initial_ids.append(obj.id)
 
         for criterion_category_general in related_model.objects.all().order_by('name'):
             if criterion_category_general.id not in parent_object_added_ids:

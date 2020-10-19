@@ -16,7 +16,7 @@
             <b>Call Evaluation Criteria:</b>
             <div style="margin-left: 2em;">
                 {% for criterion in criteria %}
-                    {% include 'common/_check-icon.tmpl' with value=criterion.in_call_evaluation only %}{{ criterion.name }}
+                    {% include 'common/_check-icon.tmpl' with value=criterion.in_call_evaluation only %}{{ criterion.name }} <small>({{ criterion.description }})</small>
                     <br>
                 {% endfor %}
             </div>
