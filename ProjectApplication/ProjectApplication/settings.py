@@ -262,14 +262,14 @@ EMAIL_USE_TLS = True
 
 DEBUG = os.environ['DEBUG'] == '1'
 SECURE_SSL_REDIRECT = os.environ['SECURE_SSL_REDIRECT'] == '1'
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
 SECURE_REFERRER_POLICY = 'same-origin'
 
 if SECURE_SSL_REDIRECT:
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_SECONDS = 3600
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
 
 # Project Application specific settings
 # These settings are specific by the Project Application code. They are not Django settings
@@ -283,7 +283,8 @@ MANAGEMENT_GROUP_NAME = 'management'
 REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-proposal-detail',
                                   'logged-export-proposals-csv-summary-all',
-                                  'logged-export-proposals-csv-summary-call']
+                                  'logged-export-proposals-csv-summary-call',
+                                  'logged-homepage']
 LOGGED_OUT_USERNAME = 'loggedout'
 PROPOSAL_STATUS_DRAFT = 'Draft'
 PROPOSAL_STATUS_SUBMITTED = 'Submitted'

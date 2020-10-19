@@ -8,3 +8,4 @@ from . import person_position
 from . import project
 from . import proposal
 from . import template_question
+from . import homepage
