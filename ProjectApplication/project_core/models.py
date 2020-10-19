@@ -1,6 +1,4 @@
 import calendar
-import hashlib
-import io
 import logging
 import uuid as uuid_lib
 
@@ -505,6 +503,9 @@ class PhysicalPerson(CreateModifyOn):
             return f'{month}-{year}'
 
         return f'{calendar.month_abbr[int(month)]}. {year}'
+
+    class Meta:
+        verbose_name_plural = 'Physical People'
 
 
 class PersonUid(Uid):
