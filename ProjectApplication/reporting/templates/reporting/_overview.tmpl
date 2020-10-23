@@ -10,7 +10,15 @@
 <strong>Number of proposals per funding instrument</strong>
 <div class="row">
     <div class="col-12">
-        {% include 'reporting/_table.tmpl' with table=proposal_per_funding_instrument table_id='proposals_per_funding_instrument' %}
+        {% include 'reporting/_table.tmpl' with table=proposals_per_funding_instrument table_id='proposals_per_funding_instrument' %}
     </div>
 </div>
 
+<p></p>
+
+<strong>Number of projects per funding instrument</strong>
+<div class="row">
+    <div class="col-12">
+        {% include 'reporting/_table.tmpl' with table=projects_per_funding_instrument table_id='projects_per_funding_instrument' %}
+    </div>
+</div>

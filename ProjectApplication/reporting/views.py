@@ -177,8 +177,8 @@ class GenderCalculator:
 
 
 class ObjectsPerFundingInstrumentPerYear:
-    def __init__(self, foreign_key):
-        self._foreign_key = foreign_key
+    def __init__(self, model):
+        self._model = model
 
         self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
 
@@ -202,7 +202,7 @@ class ObjectsPerFundingInstrumentPerYear:
                 calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
 
                 if calls.exists():
-                    proposal_count = Proposal.objects.filter(call__in=calls).count()
+                    proposal_count = self._model.objects.filter(call__in=calls).count()
                     row[funding_instrument.long_name] = proposal_count
                 else:
                     row[funding_instrument.long_name] = '-'
@@ -321,9 +321,14 @@ def career_stage_project_principal_investigator_per_call():
 
 
 def proposals_per_funding_instrument():
-    proposals_calculator = ObjectsPerFundingInstrumentPerYear('proposal_set')
+    proposals_calculator = ObjectsPerFundingInstrumentPerYear(Proposal)
 
     return proposals_calculator.calculate_result()
+
+def projects_per_funding_instrument():
+    projects_calculator = ObjectsPerFundingInstrumentPerYear(Project)
+
+    return projects_calculator.calculate_result()
 
 
 class Reporting(TemplateView):
@@ -352,7 +357,9 @@ class Reporting(TemplateView):
         context[
             'career_stage_project_principal_investigator_per_call'] = career_stage_project_principal_investigator_per_call()
 
-        context['proposal_per_funding_instrument'] = proposals_per_funding_instrument()
+        context['proposals_per_funding_instrument'] = proposals_per_funding_instrument()
+
+        context['projects_per_funding_instrument'] = projects_per_funding_instrument()
 
         context.update({'active_section': 'reporting',
                         'active_subsection': 'reporting',
