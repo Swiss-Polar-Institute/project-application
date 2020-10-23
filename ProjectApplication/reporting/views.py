@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 
 from project_core.models import Call, Project, Gender, CareerStage, Proposal
 from project_core.templatetags.thousands_separator import thousands_separator
+from reporting.models import FundingInstrumentYearMissingData
 
 NOT_IN_DB_HEADER = 'Not in DB'
 NOT_IN_DB_TOOLTIP = 'Probably data imported before the Projects Application existed'
@@ -190,6 +191,13 @@ def gender_project_principal_investigator_per_call():
     return result
 
 
+def value_or_missing_data(is_missing_data, missing_data_reason, value):
+    if is_missing_data:
+        return missing_data_reason
+
+    return value
+
+
 def career_stage_proposal_applicants_per_year():
     result = {}
 
@@ -199,16 +207,23 @@ def career_stage_proposal_applicants_per_year():
     for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
         row = {}
         row['Year'] = year
-        for career_stage in career_stages:
-            row[career_stage.name] = Proposal.objects. \
-                filter(call__finance_year=year). \
-                filter(applicant__career_stage=career_stage). \
-                count()
+        is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(year=year)
 
-            row[NOT_IN_DB_HEADER] = Project.objects. \
-                filter(call__finance_year=year). \
-                filter(principal_investigator__career_stage__isnull=True). \
-                count()
+        for career_stage in career_stages:
+            row[career_stage.name] = value_or_missing_data(is_missing_data,
+                                                           missing_data_reason,
+                                                           Proposal.objects.
+                                                           filter(call__finance_year=year).
+                                                           filter(applicant__career_stage=career_stage).
+                                                           count())
+
+        row[NOT_IN_DB_HEADER] = value_or_missing_data(is_missing_data,
+                                                      missing_data_reason,
+                                                      Project.objects.
+                                                      filter(call__finance_year=year).
+                                                      filter(principal_investigator__career_stage__isnull=True).
+                                                      count()
+                                                      )
 
         data.append(row)
 

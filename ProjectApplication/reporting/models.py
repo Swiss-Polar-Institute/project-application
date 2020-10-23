@@ -17,6 +17,16 @@ class FundingInstrumentYearMissingData(models.Model):
     description = models.CharField(help_text='Reason that there is missing data. It might be shown in the management',
                                    max_length=128)
 
+    @staticmethod
+    def is_missing_data(*, funding_instrument=None, year=None):
+        rows = FundingInstrumentYearMissingData.objects.filter(funding_instrument=funding_instrument,
+                                                               finance_year=year)
+
+        if rows:
+            return True, rows.first().description
+        else:
+            return False, None
+
     def __str__(self):
         funding_instrument = '*' if self.funding_instrument is None else self.funding_instrument
         finance_year = '*' if self.finance_year is None else self.finance_year
