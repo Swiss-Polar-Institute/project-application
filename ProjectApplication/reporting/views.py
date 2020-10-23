@@ -10,109 +10,52 @@ NOT_IN_DB_HEADER = 'Not in DB'
 NOT_IN_DB_TOOLTIP = 'Probably data imported before the Projects Application existed'
 
 
-def calculate_number_of_calls():
-    result = {}
+class CareerStagePerCallCalculator:
+    def __init__(self, career_stage_field: str, foreign_key, missing_data):
+        self._career_stage_field = career_stage_field
+        self._foreign_key = foreign_key
+        self._missing_data = missing_data
 
-    calls_per_year = Call.objects.filter(submission_deadline__lte=timezone.now()). \
-        values(Year=F('finance_year')). \
-        annotate(Calls=Count('*')). \
-        order_by('finance_year')
+        self._career_stages = None
 
-    result['data'] = calls_per_year
-    result['headers'] = ['Year', 'Calls']
+    def calculate_career_stage_stats(self, generic_queryset):
+        if self._career_stages is None:
+            self._career_stages = CareerStagePerYearCalculator._career_stages_sorted()
 
-    return result
-
-
-def allocated_budget_per_year():
-    result = {}
-
-    financial_support_per_year = Project.objects. \
-        values(year=F('call__finance_year')). \
-        annotate(financial_support=Sum('allocated_budget')). \
-        order_by('call__finance_year')
-
-    data = []
-
-    for row in financial_support_per_year:
-        data.append({'Year': row['year'],
-                     'Financial Support (CHF)': thousands_separator(row['financial_support'])
-                     })
-
-    result['data'] = data
-    result['headers'] = ['Year', 'Financial Support (CHF)']
-    return result
-
-
-def allocated_budget_per_call():
-    result = {}
-
-    allocated_budget_per_call = Project.objects. \
-        values(call_name=F('call__funding_instrument__long_name'), finance_year=F('call__finance_year')). \
-        annotate(financial_support=Sum('allocated_budget')). \
-        order_by('call__finance_year')
-
-    data = []
-    for row in allocated_budget_per_call:
-        data.append({'Grant Scheme': row['call_name'],
-                     'Year': row['finance_year'],
-                     'Financial Support (CHF)': thousands_separator(row['financial_support'])
-                     })
-
-    result['headers'] = ['Grant Scheme', 'Year', 'Financial Support (CHF)']
-    result['data'] = data
-
-    return result
-
-
-class GenderCalculator:
-    def __init__(self, gender_field, foreign_key_field: str, missing_data_type):
-        self._gender_field = gender_field
-        self._foreign_key_field = foreign_key_field
-        self._missing_data_type = missing_data_type
-
-        self._grant_scheme_text = 'Grant Scheme'
-        self._year_text = 'Year'
-
-        self._gender_list = list(Gender.objects.all().order_by('name'))
-
-        self._gender_name_list = []
-
-        for gender in self._gender_list:
-            self._gender_name_list.append(gender.name)
-
-    def _calculate_genders(self, generic_queryset):
         result = {}
-        for gender in self._gender_list:
-            result[gender.name] = generic_queryset.filter(**{self._gender_field: gender.id}).count()
+        for career_stage in self._career_stages:
+            result[career_stage.name] = generic_queryset.filter(**{self._career_stage_field: career_stage}).count()
 
-        result[NOT_IN_DB_HEADER] = generic_queryset.filter(**{f'{self._gender_field}__isnull': True}).count()
+        result[NOT_IN_DB_HEADER] = generic_queryset.filter(**{f'{self._career_stage_field}__isnull': True}).count()
 
         return result
 
-    def calculate_final_table(self):
-        proposals_genders = []
+    def calculate_result(self):
+        data = []
         for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
                 order_by('long_name'):
-            generic_queryset = getattr(call, self._foreign_key_field)
+            is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+                self._missing_data,
+                funding_instrument=call.funding_instrument,
+                year=call.finance_year)
 
-            percentages = self._calculate_genders(generic_queryset)
+            generic_queryset = getattr(call, self._foreign_key)
 
-            missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
-                self._missing_data_type, funding_instrument=call.funding_instrument, year=call.finance_year)
+            stats = self.calculate_career_stage_stats(generic_queryset)
 
-            if missing_data:
-                for data in percentages.keys():
-                    percentages[data] = missing_data_reason
+            for stat_key in stats.keys():
+                if is_missing_data:
+                    stats[stat_key] = missing_data_reason
 
-            percentages[self._grant_scheme_text] = call.funding_instrument.long_name
-            percentages[self._year_text] = call.finance_year
-            proposals_genders.append(percentages)
+            stats['Grant Scheme'] = call.funding_instrument.long_name
+            stats['Year'] = call.finance_year
+            data.append(stats)
 
         result = {}
-        result['headers'] = [self._grant_scheme_text, self._year_text] + self._gender_name_list + [NOT_IN_DB_HEADER]
-        result['data'] = proposals_genders
+        result['headers'] = ['Grant Scheme', 'Year'] + CareerStagePerYearCalculator._header_names()
+        result['data'] = data
         result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
+
         return result
 
 
@@ -182,6 +125,119 @@ class CareerStagePerYearCalculator:
         return result
 
 
+class GenderCalculator:
+    def __init__(self, gender_field, foreign_key_field: str, missing_data_type):
+        self._gender_field = gender_field
+        self._foreign_key_field = foreign_key_field
+        self._missing_data_type = missing_data_type
+
+        self._grant_scheme_text = 'Grant Scheme'
+        self._year_text = 'Year'
+
+        self._gender_list = list(Gender.objects.all().order_by('name'))
+
+        self._gender_name_list = []
+
+        for gender in self._gender_list:
+            self._gender_name_list.append(gender.name)
+
+    def _calculate_genders(self, generic_queryset):
+        result = {}
+        for gender in self._gender_list:
+            result[gender.name] = generic_queryset.filter(**{self._gender_field: gender.id}).count()
+
+        result[NOT_IN_DB_HEADER] = generic_queryset.filter(**{f'{self._gender_field}__isnull': True}).count()
+
+        return result
+
+    def calculate_final_table(self):
+        proposals_genders = []
+        for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
+                order_by('long_name'):
+            generic_queryset = getattr(call, self._foreign_key_field)
+
+            percentages = self._calculate_genders(generic_queryset)
+
+            missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+                self._missing_data_type, funding_instrument=call.funding_instrument, year=call.finance_year)
+
+            if missing_data:
+                for data in percentages.keys():
+                    percentages[data] = missing_data_reason
+
+            percentages[self._grant_scheme_text] = call.funding_instrument.long_name
+            percentages[self._year_text] = call.finance_year
+            proposals_genders.append(percentages)
+
+        result = {}
+        result['headers'] = [self._grant_scheme_text, self._year_text] + self._gender_name_list + [NOT_IN_DB_HEADER]
+        result['data'] = proposals_genders
+        result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
+        return result
+
+
+def value_or_missing_data(is_missing_data, missing_data_reason, value):
+    if is_missing_data:
+        return missing_data_reason
+
+    return value
+
+
+def calculate_number_of_calls():
+    result = {}
+
+    calls_per_year = Call.objects.filter(submission_deadline__lte=timezone.now()). \
+        values(Year=F('finance_year')). \
+        annotate(Calls=Count('*')). \
+        order_by('finance_year')
+
+    result['data'] = calls_per_year
+    result['headers'] = ['Year', 'Calls']
+
+    return result
+
+
+def allocated_budget_per_year():
+    result = {}
+
+    financial_support_per_year = Project.objects. \
+        values(year=F('call__finance_year')). \
+        annotate(financial_support=Sum('allocated_budget')). \
+        order_by('call__finance_year')
+
+    data = []
+
+    for row in financial_support_per_year:
+        data.append({'Year': row['year'],
+                     'Financial Support (CHF)': thousands_separator(row['financial_support'])
+                     })
+
+    result['data'] = data
+    result['headers'] = ['Year', 'Financial Support (CHF)']
+    return result
+
+
+def allocated_budget_per_call():
+    result = {}
+
+    allocated_budget_per_call = Project.objects. \
+        values(call_name=F('call__funding_instrument__long_name'), finance_year=F('call__finance_year')). \
+        annotate(financial_support=Sum('allocated_budget')). \
+        order_by('call__finance_year')
+
+    data = []
+    for row in allocated_budget_per_call:
+        data.append({'Grant Scheme': row['call_name'],
+                     'Year': row['finance_year'],
+                     'Financial Support (CHF)': thousands_separator(row['financial_support'])
+                     })
+
+    result['headers'] = ['Grant Scheme', 'Year', 'Financial Support (CHF)']
+    result['data'] = data
+
+    return result
+
+
 def gender_proposal_applicants_per_call():
     gender_percentage_calculator = GenderCalculator('applicant__person__gender',
                                                     'proposal_set',
@@ -195,13 +251,6 @@ def gender_project_principal_investigator_per_call():
                                                     FundingInstrumentYearMissingData.MissingDataType.GENDER_FUNDED_PROJECT_PI)
 
     return gender_percentage_calculator.calculate_final_table()
-
-
-def value_or_missing_data(is_missing_data, missing_data_reason, value):
-    if is_missing_data:
-        return missing_data_reason
-
-    return value
 
 
 def career_stage_proposal_applicants_per_year():
@@ -223,55 +272,6 @@ def career_stage_proposal_applicants_per_call():
                                                            FundingInstrumentYearMissingData.MissingDataType.CAREER_STAGE_PROPOSAL_APPLICANT)
 
     return career_stage_calculator.calculate_result()
-
-
-class CareerStagePerCallCalculator:
-    def __init__(self, career_stage_field: str, foreign_key, missing_data):
-        self._career_stage_field = career_stage_field
-        self._foreign_key = foreign_key
-        self._missing_data = missing_data
-
-        self._career_stages = None
-
-    def calculate_career_stage_stats(self, generic_queryset):
-        if self._career_stages is None:
-            self._career_stages = CareerStagePerYearCalculator._career_stages_sorted()
-
-        result = {}
-        for career_stage in self._career_stages:
-            result[career_stage.name] = generic_queryset.filter(**{self._career_stage_field: career_stage}).count()
-
-        result[NOT_IN_DB_HEADER] = generic_queryset.filter(**{f'{self._career_stage_field}__isnull': True}).count()
-
-        return result
-
-    def calculate_result(self):
-        data = []
-        for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
-                order_by('long_name'):
-            is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
-                self._missing_data,
-                funding_instrument=call.funding_instrument,
-                year=call.finance_year)
-
-            generic_queryset = getattr(call, self._foreign_key)
-
-            stats = self.calculate_career_stage_stats(generic_queryset)
-
-            for stat_key in stats.keys():
-                if is_missing_data:
-                    stats[stat_key] = missing_data_reason
-
-            stats['Grant Scheme'] = call.funding_instrument.long_name
-            stats['Year'] = call.finance_year
-            data.append(stats)
-
-        result = {}
-        result['headers'] = ['Grant Scheme', 'Year'] + CareerStagePerYearCalculator._header_names()
-        result['data'] = data
-        result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
-
-        return result
 
 
 def career_stage_project_principal_investigator_per_call():
