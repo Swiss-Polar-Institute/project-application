@@ -65,13 +65,6 @@ def allocated_budget_per_call():
     return result
 
 
-def percentage(number, total):
-    if total == 0:
-        return 'N/A'
-
-    return f'{(number / total) * 100:.2f}%'
-
-
 class GenderPercentageCalculator:
     def __init__(self, gender_field):
         self._gender_field = gender_field
