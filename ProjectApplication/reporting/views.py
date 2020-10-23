@@ -116,10 +116,11 @@ class GenderCalculator:
         return result
 
 
-class CareerStageCalculator:
-    def __init__(self, career_stage_field):
+class CareerStagePerYearCalculator:
+    def __init__(self, model, career_stage_field, missing_data_type):
+        self._model = model
         self._career_stage_field = career_stage_field
-        self._career_stages = None
+        self._missing_data_type = missing_data_type
 
     def calculate_career_stage_stats(self, generic_queryset):
         if self._career_stages is None:
@@ -134,17 +135,49 @@ class CareerStageCalculator:
         return result
 
     @staticmethod
-    def career_stages_sorted():
+    def _career_stages_sorted():
         return CareerStage.objects.order_by('list_order')
 
     @staticmethod
-    def header_names():
+    def _header_names():
         result = []
 
-        for career_stage in CareerStageCalculator.career_stages_sorted():
+        for career_stage in CareerStagePerYearCalculator._career_stages_sorted():
             result.append(career_stage.name)
 
         result.append(NOT_IN_DB_HEADER)
+
+        return result
+
+    def calculate_result(self):
+        data = []
+        for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
+            row = {}
+            row['Year'] = year
+            is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+                self._missing_data_type, year=year)
+
+            for career_stage in CareerStagePerYearCalculator._career_stages_sorted():
+                row[career_stage.name] = value_or_missing_data(is_missing_data,
+                                                               missing_data_reason,
+                                                               self._model.objects.
+                                                               filter(call__finance_year=year).
+                                                               filter(**{self._career_stage_field: career_stage}).
+                                                               count())
+
+            row[NOT_IN_DB_HEADER] = value_or_missing_data(is_missing_data,
+                                                          missing_data_reason,
+                                                          self._model.objects.
+                                                          filter(call__finance_year=year).
+                                                          filter(**{f'{self._career_stage_field}__isnull': True}).
+                                                          count())
+
+            data.append(row)
+
+        result = {}
+        result['headers'] = ['Year'] + CareerStagePerYearCalculator._header_names()
+        result['data'] = data
+        result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
 
         return result
 
@@ -172,77 +205,22 @@ def value_or_missing_data(is_missing_data, missing_data_reason, value):
 
 
 def career_stage_proposal_applicants_per_year():
-    result = {}
+    career_stage_calculator = CareerStagePerYearCalculator(Proposal, 'applicant__career_stage',
+                                                           FundingInstrumentYearMissingData.MissingDataType.CAREER_STAGE_PROPOSAL_APPLICANT)
 
-    career_stages = CareerStageCalculator.career_stages_sorted()
-
-    data = []
-    for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
-        row = {}
-        row['Year'] = year
-        is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
-            FundingInstrumentYearMissingData.MissingDataType.CAREER_STAGE_PROPOSAL_APPLICANT, year=year)
-
-        for career_stage in career_stages:
-            row[career_stage.name] = value_or_missing_data(is_missing_data,
-                                                           missing_data_reason,
-                                                           Proposal.objects.
-                                                           filter(call__finance_year=year).
-                                                           filter(applicant__career_stage=career_stage).
-                                                           count())
-
-        row[NOT_IN_DB_HEADER] = value_or_missing_data(is_missing_data,
-                                                      missing_data_reason,
-                                                      Project.objects.
-                                                      filter(call__finance_year=year).
-                                                      filter(principal_investigator__career_stage__isnull=True).
-                                                      count()
-                                                      )
-
-        data.append(row)
-
-    result['headers'] = ['Year'] + CareerStageCalculator.header_names()
-    result['data'] = data
-    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
-
-    return result
+    return career_stage_calculator.calculate_result()
 
 
 def career_stage_projects_principal_investigators_per_year():
-    result = {}
+    career_stage_calculator = CareerStagePerYearCalculator(Project, 'principal_investigator__career_stage',
+                                                           FundingInstrumentYearMissingData.MissingDataType.CAREER_STAGE_FUNDED_PROJECT_PI)
 
-    career_stages = CareerStageCalculator.career_stages_sorted()
-
-    data = []
-    for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
-        row = {}
-        row['Year'] = year
-        is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
-            FundingInstrumentYearMissingData.MissingDataType.CAREER_STAGE_FUNDED_PROJECT_PI, year=year)
-
-        for career_stage in career_stages:
-            row[career_stage.name] = value_or_missing_data(is_missing_data, missing_data_reason, Project.objects.
-                                                           filter(call__finance_year=year).
-                                                           filter(principal_investigator__career_stage=career_stage).
-                                                           count())
-
-        row[NOT_IN_DB_HEADER] = value_or_missing_data(is_missing_data, missing_data_reason, Project.objects.
-                                                      filter(call__finance_year=year).
-                                                      filter(principal_investigator__career_stage__isnull=True).
-                                                      count()
-                                                      )
-
-        data.append(row)
-
-    result['headers'] = result['headers'] = ['Year'] + CareerStageCalculator.header_names()
-    result['data'] = data
-    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
-
-    return result
+    return career_stage_calculator.calculate_result()
 
 
 def career_stage_proposal_applicants_per_call():
-    career_stage_percentage_calculator = CareerStageCalculator('applicant__career_stage')
+    return
+    career_stage_percentage_calculator = CareerStagePerYearCalculator('applicant__career_stage')
 
     data = []
     for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
@@ -264,7 +242,7 @@ def career_stage_proposal_applicants_per_call():
         data.append(stats)
 
     result = {}
-    result['headers'] = ['Grant Scheme', 'Year'] + career_stage_percentage_calculator.header_names()
+    result['headers'] = ['Grant Scheme', 'Year'] + career_stage_percentage_calculator._header_names()
     result['data'] = data
     result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
 
@@ -272,32 +250,34 @@ def career_stage_proposal_applicants_per_call():
 
 
 def career_stage_project_principal_investigator_per_call():
-    career_stage_calculator = CareerStageCalculator('principal_investigator__career_stage')
+    return
+    # career_stage_calculator = CareerStagePerYearCalculator('principal_investigator__career_stage')
+    # return career_stage_calculator.calculate_result()
 
-    data = []
-    for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
-            order_by('long_name'):
-        is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
-            FundingInstrumentYearMissingData.MissingDataType.CAREER_STAGE_FUNDED_PROJECT_PI,
-            funding_instrument=call.funding_instrument, year=call.finance_year)
-
-        generic_queryset = call.project_set
-
-        stats = career_stage_calculator.calculate_career_stage_stats(generic_queryset)
-        for stat in stats.keys():
-            if is_missing_data:
-                stats[stat] = missing_data_reason
-
-        stats['Grant Scheme'] = call.funding_instrument.long_name
-        stats['Year'] = call.finance_year
-        data.append(stats)
-
-    result = {}
-    result['headers'] = ['Grant Scheme', 'Year'] + career_stage_calculator.header_names()
-    result['data'] = data
-    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
-
-    return result
+    # data = []
+    # for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
+    #         order_by('long_name'):
+    #     is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+    #         FundingInstrumentYearMissingData.MissingDataType.CAREER_STAGE_FUNDED_PROJECT_PI,
+    #         funding_instrument=call.funding_instrument, year=call.finance_year)
+    #
+    #     generic_queryset = call.project_set
+    #
+    #     stats = career_stage_calculator.calculate_career_stage_stats(generic_queryset)
+    #     for stat in stats.keys():
+    #         if is_missing_data:
+    #             stats[stat] = missing_data_reason
+    #
+    #     stats['Grant Scheme'] = call.funding_instrument.long_name
+    #     stats['Year'] = call.finance_year
+    #     data.append(stats)
+    #
+    # result = {}
+    # result['headers'] = ['Grant Scheme', 'Year'] + career_stage_calculator._header_names()
+    # result['data'] = data
+    # result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
+    #
+    # return result
 
 
 class Reporting(TemplateView):
