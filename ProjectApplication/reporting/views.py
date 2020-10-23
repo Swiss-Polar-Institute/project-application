@@ -5,6 +5,7 @@ from django.views.generic import TemplateView
 from project_core.models import Call, Project, Gender, CareerStage, Proposal
 from project_core.templatetags.thousands_separator import thousands_separator
 
+NOT_IN_DB_HEADER = 'Not in DB'
 NOT_IN_DB_TOOLTIP = 'Probably data imported before the Projects Application existed'
 
 
@@ -106,14 +107,14 @@ class GenderPercentageCalculator:
                     'Male': '?',
                     'Other': '?',
                     'Prefer not to say': '?',
-                    'Not in DB': '?',
+                    NOT_IN_DB_HEADER: '?',
                     }
 
         return {'Female': female,
                 'Male': male,
                 'Other': other,
                 'Prefer not to say': prefer_not_to_say,
-                'Not in DB': not_in_db,
+                NOT_IN_DB_HEADER: not_in_db,
                 }
 
 
@@ -129,15 +130,24 @@ class CareerStageCalculator():
         result = {}
         for career_stage in self._career_stages:
             result[career_stage.name] = generic_queryset.filter(**{self._career_stage_field: career_stage}).count()
-            result['Not in DB'] = generic_queryset.filter(**{f'{self._career_stage_field}__isnull': True}).count()
+            result[NOT_IN_DB_HEADER] = generic_queryset.filter(**{f'{self._career_stage_field}__isnull': True}).count()
 
         return result
 
     @staticmethod
+    def career_stages_sorted():
+        return CareerStage.objects.order_by('list_order')
+
+    @staticmethod
     def header_names():
-        return ["Undergraduate / master's student", 'PhD student', 'Post-doc < 3 years since PhD award date',
-                'Established scientist', 'Other',
-                'Not in DB']
+        result = []
+
+        for career_stage in CareerStageCalculator.career_stages_sorted():
+            result.append(career_stage.name)
+
+        result.append(NOT_IN_DB_HEADER)
+
+        return result
 
 
 def gender_proposal_applicants_per_call():
@@ -155,8 +165,8 @@ def gender_proposal_applicants_per_call():
 
     result = {}
     result['data'] = proposals_genders
-    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', 'Not in DB']
-    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
+    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', NOT_IN_DB_HEADER]
+    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
     return result
 
 
@@ -174,16 +184,16 @@ def gender_project_principal_investigator_per_call():
         proposals_genders.append(percentages)
 
     result = {}
-    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', 'Not in DB']
+    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', NOT_IN_DB_HEADER]
     result['data'] = proposals_genders
-    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
+    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
     return result
 
 
 def career_stage_proposal_applicants_per_year():
     result = {}
 
-    career_stages = CareerStage.objects.all().order_by('name')
+    career_stages = CareerStageCalculator.career_stages_sorted()
 
     data = []
     for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
@@ -195,7 +205,7 @@ def career_stage_proposal_applicants_per_year():
                 filter(applicant__career_stage=career_stage). \
                 count()
 
-            row['Not in DB'] = Project.objects. \
+            row[NOT_IN_DB_HEADER] = Project.objects. \
                 filter(call__finance_year=year). \
                 filter(principal_investigator__career_stage__isnull=True). \
                 count()
@@ -204,7 +214,7 @@ def career_stage_proposal_applicants_per_year():
 
     result['headers'] = ['Year'] + CareerStageCalculator.header_names()
     result['data'] = data
-    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
+    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
 
     return result
 
@@ -212,7 +222,7 @@ def career_stage_proposal_applicants_per_year():
 def career_stage_projects_principal_investigators_per_year():
     result = {}
 
-    career_stages = CareerStage.objects.all().order_by('name')
+    career_stages = CareerStageCalculator.career_stages_sorted()
 
     data = []
     for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
@@ -224,7 +234,7 @@ def career_stage_projects_principal_investigators_per_year():
                 filter(principal_investigator__career_stage=career_stage). \
                 count()
 
-        row['Not in DB'] = Project.objects. \
+        row[NOT_IN_DB_HEADER] = Project.objects. \
             filter(call__finance_year=year). \
             filter(principal_investigator__career_stage__isnull=True). \
             count()
@@ -233,7 +243,7 @@ def career_stage_projects_principal_investigators_per_year():
 
     result['headers'] = result['headers'] = ['Year'] + CareerStageCalculator.header_names()
     result['data'] = data
-    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
+    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
 
     return result
 
@@ -254,7 +264,7 @@ def career_stage_proposal_applicants_per_call():
     result = {}
     result['headers'] = ['Grant Scheme', 'Year'] + career_stage_percentage_calculator.header_names()
     result['data'] = data
-    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
+    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
 
     return result
 
@@ -275,7 +285,7 @@ def career_stage_project_principal_investigator_per_call():
     result = {}
     result['headers'] = ['Grant Scheme', 'Year'] + career_stage_calculator.header_names()
     result['data'] = data
-    result['header_tooltips'] = {'Not in DB': NOT_IN_DB_TOOLTIP}
+    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
 
     return result
 
