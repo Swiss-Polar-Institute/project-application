@@ -11,19 +11,30 @@
             <div>
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
-                        <a class="nav-link {% if active_tab == 'finance' %}active{% endif %}" id="reporting_finance-tab" data-toggle="tab"
+                        <a class="nav-link {% if active_tab == 'overview' %}active{% endif %}" id="overview-tab"
+                           data-toggle="tab"
+                           href="#overview"
+                           role="tab">Overview</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'finance' %}active{% endif %}" id="reporting_finance-tab"
+                           data-toggle="tab"
                            href="#reporting_finance"
                            role="tab">Finance</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if active_tab == 'diversity' %}active{% endif %}" id="reporting_diversity-tab" data-toggle="tab" href="#reporting_diversity"
+                        <a class="nav-link {% if active_tab == 'diversity' %}active{% endif %}"
+                           id="reporting_diversity-tab" data-toggle="tab" href="#reporting_diversity"
                            role="tab">Diversity</a>
                     </li>
                 </ul>
             </div>
 
             <div class="tab-content">
-                <div class="tab-pane fade show active" id="reporting_finance" role="tabpanel">
+                <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                    {% include 'reporting/_overview.tmpl' %}
+                </div>
+                <div class="tab-pane fade" id="reporting_finance" role="tabpanel">
                     {% include 'reporting/_reporting_finance.tmpl' %}
                 </div>
                 <div class="tab-pane fade" id="reporting_diversity" role="tabpanel">

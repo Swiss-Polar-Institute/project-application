@@ -315,6 +315,6 @@ class Reporting(TemplateView):
         if 'tab' in self.request.GET:
             context['active_tab'] = self.request.GET['tab']
         else:
-            context['active_tab'] = 'finance'
+            context['active_tab'] = 'overview'
 
         return context
