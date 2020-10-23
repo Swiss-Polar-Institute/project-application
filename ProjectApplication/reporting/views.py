@@ -65,54 +65,49 @@ def allocated_budget_per_call():
     return result
 
 
-class GenderPercentageCalculator:
-    def __init__(self, gender_field):
+class GenderCalculator:
+    def __init__(self, gender_field, foreign_key_field: str):
         self._gender_field = gender_field
+        self._foreign_key_field = foreign_key_field
 
-        self._genders = None
+        self._grant_scheme_text = 'Grant Scheme'
+        self._year_text = 'Year'
 
-    def _get_genders(self):
-        genders = {}
+        self._gender_list = list(Gender.objects.all().order_by('name'))
 
-        genders['female'] = Gender.objects.get(name='Female')
-        genders['male'] = Gender.objects.get(name='Male')
-        genders['other'] = Gender.objects.get(name='Other')
-        genders['prefer_not_to_say'] = Gender.objects.get(name='Prefer not to say')
+        self._gender_name_list = []
 
-        return genders
+        for gender in self._gender_list:
+            self._gender_name_list.append(gender.name)
 
-    def calculate_gender_totals(self, generic_queryset):
-        if self._genders is None:
-            self._genders = self._get_genders()
+    def _calculate_genders(self, generic_queryset):
+        result = {}
+        for gender in self._gender_list:
+            result[gender.name] = generic_queryset.filter(**{self._gender_field: gender.id}).count()
 
-        total = generic_queryset.count()
+        result[NOT_IN_DB_HEADER] = generic_queryset.filter(**{f'{self._gender_field}__isnull': True}).count()
 
-        female = generic_queryset.filter(**{self._gender_field: self._genders['female']}).count()
-        male = generic_queryset.filter(**{self._gender_field: self._genders['male']}).count()
-        other = generic_queryset.filter(**{self._gender_field: self._genders['other']}).count()
-        prefer_not_to_say = generic_queryset.filter(**{self._gender_field: self._genders['prefer_not_to_say']}).count()
-        not_in_db = generic_queryset.filter(**{f'{self._gender_field}__isnull': True}).count()
+        return result
 
-        if total != female + male + other + prefer_not_to_say + not_in_db:
-            # The total should be the same as adding the other categories. It wouldn't be the same
-            # if a category is added but this function is not updated. If this function is updated
-            # the template needs to be updated as well (it's not dynamic at the moment)
-            return {'Female': '?',
-                    'Male': '?',
-                    'Other': '?',
-                    'Prefer not to say': '?',
-                    NOT_IN_DB_HEADER: '?',
-                    }
+    def calculate_final_table(self):
+        proposals_genders = []
+        for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
+                order_by('long_name'):
+            generic_queryset = getattr(call, self._foreign_key_field)
 
-        return {'Female': female,
-                'Male': male,
-                'Other': other,
-                'Prefer not to say': prefer_not_to_say,
-                NOT_IN_DB_HEADER: not_in_db,
-                }
+            percentages = self._calculate_genders(generic_queryset)
+            percentages[self._grant_scheme_text] = call.funding_instrument.long_name
+            percentages[self._year_text] = call.finance_year
+            proposals_genders.append(percentages)
+
+        result = {}
+        result['headers'] = [self._grant_scheme_text, self._year_text] + self._gender_name_list + [NOT_IN_DB_HEADER]
+        result['data'] = proposals_genders
+        result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
+        return result
 
 
-class CareerStageCalculator():
+class CareerStageCalculator:
     def __init__(self, career_stage_field):
         self._career_stage_field = career_stage_field
         self._career_stages = None
@@ -146,43 +141,15 @@ class CareerStageCalculator():
 
 
 def gender_proposal_applicants_per_call():
-    proposals_genders = []
-    gender_percentage_calculator = GenderPercentageCalculator('applicant__person__gender')
+    gender_percentage_calculator = GenderCalculator('applicant__person__gender', 'proposal_set')
 
-    for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
-            order_by('long_name'):
-        generic_queryset = call.proposal_set
-
-        percentages = gender_percentage_calculator.calculate_gender_totals(generic_queryset)
-        percentages['Grant Scheme'] = call.funding_instrument.long_name
-        percentages['Year'] = call.finance_year
-        proposals_genders.append(percentages)
-
-    result = {}
-    result['data'] = proposals_genders
-    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', NOT_IN_DB_HEADER]
-    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
-    return result
+    return gender_percentage_calculator.calculate_final_table()
 
 
 def gender_project_principal_investigator_per_call():
-    proposals_genders = []
-    gender_percentage_calculator = GenderPercentageCalculator('principal_investigator__person__gender')
+    gender_percentage_calculator = GenderCalculator('principal_investigator__person__gender', 'project_set')
 
-    for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
-            order_by('long_name'):
-        generic_queryset = call.project_set
-
-        percentages = gender_percentage_calculator.calculate_gender_totals(generic_queryset)
-        percentages['Grant Scheme'] = call.funding_instrument.long_name
-        percentages['Year'] = call.finance_year
-        proposals_genders.append(percentages)
-
-    result = {}
-    result['headers'] = ['Grant Scheme', 'Year', 'Female', 'Male', 'Other', 'Prefer not to say', NOT_IN_DB_HEADER]
-    result['data'] = proposals_genders
-    result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
-    return result
+    return gender_percentage_calculator.calculate_final_table()
 
 
 def value_or_missing_data(is_missing_data, missing_data_reason, value):
