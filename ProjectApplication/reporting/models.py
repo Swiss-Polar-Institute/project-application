@@ -12,7 +12,8 @@ class FundingInstrumentYearMissingData(models.Model):
 
     funding_instrument = models.ForeignKey(FundingInstrument, on_delete=models.PROTECT, null=True, blank=True)
     finance_year = models.IntegerField(null=True, blank=True)
-    missing_data_type = models.CharField(max_length=32)
+    missing_data_type = models.CharField(max_length=32, choices=MissingDataType.choices,
+                                         blank=True, null=True)
     description = models.CharField(help_text='Reason that there is missing data. It might be shown in the management',
                                    max_length=128)
 
