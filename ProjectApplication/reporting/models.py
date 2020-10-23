@@ -18,8 +18,9 @@ class FundingInstrumentYearMissingData(models.Model):
                                    max_length=128)
 
     @staticmethod
-    def is_missing_data(*, funding_instrument=None, year=None):
-        rows = FundingInstrumentYearMissingData.objects.filter(funding_instrument=funding_instrument,
+    def is_missing_data(missing_data_type, *, funding_instrument=None, year=None):
+        rows = FundingInstrumentYearMissingData.objects.filter(missing_data_type=missing_data_type,
+                                                               funding_instrument=funding_instrument,
                                                                finance_year=year)
 
         if rows:
