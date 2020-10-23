@@ -177,8 +177,9 @@ class GenderCalculator:
 
 
 class ObjectsPerFundingInstrumentPerYear:
-    def __init__(self, model):
+    def __init__(self, model, missing_data):
         self._model = model
+        self._missing_data = missing_data
 
         self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
 
@@ -199,6 +200,14 @@ class ObjectsPerFundingInstrumentPerYear:
             row['Year'] = year
 
             for funding_instrument in self._funding_instruments:
+                is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+                    self._missing_data,
+                    funding_instrument=funding_instrument,
+                    year=year)
+                if is_missing_data:
+                    row[funding_instrument.long_name] = missing_data_reason
+                    continue
+
                 calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
 
                 if calls.exists():
@@ -321,12 +330,14 @@ def career_stage_project_principal_investigator_per_call():
 
 
 def proposals_per_funding_instrument():
-    proposals_calculator = ObjectsPerFundingInstrumentPerYear(Proposal)
+    proposals_calculator = ObjectsPerFundingInstrumentPerYear(Proposal,
+                                                              FundingInstrumentYearMissingData.MissingDataType.PROPOSALS)
 
     return proposals_calculator.calculate_result()
 
+
 def projects_per_funding_instrument():
-    projects_calculator = ObjectsPerFundingInstrumentPerYear(Project)
+    projects_calculator = ObjectsPerFundingInstrumentPerYear(Project, None)
 
     return projects_calculator.calculate_result()
 

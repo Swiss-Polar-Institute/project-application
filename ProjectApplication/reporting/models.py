@@ -9,6 +9,8 @@ class FundingInstrumentYearMissingData(models.Model):
         CAREER_STAGE_FUNDED_PROJECT_PI = 'CAREER_STAGE_FUNDED_PROJECT_PI', 'Career Stage Funded Project PI'
         GENDER_PROPOSAL_APPLICANT = 'GENDER_PROPOSAL_APPLICANT', 'Gender Proposal Applicant'
         GENDER_FUNDED_PROJECT_PI = 'GENDER_FUNDED_PROJECT_PI', 'Gender Funded Project PI'
+        PROPOSALS = 'PROPOSALS'
+        PROJECTS = 'PROJECTS'
 
     funding_instrument = models.ForeignKey(FundingInstrument, on_delete=models.PROTECT, null=True, blank=True)
     finance_year = models.IntegerField(null=True, blank=True)
@@ -19,6 +21,9 @@ class FundingInstrumentYearMissingData(models.Model):
 
     @staticmethod
     def is_missing_data(missing_data_type, *, funding_instrument=None, year=None):
+        if missing_data_type is None:
+            return False, None
+
         rows = FundingInstrumentYearMissingData.objects.filter(missing_data_type=missing_data_type,
                                                                funding_instrument=funding_instrument,
                                                                finance_year=year)
