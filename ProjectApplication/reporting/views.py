@@ -1,8 +1,8 @@
-from django.db.models import Count, F, Sum
+from django.db.models import Count, F, Sum, Min, Max
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from project_core.models import Call, Project, Gender, CareerStage, Proposal
+from project_core.models import Call, Project, Gender, CareerStage, Proposal, FundingInstrument
 from project_core.templatetags.thousands_separator import thousands_separator
 from reporting.models import FundingInstrumentYearMissingData
 
@@ -176,6 +176,45 @@ class GenderCalculator:
         return result
 
 
+class ObjectsPerFundingInstrumentPerYear:
+    def __init__(self, foreign_key):
+        self._foreign_key = foreign_key
+
+        self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
+
+        self._funding_instruments_long_names = []
+        for funding_instrument in self._funding_instruments:
+            self._funding_instruments_long_names.append(funding_instrument.long_name)
+
+        self._start_year = Call.objects.aggregate(Min('finance_year'))['finance_year__min']
+        self._end_year = Call.objects.aggregate(Max('finance_year'))['finance_year__max']
+
+    def _get_headers(self):
+        return ['Year'] + self._funding_instruments_long_names
+
+    def calculate_result(self):
+        data = []
+        for year in range(self._start_year, self._end_year):
+            row = {}
+            row['Year'] = year
+
+            for funding_instrument in self._funding_instruments:
+                calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
+
+                if calls.exists():
+                    proposal_count = Proposal.objects.filter(call__in=calls).count()
+                    row[funding_instrument.long_name] = proposal_count
+                else:
+                    row[funding_instrument.long_name] = '-'
+
+            data.append(row)
+
+        result = {}
+        result['headers'] = self._get_headers()
+        result['data'] = data
+        return result
+
+
 def value_or_missing_data(is_missing_data, missing_data_reason, value):
     if is_missing_data:
         return missing_data_reason
@@ -281,6 +320,12 @@ def career_stage_project_principal_investigator_per_call():
     return career_stage_calculator.calculate_result()
 
 
+def proposals_per_funding_instrument():
+    proposals_calculator = ObjectsPerFundingInstrumentPerYear('proposal_set')
+
+    return proposals_calculator.calculate_result()
+
+
 class Reporting(TemplateView):
     template_name = 'reporting/reporting.tmpl'
 
@@ -306,6 +351,8 @@ class Reporting(TemplateView):
 
         context[
             'career_stage_project_principal_investigator_per_call'] = career_stage_project_principal_investigator_per_call()
+
+        context['proposal_per_funding_instrument'] = proposals_per_funding_instrument()
 
         context.update({'active_section': 'reporting',
                         'active_subsection': 'reporting',

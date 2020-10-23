@@ -4,5 +4,13 @@
         {% include 'reporting/_table.tmpl' with table=calls_per_year table_id='calls_per_year' %}
     </div>
 </div>
+
 <p></p>
+
+<strong>Number of proposals per funding instrument</strong>
+<div class="row">
+    <div class="col-12">
+        {% include 'reporting/_table.tmpl' with table=proposal_per_funding_instrument table_id='proposals_per_funding_instrument' %}
+    </div>
+</div>
 
