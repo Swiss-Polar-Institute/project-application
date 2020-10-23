@@ -66,9 +66,10 @@ def allocated_budget_per_call():
 
 
 class GenderCalculator:
-    def __init__(self, gender_field, foreign_key_field: str):
+    def __init__(self, gender_field, foreign_key_field: str, missing_data_type):
         self._gender_field = gender_field
         self._foreign_key_field = foreign_key_field
+        self._missing_data_type = missing_data_type
 
         self._grant_scheme_text = 'Grant Scheme'
         self._year_text = 'Year'
@@ -96,6 +97,14 @@ class GenderCalculator:
             generic_queryset = getattr(call, self._foreign_key_field)
 
             percentages = self._calculate_genders(generic_queryset)
+
+            missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+                self._missing_data_type, funding_instrument=call.funding_instrument, year=call.finance_year)
+
+            if missing_data:
+                for data in percentages.keys():
+                    percentages[data] = missing_data_reason
+
             percentages[self._grant_scheme_text] = call.funding_instrument.long_name
             percentages[self._year_text] = call.finance_year
             proposals_genders.append(percentages)
@@ -141,13 +150,16 @@ class CareerStageCalculator:
 
 
 def gender_proposal_applicants_per_call():
-    gender_percentage_calculator = GenderCalculator('applicant__person__gender', 'proposal_set')
+    gender_percentage_calculator = GenderCalculator('applicant__person__gender',
+                                                    'proposal_set',
+                                                    FundingInstrumentYearMissingData.MissingDataType.GENDER_PROPOSAL_APPLICANT)
 
     return gender_percentage_calculator.calculate_final_table()
 
 
 def gender_project_principal_investigator_per_call():
-    gender_percentage_calculator = GenderCalculator('principal_investigator__person__gender', 'project_set')
+    gender_percentage_calculator = GenderCalculator('principal_investigator__person__gender', 'project_set',
+                                                    FundingInstrumentYearMissingData.MissingDataType.GENDER_FUNDED_PROJECT_PI)
 
     return gender_percentage_calculator.calculate_final_table()
 
