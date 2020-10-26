@@ -16,3 +16,4 @@ export OBJECT_STORAGE_ENDPOINT_URL=http://localhost:9000
 
 export SECRET_KEY="x36a#I9R;+u]?q2p%0nfY+Q/GkrD0A)a&Q9hzNNA-4*Vb4%_lWvI?,]K+_IN"
 export SECURE_SSL_REDIRECT=0
+export ADMIN_URL_PATH=admin/
