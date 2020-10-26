@@ -691,6 +691,9 @@ class PostalAddress(CreateModifyOn):
     postcode = models.CharField(max_length=128)
     country = models.ForeignKey(Country, on_delete=models.PROTECT)
 
+    def __str__(self):
+        return f'{self.address} - {self.city} - {self.postcode} - {self.country}'
+
 
 class Role(models.Model):
     """Role a person can take in a variety of different circumstances."""
