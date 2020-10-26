@@ -195,7 +195,7 @@ class ObjectsPerFundingInstrumentPerYear:
 
     def calculate_result(self):
         data = []
-        for year in range(self._start_year, self._end_year):
+        for year in range(self._start_year, self._end_year+1):
             row = {}
             row['Year'] = year
 
