@@ -8,6 +8,7 @@
 Internal in-development application to track proposals and projects from their submission to finalisation.
 
 The application is designed for the SPI (Swiss Polar Institute) process and allows SPI to:
+
 ## Calls
 SPI can create calls. Calls belong to a Funding Instrument and each Call has a common set of questions (applicant information, area that the project would happen, keywords, etc.) Calls has optional section: budget (with limit of budget), proposal partners and any questions specific per call (based on templates to make them easier to re-use and compare between calls).
 
