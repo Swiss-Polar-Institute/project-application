@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 from project_core.models import FundingInstrument
 
@@ -24,9 +25,10 @@ class FundingInstrumentYearMissingData(models.Model):
         if missing_data_type is None:
             return False, None
 
-        rows = FundingInstrumentYearMissingData.objects.filter(missing_data_type=missing_data_type,
-                                                               funding_instrument=funding_instrument,
-                                                               finance_year=year)
+        rows = FundingInstrumentYearMissingData.objects.filter(
+            Q(funding_instrument=funding_instrument) | Q(funding_instrument__isnull=True),
+            Q(finance_year=year) | Q(finance_year__isnull=True),
+            missing_data_type=missing_data_type, )
 
         if rows:
             return True, rows.first().description
