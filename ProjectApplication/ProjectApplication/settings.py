@@ -239,6 +239,9 @@ AWS_S3_FILE_OVERWRITE = False
 
 SECRET_KEY = os.environ['SECRET_KEY']
 
+# The usual Django /admin will appear in /$ADMIN_URL_PATH
+ADMIN_URL = os.environ['ADMIN_URL_PATH']
+
 ALLOWED_HOSTS = []
 
 i = 1

@@ -23,5 +23,5 @@ urlpatterns = [
     path('', include('evaluation.urls')),
     path('', include('grant_management.urls')),
     path('', include('reporting.urls')),
-    path('admin/', admin.site.urls),
+    path(settings.ADMIN_URL, admin.site.urls),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
