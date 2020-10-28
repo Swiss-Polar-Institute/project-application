@@ -28,7 +28,7 @@
                     <td>{{ proposal.call.long_name }}</td>
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
-                    <td>{{ proposal.proposal_status.name }}</td>
+                    <td>{% include 'logged/_proposal_status_badge.tmpl' with status_name=proposal.proposal_status.name only %}</td>
                     <td>
                         <a class="btn btn-primary btn-xs"
                            href="{% url 'logged-call-proposal-detail' pk=proposal.id %}">View</a>

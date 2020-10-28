@@ -1,7 +1,10 @@
+{#TODO: refactor this and avoid code repetition? Might be this way for curlyint?#}
 {% if status == 'Ongoing' %}
-    <span class="badge badge-secondary">Ongoing</span>
+    <span class="badge badge-secondary">{{ status }}</span>
 {% elif status == 'Completed' %}
-    <span class="badge badge-success">Completed</span>
+    <span class="badge badge-success">{{ status }}</span>
 {% elif status == 'Aborted' %}
-    <span class="badge badge-danger">Aborted</span>
+    <span class="badge badge-danger">{{ status }}</span>
+{% else %}
+    {{ status }}
 {% endif %}

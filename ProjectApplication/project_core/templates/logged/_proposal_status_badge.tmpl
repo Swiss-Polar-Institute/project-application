@@ -1,0 +1,8 @@
+{#TODO: refactor this and avoid code repetition? Might be this way for curlyint?#}
+{% if status_name == 'Draft' %}
+    <span class="badge badge-secondary">{{ status_name }}</span>
+{% elif status_name == 'Submitted' %}
+    <span class="badge badge-success">{{ status_name }}</span>
+{% else %}
+    {{ status_name }}
+{% endif %}
