@@ -1,3 +1,8 @@
+.authentication_error {
+    color: #ff0000;
+    font-weight: bold;
+}
+
 /** Next select2 selectors is because django-autocomplete-light uses select2
     and the spacing in choice / choicemultiple is wrong for Bootstrap4
     */
