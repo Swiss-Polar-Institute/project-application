@@ -2,7 +2,7 @@
 {% load static %}
 
 <h2>{{ proposal.title }}</h2>
-<strong>Status:</strong> {{ proposal.proposal_status.name }} {{ link_to_edit_or_display|safe }}<br>
+<strong>Status:</strong> {% include 'logged/_proposal_status_badge.tmpl' with status_name=proposal.proposal_status.name only %}<br>
 <strong>Call:</strong>
 {% if request|request_is_management %}
     <a href="{% url 'logged-call-detail' pk=proposal.call.id %}">{{ proposal.call.long_name }}</a>
