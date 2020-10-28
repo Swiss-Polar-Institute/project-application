@@ -23,8 +23,10 @@
                 <strong>Lay summary website integration:</strong>
                 {% include 'common/_clipboard_button.tmpl' with text=public_lay_summaries_for_website_url id='xxx' %} -
                 {% include 'logged/_instructions_lay_summaries_wordpress-button-model.tmpl' with code=public_lay_summaries_for_website_url %}
-                <br>
+            {% else %}
+                <strong>Lay summary website integration:</strong> N/A - Call Evaluation needs to be closed
             {% endif %}
+            <br>
             <strong>Description:</strong>
             <div class="border p-1 bg-white rounded">{% include 'common/_value-or-dash.tmpl' with value=call.description %}</div>
             <br>
