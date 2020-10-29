@@ -1,14 +1,15 @@
 {% with postal_address=proposal.postal_address %}
     <div class="row">
-        <div class="col-6">
-            {#            If changing the width: see what happens in the application when the proposal view is displayed in a widther format#}
-            <div class="border p-1 bg-white rounded" style="width: 400px">
+        <div class="col-4">
+            <div class="border p-1 bg-white rounded">
                 {% if proposal.postal_address.address %}
                     {{ proposal.postal_address.address|linebreaksbr }}
                 {% else %}
                     -
                 {% endif %}
             </div>
+        </div>
+        <div class="col-2">
         </div>
         <div class="col-6">
             <strong>City:</strong> {% include 'common/_value-or-dash.tmpl' with value=postal_address.city %}<br>
