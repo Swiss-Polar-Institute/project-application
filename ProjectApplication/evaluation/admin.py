@@ -10,7 +10,7 @@ class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges
         'proposal', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant', 'panel_recommendation',
         'board_decision', 'decision_date', 'created_on', 'modified_on')
     readonly_fields = ('created_on', 'modified_on',)
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes', )
 
 
 class ReviewerAdmin(admin.ModelAdmin):

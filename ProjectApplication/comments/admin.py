@@ -5,7 +5,7 @@ import comments.models
 
 class ProposalCommentAdmin(admin.ModelAdmin):
     list_display = ('proposal', 'text', 'created_by', 'created_on',)
-    ordering = ['proposal', 'text', 'created_on', 'modified_on', ]
+    ordering = ('proposal', 'text', 'created_on', 'modified_on', )
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -46,7 +46,7 @@ class CallCommentCategoryAdmin(admin.ModelAdmin):
 
 class CallCommentAdmin(admin.ModelAdmin):
     list_display = ('call', 'text', 'created_by', 'created_on',)
-    ordering = ['call', 'text', 'created_on', 'modified_on', ]
+    ordering = ('call', 'text', 'created_on', 'modified_on', )
 
 
 class ProposalEvaluationAttachmentCategoryAdmin(admin.ModelAdmin):

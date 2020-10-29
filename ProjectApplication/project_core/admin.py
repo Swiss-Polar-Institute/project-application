@@ -8,7 +8,7 @@ import project_core.models
 
 # Not an admin but to add history fields on admin
 # To use it just add:
-# history_list_display = ['history_field_changes']
+# history_list_display = ('history_field_changes',)
 # And inherit of SimpleHistoryAdminFieldChanges
 
 class SimpleHistoryAdminFieldChanges:
@@ -262,7 +262,7 @@ class CallQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     ordering = ('call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_on',
                 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes', )
 
 
 class TemplateQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):

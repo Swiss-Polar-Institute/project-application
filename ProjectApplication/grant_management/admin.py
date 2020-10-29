@@ -5,7 +5,7 @@ from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, Licen
 
 
 class GrantAgreementAdmin(admin.ModelAdmin):
-    list_display = ('project', 'signed_date', 'signed_by_list', 'file')
+    list_display = ('project', 'signed_date', 'signed_by_list', 'file',)
 
     def signed_by_list(self, obj):
         if obj.signed_by.exists():
@@ -22,27 +22,27 @@ class GrantAgreementAdmin(admin.ModelAdmin):
 
 class InvoiceAdmin(admin.ModelAdmin):
     list_display = ('project', 'amount', 'sent_for_payment_date', 'received_date', 'due_date', 'paid_date',
-                    'allow_overbudget', 'overbudget_allowed_by', 'file')
+                    'allow_overbudget', 'overbudget_allowed_by', 'file',)
 
 
 class FinancialReportAdmin(admin.ModelAdmin):
-    list_display = ('project', 'approval_date', 'approved_by', 'file')
+    list_display = ('project', 'approval_date', 'approved_by', 'file',)
 
 
 class LaySummaryTypeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description')
+    list_display = ('name', 'description',)
 
 
 class LaySummaryAdmin(admin.ModelAdmin):
-    list_display = ('project', 'text', 'author', 'lay_summary_type', 'due_date', 'received_date')
+    list_display = ('project', 'text', 'author', 'lay_summary_type', 'due_date', 'received_date',)
 
 
 class BlogPostAdmin(admin.ModelAdmin):
-    list_display = ('project', 'text', 'author', 'due_date', 'received_date')
+    list_display = ('project', 'text', 'author', 'due_date', 'received_date',)
 
 
 class LicenseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'public_text')
+    list_display = ('name', 'public_text',)
 
 
 class MediumAdmin(admin.ModelAdmin):
@@ -54,7 +54,7 @@ class MediumDeletedAdmin(admin.ModelAdmin):
 
 
 class ProjectSocialNetworkAdmin(admin.ModelAdmin):
-    list_display = ('project', 'social_network', 'url')
+    list_display = ('project', 'social_network', 'url',)
 
 
 class SocialNetworkAdmin(admin.ModelAdmin):
@@ -62,15 +62,15 @@ class SocialNetworkAdmin(admin.ModelAdmin):
 
 
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('project', 'doi', 'reference', 'title', 'published_date')
+    list_display = ('project', 'doi', 'reference', 'title', 'published_date',)
 
 
 class DatasetAdmin(admin.ModelAdmin):
-    list_display = ('project', 'doi', 'url', 'title', 'published_date')
+    list_display = ('project', 'doi', 'url', 'title', 'published_date',)
 
 
 class InstallmentAdmin(admin.ModelAdmin):
-    list_display = ('project', 'amount')
+    list_display = ('project', 'amount',)
 
 
 admin.site.register(GrantAgreement, GrantAgreementAdmin)
