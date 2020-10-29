@@ -28,25 +28,25 @@ class SimpleHistoryAdminFieldChanges:
 
 class StepTypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    ordering = ['name', 'description', ]
+    ordering = ('name', 'description',)
 
 
 class StepAdmin(admin.ModelAdmin):
     list_display = ('call', 'step_type', 'date', 'created_on', 'modified_on',)
-    ordering = ['call', 'step_type', 'date', 'created_on', 'modified_on', ]
+    ordering = ('call', 'step_type', 'date', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class BudgetCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'order',)
-    ordering = ['name', 'order', ]
+    ordering = ('name', 'order',)
 
 
 class FundingInstrumentAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = ('long_name', 'short_name', 'description', 'created_on', 'modified_on',)
-    ordering = ['long_name', 'short_name', 'description', 'created_on', 'modified_on', ]
+    ordering = ('long_name', 'short_name', 'description', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes',)
 
 
 class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
@@ -54,10 +54,10 @@ class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
         'long_name', 'short_name', 'call_open_date', 'submission_deadline',
         'budget_categories_list', 'budget_maximum', 'other_funding_question',
         'proposal_partner_question', 'created_on', 'modified_on',)
-    ordering = ['long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',
-                'created_on', 'modified_on', ]
+    ordering = ('long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',
+                'created_on', 'modified_on',)
 
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes',)
 
     readonly_fields = ('created_on', 'modified_on',)
 
@@ -78,13 +78,13 @@ class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
 
 
 class BudgetCategoryCallAdmin(admin.ModelAdmin):
-    list_display = ('call', 'budget_category', 'enabled', 'order')
-    ordering = ('call', 'budget_category', 'order')
+    list_display = ('call', 'budget_category', 'enabled', 'order',)
+    ordering = ('call', 'budget_category', 'order',)
 
 
 class KeywordAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'uid', 'created_on', 'modified_on',)
-    ordering = ['name', 'description', 'uid', 'created_on', 'modified_on', ]
+    ordering = ('name', 'description', 'uid', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
     search_fields = ('name', 'description',)
     raw_id_fields = ('uid',)
@@ -92,35 +92,35 @@ class KeywordAdmin(admin.ModelAdmin):
 
 class KeywordUidAdmin(admin.ModelAdmin):
     list_display = ('uid', 'source', 'created_on', 'modified_on',)
-    ordering = ['uid', 'source', 'created_on', 'modified_on', ]
+    ordering = ('uid', 'source', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class ProposalStatusAdmin(admin.ModelAdmin):
     list_display = ('name', 'description',)
-    ordering = ['description', ]
+    ordering = ('description',)
 
 
 class PersonTitleAdmin(admin.ModelAdmin):
     list_display = ('title',)
-    ordering = ['title', ]
+    ordering = ('title',)
 
 
 class CountryUidAdmin(admin.ModelAdmin):
     list_display = ('uid', 'source', 'created_on', 'modified_on',)
-    ordering = ['uid', 'source', 'created_on', 'modified_on', ]
+    ordering = ('uid', 'source', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class CountryAdmin(admin.ModelAdmin):
     list_display = ('name', 'uid', 'created_on', 'modified_on',)
-    ordering = ['name', 'uid', 'created_on', 'modified_on', ]
+    ordering = ('name', 'uid', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class OrganisationUidAdmin(admin.ModelAdmin):
     list_display = ('uid', 'source', 'created_on', 'modified_on',)
-    ordering = ['uid', 'source', 'created_on', 'modified_on', ]
+    ordering = ('uid', 'source', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
@@ -128,52 +128,54 @@ class OrganisationAdmin(admin.ModelAdmin):
     list_display = (
         'long_name', 'short_name', 'street', 'city', 'postal_code', 'country', 'uid', 'created_on',
         'modified_on',)
-    ordering = ['long_name', 'short_name', 'city', 'country', 'uid', 'created_on',
-                'modified_on', ]
+    ordering = ('long_name', 'short_name', 'city', 'country', 'uid', 'created_on',
+                'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
+    search_fields = ('long_name', 'short_name', 'street', 'city', 'postal_code', 'country__name', 'uid',)
 
 
 class OrganisationNameAdmin(admin.ModelAdmin):
-    list_display = ('name', 'organisation', 'created_on', 'modified_on')
-    ordering = ['name']
+    list_display = ('name', 'organisation', 'created_on', 'modified_on',)
+    ordering = ('name',)
     search_fields = ('name',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class SourceAdmin(admin.ModelAdmin):
     list_display = ('source', 'created_on', 'modified_on',)
-    ordering = ['source', 'created_on', 'modified_on', ]
+    ordering = ('source', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class GenderAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_on', 'modified_on',)
-    ordering = ['name', 'created_on', 'modified_on', ]
+    ordering = ('name', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class PhysicalPersonAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'first_name', 'surname', 'orcid', 'gender', 'phd_date', 'created_on', 'modified_on',)
-    ordering = ['first_name', 'surname', 'orcid', 'gender', 'phd_date', 'created_on',
-                'modified_on', ]
+    ordering = ('first_name', 'surname', 'orcid', 'gender', 'phd_date', 'created_on',
+                'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes',)
+    search_fields = ('first_name', 'surname', 'orcid', 'phd_date',)
 
 
 class PersonUidAdmin(admin.ModelAdmin):
     list_display = ('person', 'uid', 'source',)
-    ordering = ['person', 'uid', 'source', ]
+    ordering = ('person', 'uid', 'source',)
 
 
 class PersonPositionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'person', 'academic_title', 'career_stage', 'organisations_list', 'group', 'privacy_policy',
         'contact_newsletter', 'created_on', 'modified_on',)
-    ordering = ['person', 'academic_title', 'career_stage', 'group', 'privacy_policy', 'contact_newsletter',
-                'created_on', 'modified_on', ]
+    ordering = ('person', 'academic_title', 'career_stage', 'group', 'privacy_policy', 'contact_newsletter',
+                'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes',)
 
     def organisations_list(self, obj):
         organisation_names = obj.organisation_names.all()
@@ -183,20 +185,20 @@ class PersonPositionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
 
 class ContactAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = ('person_position', 'method', 'entry', 'created_on', 'modified_on',)
-    ordering = ['person_position', 'method', 'entry', 'created_on', 'modified_on', ]
+    ordering = ('person_position', 'method', 'entry', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes',)
 
 
 class GeographicalAreaUidAdmin(admin.ModelAdmin):
     list_display = ('uid', 'source', 'created_on', 'modified_on',)
-    ordering = ['uid', 'source', 'created_on', 'modified_on', ]
+    ordering = ('uid', 'source', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class GeographicalAreaAdmin(admin.ModelAdmin):
     list_display = ('name', 'definition', 'uid', 'created_on', 'modified_on',)
-    ordering = ['name', 'uid', 'created_on', 'modified_on', ]
+    ordering = ('name', 'uid', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
@@ -205,12 +207,12 @@ class ProposalAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
                     'end_date', 'duration_months', 'applicant', 'proposal_status', 'eligibility', 'eligibility_comment',
                     'call', 'created_on', 'modified_on',
                     'draft_saved_mail_sent', 'submitted_mail_sent',)
-    ordering = ['title', 'uuid', 'start_date', 'end_date', 'duration_months', 'applicant',
+    ordering = ('title', 'uuid', 'start_date', 'end_date', 'duration_months', 'applicant',
                 'proposal_status', 'eligibility', 'eligibility_comment', 'call', 'created_on',
-                'modified_on', 'draft_saved_mail_sent', 'submitted_mail_sent', ]
+                'modified_on', 'draft_saved_mail_sent', 'submitted_mail_sent',)
     readonly_fields = ('created_on', 'modified_on',)
 
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes',)
 
     # Search at the moment only works without '-'
     search_fields = ('title', 'uuid',)
@@ -239,26 +241,26 @@ class ProposalAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
 
 class ProposedBudgetItemAdmin(admin.ModelAdmin):
     list_display = ('category', 'details', 'amount', 'proposal',)
-    ordering = ['details', 'amount', 'proposal', ]
+    ordering = ('details', 'amount', 'proposal',)
     search_fields = ('category__name', 'details', 'amount', 'proposal__title',)
 
 
 class FundingStatusAdmin(admin.ModelAdmin):
     list_display = ('status', 'description',)
-    ordering = ['status', ]
+    ordering = ('status',)
 
 
 class ProposalFundingItemAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'organisation_name', 'funding_status', 'amount')
-    ordering = ['proposal', 'organisation_name', 'funding_status', 'amount', ]
+    list_display = ('proposal', 'organisation_name', 'funding_status', 'amount',)
+    ordering = ('proposal', 'organisation_name', 'funding_status', 'amount',)
 
 
 class CallQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'order',
         'created_on', 'modified_on',)
-    ordering = ['call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_on',
-                'modified_on', ]
+    ordering = ('call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_on',
+                'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
     history_list_display = ['history_field_changes']
 
@@ -267,37 +269,38 @@ class TemplateQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'question_text', 'question_description', 'answer_type', 'answer_max_length', 'created_on',
         'modified_on',)
-    ordering = ['question_text', 'answer_type', 'answer_max_length', 'created_on',
-                'modified_on', ]
+    ordering = ('question_text', 'answer_type', 'answer_max_length', 'created_on',
+                'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
-    history_list_display = ['history_field_changes']
+    history_list_display = ('history_field_changes',)
+    search_fields = ('question_text', 'question_description',)
 
 
 class ProposalQATextAdmin(admin.ModelAdmin):
     list_display = ('proposal', 'call_question', 'answer', 'created_on', 'modified_on',)
-    ordering = ['proposal', 'call_question', 'created_on', 'modified_on', ]
+    ordering = ('proposal', 'call_question', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
 class CareerStageAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'list_order')
-    ordering = ['name', 'list_order']
+    list_display = ('name', 'description', 'list_order',)
+    ordering = ('name', 'list_order',)
 
 
 class RoleAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'type')
-    ordering = ['name', 'type', ]
+    list_display = ('name', 'description', 'type',)
+    ordering = ('name', 'type',)
 
 
 class ProposalPartnerAdmin(admin.ModelAdmin):
-    list_display = ('proposal', 'person', 'role', 'role_description', 'competences')
-    ordering = ['proposal', 'person', 'role', ]
+    list_display = ('proposal', 'person', 'role', 'role_description', 'competences',)
+    ordering = ('proposal', 'person', 'role',)
 
 
 class ProposalQAFileAdmin(admin.ModelAdmin):
     list_display = (
         'proposal', 'call_question', 'file', 'md5', 'created_on', 'modified_on',)
-    ordering = ['proposal', 'call_question', 'file', 'md5', 'created_on', 'modified_on']
+    ordering = ('proposal', 'call_question', 'file', 'md5', 'created_on', 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
 
 
@@ -305,8 +308,8 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display = ('title', 'uuid', 'keywords_list', 'geographical_area_list', 'location', 'start_date',
                     'end_date', 'principal_investigator', 'call', 'proposal', 'overarching_project',
                     'allocated_budget', 'status', 'abortion_reason', 'created_on', 'modified_on',)
-    ordering = ['title', 'uuid', 'location', 'start_date', 'end_date', 'principal_investigator',
-                'call', 'proposal', 'allocated_budget', 'status', 'abortion_reason', ]
+    ordering = ('title', 'uuid', 'location', 'start_date', 'end_date', 'principal_investigator',
+                'call', 'proposal', 'allocated_budget', 'status', 'abortion_reason',)
 
     def keywords_list(self, obj):
         keywords = obj.keywords.all()
@@ -320,18 +323,19 @@ class ProjectAdmin(admin.ModelAdmin):
 
 
 class ProjectPartnerAdmin(admin.ModelAdmin):
-    list_display = ('project', 'person', 'role', 'role_description', 'competences')
-    ordering = ['project', 'person', 'role', ]
+    list_display = ('project', 'person', 'role', 'role_description', 'competences',)
+    ordering = ('project', 'person', 'role',)
 
 
 class FinancialKeyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'funding_instrument', 'created_on', 'created_by')
-    ordering = ['name', 'description', 'created_on']
+    list_display = ('name', 'description', 'funding_instrument', 'created_on', 'created_by',)
+    ordering = ('name', 'description', 'created_on',)
 
 
 class PostalAddressAdmin(admin.ModelAdmin):
-    list_display = ('address', 'city', 'postcode', 'country')
-    ordering = ['address', 'city', 'postcode', 'country__name']
+    list_display = ('address', 'city', 'postcode', 'country',)
+    ordering = ('address', 'city', 'postcode', 'country__name',)
+    search_fields = ('address', 'city', 'postcode', 'country__name',)
 
 
 class RoleDescriptionAdmin(admin.ModelAdmin):

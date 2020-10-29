@@ -36,6 +36,7 @@ class CallAttachmentCategoryAdmin(admin.ModelAdmin):
 class CallAttachmentAdmin(admin.ModelAdmin):
     list_display = ('call', 'file', 'created_by', 'created_on',)
     ordering = ('call', 'file', 'created_by', 'created_on',)
+    search_fields = ('call__long_name',)
 
 
 class CallCommentCategoryAdmin(admin.ModelAdmin):
