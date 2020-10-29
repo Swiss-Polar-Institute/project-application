@@ -402,7 +402,7 @@ class ApiList(abc.ABC, View):
     @api_key_required
     def get(self, request, *args, **kwargs):
         modified_since_str = request.GET['modified_since']
-        modified_since_str = modified_since_str.replace(' ', '+')
+        modified_since_str = modified_since_str.replace('Z', '+00:00')
 
         try:
             modified_since = datetime.fromisoformat(modified_since_str)
