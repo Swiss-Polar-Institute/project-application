@@ -1,5 +1,6 @@
 import json
 from datetime import date
+from urllib.parse import quote_plus
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client
@@ -385,7 +386,7 @@ class TestApiListMediaView(TestCase):
 
     def test_get_media_empty(self):
         response = self._client.get(
-            f'{reverse("api-list-media-view")}?modified_since=2017-01-28T21:00:00+00:00',
+            f'{reverse("api-list-media-view")}?modified_since={quote_plus("2017-01-28T21:00:00+00:00")}',
             HTTP_ApiKey=settings.API_SECRET_KEY
         )
 
@@ -397,7 +398,7 @@ class TestApiListMediaView(TestCase):
         medium = database_population.create_medium(project)
 
         response = self._client.get(
-            f'{reverse("api-list-media-view")}?modified_since=2017-01-28T21:00:00+00:00',
+            f'{reverse("api-list-media-view")}?modified_since={quote_plus("2017-01-28T21:00:00+00:00")}',
             HTTP_ApiKey=settings.API_SECRET_KEY
         )
 
