@@ -3,6 +3,11 @@
     font-weight: bold;
 }
 
+/*https://stackoverflow.com/a/39845483/9294284*/
+thead {
+    display: table-row-group;
+}
+
 /** Next select2 selectors is because django-autocomplete-light uses select2
     and the spacing in choice / choicemultiple is wrong for Bootstrap4
     */
