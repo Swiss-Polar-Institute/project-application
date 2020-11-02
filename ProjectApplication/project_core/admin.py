@@ -262,7 +262,7 @@ class CallQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     ordering = ('call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_on',
                 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
-    history_list_display = ('history_field_changes', )
+    history_list_display = ('history_field_changes',)
 
 
 class TemplateQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
