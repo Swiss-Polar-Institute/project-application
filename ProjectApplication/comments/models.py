@@ -27,6 +27,9 @@ class AbstractComment(CreateModifyOn):
                                    related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
                                    on_delete=models.PROTECT)
 
+    class Meta:
+        abstract = True
+
     def truncate_text(self):
         max_text = 70
         if len(self.text) < max_text:
@@ -36,9 +39,6 @@ class AbstractComment(CreateModifyOn):
 
         text = text.replace('\n', '\\n')
         return text
-
-    class Meta:
-        abstract = True
 
 
 class AbstractAttachment(CreateModifyOn):
@@ -72,6 +72,9 @@ class ProposalComment(AbstractComment):
                                    related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
                                    on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('proposal', 'created_on', 'created_by'),)
+
     def __str__(self):
         return f'Proposal:{self.proposal} Category:{self.category} Text: {self.truncate_text()}'
 
@@ -81,9 +84,6 @@ class ProposalComment(AbstractComment):
     @staticmethod
     def category_queryset():
         return ProposalCommentCategory.objects.all()
-
-    class Meta:
-        unique_together = (('proposal', 'created_on', 'created_by'),)
 
 
 class ProposalAttachmentCategory(CreateModifyOn):
@@ -139,18 +139,18 @@ class CallComment(AbstractComment):
     category = models.ForeignKey(CallCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('call', 'created_on', 'created_by'),)
+
+    def __str__(self):
+        return f'Call:{self.call} Category:{self.category} Text: {self.truncate_text()}'
+
     def set_parent(self, parent):
         self.call = parent
 
     @staticmethod
     def category_queryset():
         return CallCommentCategory.objects.all()
-
-    class Meta:
-        unique_together = (('call', 'created_on', 'created_by'),)
-
-    def __str__(self):
-        return f'Call:{self.call} Category:{self.category} Text: {self.truncate_text()}'
 
 
 class CallAttachmentCategory(CreateModifyOn):
@@ -207,15 +207,15 @@ class ProposalEvaluationComment(AbstractComment):
     category = models.ForeignKey(ProposalEvaluationCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('proposal_evaluation', 'created_on', 'created_by'),)
+
     def set_parent(self, parent):
         self.proposal_evaluation = parent
 
     @staticmethod
     def category_queryset():
         return ProposalEvaluationCommentCategory.objects.all()
-
-    class Meta:
-        unique_together = (('proposal_evaluation', 'created_on', 'created_by'),)
 
 
 class ProposalEvaluationAttachmentCategory(CreateModifyOn):
@@ -270,15 +270,15 @@ class ProjectComment(AbstractComment):
     category = models.ForeignKey(ProjectCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('project', 'created_on', 'created_by'),)
+
     def set_parent(self, parent):
         self.project = parent
 
     @staticmethod
     def category_queryset():
         return ProjectCommentCategory.objects.all()
-
-    class Meta:
-        unique_together = (('project', 'created_on', 'created_by'),)
 
 
 class ProjectAttachmentCategory(CreateModifyOn):
@@ -333,18 +333,18 @@ class CallEvaluationComment(AbstractComment):
     category = models.ForeignKey(CallEvaluationCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('call_evaluation', 'created_on', 'created_by'),)
+
+    def __str__(self):
+        return f'CallEvaluation:{self.call_evaluation} Category:{self.category} Text: {self.truncate_text()}'
+
     def set_parent(self, parent):
         self.call_evaluation = parent
 
     @staticmethod
     def category_queryset():
         return CallEvaluationCommentCategory.objects.all()
-
-    class Meta:
-        unique_together = (('call_evaluation', 'created_on', 'created_by'),)
-
-    def __str__(self):
-        return f'CallEvaluation:{self.call_evaluation} Category:{self.category} Text: {self.truncate_text()}'
 
 
 # Invoice
@@ -367,18 +367,18 @@ class InvoiceComment(AbstractComment):
     category = models.ForeignKey(InvoiceCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
+    class Meta:
+        unique_together = (('invoice', 'created_on', 'created_by'),)
+
+    def __str__(self):
+        return f'Invoice:{self.invoice} Category:{self.category} Text: {self.truncate_text()}'
+
     def set_parent(self, parent):
         self.invoice = parent
 
     @staticmethod
     def category_queryset():
         return InvoiceCommentCategory.objects.all()
-
-    class Meta:
-        unique_together = (('invoice', 'created_on', 'created_by'),)
-
-    def __str__(self):
-        return f'Invoice:{self.invoice} Category:{self.category} Text: {self.truncate_text()}'
 
 
 # GrantAgreement
@@ -404,15 +404,15 @@ class GrantAgreementComment(AbstractComment):
     def set_parent(self, parent):
         self.grant_agreement = parent
 
-    @staticmethod
-    def category_queryset():
-        return GrantAgreementCommentCategory.objects.all()
-
     class Meta:
         unique_together = (('grant_agreement', 'created_on', 'created_by'),)
 
     class Meta:
         verbose_name_plural = 'Grant Agreement Comments'
+
+    @staticmethod
+    def category_queryset():
+        return GrantAgreementCommentCategory.objects.all()
 
 
 class GrantAgreementAttachmentCategory(CreateModifyOn):
@@ -442,9 +442,9 @@ class GrantAgreementAttachment(AbstractAttachment):
     def set_parent(self, parent):
         self.grant_agreement = parent
 
+    class Meta:
+        verbose_name_plural = 'Grant Agreement Attachments'
+
     @staticmethod
     def category_queryset():
         return GrantAgreementAttachmentCategory.objects.all()
-
-    class Meta:
-        verbose_name_plural = 'Grant Agreement Attachments'

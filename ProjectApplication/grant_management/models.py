@@ -239,6 +239,9 @@ class Medium(CreateModifyOn):
     class Meta:
         verbose_name_plural = 'Media'
 
+    def __str__(self):
+        return f'{self.project}-{self.photographer}'
+
     def save(self, *args, **kwargs):
         self.file_md5 = calculate_md5_from_file_field(self.file)
         super().save(*args, **kwargs)
@@ -249,9 +252,6 @@ class Medium(CreateModifyOn):
             delete_result = super().delete(*args, **kwargs)
 
         return delete_result
-
-    def __str__(self):
-        return f'{self.project}-{self.photographer}'
 
 
 class MediumDeleted(CreateModifyOn):

@@ -142,9 +142,6 @@ class ProposalEvaluation(CreateModifyOn):
         if not self.proposal.call.callevaluation.is_open():
             return 'Cannot edit proposal evaluation because call evaluation is closed'
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
 
 def post_panel_management_table_rename(instance, filename):
     return f'evaluation/CallEvaluation/{instance.call.id}-{filename}'
@@ -169,6 +166,9 @@ class CallEvaluation(CreateModifyOn):
 
     history = HistoricalRecords()
 
+    def __str__(self):
+        return f'CallEvaluation: {self.id} for call: {self.call.little_name()}'
+
     @staticmethod
     def comment_object():
         from comments.models import CallEvaluationComment
@@ -183,9 +183,6 @@ class CallEvaluation(CreateModifyOn):
 
     def attachments(self):
         return []
-
-    def __str__(self):
-        return f'CallEvaluation: {self.id} for call: {self.call.little_name()}'
 
     def is_closed(self):
         return self.closed_date is not None
