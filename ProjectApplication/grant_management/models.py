@@ -168,9 +168,8 @@ class LaySummaryType(CreateModifyOn):
     name = models.CharField(max_length=10,
                             help_text='Type of lay summary which could be used within the application to decide how the'
                                       ' summary is used',
-                            unique=True, blank=False, null=False)
-    description = models.CharField(max_length=100, help_text='Description of the type of lay summary', blank=False,
-                                   null=False)
+                            unique=True)
+    description = models.CharField(max_length=100, help_text='Description of the type of lay summary')
 
     def __str__(self):
         return self.name
@@ -258,7 +257,6 @@ class Medium(CreateModifyOn):
 class MediumDeleted(CreateModifyOn):
     original_id = models.IntegerField(help_text='ID of the delete Medium.ID. Used to return them to the '
                                                 'SPI Media Gallery or other software',
-                                      null=False, blank=False,
                                       unique=True  # The same ID cannot be deleted twice
                                       )
 
@@ -298,7 +296,7 @@ class Publication(CreateModifyOn):
                                 on_delete=models.PROTECT)
     doi = models.CharField(max_length=100, help_text='Digital object identifier of publication', null=True, blank=True)
     reference = models.CharField(max_length=1000, help_text='Full reference of publication', null=True, blank=True)
-    title = models.CharField(max_length=1000, help_text='Title of publication', null=False, blank=False)
+    title = models.CharField(max_length=1000, help_text='Title of publication')
     published_date = models.DateField(help_text='Date on which the resource was published', null=True, blank=True)
 
     def doi_link(self):
@@ -313,7 +311,7 @@ class Dataset(CreateModifyOn):
                                 on_delete=models.PROTECT)
     doi = models.CharField(max_length=100, help_text='Digital object identifier of dataset', null=True, blank=True)
     url = models.URLField(help_text='URL of dataset if it does not have a DOI', null=True, blank=True)
-    title = models.CharField(max_length=1000, help_text='Title of dataset', null=False, blank=False)
+    title = models.CharField(max_length=1000, help_text='Title of dataset')
     published_date = models.DateField(help_text='Date on which dataset was published', null=True, blank=True)
 
     def doi_link(self):

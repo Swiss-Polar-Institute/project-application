@@ -22,8 +22,7 @@ class Category(CreateModifyOn):
 
 
 class AbstractComment(CreateModifyOn):
-    text = models.TextField(help_text='Comment text', null=False,
-                            blank=False)
+    text = models.TextField(help_text='Comment text')
     created_by = models.ForeignKey(User, help_text='User by which the entry was created',
                                    related_name="%(app_label)s_%(class)s_created_by_related", blank=True, null=True,
                                    on_delete=models.PROTECT)
