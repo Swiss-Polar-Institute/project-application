@@ -23,12 +23,12 @@ class GrantAgreement(CreateModifyOn):
     file = models.FileField(storage=S3Boto3Storage(), upload_to=grant_agreement_file_rename,
                             validators=[*management_file_validator()])
 
+    def __str__(self):
+        return f'{self.project}'
+
     def signed_by_string(self):
         return ', '.join(
             [f'{person.first_name} {person.surname}' for person in self.signed_by.all().order_by('first_name')])
-
-    def __str__(self):
-        return f'{self.project}'
 
     @staticmethod
     def comment_object():
@@ -53,16 +53,19 @@ class AbstractProjectDueReceivedDate(CreateModifyOn):
     due_date = models.DateField(help_text='Date the document is due', null=True, blank=True)
     received_date = models.DateField(help_text='Date the document was received', null=True, blank=True)
 
-    def __str__(self):
-        return f'{self.project}'
-
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return f'{self.project}'
 
 
 class Installment(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that this installment refers to', on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=11, decimal_places=2, help_text='Installment amount')
+
+    def __str__(self):
+        return f'{self.project}-{self.amount}'
 
     def sent_for_payment(self):
         return self.invoice_set.filter(sent_for_payment_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
@@ -74,9 +77,6 @@ class Installment(CreateModifyOn):
         installments = list(Installment.objects.filter(project=self.project).order_by('id'))
 
         return installments.index(self) + 1
-
-    def __str__(self):
-        return f'{self.project}-{self.amount}'
 
 
 def invoice_file_rename(instance, filename):
@@ -98,6 +98,9 @@ class Invoice(AbstractProjectDueReceivedDate):
     allow_overbudget = models.BooleanField(default=False, help_text='This invoice takes a payment overbudget')
     overbudget_allowed_by = models.ForeignKey(User, null=True, blank=True, help_text='User that allowed the overbudget',
                                               on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'Id: {self.id} Amount: {self.amount}'
 
     @staticmethod
     def comment_object():
@@ -126,9 +129,6 @@ class Invoice(AbstractProjectDueReceivedDate):
     def attachments(self):
         return None
 
-    def __str__(self):
-        return f'Id: {self.id} Amount: {self.amount}'
-
 
 class AbstractProjectReport(AbstractProjectDueReceivedDate):
     sent_for_approval_date = models.DateField(help_text='Date the report was sent for approval', null=True, blank=True)
@@ -137,11 +137,11 @@ class AbstractProjectReport(AbstractProjectDueReceivedDate):
     approved_by = models.ForeignKey(PhysicalPerson, help_text='Person who approved the report',
                                     on_delete=models.PROTECT, blank=True, null=True)
 
-    def due_date_passed(self):
-        return self.due_date and self.due_date < datetime.today().date() and self.approval_date is None
-
     class Meta:
         abstract = True
+
+    def due_date_passed(self):
+        return self.due_date and self.due_date < datetime.today().date() and self.approval_date is None
 
 
 def finance_report_file_rename(instance, filename):
@@ -236,6 +236,9 @@ class Medium(CreateModifyOn):
     descriptive_text = models.TextField(
         help_text='Description of this media, if provided. Where was it taken, context, etc.', null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = 'Media'
+
     def save(self, *args, **kwargs):
         self.file_md5 = calculate_md5_from_file_field(self.file)
         super().save(*args, **kwargs)
@@ -249,9 +252,6 @@ class Medium(CreateModifyOn):
 
     def __str__(self):
         return f'{self.project}-{self.photographer}'
-
-    class Meta:
-        verbose_name_plural = 'Media'
 
 
 class MediumDeleted(CreateModifyOn):
@@ -268,11 +268,11 @@ class SocialNetwork(CreateModifyOn):
     name = models.CharField(max_length=100,
                             help_text='Social network name (e.g. Twitter, Facebook, Instagram, Blog)')
 
-    def icon(self):
-        return f'external/icons/{self.name.lower()}.png'
-
     def __str__(self):
         return f'{self.name}'
+
+    def icon(self):
+        return f'external/icons/{self.name.lower()}.png'
 
 
 class ProjectSocialNetwork(CreateModifyOn):
@@ -299,11 +299,11 @@ class Publication(CreateModifyOn):
     title = models.CharField(max_length=1000, help_text='Title of publication')
     published_date = models.DateField(help_text='Date on which the resource was published', null=True, blank=True)
 
-    def doi_link(self):
-        return generate_doi_link(self.doi)
-
     def __str__(self):
         return '{}'.format(self.title)
+
+    def doi_link(self):
+        return generate_doi_link(self.doi)
 
 
 class Dataset(CreateModifyOn):
@@ -314,11 +314,11 @@ class Dataset(CreateModifyOn):
     title = models.CharField(max_length=1000, help_text='Title of dataset')
     published_date = models.DateField(help_text='Date on which dataset was published', null=True, blank=True)
 
-    def doi_link(self):
-        return generate_doi_link(self.doi)
-
     def __str__(self):
         return '{}'.format(self.title)
+
+    def doi_link(self):
+        return generate_doi_link(self.doi)
 
 
 class MilestoneCategory(CreateModifyOn):

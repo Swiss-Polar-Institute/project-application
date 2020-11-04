@@ -56,15 +56,15 @@ class BudgetCategory(models.Model):
 
     order = models.PositiveIntegerField(help_text='Use the integer order to order the categories', default=10)
 
-    @staticmethod
-    def all_ordered():
-        return BudgetCategory.objects.all().order_by('order', 'name')
-
     class Meta:
         verbose_name_plural = 'Budget categories'
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def all_ordered():
+        return BudgetCategory.objects.all().order_by('order', 'name')
 
 
 class FundingInstrument(CreateModifyOn):
@@ -79,11 +79,11 @@ class FundingInstrument(CreateModifyOn):
 
     history = HistoricalRecords()
 
-    def get_absolute_url(self):
-        return reverse('logged-funding-instrument-detail', args=[str(self.pk)])
-
     def __str__(self):
         return '{}'.format(self.long_name)
+
+    def get_absolute_url(self):
+        return reverse('logged-funding-instrument-detail', args=[str(self.pk)])
 
 
 class Call(CreateModifyOn):
@@ -110,9 +110,6 @@ class Call(CreateModifyOn):
         default=False)
 
     history = HistoricalRecords()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def __str__(self):
         return self.long_name
@@ -274,6 +271,9 @@ class CallQuestion(AbstractQuestion):
     order = models.PositiveIntegerField(
         help_text='Use this number to order the questions')
 
+    class Meta:
+        unique_together = (('call', 'template_question'), ('call', 'order'),)
+
     @staticmethod
     def from_template(template_question):
         call_question = CallQuestion()
@@ -297,9 +297,6 @@ class CallQuestion(AbstractQuestion):
                 self.order = 1
 
         super().save(*args, **kwargs)
-
-    class Meta:
-        unique_together = (('call', 'template_question'), ('call', 'order'),)
 
 
 class Source(CreateModifyOn):
@@ -419,17 +416,17 @@ class Organisation(CreateModifyOn):
                                 on_delete=models.PROTECT)
     uid = models.ForeignKey(OrganisationUid, help_text='UID of an organisation', on_delete=models.PROTECT)
 
-    def abbreviated_name(self):
-        if self.short_name is not None:
-            return self.short_name
-        else:
-            return (self.long_name[:47] + '...') if len(self.long_name) > 50 else self.long_name
-
     class Meta:
         unique_together = (('long_name', 'country'),)
 
     def __str__(self):
         return '{} - {}'.format(self.long_name, self.country)
+
+    def abbreviated_name(self):
+        if self.short_name is not None:
+            return self.short_name
+        else:
+            return (self.long_name[:47] + '...') if len(self.long_name) > 50 else self.long_name
 
 
 class OrganisationName(CreateModifyOn):
@@ -469,6 +466,12 @@ class PhysicalPerson(CreateModifyOn):
 
     historical = HistoricalRecords()
 
+    class Meta:
+        verbose_name_plural = 'Physical People'
+
+    def __str__(self):
+        return '{} {}'.format(self.first_name, self.surname)
+
     def full_name(self):
         return '{} {}'.format(self.first_name, self.surname)
 
@@ -482,12 +485,6 @@ class PhysicalPerson(CreateModifyOn):
             return f'{month}-{year}'
 
         return f'{calendar.month_abbr[int(month)]}. {year}'
-
-    class Meta:
-        verbose_name_plural = 'Physical People'
-
-    def __str__(self):
-        return '{} {}'.format(self.first_name, self.surname)
 
 
 class PersonUid(Uid):
@@ -615,17 +612,17 @@ class Contact(CreateModifyOn):
 
     history = HistoricalRecords()
 
-    def clean(self):
-        if self.method == Contact.EMAIL:
-            validate_email(self.entry)
-
-        super().clean()
-
     class Meta:
         unique_together = (('person_position', 'entry', 'method'),)
 
     def __str__(self):
         return '{} - {}: {}'.format(self.person_position, self.method, self.entry)
+
+    def clean(self):
+        if self.method == Contact.EMAIL:
+            validate_email(self.entry)
+
+        super().clean()
 
 
 class GeographicalAreaUid(Uid):
@@ -766,6 +763,9 @@ class Proposal(CreateModifyOn):
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
 
+    def get_absolute_url(self):
+        return reverse('proposal-update', kwargs={'uuid': self.uuid})
+
     def keywords_enumeration(self):
         keywords = self.keywords.all().order_by('name')
 
@@ -795,9 +795,6 @@ class Proposal(CreateModifyOn):
                 total += item.amount
 
         return total
-
-    def get_absolute_url(self):
-        return reverse('proposal-update', kwargs={'uuid': self.uuid})
 
     def status_is_draft(self):
         return self.proposal_status.name == settings.PROPOSAL_STATUS_DRAFT
@@ -968,11 +965,11 @@ class FundingItem(models.Model):
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10,
                                  validators=[MinValueValidator(0)])
 
-    def __str__(self):
-        return '{} - {}: {}'.format(self.organisation_name, self.funding_status, self.amount)
-
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return '{} - {}: {}'.format(self.organisation_name, self.funding_status, self.amount)
 
 
 class ProposalFundingItem(FundingItem):
@@ -1065,6 +1062,12 @@ class Project(CreateModifyOn):
 
     history = HistoricalRecords()
 
+    class Meta:
+        unique_together = (('title', 'principal_investigator', 'call'),)
+
+    def __str__(self):
+        return '{} - {}'.format(self.title, self.principal_investigator)
+
     def key_pi(self):
         return f'{self.key} {self.principal_investigator.person.surname}'
 
@@ -1150,12 +1153,6 @@ class Project(CreateModifyOn):
 
     def is_active(self):
         return self.status == Project.ONGOING
-
-    class Meta:
-        unique_together = (('title', 'principal_investigator', 'call'),)
-
-    def __str__(self):
-        return '{} - {}'.format(self.title, self.principal_investigator)
 
 
 class ProjectPartner(Partner):
