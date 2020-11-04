@@ -203,7 +203,7 @@ class Step(CreateModifyOn):
     objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Step within a call', on_delete=models.PROTECT)
-    step_type = models.ForeignKey(StepType, help_text='Name of step', max_length=128, null=False,
+    step_type = models.ForeignKey(StepType, help_text='Name of step', max_length=128,
                                   on_delete=models.PROTECT)
     date = models.DateTimeField(help_text='Date and time of notable date', max_length=64, null=False)
 
