@@ -56,15 +56,15 @@ class BudgetCategory(models.Model):
 
     order = models.PositiveIntegerField(help_text='Use the integer order to order the categories', default=10)
 
-    def __str__(self):
-        return self.name
-
     @staticmethod
     def all_ordered():
         return BudgetCategory.objects.all().order_by('order', 'name')
 
     class Meta:
         verbose_name_plural = 'Budget categories'
+
+    def __str__(self):
+        return self.name
 
 
 class FundingInstrument(CreateModifyOn):
@@ -79,11 +79,11 @@ class FundingInstrument(CreateModifyOn):
 
     history = HistoricalRecords()
 
-    def __str__(self):
-        return '{}'.format(self.long_name)
-
     def get_absolute_url(self):
         return reverse('logged-funding-instrument-detail', args=[str(self.pk)])
+
+    def __str__(self):
+        return '{}'.format(self.long_name)
 
 
 class Call(CreateModifyOn):
@@ -180,11 +180,11 @@ class BudgetCategoryCall(CreateModifyOn):
 
     order = models.PositiveIntegerField(blank=True, null=True)
 
-    def __str__(self):
-        return self.budget_category.name
-
     class Meta:
         unique_together = (('call', 'budget_category'),)
+
+    def __str__(self):
+        return self.budget_category.name
 
 
 class StepType(models.Model):
@@ -239,6 +239,9 @@ class AbstractQuestion(CreateModifyOn):
 
     history = HistoricalRecords(inherit=True)
 
+    class Meta:
+        abstract = True
+
     def __str__(self):
         if self.answer_type == AbstractQuestion.FILE:
             return '{} (FILE, required: {})'.format(self.question_text, self.answer_required)
@@ -250,9 +253,6 @@ class AbstractQuestion(CreateModifyOn):
                                                                       self.answer_required)
         else:
             assert False
-
-    class Meta:
-        abstract = True
 
 
 class TemplateQuestion(AbstractQuestion):
@@ -317,12 +317,12 @@ class Uid(CreateModifyOn):
     uid = models.CharField(help_text='Unique identifier', max_length=150, null=True)
     source = models.ForeignKey(Source, help_text='Source of the UID', on_delete=models.PROTECT)
 
-    def __str__(self):
-        return '{}: {} {}'.format(self.source, self.uid, self.created_on)
-
     class Meta:
         abstract = True
         unique_together = (('uid', 'source'),)
+
+    def __str__(self):
+        return '{}: {} {}'.format(self.source, self.uid, self.created_on)
 
 
 class KeywordUid(Uid):
@@ -343,11 +343,11 @@ class Keyword(CreateModifyOn):
         blank=True, null=True)
     uid = models.ForeignKey(KeywordUid, help_text='Source from which the keyword originated', on_delete=models.PROTECT)
 
-    def __str__(self):
-        return '{}'.format(self.name)
-
     class Meta:
         unique_together = (('name', 'description'),)
+
+    def __str__(self):
+        return '{}'.format(self.name)
 
 
 class ProposalStatus(models.Model):
@@ -357,11 +357,11 @@ class ProposalStatus(models.Model):
     name = models.CharField(help_text='Name of the status of the proposal table', max_length=50, unique=True)
     description = models.CharField(help_text='Detailed description of the proposal status name', max_length=512)
 
-    def __str__(self):
-        return '{} - {}'.format(self.name, self.description)
-
     class Meta:
         verbose_name_plural = 'Proposal status'
+
+    def __str__(self):
+        return '{} - {}'.format(self.name, self.description)
 
 
 class PersonTitle(models.Model):
@@ -390,11 +390,11 @@ class Country(CreateModifyOn):
     uid = models.ForeignKey(CountryUid, help_text='UID of country name', on_delete=models.PROTECT, blank=True,
                             null=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name_plural = 'Countries'
+
+    def __str__(self):
+        return self.name
 
 
 class OrganisationUid(Uid):
@@ -425,11 +425,11 @@ class Organisation(CreateModifyOn):
         else:
             return (self.long_name[:47] + '...') if len(self.long_name) > 50 else self.long_name
 
-    def __str__(self):
-        return '{} - {}'.format(self.long_name, self.country)
-
     class Meta:
         unique_together = (('long_name', 'country'),)
+
+    def __str__(self):
+        return '{} - {}'.format(self.long_name, self.country)
 
 
 class OrganisationName(CreateModifyOn):
@@ -469,9 +469,6 @@ class PhysicalPerson(CreateModifyOn):
 
     historical = HistoricalRecords()
 
-    def __str__(self):
-        return '{} {}'.format(self.first_name, self.surname)
-
     def full_name(self):
         return '{} {}'.format(self.first_name, self.surname)
 
@@ -488,6 +485,9 @@ class PhysicalPerson(CreateModifyOn):
 
     class Meta:
         verbose_name_plural = 'Physical People'
+
+    def __str__(self):
+        return '{} {}'.format(self.first_name, self.surname)
 
 
 class PersonUid(Uid):
@@ -621,11 +621,11 @@ class Contact(CreateModifyOn):
 
         super().clean()
 
-    def __str__(self):
-        return '{} - {}: {}'.format(self.person_position, self.method, self.entry)
-
     class Meta:
         unique_together = (('person_position', 'entry', 'method'),)
+
+    def __str__(self):
+        return '{} - {}: {}'.format(self.person_position, self.method, self.entry)
 
 
 class GeographicalAreaUid(Uid):
@@ -689,11 +689,11 @@ class Role(models.Model):
         help_text='Part of the application to which the role refers, determining where it can be used in some cases',
         choices=TYPES, max_length=25)
 
-    def __str__(self):
-        return '{} ({}): {}'.format(self.name, self.type, self.description)
-
     class Meta:
         unique_together = (('name', 'type'),)
+
+    def __str__(self):
+        return '{} ({}): {}'.format(self.name, self.type, self.description)
 
 
 class RoleDescription(CreateModifyOn):
@@ -759,6 +759,9 @@ class Proposal(CreateModifyOn):
                                               help_text='True if the email informing the applicant that the proposal has been submitted has been sent')
 
     history = HistoricalRecords()
+
+    class Meta:
+        unique_together = (('title', 'applicant', 'call'),)
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
@@ -853,9 +856,6 @@ class Proposal(CreateModifyOn):
 
         assert False
 
-    class Meta:
-        unique_together = (('title', 'applicant', 'call'),)
-
     def can_eligibility_be_edited(self):
         return self.can_eligibility_be_created_or_changed() and not hasattr(self, 'proposalevaluation')
 
@@ -874,12 +874,12 @@ class ProposalQAText(CreateModifyOn):
     call_question = models.ForeignKey(CallQuestion, help_text='Question from the call', on_delete=models.PROTECT)
     answer = models.TextField(help_text='Answer to the question from the call')
 
-    def __str__(self):
-        return 'Q: {}; A: {}'.format(self.call_question, self.answer)
-
     class Meta:
         verbose_name_plural = 'Proposal question-answer (text)'
         unique_together = (('proposal', 'call_question'),)
+
+    def __str__(self):
+        return 'Q: {}; A: {}'.format(self.call_question, self.answer)
 
 
 class ProposalQAFile(CreateModifyOn):
@@ -901,6 +901,9 @@ class ProposalQAFile(CreateModifyOn):
             logger.warning(f'NOTIFY: ProposalQAFile {self.id} ClientError')
             return 'Unknown -ClientError'
 
+    def __str__(self):
+        return 'Q: {}; A: file'.format(self.call_question)
+
     def save(self, *args, **kwargs):
         if self.file:
             self.md5 = calculate_md5_from_file_field(self.file)
@@ -909,9 +912,6 @@ class ProposalQAFile(CreateModifyOn):
             self.md5 = None
 
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return 'Q: {}; A: file'.format(self.call_question)
 
 
 class BudgetItem(models.Model):
@@ -949,11 +949,11 @@ class FundingStatus(models.Model):
     status = models.CharField(help_text='Name of the status', max_length=30, unique=True)
     description = models.CharField(help_text='Description of the status', max_length=100)
 
-    def __str__(self):
-        return self.status
-
     class Meta:
         verbose_name_plural = 'Funding status'
+
+    def __str__(self):
+        return self.status
 
 
 class FundingItem(models.Model):
@@ -968,11 +968,11 @@ class FundingItem(models.Model):
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10,
                                  validators=[MinValueValidator(0)])
 
-    class Meta:
-        abstract = True
-
     def __str__(self):
         return '{} - {}: {}'.format(self.organisation_name, self.funding_status, self.amount)
+
+    class Meta:
+        abstract = True
 
 
 class ProposalFundingItem(FundingItem):
@@ -1031,7 +1031,7 @@ class Project(CreateModifyOn):
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
     key = models.CharField(help_text='Project key identifier all the way to finance', max_length=64, unique=True)
-    title = models.CharField(help_text='Title of the project', max_length=500,)
+    title = models.CharField(help_text='Title of the project', max_length=500, )
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project')
     geographical_areas = models.ManyToManyField(GeographicalArea,
                                                 help_text='Geographical area(s) covered by the project')
@@ -1064,9 +1064,6 @@ class Project(CreateModifyOn):
                                    on_delete=models.PROTECT, related_name='supervisor')
 
     history = HistoricalRecords()
-
-    def __str__(self):
-        return '{} - {}'.format(self.title, self.principal_investigator)
 
     def key_pi(self):
         return f'{self.key} {self.principal_investigator.person.surname}'
@@ -1156,6 +1153,9 @@ class Project(CreateModifyOn):
 
     class Meta:
         unique_together = (('title', 'principal_investigator', 'call'),)
+
+    def __str__(self):
+        return '{} - {}'.format(self.title, self.principal_investigator)
 
 
 class ProjectPartner(Partner):

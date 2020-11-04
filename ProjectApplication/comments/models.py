@@ -14,11 +14,11 @@ class Category(CreateModifyOn):
     name = models.CharField(max_length=100, help_text='Type of comment or attachment', unique=True)
     colour = models.ForeignKey(ColourPair, on_delete=models.PROTECT, null=True, blank=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name_plural = 'Categories'
+
+    def __str__(self):
+        return self.name
 
 
 class AbstractComment(CreateModifyOn):
@@ -56,11 +56,11 @@ class AbstractAttachment(CreateModifyOn):
 class ProposalCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Proposal Comment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 class ProposalComment(AbstractComment):
@@ -89,11 +89,11 @@ class ProposalComment(AbstractComment):
 class ProposalAttachmentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Proposal Attachment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 def proposal_attachment_rename(instance, filename):
@@ -125,11 +125,11 @@ class ProposalAttachment(AbstractAttachment):
 class CallCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Call Comment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 class CallComment(AbstractComment):
@@ -138,9 +138,6 @@ class CallComment(AbstractComment):
 
     category = models.ForeignKey(CallCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
-
-    def __str__(self):
-        return f'Call:{self.call} Category:{self.category} Text: {self.truncate_text()}'
 
     def set_parent(self, parent):
         self.call = parent
@@ -152,15 +149,18 @@ class CallComment(AbstractComment):
     class Meta:
         unique_together = (('call', 'created_on', 'created_by'),)
 
+    def __str__(self):
+        return f'Call:{self.call} Category:{self.category} Text: {self.truncate_text()}'
+
 
 class CallAttachmentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Call Attachment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 def call_attachment_rename(instance, filename):
@@ -191,11 +191,11 @@ class CallAttachment(AbstractAttachment):
 class ProposalEvaluationCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Proposal Evaluation Comment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 class ProposalEvaluationComment(AbstractComment):
@@ -221,11 +221,11 @@ class ProposalEvaluationComment(AbstractComment):
 class ProposalEvaluationAttachmentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Proposal Evaluation Attachment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 def proposal_evaluation_rename(instance, filename):
@@ -254,11 +254,11 @@ class ProposalEvaluationAttachment(AbstractAttachment):
 class ProjectCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Project Comment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 class ProjectComment(AbstractComment):
@@ -284,11 +284,11 @@ class ProjectComment(AbstractComment):
 class ProjectAttachmentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Project Attachment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 def project_attachment_rename(instance, filename):
@@ -317,11 +317,11 @@ class ProjectAttachment(AbstractAttachment):
 class CallEvaluationCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Call Evaluation Comment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 class CallEvaluationComment(AbstractComment):
@@ -333,9 +333,6 @@ class CallEvaluationComment(AbstractComment):
     category = models.ForeignKey(CallEvaluationCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
-    def __str__(self):
-        return f'CallEvaluation:{self.call_evaluation} Category:{self.category} Text: {self.truncate_text()}'
-
     def set_parent(self, parent):
         self.call_evaluation = parent
 
@@ -346,16 +343,19 @@ class CallEvaluationComment(AbstractComment):
     class Meta:
         unique_together = (('call_evaluation', 'created_on', 'created_by'),)
 
+    def __str__(self):
+        return f'CallEvaluation:{self.call_evaluation} Category:{self.category} Text: {self.truncate_text()}'
+
 
 # Invoice
 class InvoiceCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Invoice Comment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 class InvoiceComment(AbstractComment):
@@ -367,9 +367,6 @@ class InvoiceComment(AbstractComment):
     category = models.ForeignKey(InvoiceCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
-    def __str__(self):
-        return f'Invoice:{self.invoice} Category:{self.category} Text: {self.truncate_text()}'
-
     def set_parent(self, parent):
         self.invoice = parent
 
@@ -380,16 +377,19 @@ class InvoiceComment(AbstractComment):
     class Meta:
         unique_together = (('invoice', 'created_on', 'created_by'),)
 
+    def __str__(self):
+        return f'Invoice:{self.invoice} Category:{self.category} Text: {self.truncate_text()}'
+
 
 # GrantAgreement
 class GrantAgreementCommentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Grant Agreement Comment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 class GrantAgreementComment(AbstractComment):
@@ -418,11 +418,11 @@ class GrantAgreementComment(AbstractComment):
 class GrantAgreementAttachmentCategory(CreateModifyOn):
     category = models.OneToOneField(Category, on_delete=models.PROTECT)
 
-    def __str__(self):
-        return self.category.name
-
     class Meta:
         verbose_name_plural = 'Grant Agreement Attachment Categories'
+
+    def __str__(self):
+        return self.category.name
 
 
 def grant_agreement_attachment_rename(instance, filename):

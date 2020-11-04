@@ -27,19 +27,19 @@ class FundingInstrumentVariableTemplate(AbstractVariableTemplate):
     funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument that this text belongs to',
                                            on_delete=models.PROTECT)
 
-    def __str__(self):
-        return f'Funding Instrument: {self.funding_instrument} - {{{self.name}}}-{self.value}'
-
     class Meta:
         unique_together = (('funding_instrument', 'name'),)
+
+    def __str__(self):
+        return f'Funding Instrument: {self.funding_instrument} - {{{self.name}}}-{self.value}'
 
 
 class CallVariableTemplate(AbstractVariableTemplate):
     call = models.ForeignKey(Call, help_text='Call that this text belongs to',
                              on_delete=models.PROTECT)
 
-    def __str__(self):
-        return f'Funding Instrument: {self.call} - {{{self.name}}}-{self.value}'
-
     class Meta:
         unique_together = (('call', 'name'),)
+
+    def __str__(self):
+        return f'Funding Instrument: {self.call} - {{{self.name}}}-{self.value}'

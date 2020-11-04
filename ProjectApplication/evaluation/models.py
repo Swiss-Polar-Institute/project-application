@@ -210,6 +210,7 @@ class CallEvaluation(CreateModifyOn):
 
         return created_projects
 
+
 def one_line_only(value):
     if isinstance(value, str) and '\n' in value:
         raise ValidationError('Only one line descriptions. It is used in a spreadsheet cell')
@@ -221,11 +222,11 @@ class Criterion(CreateModifyOn):
                             unique=True)
     description = models.TextField(help_text='One line explanation of the criteria', validators=[one_line_only])
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name_plural = 'Criteria'
+
+    def __str__(self):
+        return self.name
 
 
 class CriterionCallEvaluation(CreateModifyOn):
@@ -241,9 +242,9 @@ class CriterionCallEvaluation(CreateModifyOn):
 
     order = models.PositiveIntegerField(blank=True, null=True)
 
-    def __str__(self):
-        return self.criterion.name
-
     class Meta:
         unique_together = (('call_evaluation', 'criterion'),)
         verbose_name_plural = 'Criterion call evaluations'
+
+    def __str__(self):
+        return self.criterion.name
