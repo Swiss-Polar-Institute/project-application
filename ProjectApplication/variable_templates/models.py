@@ -16,11 +16,11 @@ class AbstractVariableTemplate(CreateModifyOn):
     name = models.ForeignKey(TemplateVariableName, on_delete=models.PROTECT)
     value = models.CharField(help_text='Value for the variable in this funding instrument', max_length=200)
 
-    def __str__(self):
-        return f'{self.name}-{self.value}'
-
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return f'{self.name}-{self.value}'
 
 
 class FundingInstrumentVariableTemplate(AbstractVariableTemplate):

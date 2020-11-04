@@ -888,16 +888,6 @@ class ProposalQAFile(CreateModifyOn):
     # Using md5 so it matches (usually) ETags
     md5 = models.CharField(db_index=True, max_length=32)
 
-    def human_file_size(self):
-        try:
-            return bytes_to_human_readable(self.file.size)
-        except EndpointConnectionError:
-            logger.warning(f'NOTIFY: ProposalQAFile {self.id} EndpointConnectionError')
-            return 'Unknown -EndpointConnectionError'
-        except ClientError:
-            logger.warning(f'NOTIFY: ProposalQAFile {self.id} ClientError')
-            return 'Unknown -ClientError'
-
     def __str__(self):
         return 'Q: {}; A: file'.format(self.call_question)
 
@@ -909,6 +899,16 @@ class ProposalQAFile(CreateModifyOn):
             self.md5 = None
 
         super().save(*args, **kwargs)
+
+    def human_file_size(self):
+        try:
+            return bytes_to_human_readable(self.file.size)
+        except EndpointConnectionError:
+            logger.warning(f'NOTIFY: ProposalQAFile {self.id} EndpointConnectionError')
+            return 'Unknown -EndpointConnectionError'
+        except ClientError:
+            logger.warning(f'NOTIFY: ProposalQAFile {self.id} ClientError')
+            return 'Unknown -ClientError'
 
 
 class BudgetItem(models.Model):

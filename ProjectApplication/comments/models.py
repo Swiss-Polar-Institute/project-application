@@ -401,14 +401,14 @@ class GrantAgreementComment(AbstractComment):
     category = models.ForeignKey(GrantAgreementCommentCategory, help_text='Type of comment',
                                  on_delete=models.PROTECT)
 
-    def set_parent(self, parent):
-        self.grant_agreement = parent
-
     class Meta:
         unique_together = (('grant_agreement', 'created_on', 'created_by'),)
 
     class Meta:
         verbose_name_plural = 'Grant Agreement Comments'
+
+    def set_parent(self, parent):
+        self.grant_agreement = parent
 
     @staticmethod
     def category_queryset():
@@ -439,11 +439,11 @@ class GrantAgreementAttachment(AbstractAttachment):
     category = models.ForeignKey(GrantAgreementAttachmentCategory, help_text='Category of the attachment',
                                  on_delete=models.PROTECT)
 
-    def set_parent(self, parent):
-        self.grant_agreement = parent
-
     class Meta:
         verbose_name_plural = 'Grant Agreement Attachments'
+
+    def set_parent(self, parent):
+        self.grant_agreement = parent
 
     @staticmethod
     def category_queryset():
