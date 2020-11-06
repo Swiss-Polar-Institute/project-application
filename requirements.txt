@@ -4,21 +4,23 @@ Babel==2.8.0
 backcall==0.1.0
 boto3==1.11.16
 botocore==1.14.16
-certifi==2020.6.20	# from requests
-chardet==3.0.4		# from requests
+certifi==2020.6.20	# requests
+chardet==3.0.4		# requests
 click==7.1.2
 coverage==5.0.3
 curlylint==0.12.0
 decorator==4.4.1
 Django==3.0.11
 django-autocomplete-light==3.5.1
+django-axes==5.8.0
 django-crispy-forms==1.9.2
+django-ipware==3.0.1	# django-axes
 django-phonenumber-field==4.0.0
 django-simple-history==2.8.0
 django-storages==1.9.1
 docutils==0.15.2
 gunicorn==20.0.4
-idna==2.10		# from requests
+idna==2.10		# requests
 ipython==7.11.1
 ipython-genutils==0.2.0
 jedi==0.16.0

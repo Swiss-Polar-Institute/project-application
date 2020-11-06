@@ -10,9 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+import datetime
 import mimetypes
 import os
 import pathlib
+import tempfile
 
 from django.contrib.messages import constants as messages
 
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'simple_history',
     'phonenumber_field',
+    'axes',
     'project_core',
     'variable_templates',
     'evaluation',
@@ -55,7 +58,22 @@ MIDDLEWARE = [
     'project_core.middleware.login.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'simple_history.middleware.HistoryRequestMiddleware'
+    'simple_history.middleware.HistoryRequestMiddleware',
+
+    # AxesMiddleware should be the last middleware in the MIDDLEWARE list.
+    # It only formats user lockout messages and renders Axes lockout responses
+    # on failed user authentication attempts from login views.
+    # If you do not want Axes to override the authentication response
+    # you can skip installing the middleware and use your own views.
+    'axes.middleware.AxesMiddleware',
+]
+
+AUTHENTICATION_BACKENDS = [
+    # AxesBackend should be the first backend in the AUTHENTICATION_BACKENDS list.
+    'axes.backends.AxesBackend',
+
+    # Django ModelBackend is the default authentication backend.
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 ROOT_URLCONF = 'ProjectApplication.urls'
@@ -167,6 +185,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
+cache_directory = os.path.join(tempfile.gettempdir(), 'project-application-cache')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': cache_directory,
+        'TIMEOUT': 300,
+        'OPTIONS': {
+            'MAX_ENTRIES': 1000
+        }
+    }
+}
+
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'Europe/Paris'
@@ -262,6 +293,20 @@ EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
 EMAIL_SUBJECT_PREFIX = os.environ['EMAIL_SUBJECT_PREFIX']
 EMAIL_USE_TLS = True
+
+# This is part of django-axes: lock out users temporary if login fails
+# See https://django-axes.readthedocs.io/en/latest/4_configuration.html
+AXES_ENABLED = 1
+AXES_FAILURE_LIMIT = 2
+
+# Next option would lock out the IP. Not doing it: from the office/NAT a user would be able to lock out all the users
+# AXES_LOCK_OUT_AT_FAILURE = False
+
+AXES_COOLOFF_TIME = datetime.timedelta(minutes=5)
+
+AXES_ONLY_USER_FAILURES = True
+
+AXES_LOCKOUT_TEMPLATE = 'registration/user-locked-out-out.tmpl'
 
 DEBUG = os.environ['DEBUG'] == '1'
 SECURE_SSL_REDIRECT = os.environ['SECURE_SSL_REDIRECT'] == '1'

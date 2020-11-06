@@ -1,0 +1,15 @@
+{% extends 'common/_base.tmpl' %}
+
+{% block title %}User locked out{% endblock %}
+
+{% block body_contents %}
+    <div class="container" role="main">
+        {% include 'common/_logo.tmpl' %}
+        <p></p>
+        <h1>User temporary locked out</h1>
+        <div class="authentication_error">
+            Too many failed logins.
+        </div>
+        Please contact the Project Application administrators or wait for a while and try again later.
+    </div>
+{% endblock %}
