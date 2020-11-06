@@ -274,6 +274,17 @@ class CallQuestion(AbstractQuestion):
     class Meta:
         unique_together = (('call', 'template_question'), ('call', 'order'),)
 
+    @transaction.atomic
+    def save(self, *args, **kwargs):
+        if self.order is None:
+            call_questions = CallQuestion.objects.filter(call=self.call)
+            if call_questions:
+                self.order = call_questions.aggregate(Max('order'))['order__max'] + 1
+            else:
+                self.order = 1
+
+        super().save(*args, **kwargs)
+
     @staticmethod
     def from_template(template_question):
         call_question = CallQuestion()
@@ -286,17 +297,6 @@ class CallQuestion(AbstractQuestion):
         call_question.template_question = template_question
 
         return call_question
-
-    @transaction.atomic
-    def save(self, *args, **kwargs):
-        if self.order is None:
-            call_questions = CallQuestion.objects.filter(call=self.call)
-            if call_questions:
-                self.order = call_questions.aggregate(Max('order'))['order__max'] + 1
-            else:
-                self.order = 1
-
-        super().save(*args, **kwargs)
 
 
 class Source(CreateModifyOn):
