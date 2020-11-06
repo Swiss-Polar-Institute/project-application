@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
@@ -12,7 +13,7 @@ class CallList(TestCase):
         self._client_management = database_population.create_management_logged_client()
 
     def test_load_funding_instrument_add(self):
-        login = self._client_management.login(username='unittest_management', password='12345')
+        login = self._client_management.login(username='unittest_management', password='12345', request=HttpRequest())
         self.assertTrue(login)
 
         response = self._client_management.get(reverse('logged-funding-instrument-add'))

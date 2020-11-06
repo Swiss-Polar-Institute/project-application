@@ -1,3 +1,4 @@
+from django.http import HttpRequest
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
@@ -53,7 +54,7 @@ class ManagementProposalTest(TestCase):
         reviewer.calls.remove(self._proposal.call)
         reviewer.save()
 
-        login = c.login(username='unittest_reviewer', password='12345')
+        login = c.login(username='unittest_reviewer', password='12345', request=HttpRequest())
         self.assertTrue(login)
 
         response = c.get(
@@ -69,7 +70,7 @@ class ManagementProposalTest(TestCase):
         reviewer.calls.add(self._proposal.call)
         reviewer.save()
 
-        login = c.login(username='unittest_reviewer', password='12345')
+        login = c.login(username='unittest_reviewer', password='12345', request=HttpRequest())
         self.assertTrue(login)
 
         response = c.get(

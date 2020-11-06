@@ -297,7 +297,7 @@ EMAIL_USE_TLS = True
 # This is part of django-axes: lock out users temporary if login fails
 # See https://django-axes.readthedocs.io/en/latest/4_configuration.html
 AXES_ENABLED = 1
-AXES_FAILURE_LIMIT = 2
+AXES_FAILURE_LIMIT = 10
 
 # Next option would lock out the IP. Not doing it: from the office/NAT a user would be able to lock out all the users
 # AXES_LOCK_OUT_AT_FAILURE = False

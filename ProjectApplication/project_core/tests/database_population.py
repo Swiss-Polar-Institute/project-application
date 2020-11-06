@@ -4,6 +4,7 @@ from io import StringIO
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.http import HttpRequest
 from django.test import Client
 from django.utils import timezone
 from django.utils.timezone import utc
@@ -143,7 +144,7 @@ def create_management_logged_client():
     create_management_user()
 
     client = Client()
-    client.login(username='unittest_management', password='12345')
+    client.login(username='unittest_management', password='12345', request=HttpRequest())
     return client
 
 
@@ -151,7 +152,7 @@ def create_reviewer_logged_client():
     create_reviewer_user()
 
     client = Client()
-    client.login(username='unittest_reviewer', password='12345')
+    client.login(username='unittest_reviewer', password='12345', request=HttpRequest())
     return client
 
 
