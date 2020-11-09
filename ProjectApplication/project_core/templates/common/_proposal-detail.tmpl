@@ -24,13 +24,13 @@
 </div>
 <br>
 <h3>Project description</h3>
-{% include 'common/_accordion.tmpl' with prefix='project_description' button_text='Project description details' template_file='common/_project_description.tmpl' %}
+{% include 'common/_accordion.tmpl' with prefix='project_description' button_text_collapsed='View project description details' button_text_not_collapsed='Hide project description details' template_file='common/_project_description.tmpl' %}
 <br>
 {% if proposal_partner_question %}
     <h3>Roles and competences</h3>
-    {% include 'common/_accordion.tmpl' with prefix='applicant_role' button_text='Applicant' template_file='common/_role_description.tmpl' role_description=proposal.applicant_role_description %}
+    {% include 'common/_accordion.tmpl' with prefix='applicant_role' button_text_collapsed='View applicant' button_text_not_collapsed='Hide applicant' template_file='common/_role_description.tmpl' role_description=proposal.applicant_role_description %}
     <br>
-    {% include 'common/_accordion.tmpl' with prefix='partners' button_text='Partner' template_file='common/_table-partners.tmpl' %}
+    {% include 'common/_accordion.tmpl' with prefix='partners' button_text_collapsed='View partners' button_text_not_collapsed='Hide partners' template_file='common/_table-partners.tmpl' %}
     <br>
 {% endif %}
 
@@ -38,12 +38,12 @@
 <strong>Total requested budget:</strong> {{ proposal.total_budget|thousands_separator }} CHF
 <p><strong>Maximum budget:</strong> {{ maximum_budget|thousands_separator }} CHF</p>
 
-{% include 'common/_accordion.tmpl' with prefix='budget' button_text='Budget details' template_file='common/_table-budget.tmpl' %}
+{% include 'common/_accordion.tmpl' with prefix='budget' button_text_collapsed='View budget details' button_text_not_collapsed='Hide budget details' template_file='common/_table-budget.tmpl' %}
 <br>
 
 {% if proposal.call.other_funding_question %}
     <h3>Other sources of funding</h3>
-    {% include 'common/_accordion.tmpl' with prefix='funding' button_text='Funding details' template_file='common/_table-funding.tmpl' %}
+    {% include 'common/_accordion.tmpl' with prefix='funding' button_text_collapsed='View funding details' button_text_not_collapsed='Hide funding details' template_file='common/_table-funding.tmpl' %}
     <br>
 {% endif %}
 

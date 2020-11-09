@@ -3,13 +3,9 @@
         <div class="card-header {{ padding }}">
             <h5 class="mb-0">
                 <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target="#{{ prefix }}">
-                    {% if button_text_collapsed and button_text_not_collapsed %}
                         <span class="if-collapsed">{{ button_text_collapsed }}
                             {% if count is not None %}({{ count }}){% endif %}</span>
-                        <span class="if-not-collapsed">{{ button_text_not_collapsed }}</span>
-                    {% else %}
-                        {{ button_text }}
-                    {% endif %}
+                    <span class="if-not-collapsed">{{ button_text_not_collapsed }}</span>
                 </button>
             </h5>
         </div>
