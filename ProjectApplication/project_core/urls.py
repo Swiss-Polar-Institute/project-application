@@ -14,7 +14,7 @@ urlpatterns = [
     path('',
          external.homepage.Homepage.as_view(),
          name='homepage'),
-    path('admin/jsi18n/',
+    path(f'{settings.ADMIN_URL}jsi18n/',
          JavaScriptCatalog.as_view(),
          name='javascript-jsi18n'),
     path('calls/',
