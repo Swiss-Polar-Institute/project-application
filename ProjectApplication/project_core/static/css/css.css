@@ -3,6 +3,10 @@
     font-weight: bold;
 }
 
+.pre-wrap {
+    white-space: pre-wrap;
+}
+
 /*https://stackoverflow.com/a/39845483/9294284*/
 thead {
     display: table-row-group;

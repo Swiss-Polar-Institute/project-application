@@ -9,7 +9,7 @@
             <strong>Short
                 name: </strong>{% include 'common/_value-or-dash.tmpl' with value=funding_instrument.short_name %}<br>
             <strong>Description: </strong>
-            <div class="border p-1 bg-white rounded">{{ funding_instrument.description|linebreaksbr }}</div>
+            <div class="border p-1 bg-white rounded pre-wrap">{{ funding_instrument.description }}</div>
             <p></p>
             <h1>Template variables</h1>
             {% include 'variable_templates/_table-template_variables.tmpl' with template_variables=template_variables %}

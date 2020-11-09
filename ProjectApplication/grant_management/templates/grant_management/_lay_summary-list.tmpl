@@ -13,7 +13,7 @@
             <tr>
                 <td data-sort="{% include 'common/_value-or-zero.tmpl' with value=lay_summary.due_date|date:"Y-m-d" %}">{% include 'common/_value-or-dash.tmpl' with value=lay_summary.due_date %}</td>
                 <td data-sort="{% include 'common/_value-or-zero.tmpl' with value=lay_summary.received_date|date:"Y-m-d" %}">{% include 'common/_value-or-dash.tmpl' with value=lay_summary.received_date %}</td>
-                <td>{% include 'common/_value-or-dash.tmpl' with value=lay_summary.text %}</td>
+                <td class="pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=lay_summary.text %}</td>
                 <td>{% include 'common/_value-or-dash.tmpl' with value=lay_summary.author %}</td>
                 <td>{% include 'common/_value-or-dash.tmpl' with value=lay_summary.lay_summary_type %}</td>
             </tr>

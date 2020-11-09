@@ -17,7 +17,7 @@
     <p>Keywords: {{ project.keywords_enumeration }}</p>
     <h5>Summary</h5>
     {% if project.main_lay_summary_web %}
-        {{ project.main_lay_summary_web|linebreaksbr }}
+        <div style="white-space: pre-wrap;">{{ project.main_lay_summary_web|linebreaksbr }}</div>
     {% else %}
         Lay summary not available yet
     {% endif %}

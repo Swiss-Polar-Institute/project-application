@@ -1,13 +1,7 @@
 {% with postal_address=proposal.postal_address %}
     <div class="row">
         <div class="col-4">
-            <div class="border p-1 bg-white rounded">
-                {% if proposal.postal_address.address %}
-                    {{ proposal.postal_address.address|linebreaksbr }}
-                {% else %}
-                    -
-                {% endif %}
-            </div>
+            <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=proposal.postal_address.address %}</div>
         </div>
         <div class="col-2">
         </div>
