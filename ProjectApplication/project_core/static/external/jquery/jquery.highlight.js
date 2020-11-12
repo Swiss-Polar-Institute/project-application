@@ -92,7 +92,7 @@ jQuery.fn.highlight = function (words, options) {
     words = jQuery.map(words, function(word, i) {
       return word.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     });
-    if (words.length == 0) { return this; };
+    if (words.length == 0) { return this; }
 
     var flag = settings.caseSensitive ? "" : "i";
     var pattern = "(" + words.join("|") + ")";

@@ -27,6 +27,7 @@ from project_core.forms.postal_address import PostalAddressForm
 from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
+from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
 from variable_templates.utils import get_template_value_for_call
 
@@ -40,6 +41,7 @@ DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
 APPLICANT_ROLE_DESCRIPTION_FORM_NAME = 'applicant_role_description_form'
 PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
+SCIENTIFIC_CLUSTERS_FORM_NAME = 'scientific_clusters_form'
 
 logger = logging.getLogger('comments')
 
@@ -221,9 +223,9 @@ class AbstractProposalView(TemplateView):
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, only_basic_fields=False)
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
+            scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)
-
             initial_budget = []
             for budget_category in call.budgetcategorycall_set.filter(enabled=True).order_by('order', 'budget_category__name'):
                 initial_budget.append({'category': budget_category.budget_category, 'amount': None, 'details': None})
@@ -251,6 +253,7 @@ class AbstractProposalView(TemplateView):
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PERSON_FORM_NAME] = person_form
         context[QUESTIONS_FORM_NAME] = questions_form
+        context[SCIENTIFIC_CLUSTERS_FORM_NAME] = scientific_clusters_form
         context[BUDGET_FORM_NAME] = budget_form
         context[FUNDING_FORM_NAME] = funding_form
         context[APPLICANT_ROLE_DESCRIPTION_FORM_NAME] = applicant_role_description_form
@@ -508,6 +511,7 @@ def call_context_for_template(call):
                'call_submission_deadline': call.submission_deadline,
                'other_funding_question': call.other_funding_question,
                'overarching_project_question': call.overarching_project_question,
+               'scientific_clusters_question': call.scientific_clusters_question,
                'proposal_partner_question': call.proposal_partner_question
                }
 

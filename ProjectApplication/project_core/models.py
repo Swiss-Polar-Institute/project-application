@@ -107,8 +107,8 @@ class Call(CreateModifyOn):
     overarching_project_question = models.BooleanField(
         help_text='True if the question for the overarching project is displayed',
         default=False)
-    scientific_cluster_question = models.BooleanField(help_text='True if the Scientific Cluster question is enabled',
-                                                      default=False)
+    scientific_clusters_question = models.BooleanField(help_text='True if the Scientific Cluster question is enabled',
+                                                       default=False)
 
     history = HistoricalRecords()
 

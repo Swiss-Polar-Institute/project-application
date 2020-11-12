@@ -36,6 +36,11 @@
     <h3>Proposed {{ activity }}</h3>
     {% crispy proposal_form %}
 
+    {% if scientific_clusters_question %}
+        <h3>Scientific clusters</h3>
+        {% include 'common/_form-proposal-scientific_clusters.tmpl' %}
+    {% endif %}
+
     {% if overarching_project_question %}
         <h3>Overarching project</h3>
         {% include 'common/_form-project_overarching.tmpl' %}
