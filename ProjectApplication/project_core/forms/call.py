@@ -173,7 +173,8 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('overarching_project_question', css_class='col-12'),
+                Div('overarching_project_question', css_class='col-6'),
+                Div('scientific_cluster_question', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -233,7 +234,8 @@ class CallForm(forms.ModelForm):
         fields = ['funding_instrument', 'long_name', 'short_name', 'finance_year', 'description',
                   'introductory_message',
                   'call_open_date', 'submission_deadline', 'budget_maximum',
-                  'other_funding_question', 'proposal_partner_question', 'overarching_project_question', ]
+                  'other_funding_question', 'proposal_partner_question', 'overarching_project_question',
+                  'scientific_cluster_question']
 
         field_classes = {'budget_maximum': FlexibleDecimalField}
 
@@ -251,7 +253,8 @@ class CallForm(forms.ModelForm):
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
                       'other_funding_question': 'Tick this box if you would like the call to ask about other funding that will contribute to the proposal',
                       'proposal_partner_question': 'Tick this box if you would like the call to ask about proposal partners',
-                      'overarching_project_question': 'Tick this box if you would like the call to ask about the overarching project'}
+                      'overarching_project_question': 'Tick this box if you would like the call to ask about the overarching project',
+                      'scientific_cluster_question': 'Tick this box if you would like the call to include the "Scientific Clusters"', }
 
         labels = {
             'budget_maximum': 'Budget maximum (CHF)',

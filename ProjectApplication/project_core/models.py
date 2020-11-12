@@ -103,11 +103,15 @@ class Call(CreateModifyOn):
     submission_deadline = models.DateTimeField(help_text='Submission deadline of the call')
     budget_maximum = models.DecimalField(help_text='Maximum amount that can be requested in the proposal budget',
                                          decimal_places=2, max_digits=10, validators=[MinValueValidator(0)])
+
+    # TODO: this questions should be moved to another model instead of Booleans here
     other_funding_question = models.BooleanField(help_text='True if the Other Funding question is enabled')
     proposal_partner_question = models.BooleanField(help_text='True if the Proposal Partner question is enabled')
     overarching_project_question = models.BooleanField(
         help_text='True if the question for the overarching project is displayed',
         default=False)
+    scientific_cluster_question = models.BooleanField(help_text='True if the Scientific Cluster question is enabled',
+                                                      default=False)
 
     history = HistoricalRecords()
 
@@ -1164,3 +1168,23 @@ class ProjectPartner(Partner):
 
     class Meta:
         unique_together = (('person', 'role', 'project'),)
+
+
+class AbstractScientificCluster(CreateModifyOn):
+    title = models.CharField(max_length=1024, help_text='Title of the scientific cluster')
+    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the scientific cluster')
+
+    applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal',
+                                  on_delete=models.PROTECT)
+
+    class Meta:
+        abstract = True
+
+
+class ProposalScientificCluster(AbstractScientificCluster):
+    proposal = models.ForeignKey(Proposal,
+                                 help_text='Proposal that this Scientific Cluster refers to',
+                                 on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = (('title', 'proposal'),)
