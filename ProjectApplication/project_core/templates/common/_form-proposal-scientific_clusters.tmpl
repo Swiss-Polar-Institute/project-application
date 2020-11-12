@@ -6,7 +6,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
-
 {% if scientific_clusters_form.non_form_errors %}
     {{ scientific_clusters_form|as_crispy_errors }}
 {% endif %}
@@ -41,7 +40,7 @@
         let firstName = index + "-person__physical_person__first_name";
         let surname = index + "-person__physical_person__surname";
 
-        setupOrcidLookup('{{ proposal_partners_form.prefix }}', orcid, firstName, surname);
+        setupOrcidLookup('{{ scientific_clusters_form.prefix }}', orcid, firstName, surname);
     }
 
     function addedScientificCluster(scientific_cluster) {
@@ -58,10 +57,10 @@
     });
 
     jQueryForFormset(function () {
-        jQueryForFormset('#proposal_partners_form_table tbody tr').formset({
-            prefix: '{{ proposal_partners_form.prefix }}',
-            added: addedProposalPartner,
-            removed: removedProposalPartner
+        jQueryForFormset('#scientific_clusters_form_table tbody tr').formset({
+            prefix: '{{ scientific_clusters_form.prefix }}',
+            added: addedScientificCluster,
+            removed: removedScientificCluster
         });
         highlight_row_delete_link_hover('#proposal_partners_form_table');
     })

@@ -1,14 +1,17 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field, HTML
+from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
 
+from project_core.forms.person import PersonForm
 from project_core.models import Proposal, ProposalScientificCluster
 
 
 class ScientificClusterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self._person_form = PersonForm(prefix=f'{self.prefix}-PERSON-FORM')
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -25,11 +28,10 @@ class ScientificClusterForm(forms.ModelForm):
                 Div('title', css_class='col-12'),
                 css_class='row'
             ),
-            Div(
-                HTML("{% include 'common/_person-form.tmpl with person_form=person' %}"),
-                css_class='row'
-            )
+
+            # *self._person_form.helper.layout
         )
+        # self.fields.update(self._person_form.fields)
 
     def clean(self):
         cd = super().clean()
