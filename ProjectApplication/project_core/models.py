@@ -25,7 +25,6 @@ logger = logging.getLogger('project_core')
 
 class CreateModifyOn(models.Model):
     """Details of data creation and modification: including date, time and user."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     created_on = models.DateTimeField(help_text='Date and time at which the entry was created', auto_now_add=True)
     modified_on = models.DateTimeField(help_text='Date and time at which the entry was modified', auto_now=True,
@@ -49,7 +48,6 @@ class FinancialKey(CreateModifyOn):
 
 class BudgetCategory(models.Model):
     """Details of budget categories"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Name of the budget category', max_length=100, unique=True)
     description = models.CharField(help_text='Description of the budget category', max_length=300)
@@ -88,7 +86,6 @@ class FundingInstrument(CreateModifyOn):
 
 class Call(CreateModifyOn):
     """Description of call."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     long_name = models.CharField(help_text='Full name of the call', max_length=200, unique=True)
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
@@ -190,7 +187,6 @@ class BudgetCategoryCall(CreateModifyOn):
 
 class StepType(models.Model):
     """Notable steps during the process"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Name of a step', max_length=60, unique=True)
     description = models.CharField(help_text='Description of a step', max_length=200)
@@ -201,7 +197,6 @@ class StepType(models.Model):
 
 class Step(CreateModifyOn):
     """Dates of notable steps that are used throughout the process"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Step within a call', on_delete=models.PROTECT)
     step_type = models.ForeignKey(StepType, help_text='Name of step', max_length=128,
@@ -217,7 +212,6 @@ class Step(CreateModifyOn):
 
 class AbstractQuestion(CreateModifyOn):
     """Questions and details relating to their answers that can be used throughout the process"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     TEXT = 'Text'
     FILE = 'File'
@@ -258,7 +252,6 @@ class AbstractQuestion(CreateModifyOn):
 
 class TemplateQuestion(AbstractQuestion):
     """Questions used as templates that can be added to calls or other aspects of the forms."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     def get_absolute_url(self):
         return reverse('logged-template-question-detail', args=[str(self.pk)])
@@ -266,7 +259,6 @@ class TemplateQuestion(AbstractQuestion):
 
 class CallQuestion(AbstractQuestion):
     """Questions, taken from the template list, that are part of a call. """
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
     template_question = models.ForeignKey(TemplateQuestion,
@@ -336,7 +328,6 @@ class KeywordUid(Uid):
 
 class Keyword(CreateModifyOn):
     """Set of keywords used to describe the topic of a project, proposal, mission etc. """
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Name of a keyword', max_length=128)
     description = models.CharField(
@@ -353,7 +344,6 @@ class Keyword(CreateModifyOn):
 
 class ProposalStatus(models.Model):
     """Status options for a proposal"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Name of the status of the proposal table', max_length=50, unique=True)
     description = models.CharField(help_text='Detailed description of the proposal status name', max_length=512)
@@ -367,7 +357,6 @@ class ProposalStatus(models.Model):
 
 class PersonTitle(models.Model):
     """Personal and academic titles"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     title = models.CharField(help_text='Personal or academic title used by a person', max_length=50, unique=True)
 
@@ -385,7 +374,6 @@ class CountryUid(Uid):
 
 class Country(CreateModifyOn):
     """Countries"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Country name', max_length=100, unique=True)
     uid = models.ForeignKey(CountryUid, help_text='UID of country name', on_delete=models.PROTECT, blank=True,
@@ -408,7 +396,6 @@ class OrganisationUid(Uid):
 
 class Organisation(CreateModifyOn):
     """Details of an organisation - could be scientific, institution, funding etc."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     long_name = models.CharField(help_text='Full name by which the organisation is known', max_length=100)
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50,
@@ -437,7 +424,7 @@ class OrganisationName(CreateModifyOn):
     """This is used by the dropdown box to the users. Users can add organisation names and will not be associated
     with the organisation until SPI creates the organisation and links it. It's an easy way to allow users to enter
     organisations without details and without having what seems to not exist: a full list of organisations. """
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
+
     name = models.CharField(help_text='A name that the organisation is known for', max_length=100, unique=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
 
@@ -455,7 +442,6 @@ class Gender(CreateModifyOn):
 
 class PhysicalPerson(CreateModifyOn):
     """Information about a unique person."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     first_name = models.CharField(help_text='First name(s) of a person', max_length=100)
     surname = models.CharField(help_text='Last name(s) of a person', max_length=100)
@@ -502,7 +488,6 @@ class PersonUid(Uid):
 
 class CareerStage(models.Model):
     """Stage of a person within their career."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Name of career stage', max_length=50, unique=True)
     description = models.CharField(help_text='Description of the career stage', max_length=100)
@@ -514,7 +499,6 @@ class CareerStage(models.Model):
 
 class PersonPosition(CreateModifyOn):
     """Information about a person that may change as they move through their career."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     person = models.ForeignKey(PhysicalPerson, help_text='A unique physical person', on_delete=models.PROTECT)
     academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', on_delete=models.PROTECT)
@@ -595,7 +579,6 @@ class PersonPosition(CreateModifyOn):
 
 class Contact(CreateModifyOn):
     """Contact details of a person"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     OFFICE = 'Office'
     MOBILE = 'Mobile'
@@ -639,7 +622,6 @@ class GeographicalAreaUid(Uid):
 
 class GeographicalArea(CreateModifyOn):
     """Geographical area (exact coverage of this not yet determined)"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     name = models.CharField(help_text='Name of geographic area', max_length=100, unique=True)
     definition = models.CharField(
@@ -715,8 +697,6 @@ class Proposal(CreateModifyOn):
         (ELIGIBLE, 'Eligible'),
         (NOTELIGIBLE, 'Not eligible'),
     )
-
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
 
@@ -869,7 +849,6 @@ class Proposal(CreateModifyOn):
 
 class ProposalQAText(CreateModifyOn):
     """Questions assigned to a proposal and their respective answers"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     proposal = models.ForeignKey(Proposal, help_text='Questions and answers for a proposal', on_delete=models.PROTECT)
     call_question = models.ForeignKey(CallQuestion, help_text='Question from the call', on_delete=models.PROTECT)
@@ -917,7 +896,6 @@ class ProposalQAFile(CreateModifyOn):
 
 class BudgetItem(models.Model):
     """Itemised line in a budget, comprising of a category, full details and the amount"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     category = models.ForeignKey(BudgetCategory, help_text='Name of the budget item',
                                  on_delete=models.PROTECT)
@@ -934,7 +912,6 @@ class BudgetItem(models.Model):
 
 class ProposedBudgetItem(BudgetItem):
     """Itemised line in a budget as part of a proposal"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal it which the budget item relates',
                                  on_delete=models.PROTECT)
@@ -945,7 +922,6 @@ class ProposedBudgetItem(BudgetItem):
 
 class FundingStatus(models.Model):
     """Status of funding"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     status = models.CharField(help_text='Name of the status', max_length=30, unique=True)
     description = models.CharField(help_text='Description of the status', max_length=100)
@@ -959,7 +935,6 @@ class FundingStatus(models.Model):
 
 class FundingItem(models.Model):
     """Specific item of funding"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     organisation_name = models.ForeignKey(OrganisationName,
                                           help_text='Name of organisation from which the funding is sourced',
@@ -979,7 +954,6 @@ class FundingItem(models.Model):
 class ProposalFundingItem(FundingItem):
     """Specific item of funding for a proposal (referring to funding that has been sourced from elsewhere, rather than
     funding that would result from that proposal being accepted)"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal for which the funding has been sourced',
                                  on_delete=models.PROTECT)
@@ -990,7 +964,6 @@ class ProposalFundingItem(FundingItem):
 
 class Partner(models.Model):
     """Person who is a partner"""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     person = models.ForeignKey(PersonPosition, help_text='Person that is a partner', on_delete=models.PROTECT)
     role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT)
@@ -1006,7 +979,6 @@ class Partner(models.Model):
 
 class ProposalPartner(Partner):
     """Partner that is part of a proposal."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal to on which the partner is collaborating',
                                  on_delete=models.PROTECT)
@@ -1017,8 +989,6 @@ class ProposalPartner(Partner):
 
 class Project(CreateModifyOn):
     """Proposal that has been funded is now a project. Otherwise another project that has been accepted."""
-
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     ONGOING = 'Ongoing'
     COMPLETED = 'Completed'
@@ -1161,7 +1131,6 @@ class Project(CreateModifyOn):
 
 class ProjectPartner(Partner):
     """Partner that is part of a project."""
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     project = models.ForeignKey(Project, help_text='Project on which the partner is collaborating',
                                 on_delete=models.PROTECT)

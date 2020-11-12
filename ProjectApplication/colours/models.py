@@ -4,8 +4,6 @@ from project_core.models import CreateModifyOn
 
 
 class Colour(CreateModifyOn):
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
-
     name = models.CharField(max_length=64, help_text='Name of the colour', unique=True)
     hex_code = models.CharField(max_length=7, help_text='Hex code, e.g. FF0000 for red', unique=True)
 
@@ -14,8 +12,6 @@ class Colour(CreateModifyOn):
 
 
 class ColourPair(CreateModifyOn):
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
-
     description = models.CharField(max_length=128,
                                    help_text='For example "Red background with grey text" or "Use for alerts"',
                                    unique=True)

@@ -13,8 +13,6 @@ from project_core.utils.utils import user_is_in_group_name
 
 
 class Reviewer(models.Model):
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
-
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     person = models.OneToOneField(PhysicalPerson, null=True, on_delete=models.PROTECT)
     calls = models.ManyToManyField(Call, blank=True)
@@ -64,8 +62,6 @@ class ProposalEvaluation(CreateModifyOn):
     ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
     ELIGIBLE = 'Eligible'
     NOTELIGIBLE = 'Not eligible'
-
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
 
     proposal = models.OneToOneField(Proposal, on_delete=models.PROTECT)
 
@@ -148,8 +144,6 @@ def post_panel_management_table_rename(instance, filename):
 
 
 class CallEvaluation(CreateModifyOn):
-    objects = models.Manager()  # Helps Pycharm CE auto-completion
-
     call = models.OneToOneField(Call, on_delete=models.PROTECT)
 
     panel_date = models.DateField(help_text='Date on which the panel review meeting will take place')
