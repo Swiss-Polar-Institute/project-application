@@ -382,7 +382,8 @@ class InvoiceItemModelForm(forms.ModelForm):
         model = Invoice
         fields = ['installment', 'due_date', 'received_date', 'sent_for_payment_date', 'paid_date', 'amount',
                   'file']
-        field_classes = {'installment': InstallmentModelChoiceField}
+        field_classes = {'installment': InstallmentModelChoiceField,
+                         'amount': FlexibleDecimalField}
         widgets = {
             'due_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
@@ -400,8 +401,6 @@ class InvoiceItemModelForm(forms.ModelForm):
             'received_date': 'Date the invoice was received',
             'amount': 'Total of the invoice'
         }
-
-        field_classes = {'amount': FlexibleDecimalField}
 
 
 class InvoicesFormSet(BaseInlineFormSet):
