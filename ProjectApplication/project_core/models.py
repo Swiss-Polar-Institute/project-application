@@ -1143,8 +1143,8 @@ class AbstractScientificCluster(CreateModifyOn):
     title = models.CharField(max_length=1024, help_text='Title of the scientific cluster')
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the scientific cluster')
 
-    applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal',
-                                  on_delete=models.PROTECT)
+    sub_pi = models.ForeignKey(PersonPosition, help_text='Main person of this scientific cluster',
+                               on_delete=models.PROTECT)
 
     class Meta:
         abstract = True

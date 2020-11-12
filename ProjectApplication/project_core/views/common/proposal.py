@@ -175,7 +175,8 @@ class AbstractProposalView(TemplateView):
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME, instance=proposal.postal_address)
-
+            scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME,
+                                                                       instance=proposal)
             questions_form = Questions(proposal=proposal,
                                        prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
@@ -227,7 +228,8 @@ class AbstractProposalView(TemplateView):
             questions_form = Questions(call=call,
                                        prefix=QUESTIONS_FORM_NAME)
             initial_budget = []
-            for budget_category in call.budgetcategorycall_set.filter(enabled=True).order_by('order', 'budget_category__name'):
+            for budget_category in call.budgetcategorycall_set.filter(enabled=True).order_by('order',
+                                                                                             'budget_category__name'):
                 initial_budget.append({'category': budget_category.budget_category, 'amount': None, 'details': None})
 
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
@@ -323,6 +325,8 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
+            scientific_clusters_form = ScientificClustersInlineFormSet(request.POST, instance=proposal,
+                                                                       prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
                                        proposal=proposal,
@@ -357,6 +361,8 @@ class AbstractProposalView(TemplateView):
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
+            scientific_clusters_form = ScientificClustersInlineFormSet(request.POST,
+                                                                       prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
@@ -394,6 +400,9 @@ class AbstractProposalView(TemplateView):
 
         if call.overarching_project_question:
             forms_to_validate.append(proposal_project_overarching_form)
+
+        if call.scientific_clusters_question:
+            forms_to_validate.append(scientific_clusters_form)
 
         all_valid = True
         for form in forms_to_validate:
@@ -453,6 +462,12 @@ class AbstractProposalView(TemplateView):
                 proposal.save()
 
                 proposal_partners_form.save_partners(proposal)
+
+            if call.scientific_clusters_question:
+                scientific_clusters_form = ScientificClustersInlineFormSet(request.POST,
+                                                                           instance=proposal,
+                                                                           prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
+                scientific_clusters_form.save()
 
             messages.success(request, self.success_message)
 

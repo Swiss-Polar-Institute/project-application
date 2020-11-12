@@ -140,7 +140,7 @@ class InvoiceItemModelForm(forms.ModelForm):
         self._add_allow_overbudget_checkbox(divs)
 
         if self._comment_form:
-            divs += Div(HTML("{% include 'comments/_accordion-comment-list-fields-for-new.tmpl' %}"))
+            divs += Div(HTML('{% include "comments/_accordion-comment-list-fields-for-new.tmpl" %}'))
 
         self.helper.layout = Layout(*divs)
 

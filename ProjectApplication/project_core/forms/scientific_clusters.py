@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field
+from crispy_forms.layout import Layout, Div, Field, HTML
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
 
@@ -25,11 +25,18 @@ class ScientificClusterForm(forms.ModelForm):
                 Div('title', css_class='col-12'),
                 css_class='row'
             ),
+            Div(
+                HTML("{% include 'common/_person-form.tmpl with person_form=person' %}"),
+                css_class='row'
+            )
         )
 
     def clean(self):
         cd = super().clean()
         return cd
+
+    def save(self, *args, **kwargs):
+        return super().save(*args, **kwargs)
 
     class Meta:
         model = ProposalScientificCluster
@@ -42,6 +49,9 @@ class ScientificClustersFormSet(BaseInlineFormSet):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    def save(self, *args, **kwargs):
+        return super().save(*args, **kwargs)
 
     def get_queryset(self):
         return super().get_queryset().order_by('id')
