@@ -30,7 +30,7 @@
 
 <script src="{% static 'external/jquery/jquery-2.1.3-min.js' %}"></script>
 <script>
-    var jQueryForFormset = $.noConflict();
+    var jQueryForFormset = $.noConflict(true);
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 </script>
