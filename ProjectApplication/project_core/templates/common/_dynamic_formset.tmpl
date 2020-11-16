@@ -122,6 +122,8 @@
         // This code needs to be changed to be generalised a bit more and/or jquery.formset.js fixed in different
         // ways how is interacting with select2.
 
+        // This function is not operating on $(row) becasue it is fixing the row that has been copied from.
+
         $(document).find('.modelselect2').each(function (index, value) {
             let id = value.id;
 
@@ -145,6 +147,23 @@
                     },
                     containerCssClass: 'form-control'
                 });
+            }
+        });
+
+        $(document).find('.modelselect2multiple').each(function (index, value) {
+            let id = value.id;
+
+            // Used for organisation names
+            if (id.includes('organisation_name')) {
+                $(value).select2({
+                    ajax: {
+                        url: '{% url "autocomplete-organisation-names" %}',
+                        dataType: 'json'
+                    },
+                    containerCssClass: 'form-control'
+                });
+                console.log($(value));
+                console.log(id);
             }
         });
     }

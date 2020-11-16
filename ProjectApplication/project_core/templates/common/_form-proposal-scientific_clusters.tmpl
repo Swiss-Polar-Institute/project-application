@@ -1,66 +1,68 @@
-{% load static %}
-{% load crispy_forms_tags %}
-{% load crispy_forms_filters %}
+{% include 'common/_dynamic_formset.tmpl' with form_set=scientific_clusters_form human_type='scientific cluster' %}
 
-{{ scientific_clusters_form.management_form }}
-
-{% if scientific_clusters_form.non_form_errors %}
-    {{ scientific_clusters_form|as_crispy_errors }}
-{% endif %}
-
-<table id="scientific_clusters_form_table" class="table table-striped table-sm">
-    <tbody>
-    {% for scientific_cluster_form in scientific_clusters_form %}
-        <tr>
-            <td>
-                {% crispy scientific_cluster_form %}
-            </td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-
-<script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
-<script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
-<script>
-    var jQueryForFormset = $.noConflict(true);
+{#{% load static %}#}
+{#{% load crispy_forms_tags %}#}
+{#{% load crispy_forms_filters %}#}
+{##}
+{#{{ scientific_clusters_form.management_form }}#}
+{##}
+{#{% if scientific_clusters_form.non_form_errors %}#}
+{#    {{ scientific_clusters_form|as_crispy_errors }}#}
+{#{% endif %}#}
+{##}
+{#<table id="scientific_clusters_form_table" class="table table-striped table-sm">#}
+{#    <tbody>#}
+{#    {% for scientific_cluster_form in scientific_clusters_form %}#}
+{#        <tr>#}
+{#            <td>#}
+{#                {% crispy scientific_cluster_form %}#}
+{#            </td>#}
+{#        </tr>#}
+{#    {% endfor %}#}
+{#    </tbody>#}
+{#</table>#}
+{##}
+{#<script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>#}
+{#<script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>#}
+{##}
+{#<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>#}
+{##}
+{#<script>#}
+{#    var jQueryForFormset = $.noConflict(true);#}
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
-</script>
-
-<script src="{% static 'external/formset/jquery.formset.js' %}"></script>
-
-<script>
-    function setupOrcidLookupForIndexScientificCluster(index) {
-        let orcid = index + "-orcid";
-        let firstName = index + "-first_name";
-        let surname = index + "-surname";
-
-        setupOrcidLookup('{{ scientific_clusters_form.prefix }}', orcid, firstName, surname);
-    }
-
-    function addedScientificCluster(scientific_cluster) {
-        let index = parseInt(scientific_cluster[0].sectionRowIndex);
-        setupOrcidLookupForIndexScientificCluster(index);
-        highlight_row_delete_link_hover(scientific_cluster);
-    }
-
-    function removedScientificCluster() {
-    }
-
-    jQueryForFormset("#scientific_clusters_form_table tbody tr").each(function (index, element) {
-        setupOrcidLookupForIndexScientificCluster(index);
-    });
-
-    jQueryForFormset(function () {
-        jQueryForFormset('#scientific_clusters_form_table tbody tr').formset({
-            prefix: '{{ scientific_clusters_form.prefix }}',
-            added: addedScientificCluster,
-            removed: removedScientificCluster
-        });
-        highlight_row_delete_link_hover('#scientific_clusters_form_table');
-    })
-</script>
+{#</script>#}
+{##}
+{#<script src="{% static 'external/formset/jquery.formset.js' %}"></script>#}
+{##}
+{#<script>#}
+{#    function setupOrcidLookupForIndexScientificCluster(index) {#}
+{#        let orcid = index + "-orcid";#}
+{#        let firstName = index + "-first_name";#}
+{#        let surname = index + "-surname";#}
+{##}
+{#        setupOrcidLookup('{{ scientific_clusters_form.prefix }}', orcid, firstName, surname);#}
+{#    }#}
+{##}
+{#    function addedScientificCluster(scientific_cluster) {#}
+{#        let index = parseInt(scientific_cluster[0].sectionRowIndex);#}
+{#        setupOrcidLookupForIndexScientificCluster(index);#}
+{#        highlight_row_delete_link_hover(scientific_cluster);#}
+{#    }#}
+{##}
+{#    function removedScientificCluster() {#}
+{#    }#}
+{##}
+{#    jQueryForFormset("#scientific_clusters_form_table tbody tr").each(function (index, element) {#}
+{#        setupOrcidLookupForIndexScientificCluster(index);#}
+{#    });#}
+{##}
+{#    jQueryForFormset(function () {#}
+{#        jQueryForFormset('#scientific_clusters_form_table tbody tr').formset({#}
+{#            prefix: '{{ scientific_clusters_form.prefix }}',#}
+{#            added: addedScientificCluster,#}
+{#            removed: removedScientificCluster#}
+{#        });#}
+{#        highlight_row_delete_link_hover('#scientific_clusters_form_table');#}
+{#    })#}
+{#</script>#}
