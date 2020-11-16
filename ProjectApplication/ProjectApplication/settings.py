@@ -323,7 +323,13 @@ if SECURE_SSL_REDIRECT:
 # These settings are specific by the Project Application code. They are not Django settings
 HTTP_AUTH_INCOMING_LINKS = os.getenv('HTTP_AUTH_INCOMING_LINKS', '')
 NAVBAR_BACKGROUND_COLOR = os.getenv('NAVBAR_BACKGROUND_COLOR', 'bg-primary')
+
+# This category was used during the importer of Projects that were created before the Project Application existed
+# These projects were managed via a Spreadsheet and imported here. Some information (comments, attachments)
+# were assigned to DATA_IMPORT_CATEGORY_NAME but users of the application cannot select this category for their
+# comments and attachments
 DATA_IMPORT_CATEGORY_NAME = 'Data Import'
+
 GOAT_COUNTER_CODE = os.getenv('GOAT_COUNTER_CODE', None)
 REVIEWER_GROUP_NAME = 'reviewer'
 MANAGEMENT_GROUP_NAME = 'management'
