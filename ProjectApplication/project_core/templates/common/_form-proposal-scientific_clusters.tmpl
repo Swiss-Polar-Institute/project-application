@@ -1,11 +1,9 @@
-{#{% load static %}#}
-{#{% load crispy_forms_tags %}#}
-{##}
-{#{% include 'common/_dynamic_formset.tmpl' with form_set=scientific_clusters_form human_type='Scientific cluster' %}#}
-
 {% load static %}
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
+
+{{ scientific_clusters_form.management_form }}
+
 {% if scientific_clusters_form.non_form_errors %}
     {{ scientific_clusters_form|as_crispy_errors }}
 {% endif %}
@@ -22,38 +20,39 @@
     </tbody>
 </table>
 
-<script src="{% static 'external/jquery/jquery-2.1.3-min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
+<script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
 <script>
-    var jQueryForFormset = $.noConflict();
+    var jQueryForFormset = $.noConflict(true);
     {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 </script>
 
-<script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
-
-<script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
 
 <script>
-    function setupOrcidLookupForIndex(index) {
-        let orcid = index + "-person__physical_person__orcid";
-        let firstName = index + "-person__physical_person__first_name";
-        let surname = index + "-person__physical_person__surname";
+    function setupOrcidLookupForIndexScientificCluster(index) {
+        let orcid = index + "-orcid";
+        let firstName = index + "-first_name";
+        let surname = index + "-surname";
 
         setupOrcidLookup('{{ scientific_clusters_form.prefix }}', orcid, firstName, surname);
     }
 
     function addedScientificCluster(scientific_cluster) {
         let index = parseInt(scientific_cluster[0].sectionRowIndex);
-        setupOrcidLookupForIndex(index);
+        setupOrcidLookupForIndexScientificCluster(index);
         highlight_row_delete_link_hover(scientific_cluster);
     }
 
     function removedScientificCluster() {
     }
 
-    $("#scientific_clusters_form_table tbody tr").each(function (index, element) {
-        setupOrcidLookupForIndex(index);
+    jQueryForFormset("#scientific_clusters_form_table tbody tr").each(function (index, element) {
+        setupOrcidLookupForIndexScientificCluster(index);
     });
 
     jQueryForFormset(function () {
@@ -62,6 +61,6 @@
             added: addedScientificCluster,
             removed: removedScientificCluster
         });
-        highlight_row_delete_link_hover('#proposal_partners_form_table');
+        highlight_row_delete_link_hover('#scientific_clusters_form_table');
     })
 </script>

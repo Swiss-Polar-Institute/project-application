@@ -1,3 +1,9 @@
+function checkSelector(selectorId) {
+    if ($(selectorId).length === 0) {
+        alert('Error: selector "' + selectorId + '" did not find any object');
+    }
+}
+
 function setupOrcidLookup(formPrefix, orcidFieldName, firstNameFieldName, surnameFieldName) {
     let buttonSelector = "#div_id_" + formPrefix + "-" + orcidFieldName + " .input-group-append";
     let iconSelector = buttonSelector + " .input-group-text i";
@@ -5,6 +11,12 @@ function setupOrcidLookup(formPrefix, orcidFieldName, firstNameFieldName, surnam
     let orcidFieldSelector = '#id_' + formPrefix + '-' + orcidFieldName;
     let firstNameSelector = '#id_' + formPrefix + '-' + firstNameFieldName;
     let surnameSelector = '#id_' + formPrefix + '-' + surnameFieldName;
+
+    checkSelector(buttonSelector);
+    checkSelector(iconSelector);
+    checkSelector(orcidFieldSelector);
+    checkSelector(firstNameSelector);
+    checkSelector(surnameSelector);
 
     let typingTimer;
 

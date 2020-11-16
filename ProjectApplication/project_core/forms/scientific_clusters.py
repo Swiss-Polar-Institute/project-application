@@ -15,6 +15,7 @@ class ScientificClusterForm(forms.ModelForm):
 
         self.helper = FormHelper()
         self.helper.form_tag = False
+
         # self.helper.disable_csrf = True  # checked in the higher form level
 
         self.helper.layout = Layout(
@@ -29,9 +30,9 @@ class ScientificClusterForm(forms.ModelForm):
                 css_class='row'
             ),
 
-            # *self._person_form.helper.layout
+            *self._person_form.helper.layout
         )
-        # self.fields.update(self._person_form.fields)
+        self.fields.update(self._person_form.fields)
 
     def clean(self):
         cd = super().clean()
