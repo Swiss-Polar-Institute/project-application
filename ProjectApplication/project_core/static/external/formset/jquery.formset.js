@@ -37,7 +37,7 @@
                 if (elem.attr('id')) elem.attr('id', elem.attr('id').replace(idRegex, replacement));
                 if (elem.attr('name')) elem.attr('name', elem.attr('name').replace(idRegex, replacement));
 
-		if (elem.attr('data-select2-id')) elem.attr('data-select2-id', elem.attr('data-select2-id').replace(idRegex, replacement));   // SPI
+		        if (elem.attr('data-select2-id')) elem.attr('data-select2-id', elem.attr('data-select2-id').replace(idRegex, replacement));   // SPI TODO: avoid this fix
             },
 
             hasChildElements = function(row) {
@@ -252,4 +252,5 @@
         removed: null,                   // Function called each time a form is deleted
         hideLastAddForm: false           // When set to true, hide last empty add form (becomes visible when clicking on add button)
     };
-})(jQuery);
+})(jQueryForFormset);       // SPI: use jQueryForFormset instead of jQuery
+                            // TODO: avoid this fix
