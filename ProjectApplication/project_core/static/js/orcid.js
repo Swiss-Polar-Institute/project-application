@@ -1,17 +1,14 @@
 function checkSelector(selectorId) {
-    if ($(selectorId).length === 0) {
+    let selector_matched = $(selectorId).length;
+
+    if (selector_matched === 0) {
         alert('Error: selector "' + selectorId + '" did not find any object');
+    } else if (selector_matched > 1) {
+        alert('Error: selector "' + selectorId + '" matched more than one element');
     }
 }
 
-function setupOrcidLookup(formPrefix, orcidFieldName, firstNameFieldName, surnameFieldName) {
-    let buttonSelector = "#div_id_" + formPrefix + "-" + orcidFieldName + " .input-group-append";
-    let iconSelector = buttonSelector + " .input-group-text i";
-
-    let orcidFieldSelector = '#id_' + formPrefix + '-' + orcidFieldName;
-    let firstNameSelector = '#id_' + formPrefix + '-' + firstNameFieldName;
-    let surnameSelector = '#id_' + formPrefix + '-' + surnameFieldName;
-
+function setupOrcidLookupForFields(orcidFieldSelector, firstNameSelector, surnameSelector, buttonSelector, iconSelector) {
     checkSelector(buttonSelector);
     checkSelector(iconSelector);
     checkSelector(orcidFieldSelector);
@@ -78,6 +75,18 @@ function setupOrcidLookup(formPrefix, orcidFieldName, firstNameFieldName, surnam
 
         typingTimer = setTimeout(doneTyping, 100);
     });
+}
+
+function setupOrcidLookupForForm(formPrefix, orcidFieldName, firstNameFieldName, surnameFieldName) {
+    let orcidFieldSelector = '#id_' + formPrefix + '-' + orcidFieldName;
+
+    let buttonSelector = "#div_id_" + formPrefix + "-" + orcidFieldName + " .input-group-append";
+    let iconSelector = buttonSelector + " .input-group-text i";
+
+    let firstNameSelector = '#id_' + formPrefix + '-' + firstNameFieldName;
+    let surnameSelector = '#id_' + formPrefix + '-' + surnameFieldName;
+
+    setupOrcidLookupForFields(orcidFieldSelector, firstNameSelector, surnameSelector, buttonSelector, iconSelector);
 }
 
 function getOrcid(orcidId, successFunction, errorFunction) {

@@ -8,5 +8,5 @@ Please add the following details describing the overarching project to which thi
 <script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
 
 <script>
-    setupOrcidLookup('{{ project_overarching_form.prefix }}', 'person__physical_person__orcid', 'person__physical_person__first_name', 'person__physical_person__surname');
+    setupOrcidLookupForForm('{{ project_overarching_form.prefix }}', 'person__physical_person__orcid', 'person__physical_person__first_name', 'person__physical_person__surname');
 </script>
