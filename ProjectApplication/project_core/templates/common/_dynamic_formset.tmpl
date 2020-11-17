@@ -204,32 +204,34 @@
         $(row).find('.allow-overbudget-field').remove()
     }
 
-    function setup_orcid_field(row) {
+    function enable_orcid_in_row(row) {
         let orcid_selector = "[id$='-orcid'] .textInput";
 
         let orcids = $(row).find(orcid_selector);
 
-        if (orcids.length === 1) {
-            alert('enabled');
-            enable_orcid(orcids[0].id);
-        } else {
-            alert('not enabled: ' + orcids.length);
-        }
+        enable_orcid(orcids);
     }
 
-    function enable_orcid_if_exist_in_form(formset_prefix) {
+    function enable_orcid_in_form(formset_prefix) {
         let orcid_selector = "[id$='-orcid'] .textInput";
 
         let orcids = $("#" + formset_prefix).find(orcid_selector);
 
-        if (orcids.length === 1) {
-            enable_orcid(orcids[0].id);
-        } else if (orcids.length > 1) {
-            alert('Error: found more than one ORCID in a form. Not supported by dynamic_formset')
-        }
+        enable_orcid(orcids);
     }
 
-    function enable_orcid(orcid_id) {
+    function enable_orcid(orcids) {
+        let orcids_length = orcids.length;
+
+        if (orcids_length > 1) {
+            alert('Error: found more than one ORCID. Not supported by dynamic_formset');
+            return;
+        } else if (orcids_length === 0) {
+            return;
+        }
+
+        let orcid_id = orcids[0].id;
+
         let orcidFieldSelector = '#' + orcid_id;
         let firstNameSelector = orcidFieldSelector.replace(new RegExp('-orcid$'), '-first_name');
         let surnameSelector = orcidFieldSelector.replace(new RegExp('-orcid$'), '-surname');
@@ -239,7 +241,6 @@
 
         setupOrcidLookupForFields(orcidFieldSelector, firstNameSelector, surnameSelector, buttonSelector, iconSelector);
     }
-
 
     jQueryForFormset(function () {
         jQueryForFormset('#{{ form_set.prefix }} tbody tr').formset({
@@ -266,11 +267,11 @@
                 replace_invoice_due_by_invoice_header(row);
                 delete_allow_overbudget_field(row);
                 highlight_row_delete_link_hover(row);
-                setup_orcid_field(row);
+                enable_orcid_in_row(row);
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
         highlight_row_delete_link_hover('#{{ form_set.prefix }}');
-        enable_orcid_if_exist_in_form('{{ form_set.prefix }}');
+        enable_orcid_in_form('{{ form_set.prefix }}');
     });
 </script>
