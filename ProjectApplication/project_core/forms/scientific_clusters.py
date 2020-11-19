@@ -2,7 +2,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
-from django.http import QueryDict
 
 from project_core.forms.person import PersonForm
 from project_core.models import Proposal, ProposalScientificCluster
@@ -12,13 +11,10 @@ class ScientificClusterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # TODO: pass data
         self._person_form = self._get_person_form()
 
         self.helper = FormHelper()
         self.helper.form_tag = False
-
-        # self.helper.disable_csrf = True  # checked in the higher form level
 
         self.helper.layout = Layout(
             Div(
@@ -35,7 +31,6 @@ class ScientificClusterForm(forms.ModelForm):
             *self._person_form.helper.layout
         )
         self.fields.update(self._person_form.fields)
-
 
     def _get_person_form(self):
         # This is a QueryDict, not a dict
@@ -57,7 +52,9 @@ class ScientificClusterForm(forms.ModelForm):
             if person_form_field_name in temporary_person_form.fields:
                 person_form_data.setlist(person_form_field_name, self.data.getlist(field_name))
 
-        person = PersonForm(data=person_form_data)
+        sub_pi = self.instance.sub_pi if self.instance and hasattr(self.instance, 'sub_pi') else None
+
+        person = PersonForm(data=person_form_data, person_position=sub_pi)
         return person
 
     def is_valid(self):
