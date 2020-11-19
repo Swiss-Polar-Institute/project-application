@@ -6,6 +6,7 @@ class DeleteUnusedExternalKeywords(TestCase):
         self._proposal = database_population.create_proposal()
         self._keywords = database_population.create_keywords()
 
-    def test_xxx(self):
-        print('Hello')
+    def test_keywords_deleted(self):
+        # TODO
+        pass
 
