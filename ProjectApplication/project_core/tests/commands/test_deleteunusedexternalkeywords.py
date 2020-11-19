@@ -1,5 +1,7 @@
 from django.test import TestCase
+
 from project_core.tests import database_population
+
 
 class DeleteUnusedExternalKeywords(TestCase):
     def setUp(self):
@@ -9,4 +11,3 @@ class DeleteUnusedExternalKeywords(TestCase):
     def test_keywords_deleted(self):
         # TODO
         pass
-
