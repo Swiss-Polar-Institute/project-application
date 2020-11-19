@@ -4,7 +4,7 @@
 <br>
 <strong>Professional postal address</strong>
 {% include 'common/_postal_address.tmpl' %}
-<p></p>
+
 <h3>Proposal details</h3>
 <strong>Geographical focus:</strong> {{ proposal.geographical_areas_enumeration }}
 <br>
@@ -23,6 +23,12 @@
     </div>
 </div>
 <br>
+{% if proposal.call.scientific_clusters_question %}
+    <h3>Scientific clusters</h3>
+    {% include 'common/_accordion.tmpl' with prefix='scientific_clusters' button_text_collapsed='Show scientific clusters' button_text_not_collapsed='Hide scientific clusters' template_file='common/_scientific_clusters.tmpl' %}
+    <br>
+{% endif %}
+
 <h3>Project description</h3>
 {% include 'common/_accordion.tmpl' with prefix='project_description' button_text_collapsed='View project description details' button_text_not_collapsed='Hide project description details' template_file='common/_project_description.tmpl' %}
 <br>

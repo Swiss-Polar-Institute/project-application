@@ -1,0 +1,25 @@
+{% include 'common/_person_position_with_orcid.tmpl' with person_position=person_position %}
+(Gender: {% include 'common/_value-or-dash.tmpl' with value=person_position.person.gender %})
+
+<div class="row">
+    <div class="col-6">
+        <strong>Career stage:</strong> {{ person_position.career_stage }}
+    </div>
+    <div class="col-6">
+        <strong>Date of
+            PhD:</strong> {% include 'common/_value-or-dash.tmpl' with value=person_position.person.phd_date_formatted %}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-6">
+        <strong>Email:</strong> {% include 'common/_email_link_or_dash.tmpl' with email=person_position.main_email %}
+    </div>
+    <div class="col-6">
+        <strong>Phone:</strong> {% include 'common/_link_or_dash.tmpl' with phone=person_position.main_phone phone_uri=person_position.main_phone_uri %}
+    </div>
+</div>
+<strong>Organisations:</strong>
+{% include 'common/_organisation-list.tmpl' with organisations=person_position.organisations_ordered_by_name %}
+<br>
+<strong>Group / lab:</strong> {{ person_position.group }}<br>
