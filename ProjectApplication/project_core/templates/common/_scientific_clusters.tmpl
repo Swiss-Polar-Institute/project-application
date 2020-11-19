@@ -1,8 +1,8 @@
 <table class="table table-striped table-sm table-hover display">
-    {% for scientific_cluster in proposal.proposalscientificcluster_set.all %}
+    {% for scientific_cluster in proposal.scientific_clusters_ordered %}
         <tr>
             <td>
-                <strong>Title:</strong> {{ scientific_cluster.title }}<br>
+                <p><strong>Title:</strong> {{ scientific_cluster.title }}</p>
 
                 {% include 'common/_person_position_detail.tmpl' with person_position=scientific_cluster.sub_pi %}
             </td>

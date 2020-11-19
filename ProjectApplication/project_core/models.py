@@ -846,6 +846,11 @@ class Proposal(CreateModifyOn):
         elif self.proposalevaluation:
             return 'Eligibility cannot be changed because a proposal evaluation already exists'
 
+    def scientific_clusters_ordered(self):
+        # Returns the scientific clusters ordered by 'id' as an easy way to order them by creation (hopefully)
+        # or at least consistent ordering
+        return self.proposalscientificcluster_set.order_by('id')
+
 
 class ProposalQAText(CreateModifyOn):
     """Questions assigned to a proposal and their respective answers"""
