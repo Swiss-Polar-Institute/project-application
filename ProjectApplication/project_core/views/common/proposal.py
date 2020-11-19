@@ -276,7 +276,8 @@ class AbstractProposalView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         # Optional form, depending on call.other_funding_question
-        funding_form = applicant_role_description_form = proposal_partners_form = proposal_project_overarching_form = None
+        funding_form = applicant_role_description_form = proposal_partners_form = None
+        proposal_project_overarching_form = scientific_clusters_form = None
 
         if 'uuid' in kwargs:
             # Editing an existing proposal
@@ -325,8 +326,6 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
-            scientific_clusters_form = ScientificClustersInlineFormSet(request.POST, instance=proposal,
-                                                                       prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
                                        proposal=proposal,
@@ -353,6 +352,10 @@ class AbstractProposalView(TemplateView):
                                                                            prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME,
                                                                            instance=proposal.overarching_project)
 
+            if call.scientific_clusters_question:
+                scientific_clusters_form = ScientificClustersInlineFormSet(request.POST, instance=proposal,
+                                                                           prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
+
             data_collection_form = DataCollectionForm(request.POST,
                                                       prefix=DATA_COLLECTION_FORM_NAME,
                                                       person_position=proposal.applicant)
@@ -361,8 +364,6 @@ class AbstractProposalView(TemplateView):
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
-            scientific_clusters_form = ScientificClustersInlineFormSet(request.POST,
-                                                                       prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             questions_form = Questions(request.POST,
                                        request.FILES,
@@ -385,6 +386,11 @@ class AbstractProposalView(TemplateView):
             if call.overarching_project_question:
                 proposal_project_overarching_form = ProjectOverarchingForm(request.POST,
                                                                            prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME)
+
+            if call.scientific_clusters_question:
+                scientific_clusters_form = ScientificClustersInlineFormSet(request.POST,
+                                                                           prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
+
 
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
@@ -490,6 +496,9 @@ class AbstractProposalView(TemplateView):
 
         if call.overarching_project_question:
             context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = proposal_project_overarching_form
+
+        if call.scientific_clusters_question:
+            context[SCIENTIFIC_CLUSTERS_FORM_NAME] = scientific_clusters_form
 
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
 
