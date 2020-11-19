@@ -12,7 +12,8 @@ class ScientificClusterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._person_form = PersonForm()
+        # TODO: pass data
+        self._person_form = self._get_person_form()
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -35,12 +36,14 @@ class ScientificClusterForm(forms.ModelForm):
         )
         self.fields.update(self._person_form.fields)
 
-    def is_valid(self):
-        scientific_cluster_is_valid = super().is_valid()
 
+    def _get_person_form(self):
         # This is a QueryDict, not a dict
         person_form_data = self.data.copy()
         person_form_data.clear()
+
+        # to get the fields
+        temporary_person_form = PersonForm()
 
         for field_name in self.data.keys():
             if field_name in ['encoding', 'csrfmiddlewaretoken']:
@@ -51,24 +54,28 @@ class ScientificClusterForm(forms.ModelForm):
 
             person_form_field_name = field_name[len(f'{self.prefix}-'):]
 
-            if person_form_field_name in self._person_form.fields:
+            if person_form_field_name in temporary_person_form.fields:
                 person_form_data.setlist(person_form_field_name, self.data.getlist(field_name))
 
         person = PersonForm(data=person_form_data)
+        return person
 
-        person_is_valid = person.is_valid()
+    def is_valid(self):
+        scientific_cluster_is_valid = super().is_valid()
 
-        return scientific_cluster_is_valid and person_is_valid
+        return scientific_cluster_is_valid and self._person_form.is_valid()
 
     def clean(self):
         cd = super().clean()
-
         return cd
 
     def save(self, *args, **kwargs):
-        instance = super().save(commit=False)
+        sub_pi = self._person_form.save_person()
 
-        return super().save(*args, **kwargs)
+        instance = super().save(commit=False)
+        instance.sub_pi = sub_pi
+
+        return instance.save()
 
     class Meta:
         model = ProposalScientificCluster
@@ -84,6 +91,10 @@ class ScientificClustersFormSet(BaseInlineFormSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('id')
+
+    def save(self, *args, **kwargs):
+        self.is_valid()
+        return super().save(*args, **kwargs)
 
 
 ScientificClustersInlineFormSet = inlineformset_factory(Proposal, ProposalScientificCluster, form=ScientificClusterForm,
