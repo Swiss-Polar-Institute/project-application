@@ -209,7 +209,7 @@
 
         let orcids = $(row).find(orcid_selector);
 
-        enable_orcid(orcids);
+        enable_orcids(orcids);
     }
 
     function enable_orcid_in_form(formset_prefix) {
@@ -217,29 +217,22 @@
 
         let orcids = $("#" + formset_prefix).find(orcid_selector);
 
-        enable_orcid(orcids);
+        enable_orcids(orcids);
     }
 
-    function enable_orcid(orcids) {
-        let orcids_length = orcids.length;
+    function enable_orcids(orcids) {
+        orcids.each(function (orcid) {
+            let orcid_id = orcids[0].id;
 
-        if (orcids_length > 1) {
-            alert('Error: found more than one ORCID. Not supported by dynamic_formset');
-            return;
-        } else if (orcids_length === 0) {
-            return;
-        }
+            let orcidFieldSelector = '#' + orcid_id;
+            let firstNameSelector = orcidFieldSelector.replace(new RegExp('-orcid$'), '-first_name');
+            let surnameSelector = orcidFieldSelector.replace(new RegExp('-orcid$'), '-surname');
 
-        let orcid_id = orcids[0].id;
+            let buttonSelector = '#div_' + orcid_id + " .input-group-append";
+            let iconSelector = '#div_' + orcid_id + " .input-group-text i";
 
-        let orcidFieldSelector = '#' + orcid_id;
-        let firstNameSelector = orcidFieldSelector.replace(new RegExp('-orcid$'), '-first_name');
-        let surnameSelector = orcidFieldSelector.replace(new RegExp('-orcid$'), '-surname');
-
-        let buttonSelector = '#div_' + orcid_id + " .input-group-append";
-        let iconSelector = '#div_' + orcid_id + " .input-group-text i";
-
-        setupOrcidLookupForFields(orcidFieldSelector, firstNameSelector, surnameSelector, buttonSelector, iconSelector);
+            setupOrcidLookupForFields(orcidFieldSelector, firstNameSelector, surnameSelector, buttonSelector, iconSelector);
+        });
     }
 
     jQueryForFormset(function () {
