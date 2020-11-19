@@ -13,19 +13,19 @@
                 instrument
             {% endif %}
             <br>
-            <strong>Long Name:</strong> {{ call.long_name }}
+            <strong>Long name:</strong> {{ call.long_name }}
             <br>
-            <strong>Short Name:</strong> {{ call.short_name }}
+            <strong>Short name:</strong> {{ call.short_name }}
             <br>
             <strong>Finance year:</strong> {{ call.finance_year|unlocalize }}
             <p></p>
             <div class="row">
                 <div class="col-6">
-                    <strong>Call Open
-                        Date:</strong> {{ call.call_open_date }} Swiss time
+                    <strong>Call open
+                        date:</strong> {{ call.call_open_date }} Swiss time
                 </div>
                 <div class="col-6">
-                    <strong>Call Submission
+                    <strong>Call submission
                         deadline:</strong> {{ call.submission_deadline }} Swiss time
                 </div>
             </div>
