@@ -13,36 +13,36 @@
                 instrument
             {% endif %}
             <br>
-            <strong>Long Name:</strong> {{ call.long_name }}
+            <strong>Long name:</strong> {{ call.long_name }}
             <br>
-            <strong>Short Name:</strong> {{ call.short_name }}
+            <strong>Short name:</strong> {{ call.short_name }}
             <br>
             <strong>Finance year:</strong> {{ call.finance_year|unlocalize }}
-            <br>
+            <p></p>
+            <div class="row">
+                <div class="col-6">
+                    <strong>Call open
+                        date:</strong> {{ call.call_open_date }} Swiss time
+                </div>
+                <div class="col-6">
+                    <strong>Call submission
+                        deadline:</strong> {{ call.submission_deadline }} Swiss time
+                </div>
+            </div>
+            <p></p>
             {% if public_lay_summaries_for_website_url %}
                 <strong>Lay summary website integration:</strong>
                 {% include 'common/_clipboard_button.tmpl' with text=public_lay_summaries_for_website_url id='xxx' %} -
                 {% include 'logged/_instructions_lay_summaries_wordpress-button-model.tmpl' with code=public_lay_summaries_for_website_url %}
             {% else %}
-                <strong>Lay summary website integration:</strong> N/A - Call Evaluation needs to be closed
+                <strong>Lay summary website integration:</strong> Call Evaluation needs to be closed before this is possible
             {% endif %}
-            <br>
+            <p></p>
             <strong>Description:</strong>
             <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=call.description %}</div>
             <br>
             <strong>Introductory message:</strong>
             <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=call.introductory_message %}</div>
-            <br>
-            <div class="row">
-                <div class="col-6">
-                    <strong>Call Open
-                        Date:</strong> {{ call.call_open_date }} Swiss time
-                </div>
-                <div class="col-6">
-                    <strong>Call Submission
-                        deadline:</strong> {{ call.submission_deadline }} Swiss time
-                </div>
-            </div>
             <br>
             <strong>Budget maximum:</strong> {{ call.budget_maximum|thousands_separator }} CHF
             <div class="row">
