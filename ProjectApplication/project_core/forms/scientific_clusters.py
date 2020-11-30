@@ -38,7 +38,7 @@ class ScientificClusterForm(forms.ModelForm):
                       'surname': 'Populated automatically from the ORCID iD',
                       'phd_date': 'If applicable, enter the date that the sub-PI got the PhD awarded (mm-yyyy)',
                       'email': 'Email of the sub-PI',
-                      'organisation_names': 'Organisations that the sub-PI belongs to',
+                      'organisation_names': 'Organisation(s) that the sub-PI belongs to',
                       'group': 'Group of the sub-PI'}
 
         # This is a QueryDict, not a dict
