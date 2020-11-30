@@ -36,7 +36,7 @@ class ScientificClusterForm(forms.ModelForm):
         help_texts = {'orcid': 'ORCID iD of the sub-PI for this scientific cluster (e.g.: 0000-0002-1825-0097)',
                       'first_name': 'This field is populated from the ORCID iD',
                       'surname': 'This field is populated from the ORCID iD',
-                      'phd_date': 'If applicable, please enter the date the sub-PI got the PhD awarded (mm-YYYY)',
+                      'phd_date': 'If applicable, please enter the date the sub-PI got the PhD awarded (mm-yyyy)',
                       'email': 'Email of the sub-PI',
                       'organisation_names': 'Which organisations the sub-PI works for',
                       'group': 'Please write the group of the ub-PI'}
