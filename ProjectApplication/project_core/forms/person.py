@@ -101,12 +101,17 @@ class PersonForm(Form):
 
             # If adding fields here: see below to remove them from the self.helper.layout
 
+        used_help_texts = []
         for field_str, field in self.fields.items():
             if self._all_fields_are_optional:
                 field.required = False
 
             if field_str in help_texts:
                 self.fields[field_str].help_text = help_texts[field_str]
+                used_help_texts.append(field_str)
+
+        if len(used_help_texts) != len(help_texts):
+            print('Unused help texts:', help_texts.keys() - used_help_texts)
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

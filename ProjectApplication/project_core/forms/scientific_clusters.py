@@ -33,12 +33,20 @@ class ScientificClusterForm(forms.ModelForm):
         self.fields.update(self._person_form.fields)
 
     def _get_person_form(self):
+        help_texts = {'orcid': 'ORCID iD of the sub-PI for this scientific cluster (e.g.: 0000-0002-1825-0097)',
+                      'first_name': 'This field is populated from the ORCID iD',
+                      'surname': 'This field is populated from the ORCID iD',
+                      'phd_date': 'If applicable, please enter the date the sub-PI got the PhD awarded (mm-YYYY)',
+                      'email': 'Email of the sub-PI',
+                      'organisation_names': 'Which organisations the sub-PI works for',
+                      'group': 'Please write the group of the ub-PI'}
+
         # This is a QueryDict, not a dict
         person_form_data = self.data.copy()
         person_form_data.clear()
 
         # to get the fields
-        temporary_person_form = PersonForm()
+        temporary_person_form = PersonForm(help_texts=help_texts)
 
         for field_name in self.data.keys():
             if field_name in ['encoding', 'csrfmiddlewaretoken']:
@@ -54,7 +62,7 @@ class ScientificClusterForm(forms.ModelForm):
 
         sub_pi = self.instance.sub_pi if self.instance and hasattr(self.instance, 'sub_pi') else None
 
-        person = PersonForm(data=person_form_data, person_position=sub_pi)
+        person = PersonForm(data=person_form_data, person_position=sub_pi, help_texts=help_texts)
         return person
 
     def is_valid(self):
