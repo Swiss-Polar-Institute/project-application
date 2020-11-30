@@ -33,13 +33,13 @@ class ScientificClusterForm(forms.ModelForm):
         self.fields.update(self._person_form.fields)
 
     def _get_person_form(self):
-        help_texts = {'orcid': 'ORCID iD of the sub-PI for this scientific cluster (e.g.: 0000-0002-1825-0097)',
-                      'first_name': 'This field is populated from the ORCID iD',
-                      'surname': 'This field is populated from the ORCID iD',
-                      'phd_date': 'If applicable, please enter the date the sub-PI got the PhD awarded (mm-yyyy)',
+        help_texts = {'orcid': "Sub-PI\'s ORCID iD (e.g.: 0000-0002-1825-0097)",
+                      'first_name': 'Populated automatically from the ORCID iD',
+                      'surname': 'Populated automatically from the ORCID iD',
+                      'phd_date': 'If applicable, enter the date that the sub-PI got the PhD awarded (mm-yyyy)',
                       'email': 'Email of the sub-PI',
-                      'organisation_names': 'Which organisations the sub-PI works for',
-                      'group': 'Please write the group of the ub-PI'}
+                      'organisation_names': 'Organisations that the sub-PI belongs to',
+                      'group': 'Group of the sub-PI'}
 
         # This is a QueryDict, not a dict
         person_form_data = self.data.copy()
