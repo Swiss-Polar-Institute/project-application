@@ -109,6 +109,8 @@ class Call(CreateModifyOn):
         default=False)
     scientific_clusters_question = models.BooleanField(help_text='True if the Scientific Cluster question is enabled',
                                                        default=False)
+    keywords_in_general_information_question = models.BooleanField(help_text='True if we want to ask the keywords in the general section',
+                                                                       default=True)
 
     history = HistoricalRecords()
 

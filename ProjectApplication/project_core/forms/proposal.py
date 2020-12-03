@@ -64,12 +64,13 @@ class ProposalForm(ModelForm):
             )
         )
 
-        divs.append(
-            Div(
-                Div('keywords', css_class='col-12'),
-                css_class='row'
+        if call.keywords_in_general_information_question:
+            divs.append(
+                Div(
+                    Div('keywords', css_class='col-12'),
+                    css_class='row'
+                )
             )
-        )
 
         divs.append(
             Div(
@@ -94,7 +95,8 @@ class ProposalForm(ModelForm):
 
         errors = {}
 
-        keywords_validation(errors, self.cleaned_data, 'keywords')
+        if self._call.keywords_in_general_information_question:
+            keywords_validation(errors, self.cleaned_data, 'keywords')
 
         if self._raise_duplicated_title:
             errors['title'] = forms.ValidationError(

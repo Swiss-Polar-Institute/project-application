@@ -178,6 +178,10 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('keywords_in_general_information_question', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
                 HTML('<h2 class="col-12">Questions</h2>'),
                 css_class='row'
             ),
@@ -235,7 +239,7 @@ class CallForm(forms.ModelForm):
                   'introductory_message',
                   'call_open_date', 'submission_deadline', 'budget_maximum',
                   'other_funding_question', 'proposal_partner_question', 'overarching_project_question',
-                  'scientific_clusters_question']
+                  'scientific_clusters_question', 'keywords_in_general_information_question']
 
         field_classes = {'budget_maximum': FlexibleDecimalField}
 

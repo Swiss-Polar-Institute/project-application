@@ -35,7 +35,8 @@
                 {% include 'common/_clipboard_button.tmpl' with text=public_lay_summaries_for_website_url id='xxx' %} -
                 {% include 'logged/_instructions_lay_summaries_wordpress-button-model.tmpl' with code=public_lay_summaries_for_website_url %}
             {% else %}
-                <strong>Lay summary website integration:</strong> Call Evaluation needs to be closed before this is possible
+                <strong>Lay summary website integration:</strong> Call Evaluation needs to be closed before this is
+                possible
             {% endif %}
             <p></p>
             <strong>Description:</strong>
@@ -76,6 +77,12 @@
                 <div class="col-6">
                     <strong>Scientific clusters question:</strong>
                     {% include 'common/_check-icon.tmpl' with value=call.scientific_clusters_question %}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <strong>Keywords in general information question:</strong>
+                    {% include 'common/_check-icon.tmpl' with value=call.keywords_in_general_information_question %}
                 </div>
             </div>
             <br>
