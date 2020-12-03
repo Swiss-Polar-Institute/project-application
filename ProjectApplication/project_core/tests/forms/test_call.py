@@ -46,7 +46,7 @@ class CallFormTest(TestCase):
              }
         )
 
-        call_data.setlist('budget_categories', [self._budget_categories[0], self._budget_categories[1]])
+        call_data.setlist('budget_categories', [self._budget_categories[0].id, self._budget_categories[1].id])
 
         call_data.setlist('template_questions', [self._template_questions[0]])
 

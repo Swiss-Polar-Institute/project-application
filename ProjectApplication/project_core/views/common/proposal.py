@@ -277,7 +277,7 @@ class AbstractProposalView(TemplateView):
 
         # Optional form, depending on call.other_funding_question
         funding_form = applicant_role_description_form = proposal_partners_form = None
-        proposal_project_overarching_form = scientific_clusters_form = None
+        proposal_project_overarching_form = scientific_clusters_form = budget_form = None
 
         if 'uuid' in kwargs:
             # Editing an existing proposal
@@ -330,7 +330,10 @@ class AbstractProposalView(TemplateView):
                                        request.FILES,
                                        proposal=proposal,
                                        prefix=QUESTIONS_FORM_NAME)
-            budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
+
+            if call.budget_question():
+                budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
+
             if call.other_funding_question:
                 funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
                                                           instance=proposal)
@@ -369,7 +372,9 @@ class AbstractProposalView(TemplateView):
                                        request.FILES,
                                        call=call,
                                        prefix=QUESTIONS_FORM_NAME)
-            budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
+
+            if call.budget_question():
+                budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
 
             if call.other_funding_question:
                 funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
@@ -395,7 +400,7 @@ class AbstractProposalView(TemplateView):
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
         forms_to_validate = [person_form, postal_address_form, proposal_form,
-                             questions_form, budget_form, data_collection_form]
+                             questions_form, data_collection_form]
 
         if call.other_funding_question:
             forms_to_validate.append(funding_form)
@@ -409,6 +414,9 @@ class AbstractProposalView(TemplateView):
 
         if call.scientific_clusters_question:
             forms_to_validate.append(scientific_clusters_form)
+
+        if call.budget_question():
+            forms_to_validate.append(budget_form)
 
         all_valid = True
         for form in forms_to_validate:
@@ -461,7 +469,8 @@ class AbstractProposalView(TemplateView):
                 messages.error(request,
                                'File attachments could not be saved - please try editing your proposal or contact SPI if this error reoccurs')
 
-            budget_form.save_budgets(proposal)
+            if call.budget_question():
+                budget_form.save_budgets(proposal)
 
             if call.proposal_partner_question:
                 proposal.applicant_role_description = applicant_role_description_form.save()
@@ -485,7 +494,6 @@ class AbstractProposalView(TemplateView):
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[QUESTIONS_FORM_NAME] = questions_form
-        context[BUDGET_FORM_NAME] = budget_form
 
         if call.other_funding_question:
             context[FUNDING_FORM_NAME] = funding_form
@@ -499,6 +507,9 @@ class AbstractProposalView(TemplateView):
 
         if call.scientific_clusters_question:
             context[SCIENTIFIC_CLUSTERS_FORM_NAME] = scientific_clusters_form
+
+        if call.budget_question():
+            context[BUDGET_FORM_NAME] = budget_form
 
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
 
@@ -536,7 +547,8 @@ def call_context_for_template(call):
                'other_funding_question': call.other_funding_question,
                'overarching_project_question': call.overarching_project_question,
                'scientific_clusters_question': call.scientific_clusters_question,
-               'proposal_partner_question': call.proposal_partner_question
+               'proposal_partner_question': call.proposal_partner_question,
+               'budget_question': call.budget_maximum > 0,
                }
 
     return context

@@ -166,6 +166,9 @@ class Call(CreateModifyOn):
         result = hasattr(self, 'callevaluation') and self.callevaluation.is_closed()
         return result
 
+    def budget_question(self):
+        return self.budget_maximum > 0
+
 
 class BudgetCategoryCall(CreateModifyOn):
     call = models.ForeignKey(Call,
@@ -1164,3 +1167,4 @@ class ProposalScientificCluster(AbstractScientificCluster):
 
     class Meta:
         unique_together = (('title', 'proposal'),)
+

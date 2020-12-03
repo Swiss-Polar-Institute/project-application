@@ -107,6 +107,7 @@ class CallForm(forms.ModelForm):
         self.fields['budget_categories'] = forms.MultipleChoiceField(choices=budget_category_choices,
                                                                      initial=enabled_budget_categories,
                                                                      widget=CheckboxSelectMultipleSortable,
+                                                                     required=False
                                                                      )
 
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
@@ -204,6 +205,13 @@ class CallForm(forms.ModelForm):
 
         self.cleaned_data[self.budget_categories_order_key] = CheckboxSelectMultipleSortable.get_clean_order(self.data,
                                                                                                              data_budget_categories_order_key)
+
+        if cleaned_data['budget_categories'] and self.cleaned_data['budget_maximum'] == 0:
+            self.add_error('budget_maximum', 'Budget maximum cannot be 0 if there are budget categories selected')
+
+        if not cleaned_data['budget_categories'] and self.cleaned_data['budget_maximum'] > 0:
+            self.add_error('budget_categories', 'Budget categories are required if budget maximum is not 0')
+
         return cleaned_data
 
     def save(self, commit=True):

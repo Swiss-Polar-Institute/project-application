@@ -54,11 +54,13 @@
         {% include 'common/_form-proposal_partners.tmpl' %}
     {% endif %}
 
-    <h2>Budget requested</h2>
-    {% include 'common/_form-budget.tmpl' %}
+    {% if budget_question %}
+        <h3>Budget requested</h3>
+        {% include 'common/_form-budget.tmpl' %}
+    {% endif %}
 
     {% if other_funding_question %}
-        <h2>Other sources of funding</h2>
+        <h3>Other sources of funding</h3>
         {% include 'common/_form-funding_organisations.tmpl' %}
     {% endif %}
 
