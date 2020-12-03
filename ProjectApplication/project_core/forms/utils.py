@@ -80,5 +80,11 @@ def organisations_name_autocomplete(initial, help_text):
 def cancel_edit_button(url):
     return HTML(f'<a class="btn btn-danger" href="{url}">Cancel Edit</a>')
 
+
 def cancel_button(url):
     return HTML(f'<a class="btn btn-danger" href="{url}">Cancel</a>')
+
+
+def keywords_validation(errors, cleaned_data, field_name):
+    if len(cleaned_data[field_name]) < 5:
+        errors['keywords'] = forms.ValidationError('Please enter at least 5 keywords')

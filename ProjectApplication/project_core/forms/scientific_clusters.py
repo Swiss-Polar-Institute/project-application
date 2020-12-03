@@ -1,9 +1,11 @@
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field
+from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
 
 from project_core.forms.person import PersonForm
+from project_core.forms.utils import keywords_validation
 from project_core.models import Proposal, ProposalScientificCluster
 
 
@@ -27,7 +29,10 @@ class ScientificClusterForm(forms.ModelForm):
                 Div('title', css_class='col-12'),
                 css_class='row'
             ),
-
+            Div(
+                Div('keywords', css_class='col-12'),
+                css_class='row'
+            ),
             *self._person_form.helper.layout
         )
         self.fields.update(self._person_form.fields)
@@ -72,6 +77,13 @@ class ScientificClusterForm(forms.ModelForm):
 
     def clean(self):
         cd = super().clean()
+        errors = {}
+
+        keywords_validation(errors, self.cleaned_data, 'keywords')
+
+        if errors:
+            raise forms.ValidationError(errors)
+
         return cd
 
     def save(self, *args, **kwargs):
@@ -80,11 +92,16 @@ class ScientificClusterForm(forms.ModelForm):
         instance = super().save(commit=False)
         instance.sub_pi = sub_pi
 
-        return instance.save()
+        instance.save()
+
+        self.save_m2m() # For the keywords
+
+        return instance
 
     class Meta:
         model = ProposalScientificCluster
-        fields = ['proposal', 'title']
+        fields = ['proposal', 'title', 'keywords']
+        widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords')}
 
 
 class ScientificClustersFormSet(BaseInlineFormSet):

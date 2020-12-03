@@ -9,6 +9,7 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import utc
 
 from variable_templates.utils import apply_templates
+from .utils import keywords_validation
 from ..fields import FlexibleDecimalField
 from ..models import Proposal, Call
 from ..widgets import XDSoftYearMonthDayPickerInput
@@ -93,8 +94,7 @@ class ProposalForm(ModelForm):
 
         errors = {}
 
-        if len(self.cleaned_data['keywords']) < 5:
-            errors['keywords'] = forms.ValidationError('Please enter at least 5 keywords')
+        keywords_validation(errors, self.cleaned_data, 'keywords')
 
         if self._raise_duplicated_title:
             errors['title'] = forms.ValidationError(

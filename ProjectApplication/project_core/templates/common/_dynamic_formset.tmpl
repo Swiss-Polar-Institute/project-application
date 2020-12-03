@@ -154,7 +154,7 @@
             let id = value.id;
 
             // Used for organisation names
-            if (id.includes('organisation_name')) {
+            if (id.endsWith('-organisation_names')) {
                 $(value).select2({
                     ajax: {
                         url: '{% url "autocomplete-organisation-names" %}',
@@ -163,6 +163,17 @@
                     containerCssClass: 'form-control'
                 });
             }
+
+            if (id.includes('-keywords')) {
+                $(value).select2({
+                    ajax: {
+                        url: '{% url "autocomplete-keywords" %}',
+                        dataType: 'json'
+                    },
+                    containerCssClass: 'form-control'
+                });
+            }
+
         });
     }
 
