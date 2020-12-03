@@ -258,7 +258,9 @@ class CallForm(forms.ModelForm):
                       'other_funding_question': 'Tick this box if you would like the call to ask about other funding that will contribute to the proposal',
                       'proposal_partner_question': 'Tick this box if you would like the call to ask about proposal partners',
                       'overarching_project_question': 'Tick this box if you would like the call to ask about the overarching project',
-                      'scientific_clusters_question': 'Tick this box if you would like the call to include the "Scientific Clusters"', }
+                      'scientific_clusters_question': 'Tick this box if you would like the call to include the "Scientific Clusters"',
+                      'keywords_in_general_information_question': 'Tick this box if you would like to request keywords in the "General Information"',
+                      }
 
         labels = {
             'budget_maximum': 'Budget maximum (CHF)',
