@@ -442,6 +442,8 @@ class ApiListMediaView(ApiList):
             project_info = {}
             project_info['key'] = medium.project.key
             project_info['title'] = medium.project.title
+            project_info['funding_instrument'] = medium.project.call.funding_instrument.long_name
+            project_info['finance_year'] = medium.project.call.finance_year
             project_info['pi'] = medium.project.principal_investigator.person.full_name()
             medium_info['project'] = project_info
 
