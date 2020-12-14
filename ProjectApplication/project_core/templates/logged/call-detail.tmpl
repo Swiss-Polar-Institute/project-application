@@ -87,7 +87,7 @@
             </div>
             <br>
             <h2>Parts</h2>
-            {% include 'logged/_call-part-list.tmpl' with parts=parts only %}
+            {% include 'logged/_call-part-list.tmpl' with parts=parts call=call only %}
 
             <h2>Questions</h2>
             {% for question in call.callquestion_set_ordered_by_order %}
