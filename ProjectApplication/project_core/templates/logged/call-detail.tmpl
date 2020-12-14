@@ -117,9 +117,14 @@
             {% include 'comments/_comments-attachments.tmpl' %}
         </div>
         <div class="col-2">
-            <a class="btn btn-primary d-print-none" href="{% url 'logged-call-update' pk=call.id %}">Edit
-                Call</a>
-
+            <p>
+                <a class="btn btn-primary d-print-none" href="{% url 'logged-call-update' pk=call.id %}">Edit
+                    Call</a>
+            </p>
+            <p>
+                <a class="btn btn-primary d-print-none" href="{% url 'logged-call-part-list' call_pk=call.pk %}">List
+                    Parts</a>
+            </p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             {% include 'comments/_comments-attachments-compact-list.tmpl' %}

@@ -109,8 +109,9 @@ class Call(CreateModifyOn):
         default=False)
     scientific_clusters_question = models.BooleanField(help_text='True if the Scientific Cluster question is enabled',
                                                        default=False)
-    keywords_in_general_information_question = models.BooleanField(help_text='True if we want to ask the keywords in the general section',
-                                                                       default=True)
+    keywords_in_general_information_question = models.BooleanField(
+        help_text='True if we want to ask the keywords in the general section',
+        default=True)
 
     history = HistoricalRecords()
 
@@ -1168,3 +1169,18 @@ class ProposalScientificCluster(AbstractScientificCluster):
     class Meta:
         unique_together = (('title', 'proposal'),)
 
+
+class CallPart(CreateModifyOn):
+    call = models.ForeignKey(Call,
+                             help_text='Call that this ProposalPart belongs to',
+                             on_delete=models.PROTECT)
+    title = models.CharField(max_length=500)
+    introductory_text = models.TextField()
+
+    order = models.PositiveIntegerField(blank=True, null=True)
+
+    class Meta:
+        unique_together = (('call', 'title'), ('call', 'order'),)
+
+    def __str__(self):
+        return f'{self.call.short_name}-{self.title}'

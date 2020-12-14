@@ -9,3 +9,4 @@ from . import project
 from . import proposal
 from . import template_question
 from . import homepage
+from . import call_part
