@@ -217,6 +217,7 @@ class CallView(TemplateView):
                                                                                 prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('logged-call-update', kwargs={'pk': call_id})
             context['call_action'] = 'Edit'
+            context['call'] = call
 
             context['active_subsection'] = 'call-list'
             breadcrumb_page = f'{context["call_action"]} ({call.little_name()})'

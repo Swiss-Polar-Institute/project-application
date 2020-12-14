@@ -21,8 +21,13 @@
             </form>
         </div>
         <div class="col-2">
-            {% if id %}
-                <a class="btn btn-primary" href="{% url 'logged-call-detail' pk=id %}">View Call</a>
+            {% if call %}
+                <p>
+                    <a class="btn btn-primary" href="{% url 'logged-call-detail' pk=call.id %}">View Call</a>
+                </p>
+                <p>
+                    <a class="btn btn-primary" href="{% url 'logged-call-part-list' call_pk=call.id %}">List Parts</a>
+                </p>
             {% endif %}
         </div>
     </div>

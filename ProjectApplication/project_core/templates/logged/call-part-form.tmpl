@@ -1,0 +1,15 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Create Call Part for {{ call.long_name }}</h1>
+            {% crispy form %}
+        </div>
+
+        <div class="col-2">
+        </div>
+    </div>
+{% endblock %}

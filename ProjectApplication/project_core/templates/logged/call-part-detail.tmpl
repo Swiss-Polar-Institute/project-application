@@ -1,0 +1,18 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>View Call Part</h1>
+            <strong>Call:</strong> {{ callpart.call.long_name }}<br>
+            <strong>Title:</strong> {{ callpart.title }}<br>
+            <strong>Introductory text:</strong>
+            <div class="border p-1 bg-white rounded pre-wrap">{{ callpart.introductory_text }}</div>
+        </div>
+
+        <div class="col-2">
+        </div>
+    </div>
+{% endblock %}
