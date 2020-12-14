@@ -84,6 +84,8 @@ class AbstractCallView(TemplateView):
 
             context['public_lay_summaries_for_website_url'] = f'[remote_content url="{url}"{username_password_tag}]'
 
+        context['parts'] = call.callpart_set.all().order_by('order')
+
         return context
 
 
@@ -210,6 +212,7 @@ class CallView(TemplateView):
         if 'pk' in kwargs:
             call_id = kwargs['pk']
             call = Call.objects.get(id=call_id)
+            context['call'] = call
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
             context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
@@ -217,7 +220,7 @@ class CallView(TemplateView):
                                                                                 prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('logged-call-update', kwargs={'pk': call_id})
             context['call_action'] = 'Edit'
-            context['call'] = call
+            context['parts'] = call.callpart_set.all().order_by('order')
 
             context['active_subsection'] = 'call-list'
             breadcrumb_page = f'{context["call_action"]} ({call.little_name()})'

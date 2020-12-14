@@ -1,0 +1,16 @@
+{% if parts %}
+    There are extra parts on this Call:
+    <ul>
+        {% for part in parts %}
+            <li>
+                <a href="{% url 'logged-call-part-detail' call_pk=part.call.pk proposal_part_pk=part.pk %}">{{ part.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a class="btn btn-primary" href="{% url 'logged-call-part-list' call_pk=call.pk %}">Edit Parts</a>
+{% else %}
+    There are no extra parts on this call.
+    {% if call %}
+        <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Create a Part.</a>
+    {% endif %}
+{% endif %}

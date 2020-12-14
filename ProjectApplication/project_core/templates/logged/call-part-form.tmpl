@@ -10,6 +10,11 @@
         </div>
 
         <div class="col-2">
+            {% if callpart %}
+                <a class="btn btn-primary"
+                   href="{% url 'logged-call-part-update' call_pk=callpart.call.pk proposal_part_pk=callpart.pk %}">Edit
+                    Call Part</a>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
