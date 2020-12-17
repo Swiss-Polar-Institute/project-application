@@ -170,6 +170,19 @@ class Call(CreateModifyOn):
     def budget_question(self):
         return self.budget_maximum > 0
 
+    def extra_parts(self):
+        from variable_templates.utils import get_part_numbers_for_call
+
+        parts = []
+
+        heading_number = get_part_numbers_for_call(self)[1]
+
+        for part in self.callpart_set.order_by('order'):
+            part.heading_number = heading_number = heading_number + 1
+            parts.append(part)
+
+        return parts
+
 
 class BudgetCategoryCall(CreateModifyOn):
     call = models.ForeignKey(Call,

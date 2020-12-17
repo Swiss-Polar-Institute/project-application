@@ -263,8 +263,8 @@ class AbstractProposalView(TemplateView):
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
 
-        context['part_numbers'] = get_part_numbers_for_call(call)
-
+        context['part_numbers'] = get_part_numbers_for_call(call)[0]
+        context['extra_parts'] = call.extra_parts()
         context['activity'] = get_template_value_for_call('activity', call)
 
         if timezone.now() > call.submission_deadline:

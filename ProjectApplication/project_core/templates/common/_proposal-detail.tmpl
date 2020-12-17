@@ -63,6 +63,11 @@
     <br>
 {% endif %}
 
+{% for part in proposal.call.extra_parts %}
+    <h2>Part {{ part.heading_number }}: {{ part.title }}</h2>
+    {{ part.introductory_text }}
+{% endfor %}
+
 <p></p>
 <h3>Data agreement</h3>
 <strong>Agreed to privacy

@@ -49,6 +49,11 @@
     <h2>Part {{ part_numbers.project_description }}: Proposed {{ activity }} description</h2>
     {% include 'common/_form-dynamic_questions.tmpl' %}
 
+    {% for extra_part in call.extra_parts %}
+        {{ extra_part.title }}
+        {{ extra_part.introductory_text }}
+    {% endfor %}
+
     {% if proposal_partner_question %}
         <h2>Part {{ part_numbers.roles_competences }}: Roles and competences</h2>
         {% include 'common/_form-proposal_partners.tmpl' %}
@@ -64,7 +69,11 @@
         {% include 'common/_form-funding_organisations.tmpl' %}
     {% endif %}
 
-
+    {% for part in extra_parts %}
+        <h2>Part {{ part.heading_number }}: {{ part.title }}</h2>
+        {{ part.introductory_text }}
+    {% endfor %}
+    <p></p>
     {% crispy data_collection_form %}
 
     {% if not preview %}

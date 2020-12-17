@@ -90,11 +90,13 @@ def get_template_value_for_funding_instrument(name, funding_instrument):
 
     assert False
 
+
 def add_one_if(start, condition):
     if condition:
         return start + 1
     else:
         return start
+
 
 def get_part_numbers_for_call(call):
     """ 
@@ -112,7 +114,15 @@ def get_part_numbers_for_call(call):
     numbers['budget_requested'] = add_one_if(numbers['roles_competences'], call.budget_question())
     numbers['other_sources_of_funding'] = add_one_if(numbers['budget_requested'], call.other_funding_question)
 
-    return numbers
+    # TODO: refactor this
+    maximum_used = 1 + \
+              add_one_if(0, call.scientific_clusters_question) + \
+              add_one_if(0, True) + \
+              add_one_if(0, call.proposal_partner_question) + \
+              add_one_if(0, call.budget_question()) + \
+              add_one_if(0, call.other_funding_question)
+
+    return numbers, maximum_used
 
 
 def get_template_value_for_call(name, call):
