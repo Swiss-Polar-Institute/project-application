@@ -29,7 +29,7 @@ from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
-from variable_templates.utils import get_template_value_for_call, get_part_numbers_for_call
+from variable_templates.utils import get_template_value_for_call
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -67,6 +67,8 @@ class AbstractProposalDetailView(TemplateView):
         context['proposal'] = proposal
 
         context['questions_answers'] = []
+
+        context['part_numbers'] = call.get_part_numbers_for_call()[0]
 
         for question in call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
             try:
@@ -263,7 +265,7 @@ class AbstractProposalView(TemplateView):
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
 
-        context['part_numbers'] = get_part_numbers_for_call(call)[0]
+        context['part_numbers'] = call.get_part_numbers_for_call()[0]
         context['extra_parts'] = call.extra_parts()
         context['activity'] = get_template_value_for_call('activity', call)
 
@@ -518,6 +520,8 @@ class AbstractProposalView(TemplateView):
         context['activity'] = get_template_value_for_call('activity', call)
 
         context['action'] = 'Edit'
+
+        context['part_numbers'] = call.get_part_numbers_for_call()[0]
 
         context.update(call_context_for_template(call))
 

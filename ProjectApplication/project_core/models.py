@@ -20,7 +20,14 @@ from . import utils
 from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field
 
+
 logger = logging.getLogger('project_core')
+
+def add_one_if(start, condition):
+    if condition:
+        return start + 1
+    else:
+        return start
 
 
 class CreateModifyOn(models.Model):
@@ -171,17 +178,41 @@ class Call(CreateModifyOn):
         return self.budget_maximum > 0
 
     def extra_parts(self):
-        from variable_templates.utils import get_part_numbers_for_call
-
         parts = []
 
-        heading_number = get_part_numbers_for_call(self)[1]
+        heading_number = self.get_part_numbers_for_call()[1]
 
         for part in self.callpart_set.order_by('order'):
             part.heading_number = heading_number = heading_number + 1
             parts.append(part)
 
         return parts
+
+    def get_part_numbers_for_call(self):
+        """
+        Returns a dictionary with the heading numbers for different sections.
+        Sections that are not used currently have a heading number TODO: set them to None and use it to display
+        or not instead of having a second variable
+        """
+
+        numbers = {}
+
+        numbers['general_information'] = 1
+        numbers['scientific_clusters'] = add_one_if(numbers['general_information'], self.scientific_clusters_question)
+        numbers['project_description'] = add_one_if(numbers['scientific_clusters'], True)
+        numbers['roles_competences'] = add_one_if(numbers['project_description'], self.proposal_partner_question)
+        numbers['budget_requested'] = add_one_if(numbers['roles_competences'], self.budget_question())
+        numbers['other_sources_of_funding'] = add_one_if(numbers['budget_requested'], self.other_funding_question)
+
+        # TODO: refactor this
+        maximum_used = 1 + \
+                       add_one_if(0, self.scientific_clusters_question) + \
+                       add_one_if(0, True) + \
+                       add_one_if(0, self.proposal_partner_question) + \
+                       add_one_if(0, self.budget_question()) + \
+                       add_one_if(0, self.other_funding_question)
+
+        return numbers, maximum_used
 
 
 class BudgetCategoryCall(CreateModifyOn):
