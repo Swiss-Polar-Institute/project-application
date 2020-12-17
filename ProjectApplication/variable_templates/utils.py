@@ -109,7 +109,7 @@ def get_part_numbers_for_call(call):
     numbers['scientific_clusters'] = add_one_if(numbers['general_information'], call.scientific_clusters_question)
     numbers['project_description'] = add_one_if(numbers['scientific_clusters'], True)
     numbers['roles_competences'] = add_one_if(numbers['project_description'], call.proposal_partner_question)
-    numbers['budget_requested'] = add_one_if(numbers['roles_competences'], call.budget_maximum)
+    numbers['budget_requested'] = add_one_if(numbers['roles_competences'], call.budget_question())
     numbers['other_sources_of_funding'] = add_one_if(numbers['budget_requested'], call.other_funding_question)
 
     return numbers
