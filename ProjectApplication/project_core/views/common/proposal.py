@@ -29,7 +29,7 @@ from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
-from variable_templates.utils import get_template_value_for_call
+from variable_templates.utils import get_template_value_for_call, get_part_numbers_for_call
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -262,6 +262,8 @@ class AbstractProposalView(TemplateView):
         context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
+
+        context['part_numbers'] = get_part_numbers_for_call(call)
 
         context['activity'] = get_template_value_for_call('activity', call)
 

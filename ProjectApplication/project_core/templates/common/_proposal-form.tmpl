@@ -27,7 +27,7 @@
 <br>
 <form action="{{ proposal_action_url }}" enctype="multipart/form-data" method="post">
     <h1>Application form</h1>
-    <h2>Part 1: General Information</h2>
+    <h2>Part {{ part_numbers.general_information }}: General Information</h2>
     <h3>Applicant</h3>
     {% include 'common/_person-form.tmpl' with person_form=person_form %}
 
@@ -36,31 +36,31 @@
     <h3>Proposed {{ activity }}</h3>
     {% crispy proposal_form %}
 
-    {% if scientific_clusters_question %}
-        <h3>Scientific clusters</h3>
-        {% include 'common/_form-proposal-scientific_clusters.tmpl' %}
-    {% endif %}
-
     {% if overarching_project_question %}
         <h3>Overarching project</h3>
         {% include 'common/_form-project_overarching.tmpl' %}
     {% endif %}
 
-    <h2>Part 2: Proposed {{ activity }} description</h2>
+    {% if scientific_clusters_question %}
+        <h2>Part {{ part_numbers.scientific_clusters }}: Scientific Cluster of proposed {{ activity }}</h2>
+        {% include 'common/_form-proposal-scientific_clusters.tmpl' %}
+    {% endif %}
+
+    <h2>Part {{ part_numbers.project_description }}: Proposed {{ activity }} description</h2>
     {% include 'common/_form-dynamic_questions.tmpl' %}
 
     {% if proposal_partner_question %}
-        <h2>Roles and competences</h2>
+        <h2>Part {{ part_numbers.roles_competences }}: Roles and competences</h2>
         {% include 'common/_form-proposal_partners.tmpl' %}
     {% endif %}
 
     {% if budget_question %}
-        <h3>Budget requested</h3>
+        <h2>Part {{ part_numbers.budget_requested }}: Budget requested</h2>
         {% include 'common/_form-budget.tmpl' %}
     {% endif %}
 
     {% if other_funding_question %}
-        <h3>Other sources of funding</h3>
+        <h2>Part {{ part_numbers.other_sources_of_funding }}: Other sources of funding</h2>
         {% include 'common/_form-funding_organisations.tmpl' %}
     {% endif %}
 

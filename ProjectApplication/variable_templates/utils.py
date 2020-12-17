@@ -90,6 +90,30 @@ def get_template_value_for_funding_instrument(name, funding_instrument):
 
     assert False
 
+def add_one_if(start, condition):
+    if condition:
+        return start + 1
+    else:
+        return start
+
+def get_part_numbers_for_call(call):
+    """ 
+    Returns a dictionary with the heading numbers for different sections.
+    Sections that are not used currently have a heading number TODO: set them to None and use it to display
+    or not instead of having a second variable
+    """
+
+    numbers = {}
+
+    numbers['general_information'] = 1
+    numbers['scientific_clusters'] = add_one_if(numbers['general_information'], call.scientific_clusters_question)
+    numbers['project_description'] = add_one_if(numbers['scientific_clusters'], True)
+    numbers['roles_competences'] = add_one_if(numbers['project_description'], call.proposal_partner_question)
+    numbers['budget_requested'] = add_one_if(numbers['roles_competences'], call.budget_maximum)
+    numbers['other_sources_of_funding'] = add_one_if(numbers['budget_requested'], call.other_funding_question)
+
+    return numbers
+
 
 def get_template_value_for_call(name, call):
     # Returns the template value of the template name for call or the default
