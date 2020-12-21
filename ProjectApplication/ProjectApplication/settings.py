@@ -345,3 +345,6 @@ PROPOSAL_STATUS_SUBMITTED = 'Submitted'
 LAY_SUMMARY_ORIGINAL = 'Original'
 API_SECRET_KEY = os.getenv('API_SECRET_KEY')
 SPI_MEDIA_GALLERY_IMPORT_CALLBACK = os.getenv('SPI_MEDIA_GALLERY_IMPORT_CALLBACK', None)
+
+# This part is created on creating a call
+CALL_DEFAULT_PART_QUESTIONS_ANSWERS = 'Proposed {{ activity }} description'

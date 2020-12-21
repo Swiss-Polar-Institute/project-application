@@ -164,6 +164,23 @@ class AbstractProposalView(TemplateView):
 
     extra_context = {}
 
+    def _extra_parts_forms(self, call, proposal=None):
+        forms = []
+
+        for part in call.extra_parts():
+            form = {'title': part.title,
+                    'introductory': 'test',
+                    'heading_number': part.heading_number,
+                    'question_form': Questions(proposal=proposal,
+                                               call=call,
+                                               call_part=part,
+                                               prefix=QUESTIONS_FORM_NAME)
+                }
+            forms.append(form)
+
+        return forms
+
+
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -179,8 +196,8 @@ class AbstractProposalView(TemplateView):
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME, instance=proposal.postal_address)
             scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME,
                                                                        instance=proposal)
-            questions_form = Questions(proposal=proposal,
-                                       prefix=QUESTIONS_FORM_NAME)
+            # questions_form = Questions(proposal=proposal,
+            #                            prefix=QUESTIONS_FORM_NAME)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
 
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
@@ -200,6 +217,8 @@ class AbstractProposalView(TemplateView):
             context['action'] = 'Edit'
 
             context['proposal_status_is_draft'] = proposal.status_is_draft()
+
+            context['extra_parts'] = self._extra_parts_forms(call)
 
         else:
             if request.GET.get('call', None) is None:
@@ -227,8 +246,8 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(prefix=PERSON_FORM_NAME, only_basic_fields=False)
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
             scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
-            questions_form = Questions(call=call,
-                                       prefix=QUESTIONS_FORM_NAME)
+            # questions_form = Questions(call=call,
+            #                            prefix=QUESTIONS_FORM_NAME)
             initial_budget = []
             for budget_category in call.budgetcategorycall_set.filter(enabled=True).order_by('order',
                                                                                              'budget_category__name'):
@@ -251,12 +270,14 @@ class AbstractProposalView(TemplateView):
 
             context['action'] = 'New'
 
+            context['extra_parts'] = self._extra_parts_forms(call)
+
         context.update(call_context_for_template(call))
 
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PERSON_FORM_NAME] = person_form
-        context[QUESTIONS_FORM_NAME] = questions_form
+        # context[QUESTIONS_FORM_NAME] = questions_form
         context[SCIENTIFIC_CLUSTERS_FORM_NAME] = scientific_clusters_form
         context[BUDGET_FORM_NAME] = budget_form
         context[FUNDING_FORM_NAME] = funding_form
@@ -266,7 +287,6 @@ class AbstractProposalView(TemplateView):
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
 
         context['part_numbers'] = call.get_part_numbers_for_call()[0]
-        context['extra_parts'] = call.extra_parts()
         context['activity'] = get_template_value_for_call('activity', call)
 
         if timezone.now() > call.submission_deadline:
@@ -330,10 +350,10 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
-            questions_form = Questions(request.POST,
-                                       request.FILES,
-                                       proposal=proposal,
-                                       prefix=QUESTIONS_FORM_NAME)
+            # questions_form = Questions(request.POST,
+            #                            request.FILES,
+            #                            proposal=proposal,
+            #                            prefix=QUESTIONS_FORM_NAME)
 
             if call.budget_question():
                 budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
@@ -372,10 +392,10 @@ class AbstractProposalView(TemplateView):
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
-            questions_form = Questions(request.POST,
-                                       request.FILES,
-                                       call=call,
-                                       prefix=QUESTIONS_FORM_NAME)
+            # questions_form = Questions(request.POST,
+            #                            request.FILES,
+            #                            call=call,
+            #                            prefix=QUESTIONS_FORM_NAME)
 
             if call.budget_question():
                 budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
@@ -404,7 +424,8 @@ class AbstractProposalView(TemplateView):
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
         forms_to_validate = [person_form, postal_address_form, proposal_form,
-                             questions_form, data_collection_form]
+                             # questions_form,
+                             data_collection_form]
 
         if call.other_funding_question:
             forms_to_validate.append(funding_form)
@@ -467,11 +488,11 @@ class AbstractProposalView(TemplateView):
             if call.other_funding_question:
                 funding_form.save_fundings(proposal)
 
-            if not questions_form.save_answers(proposal):
-                # The current only reason to fail is that the file cannot be saved
-                # because of problems with the S3 storage
-                messages.error(request,
-                               'File attachments could not be saved - please try editing your proposal or contact SPI if this error reoccurs')
+            # if not questions_form.save_answers(proposal):
+            #     # The current only reason to fail is that the file cannot be saved
+            #     # because of problems with the S3 storage
+            #     messages.error(request,
+            #                    'File attachments could not be saved - please try editing your proposal or contact SPI if this error reoccurs')
 
             if call.budget_question():
                 budget_form.save_budgets(proposal)
@@ -497,7 +518,7 @@ class AbstractProposalView(TemplateView):
         context[PERSON_FORM_NAME] = person_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PROPOSAL_FORM_NAME] = proposal_form
-        context[QUESTIONS_FORM_NAME] = questions_form
+        # context[QUESTIONS_FORM_NAME] = questions_form
 
         if call.other_funding_question:
             context[FUNDING_FORM_NAME] = funding_form

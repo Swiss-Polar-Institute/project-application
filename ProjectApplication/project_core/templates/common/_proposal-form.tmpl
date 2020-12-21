@@ -46,12 +46,13 @@
         {% include 'common/_form-proposal-scientific_clusters.tmpl' %}
     {% endif %}
 
-    <h2>Part {{ part_numbers.project_description }}: Proposed {{ activity }} description</h2>
-    {% include 'common/_form-dynamic_questions.tmpl' %}
+{#    <h2>Part {{ part_numbers.project_description }}: Proposed {{ activity }} description</h2>#}
+{#    {% include 'common/_form-dynamic_questions.tmpl' %}#}
 
-    {% for extra_part in call.extra_parts %}
-        {{ extra_part.title }}
-        {{ extra_part.introductory_text }}
+    {% for part in extra_parts %}
+        <h2>Part {{ part.heading_number }}: {{ part.title }}</h2>
+        {{ part.introductory_text }}
+        {% include 'common/_form-dynamic_questions.tmpl' with questions_for_proposal_form=part.questions_for_proposal_form questions_form=part.question_form %}
     {% endfor %}
 
     {% if proposal_partner_question %}
@@ -69,10 +70,6 @@
         {% include 'common/_form-funding_organisations.tmpl' %}
     {% endif %}
 
-    {% for part in extra_parts %}
-        <h2>Part {{ part.heading_number }}: {{ part.title }}</h2>
-        {{ part.introductory_text }}
-    {% endfor %}
     <p></p>
     {% crispy data_collection_form %}
 

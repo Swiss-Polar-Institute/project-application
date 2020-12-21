@@ -20,8 +20,8 @@ from . import utils
 from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field
 
-
 logger = logging.getLogger('project_core')
+
 
 def add_one_if(start, condition):
     if condition:
@@ -316,6 +316,9 @@ class CallQuestion(AbstractQuestion):
                                           on_delete=models.PROTECT)
     order = models.PositiveIntegerField(
         help_text='Use this number to order the questions')
+
+    call_part = models.ForeignKey('CallPart', help_text='To which Call Part this question belongs to',
+                                  null=True, on_delete=models.PROTECT)
 
     class Meta:
         unique_together = (('call', 'template_question'), ('call', 'order'),)
@@ -1224,7 +1227,7 @@ class CallPart(CreateModifyOn):
     order = models.PositiveIntegerField(blank=True, null=True)
 
     class Meta:
-        unique_together = (('call', 'title'), ('call', 'order'),)
+        unique_together = (('call', 'title'),)
 
     def __str__(self):
         return f'{self.call.short_name}-{self.title}'
