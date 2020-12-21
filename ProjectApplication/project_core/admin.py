@@ -258,9 +258,9 @@ class ProposalFundingItemAdmin(admin.ModelAdmin):
 
 class CallQuestionAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
-        'call', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'order',
+        'call_part', 'question_text', 'question_description', 'answer_type', 'answer_max_length', 'order',
         'created_on', 'modified_on',)
-    ordering = ('call', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_on',
+    ordering = ('call_part', 'question_text', 'answer_type', 'answer_max_length', 'order', 'created_on',
                 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
     history_list_display = ('history_field_changes',)

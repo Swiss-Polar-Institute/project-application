@@ -8,9 +8,10 @@
             <form method="post" action="{{ call_action_url }}">
                 {% crispy call_form %}
 
-                {% include 'logged/_form_call_question.tmpl' %}
+{#                {% include 'logged/_form_call_question.tmpl' %}#}
 
                 {% if call_action != 'Create' %}
+                    <p></p>
                     <h1>Template variables</h1>
                     {% include 'variable_templates/_template_variables-form.tmpl' %}
                 {% endif %}

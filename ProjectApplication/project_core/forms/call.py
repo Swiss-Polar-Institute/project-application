@@ -10,7 +10,8 @@ from django.urls import reverse
 from django.utils import timezone
 
 from ..fields import FlexibleDecimalField
-from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory
+from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory, \
+    CallPart
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
 
 logger = logging.getLogger('project_core')
@@ -82,7 +83,7 @@ class CallQuestionFormSet(BaseInlineFormSet):
 
 
 CallQuestionItemFormSet = inlineformset_factory(
-    Call, CallQuestion, form=CallQuestionItemForm, formset=CallQuestionFormSet, extra=0,
+    CallPart, CallQuestion, form=CallQuestionItemForm, formset=CallQuestionFormSet, extra=0,
     can_delete=False)
 
 
@@ -90,12 +91,12 @@ class CallForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance.pk:
-            questions = self.instance.callquestion_set.all().values_list('template_question', flat=True)
-            used_questions = TemplateQuestion.objects.filter(id__in=questions)
-        else:
-            self.fields['finance_year'].initial = datetime.now().year
-            used_questions = []
+        # if self.instance.pk:
+        #     questions = self.instance.callquestion_set.all().values_list('template_question', flat=True)
+        #     used_questions = TemplateQuestion.objects.filter(id__in=questions)
+        # else:
+        #     self.fields['finance_year'].initial = datetime.now().year
+        #     used_questions = []
 
         self.budget_categories_order_key = f'budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
@@ -110,22 +111,22 @@ class CallForm(forms.ModelForm):
                                                                      required=False
                                                                      )
 
-        self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
-                                                                           queryset=TemplateQuestion.objects.all(),
-                                                                           required=False,
-                                                                           widget=FilteredSelectMultiple(
-                                                                               is_stacked=True,
-                                                                               verbose_name='questions'),
-                                                                           label=self.Meta.labels['template_questions'])
+        # self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
+        #                                                                    queryset=TemplateQuestion.objects.all(),
+        #                                                                    required=False,
+        #                                                                    widget=FilteredSelectMultiple(
+        #                                                                        is_stacked=True,
+        #                                                                        verbose_name='questions'),
+        #                                                                    label=self.Meta.labels['template_questions'])
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
         self.fields['budget_categories'].label = 'Budget categories (drag and drop to sort them)'
 
-        self.fields[
-            'template_questions'].help_text = f'Select the questions that you would like to add to this call and move them to the box below using the arrow. ' \
-                                              f'Check the full details of the question are correct by <a href="{reverse("logged-template-question-list")}">viewing ' \
-                                              f'the template questions</a>, or <a href="{reverse("logged-template-question-add")}">create a new template ' \
-                                              f'question</a> if necessary.'
+        # self.fields[
+        #     'template_questions'].help_text = f'Select the questions that you would like to add to this call and move them to the box below using the arrow. ' \
+        #                                       f'Check the full details of the question are correct by <a href="{reverse("logged-template-question-list")}">viewing ' \
+        #                                       f'the template questions</a>, or <a href="{reverse("logged-template-question-add")}">create a new template ' \
+        #                                       f'question</a> if necessary.'
 
         XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['call_open_date'])
         XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['submission_deadline'])
@@ -187,14 +188,14 @@ class CallForm(forms.ModelForm):
                          '{% include "logged/_call-part-list.tmpl" with parts=parts call=call only %}'), css_class='col-12'),
                 css_class='row'
             ),
-            Div(
-                HTML('<h2 class="col-12">Questions</h2>'),
-                css_class='row'
-            ),
-            Div(
-                Div('template_questions', css_class='col-12'),
-                css_class='row'
-            )
+            # Div(
+                # HTML('<h2 class="col-12">Questions</h2>'),
+                # css_class='row'
+            # ),
+            # Div(
+            #     Div('template_questions', css_class='col-12'),
+            #     css_class='row'
+            # )
         )
 
     def clean(self):

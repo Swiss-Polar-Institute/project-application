@@ -62,7 +62,7 @@
     <br>
 {% endif %}
 
-{% for part in proposal.call.extra_parts %}
+{% for part in proposal.call.parts %}
     <h2>Part {{ part.heading_number }}: {{ part.title }}</h2>
     <div class="border p-1 rounded pre-wrap">{{ part.introductory_text }}</div>
     <br>

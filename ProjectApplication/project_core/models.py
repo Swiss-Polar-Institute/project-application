@@ -177,7 +177,7 @@ class Call(CreateModifyOn):
     def budget_question(self):
         return self.budget_maximum > 0
 
-    def extra_parts(self):
+    def parts(self):
         parts = []
 
         heading_number = self.get_part_numbers_for_call()[1]
@@ -310,7 +310,6 @@ class TemplateQuestion(AbstractQuestion):
 class CallQuestion(AbstractQuestion):
     """Questions, taken from the template list, that are part of a call. """
 
-    call = models.ForeignKey(Call, help_text='Questions for a call', on_delete=models.PROTECT)
     template_question = models.ForeignKey(TemplateQuestion,
                                           help_text='Template question on which this call question is based',
                                           on_delete=models.PROTECT)
@@ -318,15 +317,15 @@ class CallQuestion(AbstractQuestion):
         help_text='Use this number to order the questions')
 
     call_part = models.ForeignKey('CallPart', help_text='To which Call Part this question belongs to',
-                                  null=True, on_delete=models.PROTECT)
+                                  on_delete=models.PROTECT)
 
     class Meta:
-        unique_together = (('call', 'template_question'), ('call', 'order'),)
+        unique_together = (('call_part', 'template_question'), ('call_part', 'order'),)
 
     @transaction.atomic
     def save(self, *args, **kwargs):
         if self.order is None:
-            call_questions = CallQuestion.objects.filter(call=self.call)
+            call_questions = CallQuestion.objects.filter(call=self.call_part)
             if call_questions:
                 self.order = call_questions.aggregate(Max('order'))['order__max'] + 1
             else:

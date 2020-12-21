@@ -167,7 +167,7 @@ class AbstractProposalView(TemplateView):
     def _extra_parts_forms(self, call, proposal=None):
         forms = []
 
-        for part in call.extra_parts():
+        for part in call.parts():
             form = {'title': part.title,
                     'introductory': 'test',
                     'heading_number': part.heading_number,
