@@ -128,6 +128,6 @@ class CallPartUpdate(UpdateView):
 
         return form_kwargs
 
-    # def get_success_url(self):
-    #     return reverse('logged-call-part-detail', kwargs={'call_pk': self.kwargs['call_pk'],
-    #                                                       'proposal_part_pk': self.kwargs['proposal_part_pk']})
+    def get_success_url(self):
+        return reverse('logged-call-part-detail', kwargs={'call_pk': self.kwargs['call_pk'],
+                                                          'proposal_part_pk': self.kwargs['proposal_part_pk']})

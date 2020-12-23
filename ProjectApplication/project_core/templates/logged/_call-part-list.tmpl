@@ -10,7 +10,7 @@
                         </li>
                     {% empty %}
                         <li>
-                            No question in this call part. <a href="">Add</a>
+                            No question in this call part. <a href="{% url 'logged-call-question-add' call_pk=call.pk call_part_pk=part.pk %}">Add</a>
                         </li>
                     {% endfor %}
                 </ul>

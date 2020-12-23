@@ -2,10 +2,11 @@ from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Layout, Submit
 from django import forms
+from django.db.models import Max
 from django.urls import reverse
 
 from .utils import cancel_edit_button
-from ..models import FinancialKey, CallPart, Call
+from ..models import CallPart, Call
 
 
 class CallPartForm(forms.ModelForm):
@@ -25,6 +26,7 @@ class CallPartForm(forms.ModelForm):
                                  kwargs={'pk': call_pk})
 
         self.fields['call'].initial = Call.objects.get(pk=call_pk)
+        self._call = self.fields['call'].initial
 
         self.helper.layout = Layout(
             Div(
@@ -48,6 +50,13 @@ class CallPartForm(forms.ModelForm):
                 cancel_edit_button(cancel_url)
             )
         )
+
+    def clean_order(self):
+        if self.cleaned_data['order'] is None:
+            last_order = CallPart.objects.filter(call=self._call).aggregate(Max('order'))
+            return last_order['order__max']+1
+        else:
+            return self.cleaned_data['order']
 
     class Meta:
         model = CallPart

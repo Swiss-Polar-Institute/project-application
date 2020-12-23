@@ -10,6 +10,7 @@ from project_core.models import CallQuestion, CallPart
 
 class CallQuestionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        self._call_part_pk = kwargs.pop('call_part_pk')
         super().__init__(*args, **kwargs)
 
         self.helper = FormHelper(self)
@@ -20,9 +21,16 @@ class CallQuestionForm(forms.ModelForm):
                                                  'call_question_pk': self.instance.pk
                                                  })
             self.fields['call_part'].queryset = CallPart.objects.filter(call=self.instance.call_part.call)
+            call = self.instance.call_part.call
 
         else:
-            assert False
+            call_part = CallPart.objects.get(pk=self._call_part_pk)
+            call = call_part.call
+            cancel_edit_url = reverse('logged-call-update', kwargs={'pk': call_part.call.pk})
+
+            self.fields['call_part'].initial = call_part
+
+        self.fields['call_part'].queryset = CallPart.objects.filter(call=call)
 
         self.helper.layout = Layout(
             Div(
@@ -43,6 +51,9 @@ class CallQuestionForm(forms.ModelForm):
             )
         )
 
+    # def save(self, commit=True):
+    #     return super().save(commit=commit)
+    #
     class Meta:
         model = CallQuestion
         fields = ['call_part', 'question_text', 'question_description']
