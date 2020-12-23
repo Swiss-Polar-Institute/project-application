@@ -1,6 +1,6 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit
+from crispy_forms.layout import Layout, Div, Submit, HTML
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.db.models import Max
@@ -38,7 +38,14 @@ class CallQuestionForm(forms.ModelForm):
 
         self.fields['call_part'].queryset = CallPart.objects.filter(call=call)
 
+        self.fields['call'] = forms.CharField(disabled=True)
+        self.fields['call'].initial = 'test'
+
         self.helper.layout = Layout(
+            Div(
+                Div('call', css_class='col-12'),
+                css_class='row'
+            ),
             Div(
                 Div('call_part', css_class='col-12'),
                 css_class='row'

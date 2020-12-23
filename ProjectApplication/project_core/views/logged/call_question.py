@@ -26,7 +26,7 @@ class CallQuestionView(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
                                  {'name': f'Details ({call_question.call_part.call.little_name()})',
                                   'url': url_call_parts_anchor},
-                                 {'name': 'TODO'}
+                                 {'name': call_question.question_text}
                                  ]
 
         return context
@@ -50,10 +50,12 @@ class CallQuestionUpdate(SuccessMessageMixin, UpdateView):
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'
                         })
 
+        call = call_question.call_part.call
+
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-                                 {'name': f'Details ({call_question.call_part.call.little_name()})',
-                                  'url': 'TODO'},
-                                 {'name': 'TODO'}
+                                 {'name': f'Details ({call.little_name()})',
+                                  'url': reverse('logged-call-update', kwargs={'pk': call.pk})+'#parts'},
+                                 {'name': call_question.question_text}
                                  ]
 
         return context
