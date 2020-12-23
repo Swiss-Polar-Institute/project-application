@@ -103,6 +103,15 @@ urlpatterns = [
          logged.call_part.CallPartDetail.as_view(),
          name='logged-call-part-detail'),
 
+    path('logged/call/<int:call_pk>/question/<int:call_question_pk>/',
+         logged.call_question.CallQuestionView.as_view(),
+         name='logged-call-question-detail'),
+    path('logged/call/<int:call_pk>/question/<int:call_question_pk>/update/',
+         logged.call_question.CallQuestionUpdate.as_view(),
+         name='logged-call-question-update'),
+    path('logged/call/<int:call_pk>/question/add/',
+         logged.call_question.CallQuestionCreate.as_view(),
+         name='logged-call-question-add'),
 
     path('logged/',
          logged.homepage.Homepage.as_view(),

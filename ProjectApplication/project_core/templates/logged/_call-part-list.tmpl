@@ -1,13 +1,12 @@
 {% if parts %}
-    There call parts on this Call:
     <ul>
         {% for part in parts %}
             <li>
-                <a href="{% url 'logged-call-part-detail' call_pk=part.call.pk proposal_part_pk=part.pk %}">{{ part.title }}</a>
+                <a href="{% url 'logged-call-part-detail' call_pk=part.call.pk proposal_part_pk=part.pk %}">Part {{ part.heading_number }}: {{ part.title }}</a>
                 <ul>
                     {% for callquestion in part.callquestion_set.all %}
                         <li>
-                            {{ callquestion }}
+                            <a href="{% url 'logged-call-question-detail' call_pk=callquestion.call_part.call.pk call_question_pk=callquestion.pk %}">{{ callquestion.question_text }}</a>
                         </li>
                     {% empty %}
                         <li>

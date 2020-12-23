@@ -227,23 +227,23 @@ class CallForm(forms.ModelForm):
                                             self.cleaned_data['budget_categories'],
                                             self.cleaned_data[self.budget_categories_order_key])
 
-        if commit:
-            template_questions_wanted = []
-
-            for template_question in self.cleaned_data['template_questions']:
-                call_question = CallQuestion.from_template(template_question)
-                template_questions_wanted.append(template_question.id)
-
-                if instance.callquestion_set.filter(template_question=template_question):
-                    # This question was already added
-                    continue
-
-                call_question.call = instance
-                call_question.save()
-
-            for call_question in instance.callquestion_set.all():
-                if call_question.template_question.id not in template_questions_wanted:
-                    call_question.delete()
+        # if commit:
+        #     template_questions_wanted = []
+        #
+        #     for template_question in self.cleaned_data['template_questions']:
+        #         call_question = CallQuestion.from_template(template_question)
+        #         template_questions_wanted.append(template_question.id)
+        #
+        #         if instance.callquestion_set.filter(template_question=template_question):
+        #             # This question was already added
+        #             continue
+        #
+        #         call_question.call = instance
+        #         call_question.save()
+        #
+        #     for call_question in instance.callquestion_set.all():
+        #         if call_question.template_question.id not in template_questions_wanted:
+        #             call_question.delete()
 
         return instance
 

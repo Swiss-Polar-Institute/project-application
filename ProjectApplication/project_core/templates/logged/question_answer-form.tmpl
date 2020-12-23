@@ -1,0 +1,23 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            {% if form.instance.id %}
+                <h1>Edit question</h1>
+            {% else %}
+                <h1>Create question</h1>
+            {% endif %}
+
+            {% crispy form %}
+        </div>
+        <div class="col-2">
+            {% if form.instance.id %}
+                <a class="btn btn-primary"
+                   href="{% url 'logged-call-question-detail' call_pk=call_question.call_part.call.pk call_question_pk=object.id %}">View
+                    call question</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

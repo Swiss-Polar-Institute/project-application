@@ -55,8 +55,6 @@ class CallPartDetail(DeleteView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': f'Details ({call.short_name})',
                                   'url': reverse('logged-call-detail', kwargs={'pk': call.pk})},
-                                 {'name': f'List Call Parts ({call.short_name})',
-                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
                                  {'name': f'Call Part ({self.object.title})'}
                                  ]
 
@@ -81,8 +79,6 @@ class CallPartCreate(CreateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': f'Details ({call.short_name})',
                                   'url': reverse('logged-call-detail', kwargs={'pk': call.pk})},
-                                 {'name': f'List Call Parts ({call.short_name})',
-                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
                                  {'name': f'New Call Part'}
                                  ]
 
@@ -120,8 +116,6 @@ class CallPartUpdate(UpdateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': f'Details ({call.short_name})',
                                   'url': reverse('logged-call-detail', kwargs={'pk': call.pk})},
-                                 {'name': f'List Call Parts ({call.short_name})',
-                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
                                  {'name': f'Call Part ({self.object.title})'}
                                  ]
 

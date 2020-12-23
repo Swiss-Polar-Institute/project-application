@@ -84,7 +84,7 @@ class AbstractCallView(TemplateView):
 
             context['public_lay_summaries_for_website_url'] = f'[remote_content url="{url}"{username_password_tag}]'
 
-        context['parts'] = call.callpart_set.all().order_by('order')
+        context['parts'] = call.parts()
 
         return context
 

@@ -151,8 +151,8 @@ class Call(CreateModifyOn):
         draft = ProposalStatus.objects.get(name=settings.PROPOSAL_STATUS_DRAFT)
         return self.proposal_set.exclude(proposal_status=draft).count()
 
-    def callquestion_set_ordered_by_order(self):
-        return self.callquestion_set.all().order_by('order')
+    # def callquestion_set_ordered_by_order(self):
+    #     return self.callquestion_set.all().order_by('order')
 
     @staticmethod
     def attachment_object():

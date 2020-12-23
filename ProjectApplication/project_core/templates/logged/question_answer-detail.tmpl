@@ -1,0 +1,26 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Question details</h1>
+
+            <p></p>
+            <strong>Question:</strong> {{ call_question.question_text }}<br>
+            <strong>Question belongs to call:</strong> {{ call_question.call_part.call.long_name }}<br>
+            <strong>Question belongs to part:</strong> {{ call_question.call_part.title }}<br>
+            <strong>Question description:</strong> {% include 'common/_value-or-dash.tmpl' with value=call_question.question_description %}<br>
+            <strong>Answer type:</strong> {{ call_question.answer_type }}<br>
+            <strong>Question max words:</strong> {% if call_question.answer_max_length %}
+            {{ call_question.answer_max_length }} {% else %}
+            Unlimited {% endif %}<br>
+            <strong>Answer is
+                required:</strong> {% include 'common/_check-icon.tmpl' with value=call_question.answer_required %}<br>
+        </div>
+        <div class="col-2">
+            <a class="btn btn-primary" href="{% url 'logged-call-question-update' call_pk=call_question.call_part.call.pk call_question_pk=call_question.pk  %}">Edit
+                Question</a>
+        </div>
+    </div>
+{% endblock %}

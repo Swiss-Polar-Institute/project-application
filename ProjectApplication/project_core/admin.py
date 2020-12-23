@@ -52,7 +52,8 @@ class FundingInstrumentAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges)
 class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
     list_display = (
         'long_name', 'short_name', 'call_open_date', 'submission_deadline',
-        'budget_categories_list', 'budget_maximum', 'other_funding_question',
+        # 'budget_categories_list',
+        'budget_maximum', 'other_funding_question',
         'proposal_partner_question', 'overarching_project_question', 'scientific_clusters_question',
         'keywords_in_general_information_question', 'created_on', 'modified_on',)
     ordering = ('long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',
@@ -62,20 +63,20 @@ class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
 
     readonly_fields = ('created_on', 'modified_on',)
 
-    def budget_categories_list(self, obj):
-        return 'TODO'
-        budget_categories = obj.budget_categories.all()
+    # def budget_categories_list(self, obj):
+    #     return 'TODO'
+    #     budget_categories = obj.budget_categories.all()
+    #
+    #     return ", ".join([budget_category.name for budget_category in budget_categories])
 
-        return ", ".join([budget_category.name for budget_category in budget_categories])
-
-    def call_questions_list(self, obj):
-        call_questions = obj.callquestion_set.all()
-
-        questions = ''
-        for call_question in call_questions:
-            questions += call_question.question_text
-
-        return questions
+    # def call_questions_list(self, obj):
+    #     call_questions = obj.callquestion_set.all()
+    #
+    #     questions = ''
+    #     for call_question in call_questions:
+    #         questions += call_question.question_text
+    #
+    #     return questions
 
 
 class BudgetCategoryCallAdmin(admin.ModelAdmin):
