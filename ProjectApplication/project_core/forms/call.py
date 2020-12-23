@@ -184,7 +184,7 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div(HTML('<h2>Call Parts</h2>'
+                Div(HTML('<h2><a id="parts">Call Parts</a></h2>'
                          '{% include "logged/_call-part-list.tmpl" with parts=parts call=call only %}'), css_class='col-12'),
                 css_class='row'
             ),

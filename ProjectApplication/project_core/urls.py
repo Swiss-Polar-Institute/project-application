@@ -110,7 +110,7 @@ urlpatterns = [
          logged.call_question.CallQuestionUpdate.as_view(),
          name='logged-call-question-update'),
     path('logged/call/<int:call_pk>/question/<int:call_part_pk>/add/',
-         logged.call_question.CallQuestionCreate.as_view(),
+         logged.call_question.CallQuestionTemplateQuestionUpdate.as_view(),
          name='logged-call-question-add'),
 
     path('logged/',
