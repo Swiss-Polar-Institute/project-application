@@ -204,13 +204,6 @@ class Call(CreateModifyOn):
         numbers['budget_requested'] = add_one_if(numbers['roles_competences'], self.budget_question())
         numbers['other_sources_of_funding'] = numbers['budget_requested'] + len(self.callpart_set.all()) + 1
 
-        # TODO: refactor this
-        maximum_used = 1 + \
-                       add_one_if(0, self.scientific_clusters_question) + \
-                       add_one_if(0, self.proposal_partner_question) + \
-                       add_one_if(0, self.budget_question()) + \
-                       add_one_if(0, self.other_funding_question)
-
         return numbers
 
 
