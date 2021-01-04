@@ -28,7 +28,7 @@ from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
-from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, CallQuestion, ProposalQAFile
+from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, ProposalQAFile
 from variable_templates.utils import get_template_value_for_call
 
 PROPOSAL_FORM_NAME = 'proposal_form'
@@ -44,6 +44,36 @@ PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
 SCIENTIFIC_CLUSTERS_FORM_NAME = 'scientific_clusters_form'
 
 logger = logging.getLogger('comments')
+
+
+def prepare_answers(call_questions, proposal):
+    questions_answers = []
+    for call_question in call_questions:
+        try:
+            answer = ProposalQAText.objects.get(proposal=proposal, call_question=call_question)
+        except ObjectDoesNotExist:
+            answer = None
+
+        questions_answers.append(answer)
+
+    return questions_answers
+
+def get_parts_with_answers(proposal):
+    parts = []
+
+    for part in proposal.call.parts():
+        questions_answers_text = prepare_answers(part.questions_type_text(), proposal)
+        questions_answers_file = prepare_answers(part.questions_type_files(), proposal)
+
+        parts.append({'title': part.title,
+                       'introductory_text': part.introductory_text,
+                       'heading_number': part.heading_number,
+                       'questions_type_text': questions_answers_text,
+                       'questions_type_file': questions_answers_file,
+                       'div_id': part.div_id()
+                      })
+
+    return parts
 
 
 class AbstractProposalDetailView(TemplateView):
@@ -67,6 +97,8 @@ class AbstractProposalDetailView(TemplateView):
         context['proposal'] = proposal
 
         context['part_numbers'] = call.get_part_numbers_for_call()[0]
+
+        context['parts_with_answers'] = get_parts_with_answers(proposal)
 
         if request.user.groups.filter(name='logged').exists():
             href = description = None
@@ -127,6 +159,10 @@ class AbstractProposalView(TemplateView):
 
     extra_context = {}
 
+    @staticmethod
+    def _form_prefix(part):
+        return f'{QUESTIONS_FORM_NAME}-part-{part.pk}'
+
     def _extra_parts_forms(self, call, proposal=None):
         forms = []
 
@@ -137,12 +173,22 @@ class AbstractProposalView(TemplateView):
                     'question_form': Questions(proposal=proposal,
                                                call=call,
                                                call_part=part,
-                                               prefix=QUESTIONS_FORM_NAME)
-                }
+                                               prefix=AbstractProposalView._form_prefix(part))
+                    }
             forms.append(form)
 
         return forms
 
+    def _questions_forms(self, post, proposal):
+        forms = []
+
+        for part in proposal.call.parts():
+            forms.append(Questions(post,
+                                   proposal=proposal,
+                                   call=proposal.call,
+                                   call_part=part,
+                                   prefix=AbstractProposalView._form_prefix(part)))
+        return forms
 
     def get(self, request, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -313,6 +359,8 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
+
+            questions_forms = self._questions_forms(request.POST, proposal)
             # questions_form = Questions(request.POST,
             #                            request.FILES,
             #                            proposal=proposal,
@@ -383,11 +431,10 @@ class AbstractProposalView(TemplateView):
                 scientific_clusters_form = ScientificClustersInlineFormSet(request.POST,
                                                                            prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
 
-
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
         forms_to_validate = [person_form, postal_address_form, proposal_form,
-                             # questions_form,
+                             *questions_forms,
                              data_collection_form]
 
         if call.other_funding_question:
@@ -451,6 +498,11 @@ class AbstractProposalView(TemplateView):
             if call.other_funding_question:
                 funding_form.save_fundings(proposal)
 
+            for question_form in questions_forms:
+                if not question_form.save_answers(proposal):
+                    messages.error(request,
+                                   'File attachments could not be saved - please try attaching the files again or contact SPI if this error reoccurs')
+
             # if not questions_form.save_answers(proposal):
             #     # The current only reason to fail is that the file cannot be saved
             #     # because of problems with the S3 storage
@@ -481,6 +533,8 @@ class AbstractProposalView(TemplateView):
         context[PERSON_FORM_NAME] = person_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PROPOSAL_FORM_NAME] = proposal_form
+        for question_form in questions_forms:
+            context[question_form.prefix] = question_form
         # context[QUESTIONS_FORM_NAME] = questions_form
 
         if call.other_funding_question:

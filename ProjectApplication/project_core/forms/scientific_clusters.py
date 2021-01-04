@@ -79,7 +79,9 @@ class ScientificClusterForm(forms.ModelForm):
         cd = super().clean()
         errors = {}
 
-        keywords_validation(errors, self.cleaned_data, 'keywords')
+        if 'keywords' not in self.errors:
+            # Probably there are no keywords... here we validate the minimum number of keywords
+            keywords_validation(errors, self.cleaned_data, 'keywords')
 
         if errors:
             raise forms.ValidationError(errors)

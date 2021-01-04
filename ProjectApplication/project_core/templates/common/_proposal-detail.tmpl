@@ -62,11 +62,11 @@
     <br>
 {% endif %}
 
-{% for part in proposal.call.parts %}
-    <h2>Part {{ part.heading_number }}: {{ part.title }}</h2>
-    {% if part.introductory_text %}<div class="border p-1 rounded pre-wrap">{{ part.introductory_text }}</div>{% endif %}
+{% for part_with_answers in parts_with_answers %}
+    <h2>Part {{ part_with_answers.heading_number }}: {{ part_with_answers.title }}</h2>
+    {% if part_with_answers.introductory_text %}<div class="border p-1 rounded pre-wrap">{{ part_with_answers.introductory_text }}</div>{% endif %}
     <br>
-    {% include 'common/_questions_answers-accordion-detail.tmpl' with part=part only %}
+    {% include 'common/_questions_answers-accordion-detail.tmpl' with part=part_with_answers question_answers=part_with_answers.answers only %}
     <p></p>
 {% endfor %}
 

@@ -51,7 +51,7 @@
 
     {% for part in extra_parts %}
         <h2>Part {{ part.heading_number }}: {{ part.title }}</h2>
-        <p>{{ part.introductory_text }}</p>
+        <div class="pre-wrap">{{ part.introductory_text }}</div>
         {% include 'common/_form-dynamic_questions.tmpl' with questions_for_proposal_form=part.questions_for_proposal_form questions_form=part.question_form %}
     {% endfor %}
 

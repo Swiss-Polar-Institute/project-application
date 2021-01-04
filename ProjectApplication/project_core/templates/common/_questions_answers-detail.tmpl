@@ -1,5 +1,5 @@
 {% for question_answer in questions_answers %}
-    <strong>{{ question_answer.question_text }}</strong><br>
+    <strong>{{ question_answer.call_question.question_text }}</strong><br>
     {#    @formatter:off#}
     <div class="border p-1 bg-white rounded pre-wrap">{% if question_answer.answer %}{{ question_answer.answer }}{% else %}This question has not been answered{% endif %}</div>
     {#    @formatter:on#}
