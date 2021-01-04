@@ -70,6 +70,7 @@ class AbstractProposalDetailView(TemplateView):
 
         context['part_numbers'] = call.get_part_numbers_for_call()[0]
 
+
         for question in call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
             try:
                 answer = ProposalQAText.objects.get(proposal=proposal, call_question=question).answer
@@ -169,7 +170,7 @@ class AbstractProposalView(TemplateView):
 
         for part in call.parts():
             form = {'title': part.title,
-                    'introductory': 'test',
+                    'introductory_text': part.introductory_text,
                     'heading_number': part.heading_number,
                     'question_form': Questions(proposal=proposal,
                                                call=call,

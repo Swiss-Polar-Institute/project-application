@@ -1,6 +1,7 @@
 import calendar
 import logging
 import uuid as uuid_lib
+from typing import List
 
 from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
@@ -177,7 +178,7 @@ class Call(CreateModifyOn):
     def budget_question(self):
         return self.budget_maximum > 0
 
-    def parts(self):
+    def parts(self) -> List['CallPart']:
         parts = []
 
         heading_number = self.get_part_numbers_for_call()[1]
