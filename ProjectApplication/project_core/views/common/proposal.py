@@ -58,6 +58,7 @@ def prepare_answers(call_questions, proposal):
 
     return questions_answers
 
+
 def get_parts_with_answers(proposal):
     parts = []
 
@@ -66,11 +67,11 @@ def get_parts_with_answers(proposal):
         questions_answers_file = prepare_answers(part.questions_type_files(), proposal)
 
         parts.append({'title': part.title,
-                       'introductory_text': part.introductory_text,
-                       'heading_number': part.heading_number,
-                       'questions_type_text': questions_answers_text,
-                       'questions_type_file': questions_answers_file,
-                       'div_id': part.div_id()
+                      'introductory_text': part.introductory_text,
+                      'heading_number': part.heading_number,
+                      'questions_type_text': questions_answers_text,
+                      'questions_type_file': questions_answers_file,
+                      'div_id': part.div_id()
                       })
 
     return parts
@@ -179,13 +180,21 @@ class AbstractProposalView(TemplateView):
 
         return forms
 
-    def _questions_forms(self, post, proposal):
+    def _questions_forms(self, post, proposal, call=None):
         forms = []
 
-        for part in proposal.call.parts():
+        if proposal:
+            call = proposal.call
+        elif call:
+            pass
+        else:
+            # It needs either the proposal or the call to find the questions
+            assert False
+
+        for part in call.parts():
             forms.append(Questions(post,
                                    proposal=proposal,
-                                   call=proposal.call,
+                                   call=call,
                                    call_part=part,
                                    prefix=AbstractProposalView._form_prefix(part)))
         return forms
@@ -402,6 +411,9 @@ class AbstractProposalView(TemplateView):
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
+
+            questions_forms = self._questions_forms(request.POST, proposal=None, call=call)
+
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
             # questions_form = Questions(request.POST,
             #                            request.FILES,

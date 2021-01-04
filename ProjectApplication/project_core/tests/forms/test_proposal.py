@@ -3,7 +3,7 @@ from datetime import timedelta
 from django.test import TestCase
 
 from project_core.forms.proposal import ProposalForm
-from project_core.models import CallQuestion, PersonPosition, PhysicalPerson, PersonTitle, CareerStage
+from project_core.models import CallQuestion, PersonPosition, PhysicalPerson, PersonTitle, CareerStage, CallPart
 from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
@@ -11,8 +11,12 @@ from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 class CallFormTest(TestCase):
     def setUp(self):
         self._call = database_population.create_call()
+        call_part, created = CallPart.objects.get_or_create(call=self._call,
+                                                            order=1,
+                                                            title='Weather',
+                                                            introductory_text='Weather related questions')
         template_questions = database_population.create_template_questions()
-        CallQuestion.objects.get_or_create(call=self._call, template_question=template_questions[0], order=10)
+        CallQuestion.objects.get_or_create(call_part=call_part, template_question=template_questions[0], order=10)
 
         self._geographical_areas = database_population.create_geographical_areas()
         self._keywords = database_population.create_keywords()

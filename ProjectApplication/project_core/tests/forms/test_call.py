@@ -3,7 +3,7 @@ import datetime
 from django.test import TestCase
 
 from project_core.forms.call import CallForm, CallQuestionItemForm
-from project_core.models import CallQuestion
+from project_core.models import CallQuestion, CallPart
 from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
@@ -63,12 +63,17 @@ class CallQuestionItemFormTest(TestCase):
         self._template_questions = database_population.create_template_questions()
 
     def test_create_question_item_form(self):
+        call_part, created = CallPart.objects.get_or_create(call=self._call, title='Permits',
+                                                            introductory_text='Questions about permits',
+                                                            order=1)
+
         call_question = CallQuestion.objects.create(question_text='Original question',
                                                     question_description='Original template question description',
                                                     answer_max_length=50,
                                                     answer_required=False,
-                                                    call=self._call,
-                                                    template_question=self._template_questions[0])
+                                                    call_part=call_part,
+                                                    template_question=self._template_questions[0],
+                                                    order=1)
 
         data = {'id': str(call_question.id),
                 'order': '1',
