@@ -1226,6 +1226,15 @@ class CallPart(CreateModifyOn):
 
     order = models.PositiveIntegerField(blank=True, null=True)
 
+    def questions_type_text(self):
+        return self.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order')
+
+    def questions_type_files(self):
+        return self.callquestion_set.filter(answer_type=CallQuestion.FILE).order_by('order')
+
+    def div_id(self):
+        return f'CallPart_{self.pk}'
+
     class Meta:
         unique_together = (('call', 'title'),)
 

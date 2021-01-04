@@ -1,12 +1,12 @@
 {% for question_answer in questions_answers %}
-    <strong>{{ question_answer.question }}</strong><br>
+    <strong>{{ question_answer.question_text }}</strong><br>
     {#    @formatter:off#}
     <div class="border p-1 bg-white rounded pre-wrap">{% if question_answer.answer %}{{ question_answer.answer }}{% else %}This question has not been answered{% endif %}</div>
     {#    @formatter:on#}
     <br>
 {% endfor %}
 {% for question_file in questions_files %}
-    <strong>{{ question_file.question }}</strong>
+    <strong>{{ question_file.question_text }}</strong>
     <div class="border p-1 bg-white rounded">
         {% if question_file.proposal_qa_file_id and question_file.file.md5 %}
             {% include 'common/_answer_type-icon.tmpl' with type='File' %} <a

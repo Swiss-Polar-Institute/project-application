@@ -66,45 +66,7 @@ class AbstractProposalDetailView(TemplateView):
 
         context['proposal'] = proposal
 
-        context['questions_answers'] = []
-
         context['part_numbers'] = call.get_part_numbers_for_call()[0]
-
-
-        for question in call.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
-            try:
-                answer = ProposalQAText.objects.get(proposal=proposal, call_question=question).answer
-            except ObjectDoesNotExist:
-                answer = None
-
-            question_text = question.question_text
-
-            context['questions_answers'].append({'question': question_text,
-                                                 'answer': answer})
-
-        context['questions_files'] = []
-        for question in call.callquestion_set.filter(answer_type=CallQuestion.FILE).order_by('order'):
-            try:
-                proposal_qa_file = ProposalQAFile.objects.get(proposal=proposal, call_question=question)
-                filename = os.path.basename(proposal_qa_file.file.name)
-                md5 = proposal_qa_file.md5
-                human_file_size = proposal_qa_file.human_file_size()
-                proposal_qa_file_id = proposal_qa_file.id
-
-            except ObjectDoesNotExist:
-                filename = None
-                md5 = None
-                human_file_size = None
-                proposal_qa_file_id = None
-
-            question_text = question.question_text
-
-            context['questions_files'].append({'question': question_text,
-                                               'proposal_qa_file_id': proposal_qa_file_id,
-                                               'file': {'name': filename,
-                                                        'md5': md5,
-                                                        'size': human_file_size,
-                                                        }})
 
         if request.user.groups.filter(name='logged').exists():
             href = description = None

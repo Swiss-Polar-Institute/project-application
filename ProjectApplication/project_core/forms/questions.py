@@ -7,7 +7,7 @@ from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
 
-from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion
+from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion, CallPart
 
 logger = logging.getLogger('project_core')
 
@@ -16,7 +16,7 @@ class Questions(Form):
     def __init__(self, *args, **kwargs):
         self._call = kwargs.pop('call', None)
         self._proposal = kwargs.pop('proposal', None)
-        self._call_part = kwargs.pop('call_part')
+        self._call_part: CallPart = kwargs.pop('call_part')
 
         assert self._call or self._proposal
 
@@ -25,7 +25,7 @@ class Questions(Form):
         if self._proposal:
             self._call = self._proposal.call
 
-        for question in self._call_part.callquestion_set.filter(answer_type=CallQuestion.TEXT).order_by('order'):
+        for question in self._call_part.questions_type_text():
             answer = None
             if self._proposal:
                 try:
@@ -43,7 +43,7 @@ class Questions(Form):
                                                                              help_text=question.question_description,
                                                                              required=question.answer_required)
 
-        for question in self._call_part.callquestion_set.filter(answer_type=CallQuestion.FILE).order_by('order'):
+        for question in self._call_part.questions_type_files():
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
                 self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,

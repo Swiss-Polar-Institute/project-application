@@ -28,16 +28,16 @@
     <h4>Overarching project</h4>
     {% include 'common/_project_overarching.tmpl' with overarching_project=proposal.overarching_project %}
 {% endif %}
-
+<p></p>
 {% if proposal.call.scientific_clusters_question %}
     <h3>Part {{ part_numbers.scientific_clusters }}: Scientific cluster of proposed {{ activity }}</h3>
     {% include 'common/_accordion.tmpl' with prefix='scientific_clusters' button_text_collapsed='Show scientific clusters' button_text_not_collapsed='Hide scientific clusters' template_file='common/_scientific_clusters.tmpl' %}
 {% endif %}
 
 <p></p>
-<h3>Part {{ part_numbers.project_description }}: Project description</h3>
-{% include 'common/_accordion.tmpl' with prefix='project_description' button_text_collapsed='View project description details' button_text_not_collapsed='Hide project description details' template_file='common/_project_description.tmpl' %}
-<br>
+{#<h3>Part {{ part_numbers.project_description }}: Project description</h3>#}
+{#{% include 'common/_accordion.tmpl' with prefix='project_description' button_text_collapsed='View project description details' button_text_not_collapsed='Hide project description details' template_file='common/_project_description.tmpl' %}#}
+{#<br>#}
 
 {% if proposal_partner_question %}
     <h3>Part {{ part_numbers.roles_competences }}: Roles and competences</h3>
@@ -64,8 +64,10 @@
 
 {% for part in proposal.call.parts %}
     <h2>Part {{ part.heading_number }}: {{ part.title }}</h2>
-    <div class="border p-1 rounded pre-wrap">{{ part.introductory_text }}</div>
+    {% if part.introductory_text %}<div class="border p-1 rounded pre-wrap">{{ part.introductory_text }}</div>{% endif %}
     <br>
+    {% include 'common/_questions_answers-accordion-detail.tmpl' with part=part only %}
+    <p></p>
 {% endfor %}
 
 <p></p>
