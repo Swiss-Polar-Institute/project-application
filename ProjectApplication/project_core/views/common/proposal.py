@@ -97,7 +97,7 @@ class AbstractProposalDetailView(TemplateView):
 
         context['proposal'] = proposal
 
-        context['part_numbers'] = call.get_part_numbers_for_call()[0]
+        context['part_numbers'] = call.get_part_numbers_for_call()
 
         context['parts_with_answers'] = get_parts_with_answers(proposal)
 
@@ -304,7 +304,7 @@ class AbstractProposalView(TemplateView):
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
 
-        context['part_numbers'] = call.get_part_numbers_for_call()[0]
+        context['part_numbers'] = call.get_part_numbers_for_call()
         context['activity'] = get_template_value_for_call('activity', call)
 
         if timezone.now() > call.submission_deadline:
@@ -565,7 +565,7 @@ class AbstractProposalView(TemplateView):
 
         context['action'] = 'Edit'
 
-        context['part_numbers'] = call.get_part_numbers_for_call()[0]
+        context['part_numbers'] = call.get_part_numbers_for_call()
 
         context.update(call_context_for_template(call))
 

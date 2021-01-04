@@ -35,9 +35,6 @@
 {% endif %}
 
 <p></p>
-{#<h3>Part {{ part_numbers.project_description }}: Project description</h3>#}
-{#{% include 'common/_accordion.tmpl' with prefix='project_description' button_text_collapsed='View project description details' button_text_not_collapsed='Hide project description details' template_file='common/_project_description.tmpl' %}#}
-{#<br>#}
 
 {% if proposal_partner_question %}
     <h3>Part {{ part_numbers.roles_competences }}: Roles and competences</h3>
@@ -46,6 +43,15 @@
     {% include 'common/_accordion.tmpl' with prefix='partners' button_text_collapsed='View partners' button_text_not_collapsed='Hide partners' template_file='common/_table-partners.tmpl' %}
     <hr>
 {% endif %}
+
+{% for part_with_answers in parts_with_answers %}
+    <h2>Part {{ part_with_answers.heading_number }}: {{ part_with_answers.title }}</h2>
+    {% if part_with_answers.introductory_text %}
+        <div class="pre-wrap">{{ part_with_answers.introductory_text }}</div>{% endif %}
+    <br>
+    {% include 'common/_questions_answers-accordion-detail.tmpl' with part=part_with_answers question_answers=part_with_answers.answers only %}
+    <p></p>
+{% endfor %}
 
 {% if proposal.call.budget_question %}
     <h3>Part {{ part_numbers.budget_requested }}: Budget requested</h3>
@@ -61,14 +67,6 @@
     {% include 'common/_accordion.tmpl' with prefix='funding' button_text_collapsed='View funding details' button_text_not_collapsed='Hide funding details' template_file='common/_table-funding.tmpl' %}
     <br>
 {% endif %}
-
-{% for part_with_answers in parts_with_answers %}
-    <h2>Part {{ part_with_answers.heading_number }}: {{ part_with_answers.title }}</h2>
-    {% if part_with_answers.introductory_text %}<div class="border p-1 rounded pre-wrap">{{ part_with_answers.introductory_text }}</div>{% endif %}
-    <br>
-    {% include 'common/_questions_answers-accordion-detail.tmpl' with part=part_with_answers question_answers=part_with_answers.answers only %}
-    <p></p>
-{% endfor %}
 
 <p></p>
 <h3>Data agreement</h3>
