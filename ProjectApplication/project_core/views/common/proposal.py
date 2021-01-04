@@ -227,7 +227,7 @@ class AbstractProposalView(TemplateView):
 
             context['proposal_status_is_draft'] = proposal.status_is_draft()
 
-            context['extra_parts'] = self._extra_parts_forms(call)
+            context['extra_parts'] = self._extra_parts_forms(call, proposal=proposal)
 
         else:
             if request.GET.get('call', None) is None:
@@ -502,12 +502,6 @@ class AbstractProposalView(TemplateView):
                 if not question_form.save_answers(proposal):
                     messages.error(request,
                                    'File attachments could not be saved - please try attaching the files again or contact SPI if this error reoccurs')
-
-            # if not questions_form.save_answers(proposal):
-            #     # The current only reason to fail is that the file cannot be saved
-            #     # because of problems with the S3 storage
-            #     messages.error(request,
-            #                    'File attachments could not be saved - please try editing your proposal or contact SPI if this error reoccurs')
 
             if call.budget_question():
                 budget_form.save_budgets(proposal)
