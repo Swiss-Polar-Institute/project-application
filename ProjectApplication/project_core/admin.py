@@ -348,6 +348,11 @@ class RoleDescriptionAdmin(admin.ModelAdmin):
 class CallPartAdmin(admin.ModelAdmin):
     list_display = ('call', 'title', 'introductory_text')
 
+
+class CallPartFileAdmin(admin.ModelAdmin):
+    list_display = ('call_part', 'name', 'description', 'file',)
+
+
 admin.site.register(project_core.models.StepType, StepTypeAdmin)
 admin.site.register(project_core.models.Step, StepAdmin)
 admin.site.register(project_core.models.BudgetCategory, BudgetCategoryAdmin)
@@ -388,3 +393,4 @@ admin.site.register(project_core.models.FinancialKey, FinancialKeyAdmin)
 admin.site.register(project_core.models.PostalAddress, PostalAddressAdmin)
 admin.site.register(project_core.models.RoleDescription, RoleDescriptionAdmin)
 admin.site.register(project_core.models.CallPart, CallPartAdmin)
+admin.site.register(project_core.models.CallPartFile, CallPartFileAdmin)

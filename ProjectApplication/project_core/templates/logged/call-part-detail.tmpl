@@ -3,20 +3,27 @@
 {% load crispy_forms_tags %}
 
 {% block contents %}
-    <div class="row">
-        <div class="col-10">
-            <h1>View Call Part</h1>
-            <strong>Call:</strong> {{ callpart.call.long_name }}<br>
-            <strong>Order:</strong> {{ callpart.order }}<br>
-            <strong>Title:</strong> {{ callpart.title }}<br>
-            <strong>Introductory text:</strong>
-            <div class="border p-1 bg-white rounded pre-wrap">{{ callpart.introductory_text }}</div>
-        </div>
+    {% with call=callpart.call %}
+        <div class="row">
+            <div class="col-10">
+                <h1>View Call Part</h1>
+                <strong>Call:</strong> <a
+                    href="{% url 'logged-call-detail' pk=call.pk %}">{{ call.long_name }}</a><br>
+                <strong>Order:</strong> {{ callpart.order }}<br>
+                <strong>Title:</strong> {{ callpart.title }}<br>
+                <strong>Introductory text:</strong>
+                <div class="border p-1 bg-white rounded pre-wrap">{{ callpart.introductory_text|default:'-' }}</div>
 
-        <div class="col-2">
-            <a class="btn btn-primary"
-               href="{% url 'logged-call-part-update' call_pk=callpart.call.pk proposal_part_pk=callpart.pk %}">Edit
-                Call Part</a>
+                <p></p>
+                <h2>List of questions</h2>
+                {% include 'logged/list-of-questions-for-part.tmpl' with call_part=callpart only %}
+            </div>
+
+            <div class="col-2">
+                <a class="btn btn-primary"
+                   href="{% url 'logged-call-part-update' call_pk=call.pk proposal_part_pk=callpart.pk %}">Edit
+                    Call Part</a>
+            </div>
         </div>
-    </div>
+    {% endwith %}
 {% endblock %}

@@ -1,5 +1,6 @@
 import calendar
 import logging
+import os
 import uuid as uuid_lib
 from typing import List
 
@@ -9,8 +10,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, RegexValidator
 from django.core.validators import validate_email
-from django.db import models, transaction
-from django.db.models import Max, Sum
+from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
 from phonenumber_field.phonenumber import PhoneNumber
@@ -19,7 +20,8 @@ from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
 from .utils.orcid import raise_error_if_orcid_invalid
-from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field
+from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field, \
+    management_file_validator
 
 logger = logging.getLogger('project_core')
 
@@ -1223,6 +1225,9 @@ class CallPart(CreateModifyOn):
     def questions_type_files(self):
         return self.callquestion_set.filter(answer_type=CallQuestion.FILE).order_by('order')
 
+    def questions(self):
+        return self.callquestion_set.order_by('order')
+
     def div_id(self):
         return f'CallPart_{self.pk}'
 
@@ -1231,3 +1236,23 @@ class CallPart(CreateModifyOn):
 
     def __str__(self):
         return f'{self.call.short_name}-{self.title}'
+
+
+def call_part_file_rename(instance, filename):
+    base, extension = os.path.splitext(filename)
+    return f'project_core/CAllPartFile/CallPartFile-{instance.proposal.id}{extension}'
+
+
+class CallPartFile(CreateModifyOn):
+    call_part = models.ForeignKey(CallPart,
+                                  help_text='Call part that this file belongs to',
+                                  on_delete=models.PROTECT)
+
+    name = models.CharField(max_length=64, help_text='Name of the file')
+    description = models.CharField(max_length=512, help_text='Description of this file')
+    file = models.FileField(storage=S3Boto3Storage(),
+                            upload_to=call_part_file_rename,
+                            validators=[*management_file_validator()])
+
+    def __str__(self):
+        return f'{self.call_part}-{self.name}'
