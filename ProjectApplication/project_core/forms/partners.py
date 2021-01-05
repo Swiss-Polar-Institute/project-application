@@ -7,7 +7,7 @@ from django.forms import ModelForm, BaseInlineFormSet, inlineformset_factory
 from project_core.forms.utils import get_field_information, LabelAndOrderNameChoiceField
 from project_core.models import ProposalPartner, Proposal, PersonPosition, PhysicalPerson, PersonTitle, CareerStage, \
     Role
-from variable_templates.utils import apply_templates
+from variable_templates.utils import apply_templates_to_fields
 from .utils import organisations_name_autocomplete
 from ..utils.orcid import field_set_read_only, orcid_div
 from ..utils.utils import create_person_position
@@ -58,7 +58,7 @@ class ProposalPartnerItemForm(ModelForm):
         self.fields['person__organisations'] = organisations_name_autocomplete(initial=person__organisations_initial,
                                                                                help_text='Please select the organisation(s) to which the partner is affiliated for the purposes of this proposal.')
 
-        apply_templates(self.fields, call)
+        apply_templates_to_fields(self.fields, call)
 
         self.helper.layout = Layout(
             orcid_div('person__physical_person__orcid'),

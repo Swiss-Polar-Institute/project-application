@@ -4,7 +4,7 @@ from django import forms
 
 from project_core.forms.utils import LabelAndOrderNameChoiceField
 from project_core.models import RoleDescription
-from variable_templates.utils import apply_templates
+from variable_templates.utils import apply_templates_to_fields
 
 
 class RoleDescriptionForm(forms.ModelForm):
@@ -12,7 +12,7 @@ class RoleDescriptionForm(forms.ModelForm):
         call = kwargs.pop('call', None)
         super().__init__(*args, **kwargs)
 
-        apply_templates(self.fields, call)
+        apply_templates_to_fields(self.fields, call)
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

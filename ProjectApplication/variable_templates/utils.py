@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from typing import Optional
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Field
@@ -36,7 +37,10 @@ def copy_template_variables_from_funding_instrument_to_call(call: Call):
         call_template_variable.save()
 
 
-def apply_templates(fields: OrderedDict, call):
+def apply_templates_to_string(string: Optional[str], call: Call) -> Optional[str]:
+    if string is None:
+        return None
+
     # Replaces the {{ name }}
     template_name_values = {}
 
@@ -50,24 +54,27 @@ def apply_templates(fields: OrderedDict, call):
     for template_name_value in CallVariableTemplate.objects.filter(call=call).all():
         template_name_values[template_name_value.name.name] = template_name_value.value
 
+    for template_name, template_value in template_name_values.items():
+        string = string.replace(f'{{{{ {template_name} }}}}',
+                                template_value)
+
+    return string
+
+
+def apply_templates_to_fields(fields: OrderedDict, call):
     for field in fields.items():
-        for template_name in template_name_values.keys():
-            if field[1] is None:
-                continue
+        if field[1] is None:
+            continue
 
-            if not issubclass(type(field[1]), Field):
-                # Check opening a proposal with a ProposalPartnerItemForm
-                # It does: self.fields['id'] = self.instance.pk
-                # And then here it expects a field (with .label, .help_text)
-                # but an int is received
-                continue
+        if not issubclass(type(field[1]), Field):
+            # Check opening a proposal with a ProposalPartnerItemForm
+            # It does: self.fields['id'] = self.instance.pk
+            # And then here it expects a field (with .label, .help_text)
+            # but an int is received
+            continue
 
-            if field[1].label:
-                field[1].label = field[1].label.replace(f'{{{{ {template_name} }}}}',
-                                                        template_name_values[template_name])
-            if field[1].help_text:
-                field[1].help_text = field[1].help_text.replace(f'{{{{ {template_name} }}}}',
-                                                                template_name_values[template_name])
+        field[1].label = apply_templates_to_string(field[1].label, call)
+        field[1].help_text = apply_templates_to_string(field[1].help_text, call)
 
 
 def get_template_value_for_funding_instrument(name, funding_instrument):

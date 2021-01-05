@@ -36,7 +36,7 @@ class UtilsTest(TestCase):
 
         self.assertIn('{{ activity }}', fields['title'].help_text)
 
-        utils.apply_templates(fields, self._call)
+        utils.apply_templates_to_fields(fields, self._call)
 
         self.assertNotIn('{{ activity }}', fields['title'].help_text)
 
@@ -55,7 +55,7 @@ class UtilsTest(TestCase):
 
         self.assertIn('{{ activity }}', fields['title'].help_text)
 
-        utils.apply_templates(fields, self._call)
+        utils.apply_templates_to_fields(fields, self._call)
 
         self.assertNotIn('{{ activity }}', fields['title'].help_text)
 
@@ -71,7 +71,7 @@ class UtilsTest(TestCase):
 
         self.assertIn('{{ activity }}', fields['title'].help_text)
 
-        utils.apply_templates(fields, self._call)
+        utils.apply_templates_to_fields(fields, self._call)
 
         self.assertNotIn('{{ activity }}', fields['title'].help_text)
         self.assertEqual('Name of the proposal', fields['title'].help_text)

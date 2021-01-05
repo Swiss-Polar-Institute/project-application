@@ -8,7 +8,7 @@ from django.forms import ModelForm
 from django.utils.safestring import mark_safe
 from django.utils.timezone import utc
 
-from variable_templates.utils import apply_templates
+from variable_templates.utils import apply_templates_to_fields
 from .utils import keywords_validation
 from ..fields import FlexibleDecimalField
 from ..models import Proposal, Call
@@ -40,7 +40,7 @@ class ProposalForm(ModelForm):
         self.helper.form_tag = False
 
         self.fields['duration_months'].help_text = 'Expected duration of the {{ activity }} in months'
-        apply_templates(self.fields, call)
+        apply_templates_to_fields(self.fields, call)
 
         divs = []
         divs.append(

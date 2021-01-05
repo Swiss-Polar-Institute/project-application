@@ -29,7 +29,7 @@ from project_core.forms.proposal import ProposalForm
 from project_core.forms.questions import Questions
 from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, ProposalQAFile
-from variable_templates.utils import get_template_value_for_call
+from variable_templates.utils import get_template_value_for_call, apply_templates_to_string
 
 PROPOSAL_FORM_NAME = 'proposal_form'
 PERSON_FORM_NAME = 'person_form'
@@ -66,8 +66,8 @@ def get_parts_with_answers(proposal):
         questions_answers_text = prepare_answers(part.questions_type_text(), proposal)
         questions_answers_file = prepare_answers(part.questions_type_files(), proposal)
 
-        parts.append({'title': part.title,
-                      'introductory_text': part.introductory_text,
+        parts.append({'title': apply_templates_to_string(part.title, proposal.call),
+                      'introductory_text': apply_templates_to_string(part.introductory_text, proposal.call),
                       'heading_number': part.heading_number,
                       'questions_type_text': questions_answers_text,
                       'questions_type_file': questions_answers_file,
@@ -168,8 +168,8 @@ class AbstractProposalView(TemplateView):
         forms = []
 
         for part in call.parts():
-            form = {'title': part.title,
-                    'introductory_text': part.introductory_text,
+            form = {'title': apply_templates_to_string(part.title, call),
+                    'introductory_text': apply_templates_to_string(part.introductory_text, call),
                     'heading_number': part.heading_number,
                     'question_form': Questions(proposal=proposal,
                                                call=call,
