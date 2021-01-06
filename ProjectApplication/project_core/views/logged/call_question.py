@@ -6,8 +6,8 @@ from project_core.call_question import CallQuestionForm, CallQuestionFromTemplat
 from project_core.models import CallQuestion, Call, CallPart
 
 
-class CallQuestionView(TemplateView):
-    template_name = 'logged/question_answer-detail.tmpl'
+class CallPartQuestionView(TemplateView):
+    template_name = 'logged/call_part-question_answer-detail.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,9 +32,9 @@ class CallQuestionView(TemplateView):
         return context
 
 
-class CallQuestionUpdate(SuccessMessageMixin, UpdateView):
+class CallPartQuestionUpdate(SuccessMessageMixin, UpdateView):
     model = CallQuestion
-    template_name = 'logged/question_answer-form.tmpl'
+    template_name = 'logged/call_part-question_answer-form.tmpl'
     form_class = CallQuestionForm
     pk_url_kwarg = 'call_question_pk'
     context_object_name = 'call_question'
@@ -82,8 +82,8 @@ def bread_crumb_call_question(call_part, action):
             ]
 
 
-class CallQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
-    template_name = 'logged/question_answer-form.tmpl'
+class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
+    template_name = 'logged/call_part-question_answer-form.tmpl'
     form_class = CallQuestionFromTemplateQuestionForm
     success_message = 'Question(s) added'
 
