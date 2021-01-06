@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView, UpdateView, FormView
 
 from project_core.call_question import CallQuestionForm, CallQuestionFromTemplateQuestionForm
-from project_core.models import CallQuestion, Call, CallPart
+from project_core.models import CallQuestion, CallPart
 
 
 class CallPartQuestionView(TemplateView):
@@ -62,24 +62,8 @@ class CallPartQuestionUpdate(SuccessMessageMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('logged-call-part-question-detail', kwargs={'call_pk': self.object.call_part.call.pk,
-                                                              'call_question_pk': self.object.pk
-                                                              })
-
-
-def bread_crumb_call_question(call_part, action):
-    call = call_part.call
-
-    return [{'name': 'Calls', 'url': reverse('logged-calls')},
-            {'name': f'Details ({call.little_name()})',
-             'url': reverse('logged-call-detail', kwargs={'pk': call.pk})},
-            {'name': f'Call Part ({call_part.title})',
-             'url': reverse('logged-call-part-detail', kwargs={'call_pk': call.pk,
-                                                               'call_part_pk': call_part.pk
-                                                               }
-                            )
-             },
-            {'name': f'View Call Question'}
-            ]
+                                                                   'call_question_pk': self.object.pk
+                                                                   })
 
 
 class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
@@ -88,15 +72,14 @@ class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
     success_message = 'Question(s) added'
 
     def get_context_data(self, **kwargs):
-        call = Call.objects.get(pk=self.kwargs['call_pk'])
         call_part: CallPart = CallPart.objects.get(pk=self.kwargs['call_part_pk'])
+        call = call_part.call
 
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'call-list',
-                        'sidebar_template': 'logged/_sidebar-calls.tmpl'
-                        })
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
                                  {'name': f'Details ({call.little_name()})',
@@ -107,10 +90,10 @@ class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
                                                                                     }
                                                  )
                                   },
-                                 {'name': 'View Call Question'}
-                                 ]
+                                 {'name': 'View Call Question'}]
 
         return context
+
 
     def form_valid(self, form):
         is_valid_form = super().form_valid(form)
@@ -119,10 +102,12 @@ class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
 
         return is_valid_form
 
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['call_part_pk'] = self.kwargs['call_part_pk']
         return kwargs
+
 
     def get_success_url(self):
         call_pk = self.kwargs['call_pk']

@@ -1,6 +1,6 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit, HTML
+from crispy_forms.layout import Layout, Div, Submit
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.db.models import Max

@@ -88,7 +88,7 @@ class CallPartFileCreate(SuccessMessageMixin, CreateView):
                                                                                     }
                                                  )
                                   },
-                                 {'name': 'View Call Question'}
+                                 {'name': 'View Call File'}
                                  ]
 
         return context
