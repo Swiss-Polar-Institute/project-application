@@ -88,13 +88,6 @@ class CallForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # if self.instance.pk:
-        #     questions = self.instance.callquestion_set.all().values_list('template_question', flat=True)
-        #     used_questions = TemplateQuestion.objects.filter(id__in=questions)
-        # else:
-        #     self.fields['finance_year'].initial = datetime.now().year
-        #     used_questions = []
-
         self.budget_categories_order_key = f'budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
         budget_category_choices, enabled_budget_categories = CheckboxSelectMultipleSortable.get_choices_initial(
@@ -108,22 +101,8 @@ class CallForm(forms.ModelForm):
                                                                      required=False
                                                                      )
 
-        # self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_questions,
-        #                                                                    queryset=TemplateQuestion.objects.all(),
-        #                                                                    required=False,
-        #                                                                    widget=FilteredSelectMultiple(
-        #                                                                        is_stacked=True,
-        #                                                                        verbose_name='questions'),
-        #                                                                    label=self.Meta.labels['template_questions'])
-
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
         self.fields['budget_categories'].label = 'Budget categories (drag and drop to sort them)'
-
-        # self.fields[
-        #     'template_questions'].help_text = f'Select the questions that you would like to add to this call and move them to the box below using the arrow. ' \
-        #                                       f'Check the full details of the question are correct by <a href="{reverse("logged-template-question-list")}">viewing ' \
-        #                                       f'the template questions</a>, or <a href="{reverse("logged-template-question-add")}">create a new template ' \
-        #                                       f'question</a> if necessary.'
 
         XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['call_open_date'])
         XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['submission_deadline'])
@@ -187,14 +166,6 @@ class CallForm(forms.ModelForm):
                     css_class='col-12'),
                 css_class='row'
             ),
-            # Div(
-            # HTML('<h2 class="col-12">Questions</h2>'),
-            # css_class='row'
-            # ),
-            # Div(
-            #     Div('template_questions', css_class='col-12'),
-            #     css_class='row'
-            # )
         )
 
     def clean(self):
@@ -221,13 +192,6 @@ class CallForm(forms.ModelForm):
         if self.cleaned_data['budget_maximum'] == 0:
             self.add_error('budget_maximum', 'Budget maximum cannot be 0')
 
-        #
-        # if cleaned_data['budget_categories'] and self.cleaned_data['budget_maximum'] == 0:
-        #     self.add_error('budget_maximum', 'Budget maximum cannot be 0 if there are budget categories selected')
-        #
-        # if not cleaned_data['budget_categories'] and self.cleaned_data['budget_maximum'] > 0:
-        #     self.add_error('budget_categories', 'Budget categories are required if budget maximum is not 0')
-
         return cleaned_data
 
     def save(self, commit=True):
@@ -236,24 +200,6 @@ class CallForm(forms.ModelForm):
         CheckboxSelectMultipleSortable.save(BudgetCategoryCall, instance, 'call', BudgetCategory, 'budget_category',
                                             self.cleaned_data['budget_categories'],
                                             self.cleaned_data[self.budget_categories_order_key])
-
-        # if commit:
-        #     template_questions_wanted = []
-        #
-        #     for template_question in self.cleaned_data['template_questions']:
-        #         call_question = CallQuestion.from_template(template_question)
-        #         template_questions_wanted.append(template_question.id)
-        #
-        #         if instance.callquestion_set.filter(template_question=template_question):
-        #             # This question was already added
-        #             continue
-        #
-        #         call_question.call = instance
-        #         call_question.save()
-        #
-        #     for call_question in instance.callquestion_set.all():
-        #         if call_question.template_question.id not in template_questions_wanted:
-        #             call_question.delete()
 
         return instance
 
