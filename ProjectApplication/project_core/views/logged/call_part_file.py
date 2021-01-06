@@ -49,7 +49,9 @@ class CallFileView(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
                                  {'name': f'Details ({file.call_part.call.little_name()})',
                                   'url': url_call_parts_anchor},
-                                 {'name': file.name}]
+                                 {'name': f'Part {file.call_part.title}', 'url': reverse('logged-call-part-detail', kwargs={
+                                     'call_pk': file.call_part.call.pk, 'call_part_pk': file.call_part.pk})},
+                                 {'name': f'File ({file.name})'}]
 
         return context
 

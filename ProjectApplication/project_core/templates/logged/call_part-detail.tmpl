@@ -15,14 +15,14 @@
                 <div class="border p-1 bg-white rounded pre-wrap">{{ callpart.introductory_text|default:'-' }}</div>
 
                 <p></p>
-                <h2>List of questions</h2>
+                <h2>Call part contents</h2>
                 {% include 'logged/list-of-questions-for-part.tmpl' with call_part=callpart only %}
             </div>
 
             <div class="col-2">
                 <a class="btn btn-primary"
                    href="{% url 'logged-call-part-update' call_pk=call.pk call_part_pk=callpart.pk %}">Edit
-                    Call Part</a>
+                    call part</a>
             </div>
         </div>
     {% endwith %}

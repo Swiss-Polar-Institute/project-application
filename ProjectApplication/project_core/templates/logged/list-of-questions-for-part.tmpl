@@ -1,10 +1,21 @@
 <ul>
+    {% for call_part_file in call_part.files %}
+        <li>
+            File: <a href="{% url 'logged-call-part-file-detail' call_pk=call_part_file.call_part.call.pk call_file_pk=call_part_file.pk  %}">{{ call_part_file.name }}</a>
+        </li>
+    {% endfor %}
     {% for callquestion in call_part.questions %}
         <li>
             Question: <a
                 href="{% url 'logged-call-question-detail' call_pk=callquestion.call_part.call.pk call_question_pk=callquestion.pk %}">{{ callquestion.question_text }}</a>
         </li>
     {% endfor %}
+    {% if call_part.callpartfile_set.all %}
+        <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove files</a>
+    {% else %}
+        <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove files</a>
+    {% endif %}
+    <br>
     {% if call_part.callquestion_set.all %}
         <a href="{% url 'logged-call-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
             questions</a>
@@ -14,6 +25,4 @@
             questions</a>
     {% endif %}
     <br>
-    <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
-        files</a>
 </ul>

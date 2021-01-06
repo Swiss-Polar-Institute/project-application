@@ -20,9 +20,9 @@ class CallPartFileForm(forms.ModelForm):
         self.helper = FormHelper(self)
 
         if kwargs['instance']:
-            action_text = 'Save file'
+            action_text = 'Save File'
         else:
-            action_text = 'Create file'
+            action_text = 'Create File'
 
         cancel_url = reverse('logged-call-detail', kwargs={'pk': self._call_part.call.pk}) + '#parts'
 

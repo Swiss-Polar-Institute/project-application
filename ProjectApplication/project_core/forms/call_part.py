@@ -17,11 +17,11 @@ class CallPartForm(forms.ModelForm):
         self.helper = FormHelper(self)
 
         if kwargs['instance']:
-            action_text = 'Save call part'
+            action_text = 'Save Call Part'
             cancel_url = reverse('logged-call-part-detail',
                                  kwargs={'call_pk': call_pk, 'call_part_pk': kwargs['instance'].id})
         else:
-            action_text = 'Create call part'
+            action_text = 'Create Call Part'
             cancel_url = reverse('logged-call-detail',
                                  kwargs={'pk': call_pk})
 
