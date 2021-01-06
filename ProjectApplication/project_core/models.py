@@ -19,6 +19,7 @@ from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
 from . import utils
+from .utils.SpiS3Boto3Storage import SpiS3Boto3Storage
 from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field, \
     management_file_validator
@@ -1228,6 +1229,9 @@ class CallPart(CreateModifyOn):
     def questions(self):
         return self.callquestion_set.order_by('order')
 
+    def files(self):
+        return self.callpartfile_set.order_by('order')
+
     def div_id(self):
         return f'CallPart_{self.pk}'
 
@@ -1238,9 +1242,9 @@ class CallPart(CreateModifyOn):
         return f'{self.call.short_name}-{self.title}'
 
 
-def call_part_file_rename(instance, filename):
+def call_part_file_rename(instance: 'CallPartFile', filename):
     base, extension = os.path.splitext(filename)
-    return f'project_core/CAllPartFile/CallPartFile-{instance.proposal.id}{extension}'
+    return f'project_core/CallPartFile/CallPartFile-{instance.pk}{extension}'
 
 
 class CallPartFile(CreateModifyOn):
@@ -1250,9 +1254,20 @@ class CallPartFile(CreateModifyOn):
 
     name = models.CharField(max_length=64, help_text='Name of the file')
     description = models.CharField(max_length=512, help_text='Description of this file')
-    file = models.FileField(storage=S3Boto3Storage(),
+    file = models.FileField(storage=SpiS3Boto3Storage(),
                             upload_to=call_part_file_rename,
                             validators=[*management_file_validator()])
 
+    order = models.PositiveIntegerField(blank=True, null=True)
+
+    def download_link(self):
+        return self.file.storage.download_link_with_name(self.file.name, filename=self.name)
+
+    class Meta:
+        unique_together = (('call_part', 'name'), )
+
     def __str__(self):
         return f'{self.call_part}-{self.name}'
+
+    def get_absolute_url(self):
+        return reverse('logged-call-part-file-detail', kwargs={'call_pk': self.call_part.call.pk, 'call_file_pk': self.pk})

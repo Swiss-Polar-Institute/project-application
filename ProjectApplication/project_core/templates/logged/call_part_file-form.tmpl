@@ -1,0 +1,23 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>{{ action }} file</h1>
+            <strong>Call:</strong> {{ call_part.call.long_name }}<br>
+            <strong>Call Part:</strong> {{ call_part.title }}<br>
+            <p></p>
+            {% crispy form %}
+        </div>
+
+        <div class="col-2">
+{#            {% if callpart %}#}
+{#                <a class="btn btn-primary"#}
+{#                   href="{% url 'logged-call-part-update' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">Edit#}
+{#                    Call Part</a>#}
+{#            {% endif %}#}
+        </div>
+    </div>
+{% endblock %}

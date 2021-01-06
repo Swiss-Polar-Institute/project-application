@@ -2,7 +2,7 @@
     <ul>
         {% for part in parts %}
             <li>
-                <a href="{% url 'logged-call-part-detail' call_pk=part.call.pk proposal_part_pk=part.pk %}">Part {{ part.heading_number }}: {{ part.title }}</a>
+                <a href="{% url 'logged-call-part-detail' call_pk=part.call.pk call_part_pk=part.pk %}">Part {{ part.heading_number }}: {{ part.title }}</a>
                 {% include 'logged/list-of-questions-for-part.tmpl' with call_part=part only %}
             </li>
         {% endfor %}

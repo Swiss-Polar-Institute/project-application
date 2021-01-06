@@ -89,25 +89,6 @@
             <h2><a id="parts">Parts</a></h2>
             {% include 'logged/_call-part-list.tmpl' with parts=parts call=call only %}
 
-{#            <h2>Questions</h2>#}
-{#            {% for question in call.callquestion_set_ordered_by_order %}#}
-{#                <strong>Answer type:</strong>#}
-{#                {% include 'common/_answer_type-icon.tmpl' with type=question.answer_type %}#}
-{#                <br>#}
-{#                <strong>Question:</strong> {{ question.question_text }}#}
-{#                {% if question.answer_type == question.TEXT %}(max words: {% if question.answer_max_length %}#}
-{#                    {{ question.answer_max_length }}{% else %}unlimited{% endif %}){% endif %}#}
-{#                <br>#}
-{#                <strong>Description:</strong> {{ question.question_description }}<br>#}
-{#                <strong>Answer required:</strong>#}
-{#                {% include 'common/_check-icon.tmpl' with value=question.answer_required %}#}
-{#                <p></p>#}
-{#            {% empty %}#}
-{#                No questions for this call#}
-{#            {% endfor %}#}
-{#            <p>#}
-{#            </p>#}
-{##}
             <p></p>
             <h2>Template variables</h2>
             {% if template_variables %}

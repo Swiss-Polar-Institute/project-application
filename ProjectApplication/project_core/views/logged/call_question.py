@@ -74,7 +74,7 @@ def bread_crumb_call_question(call_part, action):
              'url': reverse('logged-call-detail', kwargs={'pk': call.pk})},
             {'name': f'Call Part ({call_part.title})',
              'url': reverse('logged-call-part-detail', kwargs={'call_pk': call.pk,
-                                                               'proposal_part_pk': call_part.pk
+                                                               'call_part_pk': call_part.pk
                                                                }
                             )
              },
@@ -103,7 +103,7 @@ class CallQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
                                   'url': reverse('logged-call-detail', kwargs={'pk': call.pk})},
                                  {'name': f'Call Part ({call_part.title})',
                                   'url': reverse('logged-call-part-detail', kwargs={'call_pk': call.pk,
-                                                                                    'proposal_part_pk': call_part.pk
+                                                                                    'call_part_pk': call_part.pk
                                                                                     }
                                                  )
                                   },

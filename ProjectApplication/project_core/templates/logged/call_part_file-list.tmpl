@@ -3,34 +3,39 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            <h1>List parts for {{ call.long_name }}</h1>
+            <h1>List files for {{ callpart.title }}</h1>
+            Call: {{ callpart.call.long_name }}
+
+            <p></p>
 
             <table id="call-parts" class="table table-striped table-sm table-hover display">
                 <thead>
                 <tr>
-                    <th>Part order</th>
-                    <th>Title</th>
+                    <th>Order</th>
+                    <th>Name</th>
+                    <th>Description</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for callpart in callpart_list %}
+                {% for callpartfile in callpart.files %}
                     <tr>
-                        <td>{% include 'common/_value-or-dash.tmpl' with value=callpart.order %}</td>
-                        <td>{{ callpart.title }}</td>
+                        <td>{% include 'common/_value-or-dash.tmpl' with value=callpartfile.order %}</td>
+                        <td>{{ callpartfile.name }}</td>
+                        <td>{{ callpartfile.description|default:'-' }}</td>
                         <td>
                             <a class="btn btn-primary btn-xs"
-                               href="{% url 'logged-call-part-detail' call_pk=callpart.call.pk proposal_part_pk=callpart.pk %}">View</a>
+                               href="{% url 'logged-call-part-file-detail' call_pk=callpartfile.call_part.call.pk call_file_pk=callpartfile.pk %}">View</a>
 
                             <a class="btn btn-primary btn-xs"
-                               href="{% url 'logged-call-part-update' call_pk=callpart.call.pk proposal_part_pk=callpart.pk %}">Edit</a>
+                               href="{% url 'logged-call-part-file-update' call_pk=callpartfile.call_part.call.pk call_file_pk=callpartfile.pk %}">Edit</a>
                         </td>
                     </tr>
                 {% endfor %}
                 </tbody>
             </table>
             <p></p>
-            <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Add new Call Part</a>
+            <a class="btn btn-primary" href="{% url 'logged-call-part-file-add' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">Add new file</a>
         </div>
 
         <div class="col-2">
@@ -43,8 +48,9 @@
                     "pageLength": 100,
                     "columns": [
                         {"width": "10%"},
-                        {"width": "80%"},
                         {"width": "10%"},
+                        {"width": "60%"},
+                        {"width": "20%"},
                     ],
                     "searchHighlight": true
                 }

@@ -17,11 +17,11 @@ class CallPartForm(forms.ModelForm):
         self.helper = FormHelper(self)
 
         if kwargs['instance']:
-            action_text = 'Save Call Part'
+            action_text = 'Save call part'
             cancel_url = reverse('logged-call-part-detail',
-                                 kwargs={'call_pk': call_pk, 'proposal_part_pk': kwargs['instance'].id})
+                                 kwargs={'call_pk': call_pk, 'call_part_pk': kwargs['instance'].id})
         else:
-            action_text = 'Create Call Part'
+            action_text = 'Create call part'
             cancel_url = reverse('logged-call-detail',
                                  kwargs={'pk': call_pk})
 
@@ -54,7 +54,7 @@ class CallPartForm(forms.ModelForm):
     def clean_order(self):
         if self.cleaned_data['order'] is None:
             last_order = CallPart.objects.filter(call=self._call).aggregate(Max('order'))
-            return last_order['order__max']+1
+            return last_order['order__max']+10
         else:
             return self.cleaned_data['order']
 

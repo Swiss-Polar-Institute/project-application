@@ -7,7 +7,7 @@ from project_core.models import CallPart, Call
 
 class CallPartList(ListView):
     model = CallPart
-    template_name = 'logged/call-part-list.tmpl'
+    template_name = 'logged/call_part-list.tmpl'
 
     def get_queryset(self):
         return CallPart.objects.filter(call_id=self.kwargs['call_pk'])
@@ -33,9 +33,9 @@ class CallPartList(ListView):
 
 
 class CallPartDetail(DeleteView):
-    template_name = 'logged/call-part-detail.tmpl'
+    template_name = 'logged/call_part-detail.tmpl'
     model = CallPart
-    pk_url_kwarg = 'proposal_part_pk'
+    pk_url_kwarg = 'call_part_pk'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -63,7 +63,7 @@ class CallPartDetail(DeleteView):
 
 class CallPartCreate(CreateView):
     form_class = CallPartForm
-    template_name = 'logged/call-part-form.tmpl'
+    template_name = 'logged/call_part-form.tmpl'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -93,14 +93,14 @@ class CallPartCreate(CreateView):
 
     def get_success_url(self):
         return reverse('logged-call-part-detail', kwargs={'call_pk': self.kwargs['call_pk'],
-                                                          'proposal_part_pk': self.object.pk})
+                                                          'call_part_pk': self.object.pk})
 
 
 class CallPartUpdate(UpdateView):
     model = CallPart
     form_class = CallPartForm
-    template_name = 'logged/call-part-form.tmpl'
-    pk_url_kwarg = 'proposal_part_pk'
+    template_name = 'logged/call_part-form.tmpl'
+    pk_url_kwarg = 'call_part_pk'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -130,4 +130,4 @@ class CallPartUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse('logged-call-part-detail', kwargs={'call_pk': self.kwargs['call_pk'],
-                                                          'proposal_part_pk': self.kwargs['proposal_part_pk']})
+                                                          'call_part_pk': self.kwargs['call_part_pk']})

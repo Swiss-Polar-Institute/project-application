@@ -10,6 +10,10 @@
             questions</a>
     {% else %}
         <li>No questions in this call part.</li>
-        <a href="{% url 'logged-call-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add questions</a>
+        <a href="{% url 'logged-call-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
+            questions</a>
     {% endif %}
+    <br>
+    <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
+        files</a>
 </ul>

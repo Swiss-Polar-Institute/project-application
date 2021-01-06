@@ -1,0 +1,55 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>List parts for {{ call.long_name }}</h1>
+
+            <table id="call-parts" class="table table-striped table-sm table-hover display">
+                <thead>
+                <tr>
+                    <th>Order</th>
+                    <th>Title</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for callpart in callpart_list %}
+                    <tr>
+                        <td>{% include 'common/_value-or-dash.tmpl' with value=callpart.order %}</td>
+                        <td>{{ callpart.title }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs"
+                               href="{% url 'logged-call-part-detail' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">View</a>
+
+                            <a class="btn btn-primary btn-xs"
+                               href="{% url 'logged-call-part-update' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">Edit</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <p></p>
+            <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Add new call part</a>
+        </div>
+
+        <div class="col-2">
+        </div>
+    </div>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#call-parts.display').DataTable({
+                    "pageLength": 100,
+                    "columns": [
+                        {"width": "10%"},
+                        {"width": "80%"},
+                        {"width": "10%"},
+                    ],
+                    "searchHighlight": true
+                }
+            );
+        });
+    </script>
+
+{% endblock %}

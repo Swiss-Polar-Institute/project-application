@@ -1,0 +1,22 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load thousands_separator %}
+{% load l10n %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Call part file details</h1>
+            <strong>Part:</strong> {{ file.call_part.title }}<br>
+            <strong>Call:</strong> {{ file.call_part.call.long_name }}<br>
+            <strong>Name:</strong> <a href="{{ file.download_link }}">{{ file.name }}</a><br>
+            <strong>Description:</strong> {{ file.description }}<br>
+        </div>
+        <div class="col-2">
+            <p>
+                <a class="btn btn-primary d-print-none"
+                   href="{% url 'logged-call-part-file-update' call_pk=file.call_part.call.pk call_file_pk=file.pk %}">Edit
+                    file</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}
