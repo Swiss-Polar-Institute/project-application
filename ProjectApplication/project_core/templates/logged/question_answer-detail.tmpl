@@ -20,7 +20,7 @@
                 required:</strong> {% include 'common/_check-icon.tmpl' with value=call_question.answer_required %}<br>
         </div>
         <div class="col-2">
-            <a class="btn btn-primary" href="{% url 'logged-call-question-update' call_pk=call_question.call_part.call.pk call_question_pk=call_question.pk  %}">Edit
+            <a class="btn btn-primary" href="{% url 'logged-call-part-question-update' call_pk=call_question.call_part.call.pk call_question_pk=call_question.pk  %}">Edit
                 Question</a>
         </div>
     </div>

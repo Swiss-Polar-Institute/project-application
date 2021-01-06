@@ -61,7 +61,7 @@ class CallQuestionUpdate(SuccessMessageMixin, UpdateView):
         return context
 
     def get_success_url(self):
-        return reverse('logged-call-question-detail', kwargs={'call_pk': self.object.call_part.call.pk,
+        return reverse('logged-call-part-question-detail', kwargs={'call_pk': self.object.call_part.call.pk,
                                                               'call_question_pk': self.object.pk
                                                               })
 

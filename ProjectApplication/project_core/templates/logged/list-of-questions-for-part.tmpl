@@ -7,7 +7,7 @@
     {% for callquestion in call_part.questions %}
         <li>
             Question: <a
-                href="{% url 'logged-call-question-detail' call_pk=callquestion.call_part.call.pk call_question_pk=callquestion.pk %}">{{ callquestion.question_text }}</a>
+                href="{% url 'logged-call-part-question-detail' call_pk=callquestion.call_part.call.pk call_question_pk=callquestion.pk %}">{{ callquestion.question_text }}</a>
         </li>
     {% endfor %}
     {% if call_part.callpartfile_set.all %}
@@ -17,11 +17,11 @@
     {% endif %}
     <br>
     {% if call_part.callquestion_set.all %}
-        <a href="{% url 'logged-call-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
+        <a href="{% url 'logged-call-part-question-update' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
             questions</a>
     {% else %}
         <li>No questions in this call part.</li>
-        <a href="{% url 'logged-call-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
+        <a href="{% url 'logged-call-part-question-update' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
             questions</a>
     {% endif %}
     <br>

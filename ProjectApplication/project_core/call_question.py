@@ -21,7 +21,7 @@ class CallQuestionForm(forms.ModelForm):
         self.helper = FormHelper(self)
 
         if self.instance.pk:
-            cancel_edit_url = reverse('logged-call-question-detail',
+            cancel_edit_url = reverse('logged-call-part-question-detail',
                                       kwargs={'call_pk': self.instance.call_part.call.pk,
                                               'call_question_pk': self.instance.pk
                                               })

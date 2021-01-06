@@ -123,13 +123,13 @@ urlpatterns = [
     # Call (part) Questions
     path('logged/call/<int:call_pk>/question/<int:call_question_pk>/',
          logged.call_question.CallQuestionView.as_view(),
-         name='logged-call-question-detail'),
+         name='logged-call-part-question-detail'),
     path('logged/call/<int:call_pk>/question/<int:call_question_pk>/update/',
          logged.call_question.CallQuestionUpdate.as_view(),
-         name='logged-call-question-update'),
+         name='logged-call-part-question-update'),
     path('logged/call/<int:call_pk>/question/<int:call_part_pk>/add/',
          logged.call_question.CallQuestionTemplateQuestionUpdate.as_view(),
-         name='logged-call-question-add'),
+         name='logged-call-part-question-update'),
 
     path('logged/',
          logged.homepage.Homepage.as_view(),
