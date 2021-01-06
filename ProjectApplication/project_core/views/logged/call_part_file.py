@@ -13,18 +13,22 @@ class CallPartFileList(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['callpart'] = CallPart.objects.get(pk=self.kwargs['call_part_pk'])
+        context['callpart'] = call_part = CallPart.objects.get(pk=self.kwargs['call_part_pk'])
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'
                         })
 
-        context['breadcrumb'] = [{'name': 'TODO3'}]
-        # context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-        #                          {'name': f'Details ({file.call_part.call.little_name()})',
-        #                           'url': url_call_parts_anchor},
-        #                          {'name': file.name}]
+        call = call_part.call
+
+        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
+                                 {'name': f'Call {call.little_name()}', 'url': reverse('logged-call-detail',
+                                                                                            kwargs={'pk': call.pk})},
+                                 {'name': f'Part {call_part.title}', 'url': reverse('logged-call-part-detail',
+                                                                                    kwargs={'call_pk': call.pk,
+                                                                                            'call_part_pk': call_part.pk})},
+                                 {'name': 'List of files'}]
 
         return context
 
