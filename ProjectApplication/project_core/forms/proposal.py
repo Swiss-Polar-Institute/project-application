@@ -112,7 +112,7 @@ class ProposalForm(ModelForm):
 
         errors = {}
 
-        if 'overall_budget' in self.cleaned_data:
+        if 'overall_budget' in cleaned_data and cleaned_data['overall_budget'] is not None:
             if cleaned_data['overall_budget'] < 0:
                 errors['overall_budget'] = 'Budget needs to be greater than 0'
             elif cleaned_data['overall_budget'] > self._call.budget_maximum:
