@@ -174,7 +174,8 @@ class AbstractProposalView(TemplateView):
                     'question_form': Questions(proposal=proposal,
                                                call=call,
                                                call_part=part,
-                                               prefix=AbstractProposalView._form_prefix(part))
+                                               prefix=AbstractProposalView._form_prefix(part)),
+                    'files': part.files()
                     }
             forms.append(form)
 
