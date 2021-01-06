@@ -12,6 +12,7 @@ from variable_templates.utils import apply_templates_to_fields
 from .utils import keywords_validation
 from ..fields import FlexibleDecimalField
 from ..models import Proposal, Call
+from ..templatetags.thousands_separator import thousands_separator
 from ..widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -24,14 +25,22 @@ class ProposalForm(ModelForm):
 
         super().__init__(*args, **kwargs)
 
+        if self._call is None:
+            self._call = self.instance.call
+
         self._raise_duplicated_title = False
+
+        if self._call.overall_budget_question:
+            self.fields['overall_budget'] = FlexibleDecimalField(help_text='Estimate of the budget')
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
+            self.fields['overall_budget'].initial = self.instance.overall_budget
             call = self._call = self.instance.call
         else:
             self.fields['call_id'].initial = self._call.id
             call = Call.objects.get(id=self._call.id)
+
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
@@ -81,6 +90,14 @@ class ProposalForm(ModelForm):
             )
         )
 
+        if call.overall_budget_question:
+            divs.append(
+                Div(
+                    Div('overall_budget', css_class='col-4'),
+                    css_class='row'
+                )
+            )
+
         self.helper.layout = Layout(*divs)
 
     def save(self, commit=True):
@@ -91,12 +108,19 @@ class ProposalForm(ModelForm):
         return model
 
     def clean(self):
-        super().clean()
+        cleaned_data = super().clean()
 
         errors = {}
 
+        if 'overall_budget' in self.cleaned_data:
+            if cleaned_data['overall_budget'] < 0:
+                errors['overall_budget'] = 'Budget needs to be greater than 0'
+            elif cleaned_data['overall_budget'] > self._call.budget_maximum:
+                errors['overall_budget'] = f'Budget is greater than the maximum budget for this call: ' \
+                                           f'{thousands_separator(self._call.budget_maximum)} CHF'
+
         if self._call.keywords_in_general_information_question:
-            keywords_validation(errors, self.cleaned_data, 'keywords')
+            keywords_validation(errors, cleaned_data, 'keywords')
 
         if self._raise_duplicated_title:
             errors['title'] = forms.ValidationError(
@@ -108,8 +132,8 @@ class ProposalForm(ModelForm):
 
         # Converts date to datetime objects to compare with the end of the call.
         # The combine and datetime.datetime.min.time() makes it the beginning of the day
-        proposal_start_date = datetime.datetime.combine(self.cleaned_data['start_date'], datetime.datetime.min.time())
-        proposal_end_date = datetime.datetime.combine(self.cleaned_data['end_date'], datetime.datetime.min.time())
+        proposal_start_date = datetime.datetime.combine(cleaned_data['start_date'], datetime.datetime.min.time())
+        proposal_end_date = datetime.datetime.combine(cleaned_data['end_date'], datetime.datetime.min.time())
 
         proposal_start_date = utc.localize(proposal_start_date)
         proposal_end_date = utc.localize(proposal_end_date)
@@ -126,6 +150,8 @@ class ProposalForm(ModelForm):
         if errors:
             raise forms.ValidationError(errors)
 
+        return cleaned_data
+
     def raise_duplicated_title(self):
         self._raise_duplicated_title = True
         self.full_clean()
@@ -133,7 +159,7 @@ class ProposalForm(ModelForm):
     class Meta:
         model = Proposal
         fields = ['call_id', 'title', 'geographical_areas', 'location', 'keywords', 'start_date',
-                  'end_date', 'duration_months', ]
+                  'end_date', 'duration_months', 'overall_budget']
 
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': forms.CheckboxSelectMultiple,

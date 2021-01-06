@@ -123,6 +123,11 @@ class Call(CreateModifyOn):
     keywords_in_general_information_question = models.BooleanField(
         help_text='True if we want to ask the keywords in the general section',
         default=True)
+    overall_budget_question = models.BooleanField(
+        help_text='True to add the question "Requested overall budget". Useful to request a bulk number instead of '
+                  'the budget breakdown. Budget breakdown is displayed/hidden depending on the categories checked in'
+                  ' its section',
+        default=False)
 
     history = HistoricalRecords()
 
@@ -786,6 +791,11 @@ class Proposal(CreateModifyOn):
     submitted_mail_sent = models.BooleanField(default=False,
                                               help_text='True if the email informing the applicant that the proposal has been submitted has been sent')
 
+    overall_budget = models.DecimalField(decimal_places=2, max_digits=10,
+                                         validators=[MinValueValidator(0)],
+                                         null=True, blank=True,
+                                         help_text='If Call.overall_budget_question is enabled it contains the overall budget. It should be used only if no Budget Categories')
+
     history = HistoricalRecords()
 
     class Meta:
@@ -814,10 +824,18 @@ class Proposal(CreateModifyOn):
 
     def total_budget(self):
         """
+        If the call has overall_budget_question: returns the overall_budget.
+
+        Else returns the sum of the budget items.
+
         Get the total budget requested by a proposal by summing the items of a budget for a proposal.
         :return: returns total amount of budget
         """
 
+        if self.call.overall_budget_question:
+            return self.overall_budget
+
+        # TODO: do this in the database
         budget_items = self.proposedbudgetitem_set.all()
 
         total = 0
@@ -1264,10 +1282,11 @@ class CallPartFile(CreateModifyOn):
         return self.file.storage.download_link_with_name(self.file.name, filename=self.name)
 
     class Meta:
-        unique_together = (('call_part', 'name'), )
+        unique_together = (('call_part', 'name'),)
 
     def __str__(self):
         return f'{self.call_part}-{self.name}'
 
     def get_absolute_url(self):
-        return reverse('logged-call-part-file-detail', kwargs={'call_pk': self.call_part.call.pk, 'call_file_pk': self.pk})
+        return reverse('logged-call-part-file-detail',
+                       kwargs={'call_pk': self.call_part.call.pk, 'call_file_pk': self.pk})

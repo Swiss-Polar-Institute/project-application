@@ -1,16 +1,13 @@
 import logging
-from datetime import datetime
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
-from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
-from django.urls import reverse
 from django.utils import timezone
 
 from ..fields import FlexibleDecimalField
-from ..models import Call, TemplateQuestion, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory, \
+from ..models import Call, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory, \
     CallPart
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
 
@@ -181,16 +178,18 @@ class CallForm(forms.ModelForm):
             ),
             Div(
                 Div('keywords_in_general_information_question', css_class='col-6'),
+                Div('overall_budget_question', css_class='col-6'),
                 css_class='row'
             ),
             Div(
                 Div(HTML('<h2><a id="parts">Call Parts</a></h2>'
-                         '{% include "logged/_call-part-list.tmpl" with parts=parts call=call only %}'), css_class='col-12'),
+                         '{% include "logged/_call-part-list.tmpl" with parts=parts call=call only %}'),
+                    css_class='col-12'),
                 css_class='row'
             ),
             # Div(
-                # HTML('<h2 class="col-12">Questions</h2>'),
-                # css_class='row'
+            # HTML('<h2 class="col-12">Questions</h2>'),
+            # css_class='row'
             # ),
             # Div(
             #     Div('template_questions', css_class='col-12'),
@@ -212,11 +211,22 @@ class CallForm(forms.ModelForm):
         self.cleaned_data[self.budget_categories_order_key] = CheckboxSelectMultipleSortable.get_clean_order(self.data,
                                                                                                              data_budget_categories_order_key)
 
-        if cleaned_data['budget_categories'] and self.cleaned_data['budget_maximum'] == 0:
-            self.add_error('budget_maximum', 'Budget maximum cannot be 0 if there are budget categories selected')
+        if not cleaned_data['budget_categories'] and not cleaned_data['overall_budget_question']:
+            self.add_error('budget_categories',
+                           'Categories are mandatory if "request overall budget question" is disabled')
+        elif cleaned_data['overall_budget_question'] and cleaned_data['budget_categories']:
+            self.add_error('overall_budget_question',
+                           'Overall budget question cannot be anbled if there are budget categories enabled')
 
-        if not cleaned_data['budget_categories'] and self.cleaned_data['budget_maximum'] > 0:
-            self.add_error('budget_categories', 'Budget categories are required if budget maximum is not 0')
+        if self.cleaned_data['budget_maximum'] == 0:
+            self.add_error('budget_maximum', 'Budget maximum cannot be 0')
+
+        #
+        # if cleaned_data['budget_categories'] and self.cleaned_data['budget_maximum'] == 0:
+        #     self.add_error('budget_maximum', 'Budget maximum cannot be 0 if there are budget categories selected')
+        #
+        # if not cleaned_data['budget_categories'] and self.cleaned_data['budget_maximum'] > 0:
+        #     self.add_error('budget_categories', 'Budget categories are required if budget maximum is not 0')
 
         return cleaned_data
 
@@ -253,7 +263,8 @@ class CallForm(forms.ModelForm):
                   'introductory_message',
                   'call_open_date', 'submission_deadline', 'budget_maximum',
                   'other_funding_question', 'proposal_partner_question', 'overarching_project_question',
-                  'scientific_clusters_question', 'keywords_in_general_information_question']
+                  'scientific_clusters_question', 'keywords_in_general_information_question',
+                  'overall_budget_question']
 
         field_classes = {'budget_maximum': FlexibleDecimalField}
 

@@ -55,7 +55,8 @@ class CallAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
         # 'budget_categories_list',
         'budget_maximum', 'other_funding_question',
         'proposal_partner_question', 'overarching_project_question', 'scientific_clusters_question',
-        'keywords_in_general_information_question', 'created_on', 'modified_on',)
+        'keywords_in_general_information_question', 'overall_budget_question',
+        'created_on', 'modified_on',)
     ordering = ('long_name', 'short_name', 'call_open_date', 'submission_deadline', 'budget_maximum',
                 'created_on', 'modified_on',)
 
