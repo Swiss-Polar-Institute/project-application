@@ -13,15 +13,14 @@
     {% if call_part.callpartfile_set.all %}
         <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove files</a>
     {% else %}
-        <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove files</a>
+        No files - <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove files</a>
     {% endif %}
     <br>
     {% if call_part.callquestion_set.all %}
-        <a href="{% url 'logged-call-part-question-update' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
+        <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
             questions</a>
     {% else %}
-        <li>No questions in this call part.</li>
-        <a href="{% url 'logged-call-part-question-update' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
+        No questions - <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
             questions</a>
     {% endif %}
     <br>

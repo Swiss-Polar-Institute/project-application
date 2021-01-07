@@ -27,12 +27,14 @@ class CallPartFileList(ListView):
         call = call_part.call
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-                                 {'name': f'Call {call.little_name()}', 'url': reverse('logged-call-detail',
-                                                                                       kwargs={'pk': call.pk})},
-                                 {'name': f'Part {call_part.title}', 'url': reverse('logged-call-part-detail',
-                                                                                    kwargs={'call_pk': call.pk,
-                                                                                            'call_part_pk': call_part.pk})},
-                                 {'name': 'List of files'}]
+                                 {'name': f'Details ({call.short_name})', 'url': reverse('logged-call-detail',
+                                                                                         kwargs={'pk': call.pk})},
+                                 {'name': 'List Parts',
+                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
+                                 {'name': f'Call Part ({call_part.title})', 'url': reverse('logged-call-part-detail',
+                                                                                           kwargs={'call_pk': call.pk,
+                                                                                                   'call_part_pk': call_part.pk})},
+                                 {'name': 'List files'}]
 
         return context
 
@@ -59,9 +61,11 @@ class CallFileView(TemplateView):
                                   'url': url_call_parts_anchor},
                                  {'name': 'List Parts',
                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': file.call_part.call.pk})},
-                                 {'name': f'Part "{file.call_part.title}"',
+                                 {'name': f'Part ({file.call_part.title})',
                                   'url': reverse('logged-call-part-detail', kwargs={
                                       'call_pk': file.call_part.call.pk, 'call_part_pk': file.call_part.pk})},
+                                 {'name': 'List Files', 'url': reverse('logged-call-part-file-list', kwargs={
+                                     'call_pk': file.call_part.call.pk, 'call_part_pk': file.call_part.pk})},
                                  {'name': f'File ({file.name})'}]
 
         return context
@@ -90,13 +94,15 @@ class CallPartFileCreate(SuccessMessageMixin, CreateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
                                  {'name': f'Details ({call.little_name()})',
                                   'url': reverse('logged-call-detail', kwargs={'pk': call.pk})},
+                                 {'name': 'List Parts',
+                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
                                  {'name': f'Call Part ({call_part.title})',
                                   'url': reverse('logged-call-part-detail', kwargs={'call_pk': call.pk,
                                                                                     'call_part_pk': call_part.pk
                                                                                     }
                                                  )
                                   },
-                                 {'name': 'View Call File'}
+                                 {'name': f'{context["action"]} Call File'}
                                  ]
 
         return context
@@ -124,11 +130,22 @@ class CallPartFileUpdate(SuccessMessageMixin, UpdateView):
 
         context['call_part'] = call_part = self.object.call_part
         context['action'] = 'Update'
+
+        file = self.object
+
+        url_call_parts_anchor = reverse('logged-call-detail', kwargs={'pk': file.call_part.call.pk}) + '#parts'
+
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-                                 {'name': f'Details ({call_part.call.little_name()})',
-                                  'url': reverse('logged-call-update', kwargs={'pk': call_part.call.pk}) + '#parts'},
-                                 {'name': 'TODO4'}
-                                 ]
+                                 {'name': f'Details ({file.call_part.call.little_name()})',
+                                  'url': url_call_parts_anchor},
+                                 {'name': 'List Parts',
+                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': file.call_part.call.pk})},
+                                 {'name': f'Part ({file.call_part.title})',
+                                  'url': reverse('logged-call-part-detail', kwargs={
+                                      'call_pk': file.call_part.call.pk, 'call_part_pk': file.call_part.pk})},
+                                 {'name': 'List Files', 'url': reverse('logged-call-part-file-list', kwargs={
+                                     'call_pk': file.call_part.call.pk, 'call_part_pk': file.call_part.pk})},
+                                 {'name': f'File ({file.name})'}]
 
         return context
 

@@ -13,6 +13,7 @@ class CallPartQuestionView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         call_question = CallQuestion.objects.get(pk=self.kwargs['call_question_pk'])
+        call = call_question.call_part.call
 
         context['call_question'] = call_question
 
@@ -21,12 +22,18 @@ class CallPartQuestionView(TemplateView):
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'
                         })
 
-        url_call_parts_anchor = reverse('logged-call-detail', kwargs={'pk': call_question.call_part.call.pk}) + '#parts'
+        url_call_parts_anchor = reverse('logged-call-detail', kwargs={'pk': call.pk}) + '#parts'
 
-        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-                                 {'name': f'Details ({call_question.call_part.call.little_name()})',
+        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
+                                 {'name': f'Details ({call.short_name})',
                                   'url': url_call_parts_anchor},
-                                 {'name': call_question.question_text}
+                                 {'name': 'List Parts',
+                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
+                                 {'name': f'Call Part ({call_question.call_part.title})',
+                                  'url': reverse('logged-call-part-detail',
+                                                 kwargs={'call_pk': call.pk,
+                                                         'call_part_pk': call_question.call_part.pk})},
+                                 {'name': f'Question: {call_question.question_text}'}
                                  ]
 
         return context
@@ -52,10 +59,18 @@ class CallPartQuestionUpdate(SuccessMessageMixin, UpdateView):
 
         call = call_question.call_part.call
 
-        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
-                                 {'name': f'Details ({call.little_name()})',
-                                  'url': reverse('logged-call-update', kwargs={'pk': call.pk}) + '#parts'},
-                                 {'name': call_question.question_text}
+        url_call_parts_anchor = reverse('logged-call-detail', kwargs={'pk': call.pk}) + '#parts'
+
+        context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
+                                 {'name': f'Details ({call.short_name})',
+                                  'url': url_call_parts_anchor},
+                                 {'name': 'List Parts',
+                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
+                                 {'name': f'Call Part ({call_question.call_part.title})',
+                                  'url': reverse('logged-call-part-detail',
+                                                 kwargs={'call_pk': call.pk,
+                                                         'call_part_pk': call_question.call_part.pk})},
+                                 {'name': f'Question: {call_question.question_text}'}
                                  ]
 
         return context
@@ -94,7 +109,6 @@ class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
 
         return context
 
-
     def form_valid(self, form):
         is_valid_form = super().form_valid(form)
         if is_valid_form:
@@ -102,12 +116,10 @@ class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
 
         return is_valid_form
 
-
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['call_part_pk'] = self.kwargs['call_part_pk']
         return kwargs
-
 
     def get_success_url(self):
         call_pk = self.kwargs['call_pk']

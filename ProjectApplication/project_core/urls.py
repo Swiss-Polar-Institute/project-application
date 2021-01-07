@@ -104,7 +104,7 @@ urlpatterns = [
          logged.call_part.CallPartDetail.as_view(),
          name='logged-call-part-detail'),
     path('logged/call/call_part/delete/',
-        logged.call_part.CallPartDelete.as_view(),
+         logged.call_part.CallPartDelete.as_view(),
          name='logged-call-part-delete'),
 
     # Call (part) Files
@@ -133,7 +133,7 @@ urlpatterns = [
          name='logged-call-part-question-update'),
     path('logged/call/<int:call_pk>/question/<int:call_part_pk>/add/',
          logged.call_question.CallPartQuestionTemplateQuestionUpdate.as_view(),
-         name='logged-call-part-question-update'),
+         name='logged-call-part-question-add'),
 
     path('logged/',
          logged.homepage.Homepage.as_view(),

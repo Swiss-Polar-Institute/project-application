@@ -24,7 +24,9 @@ class CallPartFileForm(forms.ModelForm):
         else:
             action_text = 'Create File'
 
-        cancel_url = reverse('logged-call-detail', kwargs={'pk': self._call_part.call.pk}) + '#parts'
+        cancel_url = reverse('logged-call-part-file-list', kwargs={'call_pk': self._call_part.call.pk,
+                                                                   'call_part_pk': self._call_part.pk}
+                             )
 
         self.fields['call_part'].initial = self._call_part
 
