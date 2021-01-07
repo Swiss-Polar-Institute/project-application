@@ -9,12 +9,11 @@
             </div>
             <form action="{% url 'logged-call-part-delete' %}" method="post">
                 <div class="modal-body">
-                    <p>Confirm that you want to delete the call part <b><i id="callPartTitle"></i></b>.
-                    <p>Do you want to proceed?
-                        <input type="hidden" name="callPartId" id="callPartId" value="">
-                        <input type="hidden" name="callId" id="callId" value="">
-                        <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
-                    </p>
+                    <p>Confirm that you want to delete the call part <b><i id="callPartTitle"></i></b>.</p>
+                    <p>Do you want to proceed?</p>
+                    <input type="hidden" name="callPartId" id="callPartId" value="">
+                    <input type="hidden" name="callId" id="callId" value="">
+                    <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
