@@ -10,10 +10,11 @@
             <form action="{% url 'logged-call-part-file-delete' %}" method="post">
                 <div class="modal-body">
                     <p>Confirm that you want to delete the file <b><i id="fileTitle"></i></b>.
-                    <p>Do you want to proceed?</p>
-                    <input type="hidden" name="fileId" id="fileId" value="">
-                    <input type="hidden" name="partId" id="partId" value="">
-                    <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
+                    <p>Do you want to proceed?
+                        <input type="hidden" name="fileId" id="fileId" value="">
+                        <input type="hidden" name="partId" id="partId" value="">
+                        <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
