@@ -1,7 +1,7 @@
 {% if call_part.files %}
     <ul>
     {% for file in call_part.files %}
-        <li><a href="{{ file.download_link }}">{{ file.name }}</a>: {{ file.description }}</li>
+        <li><a href="{{ file.download_link }}"><i class="fas fa-download"></i> {{ file.name }}</a>: {{ file.description }}</li>
     {% endfor %}
     </ul>
 {% endif %}
