@@ -13,7 +13,7 @@ def create_default_part(apps, schema_editor):
         # It assumes the database should not have any order=1 Part for this call
         call_part = CallPart.objects.create(call=call, title=settings.CALL_DEFAULT_PART_QUESTIONS_ANSWERS, order=1)
 
-        for call_question in call.callquestion_set.all():
+        for call_question in call.callquestion_set.all().order_by('order'):
             call_question.call_part = call_part
             call_question.save()
 
