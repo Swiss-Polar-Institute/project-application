@@ -5,6 +5,53 @@
     <div class="row">
         <div class="col-10">
             <h1>Changelog</h1>
+            Flagship features:
+            <h2>Version deployed on (next)</h2>
+            <ul>
+                <li>Calls have parts</li>
+                <li>Questions/Answers are assigned to Call parts instead of to the call</li>
+                <li>Parts can also have files attached ready to be downloaded</li>
+                <li>Overall budget question enabled/disabled</li>
+                <li>Allows to not have budget categories</li>
+                <li>Updates Django</li>
+            </ul>
+
+            <h2>Version deployed on 16/11/2020</h2>
+            <ul>
+                <li>Use django-axes to avoid some brute force logins</li>
+                <li>django.doctor improvements: methods, avoids redundant parameters, etc.</li>
+                <li>Use the new admin URL when loading CSS</li>
+                <li>Fix indentation of text input by users (linebr don't keep it, go back to the old pre boxes without
+                    mono-spaced font)</li>
+            </ul>
+
+
+            <h2>Version deployed on 09/11/202</h2>
+            Many changes:
+            <ul>
+                <li>Improve Proposal budget table to avoid problems entering empty values</li>
+                <li>Allow in Statistics/Reporting to overwrite data (to indicate that some data is not there)</li>
+                <li>Add basic unit tests for Statistics</li>
+                <li>Sort the table of calls correctly</li>
+                <li>Makes URL of admin configurable</li>
+                <li>Add explanation on how to use the Lay Summaries page</li>
+                <li>Adds API call so the SPI Media Gallery can fetch media from the Grant Management</li>
+                <li>Fix printing: postal address rectangle was overlapping the city, fix printing of tables, etc.</li>
+            </ul>
+
+            <h2>Version deployed on 22/10/2020</h2>
+            Avoids logging (and notifying) errors that are not errors:
+            <ul>
+                <li>Allows requests to /proposal/add without a call parameter</li>
+                <li>Allows requests to proposal/add/?call=18as (invalid call format)</li>
+            </ul>
+
+            <h2>Version deployed on 28/09/2020</h2>
+            <ul>
+                <li>Minor fixes in texts</li>
+                <li>Formats amounts using the correct thousands separator</li>
+            </ul>
+
             <h2>Version deployed on 10/08/2020</h2>
             <ul>
                 <li>Fix reporting section (after modifying the "Career stages")</li>
@@ -30,7 +77,7 @@
 
             <h2>Version deployed 28/07/2020</h2>
             <ul>
-                Add reporting tab in the navbar and basic reports
+                <li>Add reporting tab in the navbar and basic reports</li>
             </ul>
 
             <h2>Version deployed 24/07/2020</h2>
