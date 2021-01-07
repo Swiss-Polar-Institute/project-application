@@ -116,7 +116,7 @@ urlpatterns = [
     path('logged/call/<int:call_pk>/call_part/<int:call_part_pk>/file/add/',
          logged.call_part_file.CallPartFileCreate.as_view(),
          name='logged-call-part-file-add'),
-    path('logged/call/<int:call_pk>/file/<int:call_file_pk>/delete/',
+    path('logged/call/file/delete/',
          logged.call_part_file.CallPartFileDelete.as_view(),
          name='logged-call-part-file-delete'),
 

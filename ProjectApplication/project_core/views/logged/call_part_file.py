@@ -1,6 +1,10 @@
+from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import TemplateView, UpdateView, CreateView, DeleteView, ListView
+from django.views import View
+from django.views.generic import TemplateView, UpdateView, CreateView, ListView
 
 from project_core.forms.call_part_file import CallPartFileForm
 from project_core.models import Call, CallPart, CallPartFile
@@ -24,7 +28,7 @@ class CallPartFileList(ListView):
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
                                  {'name': f'Call {call.little_name()}', 'url': reverse('logged-call-detail',
-                                                                                            kwargs={'pk': call.pk})},
+                                                                                       kwargs={'pk': call.pk})},
                                  {'name': f'Part {call_part.title}', 'url': reverse('logged-call-part-detail',
                                                                                     kwargs={'call_pk': call.pk,
                                                                                             'call_part_pk': call_part.pk})},
@@ -139,5 +143,21 @@ class CallPartFileUpdate(SuccessMessageMixin, UpdateView):
         return kwargs
 
 
-class CallPartFileDelete(DeleteView, SuccessMessageMixin):
-    pass
+class CallPartFileDelete(View):
+    def post(self, request, *args, **kwargs):
+        file_id = request.POST['fileId']
+        part_id = request.POST['partId']
+
+        call_part = CallPart.objects.get(id=part_id)
+        destination = reverse('logged-call-part-file-list',
+                              kwargs={'call_part_pk': part_id, 'call_pk': call_part.call.pk})
+
+        try:
+            call_part_file = CallPartFile.objects.get(pk=file_id)
+        except ObjectDoesNotExist:
+            messages.warning('File could not be found: it has not been deleted')
+            return redirect(destination)
+
+        call_part_file.delete()
+
+        return redirect(destination)

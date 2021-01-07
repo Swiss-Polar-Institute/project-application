@@ -2,7 +2,11 @@
 
 {% block contents %}
     <div class="row">
+
         <div class="col-10">
+
+            {% include 'logged/modal-dialogues/_modal_delete_file.tmpl' %}
+
             <h1>List files for {{ callpart.title }}</h1>
             Call: {{ callpart.call.long_name }}
 
@@ -29,6 +33,11 @@
 
                             <a class="btn btn-primary btn-xs"
                                href="{% url 'logged-call-part-file-update' call_pk=callpartfile.call_part.call.pk call_file_pk=callpartfile.pk %}">Edit</a>
+
+                            <button class="btn btn-danger btn-xs"
+                                    data-file-id="{{ callpartfile.pk }}" data-file-name="{{ callpartfile.name }}" data-part-id="{{ callpartfile.call_part.pk }}"
+                                    data-toggle="modal" data-target="#confirm-delete">Delete
+                            </button>
                         </td>
                     </tr>
                 {% endfor %}

@@ -1,0 +1,39 @@
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirm delete</div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'logged-call-part-file-delete' %}" method="post">
+                <div class="modal-body">
+                    <p>Confirm that you want to delete the file <b><i id="fileTitle"></i></b>.
+                    <p>Do you want to proceed?</p>
+                    <input type="hidden" name="fileId" id="fileId" value="">
+                    <input type="hidden" name="partId" id="partId" value="">
+                    <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#confirm-delete').on('show.bs.modal', function (event) {
+        let fileId = $(event.relatedTarget).data('file-id');
+        let fileName = $(event.relatedTarget).data('file-name');
+        let partId = $(event.relatedTarget).data('part-id')
+
+        $(this).find('.modal-body #fileId').val(fileId);
+        $(this).find('.modal-body #partId').val(partId);
+        $(this).find('.modal-body #fileTitle').text(fileName);
+
+    })
+</script>
