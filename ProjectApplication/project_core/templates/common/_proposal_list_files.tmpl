@@ -1,7 +1,10 @@
+{% load filename_from_path %}
+
 {% if call_part.files %}
+    Files:
     <ul>
     {% for file in call_part.files %}
-        <li><a href="{{ file.download_link }}"><i class="fas fa-download"></i> {{ file.name }}</a>: {{ file.description }}</li>
+        <li><a href="{{ file.download_link }}"><i class="fas fa-download"></i> {{ file.name }}</a> ({{ file.file.size|filesizeformat }}): {{ file.description }}</li>
     {% endfor %}
     </ul>
 {% endif %}
