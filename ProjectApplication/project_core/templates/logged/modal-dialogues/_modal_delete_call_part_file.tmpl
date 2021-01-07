@@ -1,5 +1,4 @@
-<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
+<div class="modal fade" id="confirm-delete-call-part-file" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -26,7 +25,7 @@
 </div>
 
 <script>
-    $('#confirm-delete').on('show.bs.modal', function (event) {
+    $('#confirm-delete-call-part-file').on('show.bs.modal', function (event) {
         let fileId = $(event.relatedTarget).data('file-id');
         let fileName = $(event.relatedTarget).data('file-name');
         let partId = $(event.relatedTarget).data('part-id')

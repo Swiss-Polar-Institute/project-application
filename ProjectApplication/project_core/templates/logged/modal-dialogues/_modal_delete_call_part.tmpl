@@ -1,0 +1,37 @@
+<div class="modal fade" id="confirm-delete-call-part" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Confirm delete</div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{% url 'logged-call-part-delete' %}" method="post">
+                <div class="modal-body">
+                    <p>Confirm that you want to delete the call part <b><i id="callPartTitle"></i></b>.
+                    <p>Do you want to proceed?</p>
+                    <input type="hidden" name="callPartId" id="callPartId" value="">
+                    <input type="hidden" name="callId" id="callId" value="">
+                    <input name="csrfmiddlewaretoken" type="hidden" value="{{ csrf_token }}">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-danger">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#confirm-delete-call-part').on('show.bs.modal', function (event) {
+        let callPartId = $(event.relatedTarget).data('call-part-id');
+        let callPartTitle = $(event.relatedTarget).data('call-part-title');
+        let callId = $(event.relatedTarget).data('call-id')
+
+        $(this).find('.modal-body #callPartId').val(callPartId);
+        $(this).find('.modal-body #callId').val(callId);
+        $(this).find('.modal-body #callPartTitle').text(callPartTitle);
+    })
+</script>

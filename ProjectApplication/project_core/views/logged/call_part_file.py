@@ -155,9 +155,10 @@ class CallPartFileDelete(View):
         try:
             call_part_file = CallPartFile.objects.get(pk=file_id)
         except ObjectDoesNotExist:
-            messages.warning('File could not be found: it has not been deleted')
+            messages.warning(request, 'File could not be found: it has not been deleted')
             return redirect(destination)
 
+        messages.success(request, 'File deleted')
         call_part_file.delete()
 
         return redirect(destination)

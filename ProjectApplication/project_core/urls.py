@@ -90,6 +90,7 @@ urlpatterns = [
          logged.call.CallList.as_view(),
          name='logged-calls'),
 
+    # Call Parts
     path('logged/call/<int:call_pk>/parts/list/',
          logged.call_part.CallPartList.as_view(),
          name='logged-call-part-list'),
@@ -102,6 +103,9 @@ urlpatterns = [
     path('logged/call/<int:call_pk>/parts/<int:call_part_pk>/',
          logged.call_part.CallPartDetail.as_view(),
          name='logged-call-part-detail'),
+    path('logged/call/call_part/delete/',
+        logged.call_part.CallPartDelete.as_view(),
+         name='logged-call-part-delete'),
 
     # Call (part) Files
     path('logged/call/<int:call_pk>/file/<int:call_file_pk>/',
@@ -116,7 +120,7 @@ urlpatterns = [
     path('logged/call/<int:call_pk>/call_part/<int:call_part_pk>/file/add/',
          logged.call_part_file.CallPartFileCreate.as_view(),
          name='logged-call-part-file-add'),
-    path('logged/call/file/delete/',
+    path('logged/call/call_part/file/delete/',
          logged.call_part_file.CallPartFileDelete.as_view(),
          name='logged-call-part-file-delete'),
 

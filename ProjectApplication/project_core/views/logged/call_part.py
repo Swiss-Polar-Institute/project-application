@@ -1,4 +1,8 @@
+from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import redirect
 from django.urls import reverse
+from django.views import View
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 
 from project_core.forms.call_part import CallPartForm
@@ -137,3 +141,23 @@ class CallPartUpdate(UpdateView):
     def get_success_url(self):
         return reverse('logged-call-part-detail', kwargs={'call_pk': self.kwargs['call_pk'],
                                                           'call_part_pk': self.kwargs['call_part_pk']})
+
+
+class CallPartDelete(View):
+    def post(self, request, *args, **kwargs):
+        call_part_id = request.POST['callPartId']
+        call_id = request.POST['callId']
+
+        destination = reverse('logged-call-part-list',
+                              kwargs={'call_pk': call_id})
+
+        try:
+            call_part = CallPart.objects.get(pk=call_part_id)
+        except ObjectDoesNotExist:
+            messages.warning(request, 'File could not be found: it has not been deleted')
+            return redirect(destination)
+
+        call_part.delete()
+        messages.success(request, 'Call part deleted')
+
+        return redirect(destination)

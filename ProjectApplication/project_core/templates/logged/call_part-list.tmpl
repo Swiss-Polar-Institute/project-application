@@ -3,6 +3,8 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
+            {% include 'logged/modal-dialogues/_modal_delete_call_part.tmpl' %}
+
             <h1>List parts for {{ call.long_name }}</h1>
 
             <table id="call-parts" class="table table-striped table-sm table-hover display">
@@ -24,6 +26,13 @@
 
                             <a class="btn btn-primary btn-xs"
                                href="{% url 'logged-call-part-update' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">Edit</a>
+
+                            <button class="btn btn-danger btn-xs"
+                                    data-call-part-id="{{ callpart.pk }}"
+                                    data-call-part-title="{{ callpart.title }}"
+                                    data-call-id="{{ callpart.call.pk }}"
+                                    data-toggle="modal" data-target="#confirm-delete-call-part">Delete
+                            </button>
                         </td>
                     </tr>
                 {% endfor %}
@@ -43,8 +52,8 @@
                     "pageLength": 100,
                     "columns": [
                         {"width": "10%"},
-                        {"width": "80%"},
-                        {"width": "10%"},
+                        {"width": "70%"},
+                        {"width": "20%"},
                     ],
                     "searchHighlight": true
                 }
