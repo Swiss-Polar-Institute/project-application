@@ -197,6 +197,9 @@ class Call(CreateModifyOn):
 
         return parts
 
+    def budget_requested_part(self):
+        return self.budgetcategorycall_set.exists()
+
     def get_part_numbers_for_call(self):
         """
         Returns a dictionary with the heading numbers for different sections.
@@ -209,8 +212,8 @@ class Call(CreateModifyOn):
         numbers['general_information'] = 1
         numbers['scientific_clusters'] = add_one_if(numbers['general_information'], self.scientific_clusters_question)
         numbers['roles_competences'] = add_one_if(numbers['scientific_clusters'], self.proposal_partner_question)
-        numbers['budget_requested'] = add_one_if(numbers['roles_competences'], self.budget_question())
-        numbers['other_sources_of_funding'] = numbers['budget_requested'] + len(self.callpart_set.all()) + 1
+        numbers['budget_requested'] = numbers['roles_competences'] + self.callpart_set.count() + 1
+        numbers['other_sources_of_funding'] = add_one_if(numbers['budget_requested'], self.budget_requested_part())
 
         return numbers
 
