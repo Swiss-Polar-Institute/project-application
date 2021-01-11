@@ -78,6 +78,8 @@ class CallPartCreate(CreateView):
 
         context['call'] = call
 
+        context['action'] = 'Create'
+
         context.update({'active_section': 'calls',
                         'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})
@@ -116,6 +118,8 @@ class CallPartUpdate(UpdateView):
         call = Call.objects.get(pk=self.kwargs['call_pk'])
 
         context['call'] = call
+
+        context['action'] = 'Edit'
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'call-list',

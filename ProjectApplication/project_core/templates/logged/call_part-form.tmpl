@@ -5,14 +5,15 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            <h1>Create Call Part for {{ call.long_name }}</h1>
+            <h1>{{ action }} call part</h1>
+            <strong>Call:</strong> {{ call.long_name }}<br>
             {% crispy form %}
         </div>
 
         <div class="col-2">
             {% if callpart %}
                 <a class="btn btn-primary"
-                   href="{% url 'logged-call-part-update' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">Edit
+                   href="{% url 'logged-call-part-detail' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">View
                     Call Part</a>
             {% endif %}
         </div>
