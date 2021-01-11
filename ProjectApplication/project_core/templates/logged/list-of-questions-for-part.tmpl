@@ -1,32 +1,37 @@
-Files:
+{% with call_part_has_questions=call_part.callquestion_set.exists call_part_has_files=call_part.callpartfile_set.exists %}
 <ul>
-    {% for call_part_file in call_part.files %}
-        <li>
-            <a href="{% url 'logged-call-part-file-detail' call_pk=call_part_file.call_part.call.pk call_file_pk=call_part_file.pk %}">{{ call_part_file.name }}</a>
-        </li>
-    {% endfor %}
-    {% if call_part.callpartfile_set.all %}
-        <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
-            files</a>
-    {% else %}
-        No files -
-        <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
-            files</a>
-    {% endif %}
+    <li>Files:{% if not call_part_has_files %} (no files){% endif %}
+        <ul>
+            {% for call_part_file in call_part.files %}
+                <li>
+                    <a href="{% url 'logged-call-part-file-detail' call_pk=call_part_file.call_part.call.pk call_file_pk=call_part_file.pk %}">{{ call_part_file.name }}</a>
+                </li>
+            {% endfor %}
+            {% if call_part_has_files %}
+                <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
+                    files</a>
+            {% else %}
+                <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
+                    files</a>
+            {% endif %}
+        </ul>
+    </li>
+    <li>Questions:{% if not call_part_has_questions %} (no questions){% endif %}
+        <ul>
+            {% for callquestion in call_part.questions %}
+                <li>
+                    Question: <a
+                        href="{% url 'logged-call-part-question-detail' call_pk=callquestion.call_part.call.pk call_question_pk=callquestion.pk %}">{{ callquestion.question_text }}</a>
+                </li>
+            {% endfor %}
+            {% if call_part_has_questions %}
+                <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
+                    questions</a>
+            {% else %}
+                <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
+                    questions</a>
+            {% endif %}
+        </ul>
+    </li>
 </ul>
-Questions:
-<ul>
-    {% for callquestion in call_part.questions %}
-        <li>
-            Question: <a
-                href="{% url 'logged-call-part-question-detail' call_pk=callquestion.call_part.call.pk call_question_pk=callquestion.pk %}">{{ callquestion.question_text }}</a>
-        </li>
-    {% endfor %}
-    {% if call_part.callquestion_set.all %}
-        <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
-            questions</a>
-    {% else %}
-        <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
-            questions</a>
-    {% endif %}
-</ul>
+{% endwith %}
