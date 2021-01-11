@@ -2,7 +2,6 @@ from django.contrib import messages
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.views import View
 from django.views.generic import TemplateView, ListView
 
 from ProjectApplication import settings
@@ -215,7 +214,6 @@ class CallView(TemplateView):
             context['call'] = call
 
             context[CALL_FORM_NAME] = CallForm(instance=call, prefix=CALL_FORM_NAME)
-            # context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(instance=call, prefix=CALL_QUESTION_FORM_NAME)
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(call=call,
                                                                                 prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('logged-call-update', kwargs={'pk': call_id})
@@ -226,7 +224,6 @@ class CallView(TemplateView):
 
         else:
             context[CALL_FORM_NAME] = CallForm(prefix=CALL_FORM_NAME)
-            # context[CALL_QUESTION_FORM_NAME] = CallQuestionItemFormSet(prefix=CALL_QUESTION_FORM_NAME)
             context[TEMPLATE_VARIABLES_FORM_NAME] = TemplateVariableItemFormSet(prefix=TEMPLATE_VARIABLES_FORM_NAME)
             context['call_action_url'] = reverse('logged-call-add')
             context['call_action'] = 'Create'
@@ -256,7 +253,6 @@ class CallView(TemplateView):
         if 'pk' in kwargs:
             call = Call.objects.get(id=kwargs['pk'])
             call_form = CallForm(request.POST, instance=call, prefix=CALL_FORM_NAME)
-            # call_question_form = CallQuestionItemFormSet(request.POST, instance=call, prefix=CALL_QUESTION_FORM_NAME)
             template_variables_form = TemplateVariableItemFormSet(request.POST, call=call,
                                                                   prefix=TEMPLATE_VARIABLES_FORM_NAME)
 
@@ -273,7 +269,6 @@ class CallView(TemplateView):
             # creates a call
             new_call = True
             call_form = CallForm(request.POST, prefix=CALL_FORM_NAME)
-            # call_question_form = CallQuestionItemFormSet(request.POST, prefix=CALL_QUESTION_FORM_NAME)
 
             context['call_action_url'] = reverse('logged-call-add')
             context['call_action'] = 'Create'
@@ -282,7 +277,6 @@ class CallView(TemplateView):
             active_subsection = 'call-add'
 
             to_validate = [call_form,
-                           # call_question_form
                            ]
 
         all_valid = True
@@ -292,7 +286,6 @@ class CallView(TemplateView):
 
         if all_valid:
             call = call_form.save()
-            # call_question_form.save()
 
             if new_call:
                 copy_template_variables_from_funding_instrument_to_call(call)
@@ -306,7 +299,6 @@ class CallView(TemplateView):
 
         context['call_action'] = call_action
         context[CALL_FORM_NAME] = call_form
-        # context[CALL_QUESTION_FORM_NAME] = call_question_form
         context[TEMPLATE_VARIABLES_FORM_NAME] = template_variables_form
 
         context.update({'active_section': 'calls',
