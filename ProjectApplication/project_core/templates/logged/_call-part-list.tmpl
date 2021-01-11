@@ -9,7 +9,7 @@
     </ul>
     <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Create Part</a>
 {% else %}
-    There are no extra parts on this call.
+    <p>There are no extra parts for this call.</p>
     {% if call %}
         <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Create a Part.</a>
     {% endif %}
