@@ -187,7 +187,7 @@ class CallForm(forms.ModelForm):
                            'Categories are mandatory if "request overall budget question" is disabled')
         elif cleaned_data['overall_budget_question'] and cleaned_data['budget_categories']:
             self.add_error('overall_budget_question',
-                           'Overall budget question cannot be anbled if there are budget categories enabled')
+                           'Overall budget question cannot be enabled if there are budget categories enabled')
 
         if self.cleaned_data['budget_maximum'] == 0:
             self.add_error('budget_maximum', 'Budget maximum cannot be 0')
@@ -226,6 +226,7 @@ class CallForm(forms.ModelForm):
                                               '<strong>application</strong> and <strong>submission</strong>',
                       'call_open_date': 'Enter the date and time at which the call opens (Swiss time)',
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
+                      'budget_categories': 'If no categories are selected, budget will not appear in the call',
                       'other_funding_question': 'Select if you would like to ask about other funding that will contribute to the proposal',
                       'proposal_partner_question': 'Select if you would like to ask about proposal partners',
                       'overarching_project_question': 'Select if you would to ask about the overarching project',
