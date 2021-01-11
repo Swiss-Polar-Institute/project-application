@@ -133,6 +133,8 @@ class CallPartFileUpdate(SuccessMessageMixin, UpdateView):
 
         file = self.object
 
+        context['file'] = file
+
         url_call_parts_anchor = reverse('logged-call-detail', kwargs={'pk': file.call_part.call.pk}) + '#parts'
 
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},

@@ -3,6 +3,8 @@
 {% load crispy_forms_tags %}
 
 {% block contents %}
+    {% include 'logged/modal-dialogues/_modal_delete_call_part.tmpl' %}
+
     {% with call=callpart.call %}
         <div class="row">
             <div class="col-10">
@@ -20,9 +22,19 @@
             </div>
 
             <div class="col-2">
-                <a class="btn btn-primary"
-                   href="{% url 'logged-call-part-update' call_pk=call.pk call_part_pk=callpart.pk %}">Edit
-                    Call Part</a>
+                <p>
+                    <a class="btn btn-primary"
+                       href="{% url 'logged-call-part-update' call_pk=call.pk call_part_pk=callpart.pk %}">Edit
+                        Call Part</a>
+                </p>
+                <p>
+                    <button class="btn btn-danger"
+                            data-call-part-id="{{ callpart.pk }}"
+                            data-call-part-title="{{ callpart.title }}"
+                            data-call-id="{{ callpart.call.pk }}"
+                            data-toggle="modal" data-target="#confirm-delete-call-part">Delete Call Part
+                    </button>
+                </p>
             </div>
         </div>
     {% endwith %}

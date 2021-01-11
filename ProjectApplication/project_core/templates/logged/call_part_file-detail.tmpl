@@ -23,25 +23,12 @@
                         data-file-id="{{ file.pk }}"
                         data-file-name="{{ file.name }}"
                         data-part-id="{{ file.call_part.pk }}"
-                        data-toggle="modal" data-target="#confirm-delete-call-part-file">Delete
+                        data-toggle="modal" data-target="#confirm-delete-call-part-file">Delete File
                 </button>
             </p>
         </div>
     </div>
 
-    <script>
-        $('#confirm-delete-call-part-file').on('show.bs.modal', function (event) {
-            let fileId = $(event.relatedTarget).data('file-id');
-            let fileName = $(event.relatedTarget).data('file-name');
-            let partId = $(event.relatedTarget).data('part-id')
-
-            $(this).find('.modal-body #fileId').val(fileId);
-            $(this).find('.modal-body #partId').val(partId);
-            $(this).find('.modal-body #fileTitle').text(fileName);
-
-        })
-    </script>
     {% include 'logged/modal-dialogues/_modal_delete_call_part_file.tmpl' %}
-
 {% endblock %}
 
