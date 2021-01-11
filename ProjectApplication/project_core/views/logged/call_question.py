@@ -51,6 +51,8 @@ class CallPartQuestionUpdate(SuccessMessageMixin, UpdateView):
         context = super().get_context_data(**kwargs)
 
         call_question = context['call_question']
+        context['call'] = call_question.call
+        context['callpart'] = call_question.call_part
 
         context.update({'active_section': 'calls',
                         'active_subsection': 'call-list',
@@ -91,7 +93,8 @@ class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
         call = call_part.call
 
         context = super().get_context_data(**kwargs)
-
+        context['call'] = call
+        context['callpart'] = call_part
         context.update({'active_section': 'calls',
                         'active_subsection': 'call-list',
                         'sidebar_template': 'logged/_sidebar-calls.tmpl'})

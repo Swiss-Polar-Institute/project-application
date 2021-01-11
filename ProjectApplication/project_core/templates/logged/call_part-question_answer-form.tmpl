@@ -9,6 +9,11 @@
             {% else %}
                 <h1>Add/remove questions</h1>
             {% endif %}
+            <p>
+                <strong>Call:</strong> <a
+                    href="{% url 'logged-call-detail' pk=call.pk %}">{{ call.long_name }}</a><br>
+                <strong>Call part:</strong> {{ callpart.title }}<br>
+            </p>
 
             {% crispy form %}
         </div>
