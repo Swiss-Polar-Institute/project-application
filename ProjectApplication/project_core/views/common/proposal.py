@@ -599,7 +599,7 @@ def call_context_for_template(call):
                'overarching_project_question': call.overarching_project_question,
                'scientific_clusters_question': call.scientific_clusters_question,
                'proposal_partner_question': call.proposal_partner_question,
-               'budget_question': call.budget_maximum > 0,
+               'budget_question': call.budget_requested_part()
                }
 
     return context

@@ -198,7 +198,7 @@ class Call(CreateModifyOn):
         return parts
 
     def budget_requested_part(self):
-        return self.budgetcategorycall_set.exists()
+        return self.budgetcategorycall_set.filter(enabled=True).exists()
 
     def get_part_numbers_for_call(self):
         """
