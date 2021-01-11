@@ -1237,7 +1237,7 @@ class CallPart(CreateModifyOn):
                              help_text='Call that this ProposalPart belongs to',
                              on_delete=models.PROTECT)
     title = models.CharField(max_length=500)
-    introductory_text = models.TextField()
+    introductory_text = models.TextField(null=True, blank=True)
 
     order = models.PositiveIntegerField(blank=True, null=True)
 
