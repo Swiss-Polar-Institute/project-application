@@ -39,12 +39,12 @@ class ScientificClusterForm(forms.ModelForm):
 
     def _get_person_form(self):
         help_texts = {'orcid': "Sub-PI\'s ORCID iD (e.g.: 0000-0002-1825-0097)",
-                      'first_name': 'Populated automatically from the ORCID iD',
-                      'surname': 'Populated automatically from the ORCID iD',
-                      'phd_date': 'If applicable, enter the date that the sub-PI got the PhD awarded (mm-yyyy)',
-                      'email': 'Email of the sub-PI',
-                      'organisation_names': 'Organisation(s) that the sub-PI belongs to',
-                      'group': 'Group of the sub-PI'}
+                      'first_name': 'Name populated from the ORCID record. If you would like to change it please amend it in ORCID',
+                      'surname': 'Surname populated from the ORCID record. If you would like to change it please amend it in ORCID',
+                      'phd_date': 'If applicable, please enter the date that the sub-PI was awarded their PhD (mm-yyyy)',
+                      'email': 'Please enter a valid email address for the sub-PI',
+                      'organisation_names': 'Please select the organisation(s) to which the sub-PI is affiliated for the purposes of this proposal. If they are not available amongst the options provided, type the full name and click on “Create”',
+                      'group': 'Please type the names of the group(s) or laboratories to which the sub-PI is affiliated for the purposes of this proposal'}
 
         # This is a QueryDict, not a dict
         person_form_data = self.data.copy()
