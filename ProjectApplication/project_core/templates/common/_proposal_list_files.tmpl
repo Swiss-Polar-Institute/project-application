@@ -4,7 +4,7 @@
     Files:
     <ul>
     {% for file in call_part.files %}
-        <li><a href="{{ file.download_link }}"><i class="fas fa-download"></i> {{ file.name }}</a> ({{ file.file.size|filesizeformat }}): {{ file.description }}</li>
+        <li><a href="{{ file.download_link }}"><i class="fas fa-download"></i> {{ file.name }}</a> ({{ file.file|filesizeformat_safe }}): {{ file.description }}</li>
     {% endfor %}
     </ul>
 {% endif %}
