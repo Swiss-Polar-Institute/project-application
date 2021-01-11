@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field
+from crispy_forms.layout import Layout, Div, Field, HTML
 from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
@@ -33,6 +33,11 @@ class ScientificClusterForm(forms.ModelForm):
                 Div('keywords', css_class='col-12'),
                 css_class='row'
             ),
+            Div(
+                Div(
+                HTML('<h3>Sub-Pi</h3>'), css_class='col-12'),
+                css_class='row'
+                ),
             *self._person_form.helper.layout
         )
         self.fields.update(self._person_form.fields)
@@ -96,7 +101,7 @@ class ScientificClusterForm(forms.ModelForm):
 
         instance.save()
 
-        self.save_m2m() # For the keywords
+        self.save_m2m()  # For the keywords
 
         return instance
 
