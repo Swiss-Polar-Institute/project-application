@@ -8,7 +8,7 @@ from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import MinValueValidator, RegexValidator, validate_slug
 from django.core.validators import validate_email
 from django.db import models
 from django.db.models import Sum
@@ -1273,7 +1273,7 @@ class CallPartFile(CreateModifyOn):
                                   help_text='Call part that this file belongs to',
                                   on_delete=models.PROTECT)
 
-    name = models.CharField(max_length=64, help_text='Name of the file')
+    name = models.CharField(max_length=64, help_text='Name of the file', validators=[validate_slug])
     description = models.CharField(max_length=512, help_text='Description of this file')
     file = models.FileField(storage=SpiS3Boto3Storage(),
                             upload_to=call_part_file_rename,
