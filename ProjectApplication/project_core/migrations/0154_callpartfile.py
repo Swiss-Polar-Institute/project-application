@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('modified_on', models.DateTimeField(auto_now=True, help_text='Date and time at which the entry was modified', null=True)),
                 ('name', models.CharField(help_text='Name of the file', max_length=64)),
                 ('description', models.CharField(help_text='Description of this file', max_length=512)),
-                ('file', models.FileField(storage=storages.backends.s3boto3.S3Boto3Storage(), upload_to=project_core.models.call_part_file_rename, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'jpg', 'jpeg', 'png']), project_core.utils.utils.file_size_validator])),
+                ('file', models.FileField(storage=storages.backends.s3boto3.S3Boto3Storage(), upload_to=project_core.models.call_part_file_rename, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'odt', 'jpg', 'jpeg', 'png']), project_core.utils.utils.file_size_validator])),
                 ('call_part', models.ForeignKey(help_text='Call part that this file belongs to', on_delete=django.db.models.deletion.PROTECT, to='project_core.callpart')),
             ],
             options={
