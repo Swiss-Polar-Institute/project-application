@@ -114,6 +114,10 @@
                 <a class="btn btn-primary d-print-none" href="{% url 'logged-call-part-list' call_pk=call.pk %}">List
                     Parts</a>
             </p>
+            <p>
+                <a class="btn btn-primary" href="{% url 'logged-proposal-preview' %}?call={{ call.id }}">Form
+                    Preview</a>
+            </p>
             <p>&nbsp;</p>
             <p>&nbsp;</p>
             {% include 'comments/_comments-attachments-compact-list.tmpl' %}
