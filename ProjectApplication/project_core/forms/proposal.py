@@ -31,7 +31,7 @@ class ProposalForm(ModelForm):
         self._raise_duplicated_title = False
 
         if self._call.overall_budget_question:
-            self.fields['overall_budget'] = FlexibleDecimalField(help_text='Estimate of the budget')
+            self.fields['overall_budget'] = FlexibleDecimalField(help_text = 'Approximate budget as detailed in programme description plus a 5% opportunity fund', label = 'Requested overall budget (CHF)')
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
