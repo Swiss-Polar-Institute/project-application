@@ -1213,7 +1213,7 @@ class ProjectPartner(Partner):
 
 
 class AbstractScientificCluster(CreateModifyOn):
-    title = models.CharField(max_length=1024, help_text='Title of the scientific cluster')
+    title = models.CharField(max_length=500, help_text='Title of the scientific cluster')
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the scientific cluster')
 
     sub_pi = models.ForeignKey(PersonPosition, help_text='Main person of this scientific cluster',

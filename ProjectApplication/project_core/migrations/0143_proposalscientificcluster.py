@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_on', models.DateTimeField(auto_now_add=True, help_text='Date and time at which the entry was created')),
                 ('modified_on', models.DateTimeField(auto_now=True, help_text='Date and time at which the entry was modified', null=True)),
-                ('title', models.CharField(help_text='Title of the scientific cluster', max_length=1024)),
+                ('title', models.CharField(help_text='Title of the scientific cluster', max_length=500)),
                 ('applicant', models.ForeignKey(help_text='Main applicant of the proposal', on_delete=django.db.models.deletion.PROTECT, to='project_core.PersonPosition')),
                 ('keywords', models.ManyToManyField(help_text='Keywords that describe the scientific cluster', to='project_core.Keyword')),
                 ('proposal', models.ForeignKey(help_text='Proposal that this Scientific Cluster refers to', on_delete=django.db.models.deletion.PROTECT, to='project_core.Proposal')),
