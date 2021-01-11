@@ -1,7 +1,9 @@
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import ProtectedError
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 from django.views import View
 from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 
@@ -133,8 +135,8 @@ class CallPartUpdate(UpdateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': f'Details ({call.short_name})',
                                   'url': call_part_section(call)},
-                                  {'name': 'List Parts',
-                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
+                                 {'name': 'List Parts',
+                                  'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
                                  {'name': f'Call Part ({self.object.title})'}
                                  ]
 
@@ -166,7 +168,11 @@ class CallPartDelete(View):
             messages.warning(request, 'File could not be found: it has not been deleted')
             return redirect(destination)
 
-        call_part.delete()
-        messages.success(request, 'Call part deleted')
+        try:
+            call_part.delete()
+            messages.success(request, 'Call part deleted')
+        except ProtectedError:
+            messages.error(request,
+                           mark_safe(f'Call part "<strong>{call_part.title}</strong>" could not be deleted. Please delete any questions and files attached to the part and try again'))
 
         return redirect(destination)

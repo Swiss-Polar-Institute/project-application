@@ -5,7 +5,10 @@
         <div class="col-10">
             {% include 'logged/modal-dialogues/_modal_delete_call_part.tmpl' %}
 
-            <h1>List parts for {{ call.long_name }}</h1>
+            <h1>List parts</h1>
+            <p>
+                <strong>Call:</strong> {{ call.long_name }}<br>
+            </p>
 
             <table id="call-parts" class="table table-striped table-sm table-hover display">
                 <thead>
