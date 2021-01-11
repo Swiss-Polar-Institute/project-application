@@ -1,0 +1,4 @@
+{% load filesizeformat_safe %}
+
+<a href="{{ file.download_link }}"><i class="fas fa-download"></i> {{ file.filename_with_extension }}
+</a> ({{ file.file|filesizeformat_safe }})

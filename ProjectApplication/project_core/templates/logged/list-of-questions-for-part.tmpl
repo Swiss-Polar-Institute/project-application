@@ -4,7 +4,7 @@
             <ul>
                 {% for call_part_file in call_part.files %}
                     <li>
-                        <a href="{% url 'logged-call-part-file-detail' call_pk=call_part_file.call_part.call.pk call_file_pk=call_part_file.pk %}">{{ call_part_file.name }}</a>
+                        {% include 'common/_file_download_link.tmpl' with file=call_part_file only %}
                     </li>
                 {% endfor %}
 
