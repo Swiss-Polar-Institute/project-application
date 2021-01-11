@@ -1,5 +1,5 @@
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Field
+from crispy_forms.layout import Layout, Div, Field, HTML
 from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory
@@ -33,18 +33,23 @@ class ScientificClusterForm(forms.ModelForm):
                 Div('keywords', css_class='col-12'),
                 css_class='row'
             ),
+            Div(
+                Div(
+                HTML('<h3>Sub-Pi</h3>'), css_class='col-12'),
+                css_class='row'
+                ),
             *self._person_form.helper.layout
         )
         self.fields.update(self._person_form.fields)
 
     def _get_person_form(self):
         help_texts = {'orcid': "Sub-PI\'s ORCID iD (e.g.: 0000-0002-1825-0097)",
-                      'first_name': 'Populated automatically from the ORCID iD',
-                      'surname': 'Populated automatically from the ORCID iD',
-                      'phd_date': 'If applicable, enter the date that the sub-PI got the PhD awarded (mm-yyyy)',
-                      'email': 'Email of the sub-PI',
-                      'organisation_names': 'Organisation(s) that the sub-PI belongs to',
-                      'group': 'Group of the sub-PI'}
+                      'first_name': 'Name populated from the ORCID record. If you would like to change it please amend it in ORCID',
+                      'surname': 'Surname populated from the ORCID record. If you would like to change it please amend it in ORCID',
+                      'phd_date': 'If applicable, please enter the date that the sub-PI was awarded their PhD (mm-yyyy)',
+                      'email': 'Please enter a valid email address for the sub-PI',
+                      'organisation_names': 'Please select the organisation(s) to which the sub-PI is affiliated for the purposes of this proposal. If they are not available amongst the options provided, type the full name and click on “Create”',
+                      'group': 'Please type the names of the group(s) or laboratories to which the sub-PI is affiliated for the purposes of this proposal'}
 
         # This is a QueryDict, not a dict
         person_form_data = self.data.copy()
@@ -96,7 +101,7 @@ class ScientificClusterForm(forms.ModelForm):
 
         instance.save()
 
-        self.save_m2m() # For the keywords
+        self.save_m2m()  # For the keywords
 
         return instance
 
