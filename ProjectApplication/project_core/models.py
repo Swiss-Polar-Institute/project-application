@@ -1284,6 +1284,10 @@ class CallPartFile(CreateModifyOn):
     def download_link(self):
         return self.file.storage.download_link_with_name(self.file.name, filename=self.name)
 
+    def filename_with_extension(self):
+        basename, extension = os.path.splitext(self.file.name)
+        return f'{self.name}{extension}'
+
     class Meta:
         unique_together = (('call_part', 'name'),)
 
