@@ -36,15 +36,15 @@ class CallPartFileForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('file', css_class='col-3'),
+                css_class='row'
+            ),
+            Div(
                 Div('name', css_class='col-3'),
                 css_class='row'
             ),
             Div(
                 Div('description', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('file', css_class='col-3'),
                 css_class='row'
             ),
             Div(
@@ -68,3 +68,6 @@ class CallPartFileForm(forms.ModelForm):
     class Meta:
         model = CallPartFile
         fields = ['call_part', 'name', 'description', 'order', 'file', ]
+        help_texts = {
+            'name': "File name as it should be displayed to the applicant. Do not use any special characters or '.'. The file extension will be appended automatically",
+            'description': 'Description to be displayed next to the file'}
