@@ -1,27 +1,32 @@
+Files:
 <ul>
     {% for call_part_file in call_part.files %}
         <li>
-            File: <a href="{% url 'logged-call-part-file-detail' call_pk=call_part_file.call_part.call.pk call_file_pk=call_part_file.pk  %}">{{ call_part_file.name }}</a>
+            <a href="{% url 'logged-call-part-file-detail' call_pk=call_part_file.call_part.call.pk call_file_pk=call_part_file.pk %}">{{ call_part_file.name }}</a>
         </li>
     {% endfor %}
+    {% if call_part.callpartfile_set.all %}
+        <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
+            files</a>
+    {% else %}
+        No files -
+        <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
+            files</a>
+    {% endif %}
+</ul>
+Questions:
+<ul>
     {% for callquestion in call_part.questions %}
         <li>
             Question: <a
                 href="{% url 'logged-call-part-question-detail' call_pk=callquestion.call_part.call.pk call_question_pk=callquestion.pk %}">{{ callquestion.question_text }}</a>
         </li>
     {% endfor %}
-    {% if call_part.callpartfile_set.all %}
-        <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove files</a>
-    {% else %}
-        No files - <a href="{% url 'logged-call-part-file-list' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove files</a>
-    {% endif %}
-    <br>
     {% if call_part.callquestion_set.all %}
         <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add/remove
             questions</a>
     {% else %}
-        No questions - <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
+        <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">Add
             questions</a>
     {% endif %}
-    <br>
 </ul>
