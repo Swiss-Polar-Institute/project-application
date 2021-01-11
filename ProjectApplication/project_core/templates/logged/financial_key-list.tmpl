@@ -5,7 +5,8 @@
     <p>
         Financial keys are used within SPI finance systems to categorise payments, including those to
         SPI-funded projects. Each funding instrument is assigned a financial key in order to capture the payments made
-        to resulting projects, as well as assign each project a related project key.
+        to resulting projects, as well as assign each project a related project key. <strong>Please speak to Laurence
+        before creating a new financial key.</strong>
     </p>
     <p>
         This is the reference list to ensure financial keys are never duplicated across SPI.
@@ -48,6 +49,9 @@
     {% else %}
         No financial keys entered in the system
     {% endif %}
+    <p></p>
+    <strong>Please speak to Laurence
+        before creating a new financial key.</strong>
     <p></p>
     <a href="{% url 'logged-financial-key-update' %}" class="btn btn-primary">Add New Financial Key</a>
     <p></p>

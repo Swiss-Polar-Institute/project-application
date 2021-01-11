@@ -226,11 +226,12 @@ class CallForm(forms.ModelForm):
                                               '<strong>application</strong> and <strong>submission</strong>',
                       'call_open_date': 'Enter the date and time at which the call opens (Swiss time)',
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
-                      'other_funding_question': 'Tick this box if you would like the call to ask about other funding that will contribute to the proposal',
-                      'proposal_partner_question': 'Tick this box if you would like the call to ask about proposal partners',
-                      'overarching_project_question': 'Tick this box if you would like the call to ask about the overarching project',
-                      'scientific_clusters_question': 'Tick this box if you would like the call to include the "Scientific Clusters"',
-                      'keywords_in_general_information_question': 'Tick this box if you would like to request keywords in the "General Information"',
+                      'other_funding_question': 'Select if you would like to ask about other funding that will contribute to the proposal',
+                      'proposal_partner_question': 'Select if you would like to ask about proposal partners',
+                      'overarching_project_question': 'Select if you would to ask about the overarching project',
+                      'scientific_clusters_question': 'Select if you would to include a sub-section about "Scientific Clusters"',
+                      'keywords_in_general_information_question': 'Select if you would like to request keywords in the "General Information" section',
+                      'overall_budget_question': 'Select if you would like to request the overall budget total. Budget details can be broken down separately by selecting the categories that budget can be allocated to'
                       }
 
         labels = {
