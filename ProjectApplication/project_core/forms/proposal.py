@@ -31,7 +31,7 @@ class ProposalForm(ModelForm):
         self._raise_duplicated_title = False
 
         if self._call.overall_budget_question:
-            self.fields['overall_budget'] = FlexibleDecimalField(help_text = 'Approximate budget as detailed in programme description plus a 5% opportunity fund', label = 'Requested overall budget (CHF)')
+            self.fields['overall_budget'] = FlexibleDecimalField(help_text = 'Approximate budget as detailed in programme description including the 5% opportunity fund', label = 'Requested overall budget (CHF)')
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
@@ -170,7 +170,7 @@ class ProposalForm(ModelForm):
         help_texts = {
             'geographical_areas': 'Select all options describing the geographical focus of this {{ activity }}',
             'title': 'Name of the proposed {{ activity }}',
-            'location': 'Name of more precise location of where the proposed {{ activity }} would take place (not coordinates)',
+            'location': 'More precise location of the proposed {{ activity }} (not coordinates)',
             'keywords': 'Please select at least 5 keywords that describe the proposed {{ activity }}. If the keywords you are looking for do not exist, then add each term separately',
             'start_date': 'Date on which the {{ activity }} to be funded by SPI, is expected to start',
             'end_date': 'Date on which the {{ activity }} to be funded by SPI, is expected to end',
