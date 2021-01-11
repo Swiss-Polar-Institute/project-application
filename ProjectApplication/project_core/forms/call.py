@@ -226,6 +226,7 @@ class CallForm(forms.ModelForm):
                                               '<strong>application</strong> and <strong>submission</strong>',
                       'call_open_date': 'Enter the date and time at which the call opens (Swiss time)',
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
+                      'budget_categories': 'If no categories are selected, budget will not appear in the call',
                       'other_funding_question': 'Select if you would like to ask about other funding that will contribute to the proposal',
                       'proposal_partner_question': 'Select if you would like to ask about proposal partners',
                       'overarching_project_question': 'Select if you would to ask about the overarching project',
