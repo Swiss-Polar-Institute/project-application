@@ -187,7 +187,7 @@ class CallForm(forms.ModelForm):
                            'Categories are mandatory if "request overall budget question" is disabled')
         elif cleaned_data['overall_budget_question'] and cleaned_data['budget_categories']:
             self.add_error('overall_budget_question',
-                           'Overall budget question cannot be anbled if there are budget categories enabled')
+                           'Overall budget question cannot be enabled if there are budget categories enabled')
 
         if self.cleaned_data['budget_maximum'] == 0:
             self.add_error('budget_maximum', 'Budget maximum cannot be 0')
