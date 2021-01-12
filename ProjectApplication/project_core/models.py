@@ -1253,6 +1253,10 @@ class CallPart(CreateModifyOn):
     def div_id(self):
         return f'CallPart_{self.pk}'
 
+    def title_rendered(self):
+        from variable_templates.utils import apply_templates_to_string
+        return apply_templates_to_string(self.title, self.call)
+
     class Meta:
         unique_together = (('call', 'title'),)
 
