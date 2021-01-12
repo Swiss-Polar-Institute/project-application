@@ -2,7 +2,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse
 from django.views.generic import TemplateView, UpdateView, FormView
 
-from project_core.call_question import CallQuestionForm, CallQuestionFromTemplateQuestionForm
+from project_core.forms.call_question import CallQuestionForm, CallQuestionFromTemplateQuestionForm
 from project_core.models import CallQuestion, CallPart
 
 
