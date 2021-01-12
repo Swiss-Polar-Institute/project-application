@@ -6,7 +6,7 @@ from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
 
-class CallPartFileTest(TestCase):
+class CallPartFileFormTest(TestCase):
     def setUp(self):
         self._call = database_population.create_call()
         self._call_part = database_population.create_call_part(self._call)

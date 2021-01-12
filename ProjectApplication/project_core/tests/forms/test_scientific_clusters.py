@@ -5,7 +5,7 @@ from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
 
-class ScientificClustersTest(TestCase):
+class ScientificClustersFormTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
         self._keywords = database_population.create_keywords()

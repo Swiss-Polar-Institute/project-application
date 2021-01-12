@@ -8,7 +8,7 @@ from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
 
-class CallFormTest(TestCase):
+class CallFormFormTest(TestCase):
     def setUp(self):
         self._budget_categories = database_population.create_budget_categories()
         self._template_questions = database_population.create_template_questions()

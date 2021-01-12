@@ -16,30 +16,21 @@ class CallQuestionForm(forms.ModelForm):
 
         super().__init__(*args, **kwargs)
 
-        assert self.instance.pk or self._call_park_pk
+        assert self.instance.pk, 'Needs to exist - they are created adding template questions'
 
         self.helper = FormHelper(self)
 
-        if self.instance.pk:
-            cancel_edit_url = reverse('logged-call-part-question-detail',
-                                      kwargs={'call_pk': self.instance.call_part.call.pk,
-                                              'call_question_pk': self.instance.pk
-                                              })
-            self.fields['call_part'].queryset = CallPart.objects.filter(call=self.instance.call_part.call)
-            call = self.instance.call_part.call
-
-        else:
-            call_part = CallPart.objects.get(pk=self._call_part_pk)
-            call = call_part.call
-            cancel_edit_url = reverse('logged-call-update', kwargs={'pk': call_part.call.pk})
-            cancel_edit_url += "#parts"
-
-            self.fields['call_part'].initial = call_part
+        cancel_edit_url = reverse('logged-call-part-question-detail',
+                                  kwargs={'call_pk': self.instance.call_part.call.pk,
+                                          'call_question_pk': self.instance.pk
+                                          })
+        self.fields['call_part'].queryset = CallPart.objects.filter(call=self.instance.call_part.call)
+        call = self.instance.call_part.call
 
         self.fields['call_part'].queryset = CallPart.objects.filter(call=call)
 
         self.fields['call'] = forms.CharField(disabled=True)
-        self.fields['call'].initial = 'test'
+        self.fields['call'].initial = self.instance.call_part.call.long_name
 
         self.helper.layout = Layout(
             Div(
@@ -64,9 +55,6 @@ class CallQuestionForm(forms.ModelForm):
             )
         )
 
-    # def save(self, commit=True):
-    #     return super().save(commit=commit)
-    #
     class Meta:
         model = CallQuestion
         fields = ['call_part', 'question_text', 'question_description']

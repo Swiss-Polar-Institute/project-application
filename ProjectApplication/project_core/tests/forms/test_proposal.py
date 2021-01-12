@@ -8,7 +8,7 @@ from project_core.tests import database_population
 from project_core.tests.utils_for_tests import dict_to_multivalue_dict
 
 
-class CallFormTest(TestCase):
+class ProposalFormTest(TestCase):
     def setUp(self):
         self._call = database_population.create_call()
         call_part, created = CallPart.objects.get_or_create(call=self._call,
