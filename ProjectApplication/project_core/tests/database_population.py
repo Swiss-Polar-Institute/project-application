@@ -36,7 +36,7 @@ def create_call(funding_instrument=None):
     return create_call_long_name('GreenLAnd Circumnavigation Expedition', funding_instrument=funding_instrument)
 
 
-def create_call_part(call):
+def create_call_part(call) -> CallPart:
     call_part, created = CallPart.objects.get_or_create(call=call, title='Weather', order=10)
 
     return call_part
