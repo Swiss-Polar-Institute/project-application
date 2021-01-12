@@ -12,7 +12,7 @@
                 <strong>Call:</strong> <a
                     href="{% url 'logged-call-detail' pk=call.pk %}">{{ call.long_name }}</a><br>
                 <strong>Order:</strong> {{ callpart.order }}<br>
-                <strong>Title:</strong> {{ callpart.title }}<br>
+                <strong>Title:</strong> {{ callpart.title_rendered }}<br>
                 <strong>Introductory text:</strong>
                 <div class="border p-1 bg-white rounded pre-wrap">{{ callpart.introductory_text|default:'-' }}</div>
 

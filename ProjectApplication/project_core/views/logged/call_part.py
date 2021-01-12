@@ -67,7 +67,7 @@ class CallPartDetail(DeleteView):
                                   'url': call_part_section(call)},
                                  {'name': 'List Parts',
                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
-                                 {'name': f'Call Part ({self.object.title})'}
+                                 {'name': f'Call Part ({self.object.title_rendered()})'}
                                  ]
 
         return context
@@ -137,7 +137,7 @@ class CallPartUpdate(UpdateView):
                                   'url': call_part_section(call)},
                                  {'name': 'List Parts',
                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
-                                 {'name': f'Call Part ({self.object.title})'}
+                                 {'name': f'Call Part ({self.object.title_rendered()})'}
                                  ]
 
         return context
