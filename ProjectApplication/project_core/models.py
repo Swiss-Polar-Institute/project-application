@@ -757,7 +757,7 @@ class Proposal(CreateModifyOn):
                                        help_text='Address to where the grant agreement is going to be sent',
                                        null=True,
                                        on_delete=models.PROTECT)
-    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the proposal')
+    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the proposal', blank=True)
     geographical_areas = models.ManyToManyField(GeographicalArea,
                                                 help_text='Geographical area(s) covered by the proposal')
     location = models.CharField(
