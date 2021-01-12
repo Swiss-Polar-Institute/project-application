@@ -372,7 +372,7 @@ class AbstractProposalView(TemplateView):
 
             questions_forms = self._questions_forms(request.POST, proposal)
 
-            if call.budget_question():
+            if call.budget_requested_part():
                 budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
 
             if call.other_funding_question:
@@ -412,12 +412,8 @@ class AbstractProposalView(TemplateView):
             questions_forms = self._questions_forms(request.POST, proposal=None, call=call)
 
             person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
-            # questions_form = Questions(request.POST,
-            #                            request.FILES,
-            #                            call=call,
-            #                            prefix=QUESTIONS_FORM_NAME)
 
-            if call.budget_question():
+            if call.budget_requested_part():
                 budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
 
             if call.other_funding_question:
@@ -459,7 +455,7 @@ class AbstractProposalView(TemplateView):
         if call.scientific_clusters_question:
             forms_to_validate.append(scientific_clusters_form)
 
-        if call.budget_question():
+        if call.budget_requested_part():
             forms_to_validate.append(budget_form)
 
         all_valid = True
@@ -512,7 +508,7 @@ class AbstractProposalView(TemplateView):
                     messages.error(request,
                                    'File attachments could not be saved - please try attaching the files again or contact SPI if this error reoccurs')
 
-            if call.budget_question():
+            if call.budget_requested_part():
                 budget_form.save_budgets(proposal)
 
             if call.proposal_partner_question:
@@ -538,7 +534,6 @@ class AbstractProposalView(TemplateView):
         context[PROPOSAL_FORM_NAME] = proposal_form
         for question_form in questions_forms:
             context[question_form.prefix] = question_form
-        # context[QUESTIONS_FORM_NAME] = questions_form
 
         if call.other_funding_question:
             context[FUNDING_FORM_NAME] = funding_form
@@ -553,7 +548,7 @@ class AbstractProposalView(TemplateView):
         if call.scientific_clusters_question:
             context[SCIENTIFIC_CLUSTERS_FORM_NAME] = scientific_clusters_form
 
-        if call.budget_question():
+        if call.budget_requested_part():
             context[BUDGET_FORM_NAME] = budget_form
 
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
