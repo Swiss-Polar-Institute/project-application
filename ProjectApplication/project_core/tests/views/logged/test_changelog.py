@@ -4,7 +4,7 @@ from django.urls import reverse
 from project_core.tests import database_population
 
 
-class CallList(TestCase):
+class ChangelogTest(TestCase):
     def setUp(self):
         self._client_management = database_population.create_management_logged_client()
 

@@ -6,7 +6,7 @@ from django.urls import reverse
 from project_core.tests import database_population
 
 
-class CallList(TestCase):
+class CallListTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
         self._funding_instrument = database_population.create_funding_instrument()

@@ -4,7 +4,7 @@ from django.urls import reverse
 from project_core.tests import database_population
 
 
-class CallList(TestCase):
+class TemplateQuestionTest(TestCase):
     def setUp(self):
         self._user = database_population.create_management_user()
         self._question1, self._question2 = database_population.create_template_questions()

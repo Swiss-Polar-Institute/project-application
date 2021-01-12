@@ -4,7 +4,7 @@ from django.urls import reverse
 from project_core.tests import database_population
 
 
-class CallList(TestCase):
+class CallListTest(TestCase):
     def setUp(self):
         self._call = database_population.create_call()
         self._user = database_population.create_management_user()
@@ -30,7 +30,7 @@ class CallList(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class ProposalList(TestCase):
+class ProposalListTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
@@ -42,7 +42,7 @@ class ProposalList(TestCase):
         self.assertContains(response, self._proposal.title)
 
 
-class ProposalDetail(TestCase):
+class ProposalDetailTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
