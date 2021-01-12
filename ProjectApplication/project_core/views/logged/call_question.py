@@ -51,7 +51,7 @@ class CallPartQuestionUpdate(SuccessMessageMixin, UpdateView):
         context = super().get_context_data(**kwargs)
 
         call_question = context['call_question']
-        context['call'] = call_question.call
+        context['call'] = call_question.call_part.call
         context['callpart'] = call_question.call_part
 
         context.update({'active_section': 'calls',
