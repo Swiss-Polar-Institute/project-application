@@ -54,7 +54,9 @@ class CallPartForm(forms.ModelForm):
     def clean_order(self):
         if self.cleaned_data['order'] is None:
             last_order = CallPart.objects.filter(call=self._call).aggregate(Max('order'))
-            return last_order['order__max']+10
+            order_max = last_order['order__max']
+
+            return order_max+10 if order_max else 10
         else:
             return self.cleaned_data['order']
 
