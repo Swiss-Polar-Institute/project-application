@@ -16,9 +16,9 @@ class CallPartTest(TestCase):
              'introductory_text': 'Please explain weather information that might be important during the expedition'
              })
 
-        call_form = CallPartForm(data=call_part_data, call_pk=self._call.pk, instance=None)
-        self.assertTrue(call_form.is_valid())
-        new_call_part = call_form.save()
+        call_part_form = CallPartForm(data=call_part_data, call_pk=self._call.pk, instance=None)
+        self.assertTrue(call_part_form.is_valid())
+        new_call_part = call_part_form.save()
 
         self.assertTrue(new_call_part.id)
         self.assertTrue(new_call_part.order, 10)
