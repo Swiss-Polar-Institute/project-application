@@ -371,10 +371,6 @@ class AbstractProposalView(TemplateView):
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
 
             questions_forms = self._questions_forms(request.POST, proposal)
-            # questions_form = Questions(request.POST,
-            #                            request.FILES,
-            #                            proposal=proposal,
-            #                            prefix=QUESTIONS_FORM_NAME)
 
             if call.budget_question():
                 budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
