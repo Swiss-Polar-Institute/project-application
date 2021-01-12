@@ -14,7 +14,7 @@ from evaluation.models import Reviewer, Criterion
 from grant_management.models import LaySummaryType, Medium
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
-    Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role, Project, FinancialKey, CallPart
+    Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role, Project, FinancialKey, CallPart, CallPartFile
 
 
 def create_call_long_name(long_name, funding_instrument=None):
@@ -40,6 +40,16 @@ def create_call_part(call) -> CallPart:
     call_part, created = CallPart.objects.get_or_create(call=call, title='Weather', order=10)
 
     return call_part
+
+
+def create_call_part_file(call_part) -> CallPartFile:
+    call_part_file, created = CallPartFile.objects.get_or_create(file=SimpleUploadedFile('form_to_download.docx',
+                                                                                         b'Some form to download'),
+                                                                 call_part=call_part,
+                                                                 name='Form to download'
+                                                                 )
+
+    return call_part_file
 
 
 def create_funding_instrument():
