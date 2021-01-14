@@ -16,7 +16,7 @@ class UtilsTest(TestCase):
         self._call = project_core_database_population.create_call(self._funding_instrument)
 
         database_population.delete_all_variables()
-        database_population.create_default_variables()
+        database_population.create_default_template_variables()
 
     def test_get_template_value(self):
         utils.get_template_value_for_call('activity', self._call)

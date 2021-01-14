@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from project_core.tests import database_population
-from variable_templates.tests.database_population import create_default_variables
+from variable_templates.tests.database_population import create_default_template_variables
 
 
 class CallListTest(TestCase):
@@ -47,7 +47,7 @@ class ProposalDetailTest(TestCase):
     def setUp(self):
         self._proposal = database_population.create_proposal()
         self._client_management = database_population.create_management_logged_client()
-        create_default_variables()
+        create_default_template_variables()
 
     def test_proposal_detail(self):
         response = self._client_management.get(

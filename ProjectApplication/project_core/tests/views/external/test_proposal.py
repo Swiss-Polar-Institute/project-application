@@ -25,7 +25,7 @@ class ProposalFormTest(TestCase):
         self._role = database_population.create_roles()[0]
 
         database_population.create_proposal_status()
-        database_population_variable_templates.create_default_variables()
+        database_population_variable_templates.create_default_template_variables()
 
     def _proposal_post_data(self, start_date):
         start_date_str = start_date.strftime('%d-%m-%Y')
