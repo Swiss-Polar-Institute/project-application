@@ -10,7 +10,11 @@
 <br>
 <strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.location %}
 <br>
-<strong>Keywords:</strong> {{ proposal.keywords_enumeration }}
+
+{% if proposal.call.keywords_in_general_information_question %}
+    <strong>Keywords:</strong> {{ proposal.keywords_enumeration }}
+{% endif %}
+
 <div class="row">
     <div class="col-3">
         <strong>Start date:</strong> {{ proposal.start_date }}<br>

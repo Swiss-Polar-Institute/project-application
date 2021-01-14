@@ -1221,6 +1221,15 @@ class AbstractScientificCluster(CreateModifyOn):
     sub_pi = models.ForeignKey(PersonPosition, help_text='Main person of this scientific cluster',
                                on_delete=models.PROTECT)
 
+    def keywords_enumeration(self):
+        # TODO: refactor with other keywords_enumeration using a Mixin probably
+        keywords = self.keywords.all().order_by('name')
+
+        if keywords:
+            return ', '.join([keyword.name for keyword in keywords])
+        else:
+            return '-'
+
     class Meta:
         abstract = True
 

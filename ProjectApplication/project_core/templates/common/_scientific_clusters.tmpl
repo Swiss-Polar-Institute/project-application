@@ -3,7 +3,7 @@
         <tr>
             <td>
                 <p><strong>Title:</strong> {{ scientific_cluster.title }}</p>
-
+                <p><strong>Keywords:</strong> {{ scientific_cluster.keywords_enumeration }}</p>
                 {% include 'common/_person_position_detail.tmpl' with person_position=scientific_cluster.sub_pi %}
             </td>
         </tr>
