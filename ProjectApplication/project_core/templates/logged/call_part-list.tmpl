@@ -7,7 +7,7 @@
 
             <h1>List call parts</h1>
             <p>
-                <strong>Call:</strong> {{ call.long_name }}<br>
+                <strong>Call:</strong> <a href="{% url 'logged-call-detail' pk=call.pk %}">{{ call.long_name }}</a><br>
             </p>
 
             <table id="call-parts" class="table table-striped table-sm table-hover display">
