@@ -29,7 +29,7 @@ class CallPartQuestionView(TemplateView):
                                   'url': url_call_parts_anchor},
                                  {'name': 'List Call Parts',
                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
-                                 {'name': f'Call Part ({call_question.call_part.title_rendered})',
+                                 {'name': f'Call Part ({call_question.call_part.title_rendered()})',
                                   'url': reverse('logged-call-part-detail',
                                                  kwargs={'call_pk': call.pk,
                                                          'call_part_pk': call_question.call_part.pk})},
@@ -68,7 +68,7 @@ class CallPartQuestionUpdate(SuccessMessageMixin, UpdateView):
                                   'url': url_call_parts_anchor},
                                  {'name': 'List Call Parts',
                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
-                                 {'name': f'Call Part ({call_question.call_part.title_rendered})',
+                                 {'name': f'Call Part ({call_question.call_part.title_rendered()})',
                                   'url': reverse('logged-call-part-detail',
                                                  kwargs={'call_pk': call.pk,
                                                          'call_part_pk': call_question.call_part.pk})},
@@ -102,7 +102,7 @@ class CallPartQuestionTemplateQuestionUpdate(SuccessMessageMixin, FormView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-calls')},
                                  {'name': f'Details ({call.little_name()})',
                                   'url': reverse('logged-call-detail', kwargs={'pk': call.pk})},
-                                 {'name': f'Call Part ({call_part.title_rendered})',
+                                 {'name': f'Call Part ({call_part.title_rendered()})',
                                   'url': reverse('logged-call-part-detail', kwargs={'call_pk': call.pk,
                                                                                     'call_part_pk': call_part.pk
                                                                                     }
