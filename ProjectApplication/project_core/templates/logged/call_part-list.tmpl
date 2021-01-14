@@ -22,7 +22,7 @@
                 {% for callpart in callpart_list %}
                     <tr>
                         <td>{% include 'common/_value-or-dash.tmpl' with value=callpart.order %}</td>
-                        <td>{{ callpart.title }}</td>
+                        <td>{{ callpart.title_rendered }}</td>
                         <td>
                             <a class="btn btn-primary btn-xs"
                                href="{% url 'logged-call-part-detail' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">View</a>
