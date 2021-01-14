@@ -1,1 +1,6 @@
-{% include 'common/_accordion.tmpl' with prefix=part.div_id button_text_collapsed='View questions' button_text_not_collapsed='Hide questions' template_file='common/_questions_answers-detail.tmpl' questions_answers=part.questions_type_text questions_files=part.questions_type_files only %}
+{% if part.questions_answers_text or part.questions_answers_file %}
+    {% include 'common/_accordion.tmpl' with prefix=part.div_id button_text_collapsed='View questions' button_text_not_collapsed='Hide questions' template_file='common/_questions_answers-detail.tmpl' part=part only %}
+{% else %}
+    <strong>No questions in this part</strong>
+{% endif %}
+

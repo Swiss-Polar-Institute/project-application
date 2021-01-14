@@ -49,7 +49,7 @@
     {% if part_with_answers.introductory_text %}
         <div class="pre-wrap">{{ part_with_answers.introductory_text }}</div>{% endif %}
     <br>
-    {% include 'common/_questions_answers-accordion-detail.tmpl' with part=part_with_answers question_answers=part_with_answers.answers only %}
+    {% include 'common/_questions_answers-accordion-detail.tmpl' with part=part_with_answers only %}
     <p></p>
 {% endfor %}
 
@@ -69,6 +69,7 @@
 {% endif %}
 
 <p></p>
+<hr>
 <h3>Data agreement</h3>
 <strong>Agreed to privacy
     policy:</strong> {% include 'common/_check-icon.tmpl' with value=proposal.applicant.privacy_policy %}<br>

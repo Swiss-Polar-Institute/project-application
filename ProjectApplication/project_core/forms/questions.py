@@ -22,6 +22,9 @@ class Questions(Form):
 
         super().__init__(*args, **kwargs)
 
+        self._questions_answers_text = []
+        self._questions_answers_file = []
+
         if self._proposal:
             self._call = self._proposal.call
 
@@ -43,7 +46,11 @@ class Questions(Form):
                                                                              help_text=question.question_description,
                                                                              required=question.answer_required)
 
+            self._questions_answers_text.append({'question': question, 'answer': answer})
+
         for question in self._call_part.questions_type_files():
+            question_label = 'question_{}'.format(question.pk)
+
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
                 self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
@@ -52,8 +59,6 @@ class Questions(Form):
                                                                                  required=question.answer_required)
 
             except ObjectDoesNotExist:
-                question_label = 'question_{}'.format(question.pk)
-
                 question_label_with_prefix = kwargs['prefix'] + '-' + question_label
 
                 if question_label_with_prefix in self.files:
@@ -66,8 +71,18 @@ class Questions(Form):
                                                                   help_text=question.question_description,
                                                                   required=question.answer_required)
 
+            self._questions_answers_file.append({'question': question,
+                                                 'answer': self.fields[question_label].initial}
+                                                )
+
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+
+    def questions_answers_text(self):
+        return self._questions_answers_text
+
+    def questions_answers_file(self):
+        return self._questions_answers_file
 
     def save_answers(self, proposal):
         all_good = True

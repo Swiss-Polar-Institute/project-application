@@ -5,9 +5,10 @@ class ProposalParts:
     def __init__(self, post, files, proposal, call=None):
         self._forms = []
         self._parts = []
+        self._proposal = proposal
 
         if proposal:
-            call = proposal.call
+            self._call = proposal.call
         elif call:
             pass
         else:
@@ -20,6 +21,11 @@ class ProposalParts:
                                             call=call,
                                             call_part=part,
                                             prefix=ProposalParts._form_prefix(part))
+
+            part.questions_answers_text = part.questions_form.questions_answers_text()
+            part.questions_answers_file = part.questions_form.questions_answers_file()
+
+
             self._parts.append(part)
 
     def get_forms(self):
