@@ -32,6 +32,10 @@ class CallPartFileForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
+                Div('order', css_class='col-3'),
+                css_class='row'
+            ),
+            Div(
                 Div('call_part', css_class='col-12', hidden=True),
                 css_class='row'
             ),
@@ -45,10 +49,6 @@ class CallPartFileForm(forms.ModelForm):
             ),
             Div(
                 Div('description', css_class='col-12'),
-                css_class='row'
-            ),
-            Div(
-                Div('order', css_class='col-3'),
                 css_class='row'
             ),
             FormActions(
