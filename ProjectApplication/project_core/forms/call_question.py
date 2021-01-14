@@ -53,6 +53,11 @@ class CallQuestionForm(forms.ModelForm):
                 Div('question_description', css_class='col-12'),
                 css_class='row'
             ),
+            Div(
+                Div('answer_required', css_class='col-12'),
+                css_class='row'
+            ),
+
             FormActions(
                 Submit('save', 'Save Call Question'),
                 cancel_edit_button(cancel_edit_url)
@@ -61,7 +66,7 @@ class CallQuestionForm(forms.ModelForm):
 
     class Meta:
         model = CallQuestion
-        fields = ['call_part', 'question_text', 'question_description', 'order']
+        fields = ['call_part', 'question_text', 'question_description', 'order', 'answer_required']
         widgets = {'question_text': forms.TextInput}
 
 
