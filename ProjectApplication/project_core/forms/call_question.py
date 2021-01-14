@@ -38,6 +38,10 @@ class CallQuestionForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('order', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
                 Div('call_part', css_class='col-12'),
                 css_class='row'
             ),
@@ -57,7 +61,7 @@ class CallQuestionForm(forms.ModelForm):
 
     class Meta:
         model = CallQuestion
-        fields = ['call_part', 'question_text', 'question_description']
+        fields = ['call_part', 'question_text', 'question_description', 'order']
         widgets = {'question_text': forms.TextInput}
 
 
