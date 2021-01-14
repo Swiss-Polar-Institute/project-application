@@ -36,7 +36,7 @@ class CallPartList(ListView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': f'Details ({call.short_name})',
                                   'url': call_part_section(call)},
-                                 {'name': 'List Parts'}
+                                 {'name': 'List Call Parts'}
                                  ]
 
         return context
@@ -65,7 +65,7 @@ class CallPartDetail(DeleteView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': f'Details ({call.short_name})',
                                   'url': call_part_section(call)},
-                                 {'name': 'List Parts',
+                                 {'name': 'List Call Parts',
                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
                                  {'name': f'Call Part ({self.object.title_rendered()})'}
                                  ]
@@ -94,7 +94,7 @@ class CallPartCreate(CreateView):
                                  {'name': f'Details ({call.short_name})',
                                   'url': call_part_section(call)
                                   },
-                                 {'name': 'List Parts',
+                                 {'name': 'List Call Parts',
                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
                                  {'name': f'New Call Part'}
                                  ]
@@ -135,7 +135,7 @@ class CallPartUpdate(UpdateView):
         context['breadcrumb'] = [{'name': 'Calls', 'url': reverse('logged-call-list')},
                                  {'name': f'Details ({call.short_name})',
                                   'url': call_part_section(call)},
-                                 {'name': 'List Parts',
+                                 {'name': 'List Call Parts',
                                   'url': reverse('logged-call-part-list', kwargs={'call_pk': call.pk})},
                                  {'name': f'Call Part ({self.object.title_rendered()})'}
                                  ]
