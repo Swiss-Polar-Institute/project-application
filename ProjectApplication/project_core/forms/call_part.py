@@ -63,3 +63,4 @@ class CallPartForm(forms.ModelForm):
     class Meta:
         model = CallPart
         fields = ['call', 'order', 'title', 'introductory_text', ]
+        help_texts = {'order': 'If left blank it will be the last one'}

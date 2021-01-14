@@ -70,4 +70,6 @@ class CallPartFileForm(forms.ModelForm):
         fields = ['call_part', 'name', 'description', 'order', 'file', ]
         help_texts = {
             'name': "File name as it should be displayed to the applicant. Do not use any special characters or '.'. The file extension will be appended automatically",
-            'description': 'Description to be displayed next to the file'}
+            'description': 'Description to be displayed next to the file',
+            'order': 'If left blank it will be the last one'
+        }
