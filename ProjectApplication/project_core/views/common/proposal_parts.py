@@ -10,7 +10,7 @@ class ProposalParts:
         if proposal:
             self._call = proposal.call
         elif call:
-            pass
+            self._call = call
         else:
             # It needs either the proposal or the call to find the questions
             assert False, 'In order to find the questions: pass either the Proposal or the Call'
