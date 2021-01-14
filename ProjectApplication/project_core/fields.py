@@ -41,7 +41,7 @@ class FlexibleDecimalField(forms.DecimalField):
                 # ',' or '.' are decimal separators and we only accept one or two decimals. If it's not at the end of the
                 # string it is an error. The user might have tried to use ',' or '.' as a thousands separator
                 raise ValidationError(
-                    'Please use comma (,) or full stops (.) to separate decimals and write maximum one or two decimals')
+                    'Please use commas (,) or full stops (.) to separate decimals and write maximum two decimal places')
 
             value = value.replace("'", '')  # thousands separator
             value = value.replace("‘", '')  # typographic thousands separator
