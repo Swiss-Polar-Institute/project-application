@@ -9,7 +9,7 @@
             <strong>Call:</strong> {{ file.call_part.call.long_name }}<br>
             <strong>Part:</strong> {{ file.call_part.title }}<br>
             <strong>Order:</strong> {{ file.order }}<br>
-            <strong>Download:</strong> {% include 'common/_file_download_link.tmpl' %}<br>
+            <strong>File:</strong> {% include 'common/_file_download_link.tmpl' with file=file only %}<br>
             <strong>Description:</strong> {{ file.description|default:'-' }}<br>
         </div>
         <div class="col-2">

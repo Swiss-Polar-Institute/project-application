@@ -18,7 +18,7 @@
                 <thead>
                 <tr>
                     <th>Order</th>
-                    <th>Name</th>
+                    <th>File</th>
                     <th>Description</th>
                     <th>Actions</th>
                 </tr>
@@ -26,8 +26,8 @@
                 <tbody>
                 {% for callpartfile in callpart.files %}
                     <tr>
-                        <td>{% include 'common/_value-or-dash.tmpl' with value=callpartfile.order %}</td>
-                        <td>{{ callpartfile.name }}</td>
+                        <td>{% include 'common/_value-or-dash.tmpl' with value=callpartfile.order only %}</td>
+                        <td>{% include 'common/_file_download_link.tmpl' with file=callpartfile only %}</td>
                         <td>{{ callpartfile.description|default:'-' }}</td>
                         <td>
                             <a class="btn btn-primary btn-xs"
@@ -63,8 +63,8 @@
                     "pageLength": 100,
                     "columns": [
                         {"width": "10%"},
-                        {"width": "10%"},
-                        {"width": "60%"},
+                        {"width": "30%"},
+                        {"width": "40%"},
                         {"width": "20%"},
                     ],
                     "searchHighlight": true
