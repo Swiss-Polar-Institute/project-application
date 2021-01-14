@@ -21,8 +21,9 @@
             <ul>
                 {% for callquestion in call_part.questions %}
                     <li>
-                        Question: <a
+                        <a
                             href="{% url 'logged-call-part-question-detail' call_pk=callquestion.call_part.call.pk call_question_pk=callquestion.pk %}">{{ callquestion.question_text }}</a>
+                                 ({{ callquestion.extra_information }})
                     </li>
                 {% endfor %}
                 <a href="{% url 'logged-call-part-question-add' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">

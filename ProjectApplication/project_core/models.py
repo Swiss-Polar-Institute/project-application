@@ -287,17 +287,22 @@ class AbstractQuestion(CreateModifyOn):
     class Meta:
         abstract = True
 
-    def __str__(self):
+    def extra_information(self):
+        required_text = 'required' if self.answer_required else 'not required'
+
         if self.answer_type == AbstractQuestion.FILE:
-            return '{} (FILE, required: {})'.format(self.question_text, self.answer_required)
+            return f'FILE, {required_text}'
         elif self.answer_type == AbstractQuestion.TEXT:
             if self.answer_max_length is None:
-                return '{} (TEXT, no max words, required: {})'.format(self.question_text, self.answer_required)
+                return f'TEXT, no max words, {required_text}'
             else:
-                return '{} (TEXT, max words {}, required: {})'.format(self.question_text, self.answer_max_length,
-                                                                      self.answer_required)
+                return f'TEXT, {self.answer_max_length} max words, {required_text}'
         else:
             assert False
+
+
+    def __str__(self):
+        return f'{self.question_text} ({self.extra_information()})'
 
 
 class TemplateQuestion(AbstractQuestion):
