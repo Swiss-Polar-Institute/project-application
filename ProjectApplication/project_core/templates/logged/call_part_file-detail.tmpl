@@ -8,7 +8,7 @@
             <h1>Call part file details</h1>
             <strong>Call:</strong> <a
                 href="{% url 'logged-call-detail' pk=file.call_part.call.pk %}">{{ file.call_part.call.long_name }}</a><br>
-            <strong>Part:</strong> <a
+            <strong>Call part:</strong> <a
                 href="{% url 'logged-call-part-detail' call_part_pk=file.call_part.pk call_pk=file.call_part.call.pk %}">{{ file.call_part.title }}</a><br>
             <strong>Order:</strong> {{ file.order }}<br>
             <strong>File:</strong> {% include 'common/_file_download_link.tmpl' with file=file only %}<br>

@@ -24,19 +24,11 @@ class CallQuestionForm(forms.ModelForm):
                                   kwargs={'call_pk': self.instance.call_part.call.pk,
                                           'call_question_pk': self.instance.pk
                                           })
-        self.fields['call_part'].queryset = CallPart.objects.filter(call=self.instance.call_part.call)
         call = self.instance.call_part.call
 
-        self.fields['call_part'].queryset = CallPart.objects.filter(call=call)
-
-        self.fields['call'] = forms.CharField(disabled=True)
-        self.fields['call'].initial = self.instance.call_part.call.long_name
+        self.fields['call_part'].queryset = CallPart.objects.filter(call=call).order_by('order')
 
         self.helper.layout = Layout(
-            Div(
-                Div('call', css_class='col-12', hidden=True),
-                css_class='row'
-            ),
             Div(
                 Div('order', css_class='col-6'),
                 css_class='row'

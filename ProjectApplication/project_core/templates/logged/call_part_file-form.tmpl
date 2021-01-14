@@ -8,7 +8,7 @@
             <h1>{{ action }} call part file</h1>
             <strong>Call:</strong> <a
                 href="{% url 'logged-call-detail' pk=call_part.call.pk %}">{{ call_part.call.long_name }}</a><br>
-            <strong>Call Part:</strong> <a
+            <strong>Call part:</strong> <a
                 href="{% url 'logged-call-part-detail' call_pk=call_part.call.pk call_part_pk=call_part.pk %}">{{ call_part.title_rendered }}</a><br>
             <p></p>
             {% crispy form %}

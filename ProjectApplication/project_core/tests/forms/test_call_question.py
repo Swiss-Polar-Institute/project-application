@@ -19,7 +19,8 @@ class CallQuestionFormTest(TestCase):
             {'call': self._call,
              'call_part': self._call_part,
              'question_text': new_question_text,
-             'question_description': 'In meters please'
+             'question_description': 'In meters please',
+             'order': 10
              })
 
         call_question_form = CallQuestionForm(data=call_question_data, instance=call_question, call_part_pk=self._call_part.pk)
