@@ -1,3 +1,5 @@
+{% load filesizeformat_safe %}
+
 {% for question_answer_text in part.questions_answers_text %}
     <strong>{{ question_answer_text.question.question_text }}</strong><br>
     {#    @formatter:off#}
@@ -9,9 +11,10 @@
     <strong>{{ question_answer_file.question.question_text }}</strong>
     <div class="border p-1 bg-white rounded">
         {% if question_answer_file.answer.instance.md5 %}
-            {% include 'common/_answer_type-icon.tmpl' with type='File' %} <a
-                href="{% url 'proposal-question-answer-file' proposal_qa_file_id=question_answer_file.answer.instance.id md5=question_answer_file.answer.instance.md5 %}">{{ question_answer_file.answer.instance.file.name }}</a>
-            ({{ question_answer_file.file.size }})
+            {#            TODO: refactor with _file_download_link.tmpl and _file_to_download.tmpl. Check tickets#}
+            <a href="{% url 'proposal-question-answer-file' proposal_qa_file_id=question_answer_file.answer.instance.id md5=question_answer_file.answer.instance.md5 %}"><i
+                    class="fas fa-download"></i> {{ question_answer_file.answer.instance.file.name }}</a>
+            ({{ question_answer_file.answer|filesizeformat_safe }})
         {% else %}
             File not attached
         {% endif %}
