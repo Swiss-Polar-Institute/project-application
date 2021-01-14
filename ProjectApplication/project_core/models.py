@@ -296,7 +296,7 @@ class AbstractQuestion(CreateModifyOn):
             if self.answer_max_length is None:
                 return f'TEXT, no max words, {required_text}'
             else:
-                return f'TEXT, {self.answer_max_length} max words, {required_text}'
+                return f'TEXT, max {self.answer_max_length} words, {required_text}'
         else:
             assert False
 

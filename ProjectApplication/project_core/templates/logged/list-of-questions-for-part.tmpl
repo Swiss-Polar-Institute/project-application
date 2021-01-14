@@ -1,10 +1,13 @@
+{% load filesizeformat_safe %}
+
 {% with call_part_has_questions=call_part.callquestion_set.exists call_part_has_files=call_part.callpartfile_set.exists %}
     <ul>
         <li>Files:{% if not call_part_has_files %} (no files){% endif %}
             <ul>
                 {% for call_part_file in call_part.files %}
                     <li>
-                        {% include 'common/_file_download_link.tmpl' with file=call_part_file only %}
+                        <a href="{% url 'logged-call-part-file-detail' call_pk=call_part.call.pk call_file_pk=call_part_file.pk %}">{{ call_part_file.filename_with_extension }}</a> ({{ call_part_file.file|filesizeformat_safe }}, <a href="{{ call_part_file.download_link }}"><i class="fas fa-download"></i></a>)
+{#                        {% include 'common/_file_download_link.tmpl' with file=call_part_file only %}#}
                     </li>
                 {% endfor %}
 
