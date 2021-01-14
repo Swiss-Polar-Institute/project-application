@@ -8,12 +8,14 @@
             Flagship features:
             <h2>Version deployed on (next)</h2>
             <ul>
-                <li>Calls have parts</li>
-                <li>Questions/Answers are assigned to Call parts instead of to the call</li>
-                <li>Parts can also have files attached ready to be downloaded</li>
+                <li>Management can add, remove, edit Parts in the Call. Calls have a title and introductory text</li>
+                <li>Management can attach Files to the Parts (so applicants can download files)</li>
+                <li>Management can attach questions to the Parts (instead of to the Call only). Needed for the flagship
+                    and will enable to organise questions when there are too many
+                </li>
                 <li>Overall budget question enabled/disabled</li>
-                <li>Allows to not have budget categories</li>
-                <li>Updates Django</li>
+                <li>Allows to not have budget categories: hides the budget table</li>
+                <li>Updates Django (the framework used for the application)</li>
             </ul>
 
             <h2>Version deployed on 16/11/2020</h2>
@@ -22,7 +24,8 @@
                 <li>django.doctor improvements: methods, avoids redundant parameters, etc.</li>
                 <li>Use the new admin URL when loading CSS</li>
                 <li>Fix indentation of text input by users (linebr don't keep it, go back to the old pre boxes without
-                    mono-spaced font)</li>
+                    mono-spaced font)
+                </li>
             </ul>
 
 
@@ -324,7 +327,8 @@
                     happening again (and for other parts of the system as well)
                 </li>
                 <li>Keep track of who, when and what information is changed. E.g. if a management user makes a change on
-                    the Call it's easier now for John, Carles or Jen to see what changed and when. If wanted this tracking
+                    the Call it's easier now for John, Carles or Jen to see what changed and when. If wanted this
+                    tracking
                     can be exposed to management
                 </li>
                 <li>Simplifies database for fields that are superseded by the previous change</li>
@@ -355,7 +359,8 @@
             New features:
             <ul>
                 <li>Added possibility of changing the text of titles/descriptions in the proposal form depending on the
-                    Funding Instrument and Call. For example some funding instruments might ask "Describe your proposal" and
+                    Funding Instrument and Call. For example some funding instruments might ask "Describe your proposal"
+                    and
                     some other ones "Describe your field trip", or "Describe your event".
                 </li>
                 <li>Added internal (SPI only) comments and attachments to proposals</li>
@@ -368,7 +373,8 @@
                     the screen (important to have space for the eligibility side column).
                 </li>
                 <li>Major update of the framework (Django) that the Projects application is built on (from version 2.2.6
-                    to 3.0.3). Minor updates of libraries that are used by the application (database, object storage, Excel
+                    to 3.0.3). Minor updates of libraries that are used by the application (database, object storage,
+                    Excel
                     writer, etc.)
                 </li>
             </ul>
