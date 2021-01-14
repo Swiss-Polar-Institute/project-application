@@ -8,8 +8,10 @@
 
             <h1>List files</h1>
             <p>
-                <strong>Call:</strong> <a href="{% url 'logged-call-detail' pk=callpart.call.pk %}">{{ callpart.call.long_name }}</a><br>
-                <strong>Call part:</strong> {{ callpart.title }}<br>
+                <strong>Call:</strong> <a
+                    href="{% url 'logged-call-detail' pk=callpart.call.pk %}">{{ callpart.call.long_name }}</a><br>
+                <strong>Call part:</strong> <a
+                    href="{% url 'logged-call-part-detail' call_part_pk=callpart.pk call_pk=callpart.call.pk %}">{{ callpart.title_rendered }}</a><br>
             </p>
 
             <table id="call-parts" class="table table-striped table-sm table-hover display">

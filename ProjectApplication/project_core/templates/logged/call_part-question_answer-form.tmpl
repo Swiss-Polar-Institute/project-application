@@ -12,7 +12,8 @@
             <p>
                 <strong>Call:</strong> <a
                     href="{% url 'logged-call-detail' pk=call.pk %}">{{ call.long_name }}</a><br>
-                <strong>Call part:</strong> {{ callpart.title }}<br>
+                <strong>Call part:</strong> <a
+                    href="{% url 'logged-call-part-detail' call_pk=callpart.call.pk call_part_pk=callpart.pk %}">{{ callpart.title }}</a><br>
             </p>
 
             {% crispy form %}

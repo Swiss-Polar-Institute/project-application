@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-10">
             <h1>{{ action }} call part</h1>
-            <strong>Call:</strong> {{ call.long_name }}<br>
+            <strong>Call:</strong> <a href="{% url 'logged-call-detail' pk=call.pk %}">{{ call.long_name }}</a><br>
             {% crispy form %}
         </div>
 
