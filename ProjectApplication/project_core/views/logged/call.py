@@ -11,7 +11,7 @@ from project_core.forms.call import CallForm, CallQuestionItemFormSet
 from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall, BudgetCategory
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
-    get_template_variables_for_call
+    get_template_variables_for_call, get_template_value_for_call
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
 from ..common.proposal import AbstractProposalDetailView
 from ...widgets import CheckboxSelectMultipleSortable
@@ -162,6 +162,8 @@ class ProposalDetail(AbstractProposalDetailView):
                                  {'name': f'List of proposals ({proposal.call.little_name()})',
                                   'url': reverse('logged-call-list-proposals', kwargs={'call_id': proposal.call.id})},
                                  {'name': 'Proposal'}]
+
+        context['activity'] = get_template_value_for_call('activity', proposal.call)
 
         return render(request, 'logged/proposal-detail.tmpl', context)
 
