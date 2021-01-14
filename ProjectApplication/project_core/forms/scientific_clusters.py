@@ -109,6 +109,8 @@ class ScientificClusterForm(forms.ModelForm):
         model = ProposalScientificCluster
         fields = ['proposal', 'title', 'keywords']
         widgets = {'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords')}
+        help_texts = {'title': 'Title of the research cluster',
+                      'keywords': 'Select at least 5 keywords that describe the research cluster. If the keywords you are looking for do not exist, then add each term separately'}
 
 
 class ScientificClustersFormSet(BaseInlineFormSet):
