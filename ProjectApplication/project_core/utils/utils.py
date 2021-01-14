@@ -87,8 +87,13 @@ def format_date(date):
 
 
 def file_size_validator(file):
-    file_size = file.file.size
-    limit = 150 * 1024 * 1024
+    # It can receive _io.BufferedRandom and S3 files
+    file_size = getattr(file.file, 'size', None)
+    if file_size is None:
+        file_size = file.size
+
+    limit_mb = 150
+    limit = limit_mb * 1024 * 1024
 
     if file_size > limit:
         raise ValidationError(f'Maximum file size is {bytes_to_human_readable(limit)}')
@@ -120,4 +125,3 @@ def calculate_md5_from_file_field(file_field):
     # file_field.file.file.seek(initial_position)
 
     return hash_md5.hexdigest()
-

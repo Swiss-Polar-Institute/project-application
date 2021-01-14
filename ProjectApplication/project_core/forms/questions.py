@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import Form
 
 from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion, CallPart
+from project_core.utils.utils import external_file_validator
 
 logger = logging.getLogger('project_core')
 
@@ -53,23 +54,29 @@ class Questions(Form):
 
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
+                # TODO: refactor to avoid repetition
                 self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
                                                                                  help_text=question.question_description,
                                                                                  initial=file,
-                                                                                 required=question.answer_required)
+                                                                                 required=question.answer_required,
+                                                                                 validators=[*external_file_validator()])
 
             except ObjectDoesNotExist:
                 question_label_with_prefix = kwargs['prefix'] + '-' + question_label
 
                 if question_label_with_prefix in self.files:
+                    # TODO: refactor to avoid repetition
                     self.fields[question_label] = forms.FileField(label=question.question_text,
                                                                   help_text=question.question_description,
                                                                   initial=self.files[question_label_with_prefix],
-                                                                  required=question.answer_required)
+                                                                  required=question.answer_required,
+                                                                  validators=[*external_file_validator()])
                 else:
+                    # TODO: refactor to avoid repetition
                     self.fields[question_label] = forms.FileField(label=question.question_text,
                                                                   help_text=question.question_description,
-                                                                  required=question.answer_required)
+                                                                  required=question.answer_required,
+                                                                  validators=[*external_file_validator()])
 
             self._questions_answers_file.append({'question': question,
                                                  'answer': self.fields[question_label].initial}
