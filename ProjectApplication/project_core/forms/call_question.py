@@ -1,6 +1,6 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit
+from crispy_forms.layout import Layout, Div, Submit, HTML
 from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.db.models import Max
@@ -74,13 +74,18 @@ class CallQuestionFromTemplateQuestionForm(forms.Form):
         for call_question in self._call_part.callquestion_set.all():
             used_templates.append(call_question.template_question)
 
+        create_template_question_url = reverse('logged-template-question-add')
+
         self.fields['template_questions'] = forms.ModelMultipleChoiceField(initial=used_templates,
+                                                                           label='',
                                                                            queryset=TemplateQuestion.objects.all(),
                                                                            required=False,
                                                                            widget=FilteredSelectMultiple(
                                                                                is_stacked=True,
-                                                                               verbose_name='questions'),
-                                                                           label='Template questions')
+                                                                               verbose_name='questions',
+                                                                           ))
+
+        template_questions_label = f'Template questions <div class="pr-3 float-right"><a target="_blank" href="{create_template_question_url}">Create template question <i class="fas fa-external-link-alt"></i></a></div>'
 
         cancel_edit_url = reverse('logged-call-update', kwargs={'pk': self._call_part.call.pk})
         cancel_edit_url += "#parts"
@@ -88,8 +93,10 @@ class CallQuestionFromTemplateQuestionForm(forms.Form):
         self.helper = FormHelper(self)
 
         self.helper.layout = Layout(
+            Div(Div(HTML(template_questions_label), css_class='col-4'),
+                css_class='row'),
             Div(
-                Div('template_questions', css_class='col-12'),
+                Div('template_questions', css_class='col-6'),
                 css_class='row'
             ),
             FormActions(
