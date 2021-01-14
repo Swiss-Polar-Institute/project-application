@@ -198,7 +198,7 @@ class AbstractProposalView(TemplateView):
 
             context['proposal_status_is_draft'] = proposal.status_is_draft()
 
-            context['extra_parts'] = ProposalParts(request.POST, request.FILES, proposal).get_parts()
+            context['extra_parts'] = ProposalParts(None, None, proposal).get_parts()
 
         else:
             if request.GET.get('call', None) is None:
@@ -248,7 +248,7 @@ class AbstractProposalView(TemplateView):
 
             context['action'] = 'New'
 
-            context['extra_parts'] = ProposalParts(request.POST, request.FILES, proposal=None, call=call).get_parts()
+            context['extra_parts'] = ProposalParts(None, None, proposal=None, call=call).get_parts()
 
         context.update(call_context_for_template(call))
 
