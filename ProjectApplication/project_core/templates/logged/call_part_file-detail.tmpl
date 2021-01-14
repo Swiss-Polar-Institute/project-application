@@ -10,7 +10,7 @@
             <strong>Part:</strong> {{ file.call_part.title }}<br>
             <strong>Call:</strong> {{ file.call_part.call.long_name }}<br>
             <strong>Download:</strong> <a href="{{ file.download_link }}">{{ file.name }}</a><br>
-            <strong>Description:</strong> {{ file.description }}<br>
+            <strong>Description:</strong> {{ file.description|default:'-' }}<br>
         </div>
         <div class="col-2">
             <p>

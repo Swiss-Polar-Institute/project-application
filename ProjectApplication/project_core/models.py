@@ -1275,7 +1275,7 @@ class CallPartFile(CreateModifyOn):
                                   on_delete=models.PROTECT)
 
     name = models.CharField(max_length=64, help_text='Name of the file', validators=[validate_slug])
-    description = models.CharField(max_length=512, help_text='Description of this file')
+    description = models.CharField(max_length=512, help_text='Description of this file', blank=True, null=True)
     file = models.FileField(storage=SpiS3Boto3Storage(),
                             upload_to=call_part_file_rename,
                             validators=[*management_file_validator()])

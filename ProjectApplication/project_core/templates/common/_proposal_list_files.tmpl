@@ -5,7 +5,7 @@
     Files:
     <ul>
     {% for file in call_part.files %}
-        <li>{% include 'common/_file_download_link.tmpl' with file=file only %}: {{ file.description }}</li>
+        <li>{% include 'common/_file_download_link.tmpl' with file=file only %}{% if file.description %}: {{ file.description }}{% else %}-{% endif %}</li>
     {% endfor %}
     </ul>
 {% endif %}
