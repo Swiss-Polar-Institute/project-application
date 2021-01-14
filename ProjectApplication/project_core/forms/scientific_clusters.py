@@ -44,12 +44,12 @@ class ScientificClusterForm(forms.ModelForm):
 
     def _get_person_form(self):
         help_texts = {'orcid': "Sub-PI\'s ORCID iD (e.g.: 0000-0002-1825-0097)",
-                      'first_name': 'Name populated from the ORCID record. If you would like to change it please amend it in ORCID',
-                      'surname': 'Surname populated from the ORCID record. If you would like to change it please amend it in ORCID',
-                      'phd_date': 'If applicable, please enter the date that the sub-PI was awarded their PhD (mm-yyyy)',
-                      'email': 'Please enter a valid email address for the sub-PI',
-                      'organisation_names': 'Please select the organisation(s) to which the sub-PI is affiliated for the purposes of this proposal. If they are not available amongst the options provided, type the full name and click on “Create”',
-                      'group': 'Please type the names of the group(s) or laboratories to which the sub-PI is affiliated for the purposes of this proposal'}
+                      'first_name': 'Name populated from the ORCID record. If you would like to change it, amend it in ORCID',
+                      'surname': 'Surname populated from the ORCID record. If you would like to change it, amend it in ORCID',
+                      'phd_date': 'If applicable, enter the date that the sub-PI was awarded their PhD (mm-yyyy)',
+                      'email': 'Enter a valid email address for the sub-PI. Note this email address will not receive a confirmation email upon submission',
+                      'organisation_names': 'Select the organisation(s) to which the sub-PI is affiliated for the purposes of this proposal. If they are not available amongst the options provided, type the full name and click on “Create”',
+                      'group': 'Type the names of the group(s) or laboratories to which the sub-PI is affiliated for the purposes of this proposal'}
 
         # This is a QueryDict, not a dict
         person_form_data = self.data.copy()
