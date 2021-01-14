@@ -34,7 +34,7 @@ class CallQuestionForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
-                Div('call', css_class='col-12'),
+                Div('call', css_class='col-12', hidden=True),
                 css_class='row'
             ),
             Div(

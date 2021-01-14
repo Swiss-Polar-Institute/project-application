@@ -8,7 +8,7 @@
 
             <p></p>
             <strong>Call:</strong> <a href="{% url 'logged-call-detail' pk=call_question.call_part.call.pk %}">{{ call_question.call_part.call.long_name }}</a><br>
-            <strong>Call part:</strong> <a href="{% url 'logged-call-part-detail' call_pk=call_question.call_part.call.pk call_part_pk=call_question.call_part.pk %}">{{ call_question.call_part.title }}</a><br>
+            <strong>Call part:</strong> <a href="{% url 'logged-call-part-detail' call_pk=call_question.call_part.call.pk call_part_pk=call_question.call_part.pk %}">{{ call_question.call_part.title_rendered }}</a><br>
             <br>
             <strong>Question:</strong> {{ call_question.question_text }}<br>
             <strong>Question description:</strong> {% include 'common/_value-or-dash.tmpl' with value=call_question.question_description %}<br>
