@@ -58,7 +58,7 @@
         {% include 'common/_form-dynamic_questions.tmpl' with questions_form=part.questions_form %}
     {% endfor %}
 
-    {% if budget_question %}
+    {% if budget_part %}
         <h2>Part {{ part_numbers.budget_requested }}: Budget requested</h2>
         {% include 'common/_form-budget.tmpl' %}
     {% endif %}
