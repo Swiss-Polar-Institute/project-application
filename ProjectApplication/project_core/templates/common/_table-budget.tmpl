@@ -11,7 +11,7 @@
     {% for proposed_budget_item in proposal.proposedbudgetitem_set.all %}
         <tr>
             <td>{{ proposed_budget_item.category }} {{ proposed_budget_item.description }}</td>
-            <td><div class="border p-1 bg-white rounded pre-wrap">{{ proposed_budget_item.details }}</div></td>
+            <td><div class="border p-1 bg-white rounded pre-wrap">{{ proposed_budget_item.details|default:'-' }}</div></td>
             <td>{% if proposed_budget_item.amount is not None %}
                 {{ proposed_budget_item.amount|thousands_separator }}{% endif %}</td>
         </tr>
