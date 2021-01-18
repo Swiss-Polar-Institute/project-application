@@ -62,7 +62,7 @@
     <p></p>
 {% endfor %}
 
-{% if proposal.call.budget_question %}
+{% if proposal.call.budget_requested_part %}
     <h2>Part {{ part_numbers.budget_requested }}: Budget requested</h2>
     <strong>Total requested budget:</strong> {{ proposal.total_budget|thousands_separator }} CHF
     <p><strong>Maximum budget:</strong> {{ maximum_budget|thousands_separator }} CHF</p>
