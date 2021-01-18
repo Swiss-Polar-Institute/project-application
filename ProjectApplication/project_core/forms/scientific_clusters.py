@@ -26,6 +26,11 @@ class ScientificClusterForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
+                Div(
+                    HTML('<h3>Scientific cluster</h3>'), css_class='col-12'),
+                css_class='row',
+            ),
+            Div(
                 Div('title', css_class='col-12'),
                 css_class='row'
             ),
@@ -35,9 +40,9 @@ class ScientificClusterForm(forms.ModelForm):
             ),
             Div(
                 Div(
-                HTML('<h3>Sub-PI</h3>'), css_class='col-12'),
+                    HTML('<h4>Sub-PI</h4>'), css_class='col-12'),
                 css_class='row'
-                ),
+            ),
             *self._person_form.helper.layout
         )
         self.fields.update(self._person_form.fields)
