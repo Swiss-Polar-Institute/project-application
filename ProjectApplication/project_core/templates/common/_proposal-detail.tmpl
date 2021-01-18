@@ -25,6 +25,11 @@
     <div class="col-6">
         <strong>Duration (months):</strong> {{ proposal.duration_months|floatformat }}<br>
     </div>
+    {% if proposal.call.overall_budget_question %}
+        <div class="col-12">
+            <strong>Requested overall budget:</strong> {{ proposal.overall_budget|thousands_separator }} CHF
+        </div>
+    {% endif %}
 </div>
 <br>
 
