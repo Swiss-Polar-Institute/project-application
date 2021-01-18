@@ -5,7 +5,7 @@
 <strong>Professional postal address</strong>
 {% include 'common/_postal_address.tmpl' %}
 
-<h3>Part 1: Proposal details</h3>
+<h2>Part 1: Proposal details</h2>
 <strong>Geographical focus:</strong> {{ proposal.geographical_areas_enumeration }}
 <br>
 <strong>Precise region:</strong> {% include 'common/_value-or-dash.tmpl' with value=proposal.location %}
@@ -39,14 +39,14 @@
 {% endif %}
 <p></p>
 {% if proposal.call.scientific_clusters_question %}
-    <h3>Part {{ part_numbers.scientific_clusters }}: Research cluster of proposed {{ activity }}</h3>
+    <h2>Part {{ part_numbers.scientific_clusters }}: Research cluster of proposed {{ activity }}</h2>
     {% include 'common/_accordion.tmpl' with prefix='scientific_clusters' button_text_collapsed='Show research clusters' button_text_not_collapsed='Hide research clusters' template_file='common/_scientific_clusters.tmpl' %}
 {% endif %}
 
 <p></p>
 
 {% if proposal_partner_question %}
-    <h3>Part {{ part_numbers.roles_competences }}: Roles and competences</h3>
+    <h2>Part {{ part_numbers.roles_competences }}: Roles and competences</h2>
     {% include 'common/_accordion.tmpl' with prefix='applicant_role' button_text_collapsed='View applicant' button_text_not_collapsed='Hide applicant' template_file='common/_role_description.tmpl' role_description=proposal.applicant_role_description %}
     <br>
     {% include 'common/_accordion.tmpl' with prefix='partners' button_text_collapsed='View partners' button_text_not_collapsed='Hide partners' template_file='common/_table-partners.tmpl' %}
@@ -63,7 +63,7 @@
 {% endfor %}
 
 {% if proposal.call.budget_question %}
-    <h3>Part {{ part_numbers.budget_requested }}: Budget requested</h3>
+    <h2>Part {{ part_numbers.budget_requested }}: Budget requested</h2>
     <strong>Total requested budget:</strong> {{ proposal.total_budget|thousands_separator }} CHF
     <p><strong>Maximum budget:</strong> {{ maximum_budget|thousands_separator }} CHF</p>
 
@@ -72,7 +72,7 @@
 {% endif %}
 
 {% if proposal.call.other_funding_question %}
-    <h3>Part {{ part_numbers.other_sources_of_funding }}: Other sources of funding</h3>
+    <h2>Part {{ part_numbers.other_sources_of_funding }}: Other sources of funding</h2>
     {% include 'common/_accordion.tmpl' with prefix='funding' button_text_collapsed='View funding details' button_text_not_collapsed='Hide funding details' template_file='common/_table-funding.tmpl' %}
     <br>
 {% endif %}

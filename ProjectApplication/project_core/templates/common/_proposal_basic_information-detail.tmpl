@@ -1,7 +1,7 @@
 {% load request_is_management %}
 {% load static %}
 
-<h2>{{ proposal.title }}</h2>
+<h1>{{ proposal.title }}</h1>
 <strong>Status:</strong> {% include 'logged/_proposal_status_badge.tmpl' with status_name=proposal.proposal_status.name only %}<br>
 <strong>Call:</strong>
 {% if request|request_is_management %}
