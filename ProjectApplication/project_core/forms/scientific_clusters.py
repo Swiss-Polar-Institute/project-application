@@ -35,7 +35,7 @@ class ScientificClusterForm(forms.ModelForm):
             ),
             Div(
                 Div(
-                HTML('<h3>Sub-Pi</h3>'), css_class='col-12'),
+                HTML('<h3>Sub-PI</h3>'), css_class='col-12'),
                 css_class='row'
                 ),
             *self._person_form.helper.layout
