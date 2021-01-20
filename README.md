@@ -84,12 +84,13 @@ Filled in by the researchers to apply for grants
 <img src="documentation/screenshots/020-proposal_main_form.png">
 </td></tr></table>
 
+## List of submitted proposals
+
 <table><tr><td>
 <img src="documentation/screenshots/030-funding_instruments.png">
 </td></tr></table>
 
-
-## List of submitted proposals
+## List of closed calls
 
 <table><tr><td>
 <img src="documentation/screenshots/050-list_of_calls.png">
