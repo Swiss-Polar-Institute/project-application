@@ -58,17 +58,27 @@ The application is very interactive: validations happening with all the forms, a
 
 Here a few screenshots to see the look and feel:
 
+## List of funding instruments
 <table><tr><td>
 <img src="documentation/screenshots/010-funding_instruments.png">
 </td></tr></table>
 
+## List of template questions
 <table><tr><td>
 <img src="documentation/screenshots/015-template_questions.png">
 </td></tr></table>
 
+## Creating a call for proposals
+
+Used by the admin of the Swiss Polar Institute to create the call
+
 <table><tr><td>
 <img src="documentation/screenshots/017-create_call.png">
 </td></tr></table>
+
+## Proposal main form
+
+Filled in by the researchers to apply for grants
 
 <table><tr><td>
 <img src="documentation/screenshots/020-proposal_main_form.png">
@@ -78,18 +88,31 @@ Here a few screenshots to see the look and feel:
 <img src="documentation/screenshots/030-funding_instruments.png">
 </td></tr></table>
 
+
+## List of submitted proposals
+
 <table><tr><td>
 <img src="documentation/screenshots/050-list_of_calls.png">
 </td></tr></table>
+
+## Details of a submitted proposal
 
 <table><tr><td>
 <img src="documentation/screenshots/070-proposal_detail.png">
 </td></tr></table>
 
+## Management of finances
+
 <table><tr><td>
 <img src="documentation/screenshots/080-grant_management-finances.png">
 </td></tr></table>
 
+## Management of deliverables
+
 <table><tr><td>
 <img src="documentation/screenshots/090-grant_management-deliverables.png">
 </td></tr></table>
+
+## Reporting tables
+
+Screenshots to be added
