@@ -118,7 +118,7 @@ class Call(CreateModifyOn):
     overarching_project_question = models.BooleanField(
         help_text='True if the question for the overarching project is displayed',
         default=False)
-    scientific_clusters_question = models.BooleanField(help_text='True if the Scientific Cluster question is enabled',
+    scientific_clusters_question = models.BooleanField(help_text='True if the Research Cluster question is enabled',
                                                        default=False)
     keywords_in_general_information_question = models.BooleanField(
         help_text='True if we want to ask the keywords in the general section',
@@ -1215,10 +1215,10 @@ class ProjectPartner(Partner):
 
 
 class AbstractScientificCluster(CreateModifyOn):
-    title = models.CharField(max_length=500, help_text='Title of the scientific cluster')
-    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the scientific cluster')
+    title = models.CharField(max_length=500, help_text='Title of the research cluster')
+    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the research cluster')
 
-    sub_pi = models.ForeignKey(PersonPosition, help_text='Main person of this scientific cluster',
+    sub_pi = models.ForeignKey(PersonPosition, help_text='Main person of this research cluster',
                                on_delete=models.PROTECT)
 
     def keywords_enumeration(self):
@@ -1236,7 +1236,7 @@ class AbstractScientificCluster(CreateModifyOn):
 
 class ProposalScientificCluster(AbstractScientificCluster):
     proposal = models.ForeignKey(Proposal,
-                                 help_text='Proposal that this Scientific Cluster refers to',
+                                 help_text='Proposal that this Research Cluster refers to',
                                  on_delete=models.PROTECT)
 
     class Meta:

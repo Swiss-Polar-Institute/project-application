@@ -230,7 +230,7 @@ class CallForm(forms.ModelForm):
                       'other_funding_question': 'Select if you would like to ask about other funding that will contribute to the proposal',
                       'proposal_partner_question': 'Select if you would like to ask about proposal partners',
                       'overarching_project_question': 'Select if you would to ask about the overarching project',
-                      'scientific_clusters_question': 'Select if you would to include a sub-section about "Scientific Clusters"',
+                      'scientific_clusters_question': 'Select if you would to include a sub-section about "Research Clusters"',
                       'keywords_in_general_information_question': 'Select if you would like to request keywords in the "General Information" section',
                       'overall_budget_question': 'Select if you would like to request the overall budget total. Budget details can be broken down separately by selecting the categories that budget can be allocated to'
                       }

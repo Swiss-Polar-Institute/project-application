@@ -27,7 +27,7 @@ class ScientificClusterForm(forms.ModelForm):
             ),
             Div(
                 Div(
-                    HTML('<h3>Scientific cluster</h3>'), css_class='col-12'),
+                    HTML('<h3>Research cluster</h3>'), css_class='col-12'),
                 css_class='row',
             ),
             Div(
@@ -40,7 +40,7 @@ class ScientificClusterForm(forms.ModelForm):
             ),
             Div(
                 Div(
-                    HTML('<h4>Sub-PI</h4>'), css_class='col-12'),
+                    HTML('<h4>Sub-PI</h4>Add information about one sub-PI per cluster'), css_class='col-12'),
                 css_class='row'
             ),
             *self._person_form.helper.layout
