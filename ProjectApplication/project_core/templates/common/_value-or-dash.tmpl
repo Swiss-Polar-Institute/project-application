@@ -1,10 +1,11 @@
-{% load get_type %}
-{% if value %}
-    {% if value|get_type == 'date' %}
-        {{ value }}
+{% load get_type %}{% spaceless %}
+    {% if value %}
+        {% if value|get_type == 'date' %}
+            {{ value }}
+        {% else %}
+            {{ value|linebreaksbr }}
+        {% endif %}
     {% else %}
-        {{ value|linebreaksbr }}
+        -
     {% endif %}
-{% else %}
-    -
-{% endif %}
+{% endspaceless %}
