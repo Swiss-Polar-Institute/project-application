@@ -102,7 +102,7 @@ class CallForm(forms.ModelForm):
                                                                      )
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
-        self.fields['budget_categories'].label = 'Budget categories (drag and drop to sort them)'
+        self.fields['budget_categories'].label = 'Budget categories (drag and drop to order them)'
 
         XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['call_open_date'])
         XDSoftYearMonthDayHourMinutePickerInput.set_format_to_field(self.fields['submission_deadline'])
