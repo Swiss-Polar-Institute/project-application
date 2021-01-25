@@ -14,7 +14,11 @@
                     {% include 'variable_templates/_template_variables-form.tmpl' %}
                 {% endif %}
 
-                {% include 'common/_submit-button.tmpl' with value='Save Call' %}
+                {% if call_action == 'Create' %}
+                    {% include 'common/_submit-button.tmpl' with value='Create Call' %}
+                {% else %}
+                    {% include 'common/_submit-button.tmpl' with value='Save Call' %}
+                {% endif %}
                 {% include 'common/_cancel-button.tmpl' with value='Cancel Edit' url=cancel_url %}
                 <p></p>
             </form>
