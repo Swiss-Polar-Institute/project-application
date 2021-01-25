@@ -89,7 +89,7 @@ class CallEvaluationForm(forms.ModelForm):
         self.fields['criteria'] = forms.MultipleChoiceField(choices=criterion_choices,
                                                             initial=criterion_initial,
                                                             widget=CheckboxSelectMultipleSortable,
-                                                            label='Criteria (drag and drop to sort them)',
+                                                            label='Criteria (drag and drop to order them)',
                                                             help_text='These criteria are used in the Excel Evaluation sheet'
                                                             )
 
