@@ -6,9 +6,9 @@
     {{ reviewer.person }}{% if not forloop.last %},{% endif %}
 {% endfor %}<br>
     <strong>Panel remarks:</strong>
-    <div class="border p-1 bg-white rounded pre-wrap">{{ proposalevaluation.panel_remarks }}</div><br>
+    <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=proposalevaluation.panel_remarks only %}</div><br>
     <strong>Feedback to applicant:</strong>
-    <div class="border p-1 bg-white rounded pre-wrap">{{ proposalevaluation.feedback_to_applicant }}</div>
+    <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=proposalevaluation.feedback_to_applicant %}</div>
     <br>
     <div class="row">
         <div class="col-8">
