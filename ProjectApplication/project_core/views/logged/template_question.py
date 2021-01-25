@@ -40,8 +40,10 @@ class CrispyNoFormTag:
         form.helper = FormHelper()
 
         if form.instance.id:
+            action = 'Save'
             cancel_edit_url = reverse('logged-template-question-detail', kwargs={'pk': form.instance.id})
         else:
+            action = 'Create'
             cancel_edit_url = reverse('logged-template-question-add')
 
         form.fields['question_text'].widget.attrs = {'rows': 2}
@@ -70,7 +72,7 @@ class CrispyNoFormTag:
                 css_class='row'
             ),
             FormActions(
-                Submit('save', 'Save Template Question'),
+                Submit('save', f'{action} Template Question'),
                 cancel_edit_button(cancel_edit_url)
             )
         )

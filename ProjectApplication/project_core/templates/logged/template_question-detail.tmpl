@@ -10,9 +10,11 @@
             <strong>Question:</strong> {{ template_question.question_text }}<br>
             <strong>Question description:</strong> {{ template_question.question_description }}<br>
             <strong>Answer type:</strong> {{ template_question.answer_type }}<br>
-            <strong>Question max words:</strong> {% if template_question.answer_max_length %}
-            {{ template_question.answer_max_length }} {% else %}
-            Unlimited {% endif %}<br>
+            {% if template_question.answer_type == 'Text' %}
+                <strong>Question max words:</strong> {% if template_question.answer_max_length %}
+                {{ template_question.answer_max_length }} {% else %}
+                Unlimited {% endif %}<br>
+            {% endif %}
             <strong>Answer is
                 required:</strong> {% include 'common/_check-icon.tmpl' with value=template_question.answer_required %}<br>
         </div>

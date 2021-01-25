@@ -75,6 +75,9 @@ class FundingInstrumentView(TemplateView):
                             'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
             breadcrumb = f'Edit ({funding_instrument.short_name})'
+            context['action_submit_button'] = 'Save Funding Instrument'
+            context['action_title'] = 'Edit'
+
 
         else:
             context[FUNDING_INSTRUMENT_FORM_NAME] = FundingInstrumentForm(prefix=FUNDING_INSTRUMENT_FORM_NAME)
@@ -85,6 +88,9 @@ class FundingInstrumentView(TemplateView):
                             'sidebar_template': 'logged/_sidebar-calls.tmpl'})
 
             breadcrumb = 'Create'
+            context['action_submit_button'] = 'Create Funding Instrument'
+            context['action_title'] = 'Create'
+
 
         context['breadcrumb'] = [{'name': 'Funding instruments', 'url': reverse('logged-funding-instrument-list')},
                                  {'name': breadcrumb}]
@@ -100,9 +106,13 @@ class FundingInstrumentView(TemplateView):
             funding_instrument = FundingInstrument.objects.get(id=kwargs['pk'])
             funding_instrument_form = FundingInstrumentForm(request.POST, instance=funding_instrument,
                                                             prefix=FUNDING_INSTRUMENT_FORM_NAME)
+            context['action_submit_button'] = 'Save Funding Instrument'
+            context['action_title'] = 'Edit'
 
         else:
             funding_instrument_form = FundingInstrumentForm(request.POST, prefix=FUNDING_INSTRUMENT_FORM_NAME)
+            context['action_submit_button'] = 'Create Funding Instrument'
+            context['action_title'] = 'Create'
 
         template_variables_form = TemplateVariableItemFormSet(request.POST, prefix=TEMPLATE_VARIABLES_FORM_NAME)
 

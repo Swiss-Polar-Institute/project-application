@@ -7,10 +7,12 @@
             </li>
         {% endfor %}
     </ul>
-    <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Create Part</a>
+    <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Create Call Part</a>
 {% else %}
-    <p>There are no extra parts for this call.</p>
+    <p>There are no parts for this call.</p>
     {% if call %}
-        <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Create Part</a>
+        <a class="btn btn-primary" href="{% url 'logged-call-part-add' call_pk=call.pk %}">Create Call Part</a>
+    {% else %}
+        <p>Further parts should be added after the call has been created.</p>
     {% endif %}
 {% endif %}

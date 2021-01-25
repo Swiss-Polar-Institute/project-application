@@ -4,11 +4,7 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
-            {% if pk %}
-                <h1>Edit funding instrument</h1>
-            {% else %}
-                <h1>Create funding instrument</h1>
-            {% endif %}
+            <h1>{{ action_title }} funding instrument</h1>
 
             <form method="post" action="{{ action_url }}">
                 {% crispy funding_instrument_form %}
@@ -16,16 +12,8 @@
                 <h2>Template variables</h2>
                 {% include 'variable_templates/_template_variables-form.tmpl' %}
 
-                {% include 'common/_submit-button.tmpl' with value='Save Funding Instrument' %}
+                {% include 'common/_submit-button.tmpl' with value=action_submit_button %}
                 {% include 'common/_cancel-button.tmpl' with value='Cancel Edit' url=cancel_url %}
-
-{#                {% if pk %}#}
-{#                    <a class="btn btn-danger" href="{% url 'logged-funding-instrument-detail' pk=pk %}"#}
-{#                       role="button">Cancel Edit</a>#}
-{#                {% else %}#}
-{#                    <a class="btn btn-danger" href="{% url 'logged-funding-instrument-list' %}"#}
-{#                       role="button">Cancel Edit</a>#}
-{#                {% endif %}#}
                 <p></p>
             </form>
         </div>

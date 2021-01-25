@@ -236,6 +236,7 @@ class CallForm(forms.ModelForm):
                       }
 
         labels = {
+            'scientific_clusters_question': 'Research clusters question',
             'budget_maximum': 'Budget maximum (CHF)',
             'template_questions': ''
         }
