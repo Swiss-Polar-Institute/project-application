@@ -32,7 +32,7 @@
                     <td>{{ proposal.call.long_name }}</td>
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
-                    <td>{{ proposal.proposal_status.name }}</td>
+                    <td>{% include 'logged/_proposal_status_badge.tmpl' with status_name=proposal.proposal_status.name only %}</td>
                     <td style="text-align:center">{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}</td>
                     <td style="text-align:center">{% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str badge_class=proposal.proposalevaluation.panel_recommendation_badge_class %}</td>
                     <td style="text-align:center">{% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str badge_class=proposal.proposalevaluation.board_decision_badge_class %}</td>
