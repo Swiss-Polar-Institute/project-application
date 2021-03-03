@@ -18,6 +18,7 @@ services:
       - nginx-proxy
     links:
       - database
+    restart: unless-stopped
 
   reverse-proxy:
     image: nginx:1.19
@@ -34,9 +35,10 @@ services:
       - project-application
     networks:
       - nginx-proxy
+    restart: unless-stopped
 
   database:
-    image: mariadb:10.4
+    image: mariadb:10.5
     environment:
       - MYSQL_DATABASE=projects
     volumes:
@@ -45,6 +47,7 @@ services:
       - "3306"
     networks:
       - nginx-proxy
+    restart: unless-stopped
 
 volumes:
   static_volume: {}
