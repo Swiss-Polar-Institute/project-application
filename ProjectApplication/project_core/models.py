@@ -622,6 +622,21 @@ class PersonPosition(CreateModifyOn):
     def organisations_ordered_by_name(self):
         return self.organisation_names.all().order_by('name')
 
+    def organisations_short_names(self):
+        organisations = []
+
+        for organisation in self.organisation_names.all():
+            if organisation.organisation is None:
+                organisations.append(organisation.name)
+            elif organisation.organisation.short_name:
+                organisations.append(organisation.organisation.short_name)
+            else:
+                organisations.append(organisation.organisation.long_name)
+
+        organisations.sort()
+        return ', '.join(organisations)
+
+
     def organisations_ordered_by_name_str(self):
         organisations = []
 
