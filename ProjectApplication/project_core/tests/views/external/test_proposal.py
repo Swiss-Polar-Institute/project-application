@@ -10,6 +10,10 @@ from project_core.models import Proposal, Country, Role
 from project_core.tests import database_population
 from variable_templates.tests import database_population as database_population_variable_templates
 
+def get_response_messages(response):
+    # Might e a better way, doing this for Django 3.2
+    from django.contrib.messages import get_messages
+    return list(get_messages(response.wsgi_request))
 
 class ProposalFormTest(TestCase):
     def setUp(self):
@@ -150,7 +154,9 @@ class ProposalFormTest(TestCase):
         self.assertEqual(302, response.status_code)
         self.assertEqual('/proposal/cannot-modify/', response.url)
 
-        self.assertIn('deadline has now passed', response.cookies['messages'].value)
+        messages = get_response_messages(response)
+
+        self.assertIn('deadline has now passed', messages[0].message)
 
     def test_only_one_partner(self):
         c = Client()
