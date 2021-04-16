@@ -1,13 +1,10 @@
-from django.core.management.base import BaseCommand
 import csv
 import pprint
 
+from django.core.management.base import BaseCommand
+
+# So pprinting dictionaries doesn't change the order
 pprint.sorted = lambda arg, *a, **kw: arg
-
-from project_core.models import *
-
-phd_student = CareerStage.objects.get(name='PhD student')
-mx = PersonTitle.objects.get(title='Mx')
 
 
 class Command(BaseCommand):
@@ -20,6 +17,39 @@ class Command(BaseCommand):
         csv_file_path = options['csv_file']
         print(csv_file_path)
         import_csv(csv_file_path)
+
+
+def create_or_get_physical_person(first_name, surname, orcid):
+    pass
+
+
+def create_or_get_person_position(physical_person, gender, academic_title, organisation_names, group):
+    pass
+
+
+def get_call_short_name(short_name):
+    pass
+
+
+def create_installment(date, amount):
+    pass
+
+
+def create_invoice(received, sent_for_payment, paid, amount, url):
+    pass
+
+
+def create_project(person_position, installments, invoices):
+    pass
+
+
+def create_financial_report(received, sent_for_approval, approval_date, approved_by, url):
+    pass
+
+
+def create_scientific_report(received, sent_for_approval, approval_date, approved_by, url):
+    pass
+
 
 def import_csv(csv_file_path):
     with open(csv_file_path) as csv_file:
