@@ -7,7 +7,7 @@ from datetime import datetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import BaseCommand
 
-from grant_management.models import GrantAgreement
+from grant_management.models import GrantAgreement, Installment, Invoice
 from project_core.models import PhysicalPerson, PersonPosition, PersonTitle, Gender, OrganisationName, Project, Call, \
     Contact, GeographicalArea, Keyword, Source, KeywordUid
 
@@ -224,20 +224,91 @@ def content_type_from_file_name(file_name):
     assert False
 
 
-def set_grant_agreement(project, grant_agreement_information):
-    file_path = grant_agreement_information['file_path']
+def create_simple_uploaded_file(file_path):
+    if file_path is None:
+        return None
 
-    rclone = subprocess.run(['rclone', 'cat', file_path], capture_output=True)
+    rclone_process = subprocess.run(['rclone', 'cat', file_path], capture_output=True)
 
-    assert rclone.returncode == 0
+    assert rclone_process.returncode == 0
 
-    file_contents = rclone.stdout
+    file_contents = rclone_process.stdout
 
-    file = SimpleUploadedFile(content=file_contents, name=os.path.basename(file_path),
+    return SimpleUploadedFile(content=file_contents, name=os.path.basename(file_path),
                               content_type=content_type_from_file_name(file_path))
 
-    GrantAgreement.objects.create(project=project,
-                                  file=file)
+
+def set_grant_agreement(project, grant_agreement_information):
+    file = create_simple_uploaded_file(grant_agreement_information['file'])
+
+    grant_agreement = GrantAgreement.objects.create(project=project,
+                                                    signed_date=grant_agreement_information['signed_date'],
+                                                    file=file)
+
+    index = 1
+    while f'signed_by_{index}_first_name' in grant_agreement_information:
+        signed_by_first_name = grant_agreement_information[f'signed_by_{index}_first_name']
+        signed_by_surname = grant_agreement_information[f'signed_by_{index}_surname']
+
+        index += 1
+
+        if signed_by_first_name is None:
+            continue
+
+        physical_person, created = PhysicalPerson.objects.get_or_create(first_name=signed_by_first_name,
+                                                                        surname=signed_by_surname)
+        grant_agreement.signed_by.add(physical_person)
+
+
+def set_installments(project, installments_data):
+    index = 1
+
+    while f'{index}_amount' in installments_data:
+        amount = installments_data[f'{index}_amount']
+        if amount is None:
+            break
+
+        assert amount
+        assert amount > 0
+        assert amount <= project.allocated_budget
+
+        Installment.objects.create(project=project,
+                                   amount=amount)
+
+        index += 1
+
+
+def set_invoices(project, invoices_data):
+    index = 1
+
+    while f'{index}_received_date' in invoices_data:
+        received_date = invoices_data[f'{index}_received_date']
+        if received_date is None:
+            break
+
+        installment = Installment.objects.filter(project=project).order_by('id')[index - 1]
+
+        file = create_simple_uploaded_file(invoices_data[f'{index}_file'])
+
+        amount = invoices_data[f'{index}_amount']
+
+        assert amount <= installment.amount
+
+        Invoice.objects.create(project=project,
+                               installment=installment,
+                               amount=amount,
+                               received_date=received_date,
+                               sent_for_payment_date=invoices_data[f'{index}_sent_for_payment'],
+                               paid_date=invoices_data[f'{index}_paid_date'],
+                               file=file
+                               )
+        index += 1
+
+
+def validate_project(project):
+    pass
+    # assert that total paid amount is not bigger than the allocated amount for the project
+    # Something else?
 
 
 def import_csv(csv_file_path):
@@ -256,13 +327,21 @@ def import_csv(csv_file_path):
 
         for project_data in projects:
             project_data = dictionary_strings_to_types(project_data)
-            principal_investigator_information = filter_dictionary(project_data, 'principal_investigator__')
-            principal_investigator = create_or_get_person_position(principal_investigator_information)
+            principal_investigator_data = filter_dictionary(project_data, 'principal_investigator__')
+            principal_investigator = create_or_get_person_position(principal_investigator_data)
 
             project = create_project(project_data, principal_investigator)
 
             set_geographical_areas(project, project_data['geographical_areas'])
             set_keywords(project, project_data['keywords'])
 
-            grant_agreement_information = filter_dictionary(project_data, 'grant_agreement__')
-            set_grant_agreement(project, grant_agreement_information)
+            grant_agreement_data = filter_dictionary(project_data, 'grant_agreement__')
+            set_grant_agreement(project, grant_agreement_data)
+
+            installments_data = filter_dictionary(project_data, 'installment_')
+            set_installments(project, installments_data)
+
+            invoice_data = filter_dictionary(project_data, 'invoice_')
+            set_invoices(project, invoice_data)
+
+            validate_project(project)
