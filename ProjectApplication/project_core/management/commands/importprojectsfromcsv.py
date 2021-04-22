@@ -7,7 +7,7 @@ from datetime import datetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import BaseCommand
 
-from grant_management.models import GrantAgreement, Installment, Invoice
+from grant_management.models import GrantAgreement, Installment, Invoice, FinancialReport, ScientificReport
 from project_core.models import PhysicalPerson, PersonPosition, PersonTitle, Gender, OrganisationName, Project, Call, \
     Contact, GeographicalArea, Keyword, Source, KeywordUid
 
@@ -32,14 +32,25 @@ class Command(BaseCommand):
         import_csv(csv_file_path)
 
 
-def create_or_get_physical_person(first_name, surname, orcid, gender):
+def create_or_get_physical_person(first_name, surname, orcid=None, gender=None):
     if gender:
         gender = Gender.objects.get(name=gender)
 
-    physical_person, created = PhysicalPerson.objects.get_or_create(first_name=first_name,
-                                                                    surname=surname,
-                                                                    orcid=orcid,
-                                                                    gender=gender)
+    if orcid:
+        physical_person, created = PhysicalPerson.objects.get_or_create(orcid=orcid,
+                                                                        defaults={'first_name': first_name,
+                                                                                  'surname': surname,
+                                                                                  'gender': gender
+                                                                                  })
+    else:
+        first_name_surname_before_count = PhysicalPerson.objects.filter(first_name=first_name, surname=surname).count()
+
+        physical_person, created = PhysicalPerson.objects.get_or_create(first_name=first_name,
+                                                                        surname=surname,
+                                                                        defaults={'gender': gender})
+
+        # It didn't exist and it got created or it existed and didn't get created
+        assert first_name_surname_before_count == 0 and created or first_name_surname_before_count > 0 and not created
 
     return physical_person
 
@@ -174,6 +185,9 @@ def create_project(project_data, principal_investigator):
     call = Call.objects.get(short_name=project_data['call__short_name'])
     assert project_data['status'] in [Project.ONGOING, Project.COMPLETED, Project.ABORTED]
 
+    if project_data['status'] in [Project.COMPLETED, Project.ABORTED]:
+        assert project_data['closed_date']
+
     project = Project.objects.create(title=project_data['title'],
                                      key=project_data['key'],
                                      principal_investigator=principal_investigator,
@@ -183,7 +197,7 @@ def create_project(project_data, principal_investigator):
                                      call=call,
                                      allocated_budget=project_data['allocated_budget'],
                                      status=project_data['status'],
-                                     closed_on=project_data['end_date'],  # TODO: is this correct?
+                                     closed_on=project_data['closed_date'],  # TODO: is this correct?
                                      closed_by=None,  # TODO: should we create a new data import user?
                                      )
 
@@ -286,7 +300,8 @@ def set_invoices(project, invoices_data):
         if received_date is None:
             break
 
-        installment = Installment.objects.filter(project=project).order_by('id')[index - 1]
+        installment_number = invoices_data[f'{index}_installment_number']
+        installment = Installment.objects.filter(project=project).order_by('id')[index - installment_number]
 
         file = create_simple_uploaded_file(invoices_data[f'{index}_file'])
 
@@ -309,6 +324,38 @@ def validate_project(project):
     pass
     # assert that total paid amount is not bigger than the allocated amount for the project
     # Something else?
+
+
+def set_reports(project, reports_data, report_model):
+    index = 1
+
+    while f'{index}_received_date' in reports_data:
+        received_date = reports_data[f'{index}_received_date']
+
+        if received_date is None:
+            break
+
+        approved_by = create_or_get_physical_person(reports_data[f'{index}_approved_by__first_name'],
+                                                    reports_data[f'{index}_approved_by__surname'])
+
+        file = create_simple_uploaded_file(reports_data[f'{index}_file'])
+
+        report_model.objects.create(project=project,
+                                    file=file,
+                                    received_date=received_date,
+                                    sent_for_approval_date=reports_data[f'{index}_sent_for_approval_date'],
+                                    approval_date=reports_data[f'{index}_approval_date'],
+                                    approved_by=approved_by)
+
+        index += 1
+
+
+def set_financial_reports(project, financial_reports_data):
+    set_reports(project, financial_reports_data, FinancialReport)
+
+
+def set_scientific_reports(project, scientific_reports_data):
+    set_reports(project, scientific_reports_data, ScientificReport)
 
 
 def import_csv(csv_file_path):
@@ -341,7 +388,13 @@ def import_csv(csv_file_path):
             installments_data = filter_dictionary(project_data, 'installment_')
             set_installments(project, installments_data)
 
-            invoice_data = filter_dictionary(project_data, 'invoice_')
-            set_invoices(project, invoice_data)
+            invoices_data = filter_dictionary(project_data, 'invoice_')
+            set_invoices(project, invoices_data)
+
+            financial_reports_data = filter_dictionary(project_data, 'financial_report_')
+            set_financial_reports(project, financial_reports_data)
+
+            scientific_reports_data = filter_dictionary(project_data, 'scientific_report_')
+            set_scientific_reports(project, scientific_reports_data)
 
             validate_project(project)
