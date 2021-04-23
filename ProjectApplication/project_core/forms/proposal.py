@@ -127,7 +127,7 @@ class ProposalForm(ModelForm):
                 mark_safe('A proposal already exists with the same title and applicant for this call. '
                           'Rather than starting from scratch again please use the link with which you were provided to '
                           'edit your application. Otherwise please contact SPI '
-                          '<a href="mailto:spi-grants@epfl.ch">spi-grants@epfl.ch</a> to receive a reminder of'
+                          '<a href="mailto:grants@swisspolar.ch">grants@swisspolar.ch</a> to receive a reminder of'
                           ' the link.'))
 
         # Converts date to datetime objects to compare with the end of the call.

@@ -17,7 +17,7 @@ def send_email_proposal_received(uuid, display_url, update_url):
         recipient_list = [proposal.applicant.main_email()]
 
         footer = textwrap.dedent('''\
-            Thank you for your interest. The SPI team remains at your disposal for questions at spi-grants@epfl.ch
+            Thank you for your interest. The SPI team remains at your disposal for questions at grants@swisspolar.ch
             Please note that this email is sent from an unmonitored email address.
             ''')
 

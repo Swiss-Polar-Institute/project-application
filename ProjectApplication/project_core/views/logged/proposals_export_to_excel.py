@@ -269,7 +269,7 @@ class ProposalsExportExcel(View):
 
         self._worksheet.set_row(0, 20)
 
-        self._worksheet.write(2, 0, 'To be returned to spi-grants@epfl.ch')
+        self._worksheet.write(2, 0, 'To be returned to grants@swisspolar.ch')
         italic_format = self._workbook.add_format({'italic': True})
         self._worksheet.write_rich_string(4, 0, 'Name of the reviewer: ', italic_format, 'please fill in')
 
