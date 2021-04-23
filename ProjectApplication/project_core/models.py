@@ -48,6 +48,8 @@ class CreateModifyOn(models.Model):
 class FinancialKey(CreateModifyOn):
     name = models.CharField(max_length=20, help_text='Code used by finance (e.g. ECON, TRAVEL) or funding instrument',
                             unique=True)
+    account_number = models.IntegerField(help_text='Code use by the accounting department', unique=True,
+                                         null=True, blank=False)
     description = models.CharField(max_length=200, help_text='Explanation of the code')
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
     funding_instrument = models.BooleanField(default=True,
@@ -299,7 +301,6 @@ class AbstractQuestion(CreateModifyOn):
                 return f'TEXT, max {self.answer_max_length} words, {required_text}'
         else:
             assert False
-
 
     def __str__(self):
         return f'{self.question_text} ({self.extra_information()})'
@@ -635,7 +636,6 @@ class PersonPosition(CreateModifyOn):
 
         organisations.sort()
         return ', '.join(organisations)
-
 
     def organisations_ordered_by_name_str(self):
         organisations = []
