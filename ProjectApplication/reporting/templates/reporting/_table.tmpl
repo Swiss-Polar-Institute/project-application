@@ -22,7 +22,7 @@
     {% for row in table.data %}
         <tr>
             {% for header in table.headers %}
-                <td>{{ row|get_dictionary_value:header }}</td>
+                <td>{{ row|get_dictionary_value:header|default:'-' }}</td>
             {% endfor %}
         </tr>
     {% endfor %}
