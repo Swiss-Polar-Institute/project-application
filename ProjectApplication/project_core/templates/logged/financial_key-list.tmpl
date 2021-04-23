@@ -16,6 +16,7 @@
             <thead>
             <tr>
                 <th>Key</th>
+                <th>Accounting number</th>
                 <th>Description</th>
                 <th>Project key</th>
                 <th>Financial key</th>
@@ -28,6 +29,7 @@
             {% for financial_key in financial_keys %}
                 <tr>
                     <td>{{ financial_key.name }}</td>
+                    <td>{{ financial_key.account_number|default:'-' }}</td>
                     <td>{{ financial_key.description }}</td>
                     <td data-sort="{{ financial_key.funding_instrument }}">{% include 'common/_check-icon.tmpl' with value=financial_key.funding_instrument %}</td>
                     <td>{% include 'common/_check-icon.tmpl' with value=True %}</td>

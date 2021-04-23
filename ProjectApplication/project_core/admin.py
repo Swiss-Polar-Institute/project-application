@@ -316,7 +316,7 @@ class ProjectPartnerAdmin(admin.ModelAdmin):
 
 
 class FinancialKeyAdmin(admin.ModelAdmin):
-    list_display = ('name', 'description', 'funding_instrument', 'created_on', 'created_by',)
+    list_display = ('name', 'account_number', 'description', 'funding_instrument', 'created_on', 'created_by',)
     ordering = ('name', 'description', 'created_on',)
 
 
