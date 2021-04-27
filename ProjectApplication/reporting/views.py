@@ -406,25 +406,29 @@ class ProjectsBalanceCsv(View):
 
         response.write(codecs.BOM_UTF8)
 
-        writer = csv.writer(response)
-
         headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Allocated budget', 'Commitment balance']
 
-        writer.writerow(headers)
+        writer = csv.DictWriter(response, fieldnames=headers)
 
         for project in Project.objects.all().order_by('key'):
             pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
 
             if hasattr(project, 'grantagreement'):
                 if project.grantagreement.signed_date:
-                    grant_agreement_signed_date = project.grantagreement.signed_date.strftime('%d-%m-%Y')
+                    grant_agreement_signed_date = project.grantagreement.signed_date.strftime('%d/%m/%Y')
                 else:
                     grant_agreement_signed_date = 'Grant agreement not signed'
             else:
                 grant_agreement_signed_date = 'No grant agreement attached'
 
-            row = [project.key, grant_agreement_signed_date, pi_organisations, project.title,
-                   project.allocated_budget, 'TODO']
+            row = {'Key': project.key,
+                   'Signed date': grant_agreement_signed_date,
+                   'Organisation': pi_organisations,
+                   'Title': project.title,
+                   'Allocated budget': project.allocated_budget,
+                   'Commitment balance': 'TODO'
+                   }
+
             writer.writerow(row)
 
         return response
