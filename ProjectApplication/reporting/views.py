@@ -1,5 +1,6 @@
 import codecs
 import csv
+from _csv import QUOTE_NONNUMERIC
 
 from django.db.models import Count, F, Sum, Min, Max
 from django.http import HttpResponse
@@ -408,7 +409,7 @@ class ProjectsBalanceCsv(View):
 
         headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Allocated budget', 'Commitment balance']
 
-        writer = csv.DictWriter(response, fieldnames=headers)
+        writer = csv.DictWriter(response, fieldnames=headers, quoting=QUOTE_NONNUMERIC)
 
         for project in Project.objects.all().order_by('key'):
             pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
