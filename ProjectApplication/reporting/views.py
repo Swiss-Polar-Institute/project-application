@@ -425,7 +425,7 @@ class ProjectsBalanceCsv(View):
                    'Signed date': grant_agreement_signed_date,
                    'Organisation': pi_organisations,
                    'Title': project.title,
-                   'Allocated budget': project.allocated_budget,
+                   'Allocated budget': str(project.allocated_budget).replace('.', ','),
                    'Commitment balance': 'TODO'
                    }
 
