@@ -398,7 +398,7 @@ class ProjectsBalanceCsv(View):
         super().__init__(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        now = timezone.now()
+        now = timezone.localtime()
         filename = (f'projects-balance-{now:%Y%m%d-%H%M}.csv')
 
         response = HttpResponse(content_type='text/csv')
