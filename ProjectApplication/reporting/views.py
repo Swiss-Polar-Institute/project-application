@@ -1,5 +1,10 @@
+import codecs
+import csv
+
 from django.db.models import Count, F, Sum, Min, Max
+from django.http import HttpResponse
 from django.utils import timezone
+from django.views import View
 from django.views.generic import TemplateView
 
 from project_core.models import Call, Project, Gender, CareerStage, Proposal, FundingInstrument
@@ -195,7 +200,7 @@ class ObjectsPerFundingInstrumentPerYear:
 
     def calculate_result(self):
         data = []
-        for year in range(self._start_year, self._end_year+1):
+        for year in range(self._start_year, self._end_year + 1):
             row = {}
             row['Year'] = year
 
@@ -386,3 +391,40 @@ class Reporting(TemplateView):
             context['active_tab'] = 'overview'
 
         return context
+
+
+class ProjectsBalanceCsv(View):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        now = timezone.now()
+        filename = (f'projects-balance-{now:%Y%m%d-%H%M}.csv')
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        response.write(codecs.BOM_UTF8)
+
+        writer = csv.writer(response)
+
+        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Allocated budget', 'Commitment balance']
+
+        writer.writerow(headers)
+
+        for project in Project.objects.all().order_by('key'):
+            pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
+
+            if hasattr(project, 'grantagreement'):
+                if project.grantagreement.signed_date:
+                    grant_agreement_signed_date = project.grantagreement.signed_date.strftime('%d-%m-%Y')
+                else:
+                    grant_agreement_signed_date = 'Grant agreement not signed'
+            else:
+                grant_agreement_signed_date = 'No grant agreement attached'
+
+            row = [project.key, grant_agreement_signed_date, pi_organisations, project.title,
+                   project.allocated_budget, 'TODO']
+            writer.writerow(row)
+
+        return response

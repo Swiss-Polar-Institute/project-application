@@ -27,6 +27,11 @@
                            id="reporting_diversity-tab" data-toggle="tab" href="#reporting_diversity"
                            role="tab">Diversity</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'finance_advanced' %}active{% endif %}"
+                            id="reporting_finance_advanced-tab" data-toggle="tab" href="#downloads"
+                            role="tab">Downloads</a>
+                    </li>
                 </ul>
             </div>
 
@@ -39,6 +44,9 @@
                 </div>
                 <div class="tab-pane fade" id="reporting_diversity" role="tabpanel">
                     {% include 'reporting/_reporting_diversity.tmpl' %}
+                </div>
+                <div class="tab-pane fade" id="downloads" role="tabpanel">
+                    {% include 'reporting/_downloads.tmpl' %}
                 </div>
             </div>
         </div>
