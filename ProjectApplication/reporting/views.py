@@ -393,6 +393,14 @@ class Reporting(TemplateView):
         return context
 
 
+def format_number_for_swiss_locale(number):
+    return str(number).replace('.', ',')
+
+
+def format_date_for_swiss_locale(date):
+    return date.strftime('%d/%m/%Y')
+
+
 class ProjectsBalanceCsv(View):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -406,7 +414,7 @@ class ProjectsBalanceCsv(View):
 
         response.write(codecs.BOM_UTF8)
 
-        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Allocated budget', 'Commitment balance']
+        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Allocated budget', 'Balance due']
 
         writer = csv.DictWriter(response, fieldnames=headers, delimiter=';')
         writer.writeheader()
@@ -415,18 +423,20 @@ class ProjectsBalanceCsv(View):
 
             if hasattr(project, 'grantagreement'):
                 if project.grantagreement.signed_date:
-                    grant_agreement_signed_date = project.grantagreement.signed_date.strftime('%d/%m/%Y')
+                    grant_agreement_signed_date = format_date_for_swiss_locale(project.grantagreement.signed_date)
                 else:
                     grant_agreement_signed_date = 'Grant agreement not signed'
             else:
                 grant_agreement_signed_date = 'No grant agreement attached'
 
+            balance_due = project.allocated_budget - project.invoices_sent_for_payment_amount()
+
             row = {'Key': project.key,
                    'Signed date': grant_agreement_signed_date,
                    'Organisation': pi_organisations,
                    'Title': project.title,
-                   'Allocated budget': str(project.allocated_budget).replace('.', ','),
-                   'Commitment balance': 'TODO'
+                   'Allocated budget': format_number_for_swiss_locale(project.allocated_budget),
+                   'Balance due': balance_due
                    }
 
             writer.writerow(row)
