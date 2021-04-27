@@ -1,6 +1,5 @@
 import codecs
 import csv
-from _csv import QUOTE_NONNUMERIC
 
 from django.db.models import Count, F, Sum, Min, Max
 from django.http import HttpResponse
@@ -409,14 +408,14 @@ class ProjectsBalanceCsv(View):
 
         headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Allocated budget', 'Commitment balance']
 
-        writer = csv.DictWriter(response, fieldnames=headers, quoting=QUOTE_NONNUMERIC)
+        writer = csv.DictWriter(response, fieldnames=headers)
 
         for project in Project.objects.all().order_by('key'):
             pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
 
             if hasattr(project, 'grantagreement'):
                 if project.grantagreement.signed_date:
-                    grant_agreement_signed_date = project.grantagreement.signed_date.strftime('%d/%m/%Y')
+                    grant_agreement_signed_date = project.grantagreement.signed_date.strftime('\'%d/%m/%Y')
                 else:
                     grant_agreement_signed_date = 'Grant agreement not signed'
             else:
