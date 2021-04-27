@@ -415,7 +415,7 @@ class ProjectsBalanceCsv(View):
 
             if hasattr(project, 'grantagreement'):
                 if project.grantagreement.signed_date:
-                    grant_agreement_signed_date = project.grantagreement.signed_date.strftime('\'%d/%m/%Y')
+                    grant_agreement_signed_date = project.grantagreement.signed_date.strftime('%d/%m/%Y')
                 else:
                     grant_agreement_signed_date = 'Grant agreement not signed'
             else:
