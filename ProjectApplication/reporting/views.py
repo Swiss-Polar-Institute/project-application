@@ -408,8 +408,8 @@ class ProjectsBalanceCsv(View):
 
         headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Allocated budget', 'Commitment balance']
 
-        writer = csv.DictWriter(response, fieldnames=headers)
-
+        writer = csv.DictWriter(response, fieldnames=headers, delimiter=';')
+        writer.writeheader()
         for project in Project.objects.all().order_by('key'):
             pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
 
