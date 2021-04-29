@@ -398,3 +398,11 @@ def import_csv(csv_file_path):
             set_scientific_reports(project, scientific_reports_data)
 
             validate_project(project)
+
+# TODO: It might be needed to add the possibility of:
+# -Add a comment for missing invoices? (e.g. where they were, why they are not available)
+# -Add a comment that all the scientific reports were also reviewed by X person
+# -Add a comment that all the financial reports were also reviewed by Y person
+# -We've added some new fields in the CSV:
+#   -attachment_N_category/file/text and f
+#   -financial_report_N_comment
