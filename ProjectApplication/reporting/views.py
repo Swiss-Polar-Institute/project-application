@@ -429,7 +429,7 @@ class ProjectsBalanceCsv(View):
             else:
                 grant_agreement_signed_date = 'No grant agreement attached'
 
-            balance_due = project.allocated_budget - project.invoices_sent_for_payment_amount()
+            balance_due = project.allocated_budget - project.invoices_paid_amount()
 
             row = {'Key': project.key,
                    'Signed date': grant_agreement_signed_date,
