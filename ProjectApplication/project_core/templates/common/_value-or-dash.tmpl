@@ -2,6 +2,8 @@
     {% if value %}
         {% if value|get_type == 'date' %}
             {{ value }}
+        {% elif value|get_type == 'datetime' %}
+            {{ value }}
         {% else %}
             {{ value|linebreaksbr }}
         {% endif %}
