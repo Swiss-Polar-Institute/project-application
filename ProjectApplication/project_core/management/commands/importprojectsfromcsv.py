@@ -2,21 +2,24 @@ import csv
 import os
 import pprint
 import subprocess
+import urllib.parse
 from datetime import datetime
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import BaseCommand
 
+from comments.models import ProjectComment, ProjectCommentCategory, Category
 from grant_management.models import GrantAgreement, Installment, Invoice, FinancialReport, ScientificReport
 from project_core.models import PhysicalPerson, PersonPosition, PersonTitle, Gender, OrganisationName, Project, Call, \
     Contact, GeographicalArea, Keyword, Source, KeywordUid
-
-# This is a throw away script to import past data
-
 # For pprinting dictionaries doesn't change the order
 # in Python 3.7 this is needed, in Python 3.8 (or 3.9?)
 # there is a better way passing a parameter to the
 # pprint.pprint function
+from project_core.templatetags.thousands_separator import thousands_separator
+# This is a throw away script to import past data
+from project_core.utils.utils import format_date
+
 pprint.sorted = lambda arg, *a, **kw: arg
 
 
@@ -144,7 +147,11 @@ def dictionary_strings_to_types(dictionary):
     result = {}
 
     for key, value in dictionary.items():
-        if value == '':
+        if key == 'keywords' and value == '':
+            result[key] = []
+            continue
+
+        if value in ('', None):
             result[key] = None
             continue
 
@@ -169,6 +176,13 @@ def dictionary_strings_to_types(dictionary):
         except ValueError:
             pass
 
+        try:
+            value_date = datetime.strptime(value, '%d/%m/%Y')
+            result[key] = value_date
+            continue
+        except ValueError:
+            pass
+
         if key in ['keywords', 'principal_investigator__organisation_names', 'geographical_areas']:
             value_list = value.split(',')
             value_list = [value_element.strip() for value_element in value_list]
@@ -188,18 +202,30 @@ def create_project(project_data, principal_investigator):
     if project_data['status'] in [Project.COMPLETED, Project.ABORTED]:
         assert project_data['closed_date']
 
+    project_key = f'ACE-2016-{project_data["key"]:03}'
+
+    allocated_budget_chf = project_data['allocated_budget_chf']
+    allocated_budget_eur = project_data['allocated_budget_eur']
+
     project = Project.objects.create(title=project_data['title'],
-                                     key=project_data['key'],
+                                     key=project_key,
                                      principal_investigator=principal_investigator,
                                      location=project_data['location'],
                                      start_date=project_data['start_date'],
                                      end_date=project_data['end_date'],
                                      call=call,
-                                     allocated_budget=project_data['allocated_budget'],
+                                     allocated_budget=allocated_budget_chf,
                                      status=project_data['status'],
                                      closed_on=project_data['closed_date'],  # TODO: is this correct?
                                      closed_by=None,  # TODO: should we create a new data import user?
                                      )
+
+    comment_text = f"This project's finance was originally in Euros\n\n" \
+                   f"Allocated budget in Euros: {thousands_separator(allocated_budget_eur)} EUR\n\n"
+
+    category = Category.objects.get(name='Finance')
+    category = ProjectCommentCategory.objects.get(category=category)
+    ProjectComment.objects.create(project=project, category=category, text=comment_text)
 
     return project
 
@@ -242,6 +268,12 @@ def create_simple_uploaded_file(file_path):
     if file_path is None:
         return None
 
+    file_path = file_path[len('https://swisspolar.sharepoint.com/sites/S/S/'):]
+
+    file_path = urllib.parse.unquote(file_path)
+
+    file_path = 'Commun-SwissPolar:' + file_path
+
     rclone_process = subprocess.run(['rclone', 'cat', file_path], capture_output=True)
 
     assert rclone_process.returncode == 0
@@ -277,8 +309,8 @@ def set_grant_agreement(project, grant_agreement_information):
 def set_installments(project, installments_data):
     index = 1
 
-    while f'{index}_amount' in installments_data:
-        amount = installments_data[f'{index}_amount']
+    while f'{index}_amount_chf' in installments_data:
+        amount = installments_data[f'{index}_amount_chf']
         if amount is None:
             break
 
@@ -295,29 +327,47 @@ def set_installments(project, installments_data):
 def set_invoices(project, invoices_data):
     index = 1
 
+    comments = []
+
     while f'{index}_received_date' in invoices_data:
         received_date = invoices_data[f'{index}_received_date']
         if received_date is None:
             break
 
-        installment_number = invoices_data[f'{index}_installment_number']
+        installment_number = index
         installment = Installment.objects.filter(project=project).order_by('id')[index - installment_number]
 
         file = create_simple_uploaded_file(invoices_data[f'{index}_file'])
 
-        amount = invoices_data[f'{index}_amount']
+        amount_chf = invoices_data[f'{index}_amount_chf']
+        amount_eur = invoices_data[f'{index}_amount_eur']
 
-        assert amount <= installment.amount
+        assert amount_chf <= installment.amount
+
+        paid_date = invoices_data[f'{index}_paid_date']
 
         Invoice.objects.create(project=project,
                                installment=installment,
-                               amount=amount,
+                               amount=amount_chf,
                                received_date=received_date,
                                sent_for_payment_date=invoices_data[f'{index}_sent_for_payment'],
                                paid_date=invoices_data[f'{index}_paid_date'],
                                file=file
                                )
+
+        comments.append(f'Invoice paid on {format_date(paid_date)} with amount {thousands_separator(amount_chf)} CHF ' \
+                        f'was of {thousands_separator(amount_eur)} EUR')
+
         index += 1
+
+    comment_text = '\n\n'.join(comments)
+
+    assert project.projectcomment_set.all().count() == 1
+
+    comment = project.projectcomment_set.all()[0]
+
+    comment.text += comment_text
+    comment.save()
 
 
 def validate_project(project):
@@ -358,6 +408,49 @@ def set_scientific_reports(project, scientific_reports_data):
     set_reports(project, scientific_reports_data, ScientificReport)
 
 
+def replace_if_needed(project_data, field_name, value):
+    PLACEHOLDERS = ('Pending question to Laurence', 'Pending from Laurence',)
+
+    if project_data[field_name] in PLACEHOLDERS:
+        project_data[field_name] = value
+
+    return project_data
+
+
+def set_fake_data(project_data):
+    replace_if_needed(project_data, 'start_date', '01-07-2016')
+    replace_if_needed(project_data, 'end_date', '01-07-2021')
+    replace_if_needed(project_data, 'allocated_budget_chf', 250_000)
+
+    replace_if_needed(project_data, 'closed_date', '01-08-2021')
+    replace_if_needed(project_data, 'closed_by__first_name', 'Laurence')
+    replace_if_needed(project_data, 'closed_by__surname', 'Mottaz')
+
+    replace_if_needed(project_data, 'installment_1_amount_chf', 100_000)
+    replace_if_needed(project_data, 'installment_2_amount_chf', 100_000)
+    replace_if_needed(project_data, 'installment_3_amount_chf', 50_000)
+
+    replace_if_needed(project_data, 'invoice_1_received_date', '01-10-2016')
+    replace_if_needed(project_data, 'invoice_1_sent_for_payment', '15-10-2016')
+    replace_if_needed(project_data, 'invoice_1_paid_date', '01-12-2016')
+    replace_if_needed(project_data, 'invoice_1_amount_eur', 12_000)
+    replace_if_needed(project_data, 'invoice_1_amount_chf', 100_000)
+    replace_if_needed(project_data, 'invoice_1_file', None)
+
+    replace_if_needed(project_data, 'invoice_2_amount_chf', 100_000)
+    replace_if_needed(project_data, 'invoice_2_amount_eur', 13_000)
+    replace_if_needed(project_data, 'invoice_2_file', None)
+    replace_if_needed(project_data, 'invoice_2_received_date', '01-10-2016')
+
+    replace_if_needed(project_data, 'invoice_3_amount_chf', 50_000)
+    replace_if_needed(project_data, 'invoice_3_file', None)
+    replace_if_needed(project_data, 'invoice_3_received_date', '01-07-2017')
+
+    project_data['keywords'] = ''
+
+    return project_data
+
+
 def import_csv(csv_file_path):
     with open(csv_file_path, encoding='utf-8') as csv_file:
         csv_reader = csv.reader(csv_file)
@@ -373,7 +466,10 @@ def import_csv(csv_file_path):
         pprint.pprint(projects)
 
         for project_data in projects:
+            project_data = set_fake_data(project_data)
+
             project_data = dictionary_strings_to_types(project_data)
+
             principal_investigator_data = filter_dictionary(project_data, 'principal_investigator__')
             principal_investigator = create_or_get_person_position(principal_investigator_data)
 
@@ -399,6 +495,10 @@ def import_csv(csv_file_path):
 
             validate_project(project)
 
+            # At the moment importing only one
+            break
+
+
 # TODO: It might be needed to add the possibility of:
 # -Add a comment for missing invoices? (e.g. where they were, why they are not available)
 # -Add a comment that all the scientific reports were also reviewed by X person
@@ -406,3 +506,23 @@ def import_csv(csv_file_path):
 # -We've added some new fields in the CSV:
 #   -attachment_N_category/file/text and f
 #   -financial_report_N_comment
+
+
+# Delete a project with some of the dependents:
+"""
+from grant_management.models import Invoice, Installment, GrantAgreement
+from project_core.models import Project
+
+project_id = 187
+
+project = Project.objects.get(id=project_id)
+
+project.grantagreement.delete()
+project.invoice_set.all().delete()
+project.installment_set.all().delete()
+project.financialreport_set.all().delete()
+project.scientificreport_set.all().delete()
+project.projectcomment_set.all().delete()
+ 
+project.delete()
+"""
