@@ -25,6 +25,7 @@ class PersonForm(Form):
         self._only_basic_fields = kwargs.pop('only_basic_fields', False)
         self._all_fields_are_optional = kwargs.pop('all_fields_are_optional', False)
         help_texts = kwargs.pop('help_texts', {})
+        career_stage_queryset = kwargs.pop('career_stages_queryset', None)
 
         super().__init__(*args, **kwargs)
 
@@ -72,8 +73,11 @@ class PersonForm(Form):
             self.fields['gender'] = forms.ModelChoiceField(queryset=Gender.objects.all(),
                                                            initial=gender_initial)
 
+            if career_stage_queryset is None:
+                career_stage_queryset = CareerStage.objects.all().order_by('list_order', 'name')
+
             self.fields['career_stage'] = forms.ModelChoiceField(
-                queryset=CareerStage.objects.all().order_by('list_order', 'name'),
+                queryset=career_stage_queryset,
                 initial=career_stage_initial)
 
             self.fields['email'] = forms.EmailField(initial=email_initial,

@@ -275,6 +275,11 @@ class CareerStageAdmin(admin.ModelAdmin):
     ordering = ('name', 'list_order',)
 
 
+class CallCareerStageAdmin(admin.ModelAdmin):
+    list_display = ('call', 'career_stage',)
+    ordering = ('call', 'career_stage',)
+
+
 class RoleAdmin(admin.ModelAdmin):
     list_display = ('name', 'description', 'type',)
     ordering = ('name', 'type',)
@@ -370,6 +375,7 @@ admin.site.register(project_core.models.CallQuestion, CallQuestionAdmin)
 admin.site.register(project_core.models.TemplateQuestion, TemplateQuestionAdmin)
 admin.site.register(project_core.models.ProposalQAText, ProposalQATextAdmin)
 admin.site.register(project_core.models.CareerStage, CareerStageAdmin)
+admin.site.register(project_core.models.CallCareerStage, CallCareerStageAdmin)
 admin.site.register(project_core.models.Role, RoleAdmin)
 admin.site.register(project_core.models.ProposalPartner, ProposalPartnerAdmin)
 admin.site.register(project_core.models.ProposalQAFile, ProposalQAFileAdmin)

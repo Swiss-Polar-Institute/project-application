@@ -27,7 +27,7 @@ from project_core.forms.postal_address import PostalAddressForm
 from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
-from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, ProposalQAFile
+from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, ProposalQAFile, CallCareerStage
 from project_core.views.common.proposal_parts import ProposalParts
 from variable_templates.utils import get_template_value_for_call, apply_templates_to_string
 
@@ -174,7 +174,9 @@ class AbstractProposalView(TemplateView):
             call = proposal.call
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
-            person_form = PersonForm(prefix=PERSON_FORM_NAME, person_position=proposal.applicant)
+            person_form = PersonForm(prefix=PERSON_FORM_NAME,
+                                     person_position=proposal.applicant,
+                                     career_stages_queryset=call.enabled_career_stages_queryset())
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME, instance=proposal.postal_address)
             scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME,
                                                                        instance=proposal)
@@ -223,7 +225,10 @@ class AbstractProposalView(TemplateView):
                 return redirect(reverse('call-list'))
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
-            person_form = PersonForm(prefix=PERSON_FORM_NAME, only_basic_fields=False)
+            person_form = PersonForm(prefix=PERSON_FORM_NAME,
+                                     only_basic_fields=False,
+                                     career_stages_queryset=call.enabled_career_stages_queryset())
+
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
             scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
             initial_budget = []
@@ -314,6 +319,8 @@ class AbstractProposalView(TemplateView):
             # New proposal
             call = Call.objects.get(id=int(self.request.GET['call']))
 
+            career_stages = CallCareerStage.objects.filter(call=call)
+
             if timezone.now() > call.submission_deadline:
                 messages.error(request,
                                'The submission deadline has now passed. Your proposal can no longer be submitted.')
@@ -324,7 +331,9 @@ class AbstractProposalView(TemplateView):
         if proposal:
             # Editing an existing proposal
             proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
-            person_form = PersonForm(request.POST, person_position=proposal.applicant, prefix=PERSON_FORM_NAME)
+            person_form = PersonForm(request.POST, person_position=proposal.applicant,
+                                     prefix=PERSON_FORM_NAME,
+                                     career_stages_queryset=call.enabled_career_stages_queryset())
             postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_FORM_NAME)
 
@@ -364,12 +373,14 @@ class AbstractProposalView(TemplateView):
 
         else:
             # Creating a new proposal
-            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
+            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME, career_stages=career_stages)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
 
             proposal_parts = ProposalParts(request.POST, request.FILES, proposal=None, call=call)
 
-            person_form = PersonForm(request.POST, prefix=PERSON_FORM_NAME)
+            person_form = PersonForm(request.POST,
+                                     prefix=PERSON_FORM_NAME,
+                                     career_stages_queryset=call.enabled_career_stages_queryset())
 
             if call.budget_requested_part():
                 budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)

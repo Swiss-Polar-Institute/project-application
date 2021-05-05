@@ -216,6 +216,10 @@ class Call(CreateModifyOn):
 
         return numbers
 
+    def enabled_career_stages_queryset(self):
+        career_stages = CallCareerStage.objects.filter(call=self).values_list('career_stage__id', flat=True)
+
+        return CareerStage.objects.filter(id__in=career_stages)
 
 class BudgetCategoryCall(CreateModifyOn):
     call = models.ForeignKey(Call,
@@ -1327,3 +1331,11 @@ class CallPartFile(CreateModifyOn):
     def get_absolute_url(self):
         return reverse('logged-call-part-file-detail',
                        kwargs={'call_pk': self.call_part.call.pk, 'call_file_pk': self.pk})
+
+
+class CallCareerStage(models.Model):
+    call = models.ForeignKey(Call, on_delete=models.PROTECT)
+    career_stage = models.ForeignKey(CareerStage, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'{self.call.short_name}-{self.career_stage.name}'
