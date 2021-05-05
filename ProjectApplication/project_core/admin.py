@@ -276,8 +276,8 @@ class CareerStageAdmin(admin.ModelAdmin):
 
 
 class CallCareerStageAdmin(admin.ModelAdmin):
-    list_display = ('call', 'career_stage',)
-    ordering = ('call', 'career_stage',)
+    list_display = ('call', 'career_stage', 'enabled', )
+    ordering = ('call', 'career_stage', 'enabled',)
 
 
 class RoleAdmin(admin.ModelAdmin):

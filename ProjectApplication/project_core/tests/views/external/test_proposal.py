@@ -17,7 +17,6 @@ def get_response_messages(response):
 
 class ProposalFormTest(TestCase):
     def setUp(self):
-        self._call = database_population.create_call()
         self._budget_categories = database_population.create_budget_categories()
         self._person_titles = database_population.create_person_titles()
         self._genders = database_population.create_genders()
@@ -27,6 +26,7 @@ class ProposalFormTest(TestCase):
         self._keywords = database_population.create_keywords()
         self._career_stage = database_population.create_career_stage()
         self._role = database_population.create_roles()[0]
+        self._call = database_population.create_call()
 
         database_population.create_proposal_status()
         database_population_variable_templates.create_default_template_variables()

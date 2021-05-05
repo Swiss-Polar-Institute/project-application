@@ -90,6 +90,17 @@
                 </div>
             </div>
             <br>
+            <h2>Career stages</h2>
+            Career stages displayed in this call:
+            <div style="margin-left: 2em;">
+                {% for career_stage in career_stages_status %}
+                    {% include 'common/_check-icon.tmpl' with value=career_stage.enabled %}
+                    {{ career_stage.name }}
+                    <br>
+                {% endfor %}
+            </div>
+
+            <p></p>
             <h2><a id="parts">Call Parts</a></h2>
             {% include 'logged/_call-part-list.tmpl' with parts=parts call=call only %}
 

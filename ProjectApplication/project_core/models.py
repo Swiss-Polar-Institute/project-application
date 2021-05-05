@@ -217,7 +217,7 @@ class Call(CreateModifyOn):
         return numbers
 
     def enabled_career_stages_queryset(self):
-        career_stages = CallCareerStage.objects.filter(call=self).values_list('career_stage__id', flat=True)
+        career_stages = CallCareerStage.objects.filter(call=self).filter(enabled=True).values_list('career_stage__id', flat=True)
 
         return CareerStage.objects.filter(id__in=career_stages)
 
@@ -1336,6 +1336,7 @@ class CallPartFile(CreateModifyOn):
 class CallCareerStage(models.Model):
     call = models.ForeignKey(Call, on_delete=models.PROTECT)
     career_stage = models.ForeignKey(CareerStage, on_delete=models.PROTECT)
+    enabled = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.call.short_name}-{self.career_stage.name}'

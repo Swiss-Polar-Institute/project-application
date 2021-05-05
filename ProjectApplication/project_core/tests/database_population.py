@@ -15,7 +15,7 @@ from grant_management.models import LaySummaryType, Medium
 from project_core.models import BudgetCategory, Call, TemplateQuestion, GeographicalArea, Keyword, KeywordUid, Source, \
     PersonTitle, Gender, Organisation, Country, OrganisationUid, ProposalStatus, CareerStage, OrganisationName, \
     Proposal, PersonPosition, PhysicalPerson, FundingInstrument, Role, Project, FinancialKey, CallPart, CallPartFile, \
-    CallQuestion
+    CallQuestion, CallCareerStage
 
 
 def create_call_long_name(long_name, funding_instrument=None):
@@ -34,7 +34,12 @@ def create_call_long_name(long_name, funding_instrument=None):
 
 
 def create_call(funding_instrument=None):
-    return create_call_long_name('GreenLAnd Circumnavigation Expedition', funding_instrument=funding_instrument)
+    call = create_call_long_name('GreenLAnd Circumnavigation Expedition', funding_instrument=funding_instrument)
+
+    for career_stage in CareerStage.objects.all():
+        CallCareerStage.objects.create(call=call, career_stage=career_stage)
+
+    return call
 
 
 def create_call_part(call) -> CallPart:

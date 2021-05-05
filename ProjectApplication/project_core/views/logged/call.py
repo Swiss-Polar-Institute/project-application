@@ -7,8 +7,8 @@ from django.views.generic import TemplateView, ListView
 from ProjectApplication import settings
 from comments import utils
 from comments.utils import process_comment_attachment, comments_attachments_forms
-from project_core.forms.call import CallForm, CallQuestionItemFormSet
-from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall, BudgetCategory
+from project_core.forms.call import CallForm
+from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall, BudgetCategory, CallCareerStage
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call, get_template_value_for_call
@@ -84,6 +84,12 @@ class AbstractCallView(TemplateView):
             context['public_lay_summaries_for_website_url'] = f'[remote_content url="{url}"{username_password_tag}]'
 
         context['parts'] = call.parts()
+
+        context['career_stages_status'] = []
+
+        for call_career_stage in CallCareerStage.objects.filter(call=call).order_by('career_stage__list_order'):
+            context['career_stages_status'].append({'name': call_career_stage.career_stage.name,
+                                                    'enabled': call_career_stage.enabled})
 
         return context
 

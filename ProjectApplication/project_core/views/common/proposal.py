@@ -373,7 +373,7 @@ class AbstractProposalView(TemplateView):
 
         else:
             # Creating a new proposal
-            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME, career_stages=career_stages)
+            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
 
             proposal_parts = ProposalParts(request.POST, request.FILES, proposal=None, call=call)
