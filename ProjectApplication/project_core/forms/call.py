@@ -125,7 +125,9 @@ class CallForm(forms.ModelForm):
         self.fields['career_stages'] = forms.MultipleChoiceField(choices=career_stages_ids_names,
                                                                  initial=initial_career_stages_ids,
                                                                  widget=CheckboxSelectMultiple,
-                                                                 required=True)
+                                                                 required=True,
+                                                                 label='Career stages',
+                                                                 help_text='Select the career stages to be displayed in the proposal form')
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
         self.fields['budget_categories'].label = 'Budget categories (drag and drop to order them)'
