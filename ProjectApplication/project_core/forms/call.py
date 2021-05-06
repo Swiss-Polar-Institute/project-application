@@ -3,12 +3,15 @@ import logging
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
+from django.db import transaction
+from django.forms import CheckboxSelectMultiple
+
+from ..fields import FlexibleDecimalField
 from django.forms.models import inlineformset_factory, BaseInlineFormSet
 from django.utils import timezone
 
-from ..fields import FlexibleDecimalField
 from ..models import Call, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory, \
-    CallPart
+    CallPart, CallCareerStage, CareerStage
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
 
 logger = logging.getLogger('project_core')
@@ -84,6 +87,22 @@ CallQuestionItemFormSet = inlineformset_factory(
     can_delete=False)
 
 
+def get_career_stages_ids_names(call):
+    career_stages_ids_names = []
+    enabled_ids = []
+
+    for career_stage in CareerStage.objects.all().order_by('list_order', 'name'):
+        career_stages_ids_names.append((career_stage.id, career_stage.name))
+        enabled_ids.append(career_stage.id)
+
+    if call:
+        enabled_ids = []
+        for call_career_stage in CallCareerStage.objects.filter(call=call).filter(enabled=True):
+            enabled_ids.append(call_career_stage.career_stage.id)
+
+    return career_stages_ids_names, enabled_ids
+
+
 class CallForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -100,6 +119,13 @@ class CallForm(forms.ModelForm):
                                                                      widget=CheckboxSelectMultipleSortable,
                                                                      required=False
                                                                      )
+
+        career_stages_ids_names, initial_career_stages_ids = get_career_stages_ids_names(self.instance)
+
+        self.fields['career_stages'] = forms.MultipleChoiceField(choices=career_stages_ids_names,
+                                                                 initial=initial_career_stages_ids,
+                                                                 widget=CheckboxSelectMultiple,
+                                                                 required=True)
 
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
         self.fields['budget_categories'].label = 'Budget categories (drag and drop to order them)'
@@ -143,6 +169,10 @@ class CallForm(forms.ModelForm):
             ),
             Div(
                 Div('budget_categories', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                Div('career_stages', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -195,11 +225,18 @@ class CallForm(forms.ModelForm):
         return cleaned_data
 
     def save(self, commit=True):
-        instance = super().save(commit)
+        with transaction.atomic():
+            instance = super().save(commit)
 
-        CheckboxSelectMultipleSortable.save(BudgetCategoryCall, instance, 'call', BudgetCategory, 'budget_category',
-                                            self.cleaned_data['budget_categories'],
-                                            self.cleaned_data[self.budget_categories_order_key])
+            CheckboxSelectMultipleSortable.save(BudgetCategoryCall, instance, 'call', BudgetCategory, 'budget_category',
+                                                self.cleaned_data['budget_categories'],
+                                                self.cleaned_data[self.budget_categories_order_key])
+
+            CallCareerStage.objects.filter(call=instance).update(enabled=False)
+
+            for career_stage_id in self.cleaned_data['career_stages']:
+                CallCareerStage.objects.update_or_create(call=instance, career_stage_id=career_stage_id,
+                                                         defaults={'enabled': True})
 
         return instance
 

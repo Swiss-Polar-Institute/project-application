@@ -120,7 +120,6 @@ def create_career_stage():
 
     return career
 
-
 def create_proposal_status():
     proposal_status_submitted, created = ProposalStatus.objects.get_or_create(name='Submitted')
     proposal_status_draft, created = ProposalStatus.objects.get_or_create(name='Draft')

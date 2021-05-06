@@ -15,6 +15,7 @@ class CallFormFormTest(TestCase):
 
     def test_create_call(self):
         funding_instrument = database_population.create_funding_instrument()
+        career_stage = database_population.create_career_stage()
 
         call_data = dict_to_multivalue_dict(
             {'call_open_date': '01-01-2020 10:00',
@@ -29,8 +30,12 @@ class CallFormFormTest(TestCase):
         call_data.setlist('budget_categories',
                           [self._budget_categories[0].id, self._budget_categories[1].id])
         call_data.setlist('funding_instrument', [funding_instrument.id])
+        call_data.setlist('career_stages', [career_stage.id])
 
+        print('HERE')
         call_form = CallForm(data=call_data)
+        print('ERRORS')
+        print(call_form.errors)
         self.assertTrue(call_form.is_valid())
         new_call = call_form.save()
 
