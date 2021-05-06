@@ -95,7 +95,7 @@ def get_career_stages_ids_names(call):
         career_stages_ids_names.append((career_stage.id, career_stage.name))
         enabled_ids.append(career_stage.id)
 
-    if call:
+    if call.id:
         enabled_ids = []
         for call_career_stage in CallCareerStage.objects.filter(call=call).filter(enabled=True):
             enabled_ids.append(call_career_stage.career_stage.id)
