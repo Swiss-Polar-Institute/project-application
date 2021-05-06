@@ -13,11 +13,10 @@ decorator==4.4.1
 Django==3.2
 django-autocomplete-light==3.5.1
 django-axes==5.8.0
-django-crispy-forms==1.9.2
+django-crispy-forms==1.11.2
 django-ipware==3.0.1	# django-axes
 django-phonenumber-field==4.0.0
-#django-simple-history==2.8.0
--e git+https://github.com/jazzband/django-simple-history.git@418716e212db67c529799a88d5e6a8f1c58d36a7#egg=django_simple_history
+django-simple-history==3.0.0
 django-storages==1.9.1
 docutils==0.15.2
 gunicorn==20.0.4
