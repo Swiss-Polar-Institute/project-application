@@ -6,6 +6,7 @@
     <div class="row">
         <div class="col-10">
             <h1>Call details</h1>
+            <h2>Call information</h2>
             <strong>Funding instrument:</strong>
             {% if call.funding_instrument %}
                 <a href="{% url 'logged-funding-instrument-detail' pk=call.funding_instrument.id %}">{{ call.funding_instrument }}</a>{% else %}
@@ -45,6 +46,7 @@
             <strong>Introductory message:</strong>
             <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=call.introductory_message %}</div>
             <br>
+            <h2>Budget</h2>
             <strong>Budget maximum:</strong> {{ call.budget_maximum|thousands_separator }} CHF
             <div class="row">
                 <div class="col-6">

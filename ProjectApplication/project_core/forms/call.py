@@ -140,6 +140,10 @@ class CallForm(forms.ModelForm):
 
         self.helper.layout = Layout(
             Div(
+                Div(HTML('<h2>Call information</h2>'), css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div('funding_instrument', css_class='col-12'),
                 css_class='row'
             ),
@@ -166,6 +170,10 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div(HTML('<h2>Budget</h2>'), css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div('budget_maximum', css_class='col-6'),
                 css_class='row'
             ),
@@ -174,7 +182,15 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div(HTML('<h2>Career stages</h2>'), css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div('career_stages', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                Div(HTML('<h2>Other questions</h2>'), css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -193,7 +209,7 @@ class CallForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div(HTML('<h2><a id="parts">Call Parts</a></h2>'
+                Div(HTML('<h2><a id="parts">Call parts</a></h2>'
                          '{% include "logged/_call-part-list.tmpl" with parts=parts call=call only %}'),
                     css_class='col-12'),
                 css_class='row'
