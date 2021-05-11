@@ -300,6 +300,30 @@ def allocated_budget_per_year():
     return result
 
 
+def calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, year):
+    total = 0
+
+    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name).\
+            filter(call__finance_year=year):
+        total += project.invoices_paid_amount()
+
+    return total
+
+
+def calculate_open_for_payment_funding_instrument_year(funding_instrument_long_name, year):
+    total = 0
+
+    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name).\
+            filter(call__finance_year=year):
+        if project.is_active():
+            total += project.allocated_budget - project.invoices_paid_amount()
+        else:
+            # If the project is closed
+            pass
+
+    return total
+
+
 def allocated_budget_per_call():
     result = {}
 
@@ -312,13 +336,22 @@ def allocated_budget_per_call():
 
     data = []
     for row in allocated_budget_per_call:
+        funding_instrument_long_name = row['call_name']
+        year = row['finance_year']
+
+        paid_so_far = calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, year)
+        open_for_payment = calculate_open_for_payment_funding_instrument_year(funding_instrument_long_name, year)
+
         data.append({'Grant Scheme': row['call_name'],
                      'Account Number': row['account_number'],
                      'Year': row['finance_year'],
-                     'Financial Support (CHF)': thousands_separator(row['financial_support'])
+                     'Commitment (CHF)': thousands_separator(row['financial_support']),
+                     'Paid so far (CHF)': thousands_separator(paid_so_far),
+                     'Open for payment (CHF)': thousands_separator(open_for_payment),
                      })
 
-    result['headers'] = ['Grant Scheme', 'Account Number', 'Year', 'Financial Support (CHF)']
+    result['headers'] = ['Grant Scheme', 'Account Number', 'Year', 'Commitment (CHF)', 'Paid so far (CHF)',
+                         'Open for payment (CHF)']
     result['data'] = data
 
     return result
