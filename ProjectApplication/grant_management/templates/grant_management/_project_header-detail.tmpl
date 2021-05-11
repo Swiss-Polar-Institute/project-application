@@ -7,7 +7,12 @@
             <strong>Principal
                 investigator:</strong> {% include 'common/_person_position_with_orcid.tmpl' with person_position=project.principal_investigator %}<br>
             <strong>Project dates:</strong> {{ project.start_date }} - {{ project.end_date }}<br>
-            <strong>Allocated budget:</strong> {{ project.allocated_budget|thousands_separator }} CHF
+            <strong>Allocated budget:</strong> {{ project.allocated_budget|thousands_separator }} CHF<br>
+            {% if project.is_active %}
+                <strong>Total paid so far:</strong> {{ project.invoices_paid_amount|thousands_separator }} CHF
+            {% else %}
+                <strong>Total paid:</strong> {{ project.invoices_paid_amount|thousands_separator }} CHF
+            {% endif %}
         </div>
         <div class="col-6">
             <strong>Project Key:</strong> {{ project.key }}<br>
