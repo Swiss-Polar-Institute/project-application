@@ -250,23 +250,53 @@ def calculate_number_of_calls():
     return result
 
 
+def calculate_paid_so_far_year(year):
+    total = 0
+
+    for project in Project.objects.filter(call__finance_year=year):
+        total += project.invoices_paid_amount()
+
+    return total
+
+
+def calculate_open_for_payment(year):
+    total = 0
+
+    for project in Project.objects.filter(call__finance_year=year):
+        if project.is_active():
+            total += project.allocated_budget - project.invoices_paid_amount()
+        else:
+            # If the project is closed
+            pass
+
+    return total
+
+
 def allocated_budget_per_year():
     result = {}
 
     financial_support_per_year = Project.objects. \
         values(year=F('call__finance_year')). \
-        annotate(financial_support=Sum('allocated_budget')). \
+        annotate(commitment=Sum('allocated_budget')). \
         order_by('call__finance_year')
 
     data = []
 
     for row in financial_support_per_year:
-        data.append({'Year': row['year'],
-                     'Financial Support (CHF)': thousands_separator(row['financial_support'])
+        year = row['year']
+        commitment = row['commitment']
+
+        data.append({'Year': year,
+                     'Commitment (CHF)': thousands_separator(commitment),
+                     'Paid so far (CHF)': thousands_separator(calculate_paid_so_far_year(year)),
+                     'Open for payment (CHF)': thousands_separator(calculate_open_for_payment(year)),
                      })
 
     result['data'] = data
-    result['headers'] = ['Year', 'Financial Support (CHF)']
+    result['headers'] = ['Year', 'Commitment (CHF)', 'Paid so far (CHF)', 'Open for payment (CHF)']
+
+    # result['header_tooltips'] = {'Open for payment (CHF)': ''}
+
     return result
 
 
