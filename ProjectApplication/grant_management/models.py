@@ -70,6 +70,9 @@ class Installment(CreateModifyOn):
     def sent_for_payment(self):
         return self.invoice_set.filter(sent_for_payment_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
 
+    def paid(self):
+        return self.invoice_set.filter(paid_date__isnull=False).aggregate(Sum('amount'))['amount__sum']
+
     def number(self):
         # This is not very efficient, but given the number of invoices and installments it's nice to not have to
         # save this in the database

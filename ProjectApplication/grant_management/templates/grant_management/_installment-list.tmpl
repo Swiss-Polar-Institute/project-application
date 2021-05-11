@@ -7,7 +7,7 @@
         <tr>
             <th>Installment</th>
             <th>Amount (CHF)</th>
-            <th>Sent (CHF) <a data-toggle="tooltip" title="Total of invoices sent for payment"><i class="fas fa-info-circle"></i></a></th>
+            <th>Paid (CHF) <a data-toggle="tooltip" title="Total of invoices paid"><i class="fas fa-info-circle"></i></a></th>
         </tr>
         </thead>
         <tbody>
@@ -15,7 +15,7 @@
             <tr>
                 <td data-sort="{{ installment.number }}">{{ installment.number|ordinal }}</td>
                 <td>{% include 'common/_value-or-dash.tmpl' with value=installment.amount|thousands_separator %}</td>
-                <td>{% include 'common/_value-or-dash.tmpl' with value=installment.sent_for_payment|thousands_separator %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=installment.paid|thousands_separator %}</td>
             </tr>
         {% endfor %}
         </tbody>
