@@ -47,6 +47,8 @@ class ProjectList(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Grant management'}]
 
+        context['active_tab'] = self.request.GET.get('tab', 'ongoing')
+
         return context
 
 
