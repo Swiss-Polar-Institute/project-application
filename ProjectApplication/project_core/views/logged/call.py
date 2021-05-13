@@ -43,6 +43,8 @@ class CallList(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Calls'}]
 
+        context['active_tab'] = self.request.GET.get('tab', 'open')
+
         return context
 
 

@@ -1,22 +1,23 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
+{% load static %}
 
 {% block contents %}
     <div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" id="open-tab" data-toggle="tab" href="#open" role="tab">Open</a>
+                <a class="nav-link {% if active_tab == 'open' %}active{% endif %}" id="open-tab" data-toggle="tab" href="#open" role="tab">Open</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="future-tab" data-toggle="tab" href="#future" role="tab">Future</a>
+                <a class="nav-link {% if active_tab == 'future' %}active{% endif %}" id="future-tab" data-toggle="tab" href="#future" role="tab">Future</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="closed-tab" data-toggle="tab" href="#closed" role="tab">Closed</a>
+                <a class="nav-link {% if active_tab == 'closed' %}active{% endif %}" id="closed-tab" data-toggle="tab" href="#closed" role="tab">Closed</a>
             </li>
         </ul>
     </div>
 
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="open" role="tabpanel">
+        <div class="tab-pane fade {% if active_tab == 'open' %}show active{% endif %}" id="open" role="tabpanel">
             <h1>Open calls</h1>
             {% if open_calls %}
                 {% include 'logged/_table_of_calls.tmpl' with calls=open_calls table_id='open_calls' %}
@@ -24,7 +25,7 @@
                 No open calls at the moment.
             {% endif %}
         </div>
-        <div class="tab-pane fade" id="future" role="tabpanel">
+        <div class="tab-pane fade {% if active_tab == 'future' %}show active{% endif %}" id="future" role="tabpanel">
             <h1>Future calls</h1>
             {% if future_calls %}
                 {% include 'logged/_table_of_calls.tmpl' with calls=future_calls table_id='future_calls' %}
@@ -32,7 +33,7 @@
                 No future calls at the moment.
             {% endif %}
         </div>
-        <div class="tab-pane fade" id="closed" role="tabpanel">
+        <div class="tab-pane fade {% if active_tab == 'closed' %}show active{% endif %}" id="closed" role="tabpanel">
             <h1>Closed calls</h1>
             {% if closed_calls %}
                 {% include 'logged/_table_of_calls.tmpl' with calls=closed_calls table_id='closed_calls' %}
@@ -44,4 +45,6 @@
     <br>
     <a class="btn btn-primary" href="{% url 'logged-call-add' %}">Create Call</a>
     <br>
+
+    <script type="text/javascript" src="{% static 'js/tab_url.js' %}"></script>
 {% endblock %}
