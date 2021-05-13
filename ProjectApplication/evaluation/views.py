@@ -82,6 +82,8 @@ class ProposalEvaluationList(TemplateView):
 
         context['breadcrumb'] = [{'name': 'Calls to evaluate'}]
 
+        context['active_tab'] = self.request.GET.get('tab', 'open')
+
         return context
 
 
