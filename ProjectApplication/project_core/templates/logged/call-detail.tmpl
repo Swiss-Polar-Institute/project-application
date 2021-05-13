@@ -44,7 +44,7 @@
             <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=call.description %}</div>
             <br>
             <strong>Introductory message:</strong>
-            <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=call.introductory_message %}</div>
+            <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=call.introductory_message|safe %}</div>
             <br>
             <h2>Budget</h2>
             <strong>Budget maximum:</strong> {{ call.budget_maximum|thousands_separator }} CHF

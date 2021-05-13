@@ -1,5 +1,6 @@
 import logging
 
+import bleach
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML
 from django import forms
@@ -216,6 +217,13 @@ class CallForm(forms.ModelForm):
             ),
         )
 
+    def clean_introductory_message(self):
+        data = self.cleaned_data['introductory_message']
+
+        data = bleach.clean(bleach.linkify(data, parse_email=True))
+
+        return data
+
     def clean(self):
         cleaned_data = super().clean()
 
@@ -278,7 +286,7 @@ class CallForm(forms.ModelForm):
                       'introductory_message': 'This text will be displayed at the top of the application form. '
                                               'It should include information required to complete the application  '
                                               'correctly such as <strong>eligibility</strong>, <strong>criteria</strong>, '
-                                              '<strong>application</strong> and <strong>submission</strong>',
+                                              '<strong>application</strong> and <strong>submission</strong>. It allows HTML',
                       'call_open_date': 'Enter the date and time at which the call opens (Swiss time)',
                       'submission_deadline': 'Enter the date and time after which no more submissions are accepted (Swiss time)',
                       'budget_categories': 'If no categories are selected, budget will not appear in the call',
