@@ -155,4 +155,6 @@ class News(TemplateView):
         context['call_news'] = get_call_news()
         context['project_news'] = get_project_news()
 
+        context['active_tab'] = self.request.GET.get('tab', 'projects')
+
         return render(request, 'logged/news.tmpl', context)

@@ -1,5 +1,6 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 {% load git_commit %}
+{% load static %}
 
 {% block contents %}
     This is work in progress - if it's more useful the visualization could be in the form of a
@@ -9,20 +10,20 @@
     <div>
         <ul class="nav nav-tabs">
             <li class="nav-item">
-                <a class="nav-link active" id="projects-tab" data-toggle="tab" href="#projects" role="tab">Projects</a>
+                <a class="nav-link {% if active_tab == 'projects' %}active{% endif %}" id="projects-tab" data-toggle="tab" href="#projects" role="tab">Projects</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" id="calls-tab" data-toggle="tab" href="#calls" role="tab">Calls</a>
+                <a class="nav-link {% if active_tab == 'calls' %}active{% endif %}" id="calls-tab" data-toggle="tab" href="#calls" role="tab">Calls</a>
             </li>
         </ul>
     </div>
 
     <div class="tab-content">
-        <div class="tab-pane fade show active" id="projects" role="tabpanel">
+        <div class="tab-pane fade {% if active_tab == 'projects' %}active show{% endif %}" id="projects" role="tabpanel">
             <h1>Project news</h1>
             {% include 'logged/_news_project-list.tmpl' with news=project_news %}
         </div>
-        <div class="tab-pane fade" id="calls" role="tabpanel">
+        <div class="tab-pane fade {% if active_tab == 'calls' %}active show{% endif %}" id="calls" role="tabpanel">
             <h1>Call news</h1>
             {% include 'logged/_news_call-list.tmpl' with news=call_news %}
         </div>
@@ -31,4 +32,6 @@
     <p>
         News from the last 7 days to the future.
     </p>
+
+    <script type="text/javascript" src="{% static 'js/tab_url.js' %}"></script>
 {% endblock %}
