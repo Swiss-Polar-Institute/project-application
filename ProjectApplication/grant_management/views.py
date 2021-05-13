@@ -81,10 +81,7 @@ class ProjectDetail(DetailView):
 
         context.update(comments_attachments_forms('logged-grant_management-project-comment-add', project))
 
-        if 'tab' in self.request.GET:
-            context['active_tab'] = self.request.GET['tab']
-        else:
-            context['active_tab'] = 'finances'
+        context['active_tab'] = self.request.GET.get('tab', 'finances')
 
         return context
 

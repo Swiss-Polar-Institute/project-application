@@ -448,10 +448,7 @@ class Reporting(TemplateView):
                         'sidebar_template': 'reporting/_sidebar-reporting.tmpl',
                         'breadcrumb': [{'name': 'Reporting'}]})
 
-        if 'tab' in self.request.GET:
-            context['active_tab'] = self.request.GET['tab']
-        else:
-            context['active_tab'] = 'overview'
+        context['active_tab'] = self.request.GET.get('tab', 'overview')
 
         return context
 
