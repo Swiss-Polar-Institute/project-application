@@ -1,4 +1,5 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
+{% load static %}
 {% load crispy_forms_tags %}
 {% load thousands_separator %}
 
@@ -98,4 +99,7 @@
             {% include 'comments/_comments-attachments-compact-list.tmpl' %}
         </div>
     </div>
+
+    <script type="text/javascript" src="{% static 'js/tab_url.js' %}"></script>
+
 {% endblock %}
