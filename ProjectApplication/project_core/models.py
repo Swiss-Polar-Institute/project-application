@@ -217,9 +217,11 @@ class Call(CreateModifyOn):
         return numbers
 
     def enabled_career_stages_queryset(self):
-        career_stages = CallCareerStage.objects.filter(call=self).filter(enabled=True).values_list('career_stage__id', flat=True)
+        career_stages = CallCareerStage.objects.filter(call=self).filter(enabled=True).values_list('career_stage__id',
+                                                                                                   flat=True)
 
         return CareerStage.objects.filter(id__in=career_stages)
+
 
 class BudgetCategoryCall(CreateModifyOn):
     call = models.ForeignKey(Call,
@@ -1083,6 +1085,11 @@ class ProposalPartner(Partner):
 
 class Project(CreateModifyOn):
     """Proposal that has been funded is now a project. Otherwise another project that has been accepted."""
+
+    search_fields = ('project__title', 'project__key', 'project__call__short_name', 'project__call__long_name',
+                     'project__principal_investigator__person__first_name',
+                     'project__principal_investigator__person__surname',
+                     'project__principal_investigator__person__orcid',)
 
     ONGOING = 'Ongoing'
     COMPLETED = 'Completed'

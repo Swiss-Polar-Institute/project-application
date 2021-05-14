@@ -6,6 +6,7 @@ from .models import Reviewer, ProposalEvaluation, CallEvaluation, Criterion, Cri
 
 
 class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
+    search_fields = ('proposal__title', 'allocated_budget', 'panel_remarks', 'panel_recommendation', 'board_decision', )
     list_display = (
         'proposal', 'allocated_budget', 'panel_remarks', 'feedback_to_applicant', 'panel_recommendation',
         'board_decision', 'decision_date', 'created_on', 'modified_on')
@@ -14,6 +15,7 @@ class ProposalEvaluationAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges
 
 
 class ReviewerAdmin(admin.ModelAdmin):
+    search_fields = ('user__username', 'person__first_name', 'person__surname', 'person__orcid', )
     list_display = ('user', 'person', 'call_list', 'proposal_list',)
     filter_vertical = ('calls', 'proposals',)
 
@@ -25,14 +27,17 @@ class ReviewerAdmin(admin.ModelAdmin):
 
 
 class CallEvaluationAdmin(admin.ModelAdmin):
+    search_fields = ('call__long_name', 'post_panel_management_table', )
     list_display = ('call', 'panel_date', 'post_panel_management_table', 'closed_date', 'closed_user')
 
 
 class CriterionAdmin(admin.ModelAdmin):
+    search_fields = ('name', 'description', )
     list_display = ('name', 'description')
 
 
 class CriterionCallEvaluationAdmin(admin.ModelAdmin):
+    search_fields = ('call_evaluation__call__long_name', 'criterion__name', )
     list_display = ('call_evaluation', 'criterion', 'enabled', 'order')
 
 
