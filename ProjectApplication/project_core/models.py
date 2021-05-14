@@ -766,6 +766,7 @@ class RoleDescription(CreateModifyOn):
 
 class Proposal(CreateModifyOn):
     """Proposal submitted for a call - not yet evaluated and therefore not yet a project."""
+
     ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
     ELIGIBLE = 'Eligible'
     NOTELIGIBLE = 'Not eligible'
