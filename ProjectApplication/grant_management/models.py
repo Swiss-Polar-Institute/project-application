@@ -191,6 +191,9 @@ class LaySummary(AbstractProjectDueReceivedDate):
     def __str__(self):
         return f'{self.text[:20]}'
 
+    class Meta:
+        verbose_name_plural = 'Lay Summaries'
+
 
 class BlogPost(AbstractProjectDueReceivedDate):
     title = models.CharField(max_length=1024, help_text='Title of the blog post', null=True, blank=True)
