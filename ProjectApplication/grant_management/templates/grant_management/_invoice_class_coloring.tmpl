@@ -1,0 +1,5 @@
+{% if invoice.negative %}
+    class="negative_invoice"
+{% elif invoice.due_date_passed %}
+    class="due_date_passed"
+{% endif %}

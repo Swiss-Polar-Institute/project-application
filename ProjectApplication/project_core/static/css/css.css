@@ -192,6 +192,10 @@ div.selector-filter {
     background-color: rgba(255, 0, 0, 0.2);
 }
 
+.negative_invoice {
+    background-color: rgba(0, 255, 0, 0.2);
+}
+
 #smaller_text {
     font-size: 0.8em;
 }

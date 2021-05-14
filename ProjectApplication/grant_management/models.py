@@ -126,6 +126,9 @@ class Invoice(AbstractProjectDueReceivedDate):
     def due_date_passed(self):
         return self.due_date and self.due_date < datetime.today().date() and self.paid_date is None
 
+    def negative(self):
+        return self.amount and self.amount < 0
+
     def comments(self):
         return self.invoicecomment_set.all().order_by('created_on')
 
