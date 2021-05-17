@@ -27,3 +27,4 @@ class InvoiceTest(TestCase):
                                          amount=200)
 
         self.assertIsNone(invoice.installment_number())
+
