@@ -17,6 +17,15 @@ class ReportingTest(TestCase):
     def test_get(self):
         response = self._client_management.get(reverse('logged-reporting'))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Big Expeditions')
+        self.assertContains(response, '20&#x27;000.00')
+
+    def test_financial_information(self):
+        response = self._client_management.get(reverse('logged-reporting'))
+        create_project_with_invoices()
+        self.assertContains(response, 'Big Expeditions')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['allocated_budget_per_call']['data']), 1)
 
 
 class FundingInstrumentYearMissingDataModelTest(TestCase):
@@ -70,6 +79,30 @@ class FundingInstrumentYearMissingDataModelTest(TestCase):
             year=2016)[0])
 
 
+def create_project_with_invoices():
+    project2 = database_population.create_project(key='SPI-2020-002', title='Second test')
+    principal_investigator = database_population.create_person_position(first_name='James',
+                                                                        surname='Alan',
+                                                                        orcid=None)
+    project2.principal_investigator = principal_investigator
+    project2.allocated_budget = 15_000
+    project2.save()
+
+    # This one is not paid yet:
+    Invoice.objects.create(project=project2,
+                           sent_for_payment_date=datetime.date(2021, 4, 5),
+                           amount=1_000)
+
+    # This one it is paid:
+    Invoice.objects.create(project=project2,
+                           sent_for_payment_date=datetime.date(2021, 4, 5),
+                           paid_date=datetime.date(2021, 4, 5),
+                           amount=1_500)
+
+    grant_agreement = GrantAgreement.objects.create(project=project2,
+                                                    signed_date=datetime.datetime(2020, 1, 4))
+
+
 class ProjectsBalanceCsvTest(TestCase):
     def setUp(self):
         self._client_management = database_population.create_management_logged_client()
@@ -92,27 +125,8 @@ class ProjectsBalanceCsvTest(TestCase):
         organisation_name = OrganisationName.objects.create(name='Some organisation')
 
         project1.principal_investigator.organisation_names.add(organisation_name)
-        project2 = database_population.create_project(key='SPI-2020-002', title='Second test')
-        principal_investigator = database_population.create_person_position(first_name='James',
-                                                                            surname='Alan',
-                                                                            orcid=None)
-        project2.principal_investigator = principal_investigator
-        project2.allocated_budget = 15_000
-        project2.save()
 
-        # This one is not paid yet:
-        Invoice.objects.create(project=project2,
-                               sent_for_payment_date=datetime.date(2021,4,5),
-                               amount=1_000)
-
-        # This one it is paid:
-        Invoice.objects.create(project=project2,
-                               sent_for_payment_date=datetime.date(2021, 4, 5),
-                               paid_date=datetime.date(2021, 4, 5),
-                               amount=1_500)
-
-        grant_agreement = GrantAgreement.objects.create(project=project2,
-                                                        signed_date=datetime.datetime(2020, 1, 4))
+        project2 = create_project_with_invoices()
 
         response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-csv'))
         self.assertEqual(response.status_code, 200)
