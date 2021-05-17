@@ -272,23 +272,23 @@ def create_organisation_names():
     return organisation1, organisation2
 
 
-def create_physical_person():
-    physical_person, _ = PhysicalPerson.objects.get_or_create(first_name='John',
-                                                              surname='Smith',
-                                                              orcid='0000-0002-1825-0097'
+def create_physical_person(first_name='John', surname='Smith', orcid='0000-0002-1825-0097'):
+    physical_person, _ = PhysicalPerson.objects.get_or_create(first_name=first_name,
+                                                              surname=surname,
+                                                              orcid=orcid
                                                               )
 
     return physical_person
 
 
-def create_academic_title():
-    academic_title, _ = PersonTitle.objects.get_or_create(title='Mr')
+def create_academic_title(title='Mr'):
+    academic_title, _ = PersonTitle.objects.get_or_create(title=title)
     return academic_title
 
 
-def create_person_position():
-    physical_person = create_physical_person()
-    academic_title = create_academic_title()
+def create_person_position(first_name='John', surname='Smith', orcid='0000-0002-1825-0097', title='Mr'):
+    physical_person = create_physical_person(first_name=first_name, surname=surname, orcid=orcid)
+    academic_title = create_academic_title(title=title)
 
     person_position, _ = PersonPosition.objects.get_or_create(person=physical_person,
                                                               academic_title=academic_title)
@@ -318,13 +318,13 @@ def create_proposal():
     return proposal
 
 
-def create_project():
+def create_project(key='SPI-2020-001', title='This is a test project'):
     proposal = create_proposal()
     antarctic, arctic, high_peaks = create_geographical_areas()
     keywords = create_keywords()
 
-    project, _ = Project.objects.get_or_create(key='SPI-2020-001',
-                                               title='This is a test project',
+    project, _ = Project.objects.get_or_create(key=key,
+                                               title=title,
                                                location='Somewhere in the world',
                                                start_date=date(2020, 1, 10),
                                                end_date=date(2022, 5, 7),
