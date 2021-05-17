@@ -288,12 +288,12 @@ def allocated_budget_per_year():
 
         data.append({'Year': year,
                      'Commitment (CHF)': thousands_separator(commitment),
-                     'Paid so far (CHF)': thousands_separator(calculate_paid_so_far_year(year)),
+                     'Paid to date (CHF)': thousands_separator(calculate_paid_so_far_year(year)),
                      'Open for payment (CHF)': thousands_separator(calculate_open_for_payment(year)),
                      })
 
     result['data'] = data
-    result['headers'] = ['Year', 'Commitment (CHF)', 'Paid so far (CHF)', 'Open for payment (CHF)']
+    result['headers'] = ['Year', 'Commitment (CHF)', 'Paid to date (CHF)', 'Open for payment (CHF)']
 
     # result['header_tooltips'] = {'Open for payment (CHF)': ''}
 
@@ -346,11 +346,11 @@ def allocated_budget_per_call():
                      'Account Number': row['account_number'],
                      'Year': row['finance_year'],
                      'Commitment (CHF)': thousands_separator(row['financial_support']),
-                     'Paid so far (CHF)': thousands_separator(paid_so_far),
+                     'Paid to date (CHF)': thousands_separator(paid_so_far),
                      'Open for payment (CHF)': thousands_separator(open_for_payment),
                      })
 
-    result['headers'] = ['Grant Scheme', 'Account Number', 'Year', 'Commitment (CHF)', 'Paid so far (CHF)',
+    result['headers'] = ['Grant Scheme', 'Account Number', 'Year', 'Commitment (CHF)', 'Paid to date (CHF)',
                          'Open for payment (CHF)']
     result['data'] = data
 
