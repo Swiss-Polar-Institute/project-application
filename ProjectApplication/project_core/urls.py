@@ -4,7 +4,7 @@ from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
 
-import project_core.views.external.proposal_pdf
+import project_core.views.common.proposal_pdf
 import project_core.views.logged.proposals_export_to_csv_summary
 import project_core.views.logged.proposals_export_to_excel
 from .views import common
@@ -32,7 +32,7 @@ urlpatterns = [
          external.proposal.ProposalDetailView.as_view(),
          name='proposal-detail'),
     path('proposal/<uuid:uuid>/pdf',
-         project_core.views.external.proposal_pdf.ProposalDetailViewPdf.as_view(),
+         project_core.views.common.proposal_pdf.ProposalDetailViewPdf.as_view(),
          name='proposal-detail-pdf'),
     path('proposal/thank-you/<uuid:uuid>/',
          external.proposal.ProposalThankYouView.as_view(),
