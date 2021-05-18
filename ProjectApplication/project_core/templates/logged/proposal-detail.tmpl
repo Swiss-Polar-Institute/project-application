@@ -12,6 +12,11 @@
             {% endif %}
         </div>
         <div class="col-2">
+            <p>
+                <a class="btn btn-primary" href="{% url 'proposal-detail-pdf' uuid=proposal.uuid %}"><i
+                        class="fas fa-download"></i> Download as
+                    PDF</a>
+            </p>
             {% if request|request_is_management %}
                 {% include 'comments/_comments-attachments-compact-list.tmpl' %}
             {% endif %}
