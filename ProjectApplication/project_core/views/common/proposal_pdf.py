@@ -1,29 +1,13 @@
-import os.path
 import subprocess
 
 from django.http import HttpResponse
-from django.template.loader import get_template
 from django.urls import reverse
-from xhtml2pdf import pisa
+from django.views import View
 
-from ProjectApplication import settings
 from project_core.models import Proposal
-from project_core.views.common.proposal import AbstractProposalDetailView
 
 
-def link_callback(uri, relative):
-    if uri.startswith('http://') or uri.startswith('https://'):
-        return uri
-    elif uri.startswith(settings.STATIC_URL):
-        resolved = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ''))
-        return resolved
-    else:
-        assert False, f'Unknown URI: {uri}'
-
-
-class ProposalDetailViewPdf(AbstractProposalDetailView):
-    template = 'external/proposal-detail.tmpl'
-
+class ProposalDetailViewPdf(View):
     def get(self, request, *args, **kwargs):
         proposal_uuid = kwargs['uuid']
         url = reverse('proposal-detail', kwargs={'uuid': proposal_uuid})

@@ -5,6 +5,7 @@ from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
 
 import project_core.views.common.proposal_pdf
+import project_core.views.common.proposal_zip
 import project_core.views.logged.proposals_export_to_csv_summary
 import project_core.views.logged.proposals_export_to_excel
 from .views import common
@@ -34,6 +35,9 @@ urlpatterns = [
     path('proposal/<uuid:uuid>/pdf',
          project_core.views.common.proposal_pdf.ProposalDetailViewPdf.as_view(),
          name='proposal-detail-pdf'),
+    path('proposal/<uuid:uuid>/zip',
+         project_core.views.common.proposal_zip.ProposalDetailViewZip.as_view(),
+         name='proposal-detail-zip'),
     path('proposal/thank-you/<uuid:uuid>/',
          external.proposal.ProposalThankYouView.as_view(),
          name='proposal-thank-you'),
