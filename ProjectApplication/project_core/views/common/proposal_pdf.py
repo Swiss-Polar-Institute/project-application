@@ -24,7 +24,7 @@ class ProposalDetailViewPdf(View):
 
         response = HttpResponse(content_type='application/pdf')
 
-        response['Content-Disposition'] = f'attachment; filename="{proposal.file_name("pdf")}'
+        response['Content-Disposition'] = f'attachment; filename="{proposal.file_name()}.pdf'
 
         response.write(proposal_pdf)
 
