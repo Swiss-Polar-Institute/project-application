@@ -53,7 +53,7 @@
 
     {% for part in extra_parts %}
         <h2>Part {{ part.heading_number }}: {{ part.title_rendered }}</h2>
-        <div class="pre-wrap">{{ part.introductory_text }}</div>
+        <div class="pre-wrap">{{ part.introductory_text|safe }}</div>
         {% include 'common/_proposal_list_files.tmpl' with call_part=part only %}
         {% include 'common/_form-dynamic_questions.tmpl' with questions_form=part.questions_form %}
     {% endfor %}
