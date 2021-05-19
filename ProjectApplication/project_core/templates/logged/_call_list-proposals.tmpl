@@ -40,11 +40,15 @@
     {% else %}
         No proposals have been created for this call.
     {% endif %}
-
+    <p></p>
     <p>
         <a class="btn btn-primary btn-sm"
            href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
+
+        <a class="btn btn-primary btn-sm"
+           href="{% url 'logged-export-proposals-zip-call' call=call.id %}">Export as ZIP</a>
     </p>
+
     <script type="text/javascript" class="init">
         $(document).ready(function () {
             $('table.display').DataTable({

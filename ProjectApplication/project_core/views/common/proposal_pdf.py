@@ -7,20 +7,25 @@ from django.views import View
 from project_core.models import Proposal
 
 
+def create_pdf_for_proposal(proposal, request):
+    url = reverse('proposal-detail', kwargs={'uuid': proposal.uuid})
+    url = request.build_absolute_uri(url)
+
+    process = subprocess.run(['wkhtmltopdf', '--quiet', url, '-'], stdout=subprocess.PIPE)
+
+    return process.stdout
+
+
 class ProposalDetailViewPdf(View):
     def get(self, request, *args, **kwargs):
-        proposal_uuid = kwargs['uuid']
-        url = reverse('proposal-detail', kwargs={'uuid': proposal_uuid})
-        url = request.build_absolute_uri(url)
+        proposal = Proposal.objects.get(uuid=kwargs['uuid'])
 
-        proposal = Proposal.objects.get(uuid=proposal_uuid)
-
-        process = subprocess.run(['wkhtmltopdf', '--quiet', url, '-'], stdout=subprocess.PIPE)
+        proposal_pdf = create_pdf_for_proposal(proposal, request)
 
         response = HttpResponse(content_type='application/pdf')
 
         response['Content-Disposition'] = f'attachment; filename="{proposal.file_name("pdf")}'
 
-        response.write(process.stdout)
+        response.write(proposal_pdf)
 
         return response

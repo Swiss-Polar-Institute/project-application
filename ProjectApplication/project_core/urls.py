@@ -8,6 +8,7 @@ import project_core.views.common.proposal_pdf
 import project_core.views.common.proposal_zip
 import project_core.views.logged.proposals_export_to_csv_summary
 import project_core.views.logged.proposals_export_to_excel
+import project_core.views.logged.proposals_export_to_zip
 from .views import common
 from .views import external
 from .views import logged
@@ -69,6 +70,12 @@ urlpatterns = [
     path('logged/proposals/export/csv/summary/<int:call>/',
          project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-call'),
+    path('logged/proposals/export/csv/summary/<int:call>/',
+         project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
+         name='logged-export-proposals-csv-summary-call'),
+    path('logged/proposals/export/zip/<int:call>/',
+         project_core.views.logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
+         name='logged-export-proposals-zip-call'),
     path('logged/proposals/export/csv/summary/',
          project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),

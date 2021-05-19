@@ -17,6 +17,13 @@
                         class="fas fa-download"></i> Download as
                     PDF</a>
             </p>
+
+            <p>
+                <a class="btn btn-primary" href="{% url 'proposal-detail-zip' uuid=proposal.uuid %}"><i
+                        class="fas fa-download"></i> Download as
+                    ZIP</a>
+            </p>
+
             {% if request|request_is_management %}
                 {% include 'comments/_comments-attachments-compact-list.tmpl' %}
             {% endif %}

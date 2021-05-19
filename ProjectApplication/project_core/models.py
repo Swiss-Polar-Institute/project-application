@@ -943,13 +943,15 @@ class Proposal(CreateModifyOn):
         # or at least consistent ordering
         return self.proposalscientificcluster_set.order_by('id')
 
-    def file_name(self, extension):
+    def file_name(self):
         # TODO: Names with umlauts, accents, etc. are going to cause a problem?
+
         applicant_full_name = self.applicant.person.full_name()
-        filename = f'Proposal-{self.call.short_name}-{applicant_full_name}'
+        filename = f'{self.call.short_name}-{applicant_full_name}'
         filename = filename.replace(' ', '_').replace('.', '_')
 
-        filename = f'{filename}.{extension}'
+        filename = filename.replace('/', '')
+        filename = filename.replace('\\', '')
 
         return filename
 
@@ -1006,6 +1008,7 @@ class ProposalQAFile(CreateModifyOn):
 
         filename = filename.replace(' ', '_')
         return filename
+
 
 class BudgetItem(models.Model):
     """Itemised line in a budget, comprising of a category, full details and the amount"""
