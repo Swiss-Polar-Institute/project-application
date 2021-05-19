@@ -5,13 +5,20 @@ from django.urls import reverse
 from django.views import View
 
 from project_core.models import Proposal
-
+from django.conf import settings
 
 def create_pdf_for_proposal(proposal, request):
     url = reverse('proposal-detail', kwargs={'uuid': proposal.uuid})
     url = request.build_absolute_uri(url)
 
-    process = subprocess.run(['wkhtmltopdf', '--quiet', url, '-'], stdout=subprocess.PIPE)
+    command = ['wkhtmltopdf', '--quiet']
+
+    if settings.SELF_HTTP_USERNAME:
+        command += ['--username', settings.SELF_HTTP_USERNAME, '--password', settings.SELF_HTTP_PASSWORD]
+
+    command += [url, '-']
+
+    process = subprocess.run(command, stdout=subprocess.PIPE)
 
     return process.stdout
 
