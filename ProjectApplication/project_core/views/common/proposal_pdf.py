@@ -19,11 +19,7 @@ class ProposalDetailViewPdf(View):
 
         response = HttpResponse(content_type='application/pdf')
 
-        # TODO: Names with umlauts, accents, etc. are going to cause a problem?
-        applicant_full_name = proposal.applicant.person.full_name()
-        filename = f'Proposal-{proposal.call.short_name}-{applicant_full_name}'
-        filename = filename.replace(' ', '_').replace('.', '_')
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response['Content-Disposition'] = f'attachment; filename="{proposal.file_name("pdf")}'
 
         response.write(process.stdout)
 
