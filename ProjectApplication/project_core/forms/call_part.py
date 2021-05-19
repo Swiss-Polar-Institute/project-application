@@ -1,3 +1,4 @@
+import bleach
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Div, Layout, Submit
@@ -51,6 +52,13 @@ class CallPartForm(forms.ModelForm):
             )
         )
 
+    def clean_introductory_text(self):
+        data = self.cleaned_data['introductory_text']
+
+        data = bleach.clean(bleach.linkify(data, parse_email=True))
+
+        return data
+
     def clean_order(self):
         if self.cleaned_data['order'] is None:
             last_order = CallPart.objects.filter(call=self._call).aggregate(Max('order'))
@@ -63,4 +71,5 @@ class CallPartForm(forms.ModelForm):
     class Meta:
         model = CallPart
         fields = ['call', 'order', 'title', 'introductory_text', ]
-        help_texts = {'order': 'If left blank it will be the last one'}
+        help_texts = {'order': 'If left blank it will be the last one',
+                      'introductory_text': 'It allows HTML'}

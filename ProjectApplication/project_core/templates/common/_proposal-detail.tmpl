@@ -56,7 +56,7 @@
 {% for part_with_answers in parts_with_answers %}
     <h2>Part {{ part_with_answers.heading_number }}: {{ part_with_answers.title_rendered }}</h2>
     {% if part_with_answers.introductory_text %}
-        <div class="pre-wrap">{{ part_with_answers.introductory_text }}</div>{% endif %}
+        <div class="pre-wrap">{{ part_with_answers.introductory_text|safe }}</div>{% endif %}
     <br>
     {% include 'common/_questions_answers-accordion-detail.tmpl' with part=part_with_answers only %}
     <p></p>

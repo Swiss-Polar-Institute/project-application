@@ -14,7 +14,7 @@
                 <strong>Order:</strong> {{ callpart.order }}<br>
                 <strong>Title:</strong> {{ callpart.title_rendered }}<br>
                 <strong>Introductory text:</strong>
-                <div class="border p-1 bg-white rounded pre-wrap">{{ callpart.introductory_text|default:'-' }}</div>
+                <div class="border p-1 bg-white rounded pre-wrap">{{ callpart.introductory_text|default:'-'|safe }}</div>
 
                 <p></p>
                 <h2>Contents</h2>
