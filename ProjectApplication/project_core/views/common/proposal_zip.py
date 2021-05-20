@@ -2,7 +2,6 @@ import io
 import os
 import zipfile
 
-import requests
 from django.http import HttpResponse
 from django.views import View
 
@@ -32,6 +31,7 @@ def add_proposal_to_zip(proposal, zip_archive, request, used_directory_names):
             file_pointer.write(answer_file.file.read())
 
     return proposal_directory
+
 
 class ProposalDetailViewZip(View):
     def get(self, request, *args, **kwargs):
