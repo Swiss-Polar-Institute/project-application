@@ -14,9 +14,10 @@ def add_proposal_to_zip(proposal, zip_archive, request, used_directory_names):
     # Returns the directory name used for this proposal
     proposal_directory = proposal.file_name()
 
-    count = 1
+    count = 2
     while proposal_directory in used_directory_names:
         proposal_directory = f'{proposal_directory}-{count}'
+        count += 1
 
     proposal_filename = f'Proposal-{proposal.file_name()}.pdf'
 
