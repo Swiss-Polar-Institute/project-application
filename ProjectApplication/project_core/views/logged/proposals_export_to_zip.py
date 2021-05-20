@@ -17,9 +17,12 @@ class ProposalsExportZip(View):
 
         buffer = io.BytesIO()
 
+        used_directory_names = []
+
         with zipfile.ZipFile(buffer, 'w') as zip_archive:
             for proposal in call.proposal_set.all():
-                add_proposal_to_zip(proposal, zip_archive, request)
+                directory_name = add_proposal_to_zip(proposal, zip_archive, request, used_directory_names)
+                used_directory_names.append(directory_name)
 
         filename = f'{call.short_name}-all_proposals.zip'
 

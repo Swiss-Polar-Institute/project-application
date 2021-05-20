@@ -10,8 +10,14 @@ from project_core.models import Proposal
 from project_core.views.common.proposal_pdf import create_pdf_for_proposal
 
 
-def add_proposal_to_zip(proposal, zip_archive, request):
+def add_proposal_to_zip(proposal, zip_archive, request, used_directory_names):
+    # Returns the directory name used for this proposal
     proposal_directory = proposal.file_name()
+
+    count = 1
+    while proposal_directory in used_directory_names:
+        proposal_directory = f'{proposal_directory}-{count}'
+
     proposal_filename = f'Proposal-{proposal.file_name()}.pdf'
 
     with zip_archive.open(os.path.join(proposal_directory, proposal_filename), mode='w') as pdf_proposal:
@@ -24,6 +30,7 @@ def add_proposal_to_zip(proposal, zip_archive, request):
         with zip_archive.open(os.path.join(proposal_directory, filename), mode='w') as file_pointer:
             file_pointer.write(answer_file.file.read())
 
+    return proposal_directory
 
 class ProposalDetailViewZip(View):
     def get(self, request, *args, **kwargs):
