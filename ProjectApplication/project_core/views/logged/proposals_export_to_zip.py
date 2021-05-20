@@ -24,7 +24,7 @@ class ProposalsExportZip(View):
                 directory_name = add_proposal_to_zip(proposal, zip_archive, request, used_directory_names)
                 used_directory_names.append(directory_name)
 
-        filename = f'{call.short_name}-all_proposals.zip'
+        filename = f'{call.short_name}-{call.finance_year}-all_proposals.zip'
 
         response = HttpResponse(buffer.getvalue())
         response['Content-Type'] = 'application/zip'

@@ -22,4 +22,4 @@
 <strong>Organisations:</strong>
 {% include 'common/_organisation-list.tmpl' with organisations=person_position.organisations_ordered_by_name %}
 <br>
-<strong>Group / lab:</strong> {{ person_position.group }}<br>
+<strong>Group / lab:</strong> {{ person_position.group|default:'-' }}<br>

@@ -947,7 +947,7 @@ class Proposal(CreateModifyOn):
         # TODO: Names with umlauts, accents, etc. are going to cause a problem?
 
         applicant_full_name = self.applicant.person.full_name()
-        filename = f'{self.call.short_name}-{applicant_full_name}'
+        filename = f'{self.call.short_name}-{self.call.finance_year}-{applicant_full_name}'
         filename = filename.replace(' ', '_').replace('.', '_')
 
         filename = filename.replace('/', '')
