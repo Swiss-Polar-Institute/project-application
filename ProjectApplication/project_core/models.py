@@ -18,7 +18,6 @@ from phonenumber_field.phonenumber import PhoneNumber
 from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 
-from variable_templates.utils import apply_templates_to_string
 from . import utils
 from .utils.SpiS3Boto3Storage import SpiS3Boto3Storage
 from .utils.orcid import raise_error_if_orcid_invalid
@@ -1004,6 +1003,8 @@ class ProposalQAFile(CreateModifyOn):
             return 'Unknown -ClientError'
 
     def file_name(self):
+        from variable_templates.utils import apply_templates_to_string
+
         _, extension = os.path.splitext(self.file.name)
         filename = f'{self.call_question.call_part.title}-{self.call_question.question_text[0:50]}{extension}'
 
