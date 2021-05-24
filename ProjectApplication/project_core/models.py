@@ -464,6 +464,8 @@ class Organisation(CreateModifyOn):
     long_name = models.CharField(help_text='Full name by which the organisation is known', max_length=100)
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50,
                                   blank=True, null=True)
+    long_name_english = models.CharField(help_text='English name by which the organisation is known', max_length=100,
+                                         blank=True, null=True)
     street = models.CharField(help_text='Street address of the organisation', max_length=500, blank=True, null=True)
     city = models.CharField(help_text='City in which the organisation is based', max_length=100)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=True, null=True)
