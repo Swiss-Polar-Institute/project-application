@@ -10,10 +10,9 @@ from project_core.views.common.proposal_zip import add_proposal_to_zip
 
 class CreateZipFile:
     def __init__(self, call, request):
-        self._proposals = list(call.proposal_set.all())
+        self._proposals = iter(call.proposal_set.all())
         self._request = request
 
-        self._next_proposal = 0
         self._buffer = io.BytesIO()
         self._zipfile = zipfile.ZipFile(self._buffer, 'w')
         self._used_directory_names = []
@@ -22,11 +21,11 @@ class CreateZipFile:
         self._last_wrote_position = 0
 
     def _add_new_proposal(self):
-        if self._next_proposal == len(self._proposals):
+        try:
+            proposal = next(self._proposals)
+        except StopIteration:
             self._zipfile.close()
             return
-
-        proposal = self._proposals[self._next_proposal]
 
         self._buffer.seek(self._last_wrote_position)
         directory_name = add_proposal_to_zip(proposal, self._zipfile,
@@ -34,8 +33,6 @@ class CreateZipFile:
         self._last_wrote_position = self._buffer.tell()
 
         self._used_directory_names.append(directory_name)
-
-        self._next_proposal += 1
 
     def read(self, size):
         read_buffer = self._buffer.read(size)
