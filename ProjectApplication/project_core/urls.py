@@ -79,7 +79,9 @@ urlpatterns = [
     path('logged/proposals/export/csv/summary/',
          project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
-
+    path('logged/proposals/export/zip/',
+         project_core.views.logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
+         name='logged-export-proposals-zip-all'),
     path('logged/call/list/',
          logged.call.CallList.as_view(),
          name='logged-call-list'),

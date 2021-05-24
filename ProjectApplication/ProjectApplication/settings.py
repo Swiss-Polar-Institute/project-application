@@ -339,6 +339,7 @@ REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-proposal-detail',
                                   'logged-export-proposals-csv-summary-all',
                                   'logged-export-proposals-csv-summary-call',
+                                  'logged-export-proposals-zip-all',
                                   'logged-homepage']
 LOGGED_OUT_USERNAME = 'loggedout'
 PROPOSAL_STATUS_DRAFT = 'Draft'

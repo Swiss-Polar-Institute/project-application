@@ -4,13 +4,14 @@ import zipfile
 from django.http import FileResponse
 from django.views import View
 
-from project_core.models import Call
+from evaluation.models import Reviewer
+from project_core.models import Call, Proposal
 from project_core.views.common.proposal_zip import add_proposal_to_zip
 
 
 class CreateZipFile:
-    def __init__(self, call, request):
-        self._proposals = iter(call.proposal_set.all())
+    def __init__(self, proposals, request):
+        self._proposals = iter(proposals)
         self._request = request
 
         self._buffer = io.BytesIO()
@@ -52,10 +53,17 @@ class ProposalsExportZip(View):
         super().__init__(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        call = Call.objects.get(id=kwargs['call'])
+        if 'call' in kwargs:
+            call = Call.objects.get(id=kwargs['call'])
+            proposals = call.proposal_set.all()
 
-        filename = f'{call.short_name}-all_proposals.zip'
-        filename = filename.replace(' ', '_')
+            filename = f'{call.short_name}-all_proposals.zip'
+            filename = filename.replace(' ', '_')
+        else:
+            proposals = Proposal.objects.all()
+            proposals = Reviewer.filter_proposals(proposals, self.request.user)
 
-        return FileResponse(CreateZipFile(call, request),
+            filename = 'all_proposals.zip'
+
+        return FileResponse(CreateZipFile(proposals, request),
                             filename=filename)
