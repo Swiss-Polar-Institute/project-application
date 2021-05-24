@@ -2,6 +2,7 @@ import io
 import zipfile
 
 from django.http import FileResponse
+from django.utils import timezone
 from django.views import View
 
 from evaluation.models import Reviewer
@@ -57,13 +58,16 @@ class ProposalsExportZip(View):
             call = Call.objects.get(id=kwargs['call'])
             proposals = call.proposal_set.all()
 
-            filename = f'{call.short_name}-all_proposals.zip'
-            filename = filename.replace(' ', '_')
+            base_filename = f'proposals-{call.short_name}'
         else:
             proposals = Proposal.objects.all()
             proposals = Reviewer.filter_proposals(proposals, self.request.user)
 
-            filename = 'all_proposals.zip'
+            base_filename = 'proposals-all'
+
+        date = timezone.now().strftime('%Y%m%d-%H%M%S')
+        filename = f'{base_filename}-{date}.zip'
+        filename = filename.replace(' ', '_')
 
         return FileResponse(CreateZipFile(proposals, request),
                             filename=filename)

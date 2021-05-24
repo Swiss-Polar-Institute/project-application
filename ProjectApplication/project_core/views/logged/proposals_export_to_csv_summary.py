@@ -17,7 +17,7 @@ class ProposalsExportCsvSummary(View):
         call_id = kwargs.get('call', None)
         response = HttpResponse(content_type='text/csv')
 
-        filename = create_file_name('proposal-summary-{}-{}.csv', call_id)
+        filename = create_file_name('proposals-summary-{}-{}.csv', call_id)
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
         response.write(codecs.BOM_UTF8)
