@@ -42,11 +42,13 @@ class CreateZipFile:
         self._used_directory_names.append(directory_name)
 
     def read(self, size):
+        first_read = self._last_read_position == 0
+
         self._buffer.seek(self._last_read_position)
         read_buffer = self._buffer.read(size)
         self._last_read_position = self._buffer.tell()
 
-        if len(read_buffer) < size:
+        if len(read_buffer) < size and not first_read:
             self._add_new_proposal()
             self._buffer.seek(self._last_read_position)
             read_buffer += self._buffer.read(size - len(read_buffer))
