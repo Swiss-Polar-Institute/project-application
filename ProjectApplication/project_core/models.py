@@ -492,6 +492,15 @@ class OrganisationName(CreateModifyOn):
     name = models.CharField(help_text='A name that the organisation is known for', max_length=100, unique=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
 
+    def public_name(self):
+        if self.organisation:
+            if self.organisation.english_name:
+                return self.organisation.english_name
+            else:
+                return self.organisation.long_name
+        else:
+            return self.name
+
     def __str__(self):
         return '{}'.format(self.name)
 

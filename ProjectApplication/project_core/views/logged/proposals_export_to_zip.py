@@ -17,10 +17,14 @@ class CreateZipFile:
 
         self._buffer = io.BytesIO()
         self._zipfile = zipfile.ZipFile(self._buffer, 'w')
+
         self._used_directory_names = []
 
         self._last_read_position = 0
         self._last_wrote_position = 0
+
+        with self._zipfile.open('README.txt', mode='w') as readme_file:
+            readme_file.write(b'Test')
 
     def _add_new_proposal(self):
         try:
