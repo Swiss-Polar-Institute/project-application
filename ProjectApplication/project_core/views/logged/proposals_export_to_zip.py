@@ -57,7 +57,5 @@ class ProposalsExportZip(View):
         filename = f'{call.short_name}-all_proposals.zip'
         filename = filename.replace(' ', '_')
 
-        response = FileResponse(CreateZipFile(call, request),
-                                filename=filename)
-
-        return response
+        return FileResponse(CreateZipFile(call, request),
+                            filename=filename)
