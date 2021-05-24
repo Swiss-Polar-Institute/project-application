@@ -21,10 +21,11 @@ class CreateZipFile:
         self._used_directory_names = []
 
         self._last_read_position = 0
-        self._last_wrote_position = 0
 
         with self._zipfile.open('README.txt', mode='w') as readme_file:
-            readme_file.write(b'Test')
+            readme_file.write(b'This ZIP file includes Proposals. Please keep it private.')
+
+        self._last_wrote_position = self._buffer.tell()
 
     def _add_new_proposal(self):
         try:
@@ -41,6 +42,7 @@ class CreateZipFile:
         self._used_directory_names.append(directory_name)
 
     def read(self, size):
+        self._buffer.seek(self._last_read_position)
         read_buffer = self._buffer.read(size)
         self._last_read_position = self._buffer.tell()
 
