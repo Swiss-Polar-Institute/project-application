@@ -43,7 +43,7 @@ six==1.14.0
 sqlparse==0.3.0
 toml==0.10.1
 traitlets==4.3.3
-urllib3==1.25.8
+urllib3==1.26.5
 wcwidth==0.1.8
 XlsxWriter==1.2.7
 bleach==3.3.0
