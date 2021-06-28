@@ -130,12 +130,12 @@ class OrganisationUidAdmin(admin.ModelAdmin):
 
 class OrganisationAdmin(admin.ModelAdmin):
     list_display = (
-        'long_name', 'short_name', 'long_name_english', 'street', 'city', 'postal_code', 'country', 'uid', 'created_on',
+        'long_name', 'short_name', 'display_name', 'street', 'city', 'postal_code', 'country', 'uid', 'created_on',
         'modified_on',)
-    ordering = ('long_name', 'short_name', 'long_name_english', 'city', 'country', 'uid', 'created_on',
+    ordering = ('long_name', 'short_name', 'display_name', 'city', 'country', 'uid', 'created_on',
                 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
-    search_fields = ('long_name', 'short_name', 'long_name_english', 'street', 'city', 'postal_code', 'country__name', 'uid__uid',)
+    search_fields = ('long_name', 'short_name', 'display_name', 'street', 'city', 'postal_code', 'country__name', 'uid__uid',)
 
 
 class OrganisationNameAdmin(admin.ModelAdmin):
