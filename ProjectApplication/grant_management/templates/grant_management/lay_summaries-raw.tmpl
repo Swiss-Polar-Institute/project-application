@@ -5,7 +5,7 @@
         <tbody>
         {% for project in projects %}
             <tr>
-                <td style="width: 28.19%"><a href="#{{ project.key }}">{{ project.principal_investigator.academic_title }} {{ project.principal_investigator.person }} - {{ project.principal_investigator.organisations_short_names }}</a></td>
+                <td style="width: 28.19%"><a href="#{{ project.key }}">{{ project.principal_investigator.academic_title }} {{ project.principal_investigator.person }} - {{ project.principal_investigator.organisations_display_names }}</a></td>
                 <td style="width: 71.23%">{{ project.title }}</td>
             </tr>
         {% endfor %}
