@@ -220,7 +220,7 @@ class Call(CreateModifyOn):
         career_stages = CallCareerStage.objects.filter(call=self).filter(enabled=True).values_list('career_stage__id',
                                                                                                    flat=True)
 
-        return CareerStage.objects.filter(id__in=career_stages)
+        return CareerStage.objects.filter(id__in=career_stages).order_by('list_order')
 
 
 class BudgetCategoryCall(CreateModifyOn):
