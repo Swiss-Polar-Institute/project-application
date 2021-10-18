@@ -5,13 +5,16 @@ import subprocess
 import urllib.parse
 from datetime import datetime
 
+from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management.base import BaseCommand
+from django.db.transaction import set_autocommit, commit
+from django.utils.timezone import make_aware
 
 from comments.models import ProjectComment, ProjectCommentCategory, Category
 from grant_management.models import GrantAgreement, Installment, Invoice, FinancialReport, ScientificReport
 from project_core.models import PhysicalPerson, PersonPosition, PersonTitle, Gender, OrganisationName, Project, Call, \
-    Contact, GeographicalArea, Keyword, Source, KeywordUid
+    Contact, GeographicalArea, Keyword, Source, KeywordUid, FundingInstrument, FinancialKey
 # For pprinting dictionaries doesn't change the order
 # in Python 3.7 this is needed, in Python 3.8 (or 3.9?)
 # there is a better way passing a parameter to the
@@ -32,7 +35,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         csv_file_path = options['csv_file']
         print(csv_file_path)
+
+        set_autocommit(False)
         import_csv(csv_file_path)
+        commit()
 
 
 def create_or_get_physical_person(first_name, surname, orcid=None, gender=None):
@@ -195,8 +201,40 @@ def dictionary_strings_to_types(dictionary):
     return result
 
 
+def create_call(call_short_name):
+    if call_short_name == 'ACE 2016':
+        user = User.objects.get(username='carles.pinaestany')  # TODO: create an import user?
+        ace_financial_key = FinancialKey.objects.create(name='TODO ACE', created_by=user)
+        funding_instrument = FundingInstrument.objects.create(
+            long_name='Antarctic Circumnavigation Expedition', short_name=ace_financial_key)
+
+        call_open_date = datetime(2016, 7, 1, 12, 0)
+        call_open_date = make_aware(call_open_date)
+
+        submission_deadline = datetime(2018, 9, 1, 12, 0)
+        submission_deadline = make_aware(submission_deadline)
+
+        call = Call.objects.create(short_name=call_short_name,
+                                   finance_year=2016,
+                                   funding_instrument=funding_instrument,
+                                   call_open_date=call_open_date,  # TODO
+                                   submission_deadline=submission_deadline,  # TODO
+                                   budget_maximum=1_000_000,  # TODO
+                                   other_funding_question=False,  # TODO
+                                   proposal_partner_question=False,  # TODO
+                                   )
+    else:
+        assert False
+
+    return call
+
+
 def create_project(project_data, principal_investigator):
-    call = Call.objects.get(short_name=project_data['call__short_name'])
+    try:
+        call = Call.objects.get(short_name=project_data['call__short_name'])
+    except Call.DoesNotExist:
+        call = create_call(project_data['call__short_name'])
+
     assert project_data['status'] in [Project.ONGOING, Project.COMPLETED, Project.ABORTED]
 
     if project_data['status'] in [Project.COMPLETED, Project.ABORTED]:
@@ -207,6 +245,9 @@ def create_project(project_data, principal_investigator):
     allocated_budget_chf = project_data['allocated_budget_chf']
     allocated_budget_eur = project_data['allocated_budget_eur']
 
+    if not allocated_budget_chf:
+        allocated_budget_chf = allocated_budget_eur * 1.08
+
     project = Project.objects.create(title=project_data['title'],
                                      key=project_key,
                                      principal_investigator=principal_investigator,
@@ -216,7 +257,7 @@ def create_project(project_data, principal_investigator):
                                      call=call,
                                      allocated_budget=allocated_budget_chf,
                                      status=project_data['status'],
-                                     closed_on=project_data['closed_date'],  # TODO: is this correct?
+                                     closed_on=make_aware(project_data['closed_date']),  # TODO: is this correct?
                                      closed_by=None,  # TODO: should we create a new data import user?
                                      )
 
@@ -265,16 +306,21 @@ def content_type_from_file_name(file_name):
 
 
 def create_simple_uploaded_file(file_path):
-    if file_path is None:
+    if not is_valid_sharepoint_file_path(file_path):
+        print('Not creating a file because file_path is:', file_path)
         return None
 
-    file_path = file_path[len('https://swisspolar.sharepoint.com/sites/S/S/'):]
+    file_path = normalise_path(file_path)
 
-    file_path = urllib.parse.unquote(file_path)
+    exec = ['rclone', 'cat', file_path]
 
-    file_path = 'Commun-SwissPolar:' + file_path
+    print(exec)
 
-    rclone_process = subprocess.run(['rclone', 'cat', file_path], capture_output=True)
+    rclone_process = subprocess.run(exec, capture_output=True)
+
+    if rclone_process.returncode != 0:
+        print('rclone_process.returncode:', rclone_process.returncode)
+        pass
 
     assert rclone_process.returncode == 0
 
@@ -324,6 +370,56 @@ def set_installments(project, installments_data):
         index += 1
 
 
+def is_valid_sharepoint_file_path(file_path):
+    print(f'In is_valid: _{file_path}_')
+    return file_path is not None and \
+           file_path != 'NA' and \
+           ':w' not in file_path and \
+           ':f' not in file_path and \
+           file_path.startswith('https://youtube.com') is False and \
+           file_path.startswith('https://www.youtube.com') is False
+
+
+def normalise_path(file_path):
+    if '?e=' in file_path:
+        to_exec = ['curl', '--cookie', '/home/carles/cookies.txt', '--include', file_path]
+        print(' '.join(to_exec))
+        result = subprocess.run(to_exec, capture_output=True)
+        result = result.stdout.decode('utf-8')
+
+        for line in result.split('\r\n'):
+            if line.lower().startswith('location: '):
+                print('line:', line)
+                file_path = line.split(' ')[1]
+                print('file_path 1:', file_path)
+
+                # Yes, it's unquoted here and later again
+                print('file_path 2:', file_path)
+                file_path = urllib.parse.unquote(file_path)
+                print('file_path 3:', file_path)
+                assert file_path.startswith(
+                    'https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/')
+                file_path = file_path[
+                            len('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):]
+                print('file_path 4:', file_path)
+                file_path = file_path.split('&parent')[0]
+                break
+
+    else:
+        print('file_path A:', file_path)
+        assert file_path.startswith('https://swisspolar.sharepoint.com/sites/S/S/')
+        file_path = file_path[len('https://swisspolar.sharepoint.com/sites/S/S/'):]
+        print('file_path B:', file_path)
+
+        file_path = urllib.parse.unquote(file_path)
+        print('file_path C:', file_path)
+
+    file_path = 'Commun-SwissPolar:' + file_path
+    print('file_path final:', file_path)
+
+    return file_path
+
+
 def set_invoices(project, invoices_data):
     index = 1
 
@@ -337,21 +433,51 @@ def set_invoices(project, invoices_data):
         installment_number = index
         installment = Installment.objects.filter(project=project).order_by('id')[index - installment_number]
 
-        file = create_simple_uploaded_file(invoices_data[f'{index}_file'])
+        file_path = invoices_data[f'{index}_file']
+
+        if is_valid_sharepoint_file_path(file_path):
+            file = create_simple_uploaded_file(invoices_data[f'{index}_file'])
+        else:
+            print('Invalid file_path. Project:', project, 'Invoice received_date:', received_date)
+            file = None
 
         amount_chf = invoices_data[f'{index}_amount_chf']
         amount_eur = invoices_data[f'{index}_amount_eur']
 
-        assert amount_chf <= installment.amount
+        if amount_chf == 'NA':
+            print('Invalid amount_chf. Project:', project, 'Invoice received_date:', received_date)
+            amount_chf = 0
+
+        if amount_eur == 'NA':
+            print('Invalid amount_eur. Project:', project, 'Invoice received_date:', received_date)
+            amount_eur = 0
+
+        if amount_chf >= installment.amount:
+            print('Warning: invoice is bigger than the installment amount. See project: ', project,
+                  'invoice amount (eur):', amount_eur)
+
+        if received_date == 'NA':
+            print('Invalid received_date. Project:', project, 'Invoice received_date:', received_date)
+            received_date = make_aware(datetime(2017, 1, 1))
+
+        sent_for_payment_date = invoices_data[f'{index}_sent_for_payment']
+
+        if sent_for_payment_date == 'NA':
+            print('Invalid sent_for_payment. Project:', project, 'Invoice received_date:', received_date)
+            sent_for_payment_date = make_aware(datetime(2017, 1, 1))
 
         paid_date = invoices_data[f'{index}_paid_date']
+
+        if paid_date == 'NA' or paid_date is None:
+            print('Invalid paid_date. Project:', project, 'Invoice received_date:', received_date)
+            paid_date = make_aware(datetime(2017, 1, 1))
 
         Invoice.objects.create(project=project,
                                installment=installment,
                                amount=amount_chf,
                                received_date=received_date,
-                               sent_for_payment_date=invoices_data[f'{index}_sent_for_payment'],
-                               paid_date=invoices_data[f'{index}_paid_date'],
+                               sent_for_payment_date=sent_for_payment_date,
+                               paid_date=paid_date,
                                file=file
                                )
 
@@ -463,7 +589,7 @@ def import_csv(csv_file_path):
         for row in transposed:
             projects.append(dict(zip(headers, row)))
 
-        pprint.pprint(projects)
+        # pprint.pprint(projects)
 
         for project_data in projects:
             project_data = set_fake_data(project_data)
@@ -494,9 +620,6 @@ def import_csv(csv_file_path):
             set_scientific_reports(project, scientific_reports_data)
 
             validate_project(project)
-
-            # At the moment importing only one
-            break
 
 
 # TODO: It might be needed to add the possibility of:
