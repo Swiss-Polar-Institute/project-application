@@ -1,6 +1,6 @@
 asgiref==3.3.2
 attrs==20.2.0
-Babel==2.8.0
+Babel==2.9.1
 backcall==0.1.0
 boto3==1.11.16
 botocore==1.14.16
