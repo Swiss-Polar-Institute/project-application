@@ -1,6 +1,5 @@
 import csv
 import os
-import pprint
 import subprocess
 import urllib.parse
 from datetime import datetime
@@ -23,7 +22,7 @@ from project_core.templatetags.thousands_separator import thousands_separator
 # This is a throw away script to import past data
 from project_core.utils.utils import format_date
 
-pprint.sorted = lambda arg, *a, **kw: arg
+# pprint.sorted = lambda arg, *a, **kw: arg
 
 
 class Command(BaseCommand):
@@ -189,6 +188,14 @@ def dictionary_strings_to_types(dictionary):
         except ValueError:
             pass
 
+        try:
+            value_date = datetime.strptime(value, '%d.%m.%Y')
+            result[key] = value_date
+            continue
+        except ValueError:
+            pass
+
+
         if key in ['keywords', 'principal_investigator__organisation_names', 'geographical_areas']:
             value_list = value.split(',')
             value_list = [value_element.strip() for value_element in value_list]
@@ -245,8 +252,12 @@ def create_project(project_data, principal_investigator):
     allocated_budget_chf = project_data['allocated_budget_chf']
     allocated_budget_eur = project_data['allocated_budget_eur']
 
-    if not allocated_budget_chf:
-        allocated_budget_chf = allocated_budget_eur * 1.08
+    allocated_budget_chf = 0    # This is calculated later on based
+                                # on paid invoices
+
+    # if not allocated_budget_chf:
+    #     print('Converting EUR to CHF for allocated budget')
+    #     allocated_budget_chf = allocated_budget_eur * 1.08
 
     project = Project.objects.create(title=project_data['title'],
                                      key=project_key,
@@ -290,6 +301,7 @@ def set_keywords(project, keywords):
 
 def content_type_from_file_name(file_name):
     file_name_lower = file_name.lower()
+    #.split('&parent')[0]
 
     if file_name_lower.endswith('.docx'):
         return 'application/vnd.openxmlformats-officedocument.wordprocessingml'
@@ -307,20 +319,25 @@ def content_type_from_file_name(file_name):
 
 def create_simple_uploaded_file(file_path):
     if not is_valid_sharepoint_file_path(file_path):
-        print('Not creating a file because file_path is:', file_path)
+        print('ERROR: Not creating a file because file_path is:', file_path)
         return None
 
     file_path = normalise_path(file_path)
 
-    exec = ['rclone', 'cat', file_path]
+    if '.docx' in file_path:
+        print('Attention: file_path with .docx?:', file_path)
 
-    print(exec)
+    to_exec = ['rclone', 'cat', file_path]
 
-    rclone_process = subprocess.run(exec, capture_output=True)
+    #to_exec = ['cat', '/home/carles/test.pdf']
+
+    print(' '.join(to_exec))
+
+    rclone_process = subprocess.run(to_exec, capture_output=True)
 
     if rclone_process.returncode != 0:
         print('rclone_process.returncode:', rclone_process.returncode)
-        pass
+        print('error')
 
     assert rclone_process.returncode == 0
 
@@ -344,7 +361,7 @@ def set_grant_agreement(project, grant_agreement_information):
 
         index += 1
 
-        if signed_by_first_name is None:
+        if signed_by_first_name is None or signed_by_first_name == 'NA':
             continue
 
         physical_person, created = PhysicalPerson.objects.get_or_create(first_name=signed_by_first_name,
@@ -362,7 +379,8 @@ def set_installments(project, installments_data):
 
         assert amount
         assert amount > 0
-        assert amount <= project.allocated_budget
+        # assert amount <= project.allocated_budget
+        # allocated budget is calculated at the end...
 
         Installment.objects.create(project=project,
                                    amount=amount)
@@ -371,51 +389,54 @@ def set_installments(project, installments_data):
 
 
 def is_valid_sharepoint_file_path(file_path):
-    print(f'In is_valid: _{file_path}_')
     return file_path is not None and \
            file_path != 'NA' and \
-           ':w' not in file_path and \
-           ':f' not in file_path and \
            file_path.startswith('https://youtube.com') is False and \
            file_path.startswith('https://www.youtube.com') is False
 
+            # ':w' not in file_path and \
+            # ':f' not in file_path and \
 
-def normalise_path(file_path):
+def normalise_path(file_path: str):
+    print('normalise_path for path:', file_path)
+
     if '?e=' in file_path:
-        to_exec = ['curl', '--cookie', '/home/carles/cookies.txt', '--include', file_path]
+        print('normalising 1...')
+        to_exec = ['curl', '--cookie', '/tmp/cookies.txt', '--include', file_path]
         print(' '.join(to_exec))
         result = subprocess.run(to_exec, capture_output=True)
         result = result.stdout.decode('utf-8')
 
         for line in result.split('\r\n'):
             if line.lower().startswith('location: '):
-                print('line:', line)
+                # print('line:', line)
                 file_path = line.split(' ')[1]
-                print('file_path 1:', file_path)
 
                 # Yes, it's unquoted here and later again
-                print('file_path 2:', file_path)
                 file_path = urllib.parse.unquote(file_path)
-                print('file_path 3:', file_path)
                 assert file_path.startswith(
                     'https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/')
                 file_path = file_path[
                             len('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):]
-                print('file_path 4:', file_path)
                 file_path = file_path.split('&parent')[0]
                 break
 
+    elif urllib.parse.unquote(file_path).startswith('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):
+        print('normalising 2...')
+        file_path = urllib.parse.unquote(file_path)
+        file_path = file_path[
+                    len('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):]
+        file_path = file_path.split('&parent')[0]
     else:
-        print('file_path A:', file_path)
+        print('normalising 3...')
         assert file_path.startswith('https://swisspolar.sharepoint.com/sites/S/S/')
         file_path = file_path[len('https://swisspolar.sharepoint.com/sites/S/S/'):]
-        print('file_path B:', file_path)
 
         file_path = urllib.parse.unquote(file_path)
-        print('file_path C:', file_path)
 
     file_path = 'Commun-SwissPolar:' + file_path
-    print('file_path final:', file_path)
+
+    print('normalised:', file_path)
 
     return file_path
 
@@ -425,20 +446,35 @@ def set_invoices(project, invoices_data):
 
     comments = []
 
+    installment_index = 0
+    installments = Installment.objects.filter(project=project).order_by('id')
+
     while f'{index}_received_date' in invoices_data:
         received_date = invoices_data[f'{index}_received_date']
-        if received_date is None:
+        amount_chf = invoices_data[f'{index}_amount_chf']
+
+        if amount_chf == '' or amount_chf == 'NA':
+            # Nothing to do in this invoice
+            # TODO: check that other fields are empty?
+            installment_index += 1
+            index += 1
+            continue
+
+        #if received_date is None:
+        #    break
+
+        if invoices_data[f'{index}_amount_chf'] and installment_index >= len(installments):
+            print('ERROR: stop processing invoice with data because no installment for this invoice')
             break
 
-        installment_number = index
-        installment = Installment.objects.filter(project=project).order_by('id')[index - installment_number]
+        installment = installments[installment_index]
+        installment_index += 1
 
         file_path = invoices_data[f'{index}_file']
 
         if is_valid_sharepoint_file_path(file_path):
             file = create_simple_uploaded_file(invoices_data[f'{index}_file'])
         else:
-            print('Invalid file_path. Project:', project, 'Invoice received_date:', received_date)
             file = None
 
         amount_chf = invoices_data[f'{index}_amount_chf']
@@ -446,31 +482,35 @@ def set_invoices(project, invoices_data):
 
         if amount_chf == 'NA':
             print('Invalid amount_chf. Project:', project, 'Invoice received_date:', received_date)
-            amount_chf = 0
+            amount_chf = None
 
         if amount_eur == 'NA':
             print('Invalid amount_eur. Project:', project, 'Invoice received_date:', received_date)
-            amount_eur = 0
+            # amount_eur = 0
+            amount_eur = None
 
-        if amount_chf >= installment.amount:
-            print('Warning: invoice is bigger than the installment amount. See project: ', project,
-                  'invoice amount (eur):', amount_eur)
+        # if amount_chf and amount_chf >= installment.amount:
+        #     print('Warning: invoice is bigger than the installment amount. See project: ', project,
+        #           'invoice amount (eur):', amount_eur)
 
         if received_date == 'NA':
-            print('Invalid received_date. Project:', project, 'Invoice received_date:', received_date)
-            received_date = make_aware(datetime(2017, 1, 1))
+            # print('Invalid received_date. Project:', project, 'Invoice received_date:', received_date)
+            # received_date = make_aware(datetime(2017, 1, 1))
+            received_date = None
 
         sent_for_payment_date = invoices_data[f'{index}_sent_for_payment']
 
         if sent_for_payment_date == 'NA':
             print('Invalid sent_for_payment. Project:', project, 'Invoice received_date:', received_date)
-            sent_for_payment_date = make_aware(datetime(2017, 1, 1))
+            # sent_for_payment_date = make_aware(datetime(2017, 1, 1))
+            sent_for_payment_date = None
+
 
         paid_date = invoices_data[f'{index}_paid_date']
 
         if paid_date == 'NA' or paid_date is None:
-            print('Invalid paid_date. Project:', project, 'Invoice received_date:', received_date)
-            paid_date = make_aware(datetime(2017, 1, 1))
+            print('ERROR: Invalid paid_date. Project:', project, 'Invoice received_date:', received_date)
+            # paid_date = make_aware(datetime(2017, 1, 1))
 
         Invoice.objects.create(project=project,
                                installment=installment,
@@ -481,8 +521,13 @@ def set_invoices(project, invoices_data):
                                file=file
                                )
 
-        comments.append(f'Invoice paid on {format_date(paid_date)} with amount {thousands_separator(amount_chf)} CHF ' \
-                        f'was of {thousands_separator(amount_eur)} EUR')
+        if amount_eur:
+            eur_suffix = f' {thousands_separator(amount_eur)} EUR'
+        else:
+            eur_suffix = ''
+
+        comments.append(f'Invoice paid on {format_date(paid_date)} with amount {thousands_separator(amount_chf)} CHF '
+                        f'was originally in Euros{eur_suffix}')
 
         index += 1
 
@@ -495,6 +540,8 @@ def set_invoices(project, invoices_data):
     comment.text += comment_text
     comment.save()
 
+    project.allocated_budget = project.invoices_paid_amount()
+    project.save()
 
 def validate_project(project):
     pass
@@ -544,33 +591,33 @@ def replace_if_needed(project_data, field_name, value):
 
 
 def set_fake_data(project_data):
-    replace_if_needed(project_data, 'start_date', '01-07-2016')
-    replace_if_needed(project_data, 'end_date', '01-07-2021')
-    replace_if_needed(project_data, 'allocated_budget_chf', 250_000)
+    # replace_if_needed(project_data, 'start_date', '01-07-2016')
+    # replace_if_needed(project_data, 'end_date', '01-07-2021')
+    # replace_if_needed(project_data, 'allocated_budget_chf', 250_000)
 
-    replace_if_needed(project_data, 'closed_date', '01-08-2021')
+    # replace_if_needed(project_data, 'closed_date', '01-08-2021')
     replace_if_needed(project_data, 'closed_by__first_name', 'Laurence')
     replace_if_needed(project_data, 'closed_by__surname', 'Mottaz')
 
-    replace_if_needed(project_data, 'installment_1_amount_chf', 100_000)
-    replace_if_needed(project_data, 'installment_2_amount_chf', 100_000)
-    replace_if_needed(project_data, 'installment_3_amount_chf', 50_000)
+    # replace_if_needed(project_data, 'installment_1_amount_chf', 100_000)
+    # replace_if_needed(project_data, 'installment_2_amount_chf', 100_000)
+    # replace_if_needed(project_data, 'installment_3_amount_chf', 50_000)
 
-    replace_if_needed(project_data, 'invoice_1_received_date', '01-10-2016')
-    replace_if_needed(project_data, 'invoice_1_sent_for_payment', '15-10-2016')
-    replace_if_needed(project_data, 'invoice_1_paid_date', '01-12-2016')
-    replace_if_needed(project_data, 'invoice_1_amount_eur', 12_000)
-    replace_if_needed(project_data, 'invoice_1_amount_chf', 100_000)
-    replace_if_needed(project_data, 'invoice_1_file', None)
+    # replace_if_needed(project_data, 'invoice_1_received_date', '01-10-2016')
+    # replace_if_needed(project_data, 'invoice_1_sent_for_payment', '15-10-2016')
+    # replace_if_needed(project_data, 'invoice_1_paid_date', '01-12-2016')
+    # replace_if_needed(project_data, 'invoice_1_amount_eur', 12_000)
+    # replace_if_needed(project_data, 'invoice_1_amount_chf', 100_000)
+    # replace_if_needed(project_data, 'invoice_1_file', None)
 
-    replace_if_needed(project_data, 'invoice_2_amount_chf', 100_000)
-    replace_if_needed(project_data, 'invoice_2_amount_eur', 13_000)
-    replace_if_needed(project_data, 'invoice_2_file', None)
-    replace_if_needed(project_data, 'invoice_2_received_date', '01-10-2016')
-
-    replace_if_needed(project_data, 'invoice_3_amount_chf', 50_000)
-    replace_if_needed(project_data, 'invoice_3_file', None)
-    replace_if_needed(project_data, 'invoice_3_received_date', '01-07-2017')
+    # replace_if_needed(project_data, 'invoice_2_amount_chf', 100_000)
+    # replace_if_needed(project_data, 'invoice_2_amount_eur', 13_000)
+    # replace_if_needed(project_data, 'invoice_2_file', None)
+    # replace_if_needed(project_data, 'invoice_2_received_date', '01-10-2016')
+    #
+    # replace_if_needed(project_data, 'invoice_3_amount_chf', 50_000)
+    # replace_if_needed(project_data, 'invoice_3_file', None)
+    # replace_if_needed(project_data, 'invoice_3_received_date', '01-07-2017')
 
     project_data['keywords'] = ''
 
@@ -588,8 +635,6 @@ def import_csv(csv_file_path):
         projects = []
         for row in transposed:
             projects.append(dict(zip(headers, row)))
-
-        # pprint.pprint(projects)
 
         for project_data in projects:
             project_data = set_fake_data(project_data)
