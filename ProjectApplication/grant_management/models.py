@@ -347,3 +347,12 @@ class Milestone(CreateModifyOn):
     text = models.CharField(max_length=200, blank=True, null=True)
 
     history = HistoricalRecords()
+
+
+class Location(CreateModifyOn):
+    project = models.ForeignKey(Project, help_text='Project that the coordinate belongs to',
+                                on_delete=models.PROTECT,
+                                related_name='project_location')
+    latitude = models.DecimalField(decimal_places=2, max_digits=6)  # TODO: add validator?
+    longitude = models.DecimalField(decimal_places=2, max_digits=7)  # TODO: add validator?
+    name = models.CharField(max_length=100)
