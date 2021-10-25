@@ -495,10 +495,10 @@ class ProjectsBalanceCsv(View):
                    'Signed date': grant_agreement_signed_date,
                    'Organisation': pi_organisations,
                    'Title': project.title,
-                   'Start Date': project.start_date,
-                   'End Date': project.end_date,
+                   'Start Date': project.start_date if project.start_date else 'N/A',
+                   'End Date': project.end_date if project.end_date else 'N/A',
                    'Allocated budget': format_number_for_swiss_locale(project.allocated_budget),
-                   'Balance due': balance_due
+                   'Balance due': format_number_for_swiss_locale(balance_due),
                    }
 
             writer.writerow(row)
