@@ -210,8 +210,8 @@ def dictionary_strings_to_types(dictionary):
 
 def create_call(call_short_name):
     if call_short_name == 'ACE 2016':
-        user = User.objects.get(username='carles.pinaestany')  # TODO: create an import user?
-        ace_financial_key = FinancialKey.objects.create(name='TODO ACE', created_by=user)
+        user = User.objects.get(username='data.importer')
+        ace_financial_key = FinancialKey.objects.create(name='ACE', created_by=user)
         funding_instrument = FundingInstrument.objects.create(
             long_name='Antarctic Circumnavigation Expedition', short_name=ace_financial_key)
 
@@ -269,7 +269,7 @@ def create_project(project_data, principal_investigator):
                                      allocated_budget=allocated_budget_chf,
                                      status=project_data['status'],
                                      closed_on=make_aware(project_data['closed_date']),  # TODO: is this correct?
-                                     closed_by=None,  # TODO: should we create a new data import user?
+                                     closed_by=User.objects.get(username='data.importer'),  # TODO: should we create a new data import user?
                                      )
 
     comment_text = f"This project's finance was originally in Euros\n\n" \
