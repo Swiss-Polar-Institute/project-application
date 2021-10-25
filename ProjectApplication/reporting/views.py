@@ -474,7 +474,7 @@ class ProjectsBalanceCsv(View):
 
         response.write(codecs.BOM_UTF8)
 
-        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Allocated budget', 'Balance due']
+        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Start Date', 'End Date', 'Allocated budget', 'Balance due']
 
         writer = csv.DictWriter(response, fieldnames=headers, delimiter=';')
         writer.writeheader()
@@ -495,6 +495,8 @@ class ProjectsBalanceCsv(View):
                    'Signed date': grant_agreement_signed_date,
                    'Organisation': pi_organisations,
                    'Title': project.title,
+                   'Start Date': project.start_date,
+                   'End Date': project.end_date,
                    'Allocated budget': format_number_for_swiss_locale(project.allocated_budget),
                    'Balance due': balance_due
                    }
