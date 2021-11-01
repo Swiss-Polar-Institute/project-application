@@ -44,7 +44,7 @@ def create_or_get_physical_person(first_name, surname, orcid=None, gender=None):
     if gender:
         gender = Gender.objects.get(name=gender)
 
-    if orcid:
+    if orcid and orcid != 'NA':
         physical_person, created = PhysicalPerson.objects.get_or_create(orcid=orcid,
                                                                         defaults={'first_name': first_name,
                                                                                   'surname': surname,
@@ -222,13 +222,14 @@ def create_call(call_short_name):
         submission_deadline = make_aware(submission_deadline)
 
         call = Call.objects.create(short_name=call_short_name,
+                                   long_name='Arctic Circumnavigation Expedition 2016',
                                    finance_year=2016,
                                    funding_instrument=funding_instrument,
-                                   call_open_date=call_open_date,  # TODO
-                                   submission_deadline=submission_deadline,  # TODO
-                                   budget_maximum=1_000_000,  # TODO
-                                   other_funding_question=False,  # TODO
-                                   proposal_partner_question=False,  # TODO
+                                   call_open_date=call_open_date,
+                                   submission_deadline=submission_deadline,
+                                   budget_maximum=1_000_000,    # TODO confirm
+                                   other_funding_question=False,
+                                   proposal_partner_question=False,
                                    )
     else:
         assert False
@@ -259,6 +260,8 @@ def create_project(project_data, principal_investigator):
     #     print('Converting EUR to CHF for allocated budget')
     #     allocated_budget_chf = allocated_budget_eur * 1.08
 
+    print('Going to create project:', project_data['title'], 'with principal investigator:', principal_investigator)
+
     project = Project.objects.create(title=project_data['title'],
                                      key=project_key,
                                      principal_investigator=principal_investigator,
@@ -268,8 +271,8 @@ def create_project(project_data, principal_investigator):
                                      call=call,
                                      allocated_budget=allocated_budget_chf,
                                      status=project_data['status'],
-                                     closed_on=make_aware(project_data['closed_date']),  # TODO: is this correct?
-                                     closed_by=User.objects.get(username='data.importer'),  # TODO: should we create a new data import user?
+                                     closed_on=make_aware(project_data['closed_date']),
+                                     closed_by=User.objects.get(username='data.importer'),
                                      )
 
     comment_text = f"This project's finance was originally in Euros\n\n" \
@@ -358,14 +361,19 @@ def set_grant_agreement(project, grant_agreement_information):
     while f'signed_by_{index}_first_name' in grant_agreement_information:
         signed_by_first_name = grant_agreement_information[f'signed_by_{index}_first_name']
         signed_by_surname = grant_agreement_information[f'signed_by_{index}_surname']
+        signed_by_orcid = grant_agreement_information[f'signed_by_{index}_orcid']
 
         index += 1
 
         if signed_by_first_name is None or signed_by_first_name == 'NA':
             continue
 
+        if signed_by_orcid == 'NA':
+            signed_by_orcid = None
+
         physical_person, created = PhysicalPerson.objects.get_or_create(first_name=signed_by_first_name,
-                                                                        surname=signed_by_surname)
+                                                                        surname=signed_by_surname,
+                                                                        orcid=signed_by_orcid)
         grant_agreement.signed_by.add(physical_person)
 
 
@@ -401,7 +409,6 @@ def normalise_path(file_path: str):
     print('normalise_path for path:', file_path)
 
     if '?e=' in file_path:
-        print('normalising 1...')
         to_exec = ['curl', '--cookie', '/tmp/cookies.txt', '--include', file_path]
         print(' '.join(to_exec))
         result = subprocess.run(to_exec, capture_output=True)
@@ -422,13 +429,11 @@ def normalise_path(file_path: str):
                 break
 
     elif urllib.parse.unquote(file_path).startswith('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):
-        print('normalising 2...')
         file_path = urllib.parse.unquote(file_path)
         file_path = file_path[
                     len('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):]
         file_path = file_path.split('&parent')[0]
     else:
-        print('normalising 3...')
         assert file_path.startswith('https://swisspolar.sharepoint.com/sites/S/S/')
         file_path = file_path[len('https://swisspolar.sharepoint.com/sites/S/S/'):]
 
