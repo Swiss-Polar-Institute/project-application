@@ -222,7 +222,7 @@ def create_call(call_short_name):
         submission_deadline = make_aware(submission_deadline)
 
         call = Call.objects.create(short_name=call_short_name,
-                                   long_name='Arctic Circumnavigation Expedition 2016',
+                                   long_name='Antarctic Circumnavigation Expedition 2016',
                                    finance_year=2016,
                                    funding_instrument=funding_instrument,
                                    call_open_date=call_open_date,
