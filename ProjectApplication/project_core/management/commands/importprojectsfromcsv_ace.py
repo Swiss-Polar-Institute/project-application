@@ -563,8 +563,11 @@ def set_reports(project, reports_data, report_model):
         if received_date is None:
             break
 
-        approved_by = create_or_get_physical_person(reports_data[f'{index}_approved_by__first_name'],
-                                                    reports_data[f'{index}_approved_by__surname'])
+        if reports_data[f'{index}_approved_by__first_name'] is None:
+            approved_by = None
+        else:
+            approved_by = create_or_get_physical_person(reports_data[f'{index}_approved_by__first_name'],
+                                                        reports_data[f'{index}_approved_by__surname'])
 
         file = create_simple_uploaded_file(reports_data[f'{index}_file'])
 
