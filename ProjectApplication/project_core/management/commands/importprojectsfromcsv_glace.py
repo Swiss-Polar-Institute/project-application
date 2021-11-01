@@ -22,6 +22,7 @@ from project_core.templatetags.thousands_separator import thousands_separator
 # This is a throw away script to import past data
 from project_core.utils.utils import format_date
 
+
 # pprint.sorted = lambda arg, *a, **kw: arg
 
 
@@ -44,7 +45,7 @@ def create_or_get_physical_person(first_name, surname, orcid=None, gender=None):
     if gender:
         gender = Gender.objects.get(name=gender)
 
-    if orcid:
+    if orcid and orcid != 'NA':
         physical_person, created = PhysicalPerson.objects.get_or_create(orcid=orcid,
                                                                         defaults={'first_name': first_name,
                                                                                   'surname': surname,
@@ -195,7 +196,6 @@ def dictionary_strings_to_types(dictionary):
         except ValueError:
             pass
 
-
         if key in ['keywords', 'principal_investigator__organisation_names', 'geographical_areas']:
             value_list = value.split(',')
             value_list = [value_element.strip() for value_element in value_list]
@@ -222,13 +222,14 @@ def create_call(call_short_name):
         submission_deadline = make_aware(submission_deadline)
 
         call = Call.objects.create(short_name=call_short_name,
+                                   long_name='Arctic Circumnavigation Expedition 2016',
                                    finance_year=2016,
                                    funding_instrument=funding_instrument,
-                                   call_open_date=call_open_date,  # TODO
-                                   submission_deadline=submission_deadline,  # TODO
-                                   budget_maximum=1_000_000,  # TODO
-                                   other_funding_question=False,  # TODO
-                                   proposal_partner_question=False,  # TODO
+                                   call_open_date=call_open_date,
+                                   submission_deadline=submission_deadline,
+                                   budget_maximum=200_000,
+                                   other_funding_question=False,
+                                   proposal_partner_question=False,
                                    )
     else:
         assert False
@@ -252,12 +253,14 @@ def create_project(project_data, principal_investigator):
     allocated_budget_chf = project_data['allocated_budget_chf']
     allocated_budget_eur = project_data['allocated_budget_eur']
 
-    allocated_budget_chf = 0    # This is calculated later on based
-                                # on paid invoices
+    allocated_budget_chf = 0  # This is calculated later on based
+    # on paid invoices
 
     # if not allocated_budget_chf:
     #     print('Converting EUR to CHF for allocated budget')
     #     allocated_budget_chf = allocated_budget_eur * 1.08
+
+    print('Going to create project:', project_data['title'], 'with principal investigator:', principal_investigator)
 
     project = Project.objects.create(title=project_data['title'],
                                      key=project_key,
@@ -268,8 +271,8 @@ def create_project(project_data, principal_investigator):
                                      call=call,
                                      allocated_budget=allocated_budget_chf,
                                      status=project_data['status'],
-                                     closed_on=make_aware(project_data['closed_date']),  # TODO: is this correct?
-                                     closed_by=User.objects.get(username='data.importer'),  # TODO: should we create a new data import user?
+                                     closed_on=make_aware(project_data['closed_date']),
+                                     closed_by=User.objects.get(username='data.importer'),
                                      )
 
     comment_text = f"This project's finance was originally in Euros\n\n" \
@@ -301,7 +304,7 @@ def set_keywords(project, keywords):
 
 def content_type_from_file_name(file_name):
     file_name_lower = file_name.lower()
-    #.split('&parent')[0]
+    # .split('&parent')[0]
 
     if file_name_lower.endswith('.docx'):
         return 'application/vnd.openxmlformats-officedocument.wordprocessingml'
@@ -329,7 +332,7 @@ def create_simple_uploaded_file(file_path):
 
     to_exec = ['rclone', 'cat', file_path]
 
-    #to_exec = ['cat', '/home/carles/test.pdf']
+    # to_exec = ['cat', '/home/carles/test.pdf']
 
     print(' '.join(to_exec))
 
@@ -358,14 +361,19 @@ def set_grant_agreement(project, grant_agreement_information):
     while f'signed_by_{index}_first_name' in grant_agreement_information:
         signed_by_first_name = grant_agreement_information[f'signed_by_{index}_first_name']
         signed_by_surname = grant_agreement_information[f'signed_by_{index}_surname']
+        signed_by_orcid = grant_agreement_information[f'signed_by_{index}_orcid']
 
         index += 1
 
         if signed_by_first_name is None or signed_by_first_name == 'NA':
             continue
 
+        if signed_by_orcid == 'NA':
+            signed_by_orcid = None
+
         physical_person, created = PhysicalPerson.objects.get_or_create(first_name=signed_by_first_name,
-                                                                        surname=signed_by_surname)
+                                                                        surname=signed_by_surname,
+                                                                        orcid=signed_by_orcid)
         grant_agreement.signed_by.add(physical_person)
 
 
@@ -394,14 +402,14 @@ def is_valid_sharepoint_file_path(file_path):
            file_path.startswith('https://youtube.com') is False and \
            file_path.startswith('https://www.youtube.com') is False
 
-            # ':w' not in file_path and \
-            # ':f' not in file_path and \
+    # ':w' not in file_path and \
+    # ':f' not in file_path and \
+
 
 def normalise_path(file_path: str):
     print('normalise_path for path:', file_path)
 
     if '?e=' in file_path:
-        print('normalising 1...')
         to_exec = ['curl', '--cookie', '/tmp/cookies.txt', '--include', file_path]
         print(' '.join(to_exec))
         result = subprocess.run(to_exec, capture_output=True)
@@ -421,14 +429,13 @@ def normalise_path(file_path: str):
                 file_path = file_path.split('&parent')[0]
                 break
 
-    elif urllib.parse.unquote(file_path).startswith('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):
-        print('normalising 2...')
+    elif urllib.parse.unquote(file_path).startswith(
+            'https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):
         file_path = urllib.parse.unquote(file_path)
         file_path = file_path[
                     len('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):]
         file_path = file_path.split('&parent')[0]
     else:
-        print('normalising 3...')
         assert file_path.startswith('https://swisspolar.sharepoint.com/sites/S/S/')
         file_path = file_path[len('https://swisspolar.sharepoint.com/sites/S/S/'):]
 
@@ -460,7 +467,7 @@ def set_invoices(project, invoices_data):
             index += 1
             continue
 
-        #if received_date is None:
+        # if received_date is None:
         #    break
 
         if invoices_data[f'{index}_amount_chf'] and installment_index >= len(installments):
@@ -505,7 +512,6 @@ def set_invoices(project, invoices_data):
             # sent_for_payment_date = make_aware(datetime(2017, 1, 1))
             sent_for_payment_date = None
 
-
         paid_date = invoices_data[f'{index}_paid_date']
 
         if paid_date == 'NA' or paid_date is None:
@@ -543,6 +549,7 @@ def set_invoices(project, invoices_data):
     project.allocated_budget = project.invoices_paid_amount()
     project.save()
 
+
 def validate_project(project):
     pass
     # assert that total paid amount is not bigger than the allocated amount for the project
@@ -563,12 +570,36 @@ def set_reports(project, reports_data, report_model):
 
         file = create_simple_uploaded_file(reports_data[f'{index}_file'])
 
-        report_model.objects.create(project=project,
-                                    file=file,
-                                    received_date=received_date,
-                                    sent_for_approval_date=reports_data[f'{index}_sent_for_approval_date'],
-                                    approval_date=reports_data[f'{index}_approval_date'],
-                                    approved_by=approved_by)
+        report = report_model.objects.create(project=project,
+                                             file=file,
+                                             received_date=received_date,
+                                             sent_for_approval_date=reports_data[f'{index}_sent_for_approval_date'],
+                                             approval_date=reports_data[f'{index}_approval_date'],
+                                             approved_by=approved_by)
+
+        comment_key = f'{index}_comment'
+
+        if comment_key in reports_data:
+            comment = reports_data[f'{index}_comment']
+            if comment is not None and comment.lower() != 'ok':
+                if report_model == FinancialReport:
+                    comment_category = ProjectCommentCategory.objects.get(category__name='Finance')
+                else:
+                    comment_category = ProjectCommentCategory.objects.get(category__name='Reports')
+
+                if report_model == FinancialReport:
+                    comment_prefix = f'Comment referring to financial report received on {report.received_date.strftime("%d-%m-%Y")}'
+                else:
+                    assert False
+
+                comment = comment_prefix + ': ' + comment
+
+                print('Adding comment', comment, 'in project', project)
+                ProjectComment.objects.create(project=project,
+                                              category=comment_category,
+                                              text=comment,
+                                              created_by=User.objects.get(username='data.importer')
+                                              )
 
         index += 1
 
@@ -691,6 +722,6 @@ project.installment_set.all().delete()
 project.financialreport_set.all().delete()
 project.scientificreport_set.all().delete()
 project.projectcomment_set.all().delete()
- 
+
 project.delete()
 """
