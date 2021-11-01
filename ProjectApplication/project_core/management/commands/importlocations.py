@@ -1,4 +1,5 @@
 import csv
+from decimal import Decimal
 
 from django.core.management.base import BaseCommand
 from django.db.transaction import set_autocommit, commit
@@ -40,10 +41,13 @@ class Command(BaseCommand):
             if lat_long != '':
                 latitude, longitude = lat_long.split(',')
 
+                latitude = Decimal(latitude)
+                longitude = Decimal(longitude)
+
                 Location.objects.get_or_create(
                     project=project,
-                    latitude=latitude,
-                    longitude=longitude,
-                    name=row[f'name_location{i}'])
+                    name=row[f'name_location{i}'],
+                    defaults={'latitude': latitude,
+                              'longitude': longitude})
 
             i += 1

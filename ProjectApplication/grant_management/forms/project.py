@@ -1,6 +1,6 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit
+from crispy_forms.layout import Layout, Div, Submit, HTML
 from dal import autocomplete
 from django import forms
 from django.urls import reverse
@@ -35,6 +35,15 @@ class ProjectForm(forms.ModelForm):
             ),
             Div(
                 Div('location', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div(HTML('Locations'), css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div(HTML('Please contact an administrator to enter new locations with latitudes and longitudes'),
+                    css_class='col-12'),
                 css_class='row'
             ),
             Div(

@@ -348,11 +348,17 @@ class Milestone(CreateModifyOn):
 
     history = HistoricalRecords()
 
+    def __str__(self):
+        return self.text
+
 
 class Location(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that the coordinate belongs to',
                                 on_delete=models.PROTECT,
                                 related_name='project_location')
-    latitude = models.DecimalField(decimal_places=2, max_digits=6)  # TODO: add validator?
-    longitude = models.DecimalField(decimal_places=2, max_digits=7)  # TODO: add validator?
+    latitude = models.DecimalField(decimal_places=2, max_digits=6)
+    longitude = models.DecimalField(decimal_places=2, max_digits=7)
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f'{self.name} ({self.latitude}, {self.longitude})'
