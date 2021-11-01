@@ -227,7 +227,7 @@ def create_call(call_short_name):
                                    funding_instrument=funding_instrument,
                                    call_open_date=call_open_date,
                                    submission_deadline=submission_deadline,
-                                   budget_maximum=1_000_000,    # TODO confirm
+                                   budget_maximum=200_000,
                                    other_funding_question=False,
                                    proposal_partner_question=False,
                                    )
