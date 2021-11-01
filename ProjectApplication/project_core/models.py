@@ -1232,6 +1232,8 @@ class Project(CreateModifyOn):
     def is_active(self):
         return self.status == Project.ONGOING
 
+    def locations_coordinates_sorted(self):
+        return self.project_location.order_by('name')
 
 class ProjectPartner(Partner):
     """Partner that is part of a project."""

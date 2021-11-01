@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from project_core.models import Project
-from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Medium, MediumDeleted,
+from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Location, Medium, MediumDeleted,
                      ProjectSocialNetwork, Publication, Dataset, LaySummaryType, BlogPost, SocialNetwork, Installment)
 
 
@@ -62,22 +62,22 @@ class MediumAdmin(admin.ModelAdmin):
 
 
 class MediumDeletedAdmin(admin.ModelAdmin):
-    search_fields = ('original_id', )
+    search_fields = ('original_id',)
     list_display = ('original_id', 'created_on', 'modified_on',)
 
 
 class ProjectSocialNetworkAdmin(admin.ModelAdmin):
-    search_fields = Project.search_fields + ('url', )
+    search_fields = Project.search_fields + ('url',)
     list_display = ('project', 'social_network', 'url',)
 
 
 class SocialNetworkAdmin(admin.ModelAdmin):
-    search_fields = ('name', )
+    search_fields = ('name',)
     list_display = ('name',)
 
 
 class PublicationAdmin(admin.ModelAdmin):
-    search_fields = Project.search_fields + ('doi', 'reference', 'title', )
+    search_fields = Project.search_fields + ('doi', 'reference', 'title',)
     list_display = ('project', 'doi', 'reference', 'title', 'published_date',)
 
 
@@ -89,6 +89,11 @@ class DatasetAdmin(admin.ModelAdmin):
 class InstallmentAdmin(admin.ModelAdmin):
     search_fields = Project.search_fields + ('amount',)
     list_display = ('project', 'amount',)
+
+
+class LocationAdmin(admin.ModelAdmin):
+    search_fields = ('latitude', 'longitude', 'name',)
+    list_display = ('latitude', 'longitude', 'name',)
 
 
 admin.site.register(GrantAgreement, GrantAgreementAdmin)
@@ -105,3 +110,4 @@ admin.site.register(SocialNetwork, SocialNetworkAdmin)
 admin.site.register(Publication, PublicationAdmin)
 admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(Installment, InstallmentAdmin)
+admin.site.register(Location, LocationAdmin)

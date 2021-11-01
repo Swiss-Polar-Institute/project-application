@@ -215,10 +215,10 @@ def create_call(call_short_name):
         funding_instrument = FundingInstrument.objects.create(
             long_name='Antarctic Circumnavigation Expedition', short_name=ace_financial_key)
 
-        call_open_date = datetime(2016, 7, 1, 12, 0)
+        call_open_date = datetime(2015, 12, 1, 12, 0)
         call_open_date = make_aware(call_open_date)
 
-        submission_deadline = datetime(2018, 9, 1, 12, 0)
+        submission_deadline = datetime(2016, 1, 31, 12, 0)
         submission_deadline = make_aware(submission_deadline)
 
         call = Call.objects.create(short_name=call_short_name,

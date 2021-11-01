@@ -1,0 +1,8 @@
+{% for location in project.locations_coordinates_sorted %}
+    {% if not forloop.first %}
+        ,
+    {% endif %}
+    {{ location.name }}
+{% empty %}
+    -
+{% endfor %}
