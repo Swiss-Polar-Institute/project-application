@@ -568,7 +568,7 @@ def set_reports(project, reports_data, report_model):
 
         file = create_simple_uploaded_file(reports_data[f'{index}_file'])
 
-        report_model.objects.create(project=project,
+        report = report_model.objects.create(project=project,
                                     file=file,
                                     received_date=received_date,
                                     sent_for_approval_date=reports_data[f'{index}_sent_for_approval_date'],
@@ -579,11 +579,18 @@ def set_reports(project, reports_data, report_model):
 
         if comment_key in reports_data:
             comment = reports_data[f'{index}_comment']
-            if comment is not None and comment != 'ok':
+            if comment is not None and comment.lower() != 'ok':
                 if report_model == FinancialReport:
                     comment_category = ProjectCommentCategory.objects.get(category__name='Finance')
                 else:
                     comment_category = ProjectCommentCategory.objects.get(category__name='Reports')
+
+                if report_model == FinancialReport:
+                    comment_prefix = f'Comment referring to financial report received on {report.received_date.strftime("%d-%m-%Y")}'
+                else:
+                    assert False
+
+                comment = comment_prefix + ': ' + comment
 
                 print('Adding comment', comment, 'in project', project)
                 ProjectComment.objects.create(project=project,
