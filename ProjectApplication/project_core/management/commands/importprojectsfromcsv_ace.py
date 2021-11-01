@@ -575,6 +575,23 @@ def set_reports(project, reports_data, report_model):
                                     approval_date=reports_data[f'{index}_approval_date'],
                                     approved_by=approved_by)
 
+        comment_key = f'{index}_comment'
+
+        if comment_key in reports_data:
+            comment = reports_data[f'{index}_comment']
+            if comment is not None and comment != 'ok':
+                if report_model == FinancialReport:
+                    comment_category = ProjectCommentCategory.objects.get(category__name='Finance')
+                else:
+                    comment_category = ProjectCommentCategory.objects.get(category__name='Reports')
+
+                print('Adding comment', comment, 'in project', project)
+                ProjectComment.objects.create(project=project,
+                                              category=comment_category,
+                                              text=comment,
+                                              created_by=User.objects.get(username='data.importer')
+                                              )
+
         index += 1
 
 
