@@ -92,8 +92,8 @@ class InstallmentAdmin(admin.ModelAdmin):
 
 
 class LocationAdmin(admin.ModelAdmin):
-    search_fields = ('latitude', 'longitude', 'name',)
-    list_display = ('latitude', 'longitude', 'name',)
+    search_fields = ('project', 'name', 'latitude', 'longitude',)
+    list_display = ('project', 'name', 'latitude', 'longitude',)
 
 
 admin.site.register(GrantAgreement, GrantAgreementAdmin)
