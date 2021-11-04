@@ -92,7 +92,7 @@ class InstallmentAdmin(admin.ModelAdmin):
 
 
 class LocationAdmin(admin.ModelAdmin):
-    search_fields = ('project', 'name', 'latitude', 'longitude',)
+    search_fields = ('project__title', 'name', 'latitude', 'longitude',)
     list_display = ('project', 'name', 'latitude', 'longitude',)
 
 
