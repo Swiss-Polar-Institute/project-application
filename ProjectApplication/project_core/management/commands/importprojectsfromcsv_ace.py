@@ -210,9 +210,9 @@ def dictionary_strings_to_types(dictionary):
 
 def create_call(call_short_name):
     if call_short_name == 'ACE 2016':
-        user = User.objects.get(username='data.importer')
-        ace_financial_key = FinancialKey.objects.create(name='ACE', created_by=user)
-        funding_instrument = FundingInstrument.objects.create(
+        # user = User.objects.get(username='data.importer')
+        ace_financial_key = FinancialKey.objects.get(name='ACE')
+        funding_instrument = FundingInstrument.objects.get(
             long_name='Antarctic Circumnavigation Expedition', short_name=ace_financial_key)
 
         call_open_date = datetime(2015, 12, 1, 12, 0)
@@ -628,8 +628,8 @@ def set_fake_data(project_data):
     # replace_if_needed(project_data, 'allocated_budget_chf', 250_000)
 
     # replace_if_needed(project_data, 'closed_date', '01-08-2021')
-    replace_if_needed(project_data, 'closed_by__first_name', 'Laurence')
-    replace_if_needed(project_data, 'closed_by__surname', 'Mottaz')
+    replace_if_needed(project_data, 'closed_by__first_name', 'Data')
+    replace_if_needed(project_data, 'closed_by__surname', 'Importer')
 
     # replace_if_needed(project_data, 'installment_1_amount_chf', 100_000)
     # replace_if_needed(project_data, 'installment_2_amount_chf', 100_000)
