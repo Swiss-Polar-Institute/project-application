@@ -1,0 +1,3 @@
+{% for location in project.locations_coordinates_sorted %}{% if not forloop.first %}{% spaceless %},&nbsp;
+{% endspaceless %}{% endif %}{% include 'common/_location-link.tmpl' with location=location only %}{% empty %}
+    -{% endfor %}

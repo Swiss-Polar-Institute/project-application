@@ -1,0 +1,9 @@
+{% spaceless %}
+    <abbr title="Latitude: {{ location.latitude }} Longitude: {{ location.longitude }}">
+        {% if location.latitude <= 85 %}
+            <a href="http://m.osmtools.de/index.php?zoom=3&mlon={{ location.longitude }}&mlat={{ location.latitude }}&icon=4">{{ location.name }}</a>
+        {% else %}
+            {{ location.name }}
+        {% endif %}
+    </abbr>
+{% endspaceless %}
