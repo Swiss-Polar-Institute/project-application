@@ -699,30 +699,40 @@ def import_csv(csv_file_path):
             validate_project(project)
 
 
-# TODO: It might be needed to add the possibility of:
-# -Add a comment for missing invoices? (e.g. where they were, why they are not available)
-# -Add a comment that all the scientific reports were also reviewed by X person
-# -Add a comment that all the financial reports were also reviewed by Y person
-# -We've added some new fields in the CSV:
-#   -attachment_N_category/file/text and f
-#   -financial_report_N_comment
-
-
-# Delete a project with some of the dependents:
+# Delete ACE projects:
 """
-from grant_management.models import Invoice, Installment, GrantAgreement
-from project_core.models import Project
+from project_core.models import *
+from grant_management.models import *
+from variable_templates.models import *
+from comments.models import *
 
-project_id = 187
+ace=Call.objects.get(short_name='ACE 2016')
 
-project = Project.objects.get(id=project_id)
+# Delete call related objects
 
-project.grantagreement.delete()
-project.invoice_set.all().delete()
-project.installment_set.all().delete()
-project.financialreport_set.all().delete()
-project.scientificreport_set.all().delete()
-project.projectcomment_set.all().delete()
- 
-project.delete()
+ScientificReport.objects.filter(project__call=ace).delete()
+FinancialReport.objects.filter(project__call=ace).delete()
+Milestone.objects.filter(project__call=ace).delete()
+Invoice.objects.filter(installment__project__call=ace).delete()
+Installment.objects.filter(project__call=ace).delete()
+ProjectComment.objects.filter(project__call=ace).delete()
+GrantAgreement.objects.filter(project__call=ace).delete()
+
+ace.proposal_set.all().delete()
+ace.project_set.all().delete()
+
+
+Project.objects.filter(call=ace).delete()
+BudgetCategoryCall.objects.filter(call=ace).delete()
+# Delete call
+ace.delete()
+
+# Delete funding instrument
+funding_instrument=FundingInstrument.objects.get(long_name='Antarctic Circumnavigation Expedition')
+
+FundingInstrumentVariableTemplate.objects.filter(funding_instrument=funding_instrument).delete()
+FundingInstrument.objects.filter(long_name='Antarctic Circumnavigation Expedition').delete()
+
+# Delete Financial Key
+FinancialKey.objects.filter(name='ACE').delete()
 """
