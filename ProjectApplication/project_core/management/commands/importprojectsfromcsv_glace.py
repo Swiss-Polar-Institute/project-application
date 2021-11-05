@@ -22,7 +22,6 @@ from project_core.templatetags.thousands_separator import thousands_separator
 # This is a throw away script to import past data
 from project_core.utils.utils import format_date
 
-
 # pprint.sorted = lambda arg, *a, **kw: arg
 
 
@@ -196,6 +195,7 @@ def dictionary_strings_to_types(dictionary):
         except ValueError:
             pass
 
+
         if key in ['keywords', 'principal_investigator__organisation_names', 'geographical_areas']:
             value_list = value.split(',')
             value_list = [value_element.strip() for value_element in value_list]
@@ -253,8 +253,8 @@ def create_project(project_data, principal_investigator):
     allocated_budget_chf = project_data['allocated_budget_chf']
     allocated_budget_eur = project_data['allocated_budget_eur']
 
-    allocated_budget_chf = 0  # This is calculated later on based
-    # on paid invoices
+    allocated_budget_chf = 0    # This is calculated later on based
+                                # on paid invoices
 
     # if not allocated_budget_chf:
     #     print('Converting EUR to CHF for allocated budget')
@@ -304,7 +304,7 @@ def set_keywords(project, keywords):
 
 def content_type_from_file_name(file_name):
     file_name_lower = file_name.lower()
-    # .split('&parent')[0]
+    #.split('&parent')[0]
 
     if file_name_lower.endswith('.docx'):
         return 'application/vnd.openxmlformats-officedocument.wordprocessingml'
@@ -332,7 +332,7 @@ def create_simple_uploaded_file(file_path):
 
     to_exec = ['rclone', 'cat', file_path]
 
-    # to_exec = ['cat', '/home/carles/test.pdf']
+    #to_exec = ['cat', '/home/carles/test.pdf']
 
     print(' '.join(to_exec))
 
@@ -402,9 +402,8 @@ def is_valid_sharepoint_file_path(file_path):
            file_path.startswith('https://youtube.com') is False and \
            file_path.startswith('https://www.youtube.com') is False
 
-    # ':w' not in file_path and \
-    # ':f' not in file_path and \
-
+            # ':w' not in file_path and \
+            # ':f' not in file_path and \
 
 def normalise_path(file_path: str):
     print('normalise_path for path:', file_path)
@@ -429,8 +428,7 @@ def normalise_path(file_path: str):
                 file_path = file_path.split('&parent')[0]
                 break
 
-    elif urllib.parse.unquote(file_path).startswith(
-            'https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):
+    elif urllib.parse.unquote(file_path).startswith('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):
         file_path = urllib.parse.unquote(file_path)
         file_path = file_path[
                     len('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):]
@@ -467,7 +465,7 @@ def set_invoices(project, invoices_data):
             index += 1
             continue
 
-        # if received_date is None:
+        #if received_date is None:
         #    break
 
         if invoices_data[f'{index}_amount_chf'] and installment_index >= len(installments):
@@ -512,6 +510,7 @@ def set_invoices(project, invoices_data):
             # sent_for_payment_date = make_aware(datetime(2017, 1, 1))
             sent_for_payment_date = None
 
+
         paid_date = invoices_data[f'{index}_paid_date']
 
         if paid_date == 'NA' or paid_date is None:
@@ -549,7 +548,6 @@ def set_invoices(project, invoices_data):
     project.allocated_budget = project.invoices_paid_amount()
     project.save()
 
-
 def validate_project(project):
     pass
     # assert that total paid amount is not bigger than the allocated amount for the project
@@ -574,11 +572,11 @@ def set_reports(project, reports_data, report_model):
         file = create_simple_uploaded_file(reports_data[f'{index}_file'])
 
         report = report_model.objects.create(project=project,
-                                             file=file,
-                                             received_date=received_date,
-                                             sent_for_approval_date=reports_data[f'{index}_sent_for_approval_date'],
-                                             approval_date=reports_data[f'{index}_approval_date'],
-                                             approved_by=approved_by)
+                                    file=file,
+                                    received_date=received_date,
+                                    sent_for_approval_date=reports_data[f'{index}_sent_for_approval_date'],
+                                    approval_date=reports_data[f'{index}_approval_date'],
+                                    approved_by=approved_by)
 
         comment_key = f'{index}_comment'
 
