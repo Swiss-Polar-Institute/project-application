@@ -210,15 +210,15 @@ def dictionary_strings_to_types(dictionary):
 
 def create_call(call_short_name):
     if call_short_name == 'ACE 2016':
-        user = User.objects.get(username='data.importer')
-        ace_financial_key = FinancialKey.objects.create(name='ACE', created_by=user)
-        funding_instrument = FundingInstrument.objects.create(
+        # user = User.objects.get(username='data.importer')
+        ace_financial_key = FinancialKey.objects.get(name='ACE')
+        funding_instrument = FundingInstrument.objects.get(
             long_name='Antarctic Circumnavigation Expedition', short_name=ace_financial_key)
 
-        call_open_date = datetime(2016, 7, 1, 12, 0)
+        call_open_date = datetime(2015, 12, 1, 12, 0)
         call_open_date = make_aware(call_open_date)
 
-        submission_deadline = datetime(2018, 9, 1, 12, 0)
+        submission_deadline = datetime(2016, 1, 31, 12, 0)
         submission_deadline = make_aware(submission_deadline)
 
         call = Call.objects.create(short_name=call_short_name,
@@ -565,8 +565,11 @@ def set_reports(project, reports_data, report_model):
         if received_date is None:
             break
 
-        approved_by = create_or_get_physical_person(reports_data[f'{index}_approved_by__first_name'],
-                                                    reports_data[f'{index}_approved_by__surname'])
+        if reports_data[f'{index}_approved_by__first_name'] is None:
+            approved_by = None
+        else:
+            approved_by = create_or_get_physical_person(reports_data[f'{index}_approved_by__first_name'],
+                                                        reports_data[f'{index}_approved_by__surname'])
 
         file = create_simple_uploaded_file(reports_data[f'{index}_file'])
 
@@ -627,8 +630,8 @@ def set_fake_data(project_data):
     # replace_if_needed(project_data, 'allocated_budget_chf', 250_000)
 
     # replace_if_needed(project_data, 'closed_date', '01-08-2021')
-    replace_if_needed(project_data, 'closed_by__first_name', 'Laurence')
-    replace_if_needed(project_data, 'closed_by__surname', 'Mottaz')
+    replace_if_needed(project_data, 'closed_by__first_name', 'Data')
+    replace_if_needed(project_data, 'closed_by__surname', 'Importer')
 
     # replace_if_needed(project_data, 'installment_1_amount_chf', 100_000)
     # replace_if_needed(project_data, 'installment_2_amount_chf', 100_000)
