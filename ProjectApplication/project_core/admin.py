@@ -166,7 +166,7 @@ class PhysicalPersonAdmin(SimpleHistoryAdmin, SimpleHistoryAdminFieldChanges):
                 'modified_on',)
     readonly_fields = ('created_on', 'modified_on',)
     history_list_display = ('history_field_changes',)
-    search_fields = ('first_name', 'surname', 'orcid', 'gender',)
+    search_fields = ('first_name', 'surname', 'orcid', 'gender__name',)
 
 
 class PersonUidAdmin(admin.ModelAdmin):
