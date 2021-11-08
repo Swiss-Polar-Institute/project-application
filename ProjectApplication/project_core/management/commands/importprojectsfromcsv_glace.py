@@ -22,6 +22,7 @@ from project_core.templatetags.thousands_separator import thousands_separator
 # This is a throw away script to import past data
 from project_core.utils.utils import format_date
 
+
 # pprint.sorted = lambda arg, *a, **kw: arg
 
 
@@ -89,6 +90,9 @@ def filter_dictionary(dictionary, starts_with):
 
 
 def get_person_title(title):
+    if title == 'Professor':
+        title = 'Prof'
+
     return PersonTitle.objects.get(title=title)
 
 
@@ -195,7 +199,6 @@ def dictionary_strings_to_types(dictionary):
         except ValueError:
             pass
 
-
         if key in ['keywords', 'principal_investigator__organisation_names', 'geographical_areas']:
             value_list = value.split(',')
             value_list = [value_element.strip() for value_element in value_list]
@@ -209,21 +212,22 @@ def dictionary_strings_to_types(dictionary):
 
 
 def create_call(call_short_name):
-    if call_short_name == 'ACE 2016':
+    if call_short_name == 'GLACE 2019':
         # user = User.objects.get(username='data.importer')
-        ace_financial_key = FinancialKey.objects.get(name='ACE')
-        funding_instrument = FundingInstrument.objects.get(
-            long_name='Antarctic Circumnavigation Expedition', short_name=ace_financial_key)
+        ace_financial_key = FinancialKey.objects.get(name='GLACE')
+        funding_instrument, _ = FundingInstrument.objects.get_or_create(
+            long_name='Greenland Circumnavigation Expedition',
+            short_name=ace_financial_key)
 
-        call_open_date = datetime(2015, 12, 1, 12, 0)
+        call_open_date = datetime(2018, 7, 3)
         call_open_date = make_aware(call_open_date)
 
-        submission_deadline = datetime(2016, 1, 31, 12, 0)
+        submission_deadline = datetime(2018, 9, 10, 12, 0)
         submission_deadline = make_aware(submission_deadline)
 
         call = Call.objects.create(short_name=call_short_name,
                                    long_name='Antarctic Circumnavigation Expedition 2016',
-                                   finance_year=2016,
+                                   finance_year=2019,
                                    funding_instrument=funding_instrument,
                                    call_open_date=call_open_date,
                                    submission_deadline=submission_deadline,
@@ -248,13 +252,13 @@ def create_project(project_data, principal_investigator):
     if project_data['status'] in [Project.COMPLETED, Project.ABORTED]:
         assert project_data['closed_date']
 
-    project_key = f'ACE-2016-{project_data["key"]:03}'
+    project_key = f'GLACE-2019-{project_data["key"]:03}'
 
-    allocated_budget_chf = project_data['allocated_budget_chf']
-    allocated_budget_eur = project_data['allocated_budget_eur']
+    allocated_budget_chf = project_data['allocated_budget']
+    # allocated_budget_eur = project_data['allocated_budget_eur']
 
-    allocated_budget_chf = 0    # This is calculated later on based
-                                # on paid invoices
+    allocated_budget_chf = 0  # This is calculated later on based
+    # on paid invoices
 
     # if not allocated_budget_chf:
     #     print('Converting EUR to CHF for allocated budget')
@@ -275,14 +279,23 @@ def create_project(project_data, principal_investigator):
                                      closed_by=User.objects.get(username='data.importer'),
                                      )
 
-    comment_text = f"This project's finance was originally in Euros\n\n" \
-                   f"Allocated budget in Euros: {thousands_separator(allocated_budget_eur)} EUR\n\n"
+    # comment_text = f"This project's finance was originally in Euros\n\n" \
+    #                f"Allocated budget in Euros: {thousands_separator(allocated_budget_eur)} EUR\n\n"
 
-    category = Category.objects.get(name='Finance')
-    category = ProjectCommentCategory.objects.get(category=category)
-    ProjectComment.objects.create(project=project, category=category, text=comment_text)
+    # category = Category.objects.get(name='Finance')
+    # category = ProjectCommentCategory.objects.get(category=category)
+    # ProjectComment.objects.create(project=project, category=category, text=comment_text)
+
+    import_comments(project, project_data)
+    import_attachments(project, project_data)
 
     return project
+
+def import_comments(project, project_data):
+    pass
+
+def import_attachments(project, project_data):
+    pass
 
 
 def set_geographical_areas(project, geographical_areas):
@@ -304,7 +317,7 @@ def set_keywords(project, keywords):
 
 def content_type_from_file_name(file_name):
     file_name_lower = file_name.lower()
-    #.split('&parent')[0]
+    # .split('&parent')[0]
 
     if file_name_lower.endswith('.docx'):
         return 'application/vnd.openxmlformats-officedocument.wordprocessingml'
@@ -332,7 +345,7 @@ def create_simple_uploaded_file(file_path):
 
     to_exec = ['rclone', 'cat', file_path]
 
-    #to_exec = ['cat', '/home/carles/test.pdf']
+    # to_exec = ['cat', '/home/carles/test.pdf']
 
     print(' '.join(to_exec))
 
@@ -380,13 +393,13 @@ def set_grant_agreement(project, grant_agreement_information):
 def set_installments(project, installments_data):
     index = 1
 
-    while f'{index}_amount_chf' in installments_data:
-        amount = installments_data[f'{index}_amount_chf']
+    while f'{index}_amount' in installments_data:
+        amount = installments_data[f'{index}_amount']
         if amount is None:
             break
 
         assert amount
-        assert amount > 0
+        # assert amount > 0 # it might be negative it money was returned?
         # assert amount <= project.allocated_budget
         # allocated budget is calculated at the end...
 
@@ -402,8 +415,9 @@ def is_valid_sharepoint_file_path(file_path):
            file_path.startswith('https://youtube.com') is False and \
            file_path.startswith('https://www.youtube.com') is False
 
-            # ':w' not in file_path and \
-            # ':f' not in file_path and \
+    # ':w' not in file_path and \
+    # ':f' not in file_path and \
+
 
 def normalise_path(file_path: str):
     print('normalise_path for path:', file_path)
@@ -428,7 +442,8 @@ def normalise_path(file_path: str):
                 file_path = file_path.split('&parent')[0]
                 break
 
-    elif urllib.parse.unquote(file_path).startswith('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):
+    elif urllib.parse.unquote(file_path).startswith(
+            'https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):
         file_path = urllib.parse.unquote(file_path)
         file_path = file_path[
                     len('https://swisspolar.sharepoint.com/sites/S/S/Forms/AllItems.aspx?id=/sites/S/S/'):]
@@ -440,6 +455,9 @@ def normalise_path(file_path: str):
         file_path = urllib.parse.unquote(file_path)
 
     file_path = 'Commun-SwissPolar:' + file_path
+
+    if '.pdf?CT=' in file_path:
+        file_path = file_path[0:file_path.index('.pdf?CT=')+4]
 
     print('normalised:', file_path)
 
@@ -456,7 +474,7 @@ def set_invoices(project, invoices_data):
 
     while f'{index}_received_date' in invoices_data:
         received_date = invoices_data[f'{index}_received_date']
-        amount_chf = invoices_data[f'{index}_amount_chf']
+        amount_chf = invoices_data[f'{index}_amount']
 
         if amount_chf == '' or amount_chf == 'NA':
             # Nothing to do in this invoice
@@ -465,10 +483,10 @@ def set_invoices(project, invoices_data):
             index += 1
             continue
 
-        #if received_date is None:
+        # if received_date is None:
         #    break
 
-        if invoices_data[f'{index}_amount_chf'] and installment_index >= len(installments):
+        if invoices_data[f'{index}_amount'] and installment_index >= len(installments):
             print('ERROR: stop processing invoice with data because no installment for this invoice')
             break
 
@@ -482,17 +500,17 @@ def set_invoices(project, invoices_data):
         else:
             file = None
 
-        amount_chf = invoices_data[f'{index}_amount_chf']
-        amount_eur = invoices_data[f'{index}_amount_eur']
+        amount_chf = invoices_data[f'{index}_amount']
+        # amount_eur = invoices_data[f'{index}_amount_eur']
 
         if amount_chf == 'NA':
             print('Invalid amount_chf. Project:', project, 'Invoice received_date:', received_date)
             amount_chf = None
 
-        if amount_eur == 'NA':
-            print('Invalid amount_eur. Project:', project, 'Invoice received_date:', received_date)
-            # amount_eur = 0
-            amount_eur = None
+        # if amount_eur == 'NA':
+        #     print('Invalid amount_eur. Project:', project, 'Invoice received_date:', received_date)
+        #     # amount_eur = 0
+        #     amount_eur = None
 
         # if amount_chf and amount_chf >= installment.amount:
         #     print('Warning: invoice is bigger than the installment amount. See project: ', project,
@@ -510,7 +528,6 @@ def set_invoices(project, invoices_data):
             # sent_for_payment_date = make_aware(datetime(2017, 1, 1))
             sent_for_payment_date = None
 
-
         paid_date = invoices_data[f'{index}_paid_date']
 
         if paid_date == 'NA' or paid_date is None:
@@ -526,27 +543,28 @@ def set_invoices(project, invoices_data):
                                file=file
                                )
 
-        if amount_eur:
-            eur_suffix = f' {thousands_separator(amount_eur)} EUR'
-        else:
-            eur_suffix = ''
-
-        comments.append(f'Invoice paid on {format_date(paid_date)} with amount {thousands_separator(amount_chf)} CHF '
-                        f'was originally in Euros{eur_suffix}')
+        # if amount_eur:
+        #     eur_suffix = f' {thousands_separator(amount_eur)} EUR'
+        # else:
+        #     eur_suffix = ''
+        #
+        # comments.append(f'Invoice paid on {format_date(paid_date)} with amount {thousands_separator(amount_chf)} CHF '
+        #                 f'was originally in Euros{eur_suffix}')
 
         index += 1
 
     comment_text = '\n\n'.join(comments)
 
-    assert project.projectcomment_set.all().count() == 1
+    # assert project.projectcomment_set.all().count() == 1
 
-    comment = project.projectcomment_set.all()[0]
+    # comment = project.projectcomment_set.all()[0]
 
-    comment.text += comment_text
-    comment.save()
+    # comment.text += comment_text
+    # comment.save()
 
     project.allocated_budget = project.invoices_paid_amount()
     project.save()
+
 
 def validate_project(project):
     pass
@@ -572,11 +590,11 @@ def set_reports(project, reports_data, report_model):
         file = create_simple_uploaded_file(reports_data[f'{index}_file'])
 
         report = report_model.objects.create(project=project,
-                                    file=file,
-                                    received_date=received_date,
-                                    sent_for_approval_date=reports_data[f'{index}_sent_for_approval_date'],
-                                    approval_date=reports_data[f'{index}_approval_date'],
-                                    approved_by=approved_by)
+                                             file=file,
+                                             received_date=received_date,
+                                             sent_for_approval_date=reports_data[f'{index}_sent_for_approval_date'],
+                                             approval_date=reports_data[f'{index}_approval_date'],
+                                             approved_by=approved_by)
 
         comment_key = f'{index}_comment'
 
