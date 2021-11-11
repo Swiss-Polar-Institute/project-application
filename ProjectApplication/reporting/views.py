@@ -330,21 +330,21 @@ def allocated_budget_per_call():
     allocated_budget_per_call = Project.objects. \
         values(call_name=F('call__funding_instrument__long_name'),
                account_number=F('call__funding_instrument__short_name__account_number'),
-               finance_year=F('call__finance_year')). \
+               finance_year_=F('finance_year')). \
         annotate(financial_support=Sum('allocated_budget')). \
-        order_by('call__finance_year')
+        order_by('finance_year')
 
     data = []
     for row in allocated_budget_per_call:
         funding_instrument_long_name = row['call_name']
-        year = row['finance_year']
+        year = row['finance_year_']
 
         paid_so_far = calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, year)
         open_for_payment = calculate_open_for_payment_funding_instrument_year(funding_instrument_long_name, year)
 
         data.append({'Grant Scheme': row['call_name'],
                      'Account Number': row['account_number'],
-                     'Year': row['finance_year'],
+                     'Year': row['finance_year_'],
                      'Commitment (CHF)': thousands_separator(row['financial_support']),
                      'Paid to date (CHF)': thousands_separator(paid_so_far),
                      'Open for payment (CHF)': thousands_separator(open_for_payment),
