@@ -10,17 +10,17 @@ from django.core.management.base import BaseCommand
 from django.db.transaction import set_autocommit, commit
 from django.utils.timezone import make_aware
 
-from comments.models import ProjectComment, ProjectCommentCategory, Category
+from comments.models import ProjectComment, ProjectCommentCategory, ProjectAttachment, ProjectAttachmentCategory
 from grant_management.models import GrantAgreement, Installment, Invoice, FinancialReport, ScientificReport
 from project_core.models import PhysicalPerson, PersonPosition, PersonTitle, Gender, OrganisationName, Project, Call, \
     Contact, GeographicalArea, Keyword, Source, KeywordUid, FundingInstrument, FinancialKey
+
+
 # For pprinting dictionaries doesn't change the order
 # in Python 3.7 this is needed, in Python 3.8 (or 3.9?)
 # there is a better way passing a parameter to the
 # pprint.pprint function
-from project_core.templatetags.thousands_separator import thousands_separator
 # This is a throw away script to import past data
-from project_core.utils.utils import format_date
 
 
 # pprint.sorted = lambda arg, *a, **kw: arg
@@ -206,7 +206,7 @@ def dictionary_strings_to_types(dictionary):
             continue
 
         # It's a string
-        result[key] = value
+        result[key] = value.strip()
 
     return result
 
@@ -226,7 +226,7 @@ def create_call(call_short_name):
         submission_deadline = make_aware(submission_deadline)
 
         call = Call.objects.create(short_name=call_short_name,
-                                   long_name='Antarctic Circumnavigation Expedition 2016',
+                                   long_name='Greenland Circumnavigation Expedition 2019',
                                    finance_year=2019,
                                    funding_instrument=funding_instrument,
                                    call_open_date=call_open_date,
@@ -291,11 +291,45 @@ def create_project(project_data, principal_investigator):
 
     return project
 
+
 def import_comments(project, project_data):
-    pass
+    comment_number = 1
+
+    comment_category = ProjectCommentCategory.objects.get(category__name='Data Import')
+
+    if f'project_comment_{comment_number}' in project_data:
+        comment = project_data[f'project_comment_{comment_number}']
+
+        if comment is not None:
+            ProjectComment.objects.create(
+                project=project,
+                category=comment_category,
+                text=comment,
+                created_by=User.objects.get(username='data.importer')
+            )
+
+        comment_number += 1
+
 
 def import_attachments(project, project_data):
-    pass
+    attachment_number = 1
+
+    comment_category = ProjectAttachmentCategory.objects.get(category__name='Data Import')
+
+    if f'project_attachment_{attachment_number}_file' in project_data:
+        file = create_simple_uploaded_file(project_data[f'project_attachment_{attachment_number}_file'])
+        if file != '':
+            comment = project_data[f'project_comment_{attachment_number}']
+
+            ProjectAttachment.objects.create(
+                file=create_simple_uploaded_file(project_data[f'project_attachment_{attachment_number}_file']),
+                project=project,
+                category=comment_category,
+                text=comment,
+                created_by=User.objects.get(username='data.importer')
+            )
+
+        attachment_number += 1
 
 
 def set_geographical_areas(project, geographical_areas):
@@ -398,7 +432,6 @@ def set_installments(project, installments_data):
         if amount is None:
             break
 
-        assert amount
         # assert amount > 0 # it might be negative it money was returned?
         # assert amount <= project.allocated_budget
         # allocated budget is calculated at the end...
@@ -457,7 +490,7 @@ def normalise_path(file_path: str):
     file_path = 'Commun-SwissPolar:' + file_path
 
     if '.pdf?CT=' in file_path:
-        file_path = file_path[0:file_path.index('.pdf?CT=')+4]
+        file_path = file_path[0:file_path.index('.pdf?CT=') + 4]
 
     print('normalised:', file_path)
 
@@ -476,7 +509,7 @@ def set_invoices(project, invoices_data):
         received_date = invoices_data[f'{index}_received_date']
         amount_chf = invoices_data[f'{index}_amount']
 
-        if amount_chf == '' or amount_chf == 'NA':
+        if amount_chf == '' or amount_chf == 'NA' or amount_chf is None:
             # Nothing to do in this invoice
             # TODO: check that other fields are empty?
             installment_index += 1
@@ -486,9 +519,9 @@ def set_invoices(project, invoices_data):
         # if received_date is None:
         #    break
 
-        if invoices_data[f'{index}_amount'] and installment_index >= len(installments):
-            print('ERROR: stop processing invoice with data because no installment for this invoice')
-            break
+        # if invoices_data[f'{index}_amount'] and installment_index >= len(installments):
+        #     print('ERROR: stop processing invoice with data because no installment for this invoice')
+        #     break
 
         installment = installments[installment_index]
         installment_index += 1
