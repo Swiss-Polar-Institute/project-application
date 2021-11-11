@@ -4,6 +4,13 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
+def copy_funding_instruments_from_proposals_to_calls(apps, schema_editor):
+    Project = apps.get_model('project_core', 'Project')
+
+    for project in Project.objects.all():
+        project.funding_instrument = project.proposal.call.funding_instrument
+        project.save()
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -21,4 +28,7 @@ class Migration(migrations.Migration):
             name='funding_instrument',
             field=models.ForeignKey(blank=True, help_text='Funding instrument to which the call belongs', null=True, on_delete=django.db.models.deletion.PROTECT, to='project_core.fundinginstrument'),
         ),
+        migrations.RunPython(
+            copy_funding_instruments_from_proposals_to_calls
+        )
     ]
