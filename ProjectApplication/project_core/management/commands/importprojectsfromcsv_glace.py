@@ -318,7 +318,7 @@ def import_attachments(project, project_data):
 
     if f'project_attachment_{attachment_number}_file' in project_data:
         file = create_simple_uploaded_file(project_data[f'project_attachment_{attachment_number}_file'])
-        if file != '':
+        if file is not None and file != '':
             comment = project_data[f'project_attachment_{attachment_number}_comment']
 
             ProjectAttachment.objects.create(
