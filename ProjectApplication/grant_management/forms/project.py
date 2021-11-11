@@ -29,15 +29,22 @@ class ProjectForm(forms.ModelForm):
         if is_editing:
             submit_text = 'Save Project'
             cancel_url = reverse('logged-project-detail', kwargs={'pk': self.instance.id})
+
+            funding_instrument_div = None
+            finance_year_div = None
         else:
             submit_text = 'Create Project'
             cancel_url = reverse('logged-project-list')
             self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
 
-        funding_instrument_div = Div(
-            Div('funding_instrument', css_class='col-12'),
-            css_class='row'
-        )
+            funding_instrument_div = Div(
+                Div('funding_instrument', css_class='col-12'),
+                css_class='row'
+            )
+            finance_year_div = Div(
+                Div('finance_year', css_class='col-6'),
+                css_class='row'
+            )
 
         self.helper.layout = Layout(
             Div(
@@ -45,6 +52,7 @@ class ProjectForm(forms.ModelForm):
                 css_class='row'
             ),
             funding_instrument_div,
+            finance_year_div,
             Div(
                 Div('keywords', css_class='col-12'),
                 css_class='row'
@@ -100,7 +108,8 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ['title', 'funding_instrument', 'keywords', 'geographical_areas', 'location', 'start_date', 'end_date']
+        fields = ['title', 'funding_instrument', 'finance_year', 'keywords', 'geographical_areas',
+                  'location', 'start_date', 'end_date']
         labels = {'location': 'Precise region'}
         widgets = {'start_date': XDSoftYearMonthDayPickerInput,
                    'end_date': XDSoftYearMonthDayPickerInput,

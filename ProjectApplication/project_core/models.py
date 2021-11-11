@@ -1107,8 +1107,9 @@ class Project(CreateModifyOn):
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
     key = models.CharField(help_text='Project key identifier all the way to finance', max_length=64, unique=True)
     title = models.CharField(help_text='Title of the project', max_length=500, )
-    funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the call belongs',
-                                           on_delete=models.PROTECT, null=True, blank=True)
+    funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the project belongs',
+                                           on_delete=models.PROTECT)
+    finance_year = models.IntegerField(help_text='Finance year of this project')
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project')
     geographical_areas = models.ManyToManyField(GeographicalArea,
                                                 help_text='Geographical area(s) covered by the project')
@@ -1181,6 +1182,8 @@ class Project(CreateModifyOn):
         project = Project()
 
         project.title = proposal.title
+        project.funding_instrument = proposal.call.funding_instrument
+        project.finance_year = proposal.call.finance_year
         project.key = f'{proposal.call.funding_instrument.short_name}-{proposal.call.finance_year}-{sequence:03d}'
         project.location = proposal.location
         project.start_date = proposal.start_date
