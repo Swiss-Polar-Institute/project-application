@@ -6,7 +6,7 @@ from django import forms
 from django.urls import reverse
 
 from project_core.forms.utils import cancel_edit_button
-from project_core.models import Project
+from project_core.models import Project, FundingInstrument
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -32,12 +32,19 @@ class ProjectForm(forms.ModelForm):
         else:
             submit_text = 'Create Project'
             cancel_url = reverse('logged-project-list')
+            self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
+
+        funding_instrument_div = Div(
+            Div('funding_instrument', css_class='col-12'),
+            css_class='row'
+        )
 
         self.helper.layout = Layout(
             Div(
                 Div('title', css_class='col-12'),
                 css_class='row'
             ),
+            funding_instrument_div,
             Div(
                 Div('keywords', css_class='col-12'),
                 css_class='row'
@@ -93,10 +100,10 @@ class ProjectForm(forms.ModelForm):
 
     class Meta:
         model = Project
-        fields = ['title', 'keywords', 'geographical_areas', 'location', 'start_date', 'end_date']
+        fields = ['title', 'funding_instrument', 'keywords', 'geographical_areas', 'location', 'start_date', 'end_date']
         labels = {'location': 'Precise region'}
         widgets = {'start_date': XDSoftYearMonthDayPickerInput,
                    'end_date': XDSoftYearMonthDayPickerInput,
                    'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
-                   'geographical_areas': forms.CheckboxSelectMultiple
+                   'geographical_areas': forms.CheckboxSelectMultiple,
                    }
