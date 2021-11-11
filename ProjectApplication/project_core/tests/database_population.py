@@ -329,6 +329,8 @@ def create_project(key='SPI-2020-001', title='This is a test project'):
                                                start_date=date(2020, 1, 10),
                                                end_date=date(2022, 5, 7),
                                                call=proposal.call,
+                                               funding_instrument=proposal.call.funding_instrument,
+                                               finance_year=proposal.call.finance_year,
                                                proposal=proposal,
                                                allocated_budget=20_000,
                                                status=Project.ONGOING,
