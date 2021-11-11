@@ -18,7 +18,20 @@ class ProjectForm(forms.ModelForm):
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
 
         self.helper = FormHelper(self)
-        cancel_url = reverse('logged-project-detail', kwargs={'pk': self.instance.id})
+
+        if self.instance.id:
+            is_editing = True
+        else:
+            is_editing = False
+
+        is_creating = not is_editing
+
+        if is_editing:
+            submit_text = 'Save Project'
+            cancel_url = reverse('logged-project-detail', kwargs={'pk': self.instance.id})
+        else:
+            submit_text = 'Create Project'
+            cancel_url = reverse('logged-project-list')
 
         self.helper.layout = Layout(
             Div(
@@ -55,7 +68,7 @@ class ProjectForm(forms.ModelForm):
                 css_class='row'
             ),
             FormActions(
-                Submit('save', 'Save Project'),
+                Submit('save', submit_text),
                 cancel_edit_button(cancel_url)
             )
         )

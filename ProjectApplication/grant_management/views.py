@@ -101,6 +101,31 @@ class ProjectDetailCommentAdd(ProjectDetail):
         return result
 
 
+def update_project_update_create_context(context, action):
+    context.update({'active_section': 'lists',
+                    'active_subsection': 'project-list',
+                    'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+    if action == 'edit':
+        human_action = f'{action} ({context["object"].key_pi()})'
+    elif action == 'create':
+        human_action = 'Create project'
+    else:
+        assert False
+
+    context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                             {'name': 'Projects', 'url': reverse('logged-project-list')},
+                             {'name': human_action}
+                             ]
+
+
+class ProjectCreate(SuccessMessageMixin, CreateView):
+    template_name = 'grant_management/project-form.tmpl'
+    form_class = ProjectForm
+    model = Project
+    success_message = 'Project created'
+
+
 class ProjectUpdate(SuccessMessageMixin, UpdateView):
     template_name = 'grant_management/project-form.tmpl'
     form_class = ProjectForm
@@ -109,14 +134,23 @@ class ProjectUpdate(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        update_project_update_create_context(context, 'edit')
 
-        context.update({'active_section': 'lists',
-                        'active_subsection': 'project-list',
-                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+        return context
 
-        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
-                                 {'name': 'Projects', 'url': reverse('logged-project-list')},
-                                 {'name': f'Edit ({context["object"].key_pi()})'}]
+    def get_success_url(self):
+        return reverse('logged-project-detail', kwargs={'pk': self.object.pk})
+
+
+class ProjectCreate(SuccessMessageMixin, CreateView):
+    template_name = 'grant_management/project-form.tmpl'
+    form_class = ProjectForm
+    model = Project
+    success_message = 'Project created'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        update_project_update_create_context(context, 'create')
 
         return context
 
