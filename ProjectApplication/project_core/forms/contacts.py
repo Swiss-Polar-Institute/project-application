@@ -34,6 +34,10 @@ class ContactForm(ModelForm):
 
         self.helper.layout = Layout(
             Div(
+                Div('person__orcid', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
                 Div('academic_title', css_class='col-2'),
                 Div('person__first_name', css_class='col-5'),
                 Div('person__surname', css_class='col-5'),
