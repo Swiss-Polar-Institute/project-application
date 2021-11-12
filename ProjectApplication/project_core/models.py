@@ -1123,7 +1123,7 @@ class Project(CreateModifyOn):
     principal_investigator = models.ForeignKey(PersonPosition, help_text='Main applicant of the project',
                                                on_delete=models.PROTECT)  # maybe rename this to principal investigator
     call = models.ForeignKey(Call, help_text='Call to which the project belongs',
-                             on_delete=models.PROTECT)
+                             on_delete=models.PROTECT, null=True, blank=True)
     proposal = models.ForeignKey(Proposal, help_text='Proposal from which the project originates', blank=True,
                                  null=True, on_delete=models.PROTECT)
     overarching_project = models.ForeignKey(ExternalProject,

@@ -19,23 +19,19 @@ class ProjectForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
 
+        is_standalone_project = self.instance.id is None \
+                                or self.instance.call is None
+
         if self.instance.id:
-            is_editing = True
-        else:
-            is_editing = False
-
-        is_creating = not is_editing
-
-        if is_editing:
             submit_text = 'Save Project'
             cancel_url = reverse('logged-project-detail', kwargs={'pk': self.instance.id})
-
-            funding_instrument_div = None
-            finance_year_div = None
         else:
             submit_text = 'Create Project'
             cancel_url = reverse('logged-project-list')
+
+        if is_standalone_project:
             self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
+            self.fields['geographical_areas'].required = False
 
             funding_instrument_div = Div(
                 Div('funding_instrument', css_class='col-12'),
@@ -45,6 +41,16 @@ class ProjectForm(forms.ModelForm):
                 Div('finance_year', css_class='col-6'),
                 css_class='row'
             )
+            allocated_budget_div = Div(
+                Div('allocated_budget', css_class='col-6'),
+                css_class='row'
+            )
+
+        else:
+            funding_instrument_div = None
+            finance_year_div = None
+            allocated_budget_div = None
+
 
         self.helper.layout = Layout(
             Div(
@@ -53,6 +59,7 @@ class ProjectForm(forms.ModelForm):
             ),
             funding_instrument_div,
             finance_year_div,
+            allocated_budget_div,
             Div(
                 Div('keywords', css_class='col-12'),
                 css_class='row'
@@ -88,6 +95,19 @@ class ProjectForm(forms.ModelForm):
             )
         )
 
+
+    def save(self, **kwargs):
+        project = self.instance
+
+        if not hasattr(project, 'principal_investigator'):
+            project.principal_investigator_id = 39
+
+        if project.key == '':
+            project.key = 'Test 03'
+
+        return super().save(**kwargs)
+
+
     def clean(self):
         cd = super().clean()
 
@@ -106,10 +126,11 @@ class ProjectForm(forms.ModelForm):
 
         return cd
 
+
     class Meta:
         model = Project
         fields = ['title', 'funding_instrument', 'finance_year', 'keywords', 'geographical_areas',
-                  'location', 'start_date', 'end_date']
+                  'location', 'start_date', 'end_date', 'allocated_budget']
         labels = {'location': 'Precise region'}
         widgets = {'start_date': XDSoftYearMonthDayPickerInput,
                    'end_date': XDSoftYearMonthDayPickerInput,

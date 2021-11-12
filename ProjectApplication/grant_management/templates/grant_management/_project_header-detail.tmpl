@@ -17,8 +17,13 @@
         <div class="col-6">
             <strong>Project Key:</strong> {{ project.key }}<br>
             <strong>Status:</strong> {% include 'grant_management/_project_status.tmpl' with project=project only %}<br>
-            <strong>Call:</strong> <a
-                href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a><br>
+            <strong>Call:</strong>
+            {% if project.call %}
+                <a href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a>
+            {% else %}
+                Project doesn't have a call.
+            {% endif %}
+            <br>
         </div>
     </div>
 </div>
