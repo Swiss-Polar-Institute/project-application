@@ -612,7 +612,8 @@ def set_reports(project, reports_data, report_model):
         received_date = reports_data[f'{index}_received_date']
 
         if received_date is None:
-            break
+            index += 1
+            continue
 
         if reports_data[f'{index}_approved_by__first_name'] is None:
             approved_by = None
