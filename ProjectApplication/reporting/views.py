@@ -1,6 +1,7 @@
-import codecs
-import csv
+import datetime
+import io
 
+import xlsxwriter
 from django.db.models import Count, F, Sum, Min, Max
 from django.http import HttpResponse
 from django.utils import timezone
@@ -303,7 +304,7 @@ def allocated_budget_per_year():
 def calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, year):
     total = 0
 
-    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name).\
+    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name). \
             filter(call__finance_year=year):
         total += project.invoices_paid_amount()
 
@@ -313,7 +314,7 @@ def calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, 
 def calculate_open_for_payment_funding_instrument_year(funding_instrument_long_name, year):
     total = 0
 
-    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name).\
+    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name). \
             filter(call__finance_year=year):
         if project.is_active():
             total += project.allocated_budget - project.invoices_paid_amount()
@@ -467,17 +468,20 @@ class ProjectsBalanceCsv(View):
 
     def get(self, request, *args, **kwargs):
         now = timezone.localtime()
-        filename = (f'projects-balance-{now:%Y%m%d-%H%M}.csv')
+        filename = f'projects-balance-{now:%Y%m%d-%H%M}.xlsx'
 
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        output = io.BytesIO()
 
-        response.write(codecs.BOM_UTF8)
+        workbook = xlsxwriter.Workbook(output)
 
-        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Start Date', 'End Date', 'Allocated budget', 'Balance due']
+        worksheet = workbook.add_worksheet()
 
-        writer = csv.DictWriter(response, fieldnames=headers, delimiter=';')
-        writer.writeheader()
+        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Start Date', 'End Date', 'Allocated budget',
+                   'Balance due']
+
+        worksheet.write_row(0, 0, headers)
+
+        rows = []
         for project in Project.objects.all().order_by('key'):
             pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
 
@@ -491,16 +495,49 @@ class ProjectsBalanceCsv(View):
 
             balance_due = project.allocated_budget - project.invoices_paid_amount()
 
-            row = {'Key': project.key,
-                   'Signed date': grant_agreement_signed_date,
-                   'Organisation': pi_organisations,
-                   'Title': project.title,
-                   'Start Date': project.start_date if project.start_date else 'N/A',
-                   'End Date': project.end_date if project.end_date else 'N/A',
-                   'Allocated budget': format_number_for_swiss_locale(project.allocated_budget),
-                   'Balance due': format_number_for_swiss_locale(balance_due),
-                   }
+            rows.append({'Key': project.key,
+                         'Signed date': grant_agreement_signed_date,
+                         'Organisation': pi_organisations,
+                         'Title': project.title,
+                         'Start Date': project.start_date if project.start_date else 'N/A',
+                         'End Date': project.end_date if project.end_date else 'N/A',
+                         'Allocated budget': format_number_for_swiss_locale(project.allocated_budget),
+                         'Balance due': format_number_for_swiss_locale(balance_due),
+                         })
 
-            writer.writerow(row)
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+        response.content = excel_dict_writer(filename, headers, rows)
 
         return response
+
+
+def excel_dict_writer(filename, headers, rows):
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(output)
+    worksheet = workbook.add_worksheet()
+
+    worksheet.write_row(0, 0, headers)
+
+    date_format = workbook.add_format({'num_format': 'dd-mm-yyyy'})
+
+    for row_index, row in enumerate(rows, 1):
+        to_use_headers = headers.copy()
+
+        for header_name, cell_value in row.items():
+            column_index = headers.index(header_name)
+            to_use_headers.remove(header_name)
+
+            if isinstance(cell_value, datetime.date):
+                worksheet.write_datetime(row_index, column_index, cell_value, date_format)
+
+            else:
+                worksheet.write(row_index, column_index, cell_value)
+
+        assert to_use_headers == []
+
+    workbook.close()
+
+    output.seek(0)
+
+    return output
