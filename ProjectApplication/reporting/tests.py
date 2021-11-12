@@ -116,8 +116,8 @@ class ProjectsBalanceCsvTest(TestCase):
 
         self.assertEqual(len(lines), 3)
 
-        self.assertEqual(lines[0], '\ufeffKey;Signed date;Organisation;Title;Start Date;End Date;Allocated budget;Balance due')
-        self.assertEqual(lines[1], 'SPI-2020-001;No grant agreement attached;;This is a test project;2020-01-10;2022-05-07;20000,00;20000,00')
+        self.assertEqual(lines[0], '\ufeffKey\tSigned date\tOrganisation\tTitle\tStart Date\tEnd Date\tAllocated budget\tBalance due')
+        self.assertEqual(lines[1], 'SPI-2020-001\tNo grant agreement attached\t\tThis is a test project\t2020-01-10\t2022-05-07\t20000,00\t20000,00')
         self.assertEqual(lines[2], '')
 
     def test_get_two_projects(self):
@@ -134,8 +134,8 @@ class ProjectsBalanceCsvTest(TestCase):
 
         self.assertEqual(len(lines), 4)
 
-        self.assertEqual(lines[0], '\ufeffKey;Signed date;Organisation;Title;Start Date;End Date;Allocated budget;Balance due')
+        self.assertEqual(lines[0], '\ufeffKey\tSigned date\tOrganisation\tTitle\tStart Date\tEnd Date\tAllocated budget\tBalance due')
         self.assertEqual(lines[1],
-                         'SPI-2020-001;No grant agreement attached;Some organisation;This is a test project;2020-01-10;2022-05-07;20000,00;20000,00')
-        self.assertEqual(lines[2], 'SPI-2020-002;04/01/2020;;Second test;2020-01-10;2022-05-07;15000,00;13500,00')
+                         'SPI-2020-001\tNo grant agreement attached\tSome organisation\tThis is a test project\t2020-01-10\t2022-05-07\t20000,00\t20000,00')
+        self.assertEqual(lines[2], 'SPI-2020-002\t04/01/2020\t\tSecond test\t2020-01-10\t2022-05-07\t15000,00\t13500,00')
         self.assertEqual(lines[3], '')
