@@ -65,6 +65,14 @@ class ProjectForm(forms.ModelForm):
             finance_year_div = None
             allocated_budget_div = None
 
+            # Used when the project is standalone (not coming from a call)
+            # In Meta.fields they are added - IMHO it's easier to delete them
+            # than add them here
+            del self.fields['principal_investigator']
+            del self.fields['finance_year']
+            del self.fields['allocated_budget']
+            del self.fields['funding_instrument']
+
         self.helper.layout = Layout(
             Div(
                 Div('title', css_class='col-12'),
