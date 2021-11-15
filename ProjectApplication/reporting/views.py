@@ -462,7 +462,7 @@ def format_date_for_swiss_locale(date):
     return date.strftime('%d/%m/%Y')
 
 
-class ProjectsBalanceCsv(View):
+class ProjectsBalanceExcel(View):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -519,8 +519,8 @@ class ProjectsBalanceCsv(View):
         }
 
         response.content = excel_dict_writer(filename,
-                                             ProjectsBalanceCsv._headers(),
-                                             ProjectsBalanceCsv._rows(),
+                                             ProjectsBalanceExcel._headers(),
+                                             ProjectsBalanceExcel._rows(),
                                              col_widths)
 
         return response

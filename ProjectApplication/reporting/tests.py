@@ -110,7 +110,7 @@ class ProjectsBalanceCsvTest(TestCase):
     def test_get_one_project(self):
         database_population.create_project()
 
-        response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-csv'))
+        response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-excel'))
         self.assertEqual(response.status_code, 200)
         lines = response.content.decode('utf-8').split('\r\n')
 
@@ -128,7 +128,7 @@ class ProjectsBalanceCsvTest(TestCase):
 
         project2 = create_project_with_invoices()
 
-        response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-csv'))
+        response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-excel'))
         self.assertEqual(response.status_code, 200)
         lines = response.content.decode('utf-8').split('\r\n')
 
