@@ -17,4 +17,10 @@
 
         </div>
     </div>
+    <script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
+
+    <script>
+        setupOrcidLookupForForm('person', 'orcid', 'first_name', 'surname');
+    </script>
+
 {% endblock %}

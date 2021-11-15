@@ -7,18 +7,23 @@ from django.forms import ModelForm
 
 from .utils import get_field_information
 from ..models import PersonPosition, PhysicalPerson, Contact
+from ..utils.orcid import orcid_div
 
 
 class ContactForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        person__first_name = person__surname = main_email = None
+        person__first_name = person__surname = person__orcid = main_email = None
 
         if self.instance and self.instance.pk and self.instance.person:
             person__first_name = self.instance.person.first_name
             person__surname = self.instance.person.surname
+            person__orcid = self.instance.person.orcid
             main_email = self.instance.main_email()
+
+        self.fields['person__orcid'] = forms.CharField(**get_field_information(PhysicalPerson, 'orcid'),
+                                                       initial=person__orcid)
 
         self.fields['person__first_name'] = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'),
                                                             initial=person__first_name)
@@ -33,10 +38,7 @@ class ContactForm(ModelForm):
         self.helper = FormHelper(self)
 
         self.helper.layout = Layout(
-            Div(
-                Div('person__orcid', css_class='col-6'),
-                css_class='row'
-            ),
+            orcid_div('person__orcid'),
             Div(
                 Div('academic_title', css_class='col-2'),
                 Div('person__first_name', css_class='col-5'),
