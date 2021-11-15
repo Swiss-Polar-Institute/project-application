@@ -33,6 +33,19 @@ class ProjectForm(forms.ModelForm):
             self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
             self.fields['geographical_areas'].required = False
 
+            principal_investigator_div = Div(
+                Div('principal_investigator', css_class='col-12'),
+                css_class='row'
+            )
+
+            create_person_url = reverse('logged-person-position-add')
+
+            self.fields[
+                'principal_investigator'].help_text += \
+                f'. If the principal investigator is not found <a href="{create_person_url}">create</a> the person ' \
+                'and try again (you need to reload the page). Only people that have accepted the privacy policy is ' \
+                'displayed'
+
             funding_instrument_div = Div(
                 Div('funding_instrument', css_class='col-12'),
                 css_class='row'
@@ -47,6 +60,7 @@ class ProjectForm(forms.ModelForm):
             )
 
         else:
+            principal_investigator_div = None
             funding_instrument_div = None
             finance_year_div = None
             allocated_budget_div = None
@@ -56,6 +70,7 @@ class ProjectForm(forms.ModelForm):
                 Div('title', css_class='col-12'),
                 css_class='row'
             ),
+            principal_investigator_div,
             funding_instrument_div,
             finance_year_div,
             allocated_budget_div,
@@ -76,8 +91,13 @@ class ProjectForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div(HTML('Please contact an administrator to enter new locations with latitudes and longitudes'),
+                Div(HTML(
+                    'Please use the Grant Management section of the project to add latitudes and longitudes'),
                     css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
+                Div(HTML('<br>'), css_class='col-12'),
                 css_class='row'
             ),
             Div(
@@ -94,7 +114,6 @@ class ProjectForm(forms.ModelForm):
             )
         )
 
-
     def save(self, **kwargs):
         project = self.instance
 
@@ -102,7 +121,8 @@ class ProjectForm(forms.ModelForm):
             project.principal_investigator_id = 39
 
         if project.key == '':
-            project.key = ProjectForm._find_project_key(f'{project.funding_instrument.short_name}-{project.finance_year}')
+            project.key = ProjectForm._find_project_key(
+                f'{project.funding_instrument.short_name}-{project.finance_year}')
 
         return super().save(**kwargs)
 
@@ -135,13 +155,13 @@ class ProjectForm(forms.ModelForm):
 
         return cd
 
-
     class Meta:
         model = Project
-        fields = ['title', 'funding_instrument', 'finance_year', 'keywords', 'geographical_areas',
-                  'location', 'start_date', 'end_date', 'allocated_budget']
+        fields = ['title', 'principal_investigator', 'funding_instrument', 'finance_year', 'keywords',
+                  'geographical_areas', 'location', 'start_date', 'end_date', 'allocated_budget']
         labels = {'location': 'Precise region'}
-        widgets = {'start_date': XDSoftYearMonthDayPickerInput,
+        widgets = {'principal_investigator': autocomplete.ModelSelect2(url='logged-autocomplete-person-positions'),
+                   'start_date': XDSoftYearMonthDayPickerInput,
                    'end_date': XDSoftYearMonthDayPickerInput,
                    'keywords': autocomplete.ModelSelect2Multiple(url='autocomplete-keywords'),
                    'geographical_areas': forms.CheckboxSelectMultiple,

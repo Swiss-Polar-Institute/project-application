@@ -223,6 +223,9 @@ urlpatterns = [
     path('logged/autocomplete/physical_people/',
          logged.autocomplete.PhysicalPersonAutocomplete.as_view(),
          name='logged-autocomplete-physical-people'),
+    path('logged/autocomplete/person_positions/',
+         logged.autocomplete.PersonPositionsAutocomplete.as_view(),
+         name='logged-autocomplete-person-positions'),
 
     path('raises500/', server_error),
 ]

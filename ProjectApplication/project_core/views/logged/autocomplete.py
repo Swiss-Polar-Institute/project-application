@@ -2,7 +2,7 @@ from dal import autocomplete
 from django.db.models import Value as V
 from django.db.models.functions import Concat
 
-from project_core.models import PhysicalPerson
+from project_core.models import PhysicalPerson, PersonPosition
 
 
 class PhysicalPersonAutocomplete(autocomplete.Select2QuerySetView):
@@ -10,11 +10,25 @@ class PhysicalPersonAutocomplete(autocomplete.Select2QuerySetView):
     #     return result.name
 
     def get_queryset(self):
-        qs = PhysicalPerson.objects.all()
+        qs = PhysicalPerson.objects.\
+            all(). \
+            annotate(full_name=Concat('first_name', V(' '), 'surname'))
 
         if self.q:
-            qs = PhysicalPerson.objects.annotate(full_name=Concat('first_name', V(' '), 'surname')).filter(
-                full_name__icontains=self.q)
+            qs = qs.filter(full_name__icontains=self.q)
 
-        qs = qs.order_by('first_name')
+        qs = qs.order_by('full_name')
+        return qs
+
+
+class PersonPositionsAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = PersonPosition.objects.\
+            filter(privacy_policy=True).\
+            annotate(full_name=Concat('person__first_name', V(' '), 'person__surname'))
+
+        if self.q:
+            qs = qs.filter(full_name__icontains=self.q)
+
+        qs = qs.order_by('full_name')
         return qs
