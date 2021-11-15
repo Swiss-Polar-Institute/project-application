@@ -53,6 +53,7 @@ class PersonPositionCreateView(SuccessMessageMixin, CreateView):
     model = PersonPosition
     success_message = 'Contact created'
     form_class = ContactForm
+    prefix = 'contact_form'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

@@ -79,7 +79,6 @@ function setupOrcidLookupForFields(orcidFieldSelector, firstNameSelector, surnam
 
 function setupOrcidLookupForForm(formPrefix, orcidFieldName, firstNameFieldName, surnameFieldName) {
     let orcidFieldSelector = '#id_' + formPrefix + '-' + orcidFieldName;
-    alert(orcidFieldSelector);
 
     let buttonSelector = "#div_id_" + formPrefix + "-" + orcidFieldName + " .input-group-append";
     let iconSelector = buttonSelector + " .input-group-text i";
