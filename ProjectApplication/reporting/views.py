@@ -479,7 +479,7 @@ class ProjectsBalanceExcel(View):
 
             if hasattr(project, 'grantagreement'):
                 if project.grantagreement.signed_date:
-                    grant_agreement_signed_date = format_date_for_swiss_locale(project.grantagreement.signed_date)
+                    grant_agreement_signed_date = project.grantagreement.signed_date
                 else:
                     grant_agreement_signed_date = 'Grant agreement not signed'
             else:
