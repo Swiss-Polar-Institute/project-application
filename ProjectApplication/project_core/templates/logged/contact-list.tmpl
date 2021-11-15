@@ -3,6 +3,10 @@
 {% block contents %}
     <h1>People</h1>
     <p>Only people who have accepted the "Privacy Policy" are listed here.</p>
+    <p>A person could belong to two different institutions or have two different academic profiles. E.g. in some
+        old Proposal the person might be "Mr" and then "PhD". This is the reason that some persons might be listed
+        twice. Click on the button "View" to understand the differences.
+    </p>
     {% if contacts %}
         <table class="table table-striped table-sm table-hover display">
             <thead>
@@ -47,4 +51,8 @@
         });
     </script>
     <br>
+    <p>
+        <a class="btn btn-primary" href="{% url 'logged-person-position-add' %}">Create Contact</a>
+    </p>
+
 {% endblock %}

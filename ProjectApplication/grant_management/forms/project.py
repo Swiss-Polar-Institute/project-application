@@ -51,7 +51,6 @@ class ProjectForm(forms.ModelForm):
             finance_year_div = None
             allocated_budget_div = None
 
-
         self.helper.layout = Layout(
             Div(
                 Div('title', css_class='col-12'),
@@ -103,10 +102,20 @@ class ProjectForm(forms.ModelForm):
             project.principal_investigator_id = 39
 
         if project.key == '':
-            project.key = 'Test 03'
+            project.key = ProjectForm._find_project_key(f'{project.funding_instrument.short_name}-{project.finance_year}')
 
         return super().save(**kwargs)
 
+    @staticmethod
+    def _find_project_key(prefix):
+        counter = 1
+        candidate_key = f'{prefix}-{counter:03d}'
+
+        while Project.objects.filter(key=candidate_key).exists():
+            counter += 1
+            candidate_key = f'{prefix}-{counter:03d}'
+
+        return candidate_key
 
     def clean(self):
         cd = super().clean()
