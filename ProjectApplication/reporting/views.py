@@ -476,7 +476,7 @@ class ProjectsBalanceCsv(View):
 
         worksheet = workbook.add_worksheet()
 
-        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Start Date', 'End Date', 'Allocated budget',
+        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
                    'Balance due']
 
         worksheet.write_row(0, 0, headers)
@@ -499,20 +499,32 @@ class ProjectsBalanceCsv(View):
                          'Signed date': grant_agreement_signed_date,
                          'Organisation': pi_organisations,
                          'Title': project.title,
-                         'Start Date': project.start_date if project.start_date else 'N/A',
-                         'End Date': project.end_date if project.end_date else 'N/A',
-                         'Allocated budget': format_number_for_swiss_locale(project.allocated_budget),
-                         'Balance due': format_number_for_swiss_locale(balance_due),
+                         'Start date': project.start_date if project.start_date else 'N/A',
+                         'End date': project.end_date if project.end_date else 'N/A',
+                         'Allocated budget': project.allocated_budget,
+                         'Balance due': balance_due,
                          })
 
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
-        response.content = excel_dict_writer(filename, headers, rows)
+
+        col_widths = {
+            'Key': 12,
+            'Organisation': 18,
+            'Title': 44,
+            'Signed date': 12,
+            'Start date': 12,
+            'End date': 12,
+            'Allocated budget': 12,
+            'Balance due': 12
+        }
+
+        response.content = excel_dict_writer(filename, headers, rows, col_widths)
 
         return response
 
 
-def excel_dict_writer(filename, headers, rows):
+def excel_dict_writer(filename, headers, rows, col_widths):
     output = io.BytesIO()
     workbook = xlsxwriter.Workbook(output)
     worksheet = workbook.add_worksheet()
@@ -535,6 +547,11 @@ def excel_dict_writer(filename, headers, rows):
                 worksheet.write(row_index, column_index, cell_value)
 
         assert to_use_headers == []
+
+    for col_width_name, col_width in col_widths.items():
+        column_index = headers.index(col_width_name)
+
+        worksheet.set_column(column_index, column_index, col_width)
 
     workbook.close()
 
