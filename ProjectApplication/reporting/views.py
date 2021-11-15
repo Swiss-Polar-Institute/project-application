@@ -1,5 +1,6 @@
 import datetime
 import io
+from decimal import Decimal
 
 import xlsxwriter
 from django.db.models import Count, F, Sum, Min, Max
@@ -534,6 +535,7 @@ def excel_dict_writer(filename, headers, rows, col_widths):
     worksheet.write_row(0, 0, headers)
 
     date_format = workbook.add_format({'num_format': 'dd-mm-yyyy'})
+    decimal_format = workbook.add_format({'num_format': "#,##0.00"})
 
     for row_index, row in enumerate(rows, 1):
         to_use_headers = headers.copy()
@@ -544,7 +546,8 @@ def excel_dict_writer(filename, headers, rows, col_widths):
 
             if isinstance(cell_value, datetime.date):
                 worksheet.write_datetime(row_index, column_index, cell_value, date_format)
-
+            elif isinstance(cell_value, Decimal):
+                worksheet.write_number(row_index, column_index, cell_value, decimal_format)
             else:
                 worksheet.write(row_index, column_index, cell_value)
 
