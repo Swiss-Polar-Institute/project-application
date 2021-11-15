@@ -751,40 +751,48 @@ def import_csv(csv_file_path):
             validate_project(project)
 
 
-# Delete ACE projects:
+# Delete GLACE projects:
 """
 from project_core.models import *
 from grant_management.models import *
 from variable_templates.models import *
 from comments.models import *
 
-ace=Call.objects.get(short_name='ACE 2016')
+from django.db.transaction import set_autocommit, commit, rollback
+
+set_autocommit(0)
+
+glace=Call.objects.get(short_name='GLACE 2019')
 
 # Delete call related objects
 
-ScientificReport.objects.filter(project__call=ace).delete()
-FinancialReport.objects.filter(project__call=ace).delete()
-Milestone.objects.filter(project__call=ace).delete()
-Invoice.objects.filter(installment__project__call=ace).delete()
-Installment.objects.filter(project__call=ace).delete()
-ProjectComment.objects.filter(project__call=ace).delete()
-GrantAgreement.objects.filter(project__call=ace).delete()
+ScientificReport.objects.filter(project__call=glace).delete()
+FinancialReport.objects.filter(project__call=glace).delete()
+Milestone.objects.filter(project__call=glace).delete()
+Invoice.objects.filter(installment__project__call=glace).delete()
+Installment.objects.filter(project__call=glace).delete()
+ProjectComment.objects.filter(project__call=glace).delete()
+ProjectAttachment.objects.filter(project__call=glace).delete()
+GrantAgreement.objects.filter(project__call=glace).delete()
 
-ace.proposal_set.all().delete()
-ace.project_set.all().delete()
+glace.proposal_set.all().delete()
+glace.project_set.all().delete()
 
 
-Project.objects.filter(call=ace).delete()
-BudgetCategoryCall.objects.filter(call=ace).delete()
+Project.objects.filter(call=glace).delete()
+BudgetCategoryCall.objects.filter(call=glace).delete()
 # Delete call
-ace.delete()
+glace.delete()
 
 # Delete funding instrument
-funding_instrument=FundingInstrument.objects.get(long_name='Antarctic Circumnavigation Expedition')
+funding_instrument=FundingInstrument.objects.get(long_name='Greenland Circumnavigation Expedition')
 
 FundingInstrumentVariableTemplate.objects.filter(funding_instrument=funding_instrument).delete()
-FundingInstrument.objects.filter(long_name='Antarctic Circumnavigation Expedition').delete()
+
+funding_instrument.delete()
 
 # Delete Financial Key
-FinancialKey.objects.filter(name='ACE').delete()
+FinancialKey.objects.filter(name='GLACE').delete()
+
+commit()
 """
