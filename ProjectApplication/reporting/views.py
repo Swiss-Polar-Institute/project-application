@@ -466,21 +466,13 @@ class ProjectsBalanceCsv(View):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        now = timezone.localtime()
-        filename = f'projects-balance-{now:%Y%m%d-%H%M}.xlsx'
+    @staticmethod
+    def _headers():
+        return ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
+                'Balance due']
 
-        output = io.BytesIO()
-
-        workbook = xlsxwriter.Workbook(output)
-
-        worksheet = workbook.add_worksheet()
-
-        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
-                   'Balance due']
-
-        worksheet.write_row(0, 0, headers)
-
+    @staticmethod
+    def _rows():
         rows = []
         for project in Project.objects.all().order_by('key'):
             pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
@@ -505,6 +497,13 @@ class ProjectsBalanceCsv(View):
                          'Balance due': balance_due,
                          })
 
+        return rows
+
+
+    def get(self, request, *args, **kwargs):
+        now = timezone.localtime()
+        filename = f'projects-balance-{now:%Y%m%d-%H%M}.xlsx'
+
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
@@ -519,7 +518,10 @@ class ProjectsBalanceCsv(View):
             'Balance due': 12
         }
 
-        response.content = excel_dict_writer(filename, headers, rows, col_widths)
+        response.content = excel_dict_writer(filename,
+                                             ProjectsBalanceCsv._headers(),
+                                             ProjectsBalanceCsv._rows(),
+                                             col_widths)
 
         return response
 
