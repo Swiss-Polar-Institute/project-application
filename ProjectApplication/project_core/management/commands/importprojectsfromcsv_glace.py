@@ -791,8 +791,5 @@ FundingInstrumentVariableTemplate.objects.filter(funding_instrument=funding_inst
 
 funding_instrument.delete()
 
-# Delete Financial Key
-FinancialKey.objects.filter(name='GLACE').delete()
-
 commit()
 """
