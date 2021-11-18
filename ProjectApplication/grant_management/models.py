@@ -366,5 +366,8 @@ class Location(CreateModifyOn):
                                                 MaxValueValidator(180)])
     name = models.CharField(max_length=100)
 
+    class Meta:
+        unique_together = (('project', 'latitude', 'longitude', 'name'),)
+
     def __str__(self):
         return f'{self.name} ({self.latitude}, {self.longitude})'
