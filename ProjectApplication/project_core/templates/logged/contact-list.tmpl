@@ -29,7 +29,7 @@
                     <td>{{ contact.person.surname }}</td>
                     <td>{% include 'common/_email_link_or_dash.tmpl' with email=contact.main_email %}</td>
                     <td>{{ contact.organisations_display_names }}</td>
-                    <td>{{ contact.group }}</td>
+                    <td>{% include 'common/_value-or-dash.tmpl' with value=contact.group %}</td>
                     <td>{% include 'common/_check-icon.tmpl' with value=contact.privacy_policy %}</td>
                     <td>{% include 'common/_check-icon.tmpl' with value=contact.contact_newsletter %}</td>
 
