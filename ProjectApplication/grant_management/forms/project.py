@@ -27,8 +27,8 @@ class ProjectForm(forms.ModelForm):
 
             grant_management_deliverables_url = reverse('logged-grant_management-project-detail',
                                                         kwargs={'pk': self.instance.id})
-            locations_message = f'Please use the <a href="{grant_management_deliverables_url}">Grant Management ' \
-                                f'section</a> of the project to add latitudes and longitudes'
+            locations_message = f'Please use the <a href="{grant_management_deliverables_url}?tab=other#locations">Grant Management ' \
+                                f'Other tab</a> of the project to edit locations'
 
         else:
             submit_text = 'Create Project'
