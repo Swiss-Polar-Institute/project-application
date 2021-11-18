@@ -31,11 +31,10 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-item">
-                    <a class="nav-link {% if active == "project-create" %}active{% endif %}"
-                       href="{% url 'logged-grant_management-project-add' %}">
-                        Create project
-                    </a>
+                <a class="nav-link {% if active == "project-create" %}active{% endif %}"
+                   href="{% url 'logged-grant_management-project-add' %}">
+                    Create project
+                </a>
             </li>
         {% endif %}
         <hr>
