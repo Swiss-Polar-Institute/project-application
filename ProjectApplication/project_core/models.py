@@ -53,7 +53,7 @@ class FinancialKey(CreateModifyOn):
     description = models.CharField(max_length=200, help_text='Explanation of the code')
     created_by = models.ForeignKey(User, on_delete=models.PROTECT)
     funding_instrument = models.BooleanField(default=True,
-                                             help_text='This field is booked or used for a funding instrument')
+                                             help_text='This financial key is booked or used for a funding instrument')
 
     def __str__(self):
         return self.name
