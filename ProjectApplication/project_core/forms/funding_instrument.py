@@ -18,7 +18,7 @@ class FundingInstrumentForm(forms.ModelForm):
             Q(fundinginstrument__isnull=True) | Q(fundinginstrument=self.instance))
 
         self.fields[
-            'short_name'].help_text = f'Select a funding instrument acronym. This needs to be a financial key. Please <a href="{reverse("logged-financial-key-list")}">create one if needed</a> and refresh this page'
+            'short_name'].help_text = f'Select a funding instrument acronym. This needs to be a financial key. Please <a href="{reverse("logged-financial-key-update")}">create one if needed</a> and refresh this page'
 
     class Meta:
         model = FundingInstrument

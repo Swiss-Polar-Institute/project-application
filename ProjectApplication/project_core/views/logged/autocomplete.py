@@ -22,6 +22,24 @@ class PhysicalPersonAutocomplete(autocomplete.Select2QuerySetView):
 
 
 class PersonPositionsAutocomplete(autocomplete.Select2QuerySetView):
+    def get_result_label(self, result: PersonPosition):
+
+        organisations_ordered = result.organisations_ordered_by_name_str()
+
+        organisations_group = ''
+
+        if organisations_ordered:
+            organisations_group = f'{organisations_ordered}'
+
+        if result.group:
+            if organisations_group:
+                organisations_group += '. '
+
+            organisations_group += f'Group: {result.group}'
+
+
+        return f'{result.academic_title} {result.person.first_name} {result.person.surname} ({organisations_group})'
+
     def get_queryset(self):
         qs = PersonPosition.objects.\
             filter(privacy_policy=True).\

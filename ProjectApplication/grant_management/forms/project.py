@@ -19,8 +19,7 @@ class ProjectForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
 
-        is_standalone_project = self.instance.id is None \
-                                or self.instance.call is None
+        is_standalone_project = self.instance.id is None or self.instance.call is None
 
         if self.instance.id:
             submit_text = 'Save Project'
@@ -34,7 +33,7 @@ class ProjectForm(forms.ModelForm):
         else:
             submit_text = 'Create Project'
             cancel_url = reverse('logged-project-list')
-            locations_message = 'After creating the project add the locations using the Grant Management section'
+            locations_message = 'After creating the project add the locations using the Grant Management for the project in the section "Other"'
 
         if is_standalone_project:
             self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')

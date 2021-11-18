@@ -62,7 +62,8 @@ class PersonPositionCreateView(SuccessMessageMixin, CreateView):
                         'active_subsection': 'contacts-add',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
-        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')}, {'name': 'People'},
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'People', 'url': reverse('logged-person-position-list')},
                                  {'name': 'Create'}]
 
         return context
