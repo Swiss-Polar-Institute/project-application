@@ -1,0 +1,47 @@
+{% with locations=project.project_location.all %}
+    <table id="locations_table" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+        </tr>
+        </thead>
+        {% for location in locations %}
+            <tr>
+                <td>{% include 'common/_location-link.tmpl' with location=location only %}</td>
+                <td>{{ location.latitude }}</td>
+                <td>{{ location.longitude }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#locations_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                    "language": {
+                        "zeroRecords": "No locations have been added"
+                    },
+                    "columns": [
+                        {"width": "50%"},
+                        {"width": "25%"},
+                        {"width": "25%"}
+                    ],
+                }
+            );
+        });
+    </script>
+
+    <style>
+        #locations_tables > td:nth-child(1), #locations_tables > td:nth-child(2) {
+            white-space: nowrap;
+        }
+    </style>
+
+{% endwith %}
+<p></p>

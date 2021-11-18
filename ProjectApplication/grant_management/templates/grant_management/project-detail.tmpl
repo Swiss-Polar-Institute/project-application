@@ -52,6 +52,10 @@
                         <a class="nav-link {% if active_tab == 'deliverables' %}active{% endif %}" id="deliverables-tab"
                            data-toggle="tab" href="#deliverables" role="tab">Deliverables</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'other' %}active{% endif %}" id="deliverables-other"
+                           data-toggle="tab" href="#other" role="tab">Other</a>
+                    </li>
                 </ul>
             </div>
 
@@ -65,6 +69,11 @@
                      role="tabpanel">
                     <br>
                     {% include 'grant_management/_project_deliverables.tmpl' %}
+                </div>
+                <div class="tab-pane fade {% if active_tab == 'other' %}show active{% endif %}" id="other"
+                     role="tabpanel">
+                    <br>
+                    {% include 'grant_management/_project_other.tmpl' %}
                 </div>
             </div>
             <p></p>

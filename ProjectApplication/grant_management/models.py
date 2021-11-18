@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models, transaction
 # Create your models here.
 # add dates of review, signed date, who signed, grant agreement - need flexibilty in types of dates that are added
@@ -356,8 +357,13 @@ class Location(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that the coordinate belongs to',
                                 on_delete=models.PROTECT,
                                 related_name='project_location')
-    latitude = models.DecimalField(decimal_places=2, max_digits=6)
-    longitude = models.DecimalField(decimal_places=2, max_digits=7)
+    latitude = models.DecimalField(decimal_places=2, max_digits=6,
+                                   validators=[MinValueValidator(-90),
+                                               MaxValueValidator(90)]
+                                   )
+    longitude = models.DecimalField(decimal_places=2, max_digits=7,
+                                    validators=[MinValueValidator(-180),
+                                                MaxValueValidator(180)])
     name = models.CharField(max_length=100)
 
     def __str__(self):
