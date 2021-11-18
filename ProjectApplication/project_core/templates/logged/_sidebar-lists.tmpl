@@ -61,6 +61,12 @@
                     List financial keys
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'financial_key-add' %}active{% endif %}"
+                   href="{% url 'logged-financial-key-update' %}">
+                    Create financial key
+                </a>
+            </li>
         {% endif %}
     </ul>
 {% endblock %}
