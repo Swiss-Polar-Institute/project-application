@@ -4,8 +4,9 @@ from dal import autocomplete
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm
+from django.urls import reverse
 
-from .utils import get_field_information
+from .utils import get_field_information, cancel_edit_button
 from ..models import PersonPosition, PhysicalPerson, Contact
 from ..utils.orcid import orcid_div
 
@@ -21,6 +22,9 @@ class ContactForm(ModelForm):
             person__surname = self.instance.person.surname
             person__orcid = self.instance.person.orcid
             main_email = self.instance.main_email()
+            cancel_url = reverse('logged-person-position-detail', kwargs={'id': self.instance.pk})
+        else:
+            cancel_url = reverse('logged-person-position-list')
 
         self.fields['person__orcid'] = forms.CharField(**get_field_information(PhysicalPerson, 'orcid'),
                                                        initial=person__orcid)
@@ -65,9 +69,10 @@ class ContactForm(ModelForm):
                 Div('privacy_policy', css_class='col-6'),
                 Div('contact_newsletter', css_class='col-6'),
                 css_class='row'
-            )
+            ),
+            Submit('submit', 'Save'),
+            cancel_edit_button(cancel_url)
         )
-        self.helper.add_input(Submit('submit', 'Save'))
 
     def clean(self):
         super().clean()
