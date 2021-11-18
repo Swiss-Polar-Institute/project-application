@@ -5,9 +5,25 @@
     <h1>Lists</h1>
 
     <ul>
-        <li><a href="{% url 'logged-proposal-list' %}">Proposals</a></li>
-        <li><a href="{% url 'logged-project-list' %}">Projects</a></li>
-        <li><a href="{% url 'logged-person-position-list' %}">People</a></li>
-        <li><a href="{% url 'logged-financial-key-list' %}">Financial keys</a></li>
+        <li><a href="{% url 'logged-proposal-list' %}">List Proposals</a></li>
+        <li>Projects
+            <ul>
+                <li><a href="{% url 'logged-project-list' %}">List Projects</a></li>
+                <li><a href="{% url 'logged-grant_management-project-add' %}">Create Project</a></li>
+            </ul>
+        </li>
+        <li>People
+            <ul>
+                <li><a href="{% url 'logged-person-position-list' %}">List People</a></li>
+                <li><a href="{% url 'logged-person-position-add' %}">Add Person</a></li>
+            </ul>
+        </li>
+        <li>Financial Keys
+            <ul>
+                <li><a href="{% url 'logged-financial-key-list' %}">List Financial keys</a></li>
+                <li><a href="{% url 'logged-financial-key-update' %}">Add Financial Key</a></li>
+                <li></li>
+            </ul>
+        </li>
     </ul>
 {% endblock %}

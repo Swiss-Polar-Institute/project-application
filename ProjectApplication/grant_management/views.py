@@ -103,7 +103,7 @@ class ProjectDetailCommentAdd(ProjectDetail):
 
 def update_project_update_create_context(context, action):
     context.update({'active_section': 'lists',
-                    'active_subsection': 'project-list',
+                    'active_subsection': 'project-create',
                     'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
     if action == 'edit':
@@ -117,13 +117,6 @@ def update_project_update_create_context(context, action):
                              {'name': 'Projects', 'url': reverse('logged-project-list')},
                              {'name': human_action}
                              ]
-
-
-class ProjectCreate(SuccessMessageMixin, CreateView):
-    template_name = 'grant_management/project-form.tmpl'
-    form_class = ProjectForm
-    model = Project
-    success_message = 'Project created'
 
 
 class ProjectUpdate(SuccessMessageMixin, UpdateView):

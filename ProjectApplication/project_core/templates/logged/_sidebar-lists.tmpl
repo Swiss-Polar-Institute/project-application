@@ -22,7 +22,7 @@
                 </a>
             </li>
         {% endif %}
-
+        <hr>
         {% if request|request_is_management %}
             <li class="nav-item">
                 <a class="nav-link {% if active == 'project-list' %}active{% endif %}"
@@ -30,8 +30,15 @@
                     List projects
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-item">
+                    <a class="nav-link {% if active == "project-create" %}active{% endif %}"
+                       href="{% url 'logged-grant_management-project-add' %}">
+                        Create project
+                    </a>
+            </li>
         {% endif %}
-
+        <hr>
         {% if request|request_is_management %}
             <li class="nav-item">
                 <a class="nav-link {% if active == 'contact-list' %}active{% endif %}"
@@ -39,13 +46,14 @@
                     List people
                 </a>
             </li>
-            {#        <li class="nav-item">#}
-            {#            <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}"#}
-            {#               href="{% url 'logged-person-position-add' %}">#}
-            {#                Create person#}
-            {#            </a>#}
-            {#        </li>#}
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'contacts-add' %}active{% endif %}"
+                   href="{% url 'logged-person-position-add' %}">
+                    Create person
+                </a>
+            </li>
         {% endif %}
+        <hr>
         {% if request|request_is_management %}
             <li class="nav-item">
                 <a class="nav-link {% if active == 'financial_key-list' %}active{% endif %}"
@@ -54,7 +62,5 @@
                 </a>
             </li>
         {% endif %}
-
-
     </ul>
 {% endblock %}

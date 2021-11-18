@@ -25,9 +25,16 @@ class ProjectForm(forms.ModelForm):
         if self.instance.id:
             submit_text = 'Save Project'
             cancel_url = reverse('logged-project-detail', kwargs={'pk': self.instance.id})
+
+            grant_management_deliverables_url = reverse('logged-grant_management-project-detail',
+                                                        kwargs={'pk': self.instance.id})
+            locations_message = f'Please use the <a href="{grant_management_deliverables_url}">Grant Management ' \
+                                f'section</a> of the project to add latitudes and longitudes'
+
         else:
             submit_text = 'Create Project'
             cancel_url = reverse('logged-project-list')
+            locations_message = 'After creating the project add the locations using the Grant Management section'
 
         if is_standalone_project:
             self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
@@ -100,7 +107,7 @@ class ProjectForm(forms.ModelForm):
             ),
             Div(
                 Div(HTML(
-                    'Please use the Grant Management section of the project to add latitudes and longitudes'),
+                    locations_message),
                     css_class='col-12'),
                 css_class='row'
             ),
