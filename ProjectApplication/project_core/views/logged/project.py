@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView
@@ -107,3 +108,21 @@ class FinancialKeyAdd(SuccessMessageMixin, CreateView):
         obj = form.save(commit=False)
         obj.created_by = self.request.user
         return super().form_valid(form)
+
+
+class UserListView(ListView):
+    template_name = 'logged/user-list.tmpl'
+    context_object_name = 'users'
+    model = User
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'users',
+                        'active_subsection': 'user-list',
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'Users'}]
+
+        return context

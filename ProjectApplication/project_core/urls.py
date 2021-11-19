@@ -207,6 +207,10 @@ urlpatterns = [
          logged.project.FinancialKeyAdd.as_view(),
          name='logged-financial-key-update'),
 
+    path('logged/users/list',
+         logged.project.UserListView.as_view(),
+         name='logged-users-list'),
+
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',
                                       extra_context={'contact': settings.LOGIN_CONTACT}),
