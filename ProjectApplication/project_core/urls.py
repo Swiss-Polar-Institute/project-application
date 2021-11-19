@@ -207,9 +207,15 @@ urlpatterns = [
          logged.project.FinancialKeyAdd.as_view(),
          name='logged-financial-key-update'),
 
-    path('logged/users/list',
+    path('logged/user/list',
          logged.project.UserListView.as_view(),
-         name='logged-users-list'),
+         name='logged-user-list'),
+    path('logged/user/add',
+         logged.project.UserAdd.as_view(),
+         name='logged-user-add'),
+    path('logged/user/<int:pk>/',
+         logged.project.UserDetailView.as_view(),
+         name='logged-user-detail'),
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',

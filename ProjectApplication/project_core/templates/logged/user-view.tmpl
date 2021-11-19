@@ -1,0 +1,33 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>User</h1>
+            <p></p>
+            <strong>Username:</strong> {{ user.username }}
+            <br>
+            <strong>First name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.first_name %}
+            <br>
+            <strong>Last name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.last_name %}
+            <p></p>
+            <div class="row">
+                <div class="col-6">
+                    <strong>Is management:</strong>
+                </div>
+                <div class="col-6">
+                    <strong>Is reviewer:</strong>
+                </div>
+            </div>
+            <p></p>
+            <strong>Last login:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.last_login %}<br>
+            (Last login is the last time that the user entered the username+password. The user might have been using
+            Nestor with a saved login.)
+            <br>
+            <strong>Date joined:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.date_joined %}
+        </div>
+        <div class="col-2">
+
+        </div>
+    </div>
+{% endblock %}

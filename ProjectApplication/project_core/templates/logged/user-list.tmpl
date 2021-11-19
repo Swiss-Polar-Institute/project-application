@@ -13,17 +13,20 @@
                 <th>Last name</th>
                 <th>Active</th>
                 <th>Groups</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            {% for project in projects %}
+            {% for user in users %}
                 <tr>
                     <td>{{ user.username }}</td>
                     <td>{{ user.first_name }}</td>
                     <td>{{ user.last_name }}</td>
+                    <td>{{ user.active }}</td>
+                    <td>...</td>
                     <td>
-                        <a class="btn btn-primary btn-xs"
-                           href="{% url 'logged-project-detail' pk=project.id %}">View</a>
+                        <a class="btn btn-primary btn-xs" href="{% url 'logged-user-detail' pk=user.pk %}">View</a>
+                        <a class="btn btn-primary btn-xs" href="#">Edit</a>
                     </td>
                 </tr>
             {% endfor %}
@@ -37,16 +40,11 @@
         $(document).ready(function () {
             $('table.display').DataTable({
                 "pageLength": 100,
-                "columns": [
-                    {"width": "10%"},
-                    {"width": "50%"},
-                    {"width": "20%"},
-                    {"width": "10%"},
-                    {"width": "10%"}
-                ],
                 "searchHighlight": true
             });
         });
     </script>
-    <p></p>
+    <p>
+        <a class="btn btn-primary" href="{% url 'logged-user-add' %}">Create User</a>
+    </p>
 {% endblock %}

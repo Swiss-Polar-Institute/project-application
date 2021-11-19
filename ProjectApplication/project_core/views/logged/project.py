@@ -6,6 +6,7 @@ from django.views.generic import DetailView, ListView, CreateView
 from comments import utils
 from comments.utils import process_comment_attachment
 from project_core.forms.financial_key import FinancialKeyForm
+from project_core.forms.user import UserForm
 from project_core.models import Project, FinancialKey
 
 
@@ -124,5 +125,48 @@ class UserListView(ListView):
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
                                  {'name': 'Users'}]
+
+        return context
+
+
+class UserAdd(SuccessMessageMixin, CreateView):
+    template_name = 'logged/user-form.tmpl'
+    model = User
+    success_message = 'User created'
+    form_class = UserForm
+    success_url = reverse_lazy('logged-user-detail')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'lists',
+                        'active_subsection': 'user-list',
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'Users', 'url': reverse('logged-user-list')},
+                                 {'name': 'Create'}]
+
+        return context
+
+    def form_valid(self, form):
+        return super().form_valid(form)
+
+
+class UserDetailView(DetailView):
+    template_name = 'logged/user-view.tmpl'
+    model = User
+    context_object_name = 'user'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'lists',
+                        'active_subsection': 'user-list',
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'Users', 'url': reverse('logged-user-list')},
+                                 {'name': 'View'}]
 
         return context
