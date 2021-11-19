@@ -181,7 +181,7 @@ urlpatterns = [
     path('logged/person_position/<int:pk>/update/',
          logged.person_position.PersonPositionUpdateView.as_view(),
          name='logged-person-position-update'),
-    path('logged/person_position/',
+    path('logged/person_position/list/',
          logged.person_position.PersonPositionListView.as_view(),
          name='logged-person-position-list'),
 
