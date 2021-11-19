@@ -216,6 +216,9 @@ urlpatterns = [
     path('logged/user/<int:pk>/',
          logged.project.UserDetailView.as_view(),
          name='logged-user-detail'),
+    path('logged/user/edit/<int:pk>/',
+         logged.project.UserUpdate.as_view(),
+         name='logged-user-update'),
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',

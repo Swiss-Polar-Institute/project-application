@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
-from django.views.generic import DetailView, ListView, CreateView
+from django.views.generic import DetailView, ListView, CreateView, UpdateView
 
 from comments import utils
 from comments.utils import process_comment_attachment
@@ -134,7 +134,6 @@ class UserAdd(SuccessMessageMixin, CreateView):
     model = User
     success_message = 'User created'
     form_class = UserForm
-    success_url = reverse_lazy('logged-user-detail')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -151,6 +150,10 @@ class UserAdd(SuccessMessageMixin, CreateView):
 
     def form_valid(self, form):
         return super().form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse('logged-user-detail', kwargs={'pk': self.object.pk})
+
 
 
 class UserDetailView(DetailView):
@@ -170,3 +173,26 @@ class UserDetailView(DetailView):
                                  {'name': 'View'}]
 
         return context
+
+
+class UserUpdate(UpdateView):
+    template_name = 'logged/user-form.tmpl'
+    model = User
+    success_message = 'User updated'
+    form_class = UserForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'lists',
+                        'active_subsection': 'user-list',
+                        'sidebar_template': 'logged/_sidebar-lists.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
+                                 {'name': 'Users', 'url': reverse('logged-user-list')},
+                                 {'name': 'View'}]
+
+        return context
+
+    def get_success_url(self, **kwargs):
+        return reverse('logged-user-detail', kwargs={'pk': self.kwargs['pk']})

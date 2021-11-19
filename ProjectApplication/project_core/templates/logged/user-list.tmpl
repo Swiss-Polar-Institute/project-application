@@ -23,10 +23,10 @@
                     <td>{{ user.first_name }}</td>
                     <td>{{ user.last_name }}</td>
                     <td>{{ user.active }}</td>
-                    <td>...</td>
+                    <td>TODO</td>
                     <td>
                         <a class="btn btn-primary btn-xs" href="{% url 'logged-user-detail' pk=user.pk %}">View</a>
-                        <a class="btn btn-primary btn-xs" href="#">Edit</a>
+                        <a class="btn btn-primary btn-xs" href="{% url 'logged-user-update' pk=user.pk %}">Edit</a>
                     </td>
                 </tr>
             {% endfor %}
