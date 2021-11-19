@@ -1,6 +1,12 @@
 {% extends 'logged/_base_with_menus.tmpl' %}
 
 {% block contents %}
+    {% if new_password %}
+        <div class="alert alert-primary" role="alert">
+            New password: {{ new_password }}
+        </div>
+    {% endif %}
+
     <div class="row">
         <div class="col-10">
             <h1>User</h1>

@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView, UpdateView
 
@@ -172,6 +173,18 @@ class UserDetailView(DetailView):
                                  {'name': 'Users', 'url': reverse('logged-user-list')},
                                  {'name': 'View'}]
 
+        user_password = self.request.session.get('user_password')
+        user_password_id = self.request.session.get('user_password_user_id')
+
+        context['new_password'] = None
+
+        if user_password:
+            if user_password_id == self.kwargs['pk']:
+                context['new_password'] = self.request.session['user_password']
+
+            self.request.session['user_password'] = None
+            self.request.session['user_password_user_id'] = None
+
         return context
 
 
@@ -194,5 +207,15 @@ class UserUpdate(UpdateView):
 
         return context
 
-    def get_success_url(self, **kwargs):
+    def get_success_url(self):
         return reverse('logged-user-detail', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form):
+        result = super().form_valid(form)
+
+        if form.new_password:
+            self.request.session['user_password_user_id'] = self.kwargs['pk']
+            self.request.session['user_password'] = form.new_password
+
+        return result
+

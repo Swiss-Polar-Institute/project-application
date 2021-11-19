@@ -12,6 +12,8 @@ class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        self.new_password = None
+
         self.helper = FormHelper(self)
 
         cancel_edit_url = reverse('logged-user-list')
@@ -45,6 +47,7 @@ class UserForm(forms.ModelForm):
 
         if self.cleaned_data['create_new_password']:
             password = User.objects.make_random_password()
+            self.new_password = password
             user.password = password
             user.save()
 
