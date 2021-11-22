@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 
 from django.test import TestCase
 from django.urls import reverse
@@ -7,6 +8,7 @@ from grant_management.models import GrantAgreement, Invoice
 from project_core.models import OrganisationName
 from project_core.tests import database_population
 from reporting.models import FundingInstrumentYearMissingData
+from reporting.views import ProjectsBalanceExcel
 
 
 class ReportingTest(TestCase):
@@ -103,24 +105,19 @@ def create_project_with_invoices():
                                                     signed_date=datetime.datetime(2020, 1, 4))
 
 
-class ProjectsBalanceCsvTest(TestCase):
+class ProjectsBalanceExcelTest(TestCase):
     def setUp(self):
         self._client_management = database_population.create_management_logged_client()
 
-    def test_get_one_project(self):
+    def test_get_one_project_ok(self):
         database_population.create_project()
 
-        response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-csv'))
+        response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-excel'))
         self.assertEqual(response.status_code, 200)
-        lines = response.content.decode('utf-8').split('\r\n')
+        self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
+        self.assertGreater(int(response['content-length']), 2000)
 
-        self.assertEqual(len(lines), 3)
-
-        self.assertEqual(lines[0], '\ufeffKey;Signed date;Organisation;Title;Start Date;End Date;Allocated budget;Balance due')
-        self.assertEqual(lines[1], 'SPI-2020-001;No grant agreement attached;;This is a test project;2020-01-10;2022-05-07;20000,00;20000,00')
-        self.assertEqual(lines[2], '')
-
-    def test_get_two_projects(self):
+    def test_get_two_projects_ok(self):
         project1 = database_population.create_project()
         organisation_name = OrganisationName.objects.create(name='Some organisation')
 
@@ -128,14 +125,42 @@ class ProjectsBalanceCsvTest(TestCase):
 
         project2 = create_project_with_invoices()
 
-        response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-csv'))
+        response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-excel'))
         self.assertEqual(response.status_code, 200)
-        lines = response.content.decode('utf-8').split('\r\n')
+        self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
+        self.assertGreater(int(response['content-length']), 2000)
 
-        self.assertEqual(len(lines), 4)
+    def data_one_project(self):
+        database_population.create_project()
 
-        self.assertEqual(lines[0], '\ufeffKey;Signed date;Organisation;Title;Start Date;End Date;Allocated budget;Balance due')
-        self.assertEqual(lines[1],
-                         'SPI-2020-001;No grant agreement attached;Some organisation;This is a test project;2020-01-10;2022-05-07;20000,00;20000,00')
-        self.assertEqual(lines[2], 'SPI-2020-002;04/01/2020;;Second test;2020-01-10;2022-05-07;15000,00;13500,00')
-        self.assertEqual(lines[3], '')
+        self.assertEqual(ProjectsBalanceExcel._headers(),
+                         ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
+                          'Balance due']
+                         )
+        self.assertEqual(ProjectsBalanceExcel._rows(),
+                         [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached', 'Organisation': '',
+                           'Title': 'This is a test project', 'Start date': datetime.date(2020, 1, 10),
+                           'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('20000.00'),
+                           'Balance due': Decimal('20000.00')}])
+
+    def data_two_projects(self):
+        project1 = database_population.create_project()
+        organisation_name = OrganisationName.objects.create(name='Some organisation')
+
+        project1.principal_investigator.organisation_names.add(organisation_name)
+
+        project2 = create_project_with_invoices()
+
+        self.assertEqual(ProjectsBalanceExcel._headers(),
+                         ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
+                          'Balance due'])
+
+        self.assertEqual(ProjectsBalanceExcel._rows(),
+                         [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached',
+                           'Organisation': 'Some organisation', 'Title': 'This is a test project',
+                           'Start date': datetime.date(2020, 1, 10), 'End date': datetime.date(2022, 5, 7),
+                           'Allocated budget': Decimal('20000.00'), 'Balance due': Decimal('20000.00')},
+                          {'Key': 'SPI-2020-002', 'Signed date': '04/01/2020', 'Organisation': '',
+                           'Title': 'Second test', 'Start date': datetime.date(2020, 1, 10),
+                           'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('15000.00'),
+                           'Balance due': Decimal('13500.00')}])

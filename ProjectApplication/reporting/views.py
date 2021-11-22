@@ -1,6 +1,8 @@
-import codecs
-import csv
+import datetime
+import io
+from decimal import Decimal
 
+import xlsxwriter
 from django.db.models import Count, F, Sum, Min, Max
 from django.http import HttpResponse
 from django.utils import timezone
@@ -303,7 +305,7 @@ def allocated_budget_per_year():
 def calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, year):
     total = 0
 
-    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name).\
+    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name). \
             filter(call__finance_year=year):
         total += project.invoices_paid_amount()
 
@@ -313,7 +315,7 @@ def calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, 
 def calculate_open_for_payment_funding_instrument_year(funding_instrument_long_name, year):
     total = 0
 
-    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name).\
+    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name). \
             filter(call__finance_year=year):
         if project.is_active():
             total += project.allocated_budget - project.invoices_paid_amount()
@@ -461,29 +463,24 @@ def format_date_for_swiss_locale(date):
     return date.strftime('%d/%m/%Y')
 
 
-class ProjectsBalanceCsv(View):
+class ProjectsBalanceExcel(View):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        now = timezone.localtime()
-        filename = (f'projects-balance-{now:%Y%m%d-%H%M}.csv')
+    @staticmethod
+    def _headers():
+        return ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
+                'Balance due']
 
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = f'attachment; filename="{filename}"'
-
-        response.write(codecs.BOM_UTF8)
-
-        headers = ['Key', 'Signed date', 'Organisation', 'Title', 'Start Date', 'End Date', 'Allocated budget', 'Balance due']
-
-        writer = csv.DictWriter(response, fieldnames=headers, delimiter=';')
-        writer.writeheader()
+    @staticmethod
+    def _rows():
+        rows = []
         for project in Project.objects.all().order_by('key'):
             pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
 
             if hasattr(project, 'grantagreement'):
                 if project.grantagreement.signed_date:
-                    grant_agreement_signed_date = format_date_for_swiss_locale(project.grantagreement.signed_date)
+                    grant_agreement_signed_date = project.grantagreement.signed_date
                 else:
                     grant_agreement_signed_date = 'Grant agreement not signed'
             else:
@@ -491,16 +488,78 @@ class ProjectsBalanceCsv(View):
 
             balance_due = project.allocated_budget - project.invoices_paid_amount()
 
-            row = {'Key': project.key,
-                   'Signed date': grant_agreement_signed_date,
-                   'Organisation': pi_organisations,
-                   'Title': project.title,
-                   'Start Date': project.start_date if project.start_date else 'N/A',
-                   'End Date': project.end_date if project.end_date else 'N/A',
-                   'Allocated budget': format_number_for_swiss_locale(project.allocated_budget),
-                   'Balance due': format_number_for_swiss_locale(balance_due),
-                   }
+            rows.append({'Key': project.key,
+                         'Signed date': grant_agreement_signed_date,
+                         'Organisation': pi_organisations,
+                         'Title': project.title,
+                         'Start date': project.start_date if project.start_date else 'N/A',
+                         'End date': project.end_date if project.end_date else 'N/A',
+                         'Allocated budget': project.allocated_budget,
+                         'Balance due': balance_due,
+                         })
 
-            writer.writerow(row)
+        return rows
+
+
+    def get(self, request, *args, **kwargs):
+        now = timezone.localtime()
+        filename = f'projects-balance-{now:%Y%m%d-%H%M}.xlsx'
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        col_widths = {
+            'Key': 12,
+            'Organisation': 18,
+            'Title': 44,
+            'Signed date': 12,
+            'Start date': 12,
+            'End date': 12,
+            'Allocated budget': 12,
+            'Balance due': 12
+        }
+
+        response.content = excel_dict_writer(filename,
+                                             ProjectsBalanceExcel._headers(),
+                                             ProjectsBalanceExcel._rows(),
+                                             col_widths)
 
         return response
+
+
+def excel_dict_writer(filename, headers, rows, col_widths):
+    output = io.BytesIO()
+    workbook = xlsxwriter.Workbook(output)
+    worksheet = workbook.add_worksheet()
+
+    worksheet.write_row(0, 0, headers)
+
+    date_format = workbook.add_format({'num_format': 'dd-mm-yyyy'})
+    decimal_format = workbook.add_format({'num_format': "#,##0.00"})
+
+    for row_index, row in enumerate(rows, 1):
+        to_use_headers = headers.copy()
+
+        for header_name, cell_value in row.items():
+            column_index = headers.index(header_name)
+            to_use_headers.remove(header_name)
+
+            if isinstance(cell_value, datetime.date):
+                worksheet.write_datetime(row_index, column_index, cell_value, date_format)
+            elif isinstance(cell_value, Decimal):
+                worksheet.write_number(row_index, column_index, cell_value, decimal_format)
+            else:
+                worksheet.write(row_index, column_index, cell_value)
+
+        assert to_use_headers == []
+
+    for col_width_name, col_width in col_widths.items():
+        column_index = headers.index(col_width_name)
+
+        worksheet.set_column(column_index, column_index, col_width)
+
+    workbook.close()
+
+    output.seek(0)
+
+    return output
