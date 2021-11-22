@@ -72,6 +72,13 @@ class CareerStagePerYearCalculator:
         self._career_stage_field = career_stage_field
         self._missing_data_type = missing_data_type
 
+        if self._model == Proposal:
+            self._finance_year_filter_key = 'call__finance_year'
+        elif self._model == Project:
+            self._finance_year_filter_key = 'finance_year'
+        else:
+            assert False
+
     def calculate_career_stage_stats(self, generic_queryset):
         if self._career_stages is None:
             self._career_stages = CareerStage.objects.all()
@@ -111,14 +118,14 @@ class CareerStagePerYearCalculator:
                 row[career_stage.name] = value_or_missing_data(is_missing_data,
                                                                missing_data_reason,
                                                                self._model.objects.
-                                                               filter(call__finance_year=year).
+                                                               filter(**{self._finance_year_filter_key: year}).
                                                                filter(**{self._career_stage_field: career_stage}).
                                                                count())
 
             row[NOT_IN_DB_HEADER] = value_or_missing_data(is_missing_data,
                                                           missing_data_reason,
                                                           self._model.objects.
-                                                          filter(call__finance_year=year).
+                                                          filter(**{self._finance_year_filter_key: year}).
                                                           filter(**{f'{self._career_stage_field}__isnull': True}).
                                                           count())
 
@@ -255,7 +262,7 @@ def calculate_number_of_calls():
 def calculate_paid_so_far_year(year):
     total = 0
 
-    for project in Project.objects.filter(call__finance_year=year):
+    for project in Project.objects.filter(finance_year=year):
         total += project.invoices_paid_amount()
 
     return total
@@ -264,7 +271,7 @@ def calculate_paid_so_far_year(year):
 def calculate_open_for_payment(year):
     total = 0
 
-    for project in Project.objects.filter(call__finance_year=year):
+    for project in Project.objects.filter(finance_year=year):
         if project.is_active():
             total += project.allocated_budget - project.invoices_paid_amount()
         else:
@@ -278,9 +285,9 @@ def allocated_budget_per_year():
     result = {}
 
     financial_support_per_year = Project.objects. \
-        values(year=F('call__finance_year')). \
+        values(year=F('finance_year')). \
         annotate(commitment=Sum('allocated_budget')). \
-        order_by('call__finance_year')
+        order_by('finance_year')
 
     data = []
 
@@ -305,8 +312,8 @@ def allocated_budget_per_year():
 def calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, year):
     total = 0
 
-    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name). \
-            filter(call__finance_year=year):
+    for project in Project.objects.filter(funding_instrument__long_name=funding_instrument_long_name). \
+            filter(finance_year=year):
         total += project.invoices_paid_amount()
 
     return total
@@ -315,8 +322,8 @@ def calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, 
 def calculate_open_for_payment_funding_instrument_year(funding_instrument_long_name, year):
     total = 0
 
-    for project in Project.objects.filter(call__funding_instrument__long_name=funding_instrument_long_name). \
-            filter(call__finance_year=year):
+    for project in Project.objects.filter(funding_instrument__long_name=funding_instrument_long_name). \
+            filter(finance_year=year):
         if project.is_active():
             total += project.allocated_budget - project.invoices_paid_amount()
         else:
