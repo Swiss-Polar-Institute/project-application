@@ -107,12 +107,16 @@ class CareerStagePerYearCalculator:
         return result
 
     def _calculate_min_year(self) -> int:
+        # Using the minimum to have '-' if needed for old calls
+        # (see _calculate_max_year)
         return min(
             Call.objects.aggregate(Min('finance_year'))['finance_year__min'],
             Project.objects.aggregate(Min('finance_year'))['finance_year__min']
         )
 
     def _calculate_max_year(self) -> int:
+        # Using the maximum because there might not be calls for a year but
+        # there might be funded projects (created not from a call)
         return max(
             Call.objects.aggregate(Max('finance_year'))['finance_year__max'],
             Project.objects.aggregate(Max('finance_year'))['finance_year__max']
