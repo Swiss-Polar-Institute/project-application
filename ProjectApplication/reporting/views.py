@@ -106,9 +106,26 @@ class CareerStagePerYearCalculator:
 
         return result
 
+    def _calculate_min_year(self) -> int:
+        return min(
+            Call.objects.aggregate(Min('finance_year'))['finance_year__min'],
+            Project.objects.aggregate(Min('finance_year'))['finance_year__min']
+        )
+
+    def _calculate_max_year(self) -> int:
+        return max(
+            Call.objects.aggregate(Max('finance_year'))['finance_year__max'],
+            Project.objects.aggregate(Max('finance_year'))['finance_year__max']
+        )
+
     def calculate_result(self):
         data = []
-        for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
+
+        min_year = self._calculate_min_year()
+        max_year = self._calculate_max_year()
+
+        # for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
+        for year in range(self._calculate_min_year(), self._calculate_max_year()+1):
             row = {}
             row['Year'] = year
             is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
