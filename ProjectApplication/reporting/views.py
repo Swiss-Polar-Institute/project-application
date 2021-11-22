@@ -193,6 +193,7 @@ class GenderCalculator:
 class ObjectsPerFundingInstrumentPerYear:
     def __init__(self, model, missing_data):
         self._model = model
+
         self._missing_data = missing_data
 
         self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
@@ -201,11 +202,24 @@ class ObjectsPerFundingInstrumentPerYear:
         for funding_instrument in self._funding_instruments:
             self._funding_instruments_long_names.append(funding_instrument.long_name)
 
-        self._start_year = Call.objects.aggregate(Min('finance_year'))['finance_year__min']
-        self._end_year = Call.objects.aggregate(Max('finance_year'))['finance_year__max']
+        self._start_year = Project.objects.aggregate(Min('finance_year'))['finance_year__min']
+        self._end_year = Project.objects.aggregate(Max('finance_year'))['finance_year__max']
 
     def _get_headers(self):
         return ['Year'] + self._funding_instruments_long_names
+
+    def _count_objects(self, funding_instrument, year):
+        if self._model == Proposal:
+            calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
+
+            if calls.exists():
+                return self._model.objects.filter(call__in=calls).count()
+            else:
+                return '-'
+        elif self._model == Project:
+            return self._model.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year).count()
+        else:
+            assert False
 
     def calculate_result(self):
         data = []
@@ -222,13 +236,7 @@ class ObjectsPerFundingInstrumentPerYear:
                     row[funding_instrument.long_name] = missing_data_reason
                     continue
 
-                calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
-
-                if calls.exists():
-                    proposal_count = self._model.objects.filter(call__in=calls).count()
-                    row[funding_instrument.long_name] = proposal_count
-                else:
-                    row[funding_instrument.long_name] = '-'
+                row[funding_instrument.long_name] = self._count_objects(funding_instrument, year)
 
             data.append(row)
 
@@ -506,7 +514,6 @@ class ProjectsBalanceExcel(View):
                          })
 
         return rows
-
 
     def get(self, request, *args, **kwargs):
         now = timezone.localtime()
