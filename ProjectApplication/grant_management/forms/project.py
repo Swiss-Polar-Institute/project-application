@@ -35,6 +35,9 @@ class ProjectForm(forms.ModelForm):
             cancel_url = reverse('logged-project-list')
             locations_message = 'After creating the project add the locations using the Grant Management for the project in the section "Other"'
 
+        # Applicants need to enter 5 keywords in the proposal, SPI at the moment can create or save them without keywords
+        self.fields['keywords'].required = False
+
         if is_standalone_project:
             self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
             self.fields['geographical_areas'].required = False
