@@ -173,7 +173,9 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ['title', 'principal_investigator', 'funding_instrument', 'finance_year', 'keywords',
                   'geographical_areas', 'location', 'start_date', 'end_date', 'allocated_budget']
-        labels = {'location': 'Precise region'}
+        labels = {'location': 'Precise region',
+                  'allocated_budget': 'Allocated budget (CHF)'
+                  }
         widgets = {'principal_investigator': autocomplete.ModelSelect2(url='logged-autocomplete-person-positions'),
                    'start_date': XDSoftYearMonthDayPickerInput,
                    'end_date': XDSoftYearMonthDayPickerInput,
