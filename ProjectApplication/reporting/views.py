@@ -330,8 +330,8 @@ def allocated_budget_per_call():
     result = {}
 
     allocated_budget_per_call = Project.objects. \
-        values(call_name=F('call__funding_instrument__long_name'),
-               account_number=F('call__funding_instrument__short_name__account_number'),
+        values(call_name=F('funding_instrument__long_name'),
+               account_number=F('funding_instrument__short_name__account_number'),
                finance_year_=F('finance_year')). \
         annotate(financial_support=Sum('allocated_budget')). \
         order_by('finance_year')
