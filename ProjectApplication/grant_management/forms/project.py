@@ -27,13 +27,14 @@ class ProjectForm(forms.ModelForm):
 
             grant_management_deliverables_url = reverse('logged-grant_management-project-detail',
                                                         kwargs={'pk': self.instance.id})
-            locations_message = f'Please use the <a href="{grant_management_deliverables_url}?tab=other#locations">Grant Management ' \
-                                f'Other tab</a> of the project to edit locations'
+
+            locations_link = f'{grant_management_deliverables_url}?tab=other#locations'
+            locations_message = f'Use the <a href="{locations_link}">"Other" tab under grant management</a> to edit the project locations.'
 
         else:
             submit_text = 'Create Project'
             cancel_url = reverse('logged-project-list')
-            locations_message = 'After creating the project add the locations using the Grant Management for the project in the section "Other"'
+            locations_message = 'Use the "Other" tab under grant management to add the project locations after creating it. '
 
         # Applicants need to enter 5 keywords in the proposal, SPI at the moment can create or save them without keywords
         self.fields['keywords'].required = False
