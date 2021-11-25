@@ -142,6 +142,9 @@ class Call(CreateModifyOn):
         else:
             return f'{self.long_name[:10]}...'
 
+    def long_name_without_finance_year(self):
+        return self.long_name.replace(str(self.finance_year), '').strip()
+
     @staticmethod
     def open_calls():
         return Call.objects.filter(call_open_date__lte=timezone.now(),
@@ -465,7 +468,7 @@ class Organisation(CreateModifyOn):
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50,
                                   blank=True, null=True)
     display_name = models.CharField(help_text='Name of organisation used for display purposes', max_length=100,
-                                         blank=True, null=True)
+                                    blank=True, null=True)
     street = models.CharField(help_text='Street address of the organisation', max_length=500, blank=True, null=True)
     city = models.CharField(help_text='City in which the organisation is based', max_length=100)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=True, null=True)
@@ -1107,7 +1110,8 @@ class Project(CreateModifyOn):
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
     key = models.CharField(help_text='Project key identifier all the way to finance', max_length=64, unique=True)
     title = models.CharField(help_text='Title of the project', max_length=500, )
-    funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the project belongs',
+    funding_instrument = models.ForeignKey(FundingInstrument,
+                                           help_text='Funding instrument to which the project belongs',
                                            on_delete=models.PROTECT)
     finance_year = models.IntegerField(help_text='Finance year of this project')
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project')
@@ -1239,6 +1243,7 @@ class Project(CreateModifyOn):
 
     def locations_coordinates_sorted(self):
         return self.project_location.order_by('name')
+
 
 class ProjectPartner(Partner):
     """Partner that is part of a project."""

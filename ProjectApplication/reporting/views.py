@@ -54,7 +54,7 @@ class CareerStagePerCallCalculator:
                 if is_missing_data:
                     stats[stat_key] = missing_data_reason
 
-            stats['Grant Scheme'] = call.funding_instrument.long_name
+            stats['Grant Scheme'] = call.long_name_without_finance_year()
             stats['Year'] = call.finance_year
             data.append(stats)
 
