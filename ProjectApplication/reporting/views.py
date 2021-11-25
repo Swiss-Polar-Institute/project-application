@@ -200,7 +200,7 @@ class GenderCalculator:
             'finance_year__max']
 
     def calculate_result(self):
-        table_contents = []
+        data = []
 
         for funding_instrument in FundingInstrument.objects.all().order_by('long_name'):
             min_year = self._calculate_min_year_for_funding_instrument(funding_instrument)
@@ -233,11 +233,11 @@ class GenderCalculator:
 
                 percentages[self._grant_scheme_text] = funding_instrument.long_name
                 percentages[self._year_text] = finance_year
-                table_contents.append(percentages)
+                data.append(percentages)
 
         result = {}
         result['headers'] = [self._grant_scheme_text, self._year_text] + self._gender_name_list + [NOT_IN_DB_HEADER]
-        result['data'] = table_contents
+        result['data'] = data
         result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
         return result
 
