@@ -199,7 +199,7 @@ class GenderCalculator:
         return Project.objects.filter(funding_instrument=funding_instrument).aggregate(Max('finance_year'))[
             'finance_year__max']
 
-    def calculate_final_table(self):
+    def calculate_result(self):
         table_contents = []
 
         for funding_instrument in FundingInstrument.objects.all().order_by('long_name'):
@@ -430,14 +430,14 @@ def gender_proposal_applicants_per_call():
     gender_percentage_calculator = GenderCalculator(Proposal,
                                                     FundingInstrumentYearMissingData.MissingDataType.GENDER_PROPOSAL_APPLICANT)
 
-    return gender_percentage_calculator.calculate_final_table()
+    return gender_percentage_calculator.calculate_result()
 
 
 def gender_project_principal_investigator_per_call():
     gender_percentage_calculator = GenderCalculator(Project,
                                                     FundingInstrumentYearMissingData.MissingDataType.GENDER_FUNDED_PROJECT_PI)
 
-    return gender_percentage_calculator.calculate_final_table()
+    return gender_percentage_calculator.calculate_result()
 
 
 def career_stage_proposal_applicants_per_year():
