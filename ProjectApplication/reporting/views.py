@@ -129,7 +129,7 @@ class CareerStagePerYearCalculator:
         max_year = self._calculate_max_year()
 
         # for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
-        for year in range(self._calculate_min_year(), self._calculate_max_year()+1):
+        for year in range(self._calculate_min_year(), self._calculate_max_year() + 1):
             row = {}
             row['Year'] = year
             is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
@@ -161,9 +161,9 @@ class CareerStagePerYearCalculator:
 
 
 class GenderCalculator:
-    def __init__(self, gender_field, foreign_key_field: str, missing_data_type):
+    def __init__(self, main_model, gender_field, missing_data_type):
+        self._main_model = main_model
         self._gender_field = gender_field
-        self._foreign_key_field = foreign_key_field
         self._missing_data_type = missing_data_type
 
         self._grant_scheme_text = 'Grant Scheme'
@@ -185,24 +185,48 @@ class GenderCalculator:
 
         return result
 
+    def _calculate_min_year_for_funding_instrument(self, funding_instrument):
+        return Project.objects.filter(funding_instrument=funding_instrument).aggregate(Min('finance_year'))[
+            'finance_year__min']
+
+    def _calculate_max_year_for_funding_instrument(self, funding_instrument):
+        return Project.objects.filter(funding_instrument=funding_instrument).aggregate(Max('finance_year'))[
+            'finance_year__max']
+
     def calculate_final_table(self):
         proposals_genders = []
-        for call in Call.objects.filter(submission_deadline__lte=timezone.now()). \
-                order_by('long_name'):
-            generic_queryset = getattr(call, self._foreign_key_field)
 
-            percentages = self._calculate_genders(generic_queryset)
+        for funding_instrument in FundingInstrument.objects.all().order_by('long_name'):
+            min_year = self._calculate_min_year_for_funding_instrument(funding_instrument)
+            max_year = self._calculate_max_year_for_funding_instrument(funding_instrument)
 
-            missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
-                self._missing_data_type, funding_instrument=call.funding_instrument, year=call.finance_year)
+            if min_year is None or max_year is None:
+                continue
 
-            if missing_data:
-                for data in percentages.keys():
-                    percentages[data] = missing_data_reason
+            for finance_year in range(min_year, max_year + 1):
+                if self._main_model == Proposal:
+                    generic_queryset = Proposal.objects.\
+                        filter(call__finance_year=finance_year).\
+                        filter(call__funding_instrument=funding_instrument).\
+                        order_by('call__long_name')
+                elif self._main_model == Project:
+                    generic_queryset = Project.objects.filter(finance_year=finance_year).\
+                        order_by('funding_instrument__long_name')
+                else:
+                    assert False
 
-            percentages[self._grant_scheme_text] = call.funding_instrument.long_name
-            percentages[self._year_text] = call.finance_year
-            proposals_genders.append(percentages)
+                percentages = self._calculate_genders(generic_queryset)
+
+                missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+                    self._missing_data_type, funding_instrument=funding_instrument, year=finance_year)
+
+                if missing_data:
+                    for data in percentages.keys():
+                        percentages[data] = missing_data_reason
+
+                percentages[self._grant_scheme_text] = funding_instrument.long_name
+                percentages[self._year_text] = finance_year
+                proposals_genders.append(percentages)
 
         result = {}
         result['headers'] = [self._grant_scheme_text, self._year_text] + self._gender_name_list + [NOT_IN_DB_HEADER]
@@ -396,15 +420,16 @@ def allocated_budget_per_call():
 
 
 def gender_proposal_applicants_per_call():
-    gender_percentage_calculator = GenderCalculator('applicant__person__gender',
-                                                    'proposal_set',
+    gender_percentage_calculator = GenderCalculator(Proposal,
+                                                    'applicant__person__gender',
                                                     FundingInstrumentYearMissingData.MissingDataType.GENDER_PROPOSAL_APPLICANT)
 
     return gender_percentage_calculator.calculate_final_table()
 
 
 def gender_project_principal_investigator_per_call():
-    gender_percentage_calculator = GenderCalculator('principal_investigator__person__gender', 'project_set',
+    gender_percentage_calculator = GenderCalculator(Project,
+                                                    'principal_investigator__person__gender',
                                                     FundingInstrumentYearMissingData.MissingDataType.GENDER_FUNDED_PROJECT_PI)
 
     return gender_percentage_calculator.calculate_final_table()
