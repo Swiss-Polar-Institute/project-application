@@ -15,7 +15,8 @@ class ContactFormTest(TestCase):
                 'group': 'IT and data',
                 'organisation_names': self._organisations,
                 'person__first_name': 'John',
-                'person__surname': 'Doe'
+                'person__surname': 'Doe',
+                'privacy_policy': True,
                 }
 
         contact_form = ContactForm(data)
