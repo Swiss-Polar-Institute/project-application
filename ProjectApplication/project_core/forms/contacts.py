@@ -36,12 +36,12 @@ class ContactForm(ModelForm):
         self.fields['person__surname'] = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
                                                          initial=person__surname)
 
-        self.fields['contact_newsletter'].disabled = True
-
         self.fields['email'] = forms.EmailField(initial=main_email, required=False)
 
         self.fields['privacy_policy'].help_text += '. Please make sure that the person has accepted the privacy policy' \
                                                    ' before adding it into the list.'
+
+        self.fields['privacy_policy'].required = True
 
         self.helper = FormHelper(self)
 
