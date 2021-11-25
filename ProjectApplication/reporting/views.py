@@ -125,8 +125,9 @@ class CareerStagePerYearCalculator:
     def calculate_result(self):
         data = []
 
-        min_year = self._calculate_min_year()
-        max_year = self._calculate_max_year()
+        for funding_instrument in FundingInstrument.objects.all().order_by('long_name'):
+            min_year = self._calculate_min_year()
+            max_year = self._calculate_max_year()
 
         # for year in Call.objects.all().values_list('finance_year', flat=True).distinct().order_by('finance_year'):
         for year in range(self._calculate_min_year(), self._calculate_max_year() + 1):
@@ -158,6 +159,37 @@ class CareerStagePerYearCalculator:
         result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
 
         return result
+
+
+def not_none_or_function(item1, item2, function):
+    if item1 is None and item2 is not None:
+        return item2
+    elif item1 is not None and item2 is None:
+        return item1
+    elif item1 is None and item2 is None:
+        return None
+    else:
+        return function(item1, item2)
+
+
+def calculate_min_year_for_funding_instrument(funding_instrument):
+    projects_min_year = Project.objects.filter(funding_instrument=funding_instrument).aggregate(Min('finance_year'))[
+        'finance_year__min']
+    proposals_min_year = \
+        Proposal.objects.filter(call__funding_instrument=funding_instrument).filter(call__callevaluation__isnull=False).aggregate(Min('call__finance_year'))[
+            'call__finance_year__min']
+
+    return not_none_or_function(projects_min_year, proposals_min_year, min)
+
+
+def calculate_max_year_for_funding_instrument(funding_instrument):
+    projects_max_year = Project.objects.filter(funding_instrument=funding_instrument).aggregate(Max('finance_year'))[
+        'finance_year__max']
+    proposals_max_year = \
+        Proposal.objects.filter(call__funding_instrument=funding_instrument).filter(call__callevaluation__isnull=False).aggregate(Max('call__finance_year'))[
+            'call__finance_year__max']
+
+    return not_none_or_function(projects_max_year, proposals_max_year, max)
 
 
 class GenderCalculator:
@@ -203,8 +235,8 @@ class GenderCalculator:
         data = []
 
         for funding_instrument in FundingInstrument.objects.all().order_by('long_name'):
-            min_year = self._calculate_min_year_for_funding_instrument(funding_instrument)
-            max_year = self._calculate_max_year_for_funding_instrument(funding_instrument)
+            min_year = calculate_min_year_for_funding_instrument(funding_instrument)
+            max_year = calculate_max_year_for_funding_instrument(funding_instrument)
 
             if min_year is None or max_year is None:
                 continue
@@ -228,8 +260,8 @@ class GenderCalculator:
                     self._missing_data_type, funding_instrument=funding_instrument, year=finance_year)
 
                 if missing_data:
-                    for data in percentages.keys():
-                        percentages[data] = missing_data_reason
+                    for key in percentages.keys():
+                        percentages[key] = missing_data_reason
 
                 percentages[self._grant_scheme_text] = funding_instrument.long_name
                 percentages[self._year_text] = finance_year
