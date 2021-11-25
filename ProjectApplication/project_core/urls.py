@@ -225,4 +225,8 @@ urlpatterns = [
          name='logged-autocomplete-physical-people'),
 
     path('raises500/', server_error),
+
+    path('api/v1/project/list/',
+         logged.project.ProjectListAPI.as_view(),
+         name='project-list-api'),
 ]

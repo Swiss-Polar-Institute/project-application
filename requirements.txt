@@ -44,3 +44,5 @@ traitlets==4.3.3
 wcwidth==0.1.8
 XlsxWriter==1.2.7
 bleach==3.3.0
+djangorestframework==3.12.4
+django-filter==2.4.0
