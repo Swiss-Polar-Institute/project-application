@@ -56,6 +56,10 @@ class ProjectForm(forms.ModelForm):
                 'and try again (you need to reload the page). Only people that have accepted the privacy policy is ' \
                 'displayed'
 
+            create_funding_instrument_url = reverse('logged-funding-instrument-add')
+            self.fields[
+                'funding_instrument'].help_text += f'. If the funding instrument isn not found <a href="{create_funding_instrument_url}">create</a> the funding instrument and try again (you need to reload the page).'
+
             funding_instrument_div = Div(
                 Div('funding_instrument', css_class='col-12'),
                 css_class='row'
