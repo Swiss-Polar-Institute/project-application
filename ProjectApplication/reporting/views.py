@@ -161,9 +161,8 @@ class CareerStagePerYearCalculator:
 
 
 class GenderCalculator:
-    def __init__(self, main_model, gender_field, missing_data_type):
+    def __init__(self, main_model, missing_data_type):
         self._main_model = main_model
-        self._gender_field = gender_field
         self._missing_data_type = missing_data_type
 
         self._grant_scheme_text = 'Grant Scheme'
@@ -172,6 +171,13 @@ class GenderCalculator:
         self._gender_list = list(Gender.objects.all().order_by('name'))
 
         self._gender_name_list = []
+
+        if self._main_model == Proposal:
+            self._gender_field = 'applicant__person__gender'
+        elif self._main_model == Project:
+            self._gender_field = 'principal_investigator__person__gender'
+        else:
+            assert False
 
         for gender in self._gender_list:
             self._gender_name_list.append(gender.name)
@@ -194,7 +200,7 @@ class GenderCalculator:
             'finance_year__max']
 
     def calculate_final_table(self):
-        proposals_genders = []
+        table_contents = []
 
         for funding_instrument in FundingInstrument.objects.all().order_by('long_name'):
             min_year = self._calculate_min_year_for_funding_instrument(funding_instrument)
@@ -205,13 +211,13 @@ class GenderCalculator:
 
             for finance_year in range(min_year, max_year + 1):
                 if self._main_model == Proposal:
-                    generic_queryset = Proposal.objects.\
-                        filter(call__finance_year=finance_year).\
-                        filter(call__funding_instrument=funding_instrument).\
+                    generic_queryset = Proposal.objects. \
+                        filter(call__finance_year=finance_year). \
+                        filter(call__funding_instrument=funding_instrument). \
                         order_by('call__long_name')
                 elif self._main_model == Project:
-                    generic_queryset = Project.objects.filter(finance_year=finance_year).\
-                        filter(funding_instrument=funding_instrument).\
+                    generic_queryset = Project.objects.filter(finance_year=finance_year). \
+                        filter(funding_instrument=funding_instrument). \
                         order_by('funding_instrument__long_name')
                 else:
                     assert False
@@ -227,11 +233,11 @@ class GenderCalculator:
 
                 percentages[self._grant_scheme_text] = funding_instrument.long_name
                 percentages[self._year_text] = finance_year
-                proposals_genders.append(percentages)
+                table_contents.append(percentages)
 
         result = {}
         result['headers'] = [self._grant_scheme_text, self._year_text] + self._gender_name_list + [NOT_IN_DB_HEADER]
-        result['data'] = proposals_genders
+        result['data'] = table_contents
         result['header_tooltips'] = {NOT_IN_DB_HEADER: NOT_IN_DB_TOOLTIP}
         return result
 
@@ -422,7 +428,6 @@ def allocated_budget_per_call():
 
 def gender_proposal_applicants_per_call():
     gender_percentage_calculator = GenderCalculator(Proposal,
-                                                    'applicant__person__gender',
                                                     FundingInstrumentYearMissingData.MissingDataType.GENDER_PROPOSAL_APPLICANT)
 
     return gender_percentage_calculator.calculate_final_table()
@@ -430,7 +435,6 @@ def gender_proposal_applicants_per_call():
 
 def gender_project_principal_investigator_per_call():
     gender_percentage_calculator = GenderCalculator(Project,
-                                                    'principal_investigator__person__gender',
                                                     FundingInstrumentYearMissingData.MissingDataType.GENDER_FUNDED_PROJECT_PI)
 
     return gender_percentage_calculator.calculate_final_table()
