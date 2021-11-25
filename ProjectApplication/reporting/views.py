@@ -211,6 +211,7 @@ class GenderCalculator:
                         order_by('call__long_name')
                 elif self._main_model == Project:
                     generic_queryset = Project.objects.filter(finance_year=finance_year).\
+                        filter(funding_instrument=funding_instrument).\
                         order_by('funding_instrument__long_name')
                 else:
                     assert False
