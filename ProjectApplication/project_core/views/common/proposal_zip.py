@@ -27,8 +27,15 @@ def add_proposal_to_zip(proposal, zip_archive, request, used_directory_names):
 
     for answer_file in proposal.proposalqafile_set.all():
         filename = answer_file.file_name()
+        try:
+            file_contents = answer_file.file.read()
+        except OSError:
+            file_contents = f'ERROR reading file from SPI object storage. File id: {answer_file.id} ' \
+                            f'file name: {answer_file.file.name} file_md5: {answer_file.md5}'.encode('utf-8')
+            filename = filename + '.txt'
+
         with zip_archive.open(os.path.join(proposal_directory, filename), mode='w') as file_pointer:
-            file_pointer.write(answer_file.file.read())
+            file_pointer.write(file_contents)
 
     return proposal_directory
 
