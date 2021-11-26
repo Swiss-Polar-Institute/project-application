@@ -1,0 +1,25 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            {% if form.instance.id %}
+                <h1>Edit user</h1>
+            {% else %}
+                <h1>Create user</h1>
+            {% endif %}
+
+            {% crispy form %}
+        </div>
+        <div class="col-2">
+            {% if form.instance.id %}
+                <p>
+                    <a class="btn btn-primary" href="{% url 'logged-user-detail' pk=form.instance.id %}">View User</a>
+                </p>
+            {% endif %}
+
+        </div>
+    </div>
+{% endblock %}
