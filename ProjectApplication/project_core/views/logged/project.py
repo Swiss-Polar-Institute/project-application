@@ -30,7 +30,7 @@ class ProjectList(ListView):
 
 
 class ProjectListAPI(ListAPIView):
-    queryset = Project.objects.all()
+    queryset = Project.objects.exclude(status=Project.ABORTED)
     serializer_class = ProjectSerializer
     filterset_class = ProjectFilterSet
 

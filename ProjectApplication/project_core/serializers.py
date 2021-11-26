@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from rest_framework import serializers
 
 from project_core.models import Project, Keyword, GeographicalArea, PersonPosition, OrganisationName
@@ -37,12 +39,25 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ('latitude', 'longitude', )
 
 
+class FilterMediumSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.filter(~Q(license_id=None))
+        return super(FilterMediumSerializer, self).to_representation(data)
+
+
 class MediumSerializer(serializers.ModelSerializer):
     photographer = serializers.CharField(source='photographer.full_name')
 
     class Meta:
         model = Medium
         fields = ('photographer', 'file', )
+        list_serializer_class = FilterMediumSerializer
+
+
+class FilterLaySummarySerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.filter(lay_summary_type__name="Web")
+        return super(FilterLaySummarySerializer, self).to_representation(data)
 
 
 class LaySummarySerializer(serializers.ModelSerializer):
@@ -50,6 +65,7 @@ class LaySummarySerializer(serializers.ModelSerializer):
     class Meta:
         model = LaySummary
         fields = ('text', 'author', )
+        list_serializer_class = FilterLaySummarySerializer
 
 
 class ProjectSerializer(serializers.ModelSerializer):
