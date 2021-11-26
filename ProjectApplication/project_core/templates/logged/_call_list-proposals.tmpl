@@ -40,11 +40,33 @@
     {% else %}
         No proposals have been created for this call.
     {% endif %}
+    <p></p>
+    {% if proposals %}
+        <p>
+            <a class="btn btn-primary btn-sm"
+               href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
 
-    <p>
-        <a class="btn btn-primary btn-sm"
-           href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
-    </p>
+            <a id="export-as-zip" class="btn btn-primary btn-sm"
+               href="{% url 'logged-export-proposals-zip-call' call=call.id %}">Export as ZIP</a>
+            <span style="display:none;" id="download-warning">Please wait, generating the Zip takes some time...</span>
+
+            <!-- This is a temporary solution to show a spinning wheel... will be changed,
+            probably the Zip file will start getting served faster instead of all generated in memory
+             -->
+            <script type="text/javascript">
+                $("#export-as-zip").click(function (e) {
+                    $(this).addClass('disabled');
+                    $(this).prepend('<span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ');
+                    $("#download-warning").show();
+                });
+                $(window).on("focus", function () {
+                    $("#export-as-zip").removeClass('disabled');
+                    $("#export-as-zip").find("#spinner").remove()
+                    $("#download-warning").hide();
+                });
+            </script>
+        </p>
+    {% endif %}
     <script type="text/javascript" class="init">
         $(document).ready(function () {
             $('table.display').DataTable({

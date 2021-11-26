@@ -339,6 +339,7 @@ REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-proposal-detail',
                                   'logged-export-proposals-csv-summary-all',
                                   'logged-export-proposals-csv-summary-call',
+                                  'logged-export-proposals-zip-all',
                                   'logged-homepage']
 LOGGED_OUT_USERNAME = 'loggedout'
 PROPOSAL_STATUS_DRAFT = 'Draft'
@@ -346,6 +347,11 @@ PROPOSAL_STATUS_SUBMITTED = 'Submitted'
 LAY_SUMMARY_ORIGINAL = 'Original'
 API_SECRET_KEY = os.getenv('API_SECRET_KEY')
 SPI_MEDIA_GALLERY_IMPORT_CALLBACK = os.getenv('SPI_MEDIA_GALLERY_IMPORT_CALLBACK', None)
+
+# To generate the PDF of a Proposal (for example) this application connects to itself. At a times it might
+# be behind a proxy: it does the full route and might need to authenticate
+SELF_HTTP_USERNAME = os.getenv('SELF_HTTP_USERNAME', None)
+SELF_HTTP_PASSWORD = os.getenv('SELF_HTTP_PASSWORD', None)
 
 # This part is created on creating a call
 CALL_DEFAULT_PART_QUESTIONS_ANSWERS = 'Proposed {{ activity }} description'

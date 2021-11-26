@@ -36,7 +36,7 @@
                     <td>{{ proposal.call.long_name }}</td>
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
-                    <td>{% include 'logged/_proposal_status_badge.tmpl' with status_name=proposal.proposal_status.name only  %}</td>
+                    <td>{% include 'logged/_proposal_status_badge.tmpl' with status_name=proposal.proposal_status.name only %}</td>
                     <td>{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}
                     </td>
                     <td>
@@ -53,9 +53,13 @@
     <p>
         <a class="btn btn-primary btn-sm"
            href="{% url 'logged-export-proposals-csv-summary-all' %}">Export as CSV</a>
+        {% if reviewer %}
+            {# We don't want to allow to export *all* the proposals into a Zip: there are many#}
+            {# Reviewers have access to a subset of them so they can export their subset.#}
+            <a class="btn btn-primary btn-sm"
+               href="{% url 'logged-export-proposals-zip-all' %}">Export as ZIP</a>
+        {% endif %}
     </p>
-
-
     <script type="text/javascript" class="init">
         $(document).ready(function () {
             $('table.display').DataTable({

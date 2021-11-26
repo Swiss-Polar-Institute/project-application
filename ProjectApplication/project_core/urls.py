@@ -4,8 +4,11 @@ from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
 
+import project_core.views.common.proposal_pdf
+import project_core.views.common.proposal_zip
 import project_core.views.logged.proposals_export_to_csv_summary
 import project_core.views.logged.proposals_export_to_excel
+import project_core.views.logged.proposals_export_to_zip
 from .views import common
 from .views import external
 from .views import logged
@@ -30,6 +33,12 @@ urlpatterns = [
     path('proposal/<uuid:uuid>/',
          external.proposal.ProposalDetailView.as_view(),
          name='proposal-detail'),
+    path('proposal/<uuid:uuid>/pdf',
+         project_core.views.common.proposal_pdf.ProposalDetailViewPdf.as_view(),
+         name='proposal-detail-pdf'),
+    path('proposal/<uuid:uuid>/zip',
+         project_core.views.common.proposal_zip.ProposalDetailViewZip.as_view(),
+         name='proposal-detail-zip'),
     path('proposal/thank-you/<uuid:uuid>/',
          external.proposal.ProposalThankYouView.as_view(),
          name='proposal-thank-you'),
@@ -61,10 +70,18 @@ urlpatterns = [
     path('logged/proposals/export/csv/summary/<int:call>/',
          project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-call'),
+    path('logged/proposals/export/csv/summary/<int:call>/',
+         project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
+         name='logged-export-proposals-csv-summary-call'),
+    path('logged/proposals/export/zip/<int:call>/',
+         project_core.views.logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
+         name='logged-export-proposals-zip-call'),
     path('logged/proposals/export/csv/summary/',
          project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
-
+    path('logged/proposals/export/zip/',
+         project_core.views.logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
+         name='logged-export-proposals-zip-all'),
     path('logged/call/list/',
          logged.call.CallList.as_view(),
          name='logged-call-list'),

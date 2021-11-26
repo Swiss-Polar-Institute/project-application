@@ -12,7 +12,8 @@ python3 manage.py collectstatic --no-input --clear
 
 gunicorn ProjectApplication.wsgi:application \
         --bind 0.0.0.0:8085 \
-        --workers 3 \
+        --workers 20 \
+	--timeout=600 \
 	--log-file=- \
 	--error-logfile=- \
 	--access-logfile=- \

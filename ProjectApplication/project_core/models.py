@@ -497,6 +497,15 @@ class OrganisationName(CreateModifyOn):
     name = models.CharField(help_text='A name that the organisation is known for', max_length=100, unique=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
 
+    def public_name(self):
+        if self.organisation:
+            if self.organisation.english_name:
+                return self.organisation.english_name
+            else:
+                return self.organisation.long_name
+        else:
+            return self.name
+
     def __str__(self):
         return '{}'.format(self.name)
 
@@ -948,6 +957,18 @@ class Proposal(CreateModifyOn):
         # or at least consistent ordering
         return self.proposalscientificcluster_set.order_by('id')
 
+    def file_name(self):
+        # TODO: Names with umlauts, accents, etc. are going to cause a problem?
+
+        applicant_full_name = self.applicant.person.full_name()
+        filename = f'{self.call.short_name}-{applicant_full_name}'
+        filename = filename.replace(' ', '_').replace('.', '_')
+
+        filename = filename.replace('/', '')
+        filename = filename.replace('\\', '')
+
+        return filename
+
 
 class ProposalQAText(CreateModifyOn):
     """Questions assigned to a proposal and their respective answers"""
@@ -994,6 +1015,17 @@ class ProposalQAFile(CreateModifyOn):
         except ClientError:
             logger.warning(f'NOTIFY: ProposalQAFile {self.id} ClientError')
             return 'Unknown -ClientError'
+
+    def file_name(self):
+        from variable_templates.utils import apply_templates_to_string
+
+        _, extension = os.path.splitext(self.file.name)
+        filename = f'{self.call_question.call_part.title}-{self.call_question.question_text[0:50]}{extension}'
+
+        filename = apply_templates_to_string(filename, self.call_question.call_part.call)
+
+        filename = filename.replace(' ', '_')
+        return filename
 
 
 class BudgetItem(models.Model):
