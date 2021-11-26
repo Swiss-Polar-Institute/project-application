@@ -46,6 +46,7 @@ class MediumSerializer(serializers.ModelSerializer):
 
 
 class LaySummarySerializer(serializers.ModelSerializer):
+    author = serializers.CharField(source='author.full_name')
     class Meta:
         model = LaySummary
         fields = ('text', 'author', )
