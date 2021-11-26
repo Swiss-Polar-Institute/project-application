@@ -12,6 +12,8 @@ from project_core.models import SpiUser
 
 class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        initial_type_of_user = kwargs.pop('type_of_user', None)
+
         super().__init__(*args, **kwargs)
 
         self.new_password = None
@@ -28,7 +30,7 @@ class UserForm(forms.ModelForm):
                                                         help_text='Reviewers have access to only proposals. Management to everything in Nestor'
                                                         )
 
-        if self.instance:
+        if self.instance.id:
             group_count = 0
             if self.instance.groups.filter(name=settings.REVIEWER_GROUP_NAME).exists():
                 self.fields['type_of_user'].initial = settings.REVIEWER_GROUP_NAME
@@ -38,6 +40,9 @@ class UserForm(forms.ModelForm):
                 group_count += 1
 
             assert group_count < 2, 'A user cannot be a reviewer and management at the same time'
+
+        if initial_type_of_user:
+            self.fields['type_of_user'].initial = initial_type_of_user
 
         self.fields['create_new_password'] = forms.BooleanField(required=False,
                                                                 help_text='If enabled it will generate and display a new password for the user')

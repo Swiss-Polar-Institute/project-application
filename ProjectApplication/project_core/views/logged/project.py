@@ -155,6 +155,15 @@ class UserAdd(SuccessMessageMixin, CreateView):
     def get_success_url(self, **kwargs):
         return reverse('logged-user-detail', kwargs={'pk': self.object.pk})
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        type_of_user = self.request.GET.get('type_of_user')
+
+        if type_of_user:
+            kwargs['type_of_user'] = type_of_user
+
+        return kwargs
 
 class UserDetailView(DetailView):
     template_name = 'logged/user-detail.tmpl'
