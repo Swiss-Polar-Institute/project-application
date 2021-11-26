@@ -8,7 +8,7 @@ from comments import utils
 from comments.utils import process_comment_attachment
 from project_core.forms.financial_key import FinancialKeyForm
 from project_core.forms.user import UserForm
-from project_core.models import Project, FinancialKey
+from project_core.models import Project, FinancialKey, SpiUser
 
 
 class ProjectList(ListView):
@@ -115,7 +115,7 @@ class FinancialKeyAdd(SuccessMessageMixin, CreateView):
 class UserListView(ListView):
     template_name = 'logged/user-list.tmpl'
     context_object_name = 'users'
-    model = User
+    model = SpiUser
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -132,7 +132,7 @@ class UserListView(ListView):
 
 class UserAdd(SuccessMessageMixin, CreateView):
     template_name = 'logged/user-form.tmpl'
-    model = User
+    model = SpiUser
     success_message = 'User created'
     form_class = UserForm
 
@@ -159,7 +159,7 @@ class UserAdd(SuccessMessageMixin, CreateView):
 
 class UserDetailView(DetailView):
     template_name = 'logged/user-view.tmpl'
-    model = User
+    model = SpiUser
     context_object_name = 'user'
 
     def get_context_data(self, **kwargs):

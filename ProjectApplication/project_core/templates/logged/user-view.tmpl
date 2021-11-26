@@ -19,21 +19,32 @@
             <p></p>
             <div class="row">
                 <div class="col-6">
-                    <strong>Is management:</strong>
+                    <strong>Type of user:</strong><br>
+                    {% include 'common/_check-icon.tmpl' with value=user.is_management only %} Management<br>
+                    {% include 'common/_check-icon.tmpl' with value=user.is_reviewer only %} Reviewer<br>
+                    <small id="hint_id_person_form-email" class="form-text text-muted">Reviewers have access to only
+                        proposals. Management to everything in Nestor</small>
                 </div>
+            </div>
+            <p></p>
+            <div class="row">
                 <div class="col-6">
-                    <strong>Is reviewer:</strong>
+                    <strong>Active:</strong> {% include 'common/_check-icon.tmpl' with value=user.is_active only %}<br>
+                    <small id="hint_id_person_form-email" class="form-text text-muted">Active users can login. It is not
+                        possible to delete users but they can be deactivated and can no longer login in any way.</small>
                 </div>
             </div>
             <p></p>
             <strong>Last login:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.last_login %}<br>
-            (Last login is the last time that the user entered the username+password. The user might have been using
-            Nestor with a saved login.)
+            <small id="hint_id_person_form-email" class="form-text text-muted">Last login is the last time that the user
+                entered the username and password. The user might have been using Nestor with a saved login.</small>
             <br>
             <strong>Date joined:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.date_joined %}
         </div>
         <div class="col-2">
-
+            <p>
+                <a class="btn btn-primary d-print-none" href="{% url 'logged-user-update' pk=user.id %}">Edit User</a>
+            </p>
         </div>
     </div>
 {% endblock %}

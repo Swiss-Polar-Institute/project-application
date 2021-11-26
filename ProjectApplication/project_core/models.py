@@ -6,7 +6,7 @@ from typing import List
 
 from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, RegexValidator, validate_slug
 from django.core.validators import validate_email
@@ -22,7 +22,7 @@ from . import utils
 from .utils.SpiS3Boto3Storage import SpiS3Boto3Storage
 from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field, \
-    management_file_validator
+    management_file_validator, user_is_in_group_name
 
 logger = logging.getLogger('project_core')
 
@@ -465,7 +465,7 @@ class Organisation(CreateModifyOn):
     short_name = models.CharField(help_text='Short name by which the organisation is commonly known', max_length=50,
                                   blank=True, null=True)
     display_name = models.CharField(help_text='Name of organisation used for display purposes', max_length=100,
-                                         blank=True, null=True)
+                                    blank=True, null=True)
     street = models.CharField(help_text='Street address of the organisation', max_length=500, blank=True, null=True)
     city = models.CharField(help_text='City in which the organisation is based', max_length=100)
     postal_code = models.CharField(help_text='Postal code of the organisation', max_length=50, blank=True, null=True)
@@ -1235,6 +1235,7 @@ class Project(CreateModifyOn):
     def locations_coordinates_sorted(self):
         return self.project_location.order_by('name')
 
+
 class ProjectPartner(Partner):
     """Partner that is part of a project."""
 
@@ -1352,3 +1353,32 @@ class CallCareerStage(models.Model):
 
     def __str__(self):
         return f'{self.call.short_name}-{self.career_stage.name}'
+
+
+class SpiUser(User):
+    class Meta:
+        proxy = True
+
+    def is_management(self):
+        return user_is_in_group_name(self, settings.MANAGEMENT_GROUP_NAME)
+
+    def is_reviewer(self):
+        return user_is_in_group_name(self, settings.REVIEWER_GROUP_NAME)
+
+    @staticmethod
+    def set_type_of_user(user, type_of_user):
+        # @staticmethod for how it's used regarding Forms and ProxyModels
+
+        reviewer_group = Group.objects.get(name=settings.REVIEWER_GROUP_NAME)
+        management_group = Group.objects.get(name=settings.MANAGEMENT_GROUP_NAME)
+
+        if type_of_user == settings.REVIEWER_GROUP_NAME:
+            user.groups.remove(management_group)
+            user.groups.add(reviewer_group)
+        elif type_of_user == settings.MANAGEMENT_GROUP_NAME:
+            user.groups.remove(reviewer_group)
+            user.groups.add(management_group)
+        else:
+            assert False
+
+        user.save()
