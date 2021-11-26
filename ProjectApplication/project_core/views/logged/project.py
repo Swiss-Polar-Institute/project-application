@@ -1,11 +1,14 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView
+from rest_framework.generics import ListAPIView
 
 from comments import utils
 from comments.utils import process_comment_attachment
 from project_core.forms.financial_key import FinancialKeyForm
 from project_core.models import Project, FinancialKey
+from project_core.serializers import ProjectSerializer
+from project_core.filters import ProjectFilterSet
 
 
 class ProjectList(ListView):
@@ -24,6 +27,12 @@ class ProjectList(ListView):
                                  {'name': 'Projects'}]
 
         return context
+
+
+class ProjectListAPI(ListAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    filterset_class = ProjectFilterSet
 
 
 class AbstractProjectView(DetailView):
