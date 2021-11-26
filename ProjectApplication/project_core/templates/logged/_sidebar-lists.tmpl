@@ -21,8 +21,8 @@
                     List proposals
                 </a>
             </li>
+            <hr>
         {% endif %}
-        <hr>
         {% if request|request_is_management %}
             <li class="nav-item">
                 <a class="nav-link {% if active == 'project-list' %}active{% endif %}"
@@ -36,8 +36,8 @@
                     Create project
                 </a>
             </li>
+            <hr>
         {% endif %}
-        <hr>
         {% if request|request_is_management %}
             <li class="nav-item">
                 <a class="nav-link {% if active == 'contact-list' %}active{% endif %}"
@@ -51,8 +51,8 @@
                     Create person
                 </a>
             </li>
+            <hr>
         {% endif %}
-        <hr>
         {% if request|request_is_management %}
             <li class="nav-item">
                 <a class="nav-link {% if active == 'financial_key-list' %}active{% endif %}"
@@ -64,6 +64,21 @@
                 <a class="nav-link {% if active == 'financial_key-add' %}active{% endif %}"
                    href="{% url 'logged-financial-key-update' %}">
                     Create financial key
+                </a>
+            </li>
+            <hr>
+        {% endif %}
+        {% if request|request_is_management %}
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'user-list' %}active{% endif %}"
+                   href="{% url 'logged-user-list' %}">
+                    List users
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active == 'user-add' %}active{% endif %}"
+                   href="{% url 'logged-user-add' %}">
+                    Create user
                 </a>
             </li>
         {% endif %}

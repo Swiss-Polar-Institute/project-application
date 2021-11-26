@@ -140,7 +140,7 @@ class UserAdd(SuccessMessageMixin, CreateView):
         context = super().get_context_data(**kwargs)
 
         context.update({'active_section': 'lists',
-                        'active_subsection': 'user-list',
+                        'active_subsection': 'user-add',
                         'sidebar_template': 'logged/_sidebar-lists.tmpl'})
 
         context['breadcrumb'] = [{'name': 'Lists', 'url': reverse('logged-lists')},
