@@ -158,7 +158,7 @@ class UserAdd(SuccessMessageMixin, CreateView):
 
 
 class UserDetailView(DetailView):
-    template_name = 'logged/user-view.tmpl'
+    template_name = 'logged/user-detail.tmpl'
     model = SpiUser
     context_object_name = 'user'
 

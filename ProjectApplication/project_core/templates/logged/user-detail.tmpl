@@ -13,9 +13,14 @@
             <p></p>
             <strong>Username:</strong> {{ user.username }}
             <br>
-            <strong>First name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.first_name %}
-            <br>
-            <strong>Last name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.last_name %}
+            <div class="row">
+                <div class="col-6">
+                    <strong>First name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.first_name %}
+                </div>
+                <div class="col-6">
+                    <strong>Last name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.last_name %}
+                </div>
+            </div>
             <p></p>
             <div class="row">
                 <div class="col-6">
