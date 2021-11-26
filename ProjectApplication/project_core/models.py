@@ -1382,3 +1382,19 @@ class SpiUser(User):
             assert False
 
         user.save()
+
+    def type_of_user_str(self):
+        count = 0
+
+        result = '-'
+
+        if self.groups.filter(name=settings.REVIEWER_GROUP_NAME):
+            count += 1
+            result = 'Reviewer'
+        if self.groups.filter(name=settings.MANAGEMENT_GROUP_NAME):
+            count += 1
+            result = 'Management'
+
+        assert count < 2, 'Should belong only to reviewer or management groups'
+
+        return result

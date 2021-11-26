@@ -12,7 +12,7 @@
                 <th>First name</th>
                 <th>Last name</th>
                 <th>Active</th>
-                <th>Groups</th>
+                <th>Type of user</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -23,7 +23,7 @@
                     <td>{{ user.first_name }}</td>
                     <td>{{ user.last_name }}</td>
                     <td>{{ user.active }}</td>
-                    <td>TODO</td>
+                    <td>{{ user.type_of_user_str }}</td>
                     <td>
                         <a class="btn btn-primary btn-xs" href="{% url 'logged-user-detail' pk=user.pk %}">View</a>
                         <a class="btn btn-primary btn-xs" href="{% url 'logged-user-update' pk=user.pk %}">Edit</a>

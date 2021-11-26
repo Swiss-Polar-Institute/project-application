@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
-from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView, UpdateView
 
@@ -116,6 +115,7 @@ class UserListView(ListView):
     template_name = 'logged/user-list.tmpl'
     context_object_name = 'users'
     model = SpiUser
+    queryset = SpiUser.objects.filter(is_superuser=False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -154,7 +154,6 @@ class UserAdd(SuccessMessageMixin, CreateView):
 
     def get_success_url(self, **kwargs):
         return reverse('logged-user-detail', kwargs={'pk': self.object.pk})
-
 
 
 class UserDetailView(DetailView):
@@ -218,4 +217,3 @@ class UserUpdate(UpdateView):
             self.request.session['user_password'] = form.new_password
 
         return result
-
