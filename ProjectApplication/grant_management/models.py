@@ -49,8 +49,7 @@ class GrantAgreement(CreateModifyOn):
 
 class AbstractProjectDueReceivedDate(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Abstract containing dates',
-                                on_delete=models.PROTECT,
-                                related_name="project_%(class)s")
+                                on_delete=models.PROTECT)
     due_date = models.DateField(help_text='Date the document is due', null=True, blank=True)
     received_date = models.DateField(help_text='Date the document was received', null=True, blank=True)
 
@@ -229,8 +228,7 @@ def medium_file_rename(instance, filename):
 
 
 class Medium(CreateModifyOn):
-    project = models.ForeignKey(Project, help_text='Project that this medium belongs to', on_delete=models.PROTECT,
-                                related_name='project_medium')
+    project = models.ForeignKey(Project, help_text='Project that this medium belongs to', on_delete=models.PROTECT)
     received_date = models.DateField(help_text='Date that the medium was received')
     photographer = models.ForeignKey(PhysicalPerson, help_text='Person who took the photo/video',
                                      on_delete=models.PROTECT)

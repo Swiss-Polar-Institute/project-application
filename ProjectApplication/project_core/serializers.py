@@ -56,12 +56,12 @@ class ProjectSerializer(serializers.ModelSerializer):
     geographical_areas = GeographicalAreaSerializer(many=True, read_only=True)
     principal_investigator = PersonPositionSerializer(read_only=True)
     project_location = LocationSerializer(many=True, read_only=True)
-    project_medium = MediumSerializer(many=True, read_only=True)
-    project_laysummary = LaySummarySerializer(many=True, read_only=True)
+    medium_set = MediumSerializer(many=True, read_only=True)
+    laysummary_set = LaySummarySerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
         fields = ('uuid', 'key', 'title', 'keywords', 'geographical_areas', 'location',
                   'start_date', 'end_date', 'principal_investigator', 'project_location',
-                  'project_medium', 'project_laysummary'
+                  'medium_set', 'laysummary_set'
                   )
