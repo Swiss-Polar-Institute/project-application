@@ -1,10 +1,10 @@
 import logging
 
 from django.contrib import messages
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 
 from ProjectApplication import settings
 from comments.utils import process_comment_attachment
@@ -13,6 +13,7 @@ from evaluation.models import Reviewer
 from project_core.models import Proposal, Call
 from project_core.utils.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
+from project_core.views.common.proposal_parts import ProposalParts
 
 logger = logging.getLogger('project_core')
 
@@ -170,3 +171,78 @@ class ProposalView(AbstractProposalView):
 class ProposalPreview(AbstractProposalView):
     preview = True
     form_template = 'common/form-proposal.tmpl'
+
+
+class ProposalUpdateFiles(TemplateView):
+    created_or_updated_url = ''
+    form_template = ''
+    action_url_add = ''
+    action_url_update = ''
+    success_message = ''
+
+    extra_context = {}
+
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        proposal = Proposal.objects.get(id=self.kwargs['pk'])
+
+        context.update({'active_section': 'calls',
+                        'active_subsection': 'call-list',
+                        'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+
+        context['breadcrumb'] = [
+            {'name': 'Calls', 'url': reverse('logged-call-list')},
+            {'name': f'List of proposals ({proposal.call.little_name()})',
+             'url': reverse('logged-call-list-proposals', kwargs={'call_id': proposal.call.id})},
+            {'name': f'Proposal ({proposal.applicant.person.full_name()})',
+             'url': reverse('logged-proposal-detail', kwargs={'pk': proposal.pk})},
+            {'name': 'Edit files'}
+        ]
+
+        context['parts_with_answers'] = ProposalParts(None, None, proposal, only_files=True).get_forms()
+        context['form_action_url'] = reverse('logged-call-proposal-detail-update-files', kwargs={'pk': proposal.id})
+        context['cancel_url'] = reverse('logged-proposal-detail', kwargs={'pk': proposal.pk})
+
+        return render(request, 'logged/proposal-edit-files.tmpl', context)
+
+    def post(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        proposal = Proposal.objects.get(id=kwargs['pk'])
+
+        proposal_parts = ProposalParts(request.POST, request.FILES, proposal)
+
+        all_valid = True
+
+        for form in proposal_parts.get_forms_only_files():
+            is_valid = form.is_valid()
+            all_valid = all_valid and is_valid
+
+        for question_form in proposal_parts.get_forms_only_files():
+            if not question_form.save_answers(proposal):
+                messages.error(request,
+                               'File attachments could not be saved - please try attaching the files again or contact an admin if the error reoccurs')
+
+        messages.success(request, 'Files saved')
+
+        return redirect(reverse('logged-proposal-detail', kwargs={'pk': proposal.id}))
+
+        # context.update({'active_section': 'calls',
+        #                 'active_subsection': 'call-list',
+        #                 'sidebar_template': 'logged/_sidebar-calls.tmpl'})
+        #
+        # context['breadcrumb'] = [
+        #     {'name': 'Calls', 'url': reverse('logged-call-list')},
+        #     {'name': f'List of proposals ({proposal.call.little_name()})',
+        #      'url': reverse('logged-call-list-proposals', kwargs={'call_id': proposal.call.id})},
+        #     {'name': f'Proposal ({proposal.applicant.person.full_name()})',
+        #      'url': reverse('logged-proposal-detail', kwargs={'pk': proposal.pk})},
+        #     {'name': 'Edit files'}
+        # ]
+        #
+        # context['proposal'] = proposal
+        #
+        # messages.success(request, 'Files saved')
+        #
+        # return render(request, 'logged/proposal-detail.tmpl', context)

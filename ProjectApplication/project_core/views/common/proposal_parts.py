@@ -2,7 +2,7 @@ from project_core.forms.questions import Questions
 
 
 class ProposalParts:
-    def __init__(self, post, files, proposal, call=None):
+    def __init__(self, post, files, proposal, call=None, only_files=False):
         self._forms = []
         self._parts = []
         self._proposal = proposal
@@ -20,6 +20,7 @@ class ProposalParts:
                                             proposal=proposal,
                                             call=self._call,
                                             call_part=part,
+                                            only_files=only_files,
                                             prefix=ProposalParts._form_prefix(part))
 
             part.questions_answers_text = part.questions_form.questions_answers_text()
@@ -28,6 +29,14 @@ class ProposalParts:
             self._parts.append(part)
 
     def get_forms(self):
+        forms = []
+
+        for part in self._parts:
+            forms.append(part.questions_form)
+
+        return forms
+
+    def get_forms_only_files(self):
         forms = []
 
         for part in self._parts:

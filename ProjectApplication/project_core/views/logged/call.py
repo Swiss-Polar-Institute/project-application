@@ -318,3 +318,5 @@ class CallView(TemplateView):
         messages.error(request, 'Call not saved. Please correct the errors in the form and try again.')
 
         return render(request, 'logged/call-form.tmpl', context)
+
+

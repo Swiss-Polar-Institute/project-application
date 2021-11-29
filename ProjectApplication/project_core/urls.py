@@ -6,6 +6,7 @@ from django.views.i18n import JavaScriptCatalog
 
 import project_core.views.common.proposal_pdf
 import project_core.views.common.proposal_zip
+import project_core.views.logged.proposal
 import project_core.views.logged.proposals_export_to_csv_summary
 import project_core.views.logged.proposals_export_to_excel
 import project_core.views.logged.proposals_export_to_zip
@@ -97,6 +98,9 @@ urlpatterns = [
     path('logged/call/proposal/<int:pk>/',
          logged.call.ProposalDetail.as_view(),
          name='logged-call-proposal-detail'),
+    path('logged/call/proposal/<int:pk>/edit/files',
+         project_core.views.logged.proposal.ProposalUpdateFiles.as_view(),
+         name='logged-call-proposal-detail-update-files'),
     path('logged/call/<int:pk>/comment/add/',
          logged.call.CallCommentAdd.as_view(),
          name='logged-call-comment-add'),

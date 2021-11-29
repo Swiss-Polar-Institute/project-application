@@ -18,6 +18,7 @@ class Questions(Form):
         self._call = kwargs.pop('call', None)
         self._proposal = kwargs.pop('proposal', None)
         self._call_part: CallPart = kwargs.pop('call_part')
+        only_files = kwargs.pop('only_files', False)
 
         assert self._call or self._proposal
 
@@ -29,25 +30,26 @@ class Questions(Form):
         if self._proposal:
             self._call = self._proposal.call
 
-        for question in self._call_part.questions_type_text():
-            answer = None
-            if self._proposal:
-                try:
-                    answer = ProposalQAText.objects.get(proposal=self._proposal, call_question=question).answer
-                except ObjectDoesNotExist:
-                    pass
+        if only_files is False:
+            for question in self._call_part.questions_type_text():
+                answer = None
+                if self._proposal:
+                    try:
+                        answer = ProposalQAText.objects.get(proposal=self._proposal, call_question=question).answer
+                    except ObjectDoesNotExist:
+                        pass
 
-            question_text = question.question_text
-            if question.answer_max_length:
-                question_text += ' (maximum {} words)'.format(question.answer_max_length)
+                question_text = question.question_text
+                if question.answer_max_length:
+                    question_text += ' (maximum {} words)'.format(question.answer_max_length)
 
-            self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question_text,
-                                                                             widget=forms.Textarea(),
-                                                                             initial=answer,
-                                                                             help_text=question.question_description,
-                                                                             required=question.answer_required)
+                self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question_text,
+                                                                                 widget=forms.Textarea(),
+                                                                                 initial=answer,
+                                                                                 help_text=question.question_description,
+                                                                                 required=question.answer_required)
 
-            self._questions_answers_text.append({'question': question, 'answer': answer})
+                self._questions_answers_text.append({'question': question, 'answer': answer})
 
         for question in self._call_part.questions_type_files():
             question_label = 'question_{}'.format(question.pk)
