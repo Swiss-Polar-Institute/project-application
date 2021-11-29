@@ -19,7 +19,29 @@
                     <a class="btn btn-primary" href="{% url 'logged-user-detail' pk=form.instance.id %}">View User</a>
                 </p>
             {% endif %}
-
         </div>
     </div>
+    <script>
+        function displayHidePhysicalPerson() {
+            let is_reviewer = $("input[name='type_of_user']:checked").val() == 'reviewer';
+            let physical_person = $('#div_id_physical_person');
+
+            if (is_reviewer) {
+                physical_person.show(500);
+            }
+            else {
+                physical_person.hide(500);
+            }
+            // The asteriskField is not hidden because all the div is hidden
+            // if the user is a management user
+            $('#id_physical_person').attr('required', is_reviewer)
+        }
+
+        $(document).ready(function () {
+           displayHidePhysicalPerson();
+        });
+
+        $('#id_type_of_user_1').change(displayHidePhysicalPerson);
+        $('#id_type_of_user_2').change(displayHidePhysicalPerson);
+    </script>
 {% endblock %}

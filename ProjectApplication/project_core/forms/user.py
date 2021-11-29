@@ -1,13 +1,14 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
+from dal import autocomplete
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 
 from project_core.forms.utils import cancel_edit_button
-from project_core.models import SpiUser
+from project_core.models import SpiUser, PhysicalPerson
 
 
 class UserForm(forms.ModelForm):
@@ -30,6 +31,10 @@ class UserForm(forms.ModelForm):
                                                         widget=forms.RadioSelect,
                                                         help_text='Reviewers have access to only proposals. Management to everything in Nestor'
                                                         )
+
+        self.fields['physical_person'] = forms.ModelChoiceField(
+            queryset=PhysicalPerson.objects.all(),
+            widget=autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'))
 
         edit_action = self.instance.id
         create_action = not edit_action
@@ -65,6 +70,7 @@ class UserForm(forms.ModelForm):
             ),
             Div(
                 Div('type_of_user', css_class='col-6'),
+                Div('physical_person', css_class='col-6'),
                 css_class='row'
             ),
             Div(
