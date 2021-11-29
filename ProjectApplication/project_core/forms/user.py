@@ -17,6 +17,7 @@ class UserForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         self.new_password = None
+        self.user_id_new_password = None
 
         self.helper = FormHelper(self)
 
@@ -30,7 +31,10 @@ class UserForm(forms.ModelForm):
                                                         help_text='Reviewers have access to only proposals. Management to everything in Nestor'
                                                         )
 
-        if self.instance.id:
+        edit_action = self.instance.id
+        create_action = not edit_action
+
+        if edit_action:
             group_count = 0
             if self.instance.groups.filter(name=settings.REVIEWER_GROUP_NAME).exists():
                 self.fields['type_of_user'].initial = settings.REVIEWER_GROUP_NAME
@@ -44,7 +48,9 @@ class UserForm(forms.ModelForm):
         if initial_type_of_user:
             self.fields['type_of_user'].initial = initial_type_of_user
 
-        self.fields['create_new_password'] = forms.BooleanField(required=False,
+        self.fields['create_new_password'] = forms.BooleanField(required=create_action,
+                                                                disabled=True,
+                                                                initial=create_action,
                                                                 help_text='If enabled it will generate and display a new password for the user')
 
         self.helper.layout = Layout(
@@ -81,6 +87,7 @@ class UserForm(forms.ModelForm):
 
         if self.cleaned_data['create_new_password']:
             self.new_password = User.objects.make_random_password()
+            self.user_id_new_password = user.id
             user.set_password(self.new_password)
             user.save()
 

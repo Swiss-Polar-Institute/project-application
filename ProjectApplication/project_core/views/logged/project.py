@@ -150,7 +150,13 @@ class UserAdd(SuccessMessageMixin, CreateView):
         return context
 
     def form_valid(self, form):
-        return super().form_valid(form)
+        result = super().form_valid(form)
+
+        if form.new_password:
+            self.request.session['user_password_user_id'] = form.user_id_new_password
+            self.request.session['user_password'] = form.new_password
+
+        return result
 
     def get_success_url(self, **kwargs):
         return reverse('logged-user-detail', kwargs={'pk': self.object.pk})
@@ -164,6 +170,7 @@ class UserAdd(SuccessMessageMixin, CreateView):
             kwargs['type_of_user'] = type_of_user
 
         return kwargs
+
 
 class UserDetailView(DetailView):
     template_name = 'logged/user-detail.tmpl'
@@ -222,7 +229,7 @@ class UserUpdate(UpdateView):
         result = super().form_valid(form)
 
         if form.new_password:
-            self.request.session['user_password_user_id'] = self.kwargs['pk']
+            self.request.session['user_password_user_id'] = form.user_id_new_password
             self.request.session['user_password'] = form.new_password
 
         return result
