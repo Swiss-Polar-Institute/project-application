@@ -72,8 +72,12 @@ class UserForm(forms.ModelForm):
             used_users.remove(initial_physical_person.id)
             my_physical_person_id = initial_physical_person.id
 
+        url_new_person_url = reverse('logged-person-position-add')
         self.fields['physical_person'] = forms.ModelChoiceField(
             label='Person',
+            help_text='Select the person that this reviewer is associated with. Only people that have accepted the '
+                      'policy privacy and that are not a reviewer yet are displayed. '
+                      f'If you need you can <a href="{url_new_person_url}">create a new person</a> and reload this page.',
             queryset=PhysicalPerson.objects.all().exclude(id__in=used_users),
             initial=initial_physical_person,
             widget=autocomplete.ModelSelect2(url=reverse(
