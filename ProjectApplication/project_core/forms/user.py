@@ -74,7 +74,8 @@ class UserForm(forms.ModelForm):
 
         url_new_person_url = reverse('logged-person-position-add')
         self.fields['physical_person'] = forms.ModelChoiceField(
-            label='Person',
+            label='Person<span class="asteriskField">*</span>',
+            required=False,
             help_text='Select the person that this reviewer is associated with. Only people that have accepted the '
                       'policy privacy and that are not a reviewer yet are displayed. '
                       f'If you need you can <a href="{url_new_person_url}">create a new person</a> and reload this page.',
@@ -113,6 +114,11 @@ class UserForm(forms.ModelForm):
                 cancel_edit_button(cancel_edit_url)
             )
         )
+
+    def clean(self):
+        if self.cleaned_data.get('type_of_user', '') == settings.REVIEWER_GROUP_NAME and \
+                self.cleaned_data['physical_person'] is None:
+            raise forms.ValidationError({'comment': 'Person is mandatory if the type of user is a reviewer'})
 
     def save(self, *args, **kwargs):
         user = super().save(*args, **kwargs)
