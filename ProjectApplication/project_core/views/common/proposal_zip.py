@@ -9,9 +9,12 @@ from project_core.models import Proposal
 from project_core.views.common.proposal_pdf import create_pdf_for_proposal
 
 
-def add_proposal_to_zip(proposal, zip_archive, request, used_directory_names):
+def add_proposal_to_zip(proposal, zip_archive, request, used_directory_names=None):
     # Returns the directory name used for this proposal
     proposal_directory = initial_directory = proposal.file_name()
+
+    if used_directory_names is None:
+        used_directory_names = []
 
     count = 2
     while proposal_directory in used_directory_names:
