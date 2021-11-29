@@ -38,6 +38,8 @@ class UserForm(forms.ModelForm):
 
         initial_physical_person = None
 
+        reviewer = None
+
         if edit_action:
             group_count = 0
             if self.instance.groups.filter(name=settings.REVIEWER_GROUP_NAME).exists():
@@ -46,7 +48,6 @@ class UserForm(forms.ModelForm):
                 try:
                     reviewer = Reviewer.objects.get(user=self.instance)
                 except Reviewer.DoesNotExist:
-                    reviewer = None
                     pass
 
                 if reviewer:
@@ -62,13 +63,21 @@ class UserForm(forms.ModelForm):
         if initial_type_of_user:
             self.fields['type_of_user'].initial = initial_type_of_user
 
+        used_users = list(Reviewer.objects.all().values_list('person', flat=True))
+
+        my_physical_person_id = 0
+
+        if reviewer:
+            initial_physical_person = reviewer.person
+            used_users.remove(initial_physical_person.id)
+            my_physical_person_id = initial_physical_person.id
+
         self.fields['physical_person'] = forms.ModelChoiceField(
             label='Person',
-            queryset=PhysicalPerson.objects.all(),
+            queryset=PhysicalPerson.objects.all().exclude(id__in=used_users),
             initial=initial_physical_person,
-            widget=autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'))
-
-
+            widget=autocomplete.ModelSelect2(url=reverse(
+                'logged-autocomplete-physical-people-non-reviewers') + f'?force_include={my_physical_person_id}'))
 
         self.fields['create_new_password'] = forms.BooleanField(required=create_action,
                                                                 disabled=create_action,
@@ -106,7 +115,9 @@ class UserForm(forms.ModelForm):
 
         # At this point user is a User object, not SpiUser
 
-        SpiUser.set_type_of_user(user, self.cleaned_data['type_of_user'], self.cleaned_data['physical_person'])
+        physical_person = self.cleaned_data.get('physical_person')
+
+        SpiUser.set_type_of_user(user, self.cleaned_data['type_of_user'], physical_person)
 
         if self.cleaned_data['create_new_password']:
             self.new_password = User.objects.make_random_password()
