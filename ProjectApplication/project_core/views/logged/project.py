@@ -5,6 +5,7 @@ from django.views.generic import DetailView, ListView, CreateView, UpdateView
 
 from comments import utils
 from comments.utils import process_comment_attachment
+from evaluation.models import Reviewer
 from project_core.forms.financial_key import FinancialKeyForm
 from project_core.forms.user import UserForm
 from project_core.models import Project, FinancialKey, SpiUser
@@ -192,6 +193,9 @@ class UserDetailView(DetailView):
         user_password_id = self.request.session.get('user_password_user_id')
 
         context['new_password'] = None
+
+        if self.object.is_reviewer():
+            context['physical_person'] = Reviewer.objects.get(user=self.object).person
 
         if user_password:
             if user_password_id == self.kwargs['pk']:

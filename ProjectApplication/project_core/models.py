@@ -6,11 +6,11 @@ from typing import List
 
 from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
-from django.contrib.auth.models import User, Group
 from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.validators import MinValueValidator, RegexValidator, validate_slug
 from django.core.validators import validate_email
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
@@ -1407,8 +1407,12 @@ class SpiUser(User):
         return user_is_in_group_name(self, settings.REVIEWER_GROUP_NAME)
 
     @staticmethod
-    def set_type_of_user(user, type_of_user):
+    @transaction.atomic
+    def set_type_of_user(user, type_of_user, physical_person=None):
         # @staticmethod for how it's used regarding Forms and ProxyModels
+
+        assert type_of_user == settings.MANAGEMENT_GROUP_NAME and physical_person is None \
+               or type_of_user == settings.REVIEWER_GROUP_NAME and physical_person
 
         reviewer_group = Group.objects.get(name=settings.REVIEWER_GROUP_NAME)
         management_group = Group.objects.get(name=settings.MANAGEMENT_GROUP_NAME)
@@ -1416,6 +1420,13 @@ class SpiUser(User):
         if type_of_user == settings.REVIEWER_GROUP_NAME:
             user.groups.remove(management_group)
             user.groups.add(reviewer_group)
+
+            from evaluation.models import Reviewer
+
+            Reviewer.objects.filter(user=user).delete()
+            Reviewer.objects.create(user=user,
+                                    person=physical_person)
+
         elif type_of_user == settings.MANAGEMENT_GROUP_NAME:
             user.groups.remove(reviewer_group)
             user.groups.add(management_group)

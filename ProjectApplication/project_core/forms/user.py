@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+from evaluation.models import Reviewer
 from project_core.forms.utils import cancel_edit_button
 from project_core.models import SpiUser, PhysicalPerson
 
@@ -32,17 +33,25 @@ class UserForm(forms.ModelForm):
                                                         help_text='Reviewers have access to only proposals. Management to everything in Nestor'
                                                         )
 
-        self.fields['physical_person'] = forms.ModelChoiceField(
-            queryset=PhysicalPerson.objects.all(),
-            widget=autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'))
-
         edit_action = self.instance.id
         create_action = not edit_action
+
+        initial_physical_person = None
 
         if edit_action:
             group_count = 0
             if self.instance.groups.filter(name=settings.REVIEWER_GROUP_NAME).exists():
                 self.fields['type_of_user'].initial = settings.REVIEWER_GROUP_NAME
+
+                try:
+                    reviewer = Reviewer.objects.get(user=self.instance)
+                except Reviewer.DoesNotExist:
+                    reviewer = None
+                    pass
+
+                if reviewer:
+                    initial_physical_person = reviewer.person
+
                 group_count += 1
             if self.instance.groups.filter(name=settings.MANAGEMENT_GROUP_NAME).exists():
                 self.fields['type_of_user'].initial = settings.MANAGEMENT_GROUP_NAME
@@ -53,8 +62,16 @@ class UserForm(forms.ModelForm):
         if initial_type_of_user:
             self.fields['type_of_user'].initial = initial_type_of_user
 
+        self.fields['physical_person'] = forms.ModelChoiceField(
+            label='Person',
+            queryset=PhysicalPerson.objects.all(),
+            initial=initial_physical_person,
+            widget=autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'))
+
+
+
         self.fields['create_new_password'] = forms.BooleanField(required=create_action,
-                                                                disabled=True,
+                                                                disabled=create_action,
                                                                 initial=create_action,
                                                                 help_text='If enabled it will generate and display a new password for the user')
 
@@ -89,7 +106,7 @@ class UserForm(forms.ModelForm):
 
         # At this point user is a User object, not SpiUser
 
-        SpiUser.set_type_of_user(user, self.cleaned_data['type_of_user'])
+        SpiUser.set_type_of_user(user, self.cleaned_data['type_of_user'], self.cleaned_data['physical_person'])
 
         if self.cleaned_data['create_new_password']:
             self.new_password = User.objects.make_random_password()
