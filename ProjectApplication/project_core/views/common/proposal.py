@@ -120,7 +120,8 @@ class AbstractProposalDetailView(TemplateView):
 
         update_files_enabled = not CallEvaluation.objects.filter(call=proposal.call).exists()
         if update_files_enabled is False:
-            context['reason_update_files_disabled'] = 'Files cannot be changed because the evaluation has already started'
+            context[
+                'reason_update_files_disabled'] = 'Files cannot be changed because the evaluation has already started'
 
         return context
 

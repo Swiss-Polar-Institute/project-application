@@ -115,6 +115,14 @@ class UserForm(forms.ModelForm):
             )
         )
 
+    def clean_username(self):
+        username = self.cleaned_data['username']
+
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError('Username already exists. Pleas use another one')
+
+        return username
+
     def clean(self):
         if self.cleaned_data.get('type_of_user', '') == settings.REVIEWER_GROUP_NAME and \
                 self.cleaned_data['physical_person'] is None:
