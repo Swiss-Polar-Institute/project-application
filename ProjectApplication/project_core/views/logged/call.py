@@ -7,6 +7,7 @@ from django.views.generic import TemplateView, ListView
 from ProjectApplication import settings
 from comments import utils
 from comments.utils import process_comment_attachment, comments_attachments_forms
+from evaluation.models import CallEvaluation
 from project_core.forms.call import CallForm
 from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall, BudgetCategory, CallCareerStage
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet

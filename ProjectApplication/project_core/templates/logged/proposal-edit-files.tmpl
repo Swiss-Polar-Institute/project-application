@@ -5,6 +5,10 @@
 {% block contents %}
     <div class="row">
         <div class="col-10">
+            <h1>Edit files</h1>
+            <p>
+                SPI management users can change the files of the proposals until the evaluation is opened.
+            </p>
             <form action="{{ form_action_url }}" enctype="multipart/form-data" method="post">
                 {% for form in parts_with_answers %}
                     {% crispy form %}

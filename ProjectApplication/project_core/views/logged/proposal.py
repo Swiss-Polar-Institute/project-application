@@ -9,7 +9,7 @@ from django.views.generic import ListView, TemplateView
 from ProjectApplication import settings
 from comments.utils import process_comment_attachment
 from evaluation.forms.eligibility import EligibilityDecisionForm
-from evaluation.models import Reviewer
+from evaluation.models import Reviewer, CallEvaluation
 from project_core.models import Proposal, Call
 from project_core.utils.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
@@ -216,6 +216,14 @@ class ProposalUpdateFiles(TemplateView):
         context = super().get_context_data(**kwargs)
 
         proposal = Proposal.objects.get(id=kwargs['pk'])
+
+        evaluation_started = CallEvaluation.objects.filter(call=proposal.call).exists()
+
+        if evaluation_started:
+            messages.error(request,
+                           'Files cannot be changed because an evaluation for the call of this proposal has started')
+
+            return redirect(reverse('logged-proposal-detail', kwargs={'pk': proposal.id}))
 
         parts_with_answers = ProposalParts(request.POST, request.FILES, proposal, only_files=True)
 

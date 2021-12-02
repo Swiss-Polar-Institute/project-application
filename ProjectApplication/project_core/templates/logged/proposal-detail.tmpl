@@ -24,6 +24,19 @@
                     ZIP</a>
             </p>
 
+            <p>
+                {% if request|request_is_management %}
+                    {% if update_files_enabled %}
+                        <a class="btn btn-primary"
+                           href="{% url 'logged-call-proposal-detail-update-files' pk=proposal.id %}">
+                            Edit files</a>
+                    {% else %}
+                        <a class="btn btn-primary disabled" href="#">Edit files</a><br>
+                        <em>({{ reason_update_files_disabled }})</em>
+                    {% endif %}
+                {% endif %}
+            </p>
+
             {% if request|request_is_management %}
                 {% include 'comments/_comments-attachments-compact-list.tmpl' %}
             {% endif %}
