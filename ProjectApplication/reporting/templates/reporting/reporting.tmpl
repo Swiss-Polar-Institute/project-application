@@ -33,23 +33,30 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if active_tab == 'downloads' %}active{% endif %}"
-                            id="downloads-tab" data-toggle="tab" href="#downloads"
-                            role="tab">Downloads</a>
+                           id="downloads-tab" data-toggle="tab" href="#downloads"
+                           role="tab">Downloads</a>
                     </li>
                 </ul>
             </div>
 
             <div class="tab-content">
-                <div class="tab-pane fade {% if active_tab == 'overview' %}show active{% endif %}" id="overview" role="tabpanel">
+                <div class="tab-pane fade {% if active_tab == 'overview' %}show active{% endif %}" id="overview"
+                     role="tabpanel">
+                    <br>
                     {% include 'reporting/_overview.tmpl' %}
                 </div>
-                <div class="tab-pane fade {% if active_tab == 'finance' %}show active{% endif %}" id="finance" role="tabpanel">
+                <div class="tab-pane fade {% if active_tab == 'finance' %}show active{% endif %}" id="finance"
+                     role="tabpanel">
+                    <br>
                     {% include 'reporting/_reporting_finance.tmpl' %}
                 </div>
-                <div class="tab-pane fade {% if active_tab == 'diversity' %}show active{% endif %}" id="diversity" role="tabpanel">
+                <div class="tab-pane fade {% if active_tab == 'diversity' %}show active{% endif %}" id="diversity"
+                     role="tabpanel">
+                    <br>
                     {% include 'reporting/_reporting_diversity.tmpl' %}
                 </div>
-                <div class="tab-pane fade {% if active_tab == 'downloads' %}show active{% endif %}" id="downloads" role="tabpanel">
+                <div class="tab-pane fade {% if active_tab == 'downloads' %}show active{% endif %}" id="downloads"
+                     role="tabpanel">
                     {% include 'reporting/_downloads.tmpl' %}
                 </div>
             </div>
