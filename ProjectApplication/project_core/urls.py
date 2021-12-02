@@ -98,7 +98,7 @@ urlpatterns = [
     path('logged/call/proposal/<int:pk>/',
          logged.call.ProposalDetail.as_view(),
          name='logged-call-proposal-detail'),
-    path('logged/call/proposal/<int:pk>/edit/files',
+    path('logged/call/proposal/<int:pk>/edit/files/',
          project_core.views.logged.proposal.ProposalUpdateFiles.as_view(),
          name='logged-call-proposal-detail-update-files'),
     path('logged/call/<int:pk>/comment/add/',
