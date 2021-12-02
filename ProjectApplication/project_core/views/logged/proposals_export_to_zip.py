@@ -23,7 +23,7 @@ class CreateZipFile:
         self._last_read_position = 0
 
         with self._zipfile.open('README.txt', mode='w') as readme_file:
-            readme_file.write(b'This ZIP file includes Proposals. Please keep it private.')
+            readme_file.write(b'This ZIP file includes confidential proposals and personal information. Please keep it private and confidential.')
 
         self._last_wrote_position = self._buffer.tell()
 
