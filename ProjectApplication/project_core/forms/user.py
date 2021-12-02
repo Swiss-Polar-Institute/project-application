@@ -72,22 +72,24 @@ class UserForm(forms.ModelForm):
             used_users.remove(initial_physical_person.id)
             my_physical_person_id = initial_physical_person.id
 
-        url_new_person_url = reverse('logged-person-position-add')
+        new_person_url = reverse('logged-person-position-add')
+        list_users_url = reverse('logged-user-list')
         self.fields['physical_person'] = forms.ModelChoiceField(
             label='Person<span class="asteriskField">*</span>',
             required=False,
-            help_text='Select the person that this reviewer is associated with. Only people that have accepted the '
-                      'policy privacy and that are not a reviewer yet are displayed. '
-                      f'If you need you can <a href="{url_new_person_url}">create a new person</a> and reload this page.',
+            help_text="Choose the reviewer's name from the list. Only people that have accepted the "
+                      f'policy privacy and that are not yet a reviewer, are displayed. If you think the person may '
+                      f'already be a reviewer, <a href="{list_users_url}">check the list of users</a> before creating another. '
+                      f'If they are not listed, <a href="{new_person_url}">create a new person</a> then reload this page.',
             queryset=PhysicalPerson.objects.all().exclude(id__in=used_users),
             initial=initial_physical_person,
             widget=autocomplete.ModelSelect2(url=reverse(
                 'logged-autocomplete-physical-people-non-reviewers') + f'?force_include={my_physical_person_id}'))
 
-        self.fields['create_new_password'] = forms.BooleanField(required=create_action,
+        self.fields['generate_new_password'] = forms.BooleanField(required=create_action,
                                                                 disabled=create_action,
                                                                 initial=create_action,
-                                                                help_text='If enabled it will generate and display a new password for the user')
+                                                                help_text='If enabled, a new password will be generated for this user. If editing a user, this option can be used to change a forgotten password')
 
         self.helper.layout = Layout(
             Div(
@@ -106,7 +108,7 @@ class UserForm(forms.ModelForm):
             ),
             Div(
                 Div('is_active', css_class='col-6'),
-                Div('create_new_password', css_class='col-6'),
+                Div('generate_new_password', css_class='col-6'),
                 css_class='row'
             ),
             FormActions(
@@ -137,7 +139,7 @@ class UserForm(forms.ModelForm):
 
         SpiUser.set_type_of_user(user, self.cleaned_data['type_of_user'], physical_person)
 
-        if self.cleaned_data['create_new_password']:
+        if self.cleaned_data['generate_new_password']:
             self.new_password = User.objects.make_random_password()
             self.user_id_new_password = user.id
             user.set_password(self.new_password)
@@ -148,3 +150,5 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = SpiUser
         fields = ['username', 'first_name', 'last_name', 'is_active']
+        help_texts = {
+            'is_active': 'Designates whether this user should be treated as active. Untick this box instead of deleting accounts for inactive users'}
