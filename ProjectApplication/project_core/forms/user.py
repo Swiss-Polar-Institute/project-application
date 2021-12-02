@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 
 from evaluation.models import Reviewer
-from project_core.forms.utils import cancel_edit_button
+from project_core.forms.utils import cancel_edit_button, cancel_button
 from project_core.models import SpiUser, PhysicalPerson
 
 
@@ -23,8 +23,6 @@ class UserForm(forms.ModelForm):
 
         self.helper = FormHelper(self)
 
-        cancel_edit_url = reverse('logged-user-list')
-
         self.fields['type_of_user'] = forms.ChoiceField(required=True,
                                                         choices=[(settings.MANAGEMENT_GROUP_NAME, 'Management'),
                                                                  (settings.REVIEWER_GROUP_NAME, 'Reviewer'),
@@ -33,7 +31,7 @@ class UserForm(forms.ModelForm):
                                                         help_text='Reviewers only have access to proposals. Management users have access to everything in Nestor'
                                                         )
 
-        edit_action = self.instance.id
+        edit_action = bool(self.instance.id)
         create_action = not edit_action
 
         initial_physical_person = None
@@ -41,6 +39,8 @@ class UserForm(forms.ModelForm):
         reviewer = None
 
         if edit_action:
+            cancel_html = cancel_edit_button(reverse('logged-user-detail', kwargs={'pk': self.instance.id}))
+
             group_count = 0
             if self.instance.groups.filter(name=settings.REVIEWER_GROUP_NAME).exists():
                 self.fields['type_of_user'].initial = settings.REVIEWER_GROUP_NAME
@@ -59,6 +59,9 @@ class UserForm(forms.ModelForm):
                 group_count += 1
 
             assert group_count < 2, 'A user cannot be a reviewer and management at the same time'
+
+        else:
+            cancel_html = cancel_button(reverse('logged-user-list'))
 
         if initial_type_of_user:
             self.fields['type_of_user'].initial = initial_type_of_user
@@ -113,7 +116,7 @@ class UserForm(forms.ModelForm):
             ),
             FormActions(
                 Submit('save', 'Save User'),
-                cancel_edit_button(cancel_edit_url)
+                cancel_html
             )
         )
 
