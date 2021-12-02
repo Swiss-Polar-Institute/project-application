@@ -52,13 +52,13 @@ class ProjectForm(forms.ModelForm):
 
             self.fields[
                 'principal_investigator'].help_text += \
-                f'. If the principal investigator is not found <a href="{create_person_url}">create</a> the person ' \
-                'and try again (you need to reload the page). Only people that have accepted the privacy policy is ' \
+                f'. If the principal investigator is not found, <a href="{create_person_url}">create</a> the person, ' \
+                'reload the page, then try again. Only people that have accepted the privacy policy are ' \
                 'displayed'
 
             create_funding_instrument_url = reverse('logged-funding-instrument-add')
             self.fields[
-                'funding_instrument'].help_text += f'. If the funding instrument isn not found <a href="{create_funding_instrument_url}">create</a> the funding instrument and try again (you need to reload the page).'
+                'funding_instrument'].help_text += f'. If the funding instrument is not found <a href="{create_funding_instrument_url}">create</a> the funding instrument, reload the page, then try again'
 
             funding_instrument_div = Div(
                 Div('funding_instrument', css_class='col-12'),
