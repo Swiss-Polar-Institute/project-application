@@ -29,7 +29,7 @@ class ContactForm(ModelForm):
         self.fields['person__orcid'] = forms.CharField(**get_field_information(PhysicalPerson, 'orcid'),
                                                        initial=person__orcid)
         self.fields['person__orcid'].required = False
-        self.fields['person__orcid'].help_text += '. Please add the ORCID if possible to avoid duplicates.'
+        self.fields['person__orcid'].help_text += '. Please add the ORCID iD to avoid duplicates'
 
         self.fields['person__first_name'] = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'),
                                                             initial=person__first_name)
@@ -39,7 +39,7 @@ class ContactForm(ModelForm):
         self.fields['email'] = forms.EmailField(initial=main_email, required=False)
 
         self.fields['privacy_policy'].help_text += '. Please make sure that the person has accepted the privacy policy' \
-                                                   ' before adding it into the list.'
+                                                   ' before adding them'
 
         self.fields['privacy_policy'].required = True
 

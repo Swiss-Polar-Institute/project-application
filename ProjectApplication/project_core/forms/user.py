@@ -30,7 +30,7 @@ class UserForm(forms.ModelForm):
                                                                  (settings.REVIEWER_GROUP_NAME, 'Reviewer'),
                                                                  ],
                                                         widget=forms.RadioSelect,
-                                                        help_text='Reviewers have access to only proposals. Management to everything in Nestor'
+                                                        help_text='Reviewers only have access to proposals. Management users have access to everything in Nestor'
                                                         )
 
         edit_action = self.instance.id

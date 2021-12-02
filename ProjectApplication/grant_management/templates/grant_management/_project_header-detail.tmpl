@@ -21,7 +21,7 @@
             {% if project.call %}
                 <a href="{% url 'logged-call-detail' pk=project.call.id %}">{{ project.call.long_name }}</a>
             {% else %}
-                Project doesn't have a call.
+                Project not part of a call.
             {% endif %}
             <br>
         </div>
