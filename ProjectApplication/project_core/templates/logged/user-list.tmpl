@@ -20,8 +20,8 @@
             {% for user in users %}
                 <tr>
                     <td>{{ user.username }}</td>
-                    <td>{{ user.first_name }}</td>
-                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.smart_first_name }}</td>
+                    <td>{{ user.smart_last_name }}</td>
                     <td>{% include 'common/_check-icon.tmpl' with value=user.is_active only %}</td>
                     <td>{{ user.type_of_user_str }}</td>
                     <td>

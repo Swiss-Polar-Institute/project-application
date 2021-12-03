@@ -1442,18 +1442,38 @@ class SpiUser(User):
 
         user.save()
 
-    def type_of_user_str(self):
+    def type_of_user(self):
         count = 0
 
-        result = '-'
+        result = ''
 
         if self.groups.filter(name=settings.REVIEWER_GROUP_NAME):
             count += 1
-            result = 'Reviewer'
+            result = settings.REVIEWER_GROUP_NAME
         if self.groups.filter(name=settings.MANAGEMENT_GROUP_NAME):
             count += 1
-            result = 'Management'
+            result = settings.MANAGEMENT_GROUP_NAME
 
         assert count < 2, 'Should belong only to reviewer or management groups'
 
         return result
+
+    def type_of_user_str(self):
+        return self.type_of_user().capitalize()
+
+    def smart_first_name(self):
+        from evaluation.models import Reviewer
+
+        if self.type_of_user() == settings.REVIEWER_GROUP_NAME:
+            return Reviewer.objects.get(user=self).person.first_name
+        else:
+            return self.first_name
+
+    def smart_last_name(self):
+        from evaluation.models import Reviewer
+
+        if self.type_of_user() == settings.REVIEWER_GROUP_NAME:
+            return Reviewer.objects.get(user=self).person.surname
+        else:
+            return self.last_name
+

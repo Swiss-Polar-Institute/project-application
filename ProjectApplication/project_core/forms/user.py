@@ -105,13 +105,16 @@ class UserForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('first_name', css_class='col-6'),
-                Div('last_name', css_class='col-6'),
+                Div('type_of_user', css_class='col-6'),
                 css_class='row'
             ),
             Div(
-                Div('type_of_user', css_class='col-6'),
                 Div('physical_person', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
+                Div('first_name', css_class='col-6'),
+                Div('last_name', css_class='col-6'),
                 css_class='row'
             ),
             Div(
@@ -133,7 +136,8 @@ class UserForm(forms.ModelForm):
         if self._is_create_action and User.objects.filter(username=username).exists():
             raise forms.ValidationError(duplicated_error)
 
-        if self._is_edit_action and User.objects.filter(username=username).exists() and self._original_username != username:
+        if self._is_edit_action and User.objects.filter(
+                username=username).exists() and self._original_username != username:
             raise forms.ValidationError(duplicated_error)
 
         return username
@@ -144,13 +148,22 @@ class UserForm(forms.ModelForm):
             raise forms.ValidationError({'comment': 'Person is mandatory if the type of user is a reviewer'})
 
     def save(self, *args, **kwargs):
-        user = super().save(*args, **kwargs)
+        user: SpiUser = super().save(*args, **kwargs)
 
         # At this point user is a User object, not SpiUser
 
-        physical_person = self.cleaned_data.get('physical_person')
+        physical_person: PhysicalPerson = self.cleaned_data.get('physical_person')
 
         SpiUser.set_type_of_user(user, self.cleaned_data['type_of_user'], physical_person)
+
+        if self.cleaned_data['type_of_user'] == settings.REVIEWER_GROUP_NAME:
+            user.first_name = ''
+            user.last_name = ''
+            user.save()
+        elif self.cleaned_data['type_of_user'] == settings.MANAGEMENT_GROUP_NAME:
+            pass
+        else:
+            assert False
 
         if self.cleaned_data['generate_new_password']:
             self.new_password = User.objects.make_random_password()
@@ -158,9 +171,8 @@ class UserForm(forms.ModelForm):
             # The password is set on the view to allow the user to see
             # the new password (since user.set_password logs out the user)
             # This is to allow users to reset their own passwords
-            #user.set_password(self.new_password)
-            #user.save()
-
+            # user.set_password(self.new_password)
+            # user.save()
 
         return user
 
