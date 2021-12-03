@@ -19,9 +19,11 @@
             </p>
 
             <p>
-                <a class="btn btn-primary" href="{% url 'proposal-detail-zip' uuid=proposal.uuid %}"><i
-                        class="fas fa-download"></i> Download as
-                    ZIP</a>
+                <a id="download-as-zip" class="btn btn-primary" href="{% url 'proposal-detail-zip' uuid=proposal.uuid %}"><i
+                        class="fas fa-download"></i> Download as ZIP</a>
+                <span style="display:none;" id="download-warning">Please wait, generating the ZIP takes some time...</span>
+
+                {% include 'common/_button_spinner.tmpl' with button_id='download-as-zip' warning_id='download-warning' only %}
             </p>
 
             <p>
