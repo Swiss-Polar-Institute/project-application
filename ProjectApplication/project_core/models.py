@@ -1171,8 +1171,8 @@ class Project(CreateModifyOn):
     abortion_reason = models.CharField(help_text='Reason that a project was aborted', max_length=50, blank=True,
                                        null=True)
 
-    closed_on = models.DateTimeField(help_text='When the project was closed', null=True)
-    closed_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    closed_on = models.DateTimeField(help_text='When the project was closed', blank=True, null=True)
+    closed_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True)
 
     supervisor = models.ForeignKey(PersonPosition, help_text='Supervisor', blank=True, null=True,
                                    on_delete=models.PROTECT, related_name='supervisor')
