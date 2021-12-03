@@ -155,8 +155,12 @@ class UserForm(forms.ModelForm):
         if self.cleaned_data['generate_new_password']:
             self.new_password = User.objects.make_random_password()
             self.user_id_new_password = user.id
-            user.set_password(self.new_password)
-            user.save()
+            # The password is set on the view to allow the user to see
+            # the new password (since user.set_password logs out the user)
+            # This is to allow users to reset their own passwords
+            #user.set_password(self.new_password)
+            #user.save()
+
 
         return user
 

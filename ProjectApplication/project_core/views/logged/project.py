@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
@@ -200,6 +201,20 @@ class UserDetailView(DetailView):
         if user_password:
             if user_password_id == self.kwargs['pk']:
                 context['new_password'] = self.request.session['user_password']
+                # Changing the password on the view is horrible
+                # but this allows changing the user's own password and visualise it before
+                # the user is logged out
+                #
+                # In normal circumstances the users would have a different way to reset their own passwords
+                # but we are keeping the flow for resetting users other passwords or own passwords similar
+                # (due to time constraints for the project)
+                self.object.set_password(context['new_password'])
+                self.object.save()
+
+                if self.object == self.request.user:
+                    messages.warning(self.request,
+                                     'Your own password has changed. You will be logged out and you will need '
+                                     'to login again with the new password.')
 
             self.request.session['user_password'] = None
             self.request.session['user_password_user_id'] = None
