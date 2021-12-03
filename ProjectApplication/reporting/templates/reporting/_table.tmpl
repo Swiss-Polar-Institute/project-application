@@ -10,8 +10,6 @@
                 {% if table.header_tooltips|get_dictionary_value:header %}
                     <a data-toggle="tooltip" title="{{ table.header_tooltips|get_dictionary_value:header }}"><i
                             class="fas fa-info-circle"></i></a>
-                {% else %}
-
                 {% endif %}
             </th>
         {% endfor %}
@@ -29,6 +27,17 @@
     </tbody>
 </table>
 
+<style>
+    {% for right_align_column in table.right_align_columns %}
+        #{{ table_id }} tr td:nth-child({{ right_align_column }}) {
+        text-align: right;
+        margin-right: 1em;
+    }
+    {% endfor %}
+</style>
+{% for column_index in right_align_columns %}
+
+{% endfor %}
 
 <script type="text/javascript" class="init">
     $(document).ready(function () {
