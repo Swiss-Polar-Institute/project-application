@@ -47,7 +47,8 @@
                href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
 
             <a id="export-as-zip" class="btn btn-primary btn-sm"
-               href="{% url 'logged-export-proposals-zip-call' call=call.id %}">Export as ZIP</a>
+               href="{% url 'logged-export-proposals-zip-call' call=call.id %}"><i
+                        class="fas fa-download"></i> Download as ZIP</a>
             <span style="display:none;" id="download-warning">Please wait, generating the Zip takes some time...</span>
 
             <!-- This is a temporary solution to show a spinning wheel... will be changed,

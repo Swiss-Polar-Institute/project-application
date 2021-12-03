@@ -57,7 +57,8 @@
             {# We don't want to allow to export *all* the proposals into a Zip: there are many#}
             {# Reviewers have access to a subset of them so they can export their subset.#}
             <a class="btn btn-primary btn-sm"
-               href="{% url 'logged-export-proposals-zip-all' %}">Export as ZIP</a>
+               href="{% url 'logged-export-proposals-zip-all' %}"><i
+                        class="fas fa-download"></i> Download as ZIP</a>
         {% endif %}
     </p>
     <script type="text/javascript" class="init">
