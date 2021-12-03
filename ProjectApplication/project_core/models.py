@@ -2,13 +2,14 @@ import calendar
 import logging
 import os
 import uuid as uuid_lib
+from datetime import datetime
 from typing import List
 
 from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.models import User, Group
-from django.core.validators import MinValueValidator, RegexValidator, validate_slug
+from django.core.validators import MinValueValidator, RegexValidator, validate_slug, MaxValueValidator
 from django.core.validators import validate_email
 from django.db import models, transaction
 from django.db.models import Sum
@@ -32,6 +33,11 @@ def add_one_if(start, condition):
         return start + 1
     else:
         return start
+
+
+finance_year_validator = [MinValueValidator(2015, 'Finance year cannot be before SPI existed'),
+                          MaxValueValidator(datetime.today().year + 2,
+                                            'Finance year cannot be more than two years after the current year')]
 
 
 class CreateModifyOn(models.Model):
@@ -103,7 +109,8 @@ class Call(CreateModifyOn):
     long_name = models.CharField(help_text='Full name of the call', max_length=200, unique=True)
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
     finance_year = models.IntegerField(
-        help_text='Finance year of this call. It is used, for example, for the project key from this call')
+        help_text='Finance year of this call. It is used, for example, for the project key from this call',
+        validators=finance_year_validator)
     description = models.TextField(help_text='Description of the call that can be used to distinguish it from others')
     funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the call belongs',
                                            on_delete=models.PROTECT)
@@ -1145,7 +1152,7 @@ class Project(CreateModifyOn):
     funding_instrument = models.ForeignKey(FundingInstrument,
                                            help_text='Funding instrument to which the project belongs',
                                            on_delete=models.PROTECT)
-    finance_year = models.IntegerField(help_text='Finance year of this project')
+    finance_year = models.IntegerField(help_text='Finance year of this project', validators=finance_year_validator)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project')
     geographical_areas = models.ManyToManyField(GeographicalArea,
                                                 help_text='Geographical area(s) covered by the project')
