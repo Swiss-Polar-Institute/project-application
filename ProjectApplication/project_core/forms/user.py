@@ -31,14 +31,19 @@ class UserForm(forms.ModelForm):
                                                         help_text='Reviewers only have access to proposals. Management users have access to everything in Nestor'
                                                         )
 
-        edit_action = bool(self.instance.id)
-        create_action = not edit_action
+        self._is_edit_action = bool(self.instance.id)
+        self._is_create_action = not self._is_edit_action
+
+        if self._is_edit_action:
+            self._original_username = self.instance.username
+        else:
+            self._original_username = None
 
         initial_physical_person = None
 
         reviewer = None
 
-        if edit_action:
+        if self._is_edit_action:
             cancel_html = cancel_edit_button(reverse('logged-user-detail', kwargs={'pk': self.instance.id}))
 
             group_count = 0
@@ -89,10 +94,10 @@ class UserForm(forms.ModelForm):
             widget=autocomplete.ModelSelect2(url=reverse(
                 'logged-autocomplete-physical-people-non-reviewers') + f'?force_include={my_physical_person_id}'))
 
-        self.fields['generate_new_password'] = forms.BooleanField(required=create_action,
-                                                                disabled=create_action,
-                                                                initial=create_action,
-                                                                help_text='If enabled, a new password will be generated for this user. If editing a user, this option can be used to change a forgotten password')
+        self.fields['generate_new_password'] = forms.BooleanField(required=self._is_create_action,
+                                                                  disabled=self._is_create_action,
+                                                                  initial=self._is_create_action,
+                                                                  help_text='If enabled, a new password will be generated for this user. If editing a user, this option can be used to change a forgotten password')
 
         self.helper.layout = Layout(
             Div(
@@ -123,8 +128,13 @@ class UserForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data['username']
 
-        if User.objects.filter(username=username).exists():
-            raise forms.ValidationError('Username already exists. Pleas use another one')
+        duplicated_error = 'Username already exists. Please use another one'
+
+        if self._is_create_action and User.objects.filter(username=username).exists():
+            raise forms.ValidationError(duplicated_error)
+
+        if self._is_edit_action and User.objects.filter(username=username).exists() and self._original_username != username:
+            raise forms.ValidationError(duplicated_error)
 
         return username
 

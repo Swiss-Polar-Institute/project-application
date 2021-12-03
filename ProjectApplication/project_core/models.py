@@ -1411,8 +1411,8 @@ class SpiUser(User):
     def set_type_of_user(user, type_of_user, physical_person=None):
         # @staticmethod for how it's used regarding Forms and ProxyModels
 
-        assert type_of_user == settings.MANAGEMENT_GROUP_NAME and physical_person is None \
-               or type_of_user == settings.REVIEWER_GROUP_NAME and physical_person
+        assert type_of_user == settings.MANAGEMENT_GROUP_NAME or \
+               type_of_user == settings.REVIEWER_GROUP_NAME and physical_person
 
         reviewer_group = Group.objects.get(name=settings.REVIEWER_GROUP_NAME)
         management_group = Group.objects.get(name=settings.MANAGEMENT_GROUP_NAME)
