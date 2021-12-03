@@ -35,7 +35,9 @@
             </div>
         </div>
         <div class="col-2">
-
+            <p>
+                <a class="btn btn-primary d-print-none" href="{% url 'logged-person-position-update' pk=person.id %}">Edit Contact</a>
+            </p>
         </div>
     </div>
 {% endblock %}
