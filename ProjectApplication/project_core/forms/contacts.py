@@ -93,13 +93,18 @@ class ContactForm(ModelForm):
         model = super().save(False)
 
         if model.person_id:
+            model.person.orcid = self.cleaned_data['person__orcid']
             model.person.first_name = self.cleaned_data['person__first_name']
             model.person.surname = self.cleaned_data['person__surname']
 
         else:
-            model.person, created = PhysicalPerson.objects.get_or_create(
-                first_name=self.cleaned_data['person__first_name'],
-                surname=self.cleaned_data['person__surname'])
+            model.person, created = PhysicalPerson.objects.update_or_create(
+                orcid=self.cleaned_data['person__orcid'],
+                defaults={
+                    'first_name': self.cleaned_data['person__first_name'],
+                    'surname': self.cleaned_data['person__surname']
+                }
+            )
 
         if commit:
             model.person.save()
