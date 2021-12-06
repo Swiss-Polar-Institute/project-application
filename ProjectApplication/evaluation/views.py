@@ -70,7 +70,7 @@ class EvaluationCriteriaList(TemplateView):
 
         context['criteria'] = Criterion.objects.all()
 
-        context['breadcrumb'] = [{'name': 'Calls to evaluate'}]
+        context['breadcrumb'] = [{'name': 'Evaluation Criteria'}]
 
         return context
 
@@ -81,12 +81,15 @@ class EvaluationCriterionDetail(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['criterion'] = criterion = Criterion.objects.get(pk=kwargs['pk'])
+
+        context['breadcrumb'] = [{'name': 'Evaluation Criteria', 'url': reverse('logged-evaluation_criteria-list')},
+                                 {'name': criterion.name}]
+
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-criteria-list',
                         'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
                         })
-
-        context['criterion'] = Criterion.objects.get(pk=kwargs['pk'])
 
         return context
 
@@ -99,6 +102,9 @@ class EvaluationCriterionUpdate(SuccessMessageMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        context['breadcrumb'] = [{'name': 'Evaluation Criteria', 'url': reverse('logged-evaluation_criteria-list')},
+                                 {'name': self.object.name}]
 
         context.update({'active_section': 'evaluation',
                         'active_subsection': 'evaluation-criteria-list',
