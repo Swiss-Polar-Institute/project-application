@@ -28,7 +28,7 @@ class CriterionForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
-                Div('description', css_class='col-6'),
+                Div('description', css_class='col-12'),
                 css_class='row'
             ),
             FormActions(
@@ -40,3 +40,4 @@ class CriterionForm(forms.ModelForm):
     class Meta:
         model = Criterion
         fields = ['name', 'description']
+        widgets = {'description': forms.TextInput}

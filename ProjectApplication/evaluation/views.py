@@ -1,10 +1,11 @@
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import PermissionDenied
 from django.db.models.fields.files import FieldFile
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.views.generic import TemplateView, ListView, DetailView, UpdateView
+from django.views.generic import TemplateView, ListView, DetailView, UpdateView, CreateView
 
 from ProjectApplication import settings
 from comments import utils
@@ -90,7 +91,7 @@ class EvaluationCriterionDetail(TemplateView):
         return context
 
 
-class EvaluationCriterionUpdate(UpdateView):
+class EvaluationCriterionUpdate(SuccessMessageMixin, UpdateView):
     template_name = 'evaluation/criterion-form.tmpl'
     model = Criterion
     success_message = 'Criterion updated'
@@ -110,8 +111,24 @@ class EvaluationCriterionUpdate(UpdateView):
         return reverse('logged-evaluation_criterion-detail', kwargs={'pk': self.kwargs['pk']})
 
 
-class EvaluationCriterionAdd(TemplateView):
-    pass
+class EvaluationCriterionAdd(SuccessMessageMixin, CreateView):
+    template_name = 'evaluation/criterion-form.tmpl'
+    model = Criterion
+    success_message = 'Criterion created'
+    form_class = CriterionForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-criteria-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                        })
+
+        return context
+
+    def get_success_url(self):
+        return reverse('logged-evaluation_criterion-detail', kwargs={'pk': self.object.pk})
 
 
 class ProposalEvaluationList(TemplateView):
