@@ -30,6 +30,8 @@ class PersonPositionUpdateView(UpdateView):
     template_name = 'logged/contact-form.tmpl'
     model = PersonPosition
     form_class = ContactForm
+    prefix = 'contact_form'
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

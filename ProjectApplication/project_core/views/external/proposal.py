@@ -3,8 +3,8 @@ import textwrap
 from django.conf import settings
 from django.core.mail import send_mail
 from django.urls import reverse
-from django.views.generic import TemplateView
 from django.utils import timezone
+from django.views.generic import TemplateView
 
 from project_core.models import Proposal
 from project_core.views.common.proposal import AbstractProposalDetailView, AbstractProposalView
@@ -22,7 +22,8 @@ def send_email_proposal_received(uuid, display_url, update_url):
             ''')
 
         if proposal.status_is_draft() and not proposal.draft_saved_mail_sent:
-            call_deadline = timezone.localtime(proposal.call.submission_deadline).strftime('%A %d %B %Y at %H:%M Swiss time')
+            call_deadline = timezone.localtime(proposal.call.submission_deadline).strftime(
+                '%A %d %B %Y at %H:%M Swiss time')
 
             subject = 'Swiss Polar Institute - Proposal draft saved'
             body = textwrap.dedent(f'''\

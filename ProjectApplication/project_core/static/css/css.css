@@ -262,3 +262,8 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
     padding-bottom: 12px;
     line-height: 1.2em;
 }
+
+.right-align {
+    text-align: right;
+    margin-right: 1em;
+}

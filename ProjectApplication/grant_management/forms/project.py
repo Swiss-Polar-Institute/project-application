@@ -5,7 +5,7 @@ from dal import autocomplete
 from django import forms
 from django.urls import reverse
 
-from project_core.forms.utils import cancel_edit_button
+from project_core.forms.utils import cancel_edit_button, cancel_button
 from project_core.models import Project, FundingInstrument
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
@@ -23,7 +23,7 @@ class ProjectForm(forms.ModelForm):
 
         if self.instance.id:
             submit_text = 'Save Project'
-            cancel_url = reverse('logged-project-detail', kwargs={'pk': self.instance.id})
+            cancel_button_html = cancel_edit_button(reverse('logged-project-detail', kwargs={'pk': self.instance.id}))
 
             grant_management_deliverables_url = reverse('logged-grant_management-project-detail',
                                                         kwargs={'pk': self.instance.id})
@@ -33,7 +33,7 @@ class ProjectForm(forms.ModelForm):
 
         else:
             submit_text = 'Create Project'
-            cancel_url = reverse('logged-project-list')
+            cancel_button_html = cancel_button(reverse('logged-project-list'))
             locations_message = 'Use the "Other" tab under grant management to add the project locations after creating it. '
 
         # Applicants need to enter 5 keywords in the proposal, SPI at the moment can create or save them without keywords
@@ -52,13 +52,13 @@ class ProjectForm(forms.ModelForm):
 
             self.fields[
                 'principal_investigator'].help_text += \
-                f'. If the principal investigator is not found <a href="{create_person_url}">create</a> the person ' \
-                'and try again (you need to reload the page). Only people that have accepted the privacy policy is ' \
+                f'. If the principal investigator is not found, <a href="{create_person_url}">create</a> the person, ' \
+                'reload the page, then try again. Only people that have accepted the privacy policy are ' \
                 'displayed'
 
             create_funding_instrument_url = reverse('logged-funding-instrument-add')
             self.fields[
-                'funding_instrument'].help_text += f'. If the funding instrument isn not found <a href="{create_funding_instrument_url}">create</a> the funding instrument and try again (you need to reload the page).'
+                'funding_instrument'].help_text += f'. If the funding instrument is not found <a href="{create_funding_instrument_url}">create</a> the funding instrument, reload the page, then try again'
 
             funding_instrument_div = Div(
                 Div('funding_instrument', css_class='col-12'),
@@ -132,7 +132,7 @@ class ProjectForm(forms.ModelForm):
             ),
             FormActions(
                 Submit('save', submit_text),
-                cancel_edit_button(cancel_url)
+                cancel_button_html
             )
         )
 

@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import ModelForm
 from django.urls import reverse
 
-from .utils import get_field_information, cancel_edit_button
+from .utils import get_field_information, cancel_edit_button, cancel_button
 from ..models import PersonPosition, PhysicalPerson, Contact
 from ..utils.orcid import orcid_div
 
@@ -17,19 +17,21 @@ class ContactForm(ModelForm):
 
         person__first_name = person__surname = person__orcid = main_email = None
 
-        if self.instance and self.instance.pk and self.instance.person:
+        is_edit = self.instance and self.instance.pk and self.instance.person
+
+        if is_edit:
             person__first_name = self.instance.person.first_name
             person__surname = self.instance.person.surname
             person__orcid = self.instance.person.orcid
             main_email = self.instance.main_email()
-            cancel_url = reverse('logged-person-position-detail', kwargs={'id': self.instance.pk})
+            cancel_html = cancel_edit_button(reverse('logged-person-position-detail', kwargs={'pk': self.instance.pk}))
         else:
-            cancel_url = reverse('logged-person-position-list')
+            cancel_html = cancel_button(reverse('logged-person-position-list'))
 
         self.fields['person__orcid'] = forms.CharField(**get_field_information(PhysicalPerson, 'orcid'),
                                                        initial=person__orcid)
         self.fields['person__orcid'].required = False
-        self.fields['person__orcid'].help_text += '. Please add the ORCID if possible to avoid duplicates.'
+        self.fields['person__orcid'].help_text += '. Please add the ORCID iD to avoid duplicates'
 
         self.fields['person__first_name'] = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'),
                                                             initial=person__first_name)
@@ -39,7 +41,7 @@ class ContactForm(ModelForm):
         self.fields['email'] = forms.EmailField(initial=main_email, required=False)
 
         self.fields['privacy_policy'].help_text += '. Please make sure that the person has accepted the privacy policy' \
-                                                   ' before adding it into the list.'
+                                                   ' before adding them'
 
         self.fields['privacy_policy'].required = True
 
@@ -71,7 +73,7 @@ class ContactForm(ModelForm):
                 css_class='row'
             ),
             Submit('submit', 'Save'),
-            cancel_edit_button(cancel_url)
+            cancel_html
         )
 
     def clean(self):
@@ -91,13 +93,18 @@ class ContactForm(ModelForm):
         model = super().save(False)
 
         if model.person_id:
+            model.person.orcid = self.cleaned_data['person__orcid']
             model.person.first_name = self.cleaned_data['person__first_name']
             model.person.surname = self.cleaned_data['person__surname']
 
         else:
-            model.person, created = PhysicalPerson.objects.get_or_create(
-                first_name=self.cleaned_data['person__first_name'],
-                surname=self.cleaned_data['person__surname'])
+            model.person, created = PhysicalPerson.objects.update_or_create(
+                orcid=self.cleaned_data['person__orcid'],
+                defaults={
+                    'first_name': self.cleaned_data['person__first_name'],
+                    'surname': self.cleaned_data['person__surname']
+                }
+            )
 
         if commit:
             model.person.save()

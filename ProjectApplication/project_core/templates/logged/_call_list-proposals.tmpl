@@ -40,11 +40,23 @@
     {% else %}
         No proposals have been created for this call.
     {% endif %}
+    <p></p>
+    {% if proposals %}
+        <p>
+            <a class="btn btn-primary btn-sm"
+               href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
 
-    <p>
-        <a class="btn btn-primary btn-sm"
-           href="{% url 'logged-export-proposals-csv-summary-call' call=call.id %}">Export as CSV</a>
-    </p>
+            <a id="download-as-zip" class="btn btn-primary btn-sm"
+               href="{% url 'logged-export-proposals-zip-call' call=call.id %}"><i
+                    class="fas fa-download"></i> Download as ZIP</a>
+            <span style="display:none;" id="download-warning">Please wait, generating the ZIP takes some time...</span>
+
+            <!-- This is a temporary solution to show a spinning wheel... will be changed,
+            probably the Zip file will start getting served faster instead of all generated in memory
+             -->
+            {% include 'common/_button_spinner.tmpl' with button_id='download-as-zip' warning_id='download-warning' only %}
+        </p>
+    {% endif %}
     <script type="text/javascript" class="init">
         $(document).ready(function () {
             $('table.display').DataTable({

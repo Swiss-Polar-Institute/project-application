@@ -395,6 +395,7 @@ def allocated_budget_per_year():
 
     result['data'] = data
     result['headers'] = ['Year', 'Commitment (CHF)', 'Paid to date (CHF)', 'Open for payment (CHF)']
+    result['right_align_columns'] = [2, 3, 4]
 
     # result['header_tooltips'] = {'Open for payment (CHF)': ''}
 
@@ -454,6 +455,8 @@ def allocated_budget_per_call():
     result['headers'] = ['Grant Scheme', 'Account Number', 'Year', 'Commitment (CHF)', 'Paid to date (CHF)',
                          'Open for payment (CHF)']
     result['data'] = data
+
+    result['right_align_columns'] = [4, 5, 6]
 
     return result
 

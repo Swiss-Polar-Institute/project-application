@@ -17,6 +17,7 @@ from django.views.generic import TemplateView
 
 from ProjectApplication import settings
 from comments.utils import comments_attachments_forms
+from evaluation.models import CallEvaluation
 from project_core.forms.applicant_role import RoleDescriptionForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
@@ -116,6 +117,11 @@ class AbstractProposalDetailView(TemplateView):
                     'link_to_edit_or_display'] = f'(<a href="{href}"><i class="fas fa-link"></i> {description}</a>)'
 
         context.update(comments_attachments_forms('logged-proposal-comment-add', proposal))
+
+        update_files_enabled = not CallEvaluation.objects.filter(call=proposal.call).exists()
+        if update_files_enabled is False:
+            context[
+                'reason_update_files_disabled'] = 'Files cannot be changed because the evaluation has already started'
 
         return context
 

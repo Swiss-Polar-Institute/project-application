@@ -12,6 +12,38 @@
             {% endif %}
         </div>
         <div class="col-2">
+            <p>
+                <a id="download-as-pdf" class="btn btn-primary"
+                   href="{% url 'proposal-detail-pdf' uuid=proposal.uuid %}"><i
+                        class="fas fa-download"></i> Download as PDF</a>
+                <span style="display:none;"
+                      id="download-warning-pdf">Please wait, generating the PDF takes some time...</span>
+                {% include 'common/_button_spinner.tmpl' with button_id='download-as-pdf' warning_id='download-warning-pdf' only %}
+            </p>
+
+            <p>
+                <a id="download-as-zip" class="btn btn-primary"
+                   href="{% url 'proposal-detail-zip' uuid=proposal.uuid %}"><i
+                        class="fas fa-download"></i> Download as ZIP</a>
+                <span style="display:none;"
+                      id="download-warning-zip">Please wait, generating the ZIP takes some time...</span>
+
+                {% include 'common/_button_spinner.tmpl' with button_id='download-as-zip' warning_id='download-warning-zip' only %}
+            </p>
+
+            <p>
+                {% if request|request_is_management %}
+                    {% if update_files_enabled %}
+                        <a class="btn btn-primary"
+                           href="{% url 'logged-call-proposal-detail-update-files' pk=proposal.id %}">
+                            Edit files</a>
+                    {% else %}
+                        <a class="btn btn-primary disabled" href="#">Edit files</a><br>
+                        <em>({{ reason_update_files_disabled }})</em>
+                    {% endif %}
+                {% endif %}
+            </p>
+
             {% if request|request_is_management %}
                 {% include 'comments/_comments-attachments-compact-list.tmpl' %}
             {% endif %}

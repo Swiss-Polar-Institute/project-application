@@ -1,0 +1,24 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Edit files</h1>
+            <p>
+                SPI management users can change the files of the proposals until the evaluation is opened.
+            </p>
+            <form action="{{ form_action_url }}" enctype="multipart/form-data" method="post">
+                {% for form in parts_with_answers %}
+                    {% crispy form %}
+                {% endfor %}
+
+                {% include 'common/_submit-button.tmpl' with value='Save' name='save_changes' %}
+                {% include 'common/_cancel-button.tmpl' with value='Cancel' url=cancel_url %}
+            </form>
+        </div>
+        <div class="col-2">
+        </div>
+    </div>
+{% endblock %}

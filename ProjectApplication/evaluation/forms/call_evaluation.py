@@ -71,13 +71,21 @@ class CallEvaluationForm(forms.ModelForm):
             cancel_edit_url = reverse('logged-call-evaluation-add') + f'?call={call.id}'
             initial_reviewers = []
 
+        reviewer_add_url = reverse('logged-user-add')
+
+        reviewers_help_text = \
+            f'Select the reviewers that you would like to be added for this call. This is everyone that ' \
+            f'will review individual proposals and be on the review panel. If you cannot find the person ' \
+            f'you are looking for, please <a href="{reviewer_add_url}">add a Reviewer type of user</a> and reload ' \
+            f'this page.'
+
         self.fields['reviewers'] = ReviewerMultipleChoiceField(initial=initial_reviewers,
                                                                queryset=Reviewer.objects.all(),
                                                                required=True,
                                                                widget=FilteredSelectMultiple(
                                                                    is_stacked=True,
                                                                    verbose_name='reviewers'),
-                                                               help_text=self.Meta.help_texts['reviewers'])
+                                                               help_text=reviewers_help_text)
 
         criterion_choices, criterion_initial = CheckboxSelectMultipleSortable.get_choices_initial(
             CriterionCallEvaluation,
@@ -154,13 +162,6 @@ class CallEvaluationForm(forms.ModelForm):
         model = CallEvaluation
 
         fields = ['call', 'panel_date', 'post_panel_management_table']
-
-        help_texts = {
-            'reviewers': 'Select the reviewers that you would like to be added for this call. This is everyone that '
-                         'will review individual proposals and be on the review panel. If you cannot find the person '
-                         'you are looking for, please contact Carles to add them. This is not currently possible as a '
-                         'management user.'
-        }
 
         widgets = {
             'panel_date': XDSoftYearMonthDayPickerInput

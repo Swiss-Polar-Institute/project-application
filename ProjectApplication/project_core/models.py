@@ -2,15 +2,16 @@ import calendar
 import logging
 import os
 import uuid as uuid_lib
+from datetime import datetime
 from typing import List
 
 from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, RegexValidator, validate_slug
+from django.contrib.auth.models import User, Group
+from django.core.validators import MinValueValidator, RegexValidator, validate_slug, MaxValueValidator
 from django.core.validators import validate_email
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
@@ -22,7 +23,7 @@ from . import utils
 from .utils.SpiS3Boto3Storage import SpiS3Boto3Storage
 from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field, \
-    management_file_validator
+    management_file_validator, user_is_in_group_name
 
 logger = logging.getLogger('project_core')
 
@@ -32,6 +33,11 @@ def add_one_if(start, condition):
         return start + 1
     else:
         return start
+
+
+finance_year_validator = [MinValueValidator(2015, 'Finance year cannot be before SPI existed'),
+                          MaxValueValidator(datetime.today().year + 2,
+                                            'Finance year cannot be more than two years after the current year')]
 
 
 class CreateModifyOn(models.Model):
@@ -103,7 +109,8 @@ class Call(CreateModifyOn):
     long_name = models.CharField(help_text='Full name of the call', max_length=200, unique=True)
     short_name = models.CharField(help_text='Short name or acronym of the call', max_length=60, blank=True, null=True)
     finance_year = models.IntegerField(
-        help_text='Finance year of this call. It is used, for example, for the project key from this call')
+        help_text='Finance year of this call. It is used, for example, for the project key from this call',
+        validators=finance_year_validator)
     description = models.TextField(help_text='Description of the call that can be used to distinguish it from others')
     funding_instrument = models.ForeignKey(FundingInstrument, help_text='Funding instrument to which the call belongs',
                                            on_delete=models.PROTECT)
@@ -496,6 +503,15 @@ class OrganisationName(CreateModifyOn):
 
     name = models.CharField(help_text='A name that the organisation is known for', max_length=100, unique=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
+
+    def public_name(self):
+        if self.organisation:
+            if self.organisation.english_name:
+                return self.organisation.english_name
+            else:
+                return self.organisation.long_name
+        else:
+            return self.name
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -948,6 +964,18 @@ class Proposal(CreateModifyOn):
         # or at least consistent ordering
         return self.proposalscientificcluster_set.order_by('id')
 
+    def file_name(self):
+        # TODO: Names with umlauts, accents, etc. are going to cause a problem?
+
+        applicant_full_name = self.applicant.person.full_name()
+        filename = f'{self.call.short_name}-{applicant_full_name}'
+        filename = filename.replace(' ', '_').replace('.', '_')
+
+        filename = filename.replace('/', '')
+        filename = filename.replace('\\', '')
+
+        return filename
+
 
 class ProposalQAText(CreateModifyOn):
     """Questions assigned to a proposal and their respective answers"""
@@ -994,6 +1022,17 @@ class ProposalQAFile(CreateModifyOn):
         except ClientError:
             logger.warning(f'NOTIFY: ProposalQAFile {self.id} ClientError')
             return 'Unknown -ClientError'
+
+    def file_name(self):
+        from variable_templates.utils import apply_templates_to_string
+
+        _, extension = os.path.splitext(self.file.name)
+        filename = f'{self.call_question.call_part.title}-{self.call_question.question_text[0:50]}{extension}'
+
+        filename = apply_templates_to_string(filename, self.call_question.call_part.call)
+
+        filename = filename.replace(' ', '_')
+        return filename
 
 
 class BudgetItem(models.Model):
@@ -1113,7 +1152,7 @@ class Project(CreateModifyOn):
     funding_instrument = models.ForeignKey(FundingInstrument,
                                            help_text='Funding instrument to which the project belongs',
                                            on_delete=models.PROTECT)
-    finance_year = models.IntegerField(help_text='Finance year of this project')
+    finance_year = models.IntegerField(help_text='Finance year of this project', validators=finance_year_validator)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the project')
     geographical_areas = models.ManyToManyField(GeographicalArea,
                                                 help_text='Geographical area(s) covered by the project')
@@ -1139,8 +1178,8 @@ class Project(CreateModifyOn):
     abortion_reason = models.CharField(help_text='Reason that a project was aborted', max_length=50, blank=True,
                                        null=True)
 
-    closed_on = models.DateTimeField(help_text='When the project was closed', null=True)
-    closed_by = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    closed_on = models.DateTimeField(help_text='When the project was closed', blank=True, null=True)
+    closed_by = models.ForeignKey(User, on_delete=models.PROTECT, blank=True, null=True)
 
     supervisor = models.ForeignKey(PersonPosition, help_text='Supervisor', blank=True, null=True,
                                    on_delete=models.PROTECT, related_name='supervisor')
@@ -1362,3 +1401,79 @@ class CallCareerStage(models.Model):
 
     def __str__(self):
         return f'{self.call.short_name}-{self.career_stage.name}'
+
+
+class SpiUser(User):
+    class Meta:
+        proxy = True
+
+    def is_management(self):
+        return user_is_in_group_name(self, settings.MANAGEMENT_GROUP_NAME)
+
+    def is_reviewer(self):
+        return user_is_in_group_name(self, settings.REVIEWER_GROUP_NAME)
+
+    @staticmethod
+    @transaction.atomic
+    def set_type_of_user(user, type_of_user, physical_person=None):
+        # @staticmethod for how it's used regarding Forms and ProxyModels
+
+        assert type_of_user == settings.MANAGEMENT_GROUP_NAME or \
+               type_of_user == settings.REVIEWER_GROUP_NAME and physical_person
+
+        reviewer_group = Group.objects.get(name=settings.REVIEWER_GROUP_NAME)
+        management_group = Group.objects.get(name=settings.MANAGEMENT_GROUP_NAME)
+
+        if type_of_user == settings.REVIEWER_GROUP_NAME:
+            user.groups.remove(management_group)
+            user.groups.add(reviewer_group)
+
+            from evaluation.models import Reviewer
+
+            Reviewer.objects.filter(user=user).delete()
+            Reviewer.objects.create(user=user,
+                                    person=physical_person)
+
+        elif type_of_user == settings.MANAGEMENT_GROUP_NAME:
+            user.groups.remove(reviewer_group)
+            user.groups.add(management_group)
+        else:
+            assert False
+
+        user.save()
+
+    def type_of_user(self):
+        count = 0
+
+        result = ''
+
+        if self.groups.filter(name=settings.REVIEWER_GROUP_NAME):
+            count += 1
+            result = settings.REVIEWER_GROUP_NAME
+        if self.groups.filter(name=settings.MANAGEMENT_GROUP_NAME):
+            count += 1
+            result = settings.MANAGEMENT_GROUP_NAME
+
+        assert count < 2, 'Should belong only to reviewer or management groups'
+
+        return result
+
+    def type_of_user_str(self):
+        return self.type_of_user().capitalize()
+
+    def smart_first_name(self):
+        from evaluation.models import Reviewer
+
+        if self.type_of_user() == settings.REVIEWER_GROUP_NAME:
+            return Reviewer.objects.get(user=self).person.first_name
+        else:
+            return self.first_name
+
+    def smart_last_name(self):
+        from evaluation.models import Reviewer
+
+        if self.type_of_user() == settings.REVIEWER_GROUP_NAME:
+            return Reviewer.objects.get(user=self).person.surname
+        else:
+            return self.last_name
+

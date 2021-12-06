@@ -1,0 +1,56 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% block contents %}
+    {% if new_password %}
+        <div class="alert alert-primary" role="alert">
+            Password for the user: {{ new_password }}
+        </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-10">
+            <h1>User</h1>
+            <p></p>
+            <strong>Username:</strong> {{ user.username }}
+            <br>
+            <div class="row">
+                <div class="col-6">
+                    <strong>First name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.smart_first_name %}
+                </div>
+                <div class="col-6">
+                    <strong>Last name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.smart_last_name %}
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-6">
+                    <strong>Type of user:</strong><br>
+                    {% include 'common/_check-icon.tmpl' with value=user.is_management only %} Management<br>
+                    {% include 'common/_check-icon.tmpl' with value=user.is_reviewer only %} Reviewer
+
+                    <small id="hint_id_person_form-email" class="form-text text-muted">Reviewers only have access to
+                        proposals. Management users have access to everything in Nestor</small>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-6">
+                    <strong>Active:</strong> {% include 'common/_check-icon.tmpl' with value=user.is_active only %}<br>
+                    <small id="hint_id_person_form-email" class="form-text text-muted">Active users can login. It is not
+                        possible to delete users but they can be deactivated and can no longer login in any way.</small>
+                </div>
+            </div>
+            <p></p>
+            <strong>Last login:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.last_login %}<br>
+            <small id="hint_id_person_form-email" class="form-text text-muted">Last login is the last time that the user
+                entered the username and password. The user might have been using Nestor with a saved login.</small>
+            <br>
+            <strong>Date created:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.date_joined %}
+        </div>
+        <div class="col-2">
+            <p>
+                <a class="btn btn-primary d-print-none" href="{% url 'logged-user-update' pk=user.id %}">Edit User</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

@@ -4,8 +4,12 @@ from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
 
+import project_core.views.common.proposal_pdf
+import project_core.views.common.proposal_zip
+import project_core.views.logged.proposal
 import project_core.views.logged.proposals_export_to_csv_summary
 import project_core.views.logged.proposals_export_to_excel
+import project_core.views.logged.proposals_export_to_zip
 from .views import common
 from .views import external
 from .views import logged
@@ -30,6 +34,12 @@ urlpatterns = [
     path('proposal/<uuid:uuid>/',
          external.proposal.ProposalDetailView.as_view(),
          name='proposal-detail'),
+    path('proposal/<uuid:uuid>/pdf',
+         project_core.views.common.proposal_pdf.ProposalDetailViewPdf.as_view(),
+         name='proposal-detail-pdf'),
+    path('proposal/<uuid:uuid>/zip',
+         project_core.views.common.proposal_zip.ProposalDetailViewZip.as_view(),
+         name='proposal-detail-zip'),
     path('proposal/thank-you/<uuid:uuid>/',
          external.proposal.ProposalThankYouView.as_view(),
          name='proposal-thank-you'),
@@ -61,10 +71,18 @@ urlpatterns = [
     path('logged/proposals/export/csv/summary/<int:call>/',
          project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-call'),
+    path('logged/proposals/export/csv/summary/<int:call>/',
+         project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
+         name='logged-export-proposals-csv-summary-call'),
+    path('logged/proposals/export/zip/<int:call>/',
+         project_core.views.logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
+         name='logged-export-proposals-zip-call'),
     path('logged/proposals/export/csv/summary/',
          project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
-
+    path('logged/proposals/export/zip/',
+         project_core.views.logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
+         name='logged-export-proposals-zip-all'),
     path('logged/call/list/',
          logged.call.CallList.as_view(),
          name='logged-call-list'),
@@ -80,6 +98,9 @@ urlpatterns = [
     path('logged/call/proposal/<int:pk>/',
          logged.call.ProposalDetail.as_view(),
          name='logged-call-proposal-detail'),
+    path('logged/call/proposal/<int:pk>/edit/files/',
+         project_core.views.logged.proposal.ProposalUpdateFiles.as_view(),
+         name='logged-call-proposal-detail-update-files'),
     path('logged/call/<int:pk>/comment/add/',
          logged.call.CallCommentAdd.as_view(),
          name='logged-call-comment-add'),
@@ -207,6 +228,19 @@ urlpatterns = [
          logged.project.FinancialKeyAdd.as_view(),
          name='logged-financial-key-update'),
 
+    path('logged/user/list',
+         logged.project.UserListView.as_view(),
+         name='logged-user-list'),
+    path('logged/user/add',
+         logged.project.UserAdd.as_view(),
+         name='logged-user-add'),
+    path('logged/user/<int:pk>/',
+         logged.project.UserDetailView.as_view(),
+         name='logged-user-detail'),
+    path('logged/user/edit/<int:pk>/',
+         logged.project.UserUpdate.as_view(),
+         name='logged-user-update'),
+
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',
                                       extra_context={'contact': settings.LOGIN_CONTACT}),
@@ -223,6 +257,9 @@ urlpatterns = [
     path('logged/autocomplete/physical_people/',
          logged.autocomplete.PhysicalPersonAutocomplete.as_view(),
          name='logged-autocomplete-physical-people'),
+    path('logged/autocomplete/physical_people/non_reviewers',
+         logged.autocomplete.PhysicalPersonNonAutocompleteReviewers.as_view(),
+         name='logged-autocomplete-physical-people-non-reviewers'),
     path('logged/autocomplete/person_positions/',
          logged.autocomplete.PersonPositionsAutocomplete.as_view(),
          name='logged-autocomplete-person-positions'),
