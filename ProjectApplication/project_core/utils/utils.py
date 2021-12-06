@@ -128,7 +128,7 @@ def calculate_md5_from_file_field(file_field):
     return hash_md5.hexdigest()
 
 
-def new_person_message():
+def new_person_message() -> str:
     new_person_url = reverse('logged-person-position-add')
 
     return f'. <a href="{new_person_url}">Add new person</a>'

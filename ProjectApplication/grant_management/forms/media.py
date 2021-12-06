@@ -11,6 +11,7 @@ from django.urls import reverse
 from ProjectApplication import settings
 from grant_management.models import Medium
 from project_core.models import Project
+from project_core.utils.utils import new_person_message
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 logger = logging.getLogger('grant_management')
