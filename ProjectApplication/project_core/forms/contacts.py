@@ -38,6 +38,9 @@ class ContactForm(ModelForm):
         self.fields['person__surname'] = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
                                                          initial=person__surname)
 
+        self.fields['organisation_names'].help_text += '. If the organisation is not listed ' \
+                                                       'type a new name to create it'
+
         self.fields['email'] = forms.EmailField(initial=main_email, required=False)
 
         self.fields['privacy_policy'].help_text += '. Please make sure that the person has accepted the privacy policy' \
