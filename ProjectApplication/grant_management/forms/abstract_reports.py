@@ -2,6 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Field, HTML
 from dal import autocomplete
 from django import forms
+from django.urls import reverse
 
 from grant_management.forms import utils
 from project_core.widgets import XDSoftYearMonthDayPickerInput
@@ -20,6 +21,9 @@ class AbstractReportItemModelForm(forms.ModelForm):
                 XDSoftYearMonthDayPickerInput.set_format_to_field(field)
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
+
+        new_person_url = reverse('logged-person-position-add')
+        self.fields['approved_by'].help_text += f' . You can <a href="{new_person_url}">add a new person</a> if needed'
 
         message = ''
         # Final fields are all or none - it checks for the first one
