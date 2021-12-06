@@ -6,6 +6,7 @@ from crispy_forms.layout import Layout, Div, Field
 from dal import autocomplete
 from django import forms
 from django.forms import BaseInlineFormSet, inlineformset_factory, CheckboxSelectMultiple
+from django.urls import reverse
 
 from ProjectApplication import settings
 from grant_management.models import Medium
@@ -43,6 +44,9 @@ class MediumModelForm(forms.ModelForm):
             widget=CheckboxSelectMultiple,
             required=False,
             help_text='Please select the relevant blog posts for this media file')
+
+        new_person_url = reverse('logged-person-position-add')
+        self.fields['photographer'].help_text += f' . You can <a href="{new_person_url}">add a new person</a> if needed'
 
         self.helper = FormHelper()
         self.helper.form_tag = False
