@@ -5,6 +5,7 @@ from django import forms
 from django.urls import reverse
 
 from grant_management.forms import utils
+from project_core.utils.utils import new_person_message
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -22,8 +23,7 @@ class AbstractReportItemModelForm(forms.ModelForm):
 
         self.fields['can_be_deleted'] = forms.CharField(initial=1, required=False)
 
-        new_person_url = reverse('logged-person-position-add')
-        self.fields['approved_by'].help_text += f' . You can <a href="{new_person_url}">add a new person</a> if needed'
+        self.fields['approved_by'].help_text += new_person_message()
 
         message = ''
         # Final fields are all or none - it checks for the first one

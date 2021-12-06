@@ -6,6 +6,7 @@ from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 
 from grant_management.models import BlogPost
 from project_core.models import Project
+from project_core.utils.utils import new_person_message
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -19,6 +20,8 @@ class BlogPostModelForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True  # checked in the higher form level
+
+        self.fields['author'].help_text += new_person_message()
 
         media = "{% include 'grant_management/_enumeration_of_media.tmpl' %}"
 

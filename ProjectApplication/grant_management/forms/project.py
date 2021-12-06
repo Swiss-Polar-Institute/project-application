@@ -7,6 +7,7 @@ from django.urls import reverse
 
 from project_core.forms.utils import cancel_edit_button, cancel_button
 from project_core.models import Project, FundingInstrument
+from project_core.utils.utils import new_person_message
 from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
@@ -48,13 +49,8 @@ class ProjectForm(forms.ModelForm):
                 css_class='row'
             )
 
-            create_person_url = reverse('logged-person-position-add')
-
             self.fields[
-                'principal_investigator'].help_text += \
-                f'. If the principal investigator is not found, <a href="{create_person_url}">create</a> the person, ' \
-                'reload the page, then try again. Only people that have accepted the privacy policy are ' \
-                'displayed'
+                'principal_investigator'].help_text += new_person_message()
 
             create_funding_instrument_url = reverse('logged-funding-instrument-add')
             self.fields[

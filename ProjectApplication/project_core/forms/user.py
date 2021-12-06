@@ -10,6 +10,7 @@ from django.urls import reverse
 from evaluation.models import Reviewer
 from project_core.forms.utils import cancel_edit_button, cancel_button
 from project_core.models import SpiUser, PhysicalPerson
+from project_core.utils.utils import new_person_message
 
 
 class UserForm(forms.ModelForm):
@@ -80,15 +81,11 @@ class UserForm(forms.ModelForm):
             used_users.remove(initial_physical_person.id)
             my_physical_person_id = initial_physical_person.id
 
-        new_person_url = reverse('logged-person-position-add')
         list_users_url = reverse('logged-user-list')
         self.fields['physical_person'] = forms.ModelChoiceField(
             label='Person<span class="asteriskField">*</span>',
             required=False,
-            help_text="Choose the reviewer's name from the list. Only people that have accepted the "
-                      f'policy privacy and that are not yet a reviewer, are displayed. If you think the person may '
-                      f'already be a reviewer, <a href="{list_users_url}">check the list of users</a> before creating another. '
-                      f'If they are not listed, <a href="{new_person_url}">create a new person</a> then reload this page.',
+            help_text=f"Choose the reviewer's name from the list{new_person_message()}",
             queryset=PhysicalPerson.objects.all().exclude(id__in=used_users),
             initial=initial_physical_person,
             widget=autocomplete.ModelSelect2(url=reverse(

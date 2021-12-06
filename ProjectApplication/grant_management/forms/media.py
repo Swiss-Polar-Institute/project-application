@@ -45,8 +45,7 @@ class MediumModelForm(forms.ModelForm):
             required=False,
             help_text='Please select the relevant blog posts for this media file')
 
-        new_person_url = reverse('logged-person-position-add')
-        self.fields['photographer'].help_text += f' . You can <a href="{new_person_url}">add a new person</a> if needed'
+        self.fields['photographer'].help_text += new_person_message()
 
         self.helper = FormHelper()
         self.helper.form_tag = False

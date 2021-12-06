@@ -3,6 +3,7 @@ import io
 
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.core.validators import FileExtensionValidator
+from django.urls import reverse
 
 
 def bytes_to_human_readable(num: int) -> str:
@@ -125,3 +126,9 @@ def calculate_md5_from_file_field(file_field):
     # file_field.file.file.seek(initial_position)
 
     return hash_md5.hexdigest()
+
+
+def new_person_message():
+    new_person_url = reverse('logged-person-position-add')
+
+    return f'. <a href="{new_person_url}">Add new person</a>'
