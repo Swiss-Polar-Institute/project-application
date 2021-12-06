@@ -1,0 +1,17 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+
+{% block contents %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Criterion</h1>
+            <p></p>
+            <strong>Name:</strong> {{ criterion.name }}<br>
+            <strong>Description:</strong> {{ criterion.description }}
+        </div>
+        <div class="col-2">
+            <p>
+                <a class="btn btn-primary d-print-none" href="{% url 'logged-evaluation_criterion-update' pk=criterion.id %}">Edit Criterion</a>
+            </p>
+        </div>
+    </div>
+{% endblock %}

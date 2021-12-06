@@ -1,0 +1,42 @@
+{% extends 'logged/_base_with_menus.tmpl' %}
+{% load static %}
+
+{% block contents %}
+    <h1>Evaluation criteria</h1>
+    These evaluation criteria are available for any new evaluation.
+
+    <table id="evaluation-criteria" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for criterion in criteria %}
+            <tr>
+                <td>{{ criterion.name }}</td>
+                <td>{{ criterion.description }}</td>
+                <td><a class="btn btn-primary btn-xs"
+                       href="{% url 'logged-evaluation_criterion-update' pk=criterion.pk %}">Edit</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+    <p>
+        <a class="btn btn-primary" href="{% url 'logged-evaluation_criterion-add' %}">Create evaluation criterion</a>
+    </p>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#evaluation-criteria.display').DataTable({
+                    "pageLength": 100,
+                    "searchHighlight": true
+                }
+            );
+        });
+    </script>
+
+{% endblock %}

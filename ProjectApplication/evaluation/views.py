@@ -4,13 +4,14 @@ from django.db.models.fields.files import FieldFile
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, UpdateView
 
 from ProjectApplication import settings
 from comments import utils
 from comments.utils import comments_attachments_forms, process_comment_attachment
 from evaluation.forms.call_evaluation import CallEvaluationForm
 from evaluation.forms.close_call_evaluation import CloseCallEvaluation
+from evaluation.forms.criterion import CriterionForm
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import CallEvaluation, ProposalEvaluation, CriterionCallEvaluation, Criterion
@@ -53,6 +54,64 @@ class ProposalEvaluationDetail(AbstractProposalDetailView):
                                  {'name': 'Proposal evaluation'}]
 
         return render(request, 'logged/proposal-detail-evaluation-detail.tmpl', context)
+
+
+class EvaluationCriteriaList(TemplateView):
+    template_name = 'evaluation/evaluation_criteria-list.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-criteria-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                        })
+
+        context['criteria'] = Criterion.objects.all()
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate'}]
+
+        return context
+
+
+class EvaluationCriterionDetail(TemplateView):
+    template_name = 'evaluation/criterion-detail.tmpl'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-criteria-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                        })
+
+        context['criterion'] = Criterion.objects.get(pk=kwargs['pk'])
+
+        return context
+
+
+class EvaluationCriterionUpdate(UpdateView):
+    template_name = 'evaluation/criterion-form.tmpl'
+    model = Criterion
+    success_message = 'Criterion updated'
+    form_class = CriterionForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-criteria-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'
+                        })
+
+        return context
+
+    def get_success_url(self):
+        return reverse('logged-evaluation_criterion-detail', kwargs={'pk': self.kwargs['pk']})
+
+
+class EvaluationCriterionAdd(TemplateView):
+    pass
 
 
 class ProposalEvaluationList(TemplateView):
