@@ -10,7 +10,9 @@ class CommentForm(forms.Form):
 
     # Note that Comments are not editable, so initial is always empty, always a new comment
     def __init__(self, *args, **kwargs):
-        comment_category = kwargs.pop('category_queryset').exclude(category__name=settings.DATA_IMPORT_CATEGORY_NAME)
+        comment_category = kwargs.pop('category_queryset').\
+            exclude(category__name=settings.DATA_IMPORT_CATEGORY_NAME). \
+            order_by('category__name')
         form_action = kwargs.pop('form_action')
         form_tag = kwargs.pop('form_tag', True)
         self._fields_required = kwargs.pop('fields_required', True)
