@@ -48,6 +48,8 @@ class MediumModelForm(forms.ModelForm):
 
         self.fields['photographer'].help_text += new_person_message()
 
+        self.fields['license'].queryset = self.fields['license'].queryset.order_by('name')
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.disable_csrf = True  # checked in the higher form level
