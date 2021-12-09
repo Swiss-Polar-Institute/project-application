@@ -5,6 +5,7 @@ import uuid as uuid_lib
 from datetime import datetime
 from typing import List
 
+import unidecode as unidecode
 from botocore.exceptions import EndpointConnectionError, ClientError
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -965,16 +966,24 @@ class Proposal(CreateModifyOn):
         return self.proposalscientificcluster_set.order_by('id')
 
     def file_name(self):
-        # TODO: Names with umlauts, accents, etc. are going to cause a problem?
-
         applicant_full_name = self.applicant.person.full_name()
         filename = f'{self.call.short_name}-{applicant_full_name}'
-        filename = filename.replace(' ', '_').replace('.', '_')
 
-        filename = filename.replace('/', '')
-        filename = filename.replace('\\', '')
+        filename = cleanup_file_name(filename)
 
         return filename
+
+
+def cleanup_file_name(filename):
+    filename = filename.replace(' ', '_')
+    filename = filename.replace('.', '_')
+
+    filename = filename.replace('/', '')
+    filename = filename.replace('\\', '')
+
+    filename = unidecode.unidecode(filename)
+
+    return filename
 
 
 class ProposalQAText(CreateModifyOn):
