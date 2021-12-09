@@ -119,6 +119,7 @@ class AbstractProposalDetailView(TemplateView):
         context.update(comments_attachments_forms('logged-proposal-comment-add', proposal))
 
         update_files_enabled = not CallEvaluation.objects.filter(call=proposal.call).exists()
+        context['update_files_enabled'] = update_files_enabled
         if update_files_enabled is False:
             context[
                 'reason_update_files_disabled'] = 'Files cannot be changed because the evaluation has already started'
