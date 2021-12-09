@@ -1,15 +1,17 @@
 <script>
-    let button_selector = '#{{ button_id }}';
-    let warning_selector = '#{{ warning_id }}';
+    {
+        let button_selector = '#{{ button_id }}';
+        let warning_selector = '#{{ warning_id }}';
 
-    $(button_selector).click(function (e) {
-        $(this).addClass('disabled');
-        $(this).prepend('<span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ');
-        $(warning_selector).show();
-    });
-    $(window).on("focus", function () {
-        $(button_selector).removeClass('disabled');
-        $(button_selector).find("#spinner").remove()
-        $(warning_selector).hide();
-    });
+        $(button_selector).click(function (e) {
+            $(this).addClass('disabled');
+            $(this).prepend('<span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ');
+            $(warning_selector).show();
+        });
+        $(window).on("focus", function () {
+            $(button_selector).removeClass('disabled');
+            $(button_selector).find("#spinner").remove()
+            $(warning_selector).hide();
+        });
+    }
 </script>
