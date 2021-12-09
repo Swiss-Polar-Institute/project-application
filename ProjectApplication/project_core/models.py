@@ -1036,11 +1036,13 @@ class ProposalQAFile(CreateModifyOn):
         from variable_templates.utils import apply_templates_to_string
 
         _, extension = os.path.splitext(self.file.name)
-        filename = f'{self.call_question.call_part.title}-{self.call_question.question_text[0:50]}{extension}'
-
+        filename = f'{self.call_question.call_part.title}-{self.call_question.question_text[0:50]}'
         filename = apply_templates_to_string(filename, self.call_question.call_part.call)
 
-        filename = filename.replace(' ', '_')
+        filename = cleanup_file_name(filename)
+
+        filename += f'{extension}'
+
         return filename
 
 
