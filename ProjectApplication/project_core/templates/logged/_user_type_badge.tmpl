@@ -1,0 +1,7 @@
+{% if user_type == "Management" %}
+    <span class="badge" style="color:#00203FFF; background-color: #ADEFD1FF;">Management</span>
+{% elif user_type == "Reviewer" %}
+    <span class="badge" style="color:#00539CFF; background-color: #EEA47FFF;">Reviewer</span>
+{% else %}
+    {{ user_type }}
+{% endif %}
