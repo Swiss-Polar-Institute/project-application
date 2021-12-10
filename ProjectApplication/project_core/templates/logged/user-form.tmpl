@@ -25,20 +25,18 @@
         function displayHidePhysicalPerson() {
             let is_reviewer = $("input[name='type_of_user']:checked").val() === 'reviewer';
 
-            let physical_person = $('#div_id_physical_person');
-            let user_first_name = $('#div_id_first_name');
-            let user_last_name = $('#div_id_last_name');
+            let reviewer_div = $('.reviewer_information');
+            let management_div = $('.management_information');
+
+            console.log(reviewer_div);
+            console.log(management_div);
 
             if (is_reviewer) {
-                physical_person.show(500);
-
-                user_first_name.hide(500);
-                user_last_name.hide(500);
+                reviewer_div.show(500);
+                management_div.hide(500);
             } else {
-                physical_person.hide(500);
-
-                user_first_name.show(500);
-                user_last_name.show(500);
+                reviewer_div.hide(500);
+                management_div.show(500);
             }
             // The asteriskField is not hidden because all the div is hidden
             // if the user is a management user

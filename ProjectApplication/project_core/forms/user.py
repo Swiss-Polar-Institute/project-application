@@ -1,6 +1,6 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit
+from crispy_forms.layout import Layout, Div, Submit, HTML
 from dal import autocomplete
 from django import forms
 from django.conf import settings
@@ -85,7 +85,8 @@ class UserForm(forms.ModelForm):
         self.fields['physical_person'] = forms.ModelChoiceField(
             label='Person<span class="asteriskField">*</span>',
             required=False,
-            help_text=f"Choose the reviewer's name from the list{new_person_message()}",
+            help_text=f"Choose the reviewer's name from the list{new_person_message()}.<br>"
+                      f"To give access to different calls add the reviewer to the Call Evaluation.",
             queryset=PhysicalPerson.objects.all().exclude(id__in=used_users),
             initial=initial_physical_person,
             widget=autocomplete.ModelSelect2(url=reverse(
@@ -107,12 +108,12 @@ class UserForm(forms.ModelForm):
             ),
             Div(
                 Div('physical_person', css_class='col-6'),
-                css_class='row'
+                css_class='row reviewer_information',
             ),
             Div(
                 Div('first_name', css_class='col-6'),
                 Div('last_name', css_class='col-6'),
-                css_class='row'
+                css_class='row management_information',
             ),
             Div(
                 Div('is_active', css_class='col-6'),
