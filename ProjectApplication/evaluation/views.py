@@ -338,11 +338,13 @@ class CallEvaluationDetail(DetailView):
                                                                    'criterion')
 
         criteria = []
-        for criterion in call_evaluation.criterioncallevaluation_set.order_by('order'):
+        for criterion in call_evaluation.criterioncallevaluation_set.order_by('order', 'criterion__name'):
             criteria.append(({'in_call_evaluation': criterion.enabled,
                               'name': criterion.criterion.name,
                               'description': criterion.criterion.description})
                             )
+
+        criteria.sort(key=lambda c: not c['in_call_evaluation'])
 
         context['criteria'] = criteria
 
