@@ -1,11 +1,12 @@
 from crispy_forms.bootstrap import FormActions
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit, HTML
+from crispy_forms.layout import Layout, Div, Submit
 from dal import autocomplete
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 from evaluation.models import Reviewer
 from project_core.forms.utils import cancel_edit_button, cancel_button
@@ -141,9 +142,29 @@ class UserForm(forms.ModelForm):
         return username
 
     def clean(self):
-        if self.cleaned_data.get('type_of_user', '') == settings.REVIEWER_GROUP_NAME and \
-                self.cleaned_data['physical_person'] is None:
-            raise forms.ValidationError({'comment': 'Person is mandatory if the type of user is a reviewer'})
+        if self.cleaned_data.get('type_of_user', '') == settings.REVIEWER_GROUP_NAME:
+            physical_person = self.cleaned_data['physical_person']
+            if physical_person is None:
+                raise forms.ValidationError(
+                    {'physical_person': 'Person is mandatory if the type of user is a reviewer'})
+            else:
+                user = User.objects.filter(username=self.cleaned_data['username']).first()
+
+                another_reviewer_same_user = Reviewer.objects.filter(person=physical_person).\
+                    exclude(user=user).\
+                    first()
+
+                if another_reviewer_same_user:
+                    raise forms.ValidationError(
+                        {'username': mark_safe(f'{another_reviewer_a_href(another_reviewer_same_user)} exist with this username')}
+                    )
+
+                if user:
+                    duplicate = Reviewer.objects.filter(person=physical_person).exclude(user=user).exists()
+
+                    if duplicate:
+                        raise forms.ValidationError(
+                            {'physical_person': 'This physical person is assigned to another reviewer'})
 
     def save(self, *args, **kwargs):
         user: SpiUser = super().save(*args, **kwargs)
@@ -179,3 +200,9 @@ class UserForm(forms.ModelForm):
         fields = ['username', 'first_name', 'last_name', 'is_active']
         help_texts = {
             'is_active': 'Designates whether this user should be treated as active. Untick this box instead of deleting accounts for inactive users'}
+
+
+def another_reviewer_a_href(reviewer):
+    link = reverse("logged-user-detail", kwargs={"pk": reviewer.user_id})
+
+    return f'<a href="{link}">Another reviewer</a>'

@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import User, Group
 from django.core.validators import MinValueValidator, RegexValidator, validate_slug, MaxValueValidator
 from django.core.validators import validate_email
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
@@ -1441,9 +1441,17 @@ class SpiUser(User):
 
             from evaluation.models import Reviewer
 
-            Reviewer.objects.filter(user=user).delete()
-            Reviewer.objects.create(user=user,
-                                    person=physical_person)
+            # Do not delete the reviewer to avoid losing the links
+            # to the existing Call Evaluation
+            #
+            # Here just re-raises and logs
+            r = Reviewer.objects.filter(user=user).first()
+
+            if r:
+                r.person = physical_person
+                r.save()
+            else:
+                Reviewer.objects.create(user=user, person=physical_person)
 
         elif type_of_user == settings.MANAGEMENT_GROUP_NAME:
             user.groups.remove(reviewer_group)
@@ -1452,6 +1460,7 @@ class SpiUser(User):
             assert False
 
         user.save()
+        return True
 
     def type_of_user(self):
         count = 0
@@ -1487,4 +1496,3 @@ class SpiUser(User):
             return Reviewer.objects.get(user=self).person.surname
         else:
             return self.last_name
-
