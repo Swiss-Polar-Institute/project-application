@@ -4,6 +4,7 @@
 {% with proposalevaluation=proposal.proposalevaluation %}
     <strong>Reviewers:</strong> {% for reviewer in proposalevaluation.proposal.reviewer_set.all %}
     {{ reviewer.person }}{% if not forloop.last %},{% endif %}
+    {% empty %}-
 {% endfor %}<br>
     <strong>Panel remarks:</strong>
     <div class="border p-1 bg-white rounded pre-wrap">{% include 'common/_value-or-dash.tmpl' with value=proposalevaluation.panel_remarks only %}</div><br>

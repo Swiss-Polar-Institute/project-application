@@ -233,6 +233,8 @@ class Call(CreateModifyOn):
 
         return CareerStage.objects.filter(id__in=career_stages).order_by('list_order')
 
+    def reviewers(self):
+        return self.reviewer_set.all().order_by('person__first_name', 'person__surname')
 
 class BudgetCategoryCall(CreateModifyOn):
     call = models.ForeignKey(Call,
