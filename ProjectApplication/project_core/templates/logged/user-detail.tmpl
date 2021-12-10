@@ -37,22 +37,23 @@
             {% if user.is_reviewer %}
                 <div class="row">
                     <div class="col-6">
-                        <strong>Access to calls:</strong>
-                        {% spaceless %}
-                            {% for call in user.reviewer.list_of_calls %}
-                                <a href="{% url 'logged-call-list-proposals' call_id=call.id %}">{{ call.short_name }}</a>{% if not forloop.last %}, {% endif %}
-                            {% empty %}
-                                -
-                            {% endfor %}
-                        {% endspaceless %}
-                        <br>
-                        <small class="form text text-muted">To give access to different calls add the reviewer to the
-                            Call Evaluation.</small>
+                        <p>
+                            <strong>Reviewer of these calls:</strong>
+                            {% include 'common/_list_of_calls-inline.tmpl' with add_link=True calls=user.reviewer.list_of_calls only %}
+                            <br>
+                            <small class="form text text-muted">To give access to different calls add the reviewer to
+                                the Call Evaluation for a specific call.</small>
+                        </p>
+                        <p>
+                            <strong>Open calls for this reviewer:</strong>
+                            {% include 'common/_list_of_calls-inline.tmpl' with add_link=True calls=user.reviewer.calls_without_closed_call_evaluation only %}
+                            <br>
+                            <small class="form text text-muted">Only calls which Call Evaluation is not closed will be
+                                displayed to the reviewer.</small>
+                        </p>
                     </div>
                 </div>
             {% endif %}
-
-            <p></p>
             <div class="row">
                 <div class="col-6">
                     <strong>Active:</strong> {% include 'common/_check-icon.tmpl' with value=user.is_active only %}<br>

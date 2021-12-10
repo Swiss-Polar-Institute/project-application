@@ -78,7 +78,14 @@ class UserForm(forms.ModelForm):
 
         used_users = list(Reviewer.objects.all().values_list('person', flat=True))
 
-        my_physical_person_id = 0
+        if self.instance and self.instance.id:
+            my_user = self.instance
+            reviewer = Reviewer.objects.filter(user=my_user).first()
+            # It might exist because the User might have been previously a reviewer and then changed to management
+            if reviewer:
+                my_physical_person_id = reviewer.user_id
+            else:
+                my_physical_person_id = 0
 
         if reviewer:
             initial_physical_person = reviewer.person
