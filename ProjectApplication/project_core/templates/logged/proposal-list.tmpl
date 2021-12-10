@@ -6,8 +6,7 @@
     {% if reviewer %}
         <strong>Reviewer:</strong> {{ reviewer }}<br>
         <strong>Calls with access:</strong>
-        {% for call in reviewer_calls_access %}{{ call.long_name }}{% if not forloop.last %}, {% endif %}{% empty %}-
-        {% endfor %}
+        {% include 'common/_list_of_calls-inline.tmpl' with calls=reviewer_calls_access no_link=true only %}
     {% elif request|request_is_management %}
         All proposals from all calls
     {% endif %}

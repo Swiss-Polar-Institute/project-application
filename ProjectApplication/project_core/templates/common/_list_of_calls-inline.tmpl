@@ -1,0 +1,9 @@
+{% spaceless %}
+    {% for call in calls %}
+        {% if add_link %}
+            <a href="{% url 'logged-call-list-proposals' call_id=call.id %}">{{ call.short_name }}</a>{% else %}
+            {{ call.short_name }}{% endif %}{% if not forloop.last %},{% endif %}
+    {% empty %}
+        -
+    {% endfor %}
+{% endspaceless %}
