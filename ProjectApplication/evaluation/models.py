@@ -31,9 +31,13 @@ class Reviewer(models.Model):
                 proposals = Proposal.objects.none()
                 return proposals
 
-            proposals = proposals.filter(call__in=reviewer.calls.all()).filter(eligibility=Proposal.ELIGIBLE)
+            proposals = proposals.filter(call__in=reviewer.calls_without_closed_call_evaluation()). \
+                filter(eligibility=Proposal.ELIGIBLE)
 
         return proposals
+
+    def calls_without_closed_call_evaluation(self):
+        return self.calls.filter(callevaluation__closed_date__isnull=True)
 
     def list_of_calls(self):
         calls = self.calls.all().order_by('short_name')
