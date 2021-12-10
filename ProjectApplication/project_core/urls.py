@@ -163,10 +163,6 @@ urlpatterns = [
          logged.news.News.as_view(),
          name='logged-news'),
 
-    path('logged/home/changelog/',
-         logged.changelog.Changelog.as_view(),
-         name='logged-changelog'),
-
     path('logged/template_question/add/',
          logged.template_question.TemplateQuestionCreateView.as_view(),
          name='logged-template-question-add'),

@@ -1,6 +1,5 @@
 from . import autocomplete
 from . import call
-from . import changelog
 from . import funding_instrument
 from . import lists
 from . import news
