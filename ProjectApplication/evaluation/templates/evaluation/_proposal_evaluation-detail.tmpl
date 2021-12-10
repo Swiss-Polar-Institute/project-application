@@ -2,7 +2,7 @@
 {% load thousands_separator %}
 
 {% with proposalevaluation=proposal.proposalevaluation %}
-    <strong>Reviewers:</strong> {% for reviewer in proposalevaluation.proposal.reviewer_set.all %}
+    <strong>Reviewers:</strong> {% for reviewer in proposalevaluation.proposal.reviewers %}
     {{ reviewer.person }}{% if not forloop.last %},{% endif %}
     {% empty %}-
 {% endfor %}<br>

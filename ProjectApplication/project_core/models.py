@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import User, Group
 from django.core.validators import MinValueValidator, RegexValidator, validate_slug, MaxValueValidator
 from django.core.validators import validate_email
-from django.db import models, transaction, IntegrityError
+from django.db import models, transaction
 from django.db.models import Sum
 from django.urls import reverse
 from django.utils import timezone
@@ -235,6 +235,7 @@ class Call(CreateModifyOn):
 
     def reviewers(self):
         return self.reviewer_set.all().order_by('person__first_name', 'person__surname')
+
 
 class BudgetCategoryCall(CreateModifyOn):
     call = models.ForeignKey(Call,
@@ -974,6 +975,9 @@ class Proposal(CreateModifyOn):
         filename = cleanup_file_name(filename)
 
         return filename
+
+    def reviewers(self):
+        return self.reviewer_set.all().order_by('person__first_name', 'person__surname')
 
 
 def cleanup_file_name(filename):
