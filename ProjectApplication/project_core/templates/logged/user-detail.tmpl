@@ -15,10 +15,12 @@
             <br>
             <div class="row">
                 <div class="col-6">
-                    <strong>First name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.smart_first_name %}
+                    <strong>First
+                        name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.smart_first_name %}
                 </div>
                 <div class="col-6">
-                    <strong>Last name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.smart_last_name %}
+                    <strong>Last
+                        name:</strong> {% include 'common/_value-or-dash.tmpl' with value=user.smart_last_name %}
                 </div>
             </div>
             <p></p>
@@ -32,6 +34,24 @@
                         proposals. Management users have access to everything in Nestor</small>
                 </div>
             </div>
+            {% if user.is_reviewer %}
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Access to calls:</strong>
+                        {% spaceless %}
+                            {% for call in user.reviewer.list_of_calls %}
+                                <a href="{% url 'logged-call-list-proposals' call_id=call.id %}">{{ call.short_name }}</a>{% if not forloop.last %}, {% endif %}
+                            {% empty %}
+                                -
+                            {% endfor %}
+                        {% endspaceless %}
+                        <br>
+                        <small class="form text text-muted">To give access to different calls add the reviewer to the
+                            Call Evaluation.</small>
+                    </div>
+                </div>
+            {% endif %}
+
             <p></p>
             <div class="row">
                 <div class="col-6">

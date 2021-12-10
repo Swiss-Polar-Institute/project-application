@@ -35,6 +35,10 @@ class Reviewer(models.Model):
 
         return proposals
 
+    def list_of_calls(self):
+        calls = self.calls.all().order_by('short_name')
+        return calls
+
 
 def proposal_evaluation_eligibility_letter_rename(instance, filename):
     return f'evaluation/ProposalEvaluation/Proposal-{instance.proposal.id}-{filename}'
