@@ -68,6 +68,9 @@ class UserForm(forms.ModelForm):
             assert group_count < 2, 'A user cannot be a reviewer and management at the same time'
 
         else:
+            self.fields['is_active'].required = True
+            self.fields['is_active'].initial = True
+            self.fields['is_active'].disabled = True
             cancel_html = cancel_button(reverse('logged-user-list'))
 
         if initial_type_of_user:
@@ -150,13 +153,14 @@ class UserForm(forms.ModelForm):
             else:
                 user = User.objects.filter(username=self.cleaned_data['username']).first()
 
-                another_reviewer_same_user = Reviewer.objects.filter(person=physical_person).\
-                    exclude(user=user).\
+                another_reviewer_same_user = Reviewer.objects.filter(person=physical_person). \
+                    exclude(user=user). \
                     first()
 
                 if another_reviewer_same_user:
                     raise forms.ValidationError(
-                        {'username': mark_safe(f'{another_reviewer_a_href(another_reviewer_same_user)} exist with this username')}
+                        {'username': mark_safe(
+                            f'{another_reviewer_a_href(another_reviewer_same_user)} exist with this username')}
                     )
 
                 if user:
