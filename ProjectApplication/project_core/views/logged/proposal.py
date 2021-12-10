@@ -44,7 +44,8 @@ class ProposalList(ListView):
         if user_is_in_group_name(self.request.user, settings.REVIEWER_GROUP_NAME):
             if hasattr(self.request.user, 'reviewer'):
                 context['reviewer'] = self.request.user.reviewer.person
-                context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).calls.all()
+                context['reviewer_calls_access'] = Reviewer.objects.get(user=self.request.user).\
+                    calls_without_closed_call_evaluation()
             else:
                 messages.error(self.request,
                                'This review user is not setup properly. Contact SPI.')
