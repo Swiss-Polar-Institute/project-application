@@ -16,13 +16,18 @@
 
         {% if next %}
             {% if user.is_authenticated %}
-                <p>Your account doesn't have access to this page. To proceed,
-                    please login with an account that has access.</p>
+                <div class="authentication_error">
+                    <p>Your account doesn't have access to the page that you tried to access.</p>
+                    <p>You can try to <a href="{% url 'logged-homepage' %}">go to the main management area</a> or login
+                        with another account below.
+                </div>
             {% else %}
-                <p>Please login to access the page you require.</p>
+                <div class="authentication_error">
+                    Please login to access the page you require.
+                </div>
             {% endif %}
         {% endif %}
-
+        <p></p>
         <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
             <table>
