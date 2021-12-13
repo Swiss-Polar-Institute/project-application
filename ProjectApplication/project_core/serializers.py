@@ -42,15 +42,16 @@ class LocationSerializer(serializers.ModelSerializer):
 class FilterMediumSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         data = data.filter(~Q(license_id=None))
-        return super(FilterMediumSerializer, self).to_representation(data)
+        return super().to_representation(data)
 
 
 class MediumSerializer(serializers.ModelSerializer):
     photographer = serializers.CharField(source='photographer.full_name')
+    license = serializers.CharField(source='license.spdx_identifier')
 
     class Meta:
         model = Medium
-        fields = ('photographer', 'file', )
+        fields = ('photographer', 'file', 'license', 'key_image', 'primary_image')
         list_serializer_class = FilterMediumSerializer
 
 
@@ -80,5 +81,5 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         fields = ('uuid', 'key', 'title', 'keywords', 'geographical_areas', 'location',
                   'start_date', 'end_date', 'principal_investigator', 'project_location',
-                  'medium_set', 'laysummary_set'
+                  'medium_set', 'laysummary_set', 'allocated_budget'
                   )
