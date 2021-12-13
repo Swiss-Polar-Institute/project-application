@@ -46,6 +46,16 @@ class MediumModelForm(forms.ModelForm):
             required=False,
             help_text='Please select the relevant blog posts for this media file')
 
+        self.fields['key_image'] = forms.BooleanField(
+            required=False,
+            help_text='Select as a key image to be displayed on website'
+        )
+
+        self.fields['primary_image'] = forms.BooleanField(
+            required=False,
+            help_text='Select as a primary image on website'
+        )
+
         self.fields['photographer'].help_text += new_person_message()
 
         self.fields['license'].queryset = self.fields['license'].queryset.order_by('name')
@@ -74,7 +84,11 @@ class MediumModelForm(forms.ModelForm):
             ),
             Div(
                 Div('descriptive_text', css_class='col-6'),
-                Div('blog_posts', css_class='col-6'),
+                Div(
+                    Div('blog_posts'),
+                    Div('key_image'),
+                    Div('primary_image'),
+                ),
                 css_class='row'
             ),
         )
@@ -86,7 +100,7 @@ class MediumModelForm(forms.ModelForm):
     class Meta:
         model = Medium
         fields = ['project', 'received_date', 'photographer', 'license', 'copyright', 'blog_posts', 'file',
-                  'descriptive_text']
+                  'descriptive_text', 'key_image', 'primary_image']
         widgets = {'received_date': XDSoftYearMonthDayPickerInput,
                    'photographer': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
 
