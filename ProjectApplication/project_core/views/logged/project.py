@@ -38,6 +38,7 @@ class ProjectListAPI(ListAPIView):
     queryset = Project.objects.exclude(status=Project.ABORTED)
     serializer_class = ProjectSerializer
     filterset_class = ProjectFilterSet
+    ordering_fields = ('start_date', )
 
 
 class AbstractProjectView(DetailView):

@@ -3,7 +3,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models, transaction
 # Create your models here.
 # add dates of review, signed date, who signed, grant agreement - need flexibilty in types of dates that are added
-from django.db.models import Sum
+from django.db.models import Sum, Q
 from django.utils.datetime_safe import datetime
 from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
@@ -245,6 +245,8 @@ class Medium(CreateModifyOn):
     blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to', blank=True)
     descriptive_text = models.TextField(
         help_text='Description of this media, if provided. Where was it taken, context, etc.', null=True, blank=True)
+    key_image = models.BooleanField(default=False, help_text="Select as a key image to be displayed on website")
+    primary_image = models.BooleanField(default=False, help_text="Select as a primary image on website")
 
     class Meta:
         verbose_name_plural = 'Media'
@@ -254,6 +256,13 @@ class Medium(CreateModifyOn):
 
     def save(self, *args, **kwargs):
         self.file_md5 = calculate_md5_from_file_field(self.file)
+        # Be sure only one primary_image per project
+        if self.primary_image:
+          with transaction.atomic():
+            Medium.objects.filter(
+                Q(primary_image=True) &
+                Q(project=self.project)
+            ).update(primary_image=False)
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
