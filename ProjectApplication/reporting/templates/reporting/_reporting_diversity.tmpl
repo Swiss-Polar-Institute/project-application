@@ -3,24 +3,37 @@
     <div class="col-6">
         <strong>Career stage of submitted proposal applicants</strong>
         {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_year table_id='career_stage_proposal_applicants_per_year' %}
+        <small class="form text text-muted">Submitted proposals were not imported for proposals before Nestor existed.
+            Calls on 2019 or before don't have the proposals and the career stage is not available for those.</small>
     </div>
     <div class="col-6">
         <strong>Career stage of funded project principal investigators</strong>
         {% include 'reporting/_table.tmpl' with table=career_stage_projects_principal_investigators_per_year table_id='career_stage_projects_principal_investigators_per_year' %}
+        <small class="form text text-muted">Submitted proposals were not imported for proposals before Nestor existed.
+            The career stage data was not available in the Project data that was imported that is why certain data is
+            missing.</small>
     </div>
 </div>
 <p></p>
 
 <strong>Career stage of submitted proposal applicants per call</strong>
 {% include 'reporting/_table.tmpl' with table=career_stage_proposal_applicants_per_call table_id='career_stage_proposal_applicants_per_call' %}
+<small class="form text text-muted">Submitted proposals were not imported for proposals before Nestor existed. Calls on
+    2019 or before don't have the proposals and the career stage is not available for those.</small>
 <p></p>
 <strong>Career stage of funded project principal investigators per call</strong>
 {% include 'reporting/_table.tmpl' with table=career_stage_project_principal_investigator_per_call table_id='career_stage_project_principal_investigator_per_call' %}
+<small class="form text text-muted">Submitted proposals were not imported for proposals before Nestor existed.
+    The career stage data was not available in the Project data that was imported that is why certain data is
+    missing.</small>
 <p></p>
 
 <h2>Gender</h2>
 <strong>Gender of applicants of submitted proposals</strong>
 {% include 'reporting/_table.tmpl' with table=proposals_genders table_id='proposals_genders' %}
+<small class="form text text-muted">Submitted proposals were not imported for proposals before Nestor existed. Calls on
+    2019 or before don't have the proposals and the gender of the applicants is not available for those.</small>
+<p></p>
 <p></p>
 <strong>Gender of principal investigators of funded projects</strong>
 {% include 'reporting/_table.tmpl' with table=projects_genders table_id='projects_genders' %}
