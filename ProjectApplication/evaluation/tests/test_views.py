@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from ProjectApplication import settings
-from evaluation.models import ProposalEvaluation, CallEvaluation
+from evaluation.models import ProposalEvaluation, CallEvaluation, Criterion
 from evaluation.views import CallEvaluationValidation
 from project_core.models import Proposal, ProposalStatus, Project
 from project_core.tests import database_population
@@ -445,3 +445,30 @@ class ProposalEligibilityUpdateTest(TestCase):
         self._proposal.refresh_from_db()
         self.assertEqual(self._proposal.eligibility, Proposal.ELIGIBLE)
         self.assertEqual(self._proposal.eligibility_comment, 'Good proposal!')
+
+
+class EvaluationCriteriaList(TestCase):
+    def setUp(self):
+        self._criterion = Criterion.objects.create(
+            name='Feasibility', description='How feasible is the project'
+        )
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get(self):
+        response = self._client_management.get(reverse('logged-evaluation_criteria-list'))
+        self.assertContains(response, 'Feasibility')
+        self.assertContains(response, 'How feasible is the project')
+
+
+class EvaluationCriterionDetail(TestCase):
+    def setUp(self):
+        self._criterion = Criterion.objects.create(
+            name='Feasibility', description='How feasible is the project'
+        )
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get(self):
+        response = self._client_management.get(
+            reverse('logged-evaluation_criterion-detail', kwargs={'pk': self._criterion.pk}))
+        self.assertContains(response, 'Feasibility')
+        self.assertContains(response, 'How feasible is the project')
