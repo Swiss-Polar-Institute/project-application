@@ -11,6 +11,9 @@ def create_pdf_for_proposal(proposal, request):
     url = reverse('proposal-detail', kwargs={'uuid': proposal.uuid})
     url = request.build_absolute_uri(url)
 
+    if url.startswith('http://testserver/'):
+        url = url.replace('http://testserver/', 'http://localhost/', 1)
+
     command = ['wkhtmltopdf', '--quiet']
 
     if settings.SELF_HTTP_USERNAME:
