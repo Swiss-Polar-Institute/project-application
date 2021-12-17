@@ -5,6 +5,7 @@ from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
 from django.utils.datastructures import MultiValueDict
+from django.utils.timezone import utc
 
 from project_core.models import Proposal, Country, Role
 from project_core.tests import database_population
@@ -144,7 +145,7 @@ class ProposalFormTest(TestCase):
 
     def test_proposal_new_post_too_late(self):
         c = Client()
-        self._call.submission_deadline = datetime(2000, 1, 1)
+        self._call.submission_deadline = utc.localize(datetime(2000, 1, 1))
         self._call.save()
 
         data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))

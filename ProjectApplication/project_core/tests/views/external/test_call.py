@@ -3,6 +3,7 @@ from datetime import datetime
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.timezone import utc
 
 from project_core.tests import database_population
 
@@ -22,7 +23,7 @@ class CallFormTest(TestCase):
     def test_list_of_calls_not_open_yet(self):
         c = Client()
 
-        self._call.call_open_date = datetime(2099, 1, 1)
+        self._call.call_open_date = utc.localize(datetime(2099, 1, 1))
         self._call.save()
 
         response = c.get(reverse('call-list'))

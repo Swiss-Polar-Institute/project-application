@@ -33,7 +33,7 @@ class CallEvaluationFormTest(TestCase):
 
         self.assertEqual(CallEvaluation.objects.all().count(), 1)
 
-        self.assertEqual(CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation).count(), 7)
+        self.assertEqual(CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation).count(), 2)
         self.assertEqual(CriterionCallEvaluation.objects.filter(call_evaluation=call_evaluation, enabled=True).count(),
                          1)
         self.assertEqual(

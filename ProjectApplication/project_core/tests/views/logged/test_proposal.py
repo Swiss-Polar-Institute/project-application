@@ -24,7 +24,7 @@ class ManagementProposalTest(TestCase):
 
     def test_create_file_name(self):
         filename = proposal.create_file_name('this-is-{}-something-{}.csv', self._call.id)
-        self.assertRegex(filename, '^this-is-GreenLAnd_Circumnavigation_Expedition-something-[0-9]{8}-[0-9]{6}\.csv$')
+        self.assertRegex(filename, '^this-is-GLACE_2018-something-[0-9]{8}-[0-9]{6}\.csv$')
 
         self._call.short_name = 'GLACE'
         self._call.save()
@@ -32,7 +32,8 @@ class ManagementProposalTest(TestCase):
         self.assertRegex(filename, '^this-is-GLACE-something-[0-9]{8}-[0-9]{6}\.csv$')
 
     def test_propsoals_export_csv_summary_for_a_specific_call(self):
-        call_no_proposals = database_population.create_call_long_name('This is a call without proposals')
+        call_no_proposals = database_population.create_call_long_name('This is a call without proposals',
+                                                                      'no proposals 2020')
 
         response = self._client_management.get(
             reverse('logged-export-proposals-csv-summary-call', args=[call_no_proposals.id]))
