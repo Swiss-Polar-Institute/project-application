@@ -16,7 +16,7 @@ def create_pdf_for_proposal(proposal, request):
     url = request.build_absolute_uri(url)
 
     if url.startswith('http://testserver/'):
-        url = url.replace('http://testserver/', 'http://localhost:9999/', 1)
+        url = url.replace('http://testserver/', 'http://localhost:9998/', 1)
 
     command = ['wkhtmltopdf', '--quiet']
 

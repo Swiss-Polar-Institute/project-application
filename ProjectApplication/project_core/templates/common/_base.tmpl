@@ -81,7 +81,9 @@
     if (window.location.pathname.startsWith('/logged/'))
         window.goatcounter['no_onload'] = true;
 </script>
-<script data-goatcounter="https://{% goat_counter_code %}.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+{% if goat_counter_code %}
+    <script data-goatcounter="https://{% goat_counter_code %}.goatcounter.com/count"
+            async src="//gc.zgo.at/count.js"></script>
+{% endif %}
 </body>
 </html>

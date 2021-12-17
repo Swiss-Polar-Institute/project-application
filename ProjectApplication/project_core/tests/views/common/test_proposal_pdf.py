@@ -7,7 +7,7 @@ from project_core.tests import database_population
 
 
 class OrganisationsAutocompleteTest(StaticLiveServerTestCase):
-    port = 9999
+    port = 9998
 
     def setUp(self):
         self._proposal = database_population.create_proposal()
