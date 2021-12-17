@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
@@ -23,6 +22,6 @@ class TestUserDetail(TestCase):
         self._client_management = database_population.create_management_logged_client()
 
     def test_get(self):
-        response = self._client_management.get(reverse('logged-user-detail'))
+        response = self._client_management.get(reverse('logged-user-detail', kwargs={'pk': self._user.pk}))
         self.assertEqual(response, self._user.username)
         self.assertContains(response, self._user.username)
