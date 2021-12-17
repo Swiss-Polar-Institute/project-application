@@ -4,8 +4,8 @@ from django.urls import reverse
 from project_core.tests import database_population
 
 
-class CallFormTest(TestCase):
-    def test_homepage(self):
+class ListTest(TestCase):
+    def test_get(self):
         client = database_population.create_management_logged_client()
 
         response = client.get(reverse('logged-lists'))

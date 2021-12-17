@@ -6,10 +6,11 @@ from django.views.i18n import JavaScriptCatalog
 
 import project_core.views.common.proposal_pdf
 import project_core.views.common.proposal_zip
-import project_core.views.logged.proposal
+import project_core.views.logged.financial_key
 import project_core.views.logged.proposals_export_to_csv_summary
 import project_core.views.logged.proposals_export_to_excel
 import project_core.views.logged.proposals_export_to_zip
+import project_core.views.logged.user
 from .views import common
 from .views import external
 from .views import logged
@@ -35,10 +36,10 @@ urlpatterns = [
          external.proposal.ProposalDetailView.as_view(),
          name='proposal-detail'),
     path('proposal/<uuid:uuid>/pdf',
-         project_core.views.common.proposal_pdf.ProposalDetailViewPdf.as_view(),
+         common.proposal_pdf.ProposalDetailViewPdf.as_view(),
          name='proposal-detail-pdf'),
     path('proposal/<uuid:uuid>/zip',
-         project_core.views.common.proposal_zip.ProposalDetailViewZip.as_view(),
+         common.proposal_zip.ProposalDetailViewZip.as_view(),
          name='proposal-detail-zip'),
     path('proposal/thank-you/<uuid:uuid>/',
          external.proposal.ProposalThankYouView.as_view(),
@@ -66,22 +67,22 @@ urlpatterns = [
          logged.proposal.ProposalCommentAdd.as_view(),
          name='logged-proposal-comment-add'),
     path('logged/proposals/export/excel/<int:call>/',
-         project_core.views.logged.proposals_export_to_excel.ProposalsExportExcel.as_view(),
+         logged.proposals_export_to_excel.ProposalsExportExcel.as_view(),
          name='logged-export-proposals-for-call-excel'),
     path('logged/proposals/export/csv/summary/<int:call>/',
-         project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
+         logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-call'),
     path('logged/proposals/export/csv/summary/<int:call>/',
-         project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
+         logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-call'),
     path('logged/proposals/export/zip/<int:call>/',
-         project_core.views.logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
+         logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
          name='logged-export-proposals-zip-call'),
     path('logged/proposals/export/csv/summary/',
-         project_core.views.logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
+         logged.proposals_export_to_csv_summary.ProposalsExportCsvSummary.as_view(),
          name='logged-export-proposals-csv-summary-all'),
     path('logged/proposals/export/zip/',
-         project_core.views.logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
+         logged.proposals_export_to_zip.ProposalsExportZip.as_view(),
          name='logged-export-proposals-zip-all'),
     path('logged/call/list/',
          logged.call.CallList.as_view(),
@@ -99,7 +100,7 @@ urlpatterns = [
          logged.call.ProposalDetail.as_view(),
          name='logged-call-proposal-detail'),
     path('logged/call/proposal/<int:pk>/edit/files/',
-         project_core.views.logged.proposal.ProposalUpdateFiles.as_view(),
+         logged.proposal.ProposalUpdateFiles.as_view(),
          name='logged-call-proposal-detail-update-files'),
     path('logged/call/<int:pk>/comment/add/',
          logged.call.CallCommentAdd.as_view(),
@@ -217,24 +218,24 @@ urlpatterns = [
          name='logged-project-comment-add'),
 
     path('logged/financial_keys/list/',
-         logged.project.FinancialKeyListView.as_view(),
+         logged.financial_key.FinancialKeyListView.as_view(),
          name='logged-financial-key-list'),
 
     path('logged/financial_keys/add/',
-         logged.project.FinancialKeyAdd.as_view(),
+         logged.financial_key.FinancialKeyAdd.as_view(),
          name='logged-financial-key-update'),
 
     path('logged/user/list',
-         logged.project.UserListView.as_view(),
+         logged.user.UserListView.as_view(),
          name='logged-user-list'),
     path('logged/user/add',
-         logged.project.UserAdd.as_view(),
+         logged.user.UserAdd.as_view(),
          name='logged-user-add'),
     path('logged/user/<int:pk>/',
-         logged.project.UserDetailView.as_view(),
+         logged.user.UserDetailView.as_view(),
          name='logged-user-detail'),
     path('logged/user/edit/<int:pk>/',
-         logged.project.UserUpdate.as_view(),
+         logged.user.UserUpdate.as_view(),
          name='logged-user-update'),
 
     path('accounts/login/',
