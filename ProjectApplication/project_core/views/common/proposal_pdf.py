@@ -1,18 +1,22 @@
+import logging
 import subprocess
 
+from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
 from django.views import View
 
 from project_core.models import Proposal
-from django.conf import settings
+
+logger = logging.getLogger('project_core')
+
 
 def create_pdf_for_proposal(proposal, request):
     url = reverse('proposal-detail', kwargs={'uuid': proposal.uuid})
     url = request.build_absolute_uri(url)
 
     if url.startswith('http://testserver/'):
-        url = url.replace('http://testserver/', 'http://localhost/', 1)
+        url = url.replace('http://testserver/', 'http://localhost:9999/', 1)
 
     command = ['wkhtmltopdf', '--quiet']
 
@@ -21,7 +25,12 @@ def create_pdf_for_proposal(proposal, request):
 
     command += [url, '-']
 
-    process = subprocess.run(command, stdout=subprocess.PIPE)
+    process = subprocess.run(command,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+
+    if process.returncode != 0:
+        logger.warning(f'NOTIFY: PDF generation warning for {proposal.pk}: {process.stderr}')
 
     return process.stdout
 

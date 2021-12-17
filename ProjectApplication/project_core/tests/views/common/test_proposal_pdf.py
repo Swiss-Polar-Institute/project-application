@@ -1,3 +1,4 @@
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import Client
 from django.test import TestCase
 from django.urls import reverse
@@ -5,7 +6,9 @@ from django.urls import reverse
 from project_core.tests import database_population
 
 
-class OrganisationsAutocompleteTest(TestCase):
+class OrganisationsAutocompleteTest(StaticLiveServerTestCase):
+    port = 9999
+
     def setUp(self):
         self._proposal = database_population.create_proposal()
 
