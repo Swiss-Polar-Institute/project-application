@@ -24,7 +24,7 @@ def create_call_long_name(long_name, short_name, funding_instrument=None):
 
     call, created = Call.objects.get_or_create(long_name=long_name,
                                                short_name=short_name,
-                                               call_open_date=datetime(2019, 1, 1),
+                                               call_open_date=utc.localize(datetime(2019, 1, 1)),
                                                submission_deadline=utc.localize(datetime(2025, 1, 31)),
                                                finance_year=2020,
                                                budget_maximum=100_000, other_funding_question=False,
