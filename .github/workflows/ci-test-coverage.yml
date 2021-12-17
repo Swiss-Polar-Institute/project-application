@@ -30,7 +30,7 @@ jobs:
         ./minio server minio_data &
     - name: Install wkhtmltopdf
       run: |
-        apt-get install wkhtmltopdf
+        sudo apt-get install wkhtmltopdf
     - name: curlylint
       run: |
         tools/curlylint.sh
