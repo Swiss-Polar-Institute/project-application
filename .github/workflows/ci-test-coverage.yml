@@ -34,7 +34,7 @@ jobs:
     - name: curlylint
       run: |
         tools/curlylint.sh
-    - name: Test with pytest
+    - name: Tests
       run: |
         source tools/environment-variables-for-test.sh
         cd ProjectApplication
