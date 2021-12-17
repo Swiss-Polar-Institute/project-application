@@ -18,11 +18,12 @@ from project_core.models import BudgetCategory, Call, TemplateQuestion, Geograph
     CallQuestion, CallCareerStage
 
 
-def create_call_long_name(long_name, funding_instrument=None):
+def create_call_long_name(long_name, short_name, funding_instrument=None):
     if funding_instrument is None:
         funding_instrument = create_funding_instrument()
 
     call, created = Call.objects.get_or_create(long_name=long_name,
+                                               short_name=short_name,
                                                call_open_date=datetime(2019, 1, 1),
                                                submission_deadline=utc.localize(datetime(2025, 1, 31)),
                                                finance_year=2020,
@@ -34,7 +35,9 @@ def create_call_long_name(long_name, funding_instrument=None):
 
 
 def create_call(funding_instrument=None):
-    call = create_call_long_name('GreenLAnd Circumnavigation Expedition', funding_instrument=funding_instrument)
+    call = create_call_long_name('GreenLAnd Circumnavigation Expedition 2018',
+                                 'GLACE 2018',
+                                 funding_instrument=funding_instrument)
 
     for career_stage in CareerStage.objects.all():
         CallCareerStage.objects.create(call=call, career_stage=career_stage)
