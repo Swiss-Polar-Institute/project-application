@@ -176,7 +176,8 @@ def calculate_min_year_for_funding_instrument(funding_instrument):
     projects_min_year = Project.objects.filter(funding_instrument=funding_instrument).aggregate(Min('finance_year'))[
         'finance_year__min']
     proposals_min_year = \
-        Proposal.objects.filter(call__funding_instrument=funding_instrument).filter(call__callevaluation__isnull=False).aggregate(Min('call__finance_year'))[
+        Proposal.objects.filter(call__funding_instrument=funding_instrument).filter(
+            call__callevaluation__isnull=False).aggregate(Min('call__finance_year'))[
             'call__finance_year__min']
 
     return not_none_or_function(projects_min_year, proposals_min_year, min)
@@ -186,7 +187,8 @@ def calculate_max_year_for_funding_instrument(funding_instrument):
     projects_max_year = Project.objects.filter(funding_instrument=funding_instrument).aggregate(Max('finance_year'))[
         'finance_year__max']
     proposals_max_year = \
-        Proposal.objects.filter(call__funding_instrument=funding_instrument).filter(call__callevaluation__isnull=False).aggregate(Max('call__finance_year'))[
+        Proposal.objects.filter(call__funding_instrument=funding_instrument).filter(
+            call__callevaluation__isnull=False).aggregate(Max('call__finance_year'))[
             'call__finance_year__max']
 
     return not_none_or_function(projects_max_year, proposals_max_year, max)
@@ -564,42 +566,115 @@ def format_date_for_swiss_locale(date):
     return date.strftime('%d/%m/%Y')
 
 
-class ProjectsBalanceExcel(View):
+class ProjectsAllInformationExcel(View):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     @staticmethod
     def _headers():
-        return ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
-                'Balance due']
+        return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
+                'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
+                'Balance due', 'Status']
 
     @staticmethod
     def _rows():
         rows = []
+
         for project in Project.objects.all().order_by('key'):
-            pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
+            financial_information = ProjectsBalanceExcel.financial_information(project)
 
-            if hasattr(project, 'grantagreement'):
-                if project.grantagreement.signed_date:
-                    grant_agreement_signed_date = project.grantagreement.signed_date
-                else:
-                    grant_agreement_signed_date = 'Grant agreement not signed'
-            else:
-                grant_agreement_signed_date = 'No grant agreement attached'
+            extra_information = {
+                'Grant scheme': project.funding_instrument.long_name,
+                'Name of PI': 'TODO',
+                'Gender': 'TODO',
+                'Career stage': 'TODO',
+                'Geographic focus': 'TODO',
+                'Location': 'TODO',
+                'Keywords': 'TODO',
+                'Status': 'TODO'
+            }
 
-            balance_due = project.allocated_budget - project.invoices_paid_amount()
-
-            rows.append({'Key': project.key,
-                         'Signed date': grant_agreement_signed_date,
-                         'Organisation': pi_organisations,
-                         'Title': project.title,
-                         'Start date': project.start_date if project.start_date else 'N/A',
-                         'End date': project.end_date if project.end_date else 'N/A',
-                         'Allocated budget': project.allocated_budget,
-                         'Balance due': balance_due,
-                         })
+            rows.append({**financial_information, **extra_information})
 
         return rows
+
+    @staticmethod
+    def _col_widths():
+        return {**ProjectsBalanceExcel.col_widths(),
+                **{
+                    'Grant scheme': 30
+                }}
+
+    def get(self, request, *args, **kwargs):
+        now = timezone.localtime()
+        filename = f'projects-information-{now:%Y%m%d-%H%M}.xlsx'
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        response.content = excel_dict_writer(filename,
+                                             ProjectsAllInformationExcel._headers(),
+                                             ProjectsAllInformationExcel._rows(),
+                                             ProjectsAllInformationExcel._col_widths())
+
+        return response
+
+
+
+
+class ProjectsBalanceExcel(View):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    @staticmethod
+    def headers():
+        return ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
+                'Balance due']
+
+    @staticmethod
+    def financial_information(project):
+        pi_organisations = project.principal_investigator.organisations_ordered_by_name_str()
+
+        if hasattr(project, 'grantagreement'):
+            if project.grantagreement.signed_date:
+                grant_agreement_signed_date = project.grantagreement.signed_date
+            else:
+                grant_agreement_signed_date = 'Grant agreement not signed'
+        else:
+            grant_agreement_signed_date = 'No grant agreement attached'
+
+        balance_due = project.allocated_budget - project.invoices_paid_amount()
+
+        return {'Key': project.key,
+                'Signed date': grant_agreement_signed_date,
+                'Organisation': pi_organisations,
+                'Title': project.title,
+                'Start date': project.start_date if project.start_date else 'N/A',
+                'End date': project.end_date if project.end_date else 'N/A',
+                'Allocated budget': project.allocated_budget,
+                'Balance due': balance_due,
+                }
+
+    @staticmethod
+    def rows():
+        rows = []
+        for project in Project.objects.all().order_by('key'):
+            rows.append(ProjectsBalanceExcel.financial_information(project))
+
+        return rows
+
+    @staticmethod
+    def col_widths():
+        return {
+            'Key': 15,
+            'Organisation': 40,
+            'Title': 80,
+            'Signed date': 12,
+            'Start date': 12,
+            'End date': 12,
+            'Allocated budget': 12,
+            'Balance due': 12
+        }
 
     def get(self, request, *args, **kwargs):
         now = timezone.localtime()
@@ -608,21 +683,10 @@ class ProjectsBalanceExcel(View):
         response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         response['Content-Disposition'] = f'attachment; filename="{filename}"'
 
-        col_widths = {
-            'Key': 12,
-            'Organisation': 18,
-            'Title': 44,
-            'Signed date': 12,
-            'Start date': 12,
-            'End date': 12,
-            'Allocated budget': 12,
-            'Balance due': 12
-        }
-
         response.content = excel_dict_writer(filename,
-                                             ProjectsBalanceExcel._headers(),
-                                             ProjectsBalanceExcel._rows(),
-                                             col_widths)
+                                             ProjectsBalanceExcel.headers(),
+                                             ProjectsBalanceExcel.rows(),
+                                             ProjectsBalanceExcel.col_widths())
 
         return response
 

@@ -5,7 +5,10 @@ urlpatterns = [
     path('logged/reporting/',
          reporting.views.Reporting.as_view(),
          name='logged-reporting'),
-    path('logged/reporting/excel/financial/projects_balance',
+    path('logged/reporting/excel/downloads/projects_balance',
          reporting.views.ProjectsBalanceExcel.as_view(),
-         name='logged-reporting-finance-projects_balance-excel')
+         name='logged-reporting-finance-projects_balance-excel'),
+    path('logged/reporting/excel/downloads/projects_information',
+         reporting.views.ProjectsAllInformationExcel.as_view(),
+         name='logged-reporting-projects_information-excel')
 ]

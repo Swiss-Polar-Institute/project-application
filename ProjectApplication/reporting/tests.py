@@ -133,11 +133,11 @@ class ProjectsBalanceExcelTest(TestCase):
     def data_one_project(self):
         database_population.create_project()
 
-        self.assertEqual(ProjectsBalanceExcel._headers(),
+        self.assertEqual(ProjectsBalanceExcel.headers(),
                          ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
                           'Balance due']
                          )
-        self.assertEqual(ProjectsBalanceExcel._rows(),
+        self.assertEqual(ProjectsBalanceExcel.rows(),
                          [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached', 'Organisation': '',
                            'Title': 'This is a test project', 'Start date': datetime.date(2020, 1, 10),
                            'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('20000.00'),
@@ -151,11 +151,11 @@ class ProjectsBalanceExcelTest(TestCase):
 
         project2 = create_project_with_invoices()
 
-        self.assertEqual(ProjectsBalanceExcel._headers(),
+        self.assertEqual(ProjectsBalanceExcel.headers(),
                          ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
                           'Balance due'])
 
-        self.assertEqual(ProjectsBalanceExcel._rows(),
+        self.assertEqual(ProjectsBalanceExcel.rows(),
                          [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached',
                            'Organisation': 'Some organisation', 'Title': 'This is a test project',
                            'Start date': datetime.date(2020, 1, 10), 'End date': datetime.date(2022, 5, 7),
