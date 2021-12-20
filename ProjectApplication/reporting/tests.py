@@ -115,7 +115,7 @@ class ProjectsBalanceExcelTest(TestCase):
         response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-excel'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
-        self.assertGreater(int(response['content-length']), 2000)
+        self.assertGreaterEqual(int(response['content-length']), 5600)
 
     def test_get_two_projects_ok(self):
         project1 = database_population.create_project()
@@ -128,7 +128,7 @@ class ProjectsBalanceExcelTest(TestCase):
         response = self._client_management.get(reverse('logged-reporting-finance-projects_balance-excel'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
-        self.assertGreater(int(response['content-length']), 2000)
+        self.assertGreaterEqual(int(response['content-length']), 5650)
 
     def data_one_project(self):
         database_population.create_project()
@@ -176,7 +176,7 @@ class ProjectsAllInformationExcelTest(TestCase):
         response = self._client_management.get(reverse('logged-reporting-projects_information-excel'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
-        self.assertGreater(int(response['content-length']), 2000)
+        self.assertGreaterEqual(int(response['content-length']), 5800)
 
     def test_get_two_projects_ok(self):
         project1 = database_population.create_project()
@@ -189,7 +189,7 @@ class ProjectsAllInformationExcelTest(TestCase):
         response = self._client_management.get(reverse('logged-reporting-projects_information-excel'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
-        self.assertGreater(int(response['content-length']), 5500)
+        self.assertGreaterEqual(int(response['content-length']), 5900)
 
     def data_one_project(self):
         database_population.create_project()
