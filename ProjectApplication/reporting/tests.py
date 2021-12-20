@@ -8,7 +8,7 @@ from grant_management.models import GrantAgreement, Invoice
 from project_core.models import OrganisationName
 from project_core.tests import database_population
 from reporting.models import FundingInstrumentYearMissingData
-from reporting.views import ProjectsBalanceExcel
+from reporting.views import ProjectsBalanceExcel, ProjectsAllInformationExcel
 
 
 class ReportingTest(TestCase):
@@ -164,3 +164,77 @@ class ProjectsBalanceExcelTest(TestCase):
                            'Title': 'Second test', 'Start date': datetime.date(2020, 1, 10),
                            'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('15000.00'),
                            'Balance due': Decimal('13500.00')}])
+
+
+class ProjectsAllInformationExcelTest(TestCase):
+    def setUp(self):
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get_one_project_ok(self):
+        database_population.create_project()
+
+        response = self._client_management.get(reverse('logged-reporting-projects_information-excel'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
+        self.assertGreater(int(response['content-length']), 2000)
+
+    def test_get_two_projects_ok(self):
+        project1 = database_population.create_project()
+        organisation_name = OrganisationName.objects.create(name='Some organisation')
+
+        project1.principal_investigator.organisation_names.add(organisation_name)
+
+        project2 = create_project_with_invoices()
+
+        response = self._client_management.get(reverse('logged-reporting-projects_information-excel'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
+        self.assertGreater(int(response['content-length']), 5500)
+
+    def data_one_project(self):
+        database_population.create_project()
+
+        self.assertEqual(ProjectsAllInformationExcel._headers(),
+                         ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage',
+                          'Geographic focus',
+                          'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
+                          'Balance due', 'Status'])
+
+        self.assertEqual(ProjectsAllInformationExcel._rows(),
+                         [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached', 'Organisation': '',
+                           'Title': 'This is a test project', 'Start date': datetime.date(2020, 1, 10),
+                           'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('20000.00'),
+                           'Balance due': Decimal('20000.00'), 'Grant scheme': 'Big Expeditions',
+                           'Name of PI': 'John Smith', 'Gender': 'N/A', 'Career stage': 'N/A',
+                           'Geographic focus': 'Arctic', 'Location': 'Somewhere in the world', 'Keywords': 'Algae',
+                           'Status': 'Ongoing'}]
+                         )
+
+    def data_two_projects(self):
+        project1 = database_population.create_project()
+        organisation_name = OrganisationName.objects.create(name='Some organisation')
+
+        project1.principal_investigator.organisation_names.add(organisation_name)
+
+        project2 = create_project_with_invoices()
+
+        self.assertEqual(ProjectsAllInformationExcel._headers(),
+                         ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage',
+                          'Geographic focus', 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date',
+                          'Allocated budget', 'Balance due', 'Status'])
+
+        self.assertEqual(ProjectsAllInformationExcel._rows(),
+                         [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached',
+                           'Organisation': 'Some organisation', 'Title': 'This is a test project',
+                           'Start date': datetime.date(2020, 1, 10), 'End date': datetime.date(2022, 5, 7),
+                           'Allocated budget': Decimal('20000.00'), 'Balance due': Decimal('20000.00'),
+                           'Grant scheme': 'Big Expeditions', 'Name of PI': 'John Smith', 'Gender': 'N/A',
+                           'Career stage': 'N/A', 'Geographic focus': 'Arctic', 'Location': 'Somewhere in the world',
+                           'Keywords': 'Algae', 'Status': 'Ongoing'},
+                          {'Key': 'SPI-2020-002', 'Signed date': datetime.date(2020, 1, 4), 'Organisation': '',
+                           'Title': 'Second test', 'Start date': datetime.date(2020, 1, 10),
+                           'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('15000.00'),
+                           'Balance due': Decimal('13500.00'), 'Grant scheme': 'Big Expeditions',
+                           'Name of PI': 'James Alan', 'Gender': 'N/A', 'Career stage': 'N/A',
+                           'Geographic focus': 'Arctic', 'Location': 'Somewhere in the world', 'Keywords': 'Algae',
+                           'Status': 'Ongoing'}])
