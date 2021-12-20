@@ -583,15 +583,27 @@ class ProjectsAllInformationExcel(View):
         for project in Project.objects.all().order_by('key'):
             financial_information = ProjectsBalanceExcel.financial_information(project)
 
+            if project.principal_investigator.person.gender:
+                gender = project.principal_investigator.person.gender.name
+            else:
+                gender = 'N/A'
+
+            if project.principal_investigator.career_stage:
+                career_stage = project.principal_investigator.career_stage.name
+            else:
+                career_stage = 'N/A'
+
+            geographical_areas = ', '.join([str(area) for area in project.geographical_areas.order_by('name')])
+
             extra_information = {
                 'Grant scheme': project.funding_instrument.long_name,
-                'Name of PI': 'TODO',
-                'Gender': 'TODO',
-                'Career stage': 'TODO',
-                'Geographic focus': 'TODO',
-                'Location': 'TODO',
-                'Keywords': 'TODO',
-                'Status': 'TODO'
+                'Name of PI': project.principal_investigator.person.full_name(),
+                'Gender': gender,
+                'Career stage': career_stage,
+                'Geographic focus': geographical_areas,
+                'Location': project.location or '-',
+                'Keywords': project.keywords_enumeration(),
+                'Status': project.status,
             }
 
             rows.append({**financial_information, **extra_information})
@@ -602,7 +614,13 @@ class ProjectsAllInformationExcel(View):
     def _col_widths():
         return {**ProjectsBalanceExcel.col_widths(),
                 **{
-                    'Grant scheme': 30
+                    'Grant scheme': 30,
+                    'Name of PI': 20,
+                    'Career stage': 35,
+                    'Geographic focus': 25,
+                    'Location': 50,
+                    'Keywords': 50,
+                    'Status': 10,
                 }}
 
     def get(self, request, *args, **kwargs):
