@@ -73,14 +73,21 @@ class ProjectForm(forms.ModelForm):
             principal_investigator_div = None
             funding_instrument_div = None
             finance_year_div = None
-            allocated_budget_div = None
+
+            allocated_budget_div = Div(
+                Div('allocated_budget', css_class='col-6'),
+                css_class='row'
+            )
+
+            if self.instance and self.instance.id and self.instance.status != Project.ONGOING:
+                self.fields['allocated_budget'].disabled = True
+                self.fields['allocated_budget'].help_text += '. Can only be changed for ONGOING projects.'
 
             # Used when the project is standalone (not coming from a call)
             # In Meta.fields they are added - IMHO it's easier to delete them
             # than add them here
             del self.fields['principal_investigator']
             del self.fields['finance_year']
-            del self.fields['allocated_budget']
             del self.fields['funding_instrument']
 
         self.helper.layout = Layout(
