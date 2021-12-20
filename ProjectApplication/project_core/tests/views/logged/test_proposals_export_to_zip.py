@@ -1,5 +1,4 @@
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.test import TestCase
 from django.urls import reverse
 
 from project_core.tests import database_population
@@ -20,4 +19,5 @@ class ProposalsExportZip(StaticLiveServerTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response['content-disposition'].endswith('.zip"'))
         self.assertTrue(response['content-disposition'].startswith('attachment; filename="'))
-        self.assertGreaterEqual(int(response['content-length']), 98000)
+        self.assertGreaterEqual(int(response['content-length']), 200)
+        self.assertTrue(response.content.startswith(b'PK'))
