@@ -17,7 +17,8 @@ class ProjectFormTest(TestCase):
                 'geographical_areas': geographical_area_ids,
                 'location': 'This is a new location',
                 'start_date': self._project.start_date,
-                'end_date': self._project.end_date
+                'end_date': self._project.end_date,
+                'allocated_budget': 2_000,
                 }
 
         project_form = ProjectForm(data=data, instance=self._project)
