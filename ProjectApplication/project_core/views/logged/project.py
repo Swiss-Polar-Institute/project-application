@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView, UpdateView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from comments import utils
 from comments.utils import process_comment_attachment
@@ -11,9 +11,9 @@ from evaluation.models import Reviewer
 from project_core.filters import ProjectFilterSet
 from project_core.forms.financial_key import FinancialKeyForm
 from project_core.forms.user import UserForm
-from project_core.models import Project, FinancialKey
+from project_core.models import Project, FinancialKey, GeographicalArea, FundingInstrument
 from project_core.models import SpiUser
-from project_core.serializers import ProjectSerializer
+from project_core.serializers import ProjectSerializer, GeographicalAreaSerializer, FundingInstrumentSerializer
 
 
 class ProjectList(ListView):
@@ -39,6 +39,22 @@ class ProjectListAPI(ListAPIView):
     serializer_class = ProjectSerializer
     filterset_class = ProjectFilterSet
     ordering_fields = ('start_date', )
+
+
+class ProjectDetailAPI(RetrieveAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    lookup_field = 'uuid'
+
+
+class GeographicalListAPI(ListAPIView):
+    queryset = GeographicalArea.objects.all()
+    serializer_class = GeographicalAreaSerializer
+
+
+class FundingInstrumentListAPI(ListAPIView):
+    queryset = FundingInstrument.objects.all()
+    serializer_class = FundingInstrumentSerializer
 
 
 class AbstractProjectView(DetailView):

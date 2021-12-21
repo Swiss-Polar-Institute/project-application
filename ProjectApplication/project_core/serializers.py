@@ -2,8 +2,14 @@ from django.db.models import Q
 
 from rest_framework import serializers
 
-from project_core.models import Project, Keyword, GeographicalArea, PersonPosition, OrganisationName
+from project_core.models import Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument
 from grant_management.models import Location, Medium, LaySummary
+
+
+class FundingInstrumentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FundingInstrument
+        fields = ('long_name', )
 
 
 class KeywordSerializer(serializers.ModelSerializer):
@@ -76,10 +82,11 @@ class ProjectSerializer(serializers.ModelSerializer):
     project_location = LocationSerializer(many=True, read_only=True)
     medium_set = MediumSerializer(many=True, read_only=True)
     laysummary_set = LaySummarySerializer(many=True, read_only=True)
+    funding_instrument = FundingInstrumentSerializer(read_only=True)
 
     class Meta:
         model = Project
         fields = ('uuid', 'key', 'title', 'keywords', 'geographical_areas', 'location',
                   'start_date', 'end_date', 'principal_investigator', 'project_location',
-                  'medium_set', 'laysummary_set', 'allocated_budget'
+                  'medium_set', 'laysummary_set', 'allocated_budget', 'funding_instrument'
                   )
