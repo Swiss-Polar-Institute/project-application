@@ -1,12 +1,12 @@
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 
 from comments import utils
 from comments.utils import process_comment_attachment
 from project_core.filters import ProjectFilterSet
-from project_core.models import Project
-from project_core.serializers import ProjectSerializer
+from project_core.models import Project, GeographicalArea, FundingInstrument
+from project_core.serializers import ProjectSerializer, GeographicalAreaSerializer, FundingInstrumentSerializer
 
 
 class ProjectList(ListView):
@@ -31,7 +31,23 @@ class ProjectListAPI(ListAPIView):
     queryset = Project.objects.exclude(status=Project.ABORTED)
     serializer_class = ProjectSerializer
     filterset_class = ProjectFilterSet
-    ordering_fields = ('start_date', )
+    ordering_fields = ('start_date',)
+
+
+class ProjectDetailAPI(RetrieveAPIView):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+    lookup_field = 'uuid'
+
+
+class GeographicalListAPI(ListAPIView):
+    queryset = GeographicalArea.objects.all()
+    serializer_class = GeographicalAreaSerializer
+
+
+class FundingInstrumentListAPI(ListAPIView):
+    queryset = FundingInstrument.objects.all()
+    serializer_class = FundingInstrumentSerializer
 
 
 class AbstractProjectView(DetailView):
@@ -71,5 +87,3 @@ class ProjectCommentAdd(AbstractProjectView):
                                             context['project'])
 
         return result
-
-

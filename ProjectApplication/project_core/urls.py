@@ -266,4 +266,17 @@ urlpatterns = [
     path('api/v1/project/list/',
          logged.project.ProjectListAPI.as_view(),
          name='project-list-api'),
+
+    path('api/v1/project/list/<uuid:uuid>/',
+         logged.project.ProjectDetailAPI.as_view(),
+         name='project-list-api'),
+
+    path('api/v1/geographical/list/',
+         logged.project.GeographicalListAPI.as_view(),
+         name='geographical-list-api'),
+
+    path('api/v1/fundinginstrument/list/',
+         logged.project.FundingInstrumentListAPI.as_view(),
+         name='fonding-list-api'),
+
 ]
