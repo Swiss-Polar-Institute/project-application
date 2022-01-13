@@ -14,8 +14,8 @@ class ProjectFilterSet(FilterSet):
 
     def filter_key_title(self, queryset, name, value):
         search_query = Q(
-            Q(key__contains=value) |
-            Q(title__contains=value)
+            Q(key__icontains=value) |
+            Q(title__icontains=value)
         )
         return queryset.filter(search_query)
 
