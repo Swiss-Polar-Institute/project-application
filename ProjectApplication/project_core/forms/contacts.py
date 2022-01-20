@@ -101,13 +101,24 @@ class ContactForm(ModelForm):
             model.person.surname = self.cleaned_data['person__surname']
 
         else:
-            model.person, created = PhysicalPerson.objects.update_or_create(
-                orcid=self.cleaned_data['person__orcid'],
-                defaults={
-                    'first_name': self.cleaned_data['person__first_name'],
-                    'surname': self.cleaned_data['person__surname']
-                }
-            )
+            orcid = self.cleaned_data['person__orcid']
+
+            defaults = {'first_name': self.cleaned_data['person__first_name'],
+                        'surname': self.cleaned_data['person__surname']
+                        }
+
+            print(defaults)
+
+            if orcid != '':
+                # Use orcid to UPDATE OR create the person with the updated
+                # name
+                model.person, created = PhysicalPerson.objects.update_or_create(
+                    orcid=orcid,
+                    defaults=defaults)
+            else:
+                # No orcid, if possible re-use a physical person and let's
+                # hope that no two different people have the same name
+                model.person, created = PhysicalPerson.objects.update_or_create(**defaults)
 
         if commit:
             model.person.save()
