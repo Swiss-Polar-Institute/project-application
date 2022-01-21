@@ -95,21 +95,22 @@ class ContactForm(ModelForm):
     def save(self, commit=True):
         model = super().save(False)
 
+        orcid = self.cleaned_data['person__orcid']
+
+        if orcid == '':
+            orcid = None
+
         if model.person_id:
-            model.person.orcid = self.cleaned_data['person__orcid']
+            model.person.orcid = None
             model.person.first_name = self.cleaned_data['person__first_name']
             model.person.surname = self.cleaned_data['person__surname']
 
         else:
-            orcid = self.cleaned_data['person__orcid']
-
             defaults = {'first_name': self.cleaned_data['person__first_name'],
                         'surname': self.cleaned_data['person__surname']
                         }
 
-            print(defaults)
-
-            if orcid != '':
+            if orcid is not None:
                 # Use orcid to UPDATE OR create the person with the updated
                 # name
                 model.person, created = PhysicalPerson.objects.update_or_create(
