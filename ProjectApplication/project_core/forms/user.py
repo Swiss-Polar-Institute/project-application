@@ -150,6 +150,9 @@ class UserForm(forms.ModelForm):
         return username
 
     def clean(self):
+        if self.errors:
+            return self.cleaned_data
+
         if self.cleaned_data.get('type_of_user', '') == settings.REVIEWER_GROUP_NAME:
             physical_person = self.cleaned_data['physical_person']
             if physical_person is None:
