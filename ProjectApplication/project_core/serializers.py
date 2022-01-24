@@ -53,11 +53,10 @@ class FilterMediumSerializer(serializers.ListSerializer):
 
 class MediumSerializer(serializers.ModelSerializer):
     photographer = serializers.CharField(source='photographer.full_name')
-    license = serializers.CharField(source='license.spdx_identifier')
 
     class Meta:
         model = Medium
-        fields = ('photographer', 'file', 'license', 'key_image', 'primary_image')
+        fields = ('photographer', 'file', 'key_image', 'primary_image')
         list_serializer_class = FilterMediumSerializer
 
 
