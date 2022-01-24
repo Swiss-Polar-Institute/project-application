@@ -94,11 +94,15 @@ class CallEvaluationForm(forms.ModelForm):
             label_from_instance=lambda obj: format_html('{} <small>({})</small>', obj.name, obj.description)
         )
 
+        evaluation_criteria_list_url = reverse('logged-evaluation_criteria-list')
+        list_edit_criteria = f'You can list and create criteria in <a href="{evaluation_criteria_list_url}">Evaluation criteria list</a>.'
+
         self.fields['criteria'] = forms.MultipleChoiceField(choices=criterion_choices,
                                                             initial=criterion_initial,
                                                             widget=CheckboxSelectMultipleSortable,
                                                             label='Criteria (drag and drop to order them)',
-                                                            help_text='These criteria are used in the Excel Evaluation sheet'
+                                                            help_text=f'These criteria are used in the Excel Evaluation sheet. '
+                                                                      f'{list_edit_criteria}'
                                                             )
 
         self.criteria_order_key = f'criteria-{CheckboxSelectMultipleSortable.order_of_values_name}'
