@@ -366,3 +366,4 @@ SELF_HTTP_PASSWORD = os.getenv('SELF_HTTP_PASSWORD', None)
 
 # This part is created on creating a call
 CALL_DEFAULT_PART_QUESTIONS_ANSWERS = 'Proposed {{ activity }} description'
+DOCUMENTATION_URL = os.getenv('DOCUMENTATION_URL', None)

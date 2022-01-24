@@ -9,6 +9,13 @@
                         Latest News
                     </a>
                 </li>
+                {% if documentation_url %}
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           href="{{ documentation_url }}">Documentation&nbsp;<i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </nav>

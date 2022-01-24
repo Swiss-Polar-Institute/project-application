@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -156,5 +157,7 @@ class News(TemplateView):
         context['project_news'] = get_project_news()
 
         context['active_tab'] = self.request.GET.get('tab', 'projects')
+
+        context['documentation_url'] = settings.DOCUMENTATION_URL
 
         return render(request, 'logged/news.tmpl', context)
