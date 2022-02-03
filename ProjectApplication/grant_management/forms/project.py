@@ -133,6 +133,10 @@ class ProjectForm(forms.ModelForm):
                 Div('end_date', css_class='col-6'),
                 css_class='row'
             ),
+            Div(
+                Div('on_website', css_class='col-6'),
+                css_class='row'
+            ),
             FormActions(
                 Submit('save', submit_text),
                 cancel_button_html
@@ -183,7 +187,7 @@ class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
         fields = ['title', 'principal_investigator', 'funding_instrument', 'finance_year', 'keywords',
-                  'geographical_areas', 'location', 'start_date', 'end_date', 'allocated_budget']
+                  'geographical_areas', 'location', 'start_date', 'end_date', 'allocated_budget', 'on_website']
         labels = {'location': 'Precise region',
                   'allocated_budget': 'Allocated budget (CHF)'
                   }
