@@ -28,7 +28,7 @@ class ProjectList(ListView):
 
 
 class ProjectListAPI(ListAPIView):
-    queryset = Project.objects.exclude(status=Project.ABORTED)
+    queryset = Project.objects.exclude(status=Project.ABORTED).exclude(on_website=False)
     serializer_class = ProjectSerializer
     filterset_class = ProjectFilterSet
     ordering_fields = ('start_date',)
