@@ -21,7 +21,6 @@ class ProjectFilterSet(FilterSet):
             "laysummary__text", "principal_investigator__organisation_names__name"
         ]
         q_field = reduce(or_, (Q(**{f"{field}__icontains": word}) for word in value.split() for field in fields))
-        print(queryset.filter(q_field))
 
         return queryset.filter(q_field).distinct()
 
@@ -32,7 +31,7 @@ class ProjectFilterSet(FilterSet):
         return queryset.filter(funding_instrument__long_name=value)
 
     def filter_start_date(self, queryset, name, value):
-        return queryset.filter(start_date__year=value)
+        return queryset.filter(start_date__year__lte=value, end_date__year__gte=value)
 
     class Meta:
         model = Project
