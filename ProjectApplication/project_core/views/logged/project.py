@@ -6,7 +6,9 @@ from comments import utils
 from comments.utils import process_comment_attachment
 from project_core.filters import ProjectFilterSet
 from project_core.models import Project, GeographicalArea, FundingInstrument
-from project_core.serializers import ProjectSerializer, GeographicalAreaSerializer, FundingInstrumentSerializer
+from project_core.serializers import (
+    ProjectSerializer, ProjectDetailSerializer, GeographicalAreaSerializer, FundingInstrumentSerializer
+)
 
 
 class ProjectList(ListView):
@@ -36,7 +38,7 @@ class ProjectListAPI(ListAPIView):
 
 class ProjectDetailAPI(RetrieveAPIView):
     queryset = Project.objects.all()
-    serializer_class = ProjectSerializer
+    serializer_class = ProjectDetailSerializer
     lookup_field = 'uuid'
 
 

@@ -75,6 +75,19 @@ class LaySummarySerializer(serializers.ModelSerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    principal_investigator = PersonPositionSerializer(read_only=True)
+    project_location = LocationSerializer(many=True, read_only=True)
+    medium_set = MediumSerializer(many=True, read_only=True)
+    funding_instrument = FundingInstrumentSerializer(read_only=True)
+
+    class Meta:
+        model = Project
+        fields = ('uuid', 'title', 'status', 'principal_investigator', 'project_location',
+                  'medium_set', 'funding_instrument'
+                  )
+
+
+class ProjectDetailSerializer(serializers.ModelSerializer):
     keywords = KeywordSerializer(many=True, read_only=True)
     geographical_areas = GeographicalAreaSerializer(many=True, read_only=True)
     principal_investigator = PersonPositionSerializer(read_only=True)
