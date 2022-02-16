@@ -27,4 +27,4 @@ class CallPartFileFormTest(TestCase):
         new_call_part = call_part_file.save()
 
         self.assertTrue(new_call_part.id)
-        self.assertTrue(new_call_part.order, 10)
+        self.assertEqual(new_call_part.order, 10)
