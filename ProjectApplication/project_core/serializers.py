@@ -39,10 +39,17 @@ class PersonPositionSerializer(serializers.ModelSerializer):
         fields = ('full_name', 'organisation_names')
 
 
+class FilterLocationSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.order_by('name')
+        return super().to_representation(data)
+
+
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
         fields = ('latitude', 'longitude', )
+        list_serializer_class = FilterLocationSerializer
 
 
 class FilterMediumSerializer(serializers.ListSerializer):
@@ -63,7 +70,7 @@ class MediumSerializer(serializers.ModelSerializer):
 class FilterLaySummarySerializer(serializers.ListSerializer):
     def to_representation(self, data):
         data = data.filter(lay_summary_type__name="Web")
-        return super(FilterLaySummarySerializer, self).to_representation(data)
+        return super().to_representation(data)
 
 
 class LaySummarySerializer(serializers.ModelSerializer):
