@@ -54,7 +54,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
 class FilterMediumSerializer(serializers.ListSerializer):
     def to_representation(self, data):
-        data = data.filter(~Q(license_id=None))
+        data = data.filter(~Q(license_id=None) & Q(key_image=True)).order_by('-primary_image')
         return super().to_representation(data)
 
 
