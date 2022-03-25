@@ -275,16 +275,19 @@ class Medium(CreateModifyOn):
         if self.file.name.lower().endswith(tuple(['jpg', 'jpeg', 'png'])):
             try:
                 im = Image.open(self.file)
-                for orientation in ExifTags.TAGS.keys():
-                    if ExifTags.TAGS[orientation] == 'Orientation': break
-                exif = dict(im._getexif().items())
-
-                if exif[orientation] == 3:
-                    im = im.rotate(180, expand=True)
-                elif exif[orientation] == 6:
-                    im = im.rotate(270, expand=True)
-                elif exif[orientation] == 8:
-                    im = im.rotate(90, expand=True)
+                if im._getexif():
+                    orientation = 0
+                    for orientation in ExifTags.TAGS.keys():
+                        if ExifTags.TAGS[orientation] == 'Orientation':
+                            break
+                    exif = dict(im._getexif().items())
+                    if orientation in exif.keys():
+                        if exif[orientation] == 3:
+                            im = im.rotate(180, expand=True)
+                        elif exif[orientation] == 6:
+                            im = im.rotate(270, expand=True)
+                        elif exif[orientation] == 8:
+                            im = im.rotate(90, expand=True)
                 out = BytesIO()
                 if self.file.name.lower().endswith('png'):
                     im = im.convert('RGB')
@@ -293,8 +296,8 @@ class Medium(CreateModifyOn):
                 self.file_web = InMemoryUploadedFile(
                     out, 'ImageField', "%s_web.jpeg" % self.file.name.split('.')[0], 'image/jpeg', sys.getsizeof(out), None
                 )
-            except UnidentifiedImageError:
-                logger.warning("Can not save smaller image for web!")
+            except (UnidentifiedImageError) as e:
+                logger.warning(f"Error: {e}; Can not save smaller image for web!")
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
