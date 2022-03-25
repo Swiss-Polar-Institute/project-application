@@ -1,0 +1,4 @@
+CREATE DATABASE IF NOT EXISTS projects;
+CREATE DATABASE IF NOT EXISTS test_projects;
+
+GRANT ALL ON *.* TO 'spi'@'%';
