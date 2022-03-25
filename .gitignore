@@ -108,3 +108,7 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+project_application_mysql.conf
+db_server/mysql-dump
+.idea

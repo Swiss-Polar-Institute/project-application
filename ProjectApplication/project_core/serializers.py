@@ -63,7 +63,7 @@ class MediumSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Medium
-        fields = ('photographer', 'file', 'key_image', 'primary_image')
+        fields = ('photographer', 'file', 'file_web', 'key_image', 'primary_image')
         list_serializer_class = FilterMediumSerializer
 
 

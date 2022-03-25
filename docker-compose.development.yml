@@ -1,6 +1,70 @@
 version: '3.6'
 
 services:
-  reverse-proxy:
+  project-application:
+    container_name: project-application
+    build:
+      dockerfile: Dockerfile.local
+      context: ./
+    env_file:
+      - .env
+    volumes:
+      - static_volume:/code/ProjectApplication/staticfiles
+      - ./ProjectApplication:/code/ProjectApplication
+      - ./.git:/code/ProjectApplication/.git
+    secrets:
+      - project_application_mysql.conf
     ports:
-        - "1235:1235"
+      - "8000:8000"
+    links:
+      - database
+      - minio
+
+  database:
+    container_name: db-server
+    build:
+      context: ./db_server
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_DATABASE=projects
+      - MYSQL_USER=spi
+      - MYSQL_PASSWORD=spi
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - database:/var/lib/mysql
+      - ./db_server/mysql-dump:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio:/data
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    command: server /data --console-address ":9001"
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio:9000 minio minio123;
+      /usr/bin/mc mb myminio/projects-test;
+      /usr/bin/mc policy set public myminio/projects-test;
+      exit 0;
+      "
+
+volumes:
+  static_volume: {}
+  database:
+  minio:
+
+secrets:
+  project_application_mysql.conf:
+    file: ./project_application_mysql.conf
