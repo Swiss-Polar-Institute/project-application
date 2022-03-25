@@ -10,11 +10,14 @@ from django.utils.datetime_safe import datetime
 from simple_history.models import HistoricalRecords
 from storages.backends.s3boto3 import S3Boto3Storage
 from django.core.files.uploadedfile import InMemoryUploadedFile
-from PIL import Image, ExifTags
+from PIL import Image, ExifTags, UnidentifiedImageError
 from io import BytesIO
 
 from project_core.models import CreateModifyOn, PhysicalPerson, Project
 from project_core.utils.utils import management_file_validator, calculate_md5_from_file_field
+
+
+logger = logging.getLogger('grant_management')
 
 
 def grant_agreement_file_rename(instance, filename):
@@ -270,25 +273,28 @@ class Medium(CreateModifyOn):
                 Q(project=self.project)
             ).update(primary_image=False)
         if self.file.name.lower().endswith(tuple(['jpg', 'jpeg', 'png'])):
-            im = Image.open(self.file)
-            for orientation in ExifTags.TAGS.keys():
-                if ExifTags.TAGS[orientation] == 'Orientation': break
-            exif = dict(im._getexif().items())
+            try:
+                im = Image.open(self.file)
+                for orientation in ExifTags.TAGS.keys():
+                    if ExifTags.TAGS[orientation] == 'Orientation': break
+                exif = dict(im._getexif().items())
 
-            if exif[orientation] == 3:
-                im = im.rotate(180, expand=True)
-            elif exif[orientation] == 6:
-                im = im.rotate(270, expand=True)
-            elif exif[orientation] == 8:
-                im = im.rotate(90, expand=True)
-            out = BytesIO()
-            if self.file.name.lower().endswith('png'):
-                im = im.convert('RGB')
-            im.save(out, format='JPEG', quality=75)
-            out.seek(0)
-            self.file_web = InMemoryUploadedFile(
-                out, 'ImageField', "%s_web.jpeg" % self.file.name.split('.')[0], 'image/jpeg', sys.getsizeof(out), None
-            )
+                if exif[orientation] == 3:
+                    im = im.rotate(180, expand=True)
+                elif exif[orientation] == 6:
+                    im = im.rotate(270, expand=True)
+                elif exif[orientation] == 8:
+                    im = im.rotate(90, expand=True)
+                out = BytesIO()
+                if self.file.name.lower().endswith('png'):
+                    im = im.convert('RGB')
+                im.save(out, format='JPEG', quality=75)
+                out.seek(0)
+                self.file_web = InMemoryUploadedFile(
+                    out, 'ImageField', "%s_web.jpeg" % self.file.name.split('.')[0], 'image/jpeg', sys.getsizeof(out), None
+                )
+            except UnidentifiedImageError:
+                logger.warning("Can not save smaller image for web!")
         super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

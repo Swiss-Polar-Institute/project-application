@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install --no-install-recommends --yes \
 	python3-pip python3-setuptools \
 	libmariadbclient-dev libmariadb-dev-compat libmariadb3 mariadb-client \
 	python3-wheel python3-dev libpython3.7-dev \
-    libjpeg-dev zlib1g-dev \
+    libjpeg-dev zlib1g-dev wkhtmltopdf \
 	gcc-7 gcc git
 
 COPY requirements.txt /code/
