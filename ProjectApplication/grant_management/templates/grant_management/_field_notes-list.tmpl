@@ -1,0 +1,37 @@
+{% with fieldnotes=project.fieldnote_set.all %}
+    <table id="fieldnotes_table" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>URL</th>
+        </tr>
+        </thead>
+        {% for fieldnote in fieldnotes %}
+            <tr>
+                <td>{% include 'grant_management/_text_with_link_or_dash.tmpl' with text=fieldnote.title %}</td>
+                <td>{% include 'grant_management/_text_with_link_or_dash.tmpl' with text=fieldnote.url url=fieldnote.url %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#fieldnotes_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                    "language": {
+                        "zeroRecords": "No fieldnotes have been added"
+                    },
+                    "columns": [
+                        {"width": "15%"},
+                        {"width": "70%"},
+                        {"width": "15%"}
+                    ],
+                }
+            );
+        });
+    </script>
+{% endwith %}

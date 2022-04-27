@@ -1,8 +1,9 @@
 from django.contrib import admin
 
 from project_core.models import Project
-from .models import (GrantAgreement, Invoice, FinancialReport, LaySummary, License, Location, Medium, MediumDeleted,
-                     ProjectSocialNetwork, Publication, Dataset, LaySummaryType, BlogPost, SocialNetwork, Installment)
+from .models import (
+    GrantAgreement, Invoice, FinancialReport, LaySummary, License, Location, Medium, MediumDeleted,
+    ProjectSocialNetwork, Publication, Dataset, FieldNote, LaySummaryType, BlogPost, SocialNetwork, Installment)
 
 
 class GrantAgreementAdmin(admin.ModelAdmin):
@@ -86,6 +87,11 @@ class DatasetAdmin(admin.ModelAdmin):
     list_display = ('project', 'doi', 'url', 'title', 'published_date',)
 
 
+class FieldNoteAdmin(admin.ModelAdmin):
+    search_fields = Project.search_fields + ('url', 'title',)
+    list_display = ('project', 'url', 'title',)
+
+
 class InstallmentAdmin(admin.ModelAdmin):
     search_fields = Project.search_fields + ('amount',)
     list_display = ('project', 'amount',)
@@ -109,5 +115,6 @@ admin.site.register(ProjectSocialNetwork, ProjectSocialNetworkAdmin)
 admin.site.register(SocialNetwork, SocialNetworkAdmin)
 admin.site.register(Publication, PublicationAdmin)
 admin.site.register(Dataset, DatasetAdmin)
+admin.site.register(FieldNote, FieldNoteAdmin)
 admin.site.register(Installment, InstallmentAdmin)
 admin.site.register(Location, LocationAdmin)

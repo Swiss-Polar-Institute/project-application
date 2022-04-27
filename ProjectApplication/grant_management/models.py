@@ -375,6 +375,16 @@ class Dataset(CreateModifyOn):
         return generate_doi_link(self.doi)
 
 
+class FieldNote(CreateModifyOn):
+    project = models.ForeignKey(Project, help_text='Project to which is the fieldnote is related',
+                                on_delete=models.PROTECT)
+    url = models.URLField(help_text='URL of fieldnote', null=True, blank=True)
+    title = models.CharField(max_length=1000, help_text='Title of fieldnote')
+
+    def __str__(self):
+        return '{}'.format(self.title)
+
+
 class MilestoneCategory(CreateModifyOn):
     name = models.CharField(max_length=40)
     created_by = models.ForeignKey(User, help_text='User that created the category', on_delete=models.PROTECT)

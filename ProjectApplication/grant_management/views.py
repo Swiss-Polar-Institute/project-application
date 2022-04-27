@@ -24,6 +24,7 @@ from project_core.models import Project
 from project_core.views.common.formset_inline_view import InlineFormsetUpdateView
 from .forms.close_project import CloseProjectModelForm
 from .forms.datasets import DatasetInlineFormSet
+from .forms.fieldnotes import FieldNoteInlineFormSet
 from .forms.locations import LocationsInlineFormSet
 from .forms.media import MediaInlineFormSet
 from .forms.milestones import MilestoneInlineFormSet
@@ -291,9 +292,16 @@ class LocationsUpdateView(GrantManagementInlineFormset):
     human_type = 'location'
     tab = 'other'
 
+
 class DatasetUpdateView(GrantManagementInlineFormset):
     inline_formset = DatasetInlineFormSet
     human_type = 'dataset'
+    tab = 'deliverables'
+
+
+class FieldNoteUpdateView(GrantManagementInlineFormset):
+    inline_formset = FieldNoteInlineFormSet
+    human_type = 'fieldnote'
     tab = 'deliverables'
 
 
