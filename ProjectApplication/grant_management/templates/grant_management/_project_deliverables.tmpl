@@ -20,6 +20,12 @@
 {% include 'grant_management/_blog_post-list.tmpl' %}
 <p></p>
 
+<h3>Field
+    notes {% include 'grant_management/_edit_button.tmpl' with force_edit_enabled=True viewname='logged-grant_management-field_notes-update' %}
+</h3>
+{% include 'grant_management/_field_notes-list.tmpl' %}
+<p></p>
+
 <h3>Photos and
     media {% include 'grant_management/_edit_button.tmpl' with force_edit_enabled=True viewname='logged-grant_management-media-update' %}
 </h3>

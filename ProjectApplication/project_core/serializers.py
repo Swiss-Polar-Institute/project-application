@@ -3,7 +3,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from project_core.models import Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument
-from grant_management.models import Location, Medium, LaySummary
+from grant_management.models import Location, Medium, LaySummary, FieldNote
 
 
 class FundingInstrumentSerializer(serializers.ModelSerializer):
@@ -67,6 +67,12 @@ class MediumSerializer(serializers.ModelSerializer):
         list_serializer_class = FilterMediumSerializer
 
 
+class FieldNoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FieldNote
+        fields = ('title', 'url', )
+
+
 class FilterLaySummarySerializer(serializers.ListSerializer):
     def to_representation(self, data):
         data = data.filter(lay_summary_type__name="Web")
@@ -102,10 +108,12 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     medium_set = MediumSerializer(many=True, read_only=True)
     laysummary_set = LaySummarySerializer(many=True, read_only=True)
     funding_instrument = FundingInstrumentSerializer(read_only=True)
+    fieldnote_set = FieldNoteSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
         fields = ('uuid', 'key', 'title', 'keywords', 'geographical_areas', 'location', 'status',
                   'start_date', 'end_date', 'principal_investigator', 'project_location',
-                  'medium_set', 'laysummary_set', 'allocated_budget', 'funding_instrument'
+                  'medium_set', 'laysummary_set', 'allocated_budget', 'funding_instrument',
+                  'fieldnote_set'
                   )
