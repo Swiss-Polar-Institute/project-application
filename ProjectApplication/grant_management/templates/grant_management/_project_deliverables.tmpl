@@ -14,12 +14,6 @@
 {% include 'common/_accordion.tmpl' with padding_body='p-1' prefix='lay_summaries' count=lay_summaries_count button_text_collapsed='View lay summaries' button_text_not_collapsed='Hide lay summaries' template_file='grant_management/_lay_summary-list.tmpl' %}
 <p></p>
 
-<h3>Blog
-    posts {% include 'grant_management/_edit_button.tmpl' with force_edit_enabled=True viewname='logged-grant_management-blog_posts-update' %}
-</h3>
-{% include 'grant_management/_blog_post-list.tmpl' %}
-<p></p>
-
 <h3>Field
     notes {% include 'grant_management/_edit_button.tmpl' with force_edit_enabled=True viewname='logged-grant_management-field_notes-update' %}
 </h3>
