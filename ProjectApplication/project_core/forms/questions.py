@@ -9,6 +9,7 @@ from django.forms import Form
 
 from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion, CallPart
 from project_core.utils.utils import external_file_validator
+from ckeditor.widgets import CKEditorWidget
 
 logger = logging.getLogger('project_core')
 
@@ -44,7 +45,7 @@ class Questions(Form):
                     question_text += ' (maximum {} words)'.format(question.answer_max_length)
 
                 self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question_text,
-                                                                                 widget=forms.Textarea(),
+                                                                                 widget=CKEditorWidget(),
                                                                                  initial=answer,
                                                                                  help_text=question.question_description,
                                                                                  required=question.answer_required)

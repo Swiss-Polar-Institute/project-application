@@ -49,7 +49,8 @@ INSTALLED_APPS = [
     'grant_management',
     'reporting',
     'rest_framework',
-    'django_filters'
+    'django_filters',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
