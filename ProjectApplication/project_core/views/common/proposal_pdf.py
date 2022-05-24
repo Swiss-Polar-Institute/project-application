@@ -1,6 +1,6 @@
 import logging
 import subprocess
-
+import pdfkit
 from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
@@ -38,8 +38,13 @@ def create_pdf_for_proposal(proposal, request):
 class ProposalDetailViewPdf(View):
     def get(self, request, *args, **kwargs):
         proposal = Proposal.objects.get(uuid=kwargs['uuid'])
+        url = reverse('proposal-detail', kwargs={'uuid': proposal.uuid})
+        url = request.build_absolute_uri(url)
 
-        proposal_pdf = create_pdf_for_proposal(proposal, request)
+        if url.startswith('http://testserver/'):
+            url = url.replace('http://testserver/', 'http://localhost:9998/', 1)
+
+        proposal_pdf = pdfkit.from_url(url)
 
         response = HttpResponse(content_type='application/pdf')
 

@@ -267,3 +267,10 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
     text-align: right;
     margin-right: 1em;
 }
+@media print {
+  * {
+    page-break-inside: avoid;
+    page-break-after: avoid;
+    page-break-before: avoid;
+  }
+}
