@@ -44,7 +44,18 @@ class ProposalDetailViewPdf(View):
         if url.startswith('http://testserver/'):
             url = url.replace('http://testserver/', 'http://localhost:9998/', 1)
 
-        proposal_pdf = pdfkit.from_url(url)
+        options = {
+            'page-size': 'Letter',
+            'margin-top': '0.75in',
+            'margin-right': '0.75in',
+            'margin-bottom': '0.95in',
+            'margin-left': '0.75in',
+            'encoding': "UTF-8",
+            'minimum-font-size': "24",
+            'footer-right': '[page]',
+        }
+
+        proposal_pdf = pdfkit.from_url(url, options=options, verbose=True)
 
         response = HttpResponse(content_type='application/pdf')
 

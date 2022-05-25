@@ -368,3 +368,16 @@ SELF_HTTP_PASSWORD = os.getenv('SELF_HTTP_PASSWORD', None)
 # This part is created on creating a call
 CALL_DEFAULT_PART_QUESTIONS_ANSWERS = 'Proposed {{ activity }} description'
 DOCUMENTATION_URL = os.getenv('DOCUMENTATION_URL', None)
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
+             'JustifyRight', 'JustifyBlock'],
+            ['RemoveFormat', 'Source']
+        ]
+    }
+}
+
