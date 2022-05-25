@@ -1,7 +1,5 @@
 import logging
-import subprocess
 import pdfkit
-from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
 from django.views import View
