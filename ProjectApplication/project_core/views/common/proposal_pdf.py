@@ -1,6 +1,6 @@
 import logging
 import subprocess
-
+import pdfkit
 from django.conf import settings
 from django.http import HttpResponse
 from django.urls import reverse
@@ -18,21 +18,17 @@ def create_pdf_for_proposal(proposal, request):
     if url.startswith('http://testserver/'):
         url = url.replace('http://testserver/', 'http://localhost:9998/', 1)
 
-    command = ['wkhtmltopdf', '--quiet']
+    options = {
+        'page-size': 'A4',
+        'margin-top': '0.75in',
+        'margin-right': '0.75in',
+        'margin-bottom': '0.95in',
+        'margin-left': '0.75in',
+        'encoding': "UTF-8",
+        'minimum-font-size': "12"
+    }
 
-    if settings.SELF_HTTP_USERNAME:
-        command += ['--username', settings.SELF_HTTP_USERNAME, '--password', settings.SELF_HTTP_PASSWORD]
-
-    command += [url, '-']
-
-    process = subprocess.run(command,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-
-    if process.returncode != 0:
-        logger.warning(f'NOTIFY: PDF generation warning for {proposal.pk}: {process.stderr}')
-
-    return process.stdout
+    return pdfkit.from_url(url, options=options, verbose=True)
 
 
 class ProposalDetailViewPdf(View):
