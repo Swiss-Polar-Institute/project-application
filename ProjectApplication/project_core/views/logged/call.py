@@ -16,7 +16,6 @@ from variable_templates.utils import copy_template_variables_from_funding_instru
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
 from ..common.proposal import AbstractProposalDetailView
 from ...widgets import CheckboxSelectMultipleSortable
-import uuid
 import datetime
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
