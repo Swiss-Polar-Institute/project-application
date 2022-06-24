@@ -16,6 +16,8 @@ from variable_templates.utils import copy_template_variables_from_funding_instru
 from .funding_instrument import TEMPLATE_VARIABLES_FORM_NAME
 from ..common.proposal import AbstractProposalDetailView
 from ...widgets import CheckboxSelectMultipleSortable
+import uuid
+import datetime
 
 CALL_QUESTION_FORM_NAME = 'call_question_form'
 CALL_FORM_NAME = 'call_form'
@@ -319,5 +321,20 @@ class CallView(TemplateView):
         messages.error(request, 'Call not saved. Please correct the errors in the form and try again.')
 
         return render(request, 'logged/call-form.tmpl', context)
+
+
+class CallCopy(TemplateView):
+    def get(self, request, *args, **kwargs):
+        if 'pk' in kwargs:
+            date_time = datetime.datetime.now()
+            formatedDate = date_time.strftime("%Y-%m-%d %H:%M:%S")
+            call = Call.objects.get(id=kwargs['pk'])
+            call.pk = None
+            call_long_name = call.long_name.rsplit(' ', 1)[0]
+            call.long_name = call_long_name + ' ' + str(formatedDate)
+            call.save()
+            return redirect(reverse('logged-call-update', kwargs={'pk': call.pk}))
+
+
 
 
