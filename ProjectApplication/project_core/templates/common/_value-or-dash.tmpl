@@ -5,7 +5,7 @@
         {% elif value|get_type == 'datetime' %}
             {{ value }}
         {% else %}
-            {{ value|linebreaksbr }}
+            {{ value|safe }}
         {% endif %}
     {% else %}
         -
