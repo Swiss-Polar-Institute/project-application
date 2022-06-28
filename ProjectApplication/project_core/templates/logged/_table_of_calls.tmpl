@@ -34,6 +34,7 @@
                 {% if edit_button %}
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-call-update' pk=call.id %}">Edit</a>
                 {% endif %}
+                    <a class="btn btn-primary btn-xs" href="{% url 'logged-call-copy' pk=call.id %}">Copy</a>
                 {% if proposal_call_list_button %}
                     <a class="btn btn-primary btn-xs" href="{% url 'logged-proposal-preview' %}?call={{ call.id }}">Form
                         Preview</a>
