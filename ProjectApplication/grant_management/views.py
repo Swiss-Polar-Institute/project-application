@@ -26,6 +26,7 @@ from .forms.close_project import CloseProjectModelForm
 from .forms.datasets import DatasetInlineFormSet
 from .forms.fieldnotes import FieldNoteInlineFormSet
 from .forms.locations import LocationsInlineFormSet
+from .forms.co_investigators import PersonsInlineFormSet
 from .forms.media import MediaInlineFormSet
 from .forms.milestones import MilestoneInlineFormSet
 from .forms.project import ProjectForm
@@ -290,6 +291,12 @@ class LaySummariesUpdateView(GrantManagementInlineFormset):
 class LocationsUpdateView(GrantManagementInlineFormset):
     inline_formset = LocationsInlineFormSet
     human_type = 'location'
+    tab = 'other'
+
+
+class PersonsUpdateView(GrantManagementInlineFormset):
+    inline_formset = PersonsInlineFormSet
+    human_type = 'Co-Investigator'
     tab = 'other'
 
 

@@ -3,7 +3,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from project_core.models import Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument
-from grant_management.models import Location, Medium, LaySummary, FieldNote
+from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors
 
 
 class FundingInstrumentSerializer(serializers.ModelSerializer):
@@ -52,6 +52,12 @@ class LocationSerializer(serializers.ModelSerializer):
         list_serializer_class = FilterLocationSerializer
 
 
+class PersonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CoInvestors
+        fields = ('co_investigator', 'organisation', )
+
+
 class FilterMediumSerializer(serializers.ListSerializer):
     def to_representation(self, data):
         data = data.filter(~Q(license_id=None) & Q(key_image=True)).order_by('-primary_image')
@@ -90,12 +96,13 @@ class LaySummarySerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     principal_investigator = PersonPositionSerializer(read_only=True)
     project_location = LocationSerializer(many=True, read_only=True)
+    project_person = PersonSerializer(many=True, read_only=True)
     medium_set = MediumSerializer(many=True, read_only=True)
     funding_instrument = FundingInstrumentSerializer(read_only=True)
 
     class Meta:
         model = Project
-        fields = ('uuid', 'title', 'status', 'principal_investigator', 'project_location',
+        fields = ('uuid', 'title', 'status', 'principal_investigator', 'project_location', 'project_person',
                   'medium_set', 'funding_instrument'
                   )
 
@@ -105,6 +112,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     geographical_areas = GeographicalAreaSerializer(many=True, read_only=True)
     principal_investigator = PersonPositionSerializer(read_only=True)
     project_location = LocationSerializer(many=True, read_only=True)
+    project_person = PersonSerializer(read_only=True)
     medium_set = MediumSerializer(many=True, read_only=True)
     laysummary_set = LaySummarySerializer(many=True, read_only=True)
     funding_instrument = FundingInstrumentSerializer(read_only=True)
@@ -113,7 +121,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = ('uuid', 'key', 'title', 'keywords', 'geographical_areas', 'location', 'status',
-                  'start_date', 'end_date', 'principal_investigator', 'project_location',
+                  'start_date', 'end_date', 'principal_investigator', 'project_location', 'project_person',
                   'medium_set', 'laysummary_set', 'allocated_budget', 'funding_instrument',
                   'fieldnote_set'
                   )

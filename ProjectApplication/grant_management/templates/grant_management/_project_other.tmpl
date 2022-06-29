@@ -4,3 +4,9 @@
 <div>First entry location will be the one displaying on website (alphabetic order)</div>
 {% include 'grant_management/_locations-list.tmpl' %}
 <p></p>
+<h3>
+    <a id="persons">Co-Project Investigator {% include 'grant_management/_edit_button.tmpl' with force_edit_enabled=True viewname='logged-grant_management-persons-update' %}</a>
+</h3>
+<div></div>
+{% include 'grant_management/_investigator-list.tmpl' %}
+<p></p>

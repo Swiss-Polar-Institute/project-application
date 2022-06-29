@@ -13,7 +13,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image, ExifTags, UnidentifiedImageError
 from io import BytesIO
 
-from project_core.models import CreateModifyOn, PhysicalPerson, Project
+from project_core.models import CreateModifyOn, PhysicalPerson, Project, Organisation
 from project_core.utils.utils import management_file_validator, calculate_md5_from_file_field
 
 
@@ -425,3 +425,15 @@ class Location(CreateModifyOn):
 
     def __str__(self):
         return f'{self.name} ({self.latitude}, {self.longitude})'
+
+
+class CoInvestors(CreateModifyOn):
+    project = models.ForeignKey(Project, help_text='Project to which the publication is related',
+                                on_delete=models.PROTECT,
+                                related_name='project_person')
+    co_investigator = models.ForeignKey(PhysicalPerson, help_text='Co-Investigator',
+                                    on_delete=models.PROTECT, blank=True, null=True)
+    organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f'{self.co_investor}-{self.organisation}'
