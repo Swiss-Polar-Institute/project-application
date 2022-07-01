@@ -53,6 +53,8 @@ class LocationSerializer(serializers.ModelSerializer):
 
 
 class PersonSerializer(serializers.ModelSerializer):
+    co_investigator = serializers.CharField(source='co_investigator.full_name')
+    organisation = serializers.CharField(source='organisation.long_name')
     class Meta:
         model = CoInvestors
         fields = ('co_investigator', 'organisation', )
@@ -112,7 +114,7 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     geographical_areas = GeographicalAreaSerializer(many=True, read_only=True)
     principal_investigator = PersonPositionSerializer(read_only=True)
     project_location = LocationSerializer(many=True, read_only=True)
-    project_person = PersonSerializer(read_only=True)
+    project_person = PersonSerializer(many=True, read_only=True)
     medium_set = MediumSerializer(many=True, read_only=True)
     laysummary_set = LaySummarySerializer(many=True, read_only=True)
     funding_instrument = FundingInstrumentSerializer(read_only=True)
