@@ -9,7 +9,8 @@ from comments import utils
 from comments.utils import process_comment_attachment, comments_attachments_forms
 from evaluation.models import CallEvaluation
 from project_core.forms.call import CallForm
-from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall, BudgetCategory, CallCareerStage
+from project_core.models import Call, Proposal, FundingInstrument, BudgetCategoryCall, BudgetCategory, CallCareerStage,\
+    CallPart, CallQuestion, CallPartFile
 from variable_templates.forms.template_variables import TemplateVariableItemFormSet
 from variable_templates.utils import copy_template_variables_from_funding_instrument_to_call, \
     get_template_variables_for_call, get_template_value_for_call
@@ -328,10 +329,28 @@ class CallCopy(TemplateView):
             date_time = datetime.datetime.now()
             formatedDate = date_time.strftime("%Y-%m-%d %H:%M:%S")
             call = Call.objects.get(id=kwargs['pk'])
+
             call.pk = None
             call_long_name = call.long_name.rsplit(' ', 1)[0]
             call.long_name = call_long_name + ' ' + str(formatedDate)
             call.save()
+            saved_call_id = call.pk
+            call_parts = CallPart.objects.filter(call_id=kwargs['pk'])
+            for call_part in call_parts:
+                call_files = CallPartFile.objects.filter(call_part_id=call_part.pk)
+                call_quetions = CallQuestion.objects.filter(call_part_id=call_part.pk)
+                call_part.pk = None
+                call_part.call_id = saved_call_id
+                call_part.save()
+                for call_file in call_files:
+                    call_file.pk = None
+                    call_file.call_part_id = call_part.pk
+                    call_file.save()
+                for call_quetion in call_quetions:
+                    call_quetion.pk = None
+                    call_quetion.call_part_id = call_part.pk
+                    call_quetion.save()
+
             return redirect(reverse('logged-call-update', kwargs={'pk': call.pk}))
 
 
