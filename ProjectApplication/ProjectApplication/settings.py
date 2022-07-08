@@ -376,7 +376,8 @@ CKEDITOR_CONFIGS = {
             ['Bold', 'Italic', 'Underline'],
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
              'JustifyRight', 'JustifyBlock'],
-            ['RemoveFormat', 'Source']
+            ['RemoveFormat', 'Source'],
+            ['Link', 'Unlink', 'Anchor']
         ]
     }
 }

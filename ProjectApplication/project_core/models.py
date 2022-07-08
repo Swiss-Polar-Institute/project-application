@@ -1202,7 +1202,7 @@ class Project(CreateModifyOn):
                                    on_delete=models.PROTECT, related_name='supervisor')
 
     history = HistoricalRecords()
-    on_website = models.BooleanField(help_text='Appears in the website', default=True)
+    on_website = models.BooleanField(help_text='Appears in the website', default=False)
 
     class Meta:
         unique_together = (('title', 'principal_investigator', 'call'),)
