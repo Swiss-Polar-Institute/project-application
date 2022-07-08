@@ -96,7 +96,7 @@ class LaySummaryModelForm(forms.ModelForm):
             'sent_for_approval_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput,
-            'text': CKEditorWidget(config_name='lay_summary'),
+            'text': CKEditorWidget,
             'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'),
         }
 
