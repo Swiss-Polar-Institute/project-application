@@ -378,6 +378,16 @@ CKEDITOR_CONFIGS = {
              'JustifyRight', 'JustifyBlock'],
             ['RemoveFormat', 'Source']
         ]
-    }
+    },
+    'lay_summary': {
+            'toolbar': 'Custom',
+            'toolbar_Custom': [
+                ['Bold', 'Italic', 'Underline'],
+                ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
+                 'JustifyRight', 'JustifyBlock'],
+                ['RemoveFormat', 'Source'],
+                ['Link', 'Unlink', 'Anchor']
+            ]
+        }
 }
 
