@@ -434,6 +434,7 @@ class CoInvestors(CreateModifyOn):
     co_investigator = models.ForeignKey(PhysicalPerson, help_text='Co-Investigator',
                                     on_delete=models.PROTECT, blank=True, null=True)
     organisation = models.ForeignKey(Organisation, blank=True, null=True, on_delete=models.PROTECT)
+    organisation_text = models.CharField(max_length=100, help_text='if organisation not found add here', null=True, blank=True)
 
     def __str__(self):
         return f'{self.co_investor}-{self.organisation}'

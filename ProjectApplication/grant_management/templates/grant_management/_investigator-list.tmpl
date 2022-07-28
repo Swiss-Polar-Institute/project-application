@@ -4,12 +4,14 @@
         <tr>
             <th>Co-Investigator</th>
             <th>Institution name</th>
+            <th>Institution Text</th>
         </tr>
         </thead>
         {% for person in persons %}
             <tr>
                 <td>{{ person.co_investigator }}</td>
                 <td>{{ person.organisation }}</td>
+                <td>{{ person.organisation_text }}</td>
             </tr>
         {% endfor %}
     </table>
@@ -26,9 +28,9 @@
                         "zeroRecords": "No locations have been added"
                     },
                     "columns": [
-                        {"width": "50%"},
-                        {"width": "25%"},
-                        {"width": "25%"}
+                        {"width": "33.33%"},
+                        {"width": "33.33%"},
+                        {"width": "33.33%"}
                     ],
                 }
             );
