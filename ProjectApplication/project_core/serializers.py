@@ -55,9 +55,10 @@ class LocationSerializer(serializers.ModelSerializer):
 class PersonSerializer(serializers.ModelSerializer):
     co_investigator = serializers.CharField(source='co_investigator.full_name')
     organisation = serializers.CharField(source='organisation.long_name', required=False)
+
     class Meta:
         model = CoInvestors
-        fields = ('co_investigator', 'organisation', )
+        fields = ('co_investigator', 'organisation', 'organisation_text')
 
 
 class FilterMediumSerializer(serializers.ListSerializer):

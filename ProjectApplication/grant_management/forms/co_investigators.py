@@ -23,15 +23,16 @@ class PersonModelForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('co_investigator', css_class='col-6'),
-                Div('organisation', css_class='col-6'),
+                Div('co_investigator', css_class='col-4'),
+                Div('organisation', css_class='col-4'),
+                Div('organisation_text', css_class='col-4'),
                 css_class='row'
             ),
         )
 
     class Meta:
         model = CoInvestors
-        fields = ['project', 'co_investigator', 'organisation']
+        fields = ['project', 'co_investigator', 'organisation', 'organisation_text']
 
 
 class PersonsFormSet(BaseInlineFormSet):
