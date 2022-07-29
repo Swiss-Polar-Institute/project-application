@@ -54,11 +54,14 @@ class LocationSerializer(serializers.ModelSerializer):
 
 class PersonSerializer(serializers.ModelSerializer):
     co_investigator = serializers.CharField(source='co_investigator.full_name')
-    organisation = serializers.CharField(source='organisation.long_name', required=False)
+    organisation = serializers.SerializerMethodField()
 
     class Meta:
         model = CoInvestors
-        fields = ('co_investigator', 'organisation', 'organisation_text')
+        fields = ('co_investigator', 'organisation')
+
+    def get_organisation(self, obj):
+        return obj.organisation.long_name if obj.organisation else obj.organisation_text
 
 
 class FilterMediumSerializer(serializers.ListSerializer):
