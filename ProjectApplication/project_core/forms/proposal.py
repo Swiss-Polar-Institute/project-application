@@ -24,6 +24,8 @@ class ProposalForm(ModelForm):
         self._call = kwargs.pop('call', None)
 
         super().__init__(*args, **kwargs)
+        self.fields['keywords'].required = True
+        self.fields['geographical_areas'].required = True
 
         if self._call is None:
             self._call = self.instance.call
