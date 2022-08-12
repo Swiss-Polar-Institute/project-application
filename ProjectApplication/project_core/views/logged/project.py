@@ -1,6 +1,7 @@
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.pagination import PageNumberPagination
 
 from comments import utils
 from comments.utils import process_comment_attachment
@@ -9,6 +10,12 @@ from project_core.models import Project, GeographicalArea, FundingInstrument
 from project_core.serializers import (
     ProjectSerializer, ProjectDetailSerializer, GeographicalAreaSerializer, FundingInstrumentSerializer
 )
+
+
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 
 class ProjectList(ListView):
@@ -45,11 +52,12 @@ class ProjectDetailAPI(RetrieveAPIView):
 class GeographicalListAPI(ListAPIView):
     queryset = GeographicalArea.objects.all()
     serializer_class = GeographicalAreaSerializer
-
+    pagination_class = StandardResultsSetPagination
 
 class FundingInstrumentListAPI(ListAPIView):
     queryset = FundingInstrument.objects.all()
     serializer_class = FundingInstrumentSerializer
+    pagination_class = StandardResultsSetPagination
 
 
 class AbstractProjectView(DetailView):

@@ -8,6 +8,7 @@ from grant_management.models import Location, Medium, LaySummary, FieldNote, CoI
 
 class FundingInstrumentSerializer(serializers.ModelSerializer):
     class Meta:
+        limit_size = 20
         model = FundingInstrument
         fields = ('long_name', )
 
