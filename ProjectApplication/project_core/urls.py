@@ -282,4 +282,12 @@ urlpatterns = [
          logged.project.FundingInstrumentListAPI.as_view(),
          name='fonding-list-api'),
 
+    path('api/v1/trace/list/',
+         logged.project.TraceListAPI.as_view(),
+         name='fonding-list-api'),
+
+    path('api/v1/trace/<int:id>',
+         logged.project.TraceDetailAPI.as_view(),
+         name='fonding-list-api'),
+
 ]

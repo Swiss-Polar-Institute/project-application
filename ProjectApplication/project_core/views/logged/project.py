@@ -1,14 +1,17 @@
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import status
+from rest_framework.response import Response
 
 from comments import utils
 from comments.utils import process_comment_attachment
 from project_core.filters import ProjectFilterSet
-from project_core.models import Project, GeographicalArea, FundingInstrument
+from project_core.models import Project, GeographicalArea, FundingInstrument, Trace, TraceCoordinates
 from project_core.serializers import (
-    ProjectSerializer, ProjectDetailSerializer, GeographicalAreaSerializer, FundingInstrumentSerializer
+    ProjectSerializer, ProjectDetailSerializer, GeographicalAreaSerializer, FundingInstrumentSerializer,
+    TraceListSerializer, TraceDetailSerializer
 )
 
 
@@ -54,10 +57,38 @@ class GeographicalListAPI(ListAPIView):
     serializer_class = GeographicalAreaSerializer
     pagination_class = StandardResultsSetPagination
 
+
 class FundingInstrumentListAPI(ListAPIView):
     queryset = FundingInstrument.objects.all()
     serializer_class = FundingInstrumentSerializer
     pagination_class = StandardResultsSetPagination
+
+
+class TraceListAPI(ListCreateAPIView):
+    queryset = Trace.objects.all()
+    serializer_class = TraceListSerializer
+
+    def post(self, request, *args, **kwargs):
+        trace_coordinates = request.data.pop("trace_coordinates")
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        trace = serializer.save()
+        headers = self.get_success_headers(serializer.data)
+
+        for coordinate in trace_coordinates:
+            TraceCoordinates(
+                longitude=coordinate["longitude"],
+                latitude=coordinate["latitude"],
+                trace=trace
+            ).save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
+class TraceDetailAPI(RetrieveAPIView):
+    queryset = Trace.objects.all()
+    serializer_class = TraceDetailSerializer
+    lookup_field = 'id'
 
 
 class AbstractProjectView(DetailView):
