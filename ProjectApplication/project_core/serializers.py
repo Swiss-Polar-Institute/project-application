@@ -2,7 +2,9 @@ from django.db.models import Q
 
 from rest_framework import serializers
 
-from project_core.models import Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument
+from project_core.models import (
+    Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument, Trace, TraceCoordinates
+)
 from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors
 
 
@@ -132,3 +134,35 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
                   'medium_set', 'laysummary_set', 'allocated_budget', 'funding_instrument',
                   'fieldnote_set'
                   )
+
+
+class TraceListSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Trace
+        fields = (
+            "id",
+            "name"
+        )
+
+
+class TraceCoordinatesSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = TraceCoordinates
+        fields = (
+            "longitude",
+            "latitude"
+        )
+
+
+class TraceDetailSerializer(serializers.ModelSerializer):
+
+    trace_coordinates = TraceCoordinatesSerializer(many=True)
+
+    class Meta:
+        model = Trace
+        fields = (
+            "id",
+            "trace_coordinates"
+        )

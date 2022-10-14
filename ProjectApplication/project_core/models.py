@@ -1503,3 +1503,17 @@ class SpiUser(User):
             return Reviewer.objects.get(user=self).person.surname
         else:
             return self.last_name
+
+
+class Trace(CreateModifyOn):
+
+    name = models.CharField(max_length=64, help_text='Name of the trace', validators=[validate_slug])
+
+
+class TraceCoordinates(models.Model):
+    longitude = models.DecimalField(max_digits=14, decimal_places=3)
+    latitude = models.DecimalField(max_digits=14, decimal_places=3)
+
+    trace = models.ForeignKey(Trace, help_text='Trace that the coordinate belongs to',
+                              on_delete=models.PROTECT,
+                              related_name='trace_coordinates')
