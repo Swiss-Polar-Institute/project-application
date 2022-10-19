@@ -1,0 +1,41 @@
+{% load thousands_separator %}
+{% load ordinal %}
+
+{% with underspendings=project.underspending_set.all %}
+    <table id="underspendings_table" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Underspending</th>
+            <th>Amount (CHF)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for underspending in underspendings %}
+            <tr>
+                <td data-sort="{{ underspending.number }}">{{ underspending.number|ordinal }}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=underspending.amount|thousands_separator %}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#underspendings_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                    "language": {
+                        "zeroRecords": "No underspending have been added"
+                    },
+                    "columns": [
+                        {"width": "33%"},
+                        {"width": "33%"}
+                    ],
+                }
+            );
+        });
+    </script>
+{% endwith %}

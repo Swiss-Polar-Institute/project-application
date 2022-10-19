@@ -91,6 +91,22 @@ class Installment(CreateModifyOn):
         return installments.index(self) + 1
 
 
+class Underspending(CreateModifyOn):
+    project = models.ForeignKey(Project, help_text='Project that this underspending refers to', on_delete=models.PROTECT)
+    amount = models.DecimalField(max_digits=11, decimal_places=2, help_text='Underspending amount')
+
+    def __str__(self):
+        return f'{self.amount}'
+
+    def number(self):
+        # This is not very efficient, but given the number of invoices and underspendings it's nice to not have to
+        # save this in the database
+
+        underspendings = list(Underspending.objects.filter(project=self.project).order_by('id'))
+
+        return underspendings.index(self) + 1
+
+
 def invoice_file_rename(instance, filename):
     return f'grant_management/Invoice/Project-{instance.project.key}-{filename}'
 

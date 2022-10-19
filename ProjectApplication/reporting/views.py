@@ -10,6 +10,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from project_core.models import Call, Project, Gender, CareerStage, Proposal, FundingInstrument
+from grant_management.models import Invoice, Installment
 from project_core.templatetags.thousands_separator import thousands_separator
 from reporting.models import FundingInstrumentYearMissingData
 
@@ -367,7 +368,23 @@ def calculate_open_for_payment(year):
 
     for project in Project.objects.filter(finance_year=year):
         if project.is_active():
-            total += project.allocated_budget - project.invoices_paid_amount()
+            total += project.allocated_budget - project.invoices_paid_amount() - project.underspending_amount()
+        else:
+            # If the project is closed
+            pass
+
+    return total
+
+
+def calculate_unpaid_invoice(year):
+    total = 0
+
+    for project in Project.objects.filter(finance_year=year):
+        if project.is_active():
+            total += project.invoices_paid_amount()
+            for installment in Installment.objects.filter(project=project):
+                for invoice in Invoice.objects.filter(installment=installment):
+                     total -= invoice.amount
         else:
             # If the project is closed
             pass
@@ -392,14 +409,16 @@ def allocated_budget_per_year():
         data.append({'Year': year,
                      'Commitment (CHF)': thousands_separator(commitment),
                      'Paid to date (CHF)': thousands_separator(calculate_paid_so_far_year(year)),
-                     'Open for payment (CHF)': thousands_separator(calculate_open_for_payment(year)),
+                     'Outstanding commitment (CHF)': thousands_separator(calculate_open_for_payment(year)),
+                     'Unpaid Invoices (CHF)': thousands_separator(calculate_unpaid_invoice(year)),
                      })
 
     result['data'] = data
-    result['headers'] = ['Year', 'Commitment (CHF)', 'Paid to date (CHF)', 'Open for payment (CHF)']
-    result['right_align_columns'] = [2, 3, 4]
+    result['headers'] = ['Year', 'Commitment (CHF)', 'Paid to date (CHF)', 'Outstanding commitment (CHF)',
+                         'Unpaid Invoices (CHF)']
+    result['right_align_columns'] = [2, 3, 4, 5]
 
-    # result['header_tooltips'] = {'Open for payment (CHF)': ''}
+    # result['header_tooltips'] = {'Outstanding commitment (CHF)': ''}
 
     return result
 
@@ -420,7 +439,23 @@ def calculate_open_for_payment_funding_instrument_year(funding_instrument_long_n
     for project in Project.objects.filter(funding_instrument__long_name=funding_instrument_long_name). \
             filter(finance_year=year):
         if project.is_active():
-            total += project.allocated_budget - project.invoices_paid_amount()
+            total += project.allocated_budget - project.invoices_paid_amount() - project.underspending_amount()
+        else:
+            # If the project is closed
+            pass
+
+    return total
+
+def calculate_unpaid_invoice_funding_instrument_year(funding_instrument_long_name, year):
+    total = 0
+
+    for project in Project.objects.filter(funding_instrument__long_name=funding_instrument_long_name). \
+            filter(finance_year=year):
+        if project.is_active():
+            total += project.invoices_paid_amount()
+            for installment in Installment.objects.filter(project=project):
+                for invoice in Invoice.objects.filter(installment=installment):
+                    total -= invoice.amount
         else:
             # If the project is closed
             pass
@@ -445,20 +480,22 @@ def allocated_budget_per_call():
 
         paid_so_far = calculate_paid_so_far_funding_instrument_year(funding_instrument_long_name, year)
         open_for_payment = calculate_open_for_payment_funding_instrument_year(funding_instrument_long_name, year)
+        unpaid_invoice = calculate_unpaid_invoice_funding_instrument_year(funding_instrument_long_name, year)
 
         data.append({'Grant Scheme': row['call_name'],
                      'Account Number': row['account_number'],
                      'Year': row['finance_year_'],
                      'Commitment (CHF)': thousands_separator(row['financial_support']),
                      'Paid to date (CHF)': thousands_separator(paid_so_far),
-                     'Open for payment (CHF)': thousands_separator(open_for_payment),
+                     'Outstanding commitment (CHF)': thousands_separator(open_for_payment),
+                     'Unpaid Invoices (CHF)': thousands_separator(unpaid_invoice),
                      })
 
     result['headers'] = ['Grant Scheme', 'Account Number', 'Year', 'Commitment (CHF)', 'Paid to date (CHF)',
-                         'Open for payment (CHF)']
+                         'Outstanding commitment (CHF)', 'Unpaid Invoices (CHF)']
     result['data'] = data
 
-    result['right_align_columns'] = [4, 5, 6]
+    result['right_align_columns'] = [4, 5, 6, 7]
 
     return result
 
@@ -647,7 +684,7 @@ class ProjectsBalanceExcel(View):
     @staticmethod
     def headers():
         return ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
-                'Balance due']
+                'Underspending', 'Total paid', 'Balance due', 'Status']
 
     @staticmethod
     def financial_information(project):
@@ -661,7 +698,7 @@ class ProjectsBalanceExcel(View):
         else:
             grant_agreement_signed_date = 'No grant agreement attached'
 
-        balance_due = project.allocated_budget - project.invoices_paid_amount()
+        balance_due = project.allocated_budget - project.invoices_paid_amount() - project.underspending_amount()
 
         return {'Key': project.key,
                 'Signed date': grant_agreement_signed_date,
@@ -670,7 +707,10 @@ class ProjectsBalanceExcel(View):
                 'Start date': project.start_date if project.start_date else 'N/A',
                 'End date': project.end_date if project.end_date else 'N/A',
                 'Allocated budget': project.allocated_budget,
+                'Underspending': project.underspending_amount(),
+                'Total paid': project.invoices_paid_amount(),
                 'Balance due': balance_due,
+                'Status': project.status,
                 }
 
     @staticmethod
@@ -691,7 +731,10 @@ class ProjectsBalanceExcel(View):
             'Start date': 12,
             'End date': 12,
             'Allocated budget': 12,
-            'Balance due': 12
+            'Underspending': 12,
+            'Total paid': 12,
+            'Balance due': 12,
+            'Status': 10,
         }
 
     def get(self, request, *args, **kwargs):

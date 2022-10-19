@@ -13,6 +13,15 @@
 <br>
 {% include 'grant_management/_invoice-list.tmpl' %}
 <p></p>
+<div class="row">
+    <div class="col-6">
+        <h3 style="display: inline-block;">
+            Underspending {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-underspendings-update' project=project %}</h3>
+        <br>
+        {% include 'grant_management/_underspending-list.tmpl' %}
+    </div>
+</div>
+<p></p>
 <h3>Financial
     reports {% include 'grant_management/_edit_button.tmpl' with viewname='logged-grant_management-financial_reports-update' project=project %}</h3>
 {% include 'grant_management/_report-list.tmpl' with reports=project.financialreport_set.all report_name='financial' %}

@@ -15,6 +15,7 @@ from grant_management.forms.blog_posts import BlogPostsInlineFormSet
 from grant_management.forms.grant_agreement import GrantAgreementForm
 from grant_management.forms.installments import InstallmentsInlineFormSet
 from grant_management.forms.invoices import InvoicesInlineFormSet
+from grant_management.forms.underspending import UnderspendingsInlineFormSet
 from grant_management.forms.lay_summaries import LaySummariesInlineFormSet
 from grant_management.forms.project_basic_information import ProjectBasicInformationForm
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
@@ -328,6 +329,12 @@ class MediaUpdateView(GrantManagementInlineFormset):
 class InvoicesUpdateView(GrantManagementInlineFormset):
     inline_formset = InvoicesInlineFormSet
     human_type = 'invoice'
+    tab = 'finances'
+
+
+class UnderspendingsUpdateView(GrantManagementInlineFormset):
+    inline_formset = UnderspendingsInlineFormSet
+    human_type = 'underspending'
     tab = 'finances'
 
 

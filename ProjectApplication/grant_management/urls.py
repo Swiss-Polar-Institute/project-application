@@ -60,6 +60,10 @@ urlpatterns = [
          grant_management.views.InvoicesUpdateView.as_view(),
          name='logged-grant_management-invoices-update'),
 
+    path('logged/grant-management/project/<int:project>/underspendings/update/',
+         grant_management.views.UnderspendingsUpdateView.as_view(),
+         name='logged-grant_management-underspendings-update'),
+
     path('logged/grant-management/project/<int:project>/financial_reports/update/',
          grant_management.views.FinancialReportsUpdateView.as_view(),
          name='logged-grant_management-financial_reports-update'),
