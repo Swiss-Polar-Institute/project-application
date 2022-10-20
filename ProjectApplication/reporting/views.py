@@ -611,7 +611,7 @@ class ProjectsAllInformationExcel(View):
     def _headers():
         return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
                 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
-                'Balance due', 'Status']
+                'Underspending', 'Total paid', 'Balance due', 'Status']
 
     @staticmethod
     def _rows():
