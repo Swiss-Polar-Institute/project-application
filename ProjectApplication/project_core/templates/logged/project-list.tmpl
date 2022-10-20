@@ -11,6 +11,7 @@
                 <th>Key</th>
                 <th>Title</th>
                 <th>Principal Investigator</th>
+                <th>Institution</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -21,6 +22,7 @@
                     <td>{{ project.key }}</td>
                     <td>{{ project.title }}</td>
                     <td>{{ project.principal_investigator.person }}</td>
+                    <td>{{ project.principal_investigator.organisations_ordered_by_name_str }}</td>
                     <td>{% include 'grant_management/_project_status_badge.tmpl' with status=project.status %}</td>
                     <td>
                         <a class="btn btn-primary btn-xs"
