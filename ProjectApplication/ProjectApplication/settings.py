@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'reporting',
     'rest_framework',
     'django_filters',
-    'ckeditor'
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -369,6 +370,13 @@ SELF_HTTP_PASSWORD = os.getenv('SELF_HTTP_PASSWORD', None)
 CALL_DEFAULT_PART_QUESTIONS_ANSWERS = 'Proposed {{ activity }} description'
 DOCUMENTATION_URL = os.getenv('DOCUMENTATION_URL', None)
 
+CKEDITOR_UPLOAD_PATH = 'upload/'
+
+AWS_QUERYSTRING_AUTH = False
+
+MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
@@ -377,7 +385,8 @@ CKEDITOR_CONFIGS = {
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
              'JustifyRight', 'JustifyBlock'],
             ['RemoveFormat', 'Source'],
-            ['Link', 'Unlink', 'Anchor']
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image']
         ]
     }
 }

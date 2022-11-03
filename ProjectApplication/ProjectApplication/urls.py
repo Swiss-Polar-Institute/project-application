@@ -24,4 +24,5 @@ urlpatterns = [
     path('', include('grant_management.urls')),
     path('', include('reporting.urls')),
     path(settings.ADMIN_URL, admin.site.urls),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
