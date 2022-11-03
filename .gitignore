@@ -60,6 +60,7 @@ coverage.xml
 *.log
 local_settings.py
 ProjectApplication/staticfiles/
+ProjectApplication/mediafiles/
 db.sqlite3
 
 # Flask stuff:
@@ -112,3 +113,4 @@ venv.bak/
 project_application_mysql.conf
 db_server/mysql-dump/02-schema.sql
 .idea
+

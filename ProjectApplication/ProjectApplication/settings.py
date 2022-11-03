@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'reporting',
     'rest_framework',
     'django_filters',
-    'ckeditor'
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -369,6 +370,10 @@ SELF_HTTP_PASSWORD = os.getenv('SELF_HTTP_PASSWORD', None)
 CALL_DEFAULT_PART_QUESTIONS_ANSWERS = 'Proposed {{ activity }} description'
 DOCUMENTATION_URL = os.getenv('DOCUMENTATION_URL', None)
 
+CKEDITOR_UPLOAD_PATH = 'upload/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
+MEDIA_URL = 'media/'
+
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'Custom',
@@ -377,7 +382,8 @@ CKEDITOR_CONFIGS = {
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
              'JustifyRight', 'JustifyBlock'],
             ['RemoveFormat', 'Source'],
-            ['Link', 'Unlink', 'Anchor']
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image']
         ]
     }
 }
