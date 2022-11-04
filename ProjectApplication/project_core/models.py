@@ -1517,8 +1517,8 @@ class Trace(CreateModifyOn):
 
 
 class TraceCoordinates(models.Model):
-    longitude = models.DecimalField(max_digits=14, decimal_places=3)
-    latitude = models.DecimalField(max_digits=14, decimal_places=3)
+    lng = models.DecimalField(max_digits=14, decimal_places=3)
+    lat = models.DecimalField(max_digits=14, decimal_places=3)
 
     trace = models.ForeignKey(Trace, help_text='Trace that the coordinate belongs to',
                               on_delete=models.PROTECT,

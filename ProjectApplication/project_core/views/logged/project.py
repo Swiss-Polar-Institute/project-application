@@ -77,8 +77,8 @@ class TraceListAPI(ListCreateAPIView):
 
         for coordinate in trace_coordinates:
             TraceCoordinates(
-                longitude=coordinate["longitude"],
-                latitude=coordinate["latitude"],
+                lng=coordinate["lng"],
+                lat=coordinate["lat"],
                 trace=trace
             ).save()
 

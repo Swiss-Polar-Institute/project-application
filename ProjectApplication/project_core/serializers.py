@@ -151,8 +151,8 @@ class TraceCoordinatesSerializer(serializers.ModelSerializer):
     class Meta:
         model = TraceCoordinates
         fields = (
-            "longitude",
-            "latitude"
+            "lng",
+            "lat"
         )
 
 
