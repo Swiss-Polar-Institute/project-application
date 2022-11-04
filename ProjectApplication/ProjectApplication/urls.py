@@ -18,11 +18,14 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 
+from ckeditor_uploader import views as ckeditor_views
+
 urlpatterns = [
     path('', include('project_core.urls')),
     path('', include('evaluation.urls')),
     path('', include('grant_management.urls')),
     path('', include('reporting.urls')),
     path(settings.ADMIN_URL, admin.site.urls),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('ckeditor/upload/', ckeditor_views.upload, name='ckeditor_upload'),
+    path('ckeditor/browse/', ckeditor_views.browse, name='ckeditor_browse'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
