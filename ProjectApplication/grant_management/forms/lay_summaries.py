@@ -7,7 +7,7 @@ from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput, 
 from grant_management.models import LaySummary
 from project_core.models import Project
 from project_core.widgets import XDSoftYearMonthDayPickerInput
-from ckeditor.widgets import CKEditorWidget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 
 class LaySummaryTypeWithDescription(ModelChoiceField):
@@ -96,7 +96,7 @@ class LaySummaryModelForm(forms.ModelForm):
             'sent_for_approval_date': XDSoftYearMonthDayPickerInput,
             'received_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput,
-            'text': CKEditorWidget,
+            'text': CKEditorUploadingWidget,
             'author': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'),
         }
 
