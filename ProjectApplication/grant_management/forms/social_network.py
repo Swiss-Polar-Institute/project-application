@@ -25,10 +25,12 @@ class SocialNetworkModelForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('social_network', css_class='col-6'),
-                Div('url', css_class='col-6'),
+                Div('social_network', css_class='col-4'),
+                Div('url', css_class='col-4'),
+                Div('file', css_class='col-4'),
                 css_class='row'
             ),
+
         )
 
     def clean(self):
@@ -37,11 +39,12 @@ class SocialNetworkModelForm(forms.ModelForm):
 
     class Meta:
         model = ProjectSocialNetwork
-        fields = ['project', 'social_network', 'url']
+        fields = ['project', 'social_network', 'url', 'file']
         widgets = {
             'project': NumberInput,
         }
         labels = {
+            'social_network': 'Outreach',
             'url': 'URL'
         }
 

@@ -1,13 +1,14 @@
 {% load static %}
 
 <div class="row">
-    <div class="col-6">
+    <div class="col-12">
         {% with social_networks=project.projectsocialnetwork_set.all %}
             <table id="social_networks_table" class="table table-striped table-sm table-hover display">
                 <thead>
                 <tr>
-                    <th>Network</th>
+                    <th>Outreach</th>
                     <th>URL</th>
+                    <th>File</th>
                 </tr>
                 </thead>
                 {% for social_network in social_networks %}
@@ -18,7 +19,8 @@
                                  src="{% static social_network.social_network.icon %}">
                             {{ social_network.social_network.name }}
                         </td>
-                        <td><a href="{{ social_network.url }}">{{ social_network.url }}</a></td>
+                        <td>{% include 'grant_management/_text_with_link_or_dash.tmpl' with text=social_network.url url=social_network.url %}</td>
+                        <td>{% include 'common/_file_to_download.tmpl' with file_field=social_network.file %}</td>
                     </tr>
                 {% endfor %}
             </table>
@@ -32,11 +34,12 @@
                             "bPaginate": false,
                             "info": false,
                             "language": {
-                                "zeroRecords": "No social media have been added"
+                                "zeroRecords": "No outreach have been added"
                             },
                             "columns": [
-                                {"width": "30%"},
-                                {"width": "70%"}
+                                {"width": "33%"},
+                                {"width": "33%"},
+                                {"width": "33%"}
                             ]
                         }
                     );
