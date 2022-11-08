@@ -358,8 +358,8 @@ class ScientificReportsUpdateView(GrantManagementInlineFormset):
 
 class SocialMediaUpdateView(GrantManagementInlineFormset):
     inline_formset = SocialNetworksInlineFormSet
-    human_type = 'social medium'
-    human_type_plural = 'social media'
+    human_type = 'outreach'
+    human_type_plural = 'outreach'
     tab = 'deliverables'
 
 

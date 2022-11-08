@@ -336,7 +336,7 @@ class MediumDeleted(CreateModifyOn):
 
 class SocialNetwork(CreateModifyOn):
     name = models.CharField(max_length=100,
-                            help_text='Social network name (e.g. Twitter, Facebook, Instagram, Blog)')
+                            help_text='Outreach name (e.g. Twitter, Facebook, Instagram, Blog)')
 
     def __str__(self):
         return f'{self.name}'
@@ -345,13 +345,19 @@ class SocialNetwork(CreateModifyOn):
         return f'external/icons/{self.name.lower()}.png'
 
 
+def outreach_file_rename(instance, filename):
+    return f'grant_management/Outreach/Project-{instance.project.key}-{filename}'
+
+
 class ProjectSocialNetwork(CreateModifyOn):
-    project = models.ForeignKey(Project, help_text='Project to which this social network page is related',
+    project = models.ForeignKey(Project, help_text='Project to which this outreach page is related',
                                 on_delete=models.PROTECT)
-    social_network = models.ForeignKey(SocialNetwork, help_text='Social network with information about the project',
+    social_network = models.ForeignKey(SocialNetwork, help_text='Outreach with information about the project',
                                        on_delete=models.PROTECT)
-    url = models.URLField(help_text='URL of social network (e.g. https://twitter.com/SwissPolar)', null=True,
+    url = models.URLField(help_text='URL of outreach (e.g. https://twitter.com/SwissPolar)', null=True,
                           blank=True)
+    file = models.FileField(storage=S3Boto3Storage(), upload_to=outreach_file_rename,
+                            blank=True, null=True)
 
     def __str__(self):
         return f'{self.project}-{self.social_network}'
