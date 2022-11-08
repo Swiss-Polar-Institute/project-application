@@ -26,6 +26,7 @@
                 <th>Title</th>
                 <th>Applicant</th>
                 <th>Status</th>
+                <th>Board decision</th>
                 <th>Eligible</th>
                 <th>Actions</th>
             </tr>
@@ -37,6 +38,7 @@
                     <td>{{ proposal.title }}</td>
                     <td>{{ proposal.applicant.person }}</td>
                     <td>{% include 'logged/_proposal_status_badge.tmpl' with status_name=proposal.proposal_status.name only %}</td>
+                    <td>{% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str badge_class=proposal.proposalevaluation.board_decision_badge_class %}</td>
                     <td>{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}
                     </td>
                     <td>
