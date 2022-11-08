@@ -135,14 +135,14 @@ class ProjectsBalanceExcelTest(TestCase):
 
         self.assertEqual(ProjectsBalanceExcel.headers(),
                          ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
-                          'Underspending', 'Total paid', 'Balance due', 'Status']
+                          'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status']
                          )
         self.assertEqual(ProjectsBalanceExcel.rows(),
                          [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached', 'Organisation': '',
                            'Title': 'This is a test project', 'Start date': datetime.date(2020, 1, 10),
                            'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('20000.00'),
-                           'Underspending': Decimal('10.00'), 'Total paid': Decimal('10.00'),
-                           'Balance due': Decimal('20000.00')}])
+                           'Underspending': Decimal('10.00'), 'Unpaid Invoices': Decimal('30000.00'),
+                           'Total paid': Decimal('10.00'), 'Balance due': Decimal('20000.00')}])
 
     def data_two_projects(self):
         project1 = database_population.create_project()
@@ -154,15 +154,16 @@ class ProjectsBalanceExcelTest(TestCase):
 
         self.assertEqual(ProjectsBalanceExcel.headers(),
                          ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
-                          'Underspending', 'Total paid', 'Balance due', 'Status'])
+                          'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status'])
 
         self.assertEqual(ProjectsBalanceExcel.rows(),
                          [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached',
                            'Organisation': 'Some organisation', 'Title': 'This is a test project',
                            'Start date': datetime.date(2020, 1, 10), 'End date': datetime.date(2022, 5, 7),
                            'Allocated budget': Decimal('20000.00'),
-                           'Underspending': Decimal('10.00'), 'Total paid': Decimal('10.00'),
-                           'Balance due': Decimal('20000.00'), 'Status': 'Ongoing'},
+                           'Underspending': Decimal('10.00'), 'Unpaid Invoices': Decimal('30000.00'),
+                           'Total paid': Decimal('10.00'), 'Balance due': Decimal('20000.00'),
+                           'Status': 'Ongoing'},
                           {'Key': 'SPI-2020-002', 'Signed date': '04/01/2020', 'Organisation': '',
                            'Title': 'Second test', 'Start date': datetime.date(2020, 1, 10),
                            'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('15000.00'),
@@ -202,7 +203,7 @@ class ProjectsAllInformationExcelTest(TestCase):
                          ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage',
                           'Geographic focus',
                           'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
-                          'Underspending', 'Total paid', 'Balance due', 'Status'])
+                          'Underspending',  'Unpaid Invoices', 'Total paid', 'Balance due', 'Status'])
 
         self.assertEqual(ProjectsAllInformationExcel._rows(),
                          [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached', 'Organisation': '',
@@ -211,7 +212,8 @@ class ProjectsAllInformationExcelTest(TestCase):
                            'Balance due': Decimal('20000.00'), 'Grant scheme': 'Big Expeditions',
                            'Name of PI': 'John Smith', 'Gender': 'N/A', 'Career stage': 'N/A',
                            'Geographic focus': 'Arctic', 'Location': 'Somewhere in the world', 'Keywords': 'Algae',
-                           'Underspending': Decimal('10.00'), 'Total paid': Decimal('10.00'), 'Status': 'Ongoing'}]
+                           'Underspending': Decimal('10.00'), 'Unpaid Invoices': Decimal('30000.00'),
+                           'Total paid': Decimal('10.00'), 'Status': 'Ongoing'}]
                          )
 
     def data_two_projects(self):
@@ -225,22 +227,23 @@ class ProjectsAllInformationExcelTest(TestCase):
         self.assertEqual(ProjectsAllInformationExcel._headers(),
                          ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage',
                           'Geographic focus', 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date',
-                          'Allocated budget', 'Underspending', 'Total paid', 'Balance due', 'Status'])
+                          'Allocated budget', 'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status'])
 
         self.assertEqual(ProjectsAllInformationExcel._rows(),
                          [{'Key': 'SPI-2020-001', 'Signed date': 'No grant agreement attached',
                            'Organisation': 'Some organisation', 'Title': 'This is a test project',
                            'Start date': datetime.date(2020, 1, 10), 'End date': datetime.date(2022, 5, 7),
                            'Allocated budget': Decimal('20000.00'),
-                           'Underspending': Decimal('10.00'), 'Total paid': Decimal('10.00'),
-                           'Balance due': Decimal('20000.00'),
+                           'Underspending': Decimal('10.00'), 'Unpaid Invoices': Decimal('30000.00'),
+                           'Total paid': Decimal('10.00'), 'Balance due': Decimal('20000.00'),
                            'Grant scheme': 'Big Expeditions', 'Name of PI': 'John Smith', 'Gender': 'N/A',
                            'Career stage': 'N/A', 'Geographic focus': 'Arctic', 'Location': 'Somewhere in the world',
                            'Keywords': 'Algae', 'Status': 'Ongoing'},
                           {'Key': 'SPI-2020-002', 'Signed date': datetime.date(2020, 1, 4), 'Organisation': '',
                            'Title': 'Second test', 'Start date': datetime.date(2020, 1, 10),
                            'End date': datetime.date(2022, 5, 7), 'Allocated budget': Decimal('15000.00'),
-                           'Underspending': Decimal('10.00'), 'Total paid': Decimal('10.00'),
+                           'Underspending': Decimal('10.00'), 'Unpaid Invoices': Decimal('30000.00'),
+                           'Total paid': Decimal('10.00'),
                            'Balance due': Decimal('13500.00'), 'Grant scheme': 'Big Expeditions',
                            'Name of PI': 'James Alan', 'Gender': 'N/A', 'Career stage': 'N/A',
                            'Geographic focus': 'Arctic', 'Location': 'Somewhere in the world', 'Keywords': 'Algae',
