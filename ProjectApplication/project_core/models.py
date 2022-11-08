@@ -1288,7 +1288,7 @@ class Project(CreateModifyOn):
         return self.invoice_set.filter(paid_date__isnull=False).aggregate(Sum('amount'))['amount__sum'] or 0
 
     def to_be_paid_amount(self):
-        return self.allocated_budget - self.invoices_paid_amount() - self.underspending_amount()
+        return self.invoice_set.filter(paid_date__isnull=True).aggregate(Sum('amount'))['amount__sum'] or 0
 
     def underspending_amount(self):
         return self.underspending_set.aggregate(Sum('amount'))['amount__sum'] or 0

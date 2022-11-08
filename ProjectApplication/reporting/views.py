@@ -611,7 +611,7 @@ class ProjectsAllInformationExcel(View):
     def _headers():
         return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
                 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Total paid', 'Balance due', 'Status']
+                'Underspending', 'Unpaid Invoices' , 'Total paid', 'Balance due', 'Status']
 
     @staticmethod
     def _rows():
@@ -684,7 +684,7 @@ class ProjectsBalanceExcel(View):
     @staticmethod
     def headers():
         return ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Total paid', 'Balance due', 'Status']
+                'Underspending', 'Unpaid Invoices' ,'Total paid', 'Balance due', 'Status']
 
     @staticmethod
     def financial_information(project):
@@ -708,6 +708,7 @@ class ProjectsBalanceExcel(View):
                 'End date': project.end_date if project.end_date else 'N/A',
                 'Allocated budget': project.allocated_budget,
                 'Underspending': project.underspending_amount(),
+                'Unpaid Invoices': project.to_be_paid_amount(),
                 'Total paid': project.invoices_paid_amount(),
                 'Balance due': balance_due,
                 'Status': project.status,
@@ -732,6 +733,7 @@ class ProjectsBalanceExcel(View):
             'End date': 12,
             'Allocated budget': 12,
             'Underspending': 12,
+            'Unpaid Invoices': 12,
             'Total paid': 12,
             'Balance due': 12,
             'Status': 10,
