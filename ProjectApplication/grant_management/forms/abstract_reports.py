@@ -91,9 +91,6 @@ class AbstractReportItemModelForm(forms.ModelForm):
         if due_date and due_date < project_starts:
             errors['due_date'] = utils.error_due_date_too_early(project)
 
-        if due_date and due_date > project_ends:
-            errors['due_date'] = utils.error_due_date_too_late(project)
-
         if received_date and received_date < project_starts:
             errors['received_date'] = utils.error_received_date_too_early(project)
 
