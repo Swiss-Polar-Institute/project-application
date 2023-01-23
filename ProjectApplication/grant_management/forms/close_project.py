@@ -129,7 +129,8 @@ class CloseProjectModelForm(forms.ModelForm):
         return None
 
     def allocated_budget_fully_paid(self):
-        return self.instance.invoices_paid_amount() >= self.instance.allocated_budget
+        return self.instance.invoices_paid_amount() + self.instance.underspending_amount() >= \
+            self.instance.allocated_budget
 
     def checkbox_ignore_allocated_budget_not_fully_paid(self):
         if not self.allocated_budget_fully_paid():
