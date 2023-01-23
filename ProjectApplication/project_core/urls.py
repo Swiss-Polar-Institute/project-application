@@ -3,6 +3,7 @@ from django.contrib.auth import views as auth_views
 from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
+from django_otp.forms import OTPAuthenticationForm
 
 import project_core.views.common.proposal_pdf
 import project_core.views.common.proposal_zip
@@ -243,7 +244,8 @@ urlpatterns = [
 
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',
-                                      extra_context={'contact': settings.LOGIN_CONTACT}),
+                                      extra_context={'contact': settings.LOGIN_CONTACT},
+                                      authentication_form=OTPAuthenticationForm),
          name='accounts-login'),
 
     path('accounts/', include('django.contrib.auth.urls')),

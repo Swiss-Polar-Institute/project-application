@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     'django_filters',
     'ckeditor',
     'ckeditor_uploader',
+    'django_otp',
+    'django_otp.plugins.otp_totp',
 ]
 
 MIDDLEWARE = [
@@ -71,6 +73,7 @@ MIDDLEWARE = [
     # If you do not want Axes to override the authentication response
     # you can skip installing the middleware and use your own views.
     'axes.middleware.AxesMiddleware',
+    'django_otp.middleware.OTPMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
