@@ -9,7 +9,7 @@ from django.forms import BaseInlineFormSet, inlineformset_factory, CheckboxSelec
 from django.urls import reverse
 
 from ProjectApplication import settings
-from grant_management.models import Medium
+from grant_management.models import Medium, Tag
 from project_core.models import Project
 from project_core.utils.utils import new_person_message
 from project_core.widgets import XDSoftYearMonthDayPickerInput
@@ -29,6 +29,26 @@ class BlogPostMultipleChoiceField(forms.ModelMultipleChoiceField):
 
 
 class BlogPostCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+class many_to_many_field_Autocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        qs = Tag.objects.all()
+
+        #search option
+        if self.q:
+            qs = qs.filter(name__icontains=self.q)
+
+        return qs
+
+
+class TagMultipleChoiceField(forms.ModelMultipleChoiceField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+
+class TagCheckboxSelectMultiple(forms.CheckboxSelectMultiple):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -86,6 +106,7 @@ class MediumModelForm(forms.ModelForm):
                 Div('descriptive_text', css_class='col-6'),
                 Div(
                     Div('blog_posts'),
+                    Div('tags'),
                     Div('key_image'),
                     Div('primary_image'),
                 ),
@@ -99,10 +120,11 @@ class MediumModelForm(forms.ModelForm):
 
     class Meta:
         model = Medium
-        fields = ['project', 'received_date', 'photographer', 'license', 'copyright', 'blog_posts', 'file',
+        fields = ['project', 'received_date', 'photographer', 'license', 'copyright', 'blog_posts', 'tags', 'file',
                   'descriptive_text', 'key_image', 'primary_image']
         widgets = {'received_date': XDSoftYearMonthDayPickerInput,
-                   'photographer': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people')}
+                   'photographer': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'),
+                   'tags': autocomplete.ModelSelect2Multiple(url='logged-autocomplete-tag')}
 
 
 class MediaFormSet(BaseInlineFormSet):

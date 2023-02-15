@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from project_core.models import Project
 from .models import (
-    GrantAgreement, Invoice, FinancialReport, LaySummary, License, Location, Medium, MediumDeleted,
+    GrantAgreement, Invoice, FinancialReport, LaySummary, License, Location, Tag, Medium, MediumDeleted,
     ProjectSocialNetwork, Publication, Dataset, FieldNote, LaySummaryType, BlogPost, SocialNetwork, Installment)
 
 
@@ -49,6 +49,11 @@ class LaySummaryAdmin(admin.ModelAdmin):
 class BlogPostAdmin(admin.ModelAdmin):
     search_fields = Project.search_fields + ('text', 'author__first_name', 'author__surname', 'author__orcid',)
     list_display = ('project', 'text', 'author', 'due_date', 'received_date',)
+
+
+class TagAdmin(admin.ModelAdmin):
+    search_fields = Project.search_fields + ('name',)
+    list_display = ('name',)
 
 
 class LicenseAdmin(admin.ModelAdmin):
@@ -108,6 +113,7 @@ admin.site.register(FinancialReport, FinancialReportAdmin)
 admin.site.register(LaySummaryType, LaySummaryTypeAdmin)
 admin.site.register(LaySummary, LaySummaryAdmin)
 admin.site.register(BlogPost, BlogPostAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(License, LicenseAdmin)
 admin.site.register(Medium, MediumAdmin)
 admin.site.register(MediumDeleted, MediumDeletedAdmin)
