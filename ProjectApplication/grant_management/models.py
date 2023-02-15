@@ -233,6 +233,13 @@ class BlogPost(AbstractProjectDueReceivedDate):
             return []
 
 
+class Tag(CreateModifyOn):
+    name = models.CharField(max_length=1024, help_text='Title of the blog post', null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.name}'
+
+
 class License(CreateModifyOn):
     name = models.CharField(max_length=100,
                             help_text='License name (e.g. Creative Commons Attribution Non Commercial Share Alike 4.0 International)',
@@ -268,6 +275,7 @@ class Medium(CreateModifyOn):
     file_web = models.FileField(storage=S3Boto3Storage(), upload_to=medium_file_rename, null=True)
 
     blog_posts = models.ManyToManyField(BlogPost, help_text='Which blog posts this image belongs to', blank=True)
+    tags = models.ManyToManyField(Tag, help_text='Which tags this image belongs to', blank=True)
     descriptive_text = models.TextField(
         help_text='Description of this media, if provided. Where was it taken, context, etc.', null=True, blank=True)
     key_image = models.BooleanField(default=False, help_text="Select as a key image to be displayed on website")

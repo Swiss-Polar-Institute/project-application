@@ -254,6 +254,8 @@ urlpatterns = [
     path('autocomplete/keywords/',
          common.autocomplete.KeywordsAutocomplete.as_view(create_field='name'),
          name='autocomplete-keywords'),
+    path('logged/autocomplete/tags/', common.autocomplete.TagAutocomplete.as_view(create_field='name'),
+         name='logged-autocomplete-tag'),
     path('logged/autocomplete/physical_people/',
          logged.autocomplete.PhysicalPersonAutocomplete.as_view(),
          name='logged-autocomplete-physical-people'),
