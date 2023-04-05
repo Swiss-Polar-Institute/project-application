@@ -51,9 +51,9 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
-      /usr/bin/mc alias set myminio http://minio:9000 minio minio123;
-      /usr/bin/mc mb myminio/projects-test;
-      /usr/bin/mc policy set public myminio/projects-test;
+      mc alias set myminio http://minio:9000 minio minio123;
+      mc mb myminio/projects-test;
+      mc policy set public myminio/projects-test;
       exit 0;
       "
 

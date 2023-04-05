@@ -280,6 +280,7 @@ class Medium(CreateModifyOn):
         help_text='Description of this media, if provided. Where was it taken, context, etc.', null=True, blank=True)
     key_image = models.BooleanField(default=False, help_text="Select as a key image to be displayed on website")
     primary_image = models.BooleanField(default=False, help_text="Select as a primary image on website")
+    uploaded = models.BooleanField(default=False, help_text="Uploaded to media gallery")
 
     class Meta:
         verbose_name_plural = 'Media'
