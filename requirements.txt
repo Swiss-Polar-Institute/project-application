@@ -14,7 +14,7 @@ django-autocomplete-light==3.5.1
 django-axes==5.8.0
 django-crispy-forms==1.11.2
 django-ipware==3.0.1	# django-axes
-django-otp==1.1.4
+django-otp==1.1.6
 django-phonenumber-field==4.0.0
 django-simple-history==3.0.0
 django-storages==1.9.1

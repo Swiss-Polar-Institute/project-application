@@ -245,7 +245,8 @@ urlpatterns = [
     path('accounts/login/',
          auth_views.LoginView.as_view(template_name='registration/login.tmpl',
                                       extra_context={'contact': settings.LOGIN_CONTACT},
-                                      authentication_form=OTPAuthenticationForm),
+                                      #authentication_form=OTPAuthenticationForm
+                                      ),
          name='accounts-login'),
 
     path('accounts/', include('django.contrib.auth.urls')),
