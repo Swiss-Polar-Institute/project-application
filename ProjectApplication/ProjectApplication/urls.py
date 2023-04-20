@@ -22,7 +22,7 @@ from django_otp.admin import OTPAdminSite
 from ckeditor_uploader import views as ckeditor_views
 
 
-# admin.site.__class__ = OTPAdminSite
+admin.site.__class__ = OTPAdminSite
 
 urlpatterns = [
     path('', include('project_core.urls')),
