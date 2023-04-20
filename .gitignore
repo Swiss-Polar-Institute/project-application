@@ -114,3 +114,4 @@ project_application_mysql.conf
 db_server/mysql-dump/02-schema.sql
 .idea
 
+.DS_Store
