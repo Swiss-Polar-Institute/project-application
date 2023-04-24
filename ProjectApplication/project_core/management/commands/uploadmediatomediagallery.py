@@ -26,6 +26,7 @@ class Command(BaseCommand):
                     continue
                 data["project"] = f"SPI project/{medium.project.key.split('-')[0]}"
                 data["photographer_value"] = str(medium.photographer)
+                data["location_value"] = str(medium.project.location)
                 data["copyright"] = str(medium.copyright)
                 data["license"] = str(medium.license)
                 data["datetime_taken"] = medium.received_date.strftime('%Y-%m-%d')

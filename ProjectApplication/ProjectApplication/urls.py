@@ -22,7 +22,8 @@ from django_otp.admin import OTPAdminSite
 from ckeditor_uploader import views as ckeditor_views
 
 
-admin.site.__class__ = OTPAdminSite
+if settings.ALLOWED_HOSTS[0] == "projects.swisspolar.ch":
+    admin.site.__class__ = OTPAdminSite
 
 urlpatterns = [
     path('', include('project_core.urls')),

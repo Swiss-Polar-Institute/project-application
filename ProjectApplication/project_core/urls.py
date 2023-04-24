@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.forms import AuthenticationForm
 from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
@@ -15,6 +16,12 @@ import project_core.views.logged.user
 from .views import common
 from .views import external
 from .views import logged
+
+
+if settings.ALLOWED_HOSTS[0] == "projects.swisspolar.ch":
+    authentication_form = OTPAuthenticationForm
+else:
+    authentication_form = AuthenticationForm
 
 urlpatterns = [
     path('',
@@ -243,12 +250,11 @@ urlpatterns = [
          name='logged-user-update'),
 
     path('accounts/login/',
-         auth_views.LoginView.as_view(template_name='registration/login.tmpl',
-                                      extra_context={'contact': settings.LOGIN_CONTACT},
-                                      authentication_form=OTPAuthenticationForm
-                                      ),
-         name='accounts-login'),
-
+             auth_views.LoginView.as_view(template_name='registration/login.tmpl',
+                                          extra_context={'contact': settings.LOGIN_CONTACT},
+                                          authentication_form=authentication_form
+                                          ),
+             name='accounts-login'),
     path('accounts/', include('django.contrib.auth.urls')),
 
     path('autocomplete/organisations/',
