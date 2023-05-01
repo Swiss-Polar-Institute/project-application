@@ -611,7 +611,7 @@ class ProjectsAllInformationExcel(View):
     def _headers():
         return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
                 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Unpaid Invoices' , 'Total paid', 'Balance due', 'Status']
+                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary']
 
     @staticmethod
     def _rows():
@@ -641,6 +641,8 @@ class ProjectsAllInformationExcel(View):
                 'Location': project.location or '-',
                 'Keywords': project.keywords_enumeration(),
                 'Status': project.status,
+                'Call Year': project.finance_year,
+                'Lay summary': project.main_lay_summary_web(),
             }
 
             rows.append({**financial_information, **extra_information})
