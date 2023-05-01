@@ -24,7 +24,7 @@ class ProposalsExportCsvSummary(View):
         writer = csv.writer(response)
 
         headers = ['Academic Title', 'First Name', 'Surname', 'Institutions', 'Proposal Title', 'Keywords',
-                   'Requested Amount (CHF)', 'Geographic Focus']
+                   'Requested Amount (CHF)', 'Geographic Focus', 'Status', 'Board Decision', 'Eligible', 'Call Year']
 
         proposals = Proposal.objects.all()
 
@@ -50,9 +50,14 @@ class ProposalsExportCsvSummary(View):
             keywords = proposal.keywords_enumeration()
             requested_amount = proposal.total_budget()
             geographic_focus = proposal.geographical_areas_enumeration()
+            status = proposal.proposal_status.name
+            board_decision = proposal.proposalevaluation.board_decision_str() if hasattr(proposal, 'proposalevaluation') \
+                else None
+            eligible = proposal.eligibility
+            call_year = proposal.call.finance_year
 
             row = [academic_title, first_name, surname, institutions, title, keywords, requested_amount,
-                   geographic_focus]
+                   geographic_focus, status, board_decision, eligible, call_year]
 
             if call_id is None:
                 # We are adding the Call name: we are exporting proposals for different calls
