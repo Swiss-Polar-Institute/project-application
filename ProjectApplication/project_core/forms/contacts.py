@@ -7,7 +7,7 @@ from django.forms import ModelForm
 from django.urls import reverse
 
 from .utils import get_field_information, cancel_edit_button, cancel_button
-from ..models import PersonPosition, PhysicalPerson, Contact
+from ..models import PersonPosition, PhysicalPerson, Contact, Gender
 from ..utils.orcid import orcid_div
 
 
@@ -15,11 +15,12 @@ class ContactForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        person__first_name = person__surname = person__orcid = main_email = None
+        person__gender = person__first_name = person__surname = person__orcid = main_email = None
 
         is_edit = self.instance and self.instance.pk and self.instance.person
 
         if is_edit:
+            person__gender = self.instance.person.gender
             person__first_name = self.instance.person.first_name
             person__surname = self.instance.person.surname
             person__orcid = self.instance.person.orcid
@@ -33,6 +34,7 @@ class ContactForm(ModelForm):
         self.fields['person__orcid'].required = False
         self.fields['person__orcid'].help_text += '. Please add the ORCID iD to avoid duplicates'
 
+        self.fields['person__gender'] = forms.ModelChoiceField(Gender.objects.all().order_by('name'), initial=person__gender)
         self.fields['person__first_name'] = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'),
                                                             initial=person__first_name)
         self.fields['person__surname'] = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
@@ -53,9 +55,11 @@ class ContactForm(ModelForm):
         self.helper.layout = Layout(
             orcid_div('person__orcid'),
             Div(
-                Div('academic_title', css_class='col-2'),
-                Div('person__first_name', css_class='col-5'),
-                Div('person__surname', css_class='col-5'),
+                Div('person__gender', css_class='col-1'),
+                Div('academic_title', css_class='col-1'),
+                Div('career_stage', css_class='col-2'),
+                Div('person__first_name', css_class='col-4'),
+                Div('person__surname', css_class='col-4'),
                 css_class='row'
             ),
             Div(
@@ -85,8 +89,10 @@ class ContactForm(ModelForm):
         if self.instance is None or self.instance.pk is None:
             # Creating a new one. Let's avoid creating duplicates and inform the user
             try:
-                physical_person = PhysicalPerson.objects.get(first_name=self.cleaned_data['person__first_name'],
-                                                             surname=self.cleaned_data['person__surname'])
+                physical_person = PhysicalPerson.objects.get(
+                    gender=self.cleaned_data['person__gender'],
+                    first_name=self.cleaned_data['person__first_name'],
+                    surname=self.cleaned_data['person__surname'])
                 raise forms.ValidationError('Cannot create this contact: person already exists')
 
             except ObjectDoesNotExist:
@@ -96,19 +102,23 @@ class ContactForm(ModelForm):
         model = super().save(False)
 
         orcid = self.cleaned_data['person__orcid']
+        print(orcid)
 
         if orcid == '':
             orcid = None
 
         if model.person_id:
-            model.person.orcid = None
+            model.person.orcid = orcid
+            model.person.gender = self.cleaned_data['person__gender']
             model.person.first_name = self.cleaned_data['person__first_name']
             model.person.surname = self.cleaned_data['person__surname']
 
         else:
-            defaults = {'first_name': self.cleaned_data['person__first_name'],
-                        'surname': self.cleaned_data['person__surname']
-                        }
+            defaults = {
+                'gender': self.cleaned_data['person__gender'],
+                'first_name': self.cleaned_data['person__first_name'],
+                'surname': self.cleaned_data['person__surname']
+            }
 
             if orcid is not None:
                 # Use orcid to UPDATE OR create the person with the updated
@@ -145,5 +155,5 @@ class ContactForm(ModelForm):
 
     class Meta:
         model = PersonPosition
-        fields = ['academic_title', 'group', 'privacy_policy', 'contact_newsletter', 'organisation_names']
+        fields = ['academic_title', 'career_stage', 'group', 'privacy_policy', 'contact_newsletter', 'organisation_names']
         widgets = {'organisation_names': autocomplete.ModelSelect2Multiple(url='autocomplete-organisation-names')}
