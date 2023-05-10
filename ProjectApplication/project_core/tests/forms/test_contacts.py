@@ -20,7 +20,6 @@ class ContactFormTest(TestCase):
                 'person__surname': 'Doe',
                 'privacy_policy': True,
                 }
-        print(data)
         contact_form = ContactForm(data)
 
         self.assertEqual(PersonPosition.objects.all().count(), 0)

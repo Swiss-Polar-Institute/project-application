@@ -102,7 +102,6 @@ class ContactForm(ModelForm):
         model = super().save(False)
 
         orcid = self.cleaned_data['person__orcid']
-        print(orcid)
 
         if orcid == '':
             orcid = None
