@@ -34,7 +34,8 @@ class ContactForm(ModelForm):
         self.fields['person__orcid'].required = False
         self.fields['person__orcid'].help_text += '. Please add the ORCID iD to avoid duplicates'
 
-        self.fields['person__gender'] = forms.ModelChoiceField(Gender.objects.all().order_by('name'), initial=person__gender)
+        self.fields['person__gender'] = forms.ModelChoiceField(Gender.objects.all().order_by('name'),
+                                                               initial=person__gender)
         self.fields['person__first_name'] = forms.CharField(**get_field_information(PhysicalPerson, 'first_name'),
                                                             initial=person__first_name)
         self.fields['person__surname'] = forms.CharField(**get_field_information(PhysicalPerson, 'surname'),
@@ -90,7 +91,6 @@ class ContactForm(ModelForm):
             # Creating a new one. Let's avoid creating duplicates and inform the user
             try:
                 physical_person = PhysicalPerson.objects.get(
-                    gender=self.cleaned_data['person__gender'],
                     first_name=self.cleaned_data['person__first_name'],
                     surname=self.cleaned_data['person__surname'])
                 raise forms.ValidationError('Cannot create this contact: person already exists')
