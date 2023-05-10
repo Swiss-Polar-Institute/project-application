@@ -74,7 +74,7 @@ class MediumDeletedAdmin(admin.ModelAdmin):
 
 class ProjectSocialNetworkAdmin(admin.ModelAdmin):
     search_fields = Project.search_fields + ('url',)
-    list_display = ('project', 'social_network', 'url',)
+    list_display = ('project', 'social_network', 'title', 'url',)
 
 
 class SocialNetworkAdmin(admin.ModelAdmin):

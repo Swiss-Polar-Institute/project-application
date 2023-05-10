@@ -7,6 +7,7 @@
                 <thead>
                 <tr>
                     <th>Outreach</th>
+                    <th>Title</th>
                     <th>URL</th>
                     <th>File</th>
                 </tr>
@@ -19,6 +20,7 @@
                                  src="{% static social_network.social_network.icon %}">
                             {{ social_network.social_network.name }}
                         </td>
+                        <td>{{ social_network.title }}</td>
                         <td>{% include 'grant_management/_text_with_link_or_dash.tmpl' with text=social_network.url url=social_network.url %}</td>
                         <td>{% include 'common/_file_to_download.tmpl' with file_field=social_network.file %}</td>
                     </tr>
