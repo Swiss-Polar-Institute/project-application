@@ -5,11 +5,14 @@ from django.forms import BaseInlineFormSet, inlineformset_factory, NumberInput
 
 from grant_management.models import ProjectSocialNetwork, SocialNetwork
 from project_core.models import Project
+from project_core.widgets import XDSoftYearMonthDayPickerInput
 
 
 class SocialNetworkModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['published_date'])
 
         self.fields['social_network'].queryset = SocialNetwork.objects.order_by('name')
 
@@ -25,9 +28,11 @@ class SocialNetworkModelForm(forms.ModelForm):
                 css_class='row', hidden=True
             ),
             Div(
-                Div('social_network', css_class='col-4'),
-                Div('url', css_class='col-4'),
-                Div('file', css_class='col-4'),
+                Div('social_network', css_class='col-2'),
+                Div('title', css_class='col-3'),
+                Div('url', css_class='col-3'),
+                Div('file', css_class='col-2'),
+                Div('published_date', css_class='col-2'),
                 css_class='row'
             ),
 
@@ -39,9 +44,10 @@ class SocialNetworkModelForm(forms.ModelForm):
 
     class Meta:
         model = ProjectSocialNetwork
-        fields = ['project', 'social_network', 'url', 'file']
+        fields = ['project', 'social_network', 'title', 'url', 'file', 'published_date']
         widgets = {
             'project': NumberInput,
+            'published_date': XDSoftYearMonthDayPickerInput,
         }
         labels = {
             'social_network': 'Outreach',

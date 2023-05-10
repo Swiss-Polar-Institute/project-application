@@ -361,12 +361,14 @@ def outreach_file_rename(instance, filename):
 class ProjectSocialNetwork(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project to which this outreach page is related',
                                 on_delete=models.PROTECT)
+    title = models.CharField(max_length=1000, help_text='Title of outreach', null=True, blank=True)
     social_network = models.ForeignKey(SocialNetwork, help_text='Outreach with information about the project',
                                        on_delete=models.PROTECT)
     url = models.URLField(help_text='URL of outreach (e.g. https://twitter.com/SwissPolar)', null=True,
                           blank=True)
     file = models.FileField(storage=S3Boto3Storage(), upload_to=outreach_file_rename,
                             blank=True, null=True)
+    published_date = models.DateField(help_text='Date on which the outreach was published', null=True, blank=True)
 
     def __str__(self):
         return f'{self.project}-{self.social_network}'
