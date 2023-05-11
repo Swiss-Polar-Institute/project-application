@@ -30,6 +30,10 @@ class DatasetModelForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('reference', css_class='col-12'),
+                css_class='row'
+            ),
+            Div(
                 Div('doi', css_class='col-6'),
                 Div('url', css_class='col-6'),
                 css_class='row'
@@ -46,7 +50,7 @@ class DatasetModelForm(forms.ModelForm):
 
     class Meta:
         model = Dataset
-        fields = ['project', 'doi', 'url', 'title', 'published_date']
+        fields = ['project', 'doi', 'url', 'title', 'reference', 'published_date']
         widgets = {
             'published_date': XDSoftYearMonthDayPickerInput,
             'project': NumberInput,

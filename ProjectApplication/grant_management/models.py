@@ -397,6 +397,7 @@ class Dataset(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project to which is the dataset is related',
                                 on_delete=models.PROTECT)
     doi = models.CharField(max_length=100, help_text='Digital object identifier of dataset', null=True, blank=True)
+    reference = models.CharField(max_length=1000, help_text='Full reference of dataset', null=True, blank=True)
     url = models.URLField(help_text='URL of dataset if it does not have a DOI', null=True, blank=True)
     title = models.CharField(max_length=1000, help_text='Title of dataset')
     published_date = models.DateField(help_text='Date on which dataset was published', null=True, blank=True)

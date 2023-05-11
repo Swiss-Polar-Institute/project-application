@@ -4,6 +4,7 @@
         <tr>
             <th>Date published</th>
             <th>Title</th>
+            <th>Reference</th>
             <th>DOI</th>
         </tr>
         </thead>
@@ -11,6 +12,7 @@
             <tr>
                 <td data-sort="{{ dataset.published_date|date:"Y-m-d" }}">{% include 'common/_value-or-dash.tmpl' with value=dataset.published_date %}</td>
                 <td>{% include 'grant_management/_text_with_link_or_dash.tmpl' with text=dataset.title url=dataset.url %}</td>
+                <td>{% include 'common/_value-or-dash.tmpl' with value=dataset.reference %}</td>
                 <td>{% include 'grant_management/_text_with_link_or_dash.tmpl' with text=dataset.doi url=dataset.doi_link %}</td>
             </tr>
         {% endfor %}
@@ -29,7 +31,8 @@
                     },
                     "columns": [
                         {"width": "15%"},
-                        {"width": "70%"},
+                        {"width": "35%"},
+                        {"width": "35%"},
                         {"width": "15%"}
                     ],
                 }
