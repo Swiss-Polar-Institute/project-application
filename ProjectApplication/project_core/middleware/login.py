@@ -30,6 +30,12 @@ class LoginRequiredMiddleware(MiddlewareMixin):
 
         return resolved_path.url_name in settings.REVIEWER_CAN_ACCESS_VIEW_NAMES
 
+    @staticmethod
+    def _proposal_can_access(path):
+        resolved_path = resolve(path)
+
+        return resolved_path.url_name in settings.PROPOSAL_CAN_ACCESS_VIEW_NAMES
+
     def process_request(self, request):
         assert hasattr(request, 'user'), (
             'The LoginRequiredMiddleware requires authentication middleware '
@@ -43,6 +49,9 @@ class LoginRequiredMiddleware(MiddlewareMixin):
                 return
             elif user_is_in_group_name(request.user, settings.REVIEWER_GROUP_NAME):
                 if LoginRequiredMiddleware._reviewer_can_access(request.path):
+                    return
+            elif user_is_in_group_name(request.user, settings.PROPOSAL_GROUP_NAME):
+                if LoginRequiredMiddleware._proposal_can_access(request.path):
                     return
 
             return redirect_to_login(request.path)

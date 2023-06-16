@@ -350,6 +350,7 @@ DATA_IMPORT_CATEGORY_NAME = 'Data Import'
 GOAT_COUNTER_CODE = os.getenv('GOAT_COUNTER_CODE', None)
 REVIEWER_GROUP_NAME = 'reviewer'
 MANAGEMENT_GROUP_NAME = 'management'
+PROPOSAL_GROUP_NAME = 'proposal'
 
 REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-proposal-detail',
@@ -357,6 +358,17 @@ REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-export-proposals-csv-summary-call',
                                   'logged-export-proposals-zip-all',
                                   'logged-homepage']
+
+PROPOSAL_CAN_ACCESS_VIEW_NAMES = ['call-list',
+                                  'proposal-add',
+                                  'proposal-update',
+                                  'proposal-detail',
+                                  'proposal-detail-pdf',
+                                  'proposal-detail-zip',
+                                  'proposal-thank-you',
+                                  'proposal-cannot-modify',
+                                  'proposal-question-answer-file']
+
 LOGGED_OUT_USERNAME = 'loggedout'
 PROPOSAL_STATUS_DRAFT = 'Draft'
 PROPOSAL_STATUS_SUBMITTED = 'Submitted'
@@ -374,6 +386,7 @@ CALL_DEFAULT_PART_QUESTIONS_ANSWERS = 'Proposed {{ activity }} description'
 DOCUMENTATION_URL = os.getenv('DOCUMENTATION_URL', None)
 
 CKEDITOR_UPLOAD_PATH = 'upload/'
+CKEDITOR_RESTRICT_BY_USER = True
 
 MEDIA_URL = f'{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -386,6 +399,7 @@ CKEDITOR_CONFIGS = {
             ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter',
              'JustifyRight', 'JustifyBlock'],
             ['RemoveFormat', 'Source'],
+            ['Image'],
             ['Link', 'Unlink', 'Anchor']
         ]
     }
