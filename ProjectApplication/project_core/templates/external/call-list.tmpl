@@ -3,10 +3,9 @@
 
 {% block body_contents %}
     <div class="container" role="main">
-        {% include 'common/_logo.tmpl' %}
-        <p></p>
-        {% include 'common/_messages-box.tmpl' %}
+        {% include 'logged/_navbar.tmpl' %}
         <h1>Open calls</h1>
+
 
         {% if calls %}
             Click on a call to create a proposal.
