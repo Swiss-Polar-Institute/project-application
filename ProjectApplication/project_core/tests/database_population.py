@@ -185,14 +185,6 @@ def create_management_logged_client():
     return client
 
 
-def create_reviewer_logged_client():
-    create_reviewer_user()
-
-    client = Client()
-    client.login(username='unittest_reviewer', password='12345', request=HttpRequest())
-    return client
-
-
 def create_reviewer_user():
     try:
         user = User.objects.get(username='unittest_reviewer')
@@ -205,6 +197,36 @@ def create_reviewer_user():
     group.save()
 
     return user
+
+
+def create_reviewer_logged_client():
+    create_reviewer_user()
+
+    client = Client()
+    client.login(username='unittest_reviewer', password='12345', request=HttpRequest())
+    return client
+
+
+def create_applicant_user():
+    try:
+        user = User.objects.get(username='unittest_applicant')
+    except ObjectDoesNotExist:
+        user = User.objects.create_user(username='unittest_applicant', password='12345')
+
+    group, _ = Group.objects.get_or_create(name=settings.APPLICANT_GROUP_NAME)
+
+    group.user_set.add(user)
+    group.save()
+
+    return user
+
+
+def create_applicant_logged_client():
+    create_applicant_user()
+
+    client = Client()
+    client.login(username='unittest_applicant', password='12345', request=HttpRequest())
+    return client
 
 
 def create_evaluation_criteria():

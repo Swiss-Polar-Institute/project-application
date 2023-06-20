@@ -73,9 +73,6 @@
     {% crispy data_collection_form %}
 
     {% if not preview %}
-        {% if request|in_management %}
-            {% include 'common/_submit-button.tmpl' with value='Save' name='save_changes' %}
-        {% else %}
             {% include 'common/_submit-button.tmpl' with value='Save Draft' name='save_draft' %}
             {% include 'common/_submit-button.tmpl' with value='Submit' name='submit' %}
 
@@ -86,7 +83,6 @@
                 Please make sure to submit the final version of your proposal before the call deadline.
                 {% include 'common/_submitted_cannot_modify_text.tmpl' %}
             </p>
-        {% endif %}
     {% else %}
         <strong>This is a preview of the proposal form: it cannot be saved.</strong>
     {% endif %}

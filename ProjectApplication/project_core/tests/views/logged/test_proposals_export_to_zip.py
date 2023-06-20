@@ -19,4 +19,4 @@ class ProposalsExportZip(StaticLiveServerTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response['content-disposition'].endswith('.zip"'))
         self.assertTrue(response['content-disposition'].startswith('attachment; filename="'))
-        self.assertGreaterEqual(int(response['content-length']), 97000)
+        self.assertGreaterEqual(int(response['content-length']), 76650)

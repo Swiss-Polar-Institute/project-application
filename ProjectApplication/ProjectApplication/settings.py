@@ -360,14 +360,14 @@ REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-homepage']
 
 APPLICANT_CAN_ACCESS_VIEW_NAMES = ['call-list',
-                                    'proposal-add',
-                                    'proposal-update',
-                                    'proposal-detail',
-                                    'proposal-detail-pdf',
-                                    'proposal-detail-zip',
-                                    'proposal-thank-you',
-                                    'proposal-cannot-modify',
-                                    'proposal-question-answer-file']
+                                   'proposal-add',
+                                   'proposal-update',
+                                   'proposal-detail',
+                                   'proposal-detail-pdf',
+                                   'proposal-detail-zip',
+                                   'proposal-thank-you',
+                                   'proposal-cannot-modify',
+                                   'proposal-question-answer-file']
 
 LOGGED_OUT_USERNAME = 'loggedout'
 PROPOSAL_STATUS_DRAFT = 'Draft'
