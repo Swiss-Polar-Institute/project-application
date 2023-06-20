@@ -28,10 +28,10 @@ class UserForm(forms.ModelForm):
         self.fields['type_of_user'] = forms.ChoiceField(required=True,
                                                         choices=[(settings.MANAGEMENT_GROUP_NAME, 'Management'),
                                                                  (settings.REVIEWER_GROUP_NAME, 'Reviewer'),
-                                                                 (settings.REVIEWER_GROUP_NAME, 'Proposal'),
+                                                                 (settings.APPLICANT_GROUP_NAME, 'Applicant'),
                                                                  ],
                                                         widget=forms.RadioSelect,
-                                                        help_text='Reviewers only have access to proposals. Management users have access to everything in Nestor. Proposal only have access to calls'
+                                                        help_text='Reviewers only have access to proposals. Management users have access to everything in Nestor. Applicant only have access to calls'
                                                         )
 
         self._is_edit_action = bool(self.instance.id)
@@ -66,8 +66,8 @@ class UserForm(forms.ModelForm):
                 self.fields['type_of_user'].initial = settings.MANAGEMENT_GROUP_NAME
                 group_count += 1
 
-            if self.instance.groups.filter(name=settings.PROPOSAL_GROUP_NAME).exists():
-                self.fields['type_of_user'].initial = settings.PROPOSAL_GROUP_NAME
+            if self.instance.groups.filter(name=settings.APPLICANT_GROUP_NAME).exists():
+                self.fields['type_of_user'].initial = settings.APPLICANTS_GROUP_NAME
                 group_count += 1
 
             assert group_count < 2, 'A user cannot be a reviewer and management at the same time'

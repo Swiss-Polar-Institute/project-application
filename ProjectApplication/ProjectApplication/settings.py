@@ -350,7 +350,7 @@ DATA_IMPORT_CATEGORY_NAME = 'Data Import'
 GOAT_COUNTER_CODE = os.getenv('GOAT_COUNTER_CODE', None)
 REVIEWER_GROUP_NAME = 'reviewer'
 MANAGEMENT_GROUP_NAME = 'management'
-PROPOSAL_GROUP_NAME = 'proposal'
+APPLICANT_GROUP_NAME = 'applicant'
 
 REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-proposal-detail',
@@ -359,15 +359,15 @@ REVIEWER_CAN_ACCESS_VIEW_NAMES = ['logged-proposal-list',
                                   'logged-export-proposals-zip-all',
                                   'logged-homepage']
 
-PROPOSAL_CAN_ACCESS_VIEW_NAMES = ['call-list',
-                                  'proposal-add',
-                                  'proposal-update',
-                                  'proposal-detail',
-                                  'proposal-detail-pdf',
-                                  'proposal-detail-zip',
-                                  'proposal-thank-you',
-                                  'proposal-cannot-modify',
-                                  'proposal-question-answer-file']
+APPLICANT_CAN_ACCESS_VIEW_NAMES = ['call-list',
+                                    'proposal-add',
+                                    'proposal-update',
+                                    'proposal-detail',
+                                    'proposal-detail-pdf',
+                                    'proposal-detail-zip',
+                                    'proposal-thank-you',
+                                    'proposal-cannot-modify',
+                                    'proposal-question-answer-file']
 
 LOGGED_OUT_USERNAME = 'loggedout'
 PROPOSAL_STATUS_DRAFT = 'Draft'
