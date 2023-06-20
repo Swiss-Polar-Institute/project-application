@@ -28,6 +28,7 @@ class ProposalFormTest(TestCase):
         self._career_stage = database_population.create_career_stage()
         self._role = database_population.create_roles()[0]
         self._call = database_population.create_call()
+        self._client_management = database_population.create_applicant_logged_client()
 
         database_population.create_proposal_status()
         database_population_variable_templates.create_default_template_variables()
@@ -96,12 +97,11 @@ class ProposalFormTest(TestCase):
         )
 
     def test_proposal_get(self):
-        c = Client()
 
         self._call.proposal_partner_question = True
         self._call.save()
 
-        response = c.get(reverse('proposal-add') + '?call={}'.format(self._call.id))
+        response = self._client_management.get(reverse('proposal-add') + '?call={}'.format(self._call.id))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Call name:')
         self.assertContains(response, 'GreenLAnd Circumnavigation Expedition')
@@ -109,12 +109,10 @@ class ProposalFormTest(TestCase):
         self.assertContains(response, 'Partners')
 
     def test_proposal_no_partners_get(self):
-        c = Client()
-
         self._call.proposal_partner_question = False
         self._call.save()
 
-        response = c.get(reverse('proposal-add') + '?call={}'.format(self._call.id))
+        response = self._client_management.get(reverse('proposal-add') + '?call={}'.format(self._call.id))
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Call name:')
@@ -122,15 +120,13 @@ class ProposalFormTest(TestCase):
         self.assertNotContains(response, 'Proposal partners')
 
     def test_proposal_new_post(self):
-        c = Client()
-
         self._call.proposal_partner_question = False
         self._call.save()
 
         data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Collect algae']
 
-        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
+        response = self._client_management.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(response.status_code, 302)
         reg_exp = '/proposal/thank-you/([0-9a-z-]+)/'
         self.assertRegex(response.url, reg_exp)
@@ -144,24 +140,21 @@ class ProposalFormTest(TestCase):
         self._call.save()
 
     def test_proposal_new_post_too_late(self):
-        c = Client()
         self._call.submission_deadline = utc.localize(datetime(2000, 1, 1))
         self._call.save()
 
         data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Too late?']
 
-        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
+        response = self._client_management.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(302, response.status_code)
-        self.assertEqual('/proposal/cannot-modify/', response.url)
+        self.assertEqual('/logged/proposal/cannot-modify/', response.url)
 
         messages = get_response_messages(response)
 
         self.assertIn('deadline has now passed', messages[0].message)
 
     def test_only_one_partner(self):
-        c = Client()
-
         data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Collect algae again']
 
@@ -179,7 +172,7 @@ class ProposalFormTest(TestCase):
 
                                     }))
 
-        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
+        response = self._client_management.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(response.status_code, 302)
 
         proposal = Proposal.objects.get(title='Collect algae again')
@@ -187,8 +180,6 @@ class ProposalFormTest(TestCase):
         self.assertEqual(proposal.proposalpartner_set.all()[0].person.person.first_name, 'John')
 
     def test_only_two_partners_duplicated(self):
-        c = Client()
-
         data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Collect algae again']
 
@@ -219,7 +210,7 @@ class ProposalFormTest(TestCase):
 
                                     }))
 
-        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
+        response = self._client_management.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, 'Call name:')
@@ -230,8 +221,6 @@ class ProposalFormTest(TestCase):
         self.assertEqual(Proposal.objects.all().count(), 0)
 
     def test_only_two_partners_duplicated_deleted(self):
-        c = Client()
-
         data = self._proposal_post_data(self._call.submission_deadline + timedelta(days=1))
         data['proposal_form-title'] = ['Collect algae again']
 
@@ -262,7 +251,7 @@ class ProposalFormTest(TestCase):
                                     'proposal_partners_form-TOTAL_FORMS': ['2'],
                                     }))
 
-        response = c.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
+        response = self._client_management.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(response.status_code, 302)
 
         proposal = Proposal.objects.get(title='Collect algae again')

@@ -67,10 +67,10 @@ class UserForm(forms.ModelForm):
                 group_count += 1
 
             if self.instance.groups.filter(name=settings.APPLICANT_GROUP_NAME).exists():
-                self.fields['type_of_user'].initial = settings.APPLICANTS_GROUP_NAME
+                self.fields['type_of_user'].initial = settings.APPLICANT_GROUP_NAME
                 group_count += 1
 
-            assert group_count < 2, 'A user cannot be a reviewer and management at the same time'
+            assert group_count < 2, 'A user cannot be a reviewer, management and applicant at the same time'
 
         else:
             self.fields['is_active'].required = True
@@ -197,6 +197,8 @@ class UserForm(forms.ModelForm):
             user.last_name = ''
             user.save()
         elif self.cleaned_data['type_of_user'] == settings.MANAGEMENT_GROUP_NAME:
+            pass
+        elif self.cleaned_data['type_of_user'] == settings.APPLICANT_GROUP_NAME:
             pass
         else:
             assert False

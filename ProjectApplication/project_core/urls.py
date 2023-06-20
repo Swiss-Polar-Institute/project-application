@@ -30,7 +30,7 @@ urlpatterns = [
     path(f'{settings.ADMIN_URL}jsi18n/',
          JavaScriptCatalog.as_view(),
          name='javascript-jsi18n'),
-    path('logged/calls/',
+    path('logged/calls-list/',
          external.call.CallList.as_view(),
          name='call-list'),
 

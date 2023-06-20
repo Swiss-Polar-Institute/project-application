@@ -1437,19 +1437,25 @@ class SpiUser(User):
     def is_reviewer(self):
         return user_is_in_group_name(self, settings.REVIEWER_GROUP_NAME)
 
+    def is_applicant(self):
+        return user_is_in_group_name(self, settings.APPLICANT_GROUP_NAME)
+
     @staticmethod
     @transaction.atomic
     def set_type_of_user(user, type_of_user, physical_person=None):
         # @staticmethod for how it's used regarding Forms and ProxyModels
-
+        print(type_of_user)
         assert type_of_user == settings.MANAGEMENT_GROUP_NAME or \
-               type_of_user == settings.REVIEWER_GROUP_NAME and physical_person
+               type_of_user == settings.REVIEWER_GROUP_NAME and physical_person or \
+               type_of_user == settings.APPLICANT_GROUP_NAME
 
         reviewer_group = Group.objects.get(name=settings.REVIEWER_GROUP_NAME)
         management_group = Group.objects.get(name=settings.MANAGEMENT_GROUP_NAME)
+        applicant_group = Group.objects.get(name=settings.APPLICANT_GROUP_NAME)
 
         if type_of_user == settings.REVIEWER_GROUP_NAME:
             user.groups.remove(management_group)
+            user.groups.remove(applicant_group)
             user.groups.add(reviewer_group)
 
             from evaluation.models import Reviewer
@@ -1468,7 +1474,12 @@ class SpiUser(User):
 
         elif type_of_user == settings.MANAGEMENT_GROUP_NAME:
             user.groups.remove(reviewer_group)
+            user.groups.remove(applicant_group)
             user.groups.add(management_group)
+        elif type_of_user == settings.APPLICANT_GROUP_NAME:
+            user.groups.remove(reviewer_group)
+            user.groups.remove(management_group)
+            user.groups.add(applicant_group)
         else:
             assert False
 
@@ -1486,8 +1497,11 @@ class SpiUser(User):
         if self.groups.filter(name=settings.MANAGEMENT_GROUP_NAME):
             count += 1
             result = settings.MANAGEMENT_GROUP_NAME
+        if self.groups.filter(name=settings.APPLICANT_GROUP_NAME):
+            count += 1
+            result = settings.APPLICANT_GROUP_NAME
 
-        assert count < 2, 'Should belong only to reviewer or management groups'
+        assert count < 2, 'Should belong only to reviewer or management or applicant groups'
 
         return result
 
