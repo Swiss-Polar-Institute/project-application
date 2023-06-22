@@ -1,0 +1,48 @@
+{% extends 'common/_base.tmpl' %}
+
+{% block title %}Management login{% endblock %}
+
+{% block body_contents %}
+
+    <div class="container" role="main">
+        {% include 'common/_logo.tmpl' %}
+        <p></p>
+        <h1>Register</h1>
+        <form method="post" action="{% url 'register' %}">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <td>{{ form.username.label_tag }}</td>
+                    <td>{{ form.username }}</td>
+                </tr>
+                <tr>
+                    <td>{{ form.email.label_tag }}</td>
+                    <td>{{ form.email }}</td>
+                </tr>
+            </table>
+
+            {% include 'common/_submit-button.tmpl' %}
+            <input type="hidden" name="next" value="{{ next }}"/>
+            <hr>
+            <div class="form-group"> <div id="div_id_data_collection_form-privacy_policy" class="custom-control custom-checkbox"> <input type="checkbox" name="data_collection_form-privacy_policy" class="checkboxinput custom-control-input" required="" id="id_data_collection_form-privacy_policy"> <label for="id_data_collection_form-privacy_policy" class="custom-control-label requiredField">
+                    I agree to my personal data being saved by SPI for the administration of my proposal<span class="asteriskField">*</span> </label> <small id="hint_id_data_collection_form-privacy_policy" class="form-text text-muted">By ticking this box you agree to the Swiss Polar Insitute (SPI) storing your personal data for the purpose of administering your proposal. The data you provide here will be kept private and held securely by the SPI. Anonymised statistics will be produced about the proposal applications. If your proposal is selected for funding, your data will also be used for the administration of your project and may contribute to scientific metadata for the project.</small> </div> </div>
+        </form>
+        <hr>
+        <p>
+            If you have problems register in please contact {{ contact }}
+        </p>
+        {% if form.errors %}
+            <div class="authentication_error">
+                <p>There were some errors in the information you entered. Please correct the following:</p>
+                <ul>
+                    {% for field in form %}
+                        {% if field.errors %}<li>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        <p>
+            <a href="{% url 'homepage' %}">Homepage</a>
+        </p>
+    </div>
+{% endblock %}
