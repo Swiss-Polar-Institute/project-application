@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import AuthenticationForm
+from django.views.generic.edit import CreateView
 from django.urls import include, path
 from django.views.defaults import server_error
 from django.views.i18n import JavaScriptCatalog
@@ -255,7 +256,28 @@ urlpatterns = [
                                           authentication_form=authentication_form
                                           ),
              name='accounts-login'),
+    path('accounts/password_reset/',
+         auth_views.PasswordResetView.as_view(template_name='registration/password_reset.html'),
+         name='password_reset'),
+    path('accounts/password_reset/done/',
+         auth_views.PasswordResetDoneView.as_view(template_name='registration/password_done.html'),
+         name='password_reset_done'),
+    path('accounts/reset/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_confirm.html'),
+         name='password_reset_confirm'),
+    path('accounts/reset/done/',
+         auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_complete.html'),
+         name='password_reset_complete'),
+
     path('accounts/', include('django.contrib.auth.urls')),
+
+    path('register/', CreateView.as_view(
+        template_name='registration/register.tmpl',
+        form_class=external.user_creation.UserCreationForm,
+        success_url='/logged/calls-list/'
+    ),
+        name='register'
+    ),
 
     path('autocomplete/organisations/',
          common.autocomplete.OrganisationsAutocomplete.as_view(create_field='name'),

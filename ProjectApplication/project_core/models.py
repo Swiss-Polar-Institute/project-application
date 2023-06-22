@@ -1444,7 +1444,6 @@ class SpiUser(User):
     @transaction.atomic
     def set_type_of_user(user, type_of_user, physical_person=None):
         # @staticmethod for how it's used regarding Forms and ProxyModels
-        print(type_of_user)
         assert type_of_user == settings.MANAGEMENT_GROUP_NAME or \
                type_of_user == settings.REVIEWER_GROUP_NAME and physical_person or \
                type_of_user == settings.APPLICANT_GROUP_NAME
