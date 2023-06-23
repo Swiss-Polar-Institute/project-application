@@ -17,5 +17,5 @@ class OrganisationsAutocompleteTest(StaticLiveServerTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers['Content-Type'], 'application/zip')
         self.assertEqual(response.headers['Content-Disposition'], 'attachment; filename="GLACE_2018-John_Smith.zip"')
-        self.assertGreaterEqual(int(response.headers['Content-Length']), 76650)
+        self.assertGreaterEqual(int(response.headers['Content-Length']), 97000)
         self.assertTrue(response.content.startswith(b'PK'))
