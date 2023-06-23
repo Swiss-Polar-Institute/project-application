@@ -148,7 +148,7 @@ class ProposalFormTest(TestCase):
 
         response = self._client_management.post(f'{reverse("proposal-add")}?call={self._call.id}', data=data)
         self.assertEqual(302, response.status_code)
-        self.assertEqual('/logged/proposal/cannot-modify/', response.url)
+        self.assertEqual('/applicant/proposal/cannot-modify/', response.url)
 
         messages = get_response_messages(response)
 

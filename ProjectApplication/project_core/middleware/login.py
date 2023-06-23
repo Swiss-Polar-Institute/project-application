@@ -54,7 +54,10 @@ class LoginRequiredMiddleware(MiddlewareMixin):
             return redirect_to_login(request.path)
 
         if request.path.startswith(settings.LOGIN_REDIRECT_URL_APPLICANT):
-            if user_is_in_group_name(request.user, settings.APPLICANT_GROUP_NAME):
+            if user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
+                # Managers can see everything
+                return
+            elif user_is_in_group_name(request.user, settings.APPLICANT_GROUP_NAME):
                 if LoginRequiredMiddleware._applicant_can_access(request.path):
                     return
             return redirect_to_login(request.path, login_url='applicant-login')
