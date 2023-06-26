@@ -258,7 +258,7 @@ urlpatterns = [
                                           ),
              name='accounts-login'),
     path('accounts/applicant/login/',
-             auth_views.LoginView.as_view(template_name='registration/login.tmpl',
+             auth_views.LoginView.as_view(template_name='registration/login_applicant.tmpl',
                                           extra_context={'contact': settings.LOGIN_CONTACT},
                                           authentication_form=AuthenticationForm
                                           ),

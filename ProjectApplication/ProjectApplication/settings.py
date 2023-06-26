@@ -402,6 +402,7 @@ CKEDITOR_CONFIGS = {
             ['RemoveFormat', 'Source'],
             ['Image'],
             ['Link', 'Unlink', 'Anchor']
-        ]
+        ],
+        'removeDialogTabs': 'image:advanced;image:Link;',
     }
 }

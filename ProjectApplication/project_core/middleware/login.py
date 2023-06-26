@@ -42,7 +42,6 @@ class LoginRequiredMiddleware(MiddlewareMixin):
             'to be installed. Edit your MIDDLEWARE setting to insert before '
             "'django.contrib.auth.middleware.AuthenticationMiddleware'."
         )
-
         if request.path.startswith(settings.LOGIN_REDIRECT_URL):
             if user_is_in_group_name(request.user, settings.MANAGEMENT_GROUP_NAME):
                 # Managers can see everything
@@ -50,6 +49,8 @@ class LoginRequiredMiddleware(MiddlewareMixin):
             elif user_is_in_group_name(request.user, settings.REVIEWER_GROUP_NAME):
                 if LoginRequiredMiddleware._reviewer_can_access(request.path):
                     return
+            elif user_is_in_group_name(request.user, settings.APPLICANT_GROUP_NAME):
+                return redirect_to_login(request.path, login_url='call-list')
 
             return redirect_to_login(request.path)
 

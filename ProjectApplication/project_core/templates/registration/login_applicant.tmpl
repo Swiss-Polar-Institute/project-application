@@ -29,7 +29,7 @@
             {% endif %}
         {% endif %}
         <p></p>
-        <form method="post" action="{% url 'login' %}">
+        <form method="post" action="{% url 'applicant-login' %}">
             {% csrf_token %}
             <table>
 
@@ -37,14 +37,9 @@
                     <td>{{ form.username.label_tag }}</td>
                     <td>{{ form.username }}</td>
                 </tr>
-
                 <tr>
                     <td>{{ form.password.label_tag }}</td>
                     <td>{{ form.password }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.otp_token.label_tag }}</td>
-                    <td>{{ form.otp_token }}</td>
                 </tr>
             </table>
 
@@ -58,5 +53,8 @@
         <p>
             <a href="{% url 'homepage' %}">Homepage</a>
         </p>
+        {# Assumes you setup the password_reset view in your URLconf #}
+        <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
+        <p><a href="{% url 'register' %}">Register?</a></p>
     </div>
 {% endblock %}

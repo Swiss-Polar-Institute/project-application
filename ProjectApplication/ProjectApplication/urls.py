@@ -14,10 +14,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path,re_path
 from django.conf import settings
 from django.conf.urls.static import static
 from django_otp.admin import OTPAdminSite
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import never_cache
+
 
 from ckeditor_uploader import views as ckeditor_views
 
@@ -31,6 +34,6 @@ urlpatterns = [
     path('', include('grant_management.urls')),
     path('', include('reporting.urls')),
     path(settings.ADMIN_URL, admin.site.urls),
-    path('ckeditor/upload/', ckeditor_views.upload, name='ckeditor_upload'),
-    path('ckeditor/browse/', ckeditor_views.browse, name='ckeditor_browse'),
+    re_path(r"^ckeditor/upload/", login_required(ckeditor_views.upload), name="ckeditor_upload"),
+    re_path(r"^ckeditor/browse/", never_cache(login_required(ckeditor_views.browse)), name="ckeditor_browse")
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
