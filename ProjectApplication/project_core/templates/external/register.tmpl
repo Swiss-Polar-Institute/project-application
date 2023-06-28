@@ -1,0 +1,14 @@
+{% extends 'common/_base.tmpl' %}
+{% load git_commit %}
+{% block title %}Swiss Polar Institute{% endblock %}
+
+{% block body_contents %}
+    <div class="container" role="main">
+        {% include 'common/_logo.tmpl' %}
+        <p></p>
+        <h1>Thanks for register</h1>
+        <p>You will receive an email with your username and password</p>
+        <p>Then you can login and access to: <a href="{% url 'call-list' %}">List of calls</a></p>
+        <p>If you have any issue please contact: <a href="mailto:grants@swisspolar.ch">grants@swisspolar.ch</a></p>
+    </div>
+{% endblock %}

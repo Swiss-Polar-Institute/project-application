@@ -281,10 +281,15 @@ urlpatterns = [
     path('register/', CreateView.as_view(
         template_name='registration/register.tmpl',
         form_class=external.user_creation.UserCreationForm,
-        success_url='/logged/calls-list/'
+        success_url='/register/done',
+        extra_context={'contact': settings.LOGIN_CONTACT},
         ),
         name='register'
     ),
+
+    path('register/done',
+         external.homepage.Register.as_view(),
+         name='register-done'),
 
     path('autocomplete/organisations/',
          common.autocomplete.OrganisationsAutocomplete.as_view(create_field='name'),
