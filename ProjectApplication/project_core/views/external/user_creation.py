@@ -44,7 +44,7 @@ class UserCreationForm(forms.ModelForm):
         user.save()
         context = {
             'email': user.email,
-            'site_name': "SwissPolar Institute",
+            'site_name': "Swiss Polar Institute",
             'username': user.username,
             'password': new_password
         }
