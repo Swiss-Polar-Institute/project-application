@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import CreateView
 from django.urls import include, path
 from django.views.defaults import server_error
@@ -310,6 +311,10 @@ urlpatterns = [
          name='logged-autocomplete-person-positions'),
 
     path('raises500/', server_error),
+
+    path('api/v1/logged/',
+         logged.project.ProjectLoggedAPI.as_view(),
+         name='project-list-api'),
 
     path('api/v1/project/list/',
          logged.project.ProjectListAPI.as_view(),

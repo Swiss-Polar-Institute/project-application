@@ -1,5 +1,6 @@
 from django.urls import reverse
 from django.views.generic import DetailView, ListView
+from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import status
@@ -37,6 +38,13 @@ class ProjectList(ListView):
                                  {'name': 'Projects'}]
 
         return context
+
+
+class ProjectLoggedAPI(APIView):
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 class ProjectListAPI(ListAPIView):
