@@ -5,7 +5,7 @@ from rest_framework import serializers
 from project_core.models import (
     Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument, Trace, TraceCoordinates
 )
-from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors
+from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors, Dataset, Publication
 
 
 class FundingInstrumentSerializer(serializers.ModelSerializer):
@@ -102,6 +102,18 @@ class LaySummarySerializer(serializers.ModelSerializer):
         list_serializer_class = FilterLaySummarySerializer
 
 
+class DatasetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dataset
+        fields = ('doi', 'reference', 'url', 'title', 'published_date')
+
+
+class PublicationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Publication
+        fields = ('doi', 'reference', 'title', 'published_date')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     principal_investigator = PersonPositionSerializer(read_only=True)
     project_location = LocationSerializer(many=True, read_only=True)
@@ -126,13 +138,15 @@ class ProjectDetailSerializer(serializers.ModelSerializer):
     laysummary_set = LaySummarySerializer(many=True, read_only=True)
     funding_instrument = FundingInstrumentSerializer(read_only=True)
     fieldnote_set = FieldNoteSerializer(many=True, read_only=True)
+    dataset_set = DatasetSerializer(many=True, read_only=True)
+    publication_set = PublicationSerializer(many=True, read_only=True)
 
     class Meta:
         model = Project
         fields = ('uuid', 'key', 'title', 'keywords', 'geographical_areas', 'location', 'status',
                   'start_date', 'end_date', 'principal_investigator', 'project_location', 'project_person',
                   'medium_set', 'laysummary_set', 'allocated_budget', 'funding_instrument',
-                  'fieldnote_set'
+                  'fieldnote_set', 'dataset_set', 'publication_set',
                   )
 
 
