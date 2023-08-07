@@ -102,16 +102,30 @@ class LaySummarySerializer(serializers.ModelSerializer):
         list_serializer_class = FilterLaySummarySerializer
 
 
+class FileterDatasetSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.order_by('published_date')
+        return super().to_representation(data)
+
+
 class DatasetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Dataset
         fields = ('doi', 'reference', 'url', 'title', 'published_date')
+        list_serializer_class = FileterDatasetSerializer
+
+
+class FileterPublicationSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.order_by('published_date')
+        return super().to_representation(data)
 
 
 class PublicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Publication
         fields = ('doi', 'reference', 'title', 'published_date')
+        list_serializer_class = FileterPublicationSerializer
 
 
 class ProjectSerializer(serializers.ModelSerializer):
