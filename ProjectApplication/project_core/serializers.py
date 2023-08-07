@@ -109,6 +109,7 @@ class FileterDatasetSerializer(serializers.ListSerializer):
 
 
 class DatasetSerializer(serializers.ModelSerializer):
+    doi = serializers.CharField(source='doi_link')
     class Meta:
         model = Dataset
         fields = ('doi', 'reference', 'url', 'title', 'published_date')
@@ -122,6 +123,7 @@ class FileterPublicationSerializer(serializers.ListSerializer):
 
 
 class PublicationSerializer(serializers.ModelSerializer):
+    doi = serializers.CharField(source='doi_link')
     class Meta:
         model = Publication
         fields = ('doi', 'reference', 'title', 'published_date')
