@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import AuthenticationForm
-from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView
 from django.urls import include, path
 from django.views.defaults import server_error
@@ -314,7 +313,7 @@ urlpatterns = [
 
     path('api/v1/logged/',
          logged.project.ProjectLoggedAPI.as_view(),
-         name='project-list-api'),
+         name='project-logged-api'),
 
     path('api/v1/project/list/',
          logged.project.ProjectListAPI.as_view(),
@@ -340,7 +339,8 @@ urlpatterns = [
          logged.project.TraceDetailAPI.as_view(),
          name='fonding-list-api'),
 
-    path('media_gallery',
-         RedirectView.as_view(url='https://media.swisspolar.ch/', permanent=False)),
+    path('api/v1/media_gallery',
+         logged.project.ProjectMediaGalleryAPI.as_view(),
+         name='project-logged-api'),
 
 ]

@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, ListView
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView
@@ -41,10 +42,18 @@ class ProjectList(ListView):
 
 
 class ProjectLoggedAPI(APIView):
-    def get(self, request, format=None):
+    def get(self, request):
         if request.user.is_authenticated:
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+class ProjectMediaGalleryAPI(APIView):
+    def get(self, request):
+        cookies = request.COOKIES
+        response = HttpResponseRedirect(
+            f'https://media.swisspolar.ch/cookie?csrftoken={cookies.get("csrftoken")}&sessionid={cookies.get("sessionid")}')
+        return response
 
 
 class ProjectListAPI(ListAPIView):
