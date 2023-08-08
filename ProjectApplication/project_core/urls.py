@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth.decorators import login_required
+from django.views.generic.base import RedirectView
 from django.views.generic.edit import CreateView
 from django.urls import include, path
 from django.views.defaults import server_error
@@ -339,5 +339,8 @@ urlpatterns = [
     path('api/v1/trace/<int:id>',
          logged.project.TraceDetailAPI.as_view(),
          name='fonding-list-api'),
+
+    path('media_gallery',
+         RedirectView.as_view(url='https://media.swisspolar.ch/', permanent=False)),
 
 ]
