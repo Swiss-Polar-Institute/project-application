@@ -104,7 +104,7 @@ class LaySummarySerializer(serializers.ModelSerializer):
 
 class FileterDatasetSerializer(serializers.ListSerializer):
     def to_representation(self, data):
-        data = data.order_by('published_date')
+        data = data.order_by('-published_date')
         return super().to_representation(data)
 
 
@@ -118,7 +118,7 @@ class DatasetSerializer(serializers.ModelSerializer):
 
 class FileterPublicationSerializer(serializers.ListSerializer):
     def to_representation(self, data):
-        data = data.order_by('published_date')
+        data = data.order_by('-published_date')
         return super().to_representation(data)
 
 
