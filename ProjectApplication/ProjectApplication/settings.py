@@ -406,3 +406,5 @@ CKEDITOR_CONFIGS = {
         'removeDialogTabs': 'image:advanced;image:Link;',
     }
 }
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
