@@ -63,8 +63,8 @@ class ProposalEvaluation(CreateModifyOn):
     BOARD_DECISION_DO_NOT_FUND = 'NotFund'
 
     BOARD_DECISION = (
-        (BOARD_DECISION_FUND, 'Fund'),
-        (BOARD_DECISION_DO_NOT_FUND, 'Do not fund'),
+        (BOARD_DECISION_FUND, 'Approved'),
+        (BOARD_DECISION_DO_NOT_FUND, 'Rejected'),
     )
 
     ELIGIBILITYNOTCHECKED = 'Eligibility not checked'
