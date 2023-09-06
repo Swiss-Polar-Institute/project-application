@@ -125,7 +125,9 @@ class ProposalEvaluation(CreateModifyOn):
 
     def board_decision_str(self):
         if self.board_decision == ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND:
-            return 'Do not fund'
+            return 'Rejected'
+        if self.board_decision == ProposalEvaluation.BOARD_DECISION_FUND:
+            return 'Approved'
 
         return self.board_decision
 
