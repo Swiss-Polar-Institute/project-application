@@ -66,4 +66,7 @@ urlpatterns = [
     path('logged/call-evaluation/<int:call_id>/close/',
          evaluation.views.CallCloseEvaluation.as_view(),
          name='logged-call-close-evaluation'),
+    path('logged/call-evaluation/add-call-evaluation/',
+         evaluation.views.SingleCallCloseEvaluationUpdate.as_view(),
+         name='logged-call-close-single-evaluation'),
 ]
