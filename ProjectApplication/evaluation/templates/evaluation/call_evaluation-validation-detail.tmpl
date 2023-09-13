@@ -14,6 +14,55 @@
                 <h4>Summary</h4>
                 {% include 'evaluation/_call_evaluation-summary-detail.tmpl' %}
             {% endif %}
+             {% if proposals %}
+        <style>
+            /** The buttons "Edit" and "View" in the Actions column should always be in the same line */
+            #list-of-proposals td:nth-child(8) {
+                white-space: nowrap;
+            }
+        </style>
+
+        <table id="list-of-call-proposals" class="table table-striped table-sm table-hover display">
+            <thead>
+            <tr>
+                <th>Call</th>
+                <th>Title</th>
+                <th>Applicant</th>
+                <th>Status</th>
+                <th style="text-align:center">Eligibility</th>
+                <th style="text-align:center">Panel recommendation</th>
+                <th style="text-align:center">Board decision</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for proposal in proposals %}
+             {% if proposal.eligibility_is_eligible and proposal.proposalevaluation %}
+                <tr>
+                    <td>{{ proposal.call.long_name }}</td>
+                    <td>{{ proposal.title }}</td>
+                    <td>{{ proposal.applicant.person }}</td>
+                    <td>{% include 'logged/_proposal_status_badge.tmpl' with status_name=proposal.proposal_status.name only %}</td>
+                    <td style="text-align:center">{% include 'common/_eligiblecheck.tmpl' with eligibility=proposal.eligibility %}</td>
+                    <td style="text-align:center">{% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.panel_recommendation_str badge_class=proposal.proposalevaluation.panel_recommendation_badge_class %}</td>
+                    <td style="text-align:center">{% include 'common/_badge-or-dash.tmpl' with value=proposal.proposalevaluation.board_decision_str badge_class=proposal.proposalevaluation.board_decision_badge_class %}</td>
+                    <td>
+                        {% if proposal.proposal_project_status > 0 %}
+                        <span class="badge badge-success">Created</span>
+                        {% else %}
+                        <a class="btn btn-primary btn-xs"
+                           href="{% url 'logged-call-close-single-evaluation' %}?proposal={{ proposal.id }}">Create&nbsp;Fund</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        No proposals to be listed.
+    {% endif %}
+    <br>
 
             {% if can_close %}
                 <p><strong>

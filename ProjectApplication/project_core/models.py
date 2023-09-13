@@ -906,6 +906,10 @@ class Proposal(CreateModifyOn):
     def eligibility_is_eligible(self):
         return self.eligibility == Proposal.ELIGIBLE
 
+    def proposal_project_status(self):
+        project_count = Project.objects.filter(proposal_id=self.id).count()
+        return project_count
+
     def attachments(self):
         return self.proposalattachment_set.all().order_by('created_on')
 

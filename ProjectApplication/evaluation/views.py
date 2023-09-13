@@ -16,7 +16,7 @@ from evaluation.forms.criterion import CriterionForm
 from evaluation.forms.eligibility import EligibilityDecisionForm
 from evaluation.forms.proposal_evaluation import ProposalEvaluationForm
 from evaluation.models import CallEvaluation, ProposalEvaluation, CriterionCallEvaluation, Criterion
-from project_core.models import Proposal, Call, ProposalStatus
+from project_core.models import Proposal, Call, ProposalStatus, Project
 from project_core.utils.utils import user_is_in_group_name
 from project_core.views.common.proposal import AbstractProposalDetailView
 from project_core.views.logged.proposal import get_eligibility_history
@@ -661,6 +661,7 @@ class CallEvaluationValidation(TemplateView):
         context['evaluation_validations'] = evaluation_validations
 
         context['call'] = call
+        context['proposals'] = proposals
 
         context['all_good'] = CallEvaluationValidation._all_good(proposal_validations + evaluation_validations)
         context['can_close'] = context['all_good'] and call.callevaluation.closed_date is None
@@ -711,3 +712,35 @@ class CallCloseEvaluation(TemplateView):
                                  {'name': f'Close call ({call.little_name()})'}]
 
         return render(request, 'evaluation/call_evaluation-close-detail.tmpl', context)
+
+
+class SingleCallCloseEvaluationUpdate(TemplateView):
+    def get(self, request, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        proposal = Proposal.objects.get(id=self.request.GET['proposal'])
+        call_id = proposal.call_id
+        call = Call.objects.get(id=call_id)
+        call_project_count = Project.objects.filter(call_id=call_id).count()
+        print(call_project_count)
+        if call_project_count > 0:
+            key = Project.objects.filter(call_id=call_id).latest('key')
+            last_key = key.key.split("-")
+            latest_key = int(last_key[2]) + 1
+        else:
+            latest_key = 1
+        projects_created = Project.create_from_proposal(proposal, latest_key)
+        context['projects_created_count'] = 1
+        context['project'] = projects_created
+        context['call'] = call
+
+        context.update({'active_section': 'evaluation',
+                        'active_subsection': 'evaluation-list',
+                        'sidebar_template': 'evaluation/_sidebar-evaluation.tmpl'})
+
+        context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
+                                 {'name': f'Call Evaluation ({call.little_name()})',
+                                  'url': reverse('logged-call-evaluation-summary', kwargs={'call_id': call_id})},
+                                 {'name': f'Close call ({call.little_name()})'}]
+
+        return render(request, 'evaluation/call_evaluation-close-single-detail.tmpl', context)
