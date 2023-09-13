@@ -131,6 +131,13 @@ class ProposalEvaluation(CreateModifyOn):
 
         return self.board_decision
 
+    def is_approved(self):
+        if (self.board_decision == ProposalEvaluation.BOARD_DECISION_FUND and
+                self.panel_recommendation != ProposalEvaluation.PANEL_RECOMMENDATION_DO_NOT_FUND and
+                self.decision_letter):
+            return True
+        return False
+
     def board_decision_badge_class(self):
         lookup = {ProposalEvaluation.BOARD_DECISION_FUND: 'badge-success',
                   ProposalEvaluation.BOARD_DECISION_DO_NOT_FUND: 'badge-danger',
@@ -195,21 +202,12 @@ class CallEvaluation(CreateModifyOn):
         return self.closed_date is None
 
     def close(self, user_closing_call_evaluation):
-        """ It creates the projects and closes the call. """
-        created_projects = []
 
-        with transaction.atomic():
-            for proposal in Proposal.objects.filter(call=self.call).filter(
-                    proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND).order_by('?'):
-                project = Project.create_from_proposal(proposal, len(created_projects) + 1)
+        self.closed_date = timezone.now()
+        self.closed_user = user_closing_call_evaluation
+        self.save()
 
-                created_projects.append(project)
-
-            self.closed_date = timezone.now()
-            self.closed_user = user_closing_call_evaluation
-            self.save()
-
-        return created_projects
+        return Project.objects.filter(call=self.call)
 
 
 def one_line_only(value):

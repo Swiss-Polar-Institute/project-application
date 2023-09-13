@@ -37,7 +37,7 @@
             </thead>
             <tbody>
             {% for proposal in proposals %}
-             {% if proposal.eligibility_is_eligible and proposal.proposalevaluation %}
+             {% if show_summary and proposal.proposalevaluation.is_approved %}
                 <tr>
                     <td>{{ proposal.call.long_name }}</td>
                     <td>{{ proposal.title }}</td>
@@ -65,13 +65,6 @@
     <br>
 
             {% if can_close %}
-                <p><strong>
-                    If you continue to close the evaluation, {{ total_number_of_funded }}
-                    project{{ total_number_of_funded|pluralize:"s" }} for the call {{ call.long_name }} will be created.
-                    This cannot be
-                    reversed.
-                </strong>
-                </p>
                 <p>
                     {% crispy close_call_evaluation_form %}
                 </p>

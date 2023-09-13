@@ -3,7 +3,8 @@ from django.contrib import admin
 from project_core.models import Project
 from .models import (
     GrantAgreement, Invoice, FinancialReport, LaySummary, License, Location, Tag, Medium, MediumDeleted,
-    ProjectSocialNetwork, Publication, Dataset, FieldNote, LaySummaryType, BlogPost, SocialNetwork, Installment)
+    ProjectSocialNetwork, Publication, Dataset, FieldNote, LaySummaryType, BlogPost, SocialNetwork, Installment,
+    CoInvestors)
 
 
 class GrantAgreementAdmin(admin.ModelAdmin):
@@ -107,6 +108,11 @@ class LocationAdmin(admin.ModelAdmin):
     list_display = ('project', 'name', 'latitude', 'longitude',)
 
 
+class CoInvestorsAdmin(admin.ModelAdmin):
+    search_fields = ('project__title', 'co_investigator',)
+    list_display = ('project', 'co_investigator',)
+
+
 admin.site.register(GrantAgreement, GrantAgreementAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(FinancialReport, FinancialReportAdmin)
@@ -124,3 +130,4 @@ admin.site.register(Dataset, DatasetAdmin)
 admin.site.register(FieldNote, FieldNoteAdmin)
 admin.site.register(Installment, InstallmentAdmin)
 admin.site.register(Location, LocationAdmin)
+admin.site.register(CoInvestors, CoInvestorsAdmin)

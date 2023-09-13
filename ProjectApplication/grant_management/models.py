@@ -471,4 +471,4 @@ class CoInvestors(CreateModifyOn):
     organisation_text = models.CharField(max_length=100, help_text='if organisation not found add here', null=True, blank=True)
 
     def __str__(self):
-        return f'{self.co_investor}-{self.organisation}'
+        return f'{self.co_investigator}-{self.organisation_text}'
