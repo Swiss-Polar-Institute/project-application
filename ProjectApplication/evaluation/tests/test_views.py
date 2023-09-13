@@ -377,6 +377,9 @@ class CallCloseEvaluationTest(TestCase):
 
         self.assertEqual(Project.objects.all().count(), 0)
 
+        self._client.get(
+            f"{reverse('logged-call-close-single-evaluation')}?proposal={self._proposal.id}")
+
         response = self._client.post(
             reverse('logged-call-close-evaluation', kwargs={'call_id': self._proposal.call.id}))
 
