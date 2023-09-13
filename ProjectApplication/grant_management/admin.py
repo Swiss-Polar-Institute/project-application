@@ -4,7 +4,7 @@ from project_core.models import Project
 from .models import (
     GrantAgreement, Invoice, FinancialReport, LaySummary, License, Location, Tag, Medium, MediumDeleted,
     ProjectSocialNetwork, Publication, Dataset, FieldNote, LaySummaryType, BlogPost, SocialNetwork, Installment,
-    CoInvestors)
+    CoInvestors, ScientificReport)
 
 
 class GrantAgreementAdmin(admin.ModelAdmin):
@@ -113,6 +113,11 @@ class CoInvestorsAdmin(admin.ModelAdmin):
     list_display = ('project', 'co_investigator',)
 
 
+class ScientificReportAdmin(admin.ModelAdmin):
+    search_fields = ('project__title',)
+    list_display = ('project',)
+
+
 admin.site.register(GrantAgreement, GrantAgreementAdmin)
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(FinancialReport, FinancialReportAdmin)
@@ -131,3 +136,4 @@ admin.site.register(FieldNote, FieldNoteAdmin)
 admin.site.register(Installment, InstallmentAdmin)
 admin.site.register(Location, LocationAdmin)
 admin.site.register(CoInvestors, CoInvestorsAdmin)
+admin.site.register(ScientificReport, ScientificReportAdmin)
