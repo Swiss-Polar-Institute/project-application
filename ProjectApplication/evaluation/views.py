@@ -5,6 +5,7 @@ from django.db.models.fields.files import FieldFile
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils.safestring import mark_safe
+from django.db.models import Q
 from django.views.generic import TemplateView, ListView, DetailView, UpdateView, CreateView
 
 from ProjectApplication import settings
@@ -497,7 +498,8 @@ class CallEvaluationSummary(TemplateView):
         summary['total_number_of_submitted'] = proposals.filter(proposal_status=submitted_status).count()
         summary['total_number_of_eligible'] = proposals.filter(eligibility=Proposal.ELIGIBLE).count()
         summary['total_number_of_funded'] = proposals.filter(
-            proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND).count()
+            Q(proposalevaluation__board_decision=ProposalEvaluation.BOARD_DECISION_FUND) &
+            ~Q(proposalevaluation__panel_recommendation=ProposalEvaluation.PANEL_RECOMMENDATION_DO_NOT_FUND)).count()
         summary['total_number_of_eligible_not_funded'] = summary['total_number_of_eligible'] - summary[
             'total_number_of_funded']
 
@@ -709,7 +711,7 @@ class CallCloseEvaluation(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'Call Evaluation ({call.little_name()})',
                                   'url': reverse('logged-call-evaluation-summary', kwargs={'call_id': call.id})},
-                                 {'name': f'Close call ({call.little_name()})'}]
+                                 {'name': f'Call ({call.little_name()})'}]
 
         return render(request, 'evaluation/call_evaluation-close-detail.tmpl', context)
 
@@ -722,13 +724,14 @@ class SingleCallCloseEvaluationUpdate(TemplateView):
         call_id = proposal.call_id
         call = Call.objects.get(id=call_id)
         call_project_count = Project.objects.filter(call_id=call_id).count()
-        print(call_project_count)
+
         if call_project_count > 0:
             key = Project.objects.filter(call_id=call_id).latest('key')
             last_key = key.key.split("-")
             latest_key = int(last_key[2]) + 1
         else:
             latest_key = 1
+
         projects_created = Project.create_from_proposal(proposal, latest_key)
         context['projects_created_count'] = 1
         context['project'] = projects_created
@@ -741,6 +744,6 @@ class SingleCallCloseEvaluationUpdate(TemplateView):
         context['breadcrumb'] = [{'name': 'Calls to evaluate', 'url': reverse('logged-evaluation-list')},
                                  {'name': f'Call Evaluation ({call.little_name()})',
                                   'url': reverse('logged-call-evaluation-summary', kwargs={'call_id': call_id})},
-                                 {'name': f'Close call ({call.little_name()})'}]
+                                 {'name': f'Call ({call.little_name()})'}]
 
         return render(request, 'evaluation/call_evaluation-close-single-detail.tmpl', context)
