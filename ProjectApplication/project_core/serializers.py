@@ -139,7 +139,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        fields = ('uuid', 'title', 'status', 'principal_investigator', 'project_location', 'project_person',
+        fields = ('uuid', 'title', 'status', 'key', 'principal_investigator', 'project_location', 'project_person',
                   'medium_set', 'funding_instrument'
                   )
 
