@@ -12,4 +12,4 @@ class CallFormTest(TestCase):
 
         response = c.get(reverse('homepage'))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'List of calls')
+        self.assertContains(response, 'Proposal submission')
