@@ -57,4 +57,4 @@ class FieldNoteFormSet(BaseInlineFormSet):
 
 FieldNoteInlineFormSet = inlineformset_factory(Project, FieldNote, form=FieldNoteModelForm,
                                                formset=FieldNoteFormSet,
-                                               min_num=1, extra=0, can_delete=True)
+                                               min_num=1, extra=1, can_delete=True)
