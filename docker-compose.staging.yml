@@ -2,6 +2,7 @@ version: '3.6'
 
 services:
   project-application:
+    container_name: project-application-staging
     env_file:
       - ${PROJECT_APPLICATION_STAGING_ENV_FILE}
     logging:
@@ -11,6 +12,7 @@ services:
         tag: project-application-staging.django
 
   reverse-proxy:
+    container_name: project-application-reverse-proxy-staging
     environment:
       - VIRTUAL_HOST=${PROJECT_APPLICATION_STAGING_DOMAINS}
       - LETSENCRYPT_HOST=${PROJECT_APPLICATION_STAGING_DOMAINS}
@@ -23,6 +25,7 @@ services:
         tag: project-application-staging.nginx
 
   database:
+    container_name: project-application-database-staging
     environment:
       - MYSQL_USER=${PROJECT_APPLICATION_STAGING_DB_USER}
       - MYSQL_PASSWORD=${PROJECT_APPLICATION_STAGING_DB_PASSWORD}
