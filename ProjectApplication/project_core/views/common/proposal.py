@@ -442,6 +442,7 @@ class AbstractProposalView(TemplateView):
             is_valid = form.is_valid()
             print(f"is_valid: {is_valid}")
             all_valid = all_valid and is_valid
+            print(f"FUCK: {all_valid}")
         print(f"ALL VALID1: {all_valid}")
         all_valid = all_valid and self._validate_project_title_applicant(proposal_form, person_form)
         if all_valid:
