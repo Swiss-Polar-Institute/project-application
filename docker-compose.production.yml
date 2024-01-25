@@ -2,6 +2,7 @@ version: '3.6'
 
 services:
   project-application:
+    container_name: project-application-prod
     env_file:
       - ${PROJECT_APPLICATION_ENV_FILE}
     logging:
@@ -11,6 +12,7 @@ services:
         tag: project-application.django
 
   reverse-proxy:
+    container_name: project-application-reverse-proxy-prod
     environment:
       - VIRTUAL_HOST=${PROJECT_APPLICATION_DOMAINS}
       - LETSENCRYPT_HOST=${PROJECT_APPLICATION_DOMAINS}
@@ -23,6 +25,7 @@ services:
         tag: project-application.nginx
 
   database:
+    container_name: project-application-database-prod
     environment:
       - MYSQL_USER=${PROJECT_APPLICATION_DB_USER}
       - MYSQL_PASSWORD=${PROJECT_APPLICATION_DB_PASSWORD}
