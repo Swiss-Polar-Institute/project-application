@@ -379,6 +379,7 @@ class AbstractProposalView(TemplateView):
                                                       person_position=proposal.applicant)
 
         else:
+            print("START TEST")
             # Creating a new proposal
             proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
@@ -433,6 +434,7 @@ class AbstractProposalView(TemplateView):
 
         if call.budget_requested_part():
             forms_to_validate.append(budget_form)
+        print("MID TEST")
 
         all_valid = True
         for form in forms_to_validate:
@@ -504,7 +506,7 @@ class AbstractProposalView(TemplateView):
             return redirect(
                 reverse(self.created_or_updated_url, kwargs={'uuid': proposal.uuid})
             )
-
+        print("FAIL TEST")
         context[PERSON_FORM_NAME] = person_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PROPOSAL_FORM_NAME] = proposal_form
@@ -538,7 +540,7 @@ class AbstractProposalView(TemplateView):
         context['extra_parts'] = proposal_parts.get_parts()
 
         context.update(call_context_for_template(call))
-
+        print("END FAIL TEST")
         messages.error(request, 'Proposal not saved. Please correct the errors in the form and try again.')
 
         return render(request, 'common/form-proposal.tmpl', context)
