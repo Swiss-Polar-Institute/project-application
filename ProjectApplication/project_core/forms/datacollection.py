@@ -26,17 +26,17 @@ class DataCollectionForm(Form):
                                                                   'scientific metadata for the project.',
                                                            label='I agree to my personal data being saved by SPI for the administration of my proposal')
 
-        self.fields['contact_newsletter'] = forms.BooleanField(initial=contact_newsletter_initial,
-                                                               help_text='By ticking this box you agree to receiving '
-                                                                  'news and future opportunities from SPI. '
-                                                                  'Your contact details will not be used for other purposes.',
-                                                               required=False,
-                                                               label='I would like to receive news about SPI and future opportunities')
+        # self.fields['contact_newsletter'] = forms.BooleanField(initial=contact_newsletter_initial,
+        #                                                        help_text='By ticking this box you agree to receiving '
+        #                                                           'news and future opportunities from SPI. '
+        #                                                           'Your contact details will not be used for other purposes.',
+        #                                                        required=False,
+        #                                                        label='I would like to receive news about SPI and future opportunities')
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
     def update(self, person_position):
         person_position.privacy_policy = self.cleaned_data['privacy_policy']
-        person_position.contact_newsletter = self.cleaned_data['contact_newsletter']
+        # person_position.contact_newsletter = self.cleaned_data['contact_newsletter']
         person_position.save()
