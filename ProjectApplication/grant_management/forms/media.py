@@ -10,9 +10,11 @@ from django.urls import reverse
 
 from ProjectApplication import settings
 from grant_management.models import Medium, Tag
-from project_core.models import Project
+from project_core.models import Project, PhysicalPerson
 from project_core.utils.utils import new_person_message
 from project_core.widgets import XDSoftYearMonthDayPickerInput
+from django.core.exceptions import ValidationError
+
 
 logger = logging.getLogger('grant_management')
 
@@ -76,7 +78,7 @@ class MediumModelForm(forms.ModelForm):
             help_text='Select as a primary image on website'
         )
 
-        self.fields['photographer'].help_text += new_person_message()
+        # self.fields['photographer'].help_text += new_person_message()
 
         self.fields['license'].queryset = self.fields['license'].queryset.order_by('name')
 
@@ -113,6 +115,14 @@ class MediumModelForm(forms.ModelForm):
                 css_class='row'
             ),
         )
+        if self.instance.pk:
+            photographer_value = self.initial.get('photographer', '')
+            if photographer_value and photographer_value.isdigit():
+                try:
+                    photographer_obj = PhysicalPerson.objects.get(id=int(photographer_value))
+                    self.initial['photographer'] = photographer_obj.first_name + ' ' + photographer_obj.surname
+                except PhysicalPerson.DoesNotExist:
+                    self.initial['photographer'] = ''
 
     def clean(self):
         cd = super().clean()
@@ -123,7 +133,6 @@ class MediumModelForm(forms.ModelForm):
         fields = ['project', 'received_date', 'photographer', 'license', 'copyright', 'blog_posts', 'tags', 'file',
                   'descriptive_text', 'key_image', 'primary_image']
         widgets = {'received_date': XDSoftYearMonthDayPickerInput,
-                   'photographer': autocomplete.ModelSelect2(url='logged-autocomplete-physical-people'),
                    'tags': autocomplete.ModelSelect2Multiple(url='logged-autocomplete-tag')}
 
 

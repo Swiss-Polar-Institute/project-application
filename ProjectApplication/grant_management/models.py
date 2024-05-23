@@ -262,8 +262,7 @@ def medium_file_rename(instance, filename):
 class Medium(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that this medium belongs to', on_delete=models.PROTECT)
     received_date = models.DateField(help_text='Date that the medium was received')
-    photographer = models.ForeignKey(PhysicalPerson, help_text='Person who took the photo/video',
-                                     on_delete=models.PROTECT)
+    photographer = models.CharField(max_length=256, help_text='Person who took the photo/video')
     license = models.ForeignKey(License, help_text='License',
                                 on_delete=models.PROTECT, null=True, blank=True)
     copyright = models.CharField(max_length=1024,
