@@ -388,7 +388,7 @@ def create_medium(project):
                                              file=SimpleUploadedFile('photo_expedition.jpg',
                                                                      b'This is a JPEG photo of an expedition'),
                                              descriptive_text='Photo taken in an expedition',
-                                             photographer=photographer
+                                             photographer='The name of the photographer',
                                              )
 
     return medium

@@ -502,8 +502,7 @@ class ApiListMediaView(ApiList):
             medium_info['project'] = project_info
 
             photographer_info = {}
-            photographer_info['first_name'] = medium.photographer.first_name
-            photographer_info['last_name'] = medium.photographer.surname
+            photographer_info['first_name'] = medium.photographer
 
             medium_info['photographer'] = photographer_info
 
