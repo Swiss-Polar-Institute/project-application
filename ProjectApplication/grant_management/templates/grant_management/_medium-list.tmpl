@@ -7,11 +7,25 @@
     </tr>
     </thead>
     {% for medium in media %}
-        <tr>
-            <td data-sort="{{ medium.received_date }}">{{ medium.received_date }}</td>
-            <td>{{ medium.photographer }}</td>
-            <td>{% include 'common/_file_to_download.tmpl' with file_field=medium.file %}</td>
-        </tr>
+    <tr>
+        <td data-sort="{{ medium.received_date }}">{{ medium.received_date }}</td>
+        <td>
+            {% if medium.photographer|add:"0" >= 1 and medium.photographer|add:"0" <= 5000 %}
+                {% for person in physical_persons %}
+                    {% if person.id == medium.photographer|add:"0" %}
+                        {% with photographer_name=person.first_name|add:' '|add:person.surname %}
+                            {{ photographer_name }}
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}
+                {{photographer_name}}
+            {% else %}
+                {{ medium.photographer }}
+            {% endif %}
+
+        </td>
+        <td>{% include 'common/_file_to_download.tmpl' with file_field=medium.file %}</td>
+    </tr>
     {% endfor %}
 </table>
 

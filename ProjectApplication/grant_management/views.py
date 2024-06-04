@@ -21,7 +21,7 @@ from grant_management.forms.project_basic_information import ProjectBasicInforma
 from grant_management.forms.reports import FinancialReportsInlineFormSet, ScientificReportsInlineFormSet
 from grant_management.models import GrantAgreement, MilestoneCategory, Medium, MediumDeleted
 from project_core.decorators import api_key_required
-from project_core.models import Project
+from project_core.models import Project, PhysicalPerson
 from project_core.views.common.formset_inline_view import InlineFormsetUpdateView
 from .forms.close_project import CloseProjectModelForm
 from .forms.datasets import DatasetInlineFormSet
@@ -63,8 +63,10 @@ class ProjectDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        physical_persons = PhysicalPerson.objects.all()
 
         project = context['project']
+        context['physical_persons'] = physical_persons
 
         if hasattr(project, 'grantagreement'):
             context['grant_agreement_button_text'] = 'Edit'
