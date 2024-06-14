@@ -37,6 +37,6 @@ class DataCollectionForm(Form):
         self.helper.form_tag = False
 
     def update(self, person_position):
-        person_position.privacy_policy = self.cleaned_data['privacy_policy']
+        person_position.privacy_policy = self.data.get('privacy_policy')
         # person_position.contact_newsletter = self.cleaned_data['contact_newsletter']
         person_position.save()

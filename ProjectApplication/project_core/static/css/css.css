@@ -274,3 +274,238 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
     page-break-before: avoid;
   }
 }
+
+.container {
+    max-width: 1390px;
+}
+
+
+.section-title {
+  font-size: 34px;
+  text-transform: uppercase;
+}
+
+.information-wrapper {
+  max-width: 50%;
+    padding: 50px 0 100px;
+}
+
+.information-wrapper .content-block {
+  margin-top: 80px;
+  border: 1px solid rgba(68, 68, 68, .20);
+}
+
+.information-wrapper .content-block--header {
+  position: relative;
+  border-bottom: 1px solid rgba(68, 68, 68, .20);
+  padding: 30px 40px;
+}
+
+.information-wrapper .content-block--header::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: block;
+  width: 5px;
+  background-color: #CC2027;
+}
+
+.information-wrapper .content-block--header p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.information-wrapper .content-block--body {
+  padding: 30px 40px;
+}
+
+.information-wrapper .content-block--body ul {
+  padding: 0 0 0 20px;
+  margin: 0;
+}
+
+.information-wrapper .content-block--body ul li + li {
+  margin-top: 20px;
+}
+
+.application-form {
+  padding: 80px 0;
+  background-color: rgba(68, 68, 68, .05);
+}
+
+.step-wizard-wrapper {
+  display: flex;
+  gap: 100px;
+}
+
+.progressbar-wrapper {
+  flex: 0 0 300px;
+  max-width: 300px;
+}
+
+.progressbar-wrapper .btn-save-draft-wrapper {
+  margin: 40px 0 0 35px;
+}
+
+.progressbar {
+  user-select: none;
+}
+
+.progressbar .step,
+.top-wizard-wrapper .step {
+  position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(68, 68, 68, .6);
+  transition: color .3s ease-in-out;
+}
+
+.progressbar .step:not(:first-child) {
+  margin-block-start: 25px;
+}
+
+.progressbar .step .bullet {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  margin-inline-end: 10px;
+  transition: border .3s ease-in-out;
+}
+
+.progressbar .step .bullet::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  font-size: 24px;
+  color: #3EC27B;
+  line-height: 1;
+}
+
+.progressbar .step.active {
+  color: #000;
+}
+
+.progressbar .step.active .bullet::before {
+  content: "\2713";
+}
+
+.form-wrapper {
+  flex-grow: 1;
+}
+
+.form-wrapper .form-group {
+  margin-bottom: 25px;
+}
+
+.form-wrapper fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.form-wrapper fieldset:not(:first-of-type) {
+  display: none;
+}
+
+.step-wizard-wrapper .action-btn {
+  margin-top: 30px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.step-wizard-wrapper .btn {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 15px 50px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.step-wizard-wrapper .btn.disabled {
+  pointer-events: none;
+  background-color: #D9D9D9;
+  border-color: transparent;
+  color: #444;
+  opacity: .5;
+}
+
+.step-wizard-wrapper .btn-primary,
+.step-wizard-wrapper .btn-primary:active{
+  background-color: #CC2027 !important;
+  border-color: #CC2027 !important;
+  color: #fff !important;
+}
+
+.step-wizard-wrapper .btn-outline-primary {
+  background-color: transparent;
+  border-color: #CC2027;
+  color: #CC2027;
+}
+
+.step-wizard-wrapper .btn-outline-primary:active {
+    color: #CC2027 !important;
+    border-color: #CC2027 !important;
+    background-color: transparent !important;
+}
+
+.step-wizard-wrapper .btn-light {
+  background-color: transparent;
+  border-color: rgba(68, 68, 68, .26);
+  color: #444;
+}
+
+/* Top wizard */
+.top-wizard-wrapper {
+  display: flex;
+  margin-bottom: 60px;
+  background-color: #fff;
+  height: 40px;
+}
+
+.top-wizard-wrapper .step {
+  flex: 0 20%;
+  border-top: 1px solid #DADADA;
+  border-bottom: 1px solid #DADADA;
+}
+
+.top-wizard-wrapper .step.active,
+.top-wizard-wrapper .step.finished {
+  background-color: #CC2027;
+  border-color: #CC2027;
+  color: #fff;
+}
+
+.top-wizard-wrapper .step > span:not(.arrow) {
+  position: relative;
+  padding: 10px 30px 10px 50px;
+  width: 100%;
+  display: block;
+}
+
+.top-wizard-wrapper .arrow {
+  display: inline-block;
+  padding: 11px;
+  border: solid #DADADA;
+  border-width: 0 1px 1px 0;
+  background-color: #FFF;
+  transform: translateY(17px) rotate(-45deg) skew(-10deg, -10deg) translateX(20px);
+}
+
+.top-wizard-wrapper .step.active .arrow,
+.top-wizard-wrapper .step.finished .arrow {
+  background-color: #CC2027;
+  border-color: #CC2027;
+}
+.is-invalid,
+.is-invalid ~ .select2-container .custom-select{
+    border-color: red !important;
+}

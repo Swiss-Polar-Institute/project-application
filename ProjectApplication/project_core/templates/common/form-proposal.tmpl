@@ -1,11 +1,14 @@
+
 {% extends 'common/_base.tmpl' %}
 {% load static %}
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 {% block title %}{% include 'common/_title_for_proposal.tmpl' %}{% endblock %}
 
 {% block body_contents %}
-    <div class="container" role="main">
+    <div>
         {% include 'common/_logo.tmpl' %}
         <p></p>
-        {% include 'common/_proposal-form.tmpl' %}
+        {% include 'common/_proposal-form-wizard.tmpl' %}
     </div>
+    <script type="text/javascript" src="{% static 'js/wizard.js' %}"></script>
 {% endblock %}

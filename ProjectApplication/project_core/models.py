@@ -597,7 +597,7 @@ class PersonPosition(CreateModifyOn):
     group = models.CharField(help_text='Name of the working group, department, laboratory for which the person works',
                              max_length=200, blank=True, null=True)
     privacy_policy = models.BooleanField(
-        help_text='Agree or disagree to the data policy for storage of personal information', default=False)
+        help_text='Agree or disagree to the data policy for storage of personal information', default=False, blank=True, null=True)
     contact_newsletter = models.BooleanField(help_text='Agree or disagree to being contacted by email with newsletter',
                                              default=False)
 
@@ -803,46 +803,42 @@ class Proposal(CreateModifyOn):
     )
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
-
-    title = models.CharField(help_text='Title of the proposal being submitted', max_length=500)
+    title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=True)
     postal_address = models.ForeignKey(PostalAddress,
                                        help_text='Address to where the grant agreement is going to be sent',
-                                       null=True,
+                                       null=True, blank=True,
                                        on_delete=models.PROTECT)
     keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the proposal', blank=True)
     geographical_areas = models.ManyToManyField(GeographicalArea,
-                                                help_text='Geographical area(s) covered by the proposal')
+                                                help_text='Geographical area(s) covered by the proposal', blank=True)
     location = models.CharField(
         help_text='Name of more precise location of where proposal would take place (not coordinates)',
-        max_length=200, blank=True, null=True)  # Consider having this as another text question
+        max_length=200, blank=True, null=True)
     start_date = models.DateField(
-        help_text='Approximate date on which the proposed project is expected to start')
+        help_text='Approximate date on which the proposed project is expected to start', blank=True, null=True)
     end_date = models.DateField(
-        help_text='Approximate date on which the proposed project is expected to end')
+        help_text='Approximate date on which the proposed project is expected to end', blank=True, null=True)
     duration_months = models.DecimalField(
         help_text='Expected duration of the proposed project in months',
-        decimal_places=2, max_digits=5, validators=[MinValueValidator(0)])
+        decimal_places=2, max_digits=5, null=True, blank=True)
     applicant = models.ForeignKey(PersonPosition, help_text='Main applicant of the proposal',
-                                  on_delete=models.PROTECT)
+                                  on_delete=models.PROTECT, null=True, blank=True)
     applicant_role_description = models.ForeignKey(RoleDescription, help_text='Main applicant role', blank=True,
                                                    null=True,
                                                    on_delete=models.PROTECT)
     proposal_status = models.ForeignKey(ProposalStatus, help_text='Status or outcome of the proposal',
-                                        on_delete=models.PROTECT)
+                                        on_delete=models.PROTECT, null=True, blank=True)
     eligibility = models.CharField(help_text='Status of eligibility of proposal', max_length=30,
-                                   default=ELIGIBILITYNOTCHECKED, choices=STATUS)
+                                   default=ELIGIBILITYNOTCHECKED, choices=STATUS, blank=True, null=True)
     eligibility_comment = models.TextField(help_text='Comments regarding eligibility of proposal', blank=True,
                                            null=True)
-    call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT)
-
+    call = models.ForeignKey(Call, help_text='Call to which the proposal relates', on_delete=models.PROTECT, blank=True,
+                             null=True)
     overarching_project = models.ForeignKey(ExternalProject, null=True, blank=True, on_delete=models.PROTECT)
-
     draft_saved_mail_sent = models.BooleanField(default=False,
                                                 help_text='True if the email informing the applicant that the draft has been saved has already been sent (usually is sent only once)')
-
     submitted_mail_sent = models.BooleanField(default=False,
                                               help_text='True if the email informing the applicant that the proposal has been submitted has been sent')
-
     overall_budget = models.DecimalField(decimal_places=2, max_digits=10,
                                          validators=[MinValueValidator(0)],
                                          null=True, blank=True,

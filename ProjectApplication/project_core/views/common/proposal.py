@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.http import HttpResponse
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -27,12 +27,14 @@ from project_core.forms.person import PersonForm
 from project_core.forms.postal_address import PostalAddressForm
 from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
+from project_core.forms.proposal_application import ProposalApplicationForm
 from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, ProposalQAFile, CallCareerStage
 from project_core.views.common.proposal_parts import ProposalParts
 from variable_templates.utils import get_template_value_for_call, apply_templates_to_string
 
 PROPOSAL_FORM_NAME = 'proposal_form'
+PROPOSAL_APPLICATION_FORM_NAME = 'proposal_application_form'
 PERSON_FORM_NAME = 'person_form'
 POSTAL_ADDRESS_FORM_NAME = 'postal_address_form'
 QUESTIONS_FORM_NAME = 'questions_form'
@@ -181,6 +183,7 @@ class AbstractProposalView(TemplateView):
             call = proposal.call
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME, instance=proposal)
+            proposal_application_form = ProposalApplicationForm(call=call, prefix=PROPOSAL_APPLICATION_FORM_NAME, instance=proposal)
             person_form = PersonForm(prefix=PERSON_FORM_NAME,
                                      person_position=proposal.applicant,
                                      career_stages_queryset=call.enabled_career_stages_queryset())
@@ -232,6 +235,7 @@ class AbstractProposalView(TemplateView):
                 return redirect(reverse('call-list'))
 
             proposal_form = ProposalForm(call=call, prefix=PROPOSAL_FORM_NAME)
+            proposal_application_form = ProposalApplicationForm(call=call, prefix=PROPOSAL_APPLICATION_FORM_NAME)
             person_form = PersonForm(prefix=PERSON_FORM_NAME,
                                      only_basic_fields=False,
                                      career_stages_queryset=call.enabled_career_stages_queryset())
@@ -265,6 +269,7 @@ class AbstractProposalView(TemplateView):
         context.update(call_context_for_template(call))
 
         context[PROPOSAL_FORM_NAME] = proposal_form
+        context[PROPOSAL_APPLICATION_FORM_NAME] = proposal_application_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PERSON_FORM_NAME] = person_form
         context[SCIENTIFIC_CLUSTERS_FORM_NAME] = scientific_clusters_form
@@ -337,7 +342,7 @@ class AbstractProposalView(TemplateView):
 
         if proposal:
             # Editing an existing proposal
-            proposal_form = ProposalForm(request.POST, instance=proposal, prefix=PROPOSAL_FORM_NAME)
+            proposal_form = ProposalApplicationForm(request.POST, instance=proposal, prefix=PROPOSAL_APPLICATION_FORM_NAME)
             person_form = PersonForm(request.POST, person_position=proposal.applicant,
                                      prefix=PERSON_FORM_NAME,
                                      career_stages_queryset=call.enabled_career_stages_queryset())
@@ -380,7 +385,7 @@ class AbstractProposalView(TemplateView):
 
         else:
             # Creating a new proposal
-            proposal_form = ProposalForm(request.POST, call=call, prefix=PROPOSAL_FORM_NAME)
+            proposal_form = ProposalApplicationForm(request.POST, call=call, prefix=PROPOSAL_APPLICATION_FORM_NAME)
             postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
 
             proposal_parts = ProposalParts(request.POST, request.FILES, proposal=None, call=call)
@@ -414,9 +419,7 @@ class AbstractProposalView(TemplateView):
 
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
-        forms_to_validate = [person_form, postal_address_form, proposal_form,
-                             *proposal_parts.get_forms(),
-                             data_collection_form]
+        forms_to_validate = [person_form, postal_address_form, proposal_form]
 
         if call.other_funding_question:
             forms_to_validate.append(funding_form)
@@ -439,7 +442,7 @@ class AbstractProposalView(TemplateView):
             is_valid = form.is_valid()
             all_valid = all_valid and is_valid
 
-        all_valid = all_valid and self._validate_project_title_applicant(proposal_form, person_form)
+        # all_valid = all_valid and self._validate_project_title_applicant(proposal_form, person_form)
 
         if all_valid:
             proposal = proposal_form.save(commit=False)
@@ -508,6 +511,7 @@ class AbstractProposalView(TemplateView):
         context[PERSON_FORM_NAME] = person_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
         context[PROPOSAL_FORM_NAME] = proposal_form
+        context[PROPOSAL_APPLICATION_FORM_NAME] = proposal_form
         for question_form in proposal_parts.get_forms():
             context[question_form.prefix] = question_form
 
@@ -543,21 +547,34 @@ class AbstractProposalView(TemplateView):
 
         return render(request, 'common/form-proposal.tmpl', context)
 
-    def _validate_project_title_applicant(self, proposal_form, person_form):
-        proposal_title = proposal_form.cleaned_data['title']
-        call_id = proposal_form.cleaned_data['call_id']
+    # def _validate_project_title_applicant(self, proposal_form, person_form):
+    #     proposal_title = proposal_form.data.get('title')
+    #     call_id = proposal_form.data.get('call_id')
+    #
+    #     for person_position in person_form.get_person_positions():
+    #         proposals = Proposal.objects.filter(title=proposal_title,
+    #                                             applicant=person_position,
+    #                                             call_id=call_id).exclude(id=proposal_form.instance.id)
+    #
+    #         if len(proposals) > 0:
+    #             proposal_form.raise_duplicated_title()
+    #             return False
+    #
+    #     return True
 
-        for person_position in person_form.get_person_positions():
-            proposals = Proposal.objects.filter(title=proposal_title,
-                                                applicant=person_position,
-                                                call_id=call_id).exclude(id=proposal_form.instance.id)
 
-            if len(proposals) > 0:
-                proposal_form.raise_duplicated_title()
-                return False
+def check_duplicate_proposal(request):
+    proposal_title = request.GET.get('proposal_title')
+    applicant_id = request.GET.get('applicant_id')
+    call_id = request.GET.get('call_id')
 
-        return True
+    exists = Proposal.objects.filter(
+        title=proposal_title,
+        applicant_id=applicant_id,
+        call_id=call_id
+    ).exists()
 
+    return JsonResponse({'exists': exists})
 
 def call_context_for_template(call):
     context = {'maximum_budget': call.budget_maximum,

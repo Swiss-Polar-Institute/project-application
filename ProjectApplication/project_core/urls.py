@@ -309,6 +309,10 @@ urlpatterns = [
          logged.autocomplete.PersonPositionsAutocomplete.as_view(),
          name='logged-autocomplete-person-positions'),
 
+    path('check_duplicate_proposal/',
+             common.proposal.check_duplicate_proposal,
+             name='check-duplicate-proposal'),
+
     path('raises500/', server_error),
 
     path('api/v1/logged/',

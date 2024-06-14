@@ -1,0 +1,194 @@
+{% load crispy_forms_tags %}
+{% load in_management %}
+
+<div class="container">
+    {% include 'common/_messages-box.tmpl' %}
+    {% if preview %}
+        <div class="alert alert-primary" role="alert">
+            This is a preview of the proposal form: it cannot be saved but it can be used to see how it would look for the
+            applicants.
+        </div>
+    {% endif %}
+    <br>
+    {% if proposal_status_is_draft %}
+        <div class="alert alert-secondary" role="alert"><i class="fas fa-info-circle"></i> This proposal is a draft and will
+            not be evaluated.
+            Click on Submit before the application deadline to ensure your proposal is evaluated.
+        </div>
+    {% endif %}
+</div>
+<section>
+    <div class="container">
+        <div class="information-wrapper">
+          <h2 class="section-title"><strong>Call name:</strong> {{ call_name }}</h2>
+          <p>From December 2016 to March 2017, scientific teams from all over the world boarded the Russian research vessel Akademik Tryoshnikov for an unprecedented expedition around Antarctica, organised by the Swiss Polar Institute. During the Antarctic Circumnavigation Expedition (ACE), researchers worked in a number of fields, from biology to climatology to oceanography, to improve knowledge on what the future may hold for this continent and the world.</p>
+
+          <div class="content-block">
+            <div class="content-block--header">
+              <p><strong>Deadline for application:</strong> {{ call_submission_deadline }}</p>
+            </div>
+            <div class="content-block--body">
+              <ul>
+                <li>Please complete all mandatory fields and press "Save Draft" or "Submit".</li>
+                <li>{{ call_introductory_message|safe }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
+</section>
+
+<section class="application-form">
+    <div class="container">
+        <h2 class="section-title" style="margin-bottom: 50px;">Application Form</h2>
+
+        <div class="top-wizard-wrapper">
+              <div class="step active">
+                <span>1. Applicant</span>
+                <span class="arrow"></span>
+              </div>
+              <div class="step">
+                <span>2. Proposed Projects</span>
+                <span class="arrow"></span>
+              </div>
+              <div class="step">
+                <span>3. Budget Request</span>
+                <span class="arrow"></span>
+              </div>
+              <div class="step">
+                <span>4. Custom Part</span>
+                <span class="arrow"></span>
+              </div>
+              <div class="step">
+                <span>5. Summary</span>
+                <span class="arrow"></span>
+              </div>
+        </div>
+<form action="{{ proposal_action_url }}" enctype="multipart/form-data" method="post" id="dd-form">
+<div class="step-wizard-wrapper">
+   <div class="progressbar-wrapper">
+        <div class="progressbar">
+          <div class="step active">
+            <span class="bullet"></span>
+            <span>1. Applicant</span>
+          </div>
+          <div class="step">
+            <span class="bullet"></span>
+            <span>2. Proposed Projects</span>
+          </div>
+          <div class="step">
+            <span class="bullet"></span>
+            <span>3. Budget Request</span>
+          </div>
+          {% if extra_parts %}
+              <div class="step">
+                <span class="bullet"></span>
+                <span>4. Custom Part</span>
+              </div>
+              <div class="step">
+                <span class="bullet"></span>
+                <span>5. Summary</span>
+              </div>
+          {% else %}
+              <div class="step">
+                <span class="bullet"></span>
+                <span>4. Summary</span>
+              </div>
+          {% endif %}
+        </div>
+        <div class="btn-save-draft-wrapper">
+          <input type="button" name="save_draft" class="btn btn-light savedraft" value="Save draft" >
+        </div>
+   </div>
+  <div class="form-wrapper">
+    <!-- <form role="form"> -->
+      <fieldset>
+        <div class="form-fields-wrapper">
+          {% include 'common/_person-form.tmpl' with person_form=person_form %}
+          {% include 'common/_form-postal_address.tmpl' %}
+        </div>
+        <div class="action-btn">
+          <input type="button" name="save" class="btn btn-light savedraft" value="Save draft">
+          <input type="button" name="previous" class="btn btn-outline-primary previous disabled" value="Previous">
+          <input type="button" name="next" class="btn btn-primary next" value="Next">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <div class="form-fields-wrapper">
+             {% crispy proposal_application_form %}
+             {% if overarching_project_question %}
+                <h3>Overarching project</h3>
+                {% include 'common/_form-project_overarching.tmpl' %}
+             {% endif %}
+
+            {% if scientific_clusters_question %}
+                <h2>Part {{ part_numbers.scientific_clusters }}: Research cluster of proposed {{ activity }}</h2>
+                {% include 'common/_form-proposal-scientific_clusters.tmpl' %}
+            {% endif %}
+
+            {% if proposal_partner_question %}
+                <h2>Part {{ part_numbers.roles_competences }}: Roles and competences</h2>
+                {% include 'common/_form-proposal_partners.tmpl' %}
+            {% endif %}
+        </div>
+        <div class="action-btn">
+          <input type="button" name="save" class="btn btn-light savedraft" value="Save draft">
+          <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
+          <input type="button" name="next" class="btn btn-primary next" value="Next">
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <div class="form-fields-wrapper">
+                {% include 'common/_form-budget.tmpl' %}
+                {% if other_funding_question %}
+                    <h2>Part {{ part_numbers.other_sources_of_funding }}: Other sources of funding</h2>
+                    {% include 'common/_form-funding_organisations.tmpl' %}
+                {% endif %}
+                <p></p>
+                <hr>
+                {% crispy data_collection_form %}
+        </div>
+        <div class="action-btn">
+          <input type="button" name="save" class="btn btn-light savedraft" value="Save draft">
+          <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
+          <input type="button" name="next" class="btn btn-primary next" value="Next">
+        </div>
+      </fieldset>
+     {% if extra_parts %}
+     <fieldset>
+        <div class="form-fields-wrapper">
+            {% for part in extra_parts %}
+                <h2>Part {{ part.heading_number }}: {{ part.title_rendered }}</h2>
+                <div class="pre-wrap">{{ part.introductory_text|safe }}</div>
+                {% include 'common/_proposal_list_files.tmpl' with call_part=part only %}
+                {% include 'common/_form-dynamic_questions.tmpl' with questions_form=part.questions_form %}
+            {% endfor %}
+        </div>
+        <div class="action-btn">
+          <input type="button" name="save" class="btn btn-light savedraft" value="Save draft">
+          <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
+          <input type="button" name="next" class="btn btn-primary next" value="Next">
+        </div>
+      </fieldset>
+      {% endif %}
+
+      <fieldset>
+        <div class="form-fields-wrapper" id="summary-content">
+        </div>
+        <div class="action-btn">
+        {% if not preview %}
+           <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
+          <input type="submit" id="final-result" name="submit" class="btn btn-primary" value="Submit">
+        {% else %}
+            <strong>This is a preview of the proposal form: it cannot be saved.</strong>
+        {% endif %}
+        </div>
+      </fieldset>
+    <!-- </form> -->
+  </div>
+</div>
+</form>
+</div>
+</section>
