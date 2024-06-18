@@ -6,8 +6,10 @@
 
 {% block body_contents %}
     <div>
-        {% include 'common/_logo.tmpl' %}
-        <p></p>
+        {% load static %}
+        <br>
+        <div class="container"><a href="https://polar.epfl.ch/" class="logo-wrapper"><img src="{% static 'images/LogoSPI.png' %}" width="170" alt="SPI Logo"></a></div>
+
         {% include 'common/_proposal-form-wizard.tmpl' %}
     </div>
     <script type="text/javascript" src="{% static 'js/wizard.js' %}"></script>

@@ -467,21 +467,34 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
 .top-wizard-wrapper {
   display: flex;
   margin-bottom: 60px;
-  background-color: #fff;
-  height: 40px;
+}
+
+.top-wizard-wrapper::after {
+  clear: both;
+  content: "";
+  display: table;
 }
 
 .top-wizard-wrapper .step {
+  position: relative;
   flex: 0 20%;
-  border-top: 1px solid #DADADA;
-  border-bottom: 1px solid #DADADA;
+  margin: 4px 4px 4px 0;
 }
 
-.top-wizard-wrapper .step.active,
-.top-wizard-wrapper .step.finished {
+.top-wizard-wrapper .step.active>*,
+.top-wizard-wrapper .step.finished>* {
   background-color: #CC2027;
   border-color: #CC2027;
   color: #fff;
+}
+
+.top-wizard-wrapper .step>* {
+  background-color: #edeff0;
+  border-color: #edeff0;
+}
+
+.top-wizard-wrapper .step:last-of-type {
+  margin-right: 0;
 }
 
 .top-wizard-wrapper .step > span:not(.arrow) {
@@ -491,20 +504,47 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
   display: block;
 }
 
-.top-wizard-wrapper .arrow {
-  display: inline-block;
-  padding: 11px;
-  border: solid #DADADA;
-  border-width: 0 1px 1px 0;
-  background-color: #FFF;
-  transform: translateY(17px) rotate(-45deg) skew(-10deg, -10deg) translateX(20px);
+.top-wizard-wrapper .step::after,
+.top-wizard-wrapper .step>*::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 100%;
+  height: 0;
+  width: 0;
+  border: 23px solid transparent;
+  border-right-width: 0;
+  border-left-width: 12px;
 }
 
-.top-wizard-wrapper .step.active .arrow,
-.top-wizard-wrapper .step.finished .arrow {
-  background-color: #CC2027;
-  border-color: #CC2027;
+.top-wizard-wrapper .step::after {
+  z-index: 1;
+  transform: translateX(4px);
+  border-left-color: #fff;
+  margin: 0;
 }
+
+.top-wizard-wrapper .step>*::after {
+  z-index: 2;
+  border-left-color: inherit;
+}
+
+.top-wizard-wrapper .step:last-of-type::after,
+.top-wizard-wrapper .step:last-of-type>*::after {
+  display: none;
+}
+
+@-moz-document url-prefix() {
+  .top-wizard-wrapper .step::after,
+  .top-wizard-wrapper .step>*::after {
+    border-left-style: dashed;
+  }
+}
+
+.logo-wrapper {
+    display: inline-flex;
+}
+
 .is-invalid,
 .is-invalid ~ .select2-container .custom-select{
     border-color: red !important;

@@ -45,23 +45,18 @@
         <div class="top-wizard-wrapper">
               <div class="step active">
                 <span>1. Applicant</span>
-                <span class="arrow"></span>
               </div>
               <div class="step">
                 <span>2. Proposed Projects</span>
-                <span class="arrow"></span>
               </div>
               <div class="step">
                 <span>3. Budget Request</span>
-                <span class="arrow"></span>
               </div>
               <div class="step">
                 <span>4. Custom Part</span>
-                <span class="arrow"></span>
               </div>
               <div class="step">
                 <span>5. Summary</span>
-                <span class="arrow"></span>
               </div>
         </div>
 <form action="{{ proposal_action_url }}" enctype="multipart/form-data" method="post" id="dd-form">
@@ -160,7 +155,7 @@
      <fieldset>
         <div class="form-fields-wrapper">
             {% for part in extra_parts %}
-                <h2>Part {{ part.heading_number }}: {{ part.title_rendered }}</h2>
+                <h2>Custom Part</h2>
                 <div class="pre-wrap">{{ part.introductory_text|safe }}</div>
                 {% include 'common/_proposal_list_files.tmpl' with call_part=part only %}
                 {% include 'common/_form-dynamic_questions.tmpl' with questions_form=part.questions_form %}
