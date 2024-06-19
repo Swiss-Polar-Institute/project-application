@@ -4,37 +4,32 @@ $(document).ready(function () {
     var current = 1;
     var steps = $("fieldset").length;
 
-    function addvalidation(){
+    function addvalidation() {
         $("fieldset:hidden input").removeAttr("required");
         $("fieldset:hidden select").removeAttr("required");
         $("fieldset:hidden textarea").removeAttr("required");
-        $("input[name='proposal_application_form-title']:visible").attr("required","required");
-        $("input[name='person_form-orcid']:visible").attr("required","required");
-        $("input[name='person_form-first_name']:visible").attr("required","required");
-        $("input[name='person_form-surname']:visible").attr("required","required");
-        $("select[name='person_form-academic_title']:visible").attr("required","required");
-        $("select[name='person_form-gender']:visible").attr("required","required");
-        $("input[name='person_form-career_stage']:visible").attr("required","required");
-        $("input[name='person_form-email']:visible").attr("required","required");
-        $("input[name='person_form-phone']:visible").attr("required","required");
-        $("select[name='person_form-organisation_names']:visible").attr("required","required");
-        $("input[name='postal_address_form-address']:visible").attr("required","required");
-        $("input[name='postal_address_form-city']:visible").attr("required","required");
-        $("input[name='postal_address_form-postcode']:visible").attr("required","required");
-        $("input[name='postal_address_form-country']:visible").attr("required","required");
-        $("input[name='proposal_application_form-title']:visible").attr("required","required");
-        $("input[name='proposal_application_form-geographical_areas']:visible").attr("required","required");
-        $("select[name='proposal_application_form-keywords']:visible").attr("required","required");
-        $("input[name='proposal_application_form-start_date']:visible").attr("required","required");
-        $("input[name='proposal_application_form-end_date']:visible").attr("required","required");
-        $("input[name='proposal_application_form-duration_months']:visible").attr("required","required");
-        $("input[name='data_collection_form-privacy_policy']:visible").attr("required","required");
+        $("input[name='proposal_application_form-title']:visible").attr("required", "required");
+        $("input[name='person_form-orcid']:visible").attr("required", "required");
+        $("input[name='person_form-first_name']:visible").attr("required", "required");
+        $("input[name='person_form-surname']:visible").attr("required", "required");
+        $("select[name='person_form-academic_title']:visible").attr("required", "required");
+        $("select[name='person_form-gender']:visible").attr("required", "required");
+        $("input[name='person_form-career_stage']:visible").attr("required", "required");
+        $("input[name='person_form-email']:visible").attr("required", "required");
+        $("input[name='person_form-phone']:visible").attr("required", "required");
+        $("select[name='person_form-organisation_names']:visible").attr("required", "required");
+        $("input[name='postal_address_form-address']:visible").attr("required", "required");
+        $("input[name='postal_address_form-city']:visible").attr("required", "required");
+        $("input[name='postal_address_form-postcode']:visible").attr("required", "required");
+        $("input[name='postal_address_form-country']:visible").attr("required", "required");
+        $("input[name='proposal_application_form-title']:visible").attr("required", "required");
+        $("input[name='proposal_application_form-start_date']:visible").attr("required", "required");
+        $("input[name='proposal_application_form-end_date']:visible").attr("required", "required");
+        $("input[name='proposal_application_form-duration_months']:visible").attr("required", "required");
+        $("input[name='data_collection_form-privacy_policy']:visible").attr("required", "required");
     }
 
-
-
     function storeFormData() {
-
         $("fieldset:visible :input").each(function () {
             var input = $(this);
             var name = input.attr('name');
@@ -154,7 +149,7 @@ $(document).ready(function () {
         }
 
         // Keywords validation
-        var keywordsInput = current_fs.find("select[name='proposal_form-keywords']");
+        var keywordsInput = current_fs.find("select[name='proposal_application_form-keywords']:visible");
         if (keywordsInput.length) {
             var selectedKeywords = keywordsInput.find("option:selected");
             if (selectedKeywords.length < 5) {
@@ -162,6 +157,14 @@ $(document).ready(function () {
                 var label = getLabelText(keywordsInput);
                 showValidationError(keywordsInput, 'Please enter at least 5 ' + label + '.');
             }
+        }
+
+        // Geographical areas validation
+        var geographicalAreas = current_fs.find("input[name='proposal_application_form-geographical_areas']:visible");
+        if (geographicalAreas.length && geographicalAreas.filter(':checked').length !== geographicalAreas.length) {
+            isValid = false;
+            var label = getLabelText(geographicalAreas.first());
+            showValidationError(geographicalAreas.first(), 'All ' + label + ' must be selected.');
         }
 
         return isValid;
@@ -199,7 +202,6 @@ $(document).ready(function () {
     retrieveFormData();
 
     $(".next").click(function () {
-
         current_fs = $(this).closest('fieldset');
         next_fs = $(this).closest('fieldset').next();
 
@@ -289,13 +291,13 @@ $(document).ready(function () {
         $("fieldset:hidden textarea").removeAttr("required");
     }
 
-
-    $(document).on('click','.savedraft',function (){
+    $(document).on('click', '.savedraft', function () {
+        if (!validateCurrentFieldset()) {
+            return;
+        }
         beforeSubmitActions();
         localStorage.clear();
-         $("form#dd-form").submit();
-         $("#final-result").click();
+        $("form#dd-form").submit();
+        $("#final-result").click();
     });
-
-
 });
