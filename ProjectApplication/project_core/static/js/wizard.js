@@ -126,6 +126,8 @@ $(document).ready(function () {
     }
 
     function validateCurrentFieldset() {
+        current_fs = $(".next:visible").closest('fieldset');
+        next_fs = $(".next:visible").closest('fieldset').next();
         var isValid = true;
         clearValidationErrors();
 

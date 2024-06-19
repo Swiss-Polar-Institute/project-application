@@ -92,7 +92,7 @@
           {% endif %}
         </div>
         <div class="btn-save-draft-wrapper">
-          <input type="button" name="save_draft" class="btn btn-light savedraft" value="Save draft" >
+          <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
         </div>
    </div>
   <div class="form-wrapper">
@@ -103,7 +103,7 @@
           {% include 'common/_form-postal_address.tmpl' %}
         </div>
         <div class="action-btn">
-          <input type="button" name="save" class="btn btn-light savedraft" value="Save draft">
+          <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
           <input type="button" name="previous" class="btn btn-outline-primary previous disabled" value="Previous">
           <input type="button" name="next" class="btn btn-primary next" value="Next">
         </div>
@@ -128,7 +128,7 @@
             {% endif %}
         </div>
         <div class="action-btn">
-          <input type="button" name="save" class="btn btn-light savedraft" value="Save draft">
+          <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
           <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
           <input type="button" name="next" class="btn btn-primary next" value="Next">
         </div>
@@ -146,7 +146,7 @@
                 {% crispy data_collection_form %}
         </div>
         <div class="action-btn">
-          <input type="button" name="save" class="btn btn-light savedraft" value="Save draft">
+          <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
           <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
           <input type="button" name="next" class="btn btn-primary next" value="Next">
         </div>
@@ -162,7 +162,7 @@
             {% endfor %}
         </div>
         <div class="action-btn">
-          <input type="button" name="save" class="btn btn-light savedraft" value="Save draft">
+          <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
           <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
           <input type="button" name="next" class="btn btn-primary next" value="Next">
         </div>

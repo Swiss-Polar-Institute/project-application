@@ -25,6 +25,7 @@ from .utils.SpiS3Boto3Storage import SpiS3Boto3Storage
 from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field, \
     management_file_validator, user_is_in_group_name
+from django.core.exceptions import ValidationError
 
 logger = logging.getLogger('project_core')
 
@@ -847,7 +848,7 @@ class Proposal(CreateModifyOn):
     history = HistoricalRecords()
 
     class Meta:
-        unique_together = (('title', 'applicant', 'call'),)
+        pass
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
@@ -978,6 +979,16 @@ class Proposal(CreateModifyOn):
 
     def reviewers(self):
         return self.reviewer_set.all().order_by('person__first_name', 'person__surname')
+
+    def clean(self):
+        # Call the parent class's clean method
+        super().clean()
+
+        # Check for unique constraint only if proposal_status_id is not 9
+        if self.proposal_status_id != 9:
+            if Proposal.objects.filter(title=self.title, applicant=self.applicant, call=self.call).exclude(
+                    id=self.id).exists():
+                raise ValidationError(_('Proposal with this Title, Applicant, and Call already exists.'))
 
 
 def cleanup_file_name(filename):
