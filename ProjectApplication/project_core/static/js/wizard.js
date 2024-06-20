@@ -163,10 +163,10 @@ $(document).ready(function () {
 
         // Geographical areas validation
         var geographicalAreas = current_fs.find("input[name='proposal_application_form-geographical_areas']:visible");
-        if (geographicalAreas.length && geographicalAreas.filter(':checked').length !== geographicalAreas.length) {
+        if (geographicalAreas.length && geographicalAreas.filter(':checked').length === 0) {
             isValid = false;
             var label = getLabelText(geographicalAreas.first());
-            showValidationError(geographicalAreas.first(), 'All ' + label + ' must be selected.');
+            showValidationError(geographicalAreas.first(), 'At least one ' + label + ' must be selected.');
         }
 
         return isValid;
