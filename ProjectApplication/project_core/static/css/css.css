@@ -549,3 +549,4 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
 .is-invalid ~ .select2-container .custom-select{
     border-color: red !important;
 }
+.cursor-pointer {cursor: pointer;}

@@ -8,7 +8,7 @@ $(document).ready(function () {
         var errorMessages = []; // Array to store error messages
 
         // Check each required field
-        $("input[name='proposal_application_form-title'], input[name='person_form-orcid'], input[name='person_form-first_name'], input[name='person_form-surname'], select[name='person_form-academic_title'], select[name='person_form-gender'], input[name='person_form-career_stage'], input[name='person_form-email'], input[name='person_form-phone'], select[name='person_form-organisation_names'], input[name='postal_address_form-address'], input[name='postal_address_form-city'], input[name='postal_address_form-postcode'], input[name='postal_address_form-country'], input[name='proposal_application_form-title'], input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months'], input[name='data_collection_form-privacy_policy']").each(function() {
+        $("input[name='proposal_application_form-title'], input[name='person_form-orcid'], input[name='person_form-first_name'], input[name='person_form-surname'], select[name='person_form-academic_title'], select[name='person_form-gender'], input[name='person_form-career_stage'], input[name='person_form-email'], input[name='person_form-phone'], select[name='person_form-organisation_names'], input[name='postal_address_form-address'], input[name='postal_address_form-city'], input[name='postal_address_form-postcode'], input[name='postal_address_form-country'], input[name='proposal_application_form-title'], input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months'], input[name='data_collection_form-privacy_policy']").each(function () {
             if ($(this).val() === '') {
                 var label = getLabelText($(this));
                 errorMessages.push(label + ' is required.');
@@ -18,14 +18,15 @@ $(document).ready(function () {
         // Display error messages
         if (errorMessages.length > 0) {
             var errorMessageHtml = '<ul>';
-            errorMessages.forEach(function(message) {
+            errorMessages.forEach(function (message) {
                 errorMessageHtml += '<li>' + message + '</li>';
             });
             errorMessageHtml += '</ul>';
 
             // Display error messages in a div
-            $('#error-messages').html(errorMessageHtml).css('display', 'block');;
-            $('html, body').animate({ scrollTop: 0 }, 'slow');
+            $('#error-messages').html(errorMessageHtml).css('display', 'block');
+            ;
+            $('html, body').animate({scrollTop: 0}, 'slow');
         } else {
             // Clear error messages if there are none
             $('#error-messages').html('');
@@ -268,5 +269,19 @@ $(document).ready(function () {
         storeFormData();
         $("form#dd-form").submit();
         $("#final-result").click();
+    });
+    $(".progressbar .step").click(function () {
+        var index = $(this).index();
+
+        // Remove active and finished classes from all steps
+        $(".progressbar .step").removeClass("active finished");
+        $(".top-wizard-wrapper .step").removeClass("active finished");
+
+        // Add active class to the clicked step and all previous steps
+        $(".progressbar .step").slice(0, index + 1).addClass("active finished");
+        $(".top-wizard-wrapper .step").slice(0, index + 1).addClass("active finished");
+
+        // Show the corresponding fieldset
+        $("fieldset").hide().eq(index).show();
     });
 });
