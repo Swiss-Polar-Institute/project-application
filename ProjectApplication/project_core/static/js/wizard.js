@@ -203,58 +203,52 @@ $(document).ready(function () {
 
     retrieveFormData();
 
+    function setStep(stepIndex) {
+        if (stepIndex < 0 || stepIndex >= steps) return;
+
+        // Remove active and finished classes from all steps
+        $(".progressbar .step").removeClass("active finished");
+        $(".top-wizard-wrapper .step").removeClass("active finished");
+
+        // Add active class to the clicked step and all previous steps
+        $(".progressbar .step").slice(0, stepIndex + 1).addClass("active finished");
+        $(".top-wizard-wrapper .step").slice(0, stepIndex + 1).addClass("active finished");
+
+        // Hide all fieldsets and show the target fieldset with animation
+        $("fieldset").css({ 'display': 'none', 'position': 'relative', 'opacity': 0 });
+        $("fieldset").eq(stepIndex).css({ 'display': 'block' }).animate({
+          opacity: 1
+        }, 500);
+    }
+
     $(".next").click(function () {
         current_fs = $(this).closest('fieldset');
         next_fs = $(this).closest('fieldset').next();
 
-        next_fs.show();
-
-        current_fs.animate({
-            opacity: 0
-        }, {
-            step: function (now) {
-                opacity = 1 - now;
-                current_fs.css({
-                    'display': 'none',
-                    'position': 'relative'
-                });
-                next_fs.css({
-                    'opacity': opacity
-                });
-            },
-            duration: 500,
-            complete: function () {
-                if ($("fieldset").index(next_fs) === steps - 1) {
-                    populateSummary();
-                }
-            }
-        });
+        if (next_fs.length) {
+          var nextIndex = $("fieldset").index(next_fs);
+          setStep(nextIndex);
+          populateSummary();
+        }
     });
 
     $(".previous").click(function () {
         current_fs = $(this).closest('fieldset');
         previous_fs = $(this).closest('fieldset').prev();
 
-        previous_fs.show();
-
+        if (previous_fs.length) {
+          var prevIndex = $("fieldset").index(previous_fs);
+          setStep(prevIndex);
+        }
         retrieveFormData();
-
-        current_fs.animate({
-            opacity: 0
-        }, {
-            step: function (now) {
-                opacity = 1 - now;
-                current_fs.css({
-                    'display': 'none',
-                    'position': 'relative'
-                });
-                previous_fs.css({
-                    'opacity': opacity
-                });
-            },
-            duration: 500
-        });
     });
+
+    $(".progressbar .step, .top-wizard-wrapper .step").click(function() {
+        var index = $(this).index();
+        setStep(index);
+      });
+
+
 
     $(document).on('click', '.submit_btn', function (e) {
         e.preventDefault();
@@ -270,18 +264,5 @@ $(document).ready(function () {
         $("form#dd-form").submit();
         $("#final-result").click();
     });
-    $(".progressbar .step").click(function () {
-        var index = $(this).index();
-
-        // Remove active and finished classes from all steps
-        $(".progressbar .step").removeClass("active finished");
-        $(".top-wizard-wrapper .step").removeClass("active finished");
-
-        // Add active class to the clicked step and all previous steps
-        $(".progressbar .step").slice(0, index + 1).addClass("active finished");
-        $(".top-wizard-wrapper .step").slice(0, index + 1).addClass("active finished");
-
-        // Show the corresponding fieldset
-        $("fieldset").hide().eq(index).show();
-    });
+    setStep(0);
 });
