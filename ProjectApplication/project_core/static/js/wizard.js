@@ -45,19 +45,25 @@ $(document).ready(function () {
                 if (input.is('select')) {
                     var selectedOptionText = input.find('option:selected').text();
                     localStorage.setItem(name, selectedOptionText);
-                } else if (input.is(':checkbox') || input.is(':radio')) {
+                } else if (input.is(':checkbox')) {
+                    localStorage.setItem(name + '_checked', input.is(':checked') ? 'true' : 'false');
+                    if (input.is(':checked')) {
+                        localStorage.setItem(name, input.val());
+                    }
+                } else if (input.is(':radio')) {
                     if (input.is(':checked')) {
                         localStorage.setItem(name, input.val());
                         localStorage.setItem(name + '_checked', 'true');
-                    } else {
-                        localStorage.setItem(name + '_checked', 'false');
                     }
+                } else if (input.is('textarea')) {
+                    localStorage.setItem(name, input.val());
                 } else {
                     localStorage.setItem(name, input.val());
                 }
             }
         });
     }
+
 
     function retrieveFormData() {
         $("fieldset:visible :input").each(function () {
@@ -140,7 +146,7 @@ $(document).ready(function () {
         });
 
         // ORCID specific validation
-        var orcidInput = current_fs.find("input[name='person_form-orcid']");
+        var orcidInput = "input[name='person_form-orcid']";
         if (orcidInput.length) {
             var orcidValue = orcidInput.val();
             if (!validateOrcid(orcidValue)) {
@@ -151,7 +157,7 @@ $(document).ready(function () {
         }
 
         // Keywords validation
-        var keywordsInput = current_fs.find("select[name='proposal_application_form-keywords']");
+        var keywordsInput = "select[name='proposal_application_form-keywords']";
         if (keywordsInput.length) {
             var selectedKeywords = keywordsInput.find("option:selected");
             if (selectedKeywords.length < 5) {
@@ -204,6 +210,7 @@ $(document).ready(function () {
     retrieveFormData();
 
     function setStep(stepIndex) {
+        storeFormData();
         if (stepIndex < 0 || stepIndex >= steps) return;
 
         // Remove active and finished classes from all steps
@@ -222,15 +229,19 @@ $(document).ready(function () {
     }
 
     $(".next").click(function () {
-        current_fs = $(this).closest('fieldset');
-        next_fs = $(this).closest('fieldset').next();
+    current_fs = $(this).closest('fieldset');
+    next_fs = $(this).closest('fieldset').next();
 
-        if (next_fs.length) {
-          var nextIndex = $("fieldset").index(next_fs);
-          setStep(nextIndex);
-          populateSummary();
+    if (next_fs.length) {
+        var nextIndex = $("fieldset").index(next_fs);
+        setStep(nextIndex);
+
+        // Populate summary when reaching the last step
+        if (nextIndex === steps - 1) {
+            populateSummary();
         }
-    });
+    }
+});
 
     $(".previous").click(function () {
         current_fs = $(this).closest('fieldset');
@@ -260,7 +271,6 @@ $(document).ready(function () {
         }
 
         // If no errors, proceed with form submission
-        storeFormData();
         $("form#dd-form").submit();
         $("#final-result").click();
     });
