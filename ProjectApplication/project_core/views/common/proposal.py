@@ -419,6 +419,7 @@ class AbstractProposalView(TemplateView):
 
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
+
         forms_to_validate = [person_form, postal_address_form, proposal_form]
 
         if call.other_funding_question:

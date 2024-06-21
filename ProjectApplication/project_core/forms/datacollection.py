@@ -24,7 +24,7 @@ class DataCollectionForm(Form):
                                                                   'If your proposal is selected for funding, your data will also be used '
                                                                   'for the administration of your project and may contribute to '
                                                                   'scientific metadata for the project.',
-                                                           label='I agree to my personal data being saved by SPI for the administration of my proposal')
+                                                           label='I agree to my personal data being saved by SPI for the administration of my proposal', required=False)
 
         # self.fields['contact_newsletter'] = forms.BooleanField(initial=contact_newsletter_initial,
         #                                                        help_text='By ticking this box you agree to receiving '

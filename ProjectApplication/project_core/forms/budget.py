@@ -56,26 +56,26 @@ class BudgetItemForm(forms.Form):
 
         category = BudgetCategory.objects.get(id=cleaned_data['category'])
 
-        if 'amount' not in cleaned_data:
-            self.add_error('amount', 'Please write a number (do not use thousands separator if you have a problem)')
-            valid_amount = False
-            amount = None
-        else:
-            valid_amount = True
-            amount = cleaned_data['amount']
-
-        details = cleaned_data['details'] or ''
-
-        if valid_amount:
-            if amount is not None:
-                if details == '' and amount > 0:
-                    self.add_error('details', 'Please fill in details for {}'.format(category))
-                elif amount < 0:
-                    self.add_error('amount', 'Cannot be negative {}'.format(category))
-
-            else:
-                if details != '':
-                    self.add_error('amount', 'Please declare a budget amount for {}'.format(category))
+        # if 'amount' not in cleaned_data:
+        #     self.add_error('amount', 'Please write a number (do not use thousands separator if you have a problem)')
+        #     valid_amount = False
+        #     amount = None
+        # else:
+        #     valid_amount = True
+        #     amount = cleaned_data['amount']
+        #
+        # details = cleaned_data['details'] or ''
+        #
+        # if valid_amount:
+        #     if amount is not None:
+        #         if details == '' and amount > 0:
+        #             self.add_error('details', 'Please fill in details for {}'.format(category))
+        #         elif amount < 0:
+        #             self.add_error('amount', 'Cannot be negative {}'.format(category))
+        #
+        #     else:
+        #         if details != '':
+        #             self.add_error('amount', 'Please declare a budget amount for {}'.format(category))
 
         return cleaned_data
 

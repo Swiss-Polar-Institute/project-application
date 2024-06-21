@@ -591,7 +591,7 @@ class PersonPosition(CreateModifyOn):
     """Information about a person that may change as they move through their career."""
 
     person = models.ForeignKey(PhysicalPerson, help_text='A unique physical person', on_delete=models.PROTECT)
-    academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', on_delete=models.PROTECT)
+    academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', on_delete=models.SET_NULL, null=True, blank=True)
     career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career',
                                      on_delete=models.PROTECT, blank=True, null=True)
     organisation_names = models.ManyToManyField(OrganisationName, help_text='Organisation(s) represented by the person')
@@ -804,14 +804,14 @@ class Proposal(CreateModifyOn):
     )
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
-    title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=True)
+    title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=True, null=True)
     postal_address = models.ForeignKey(PostalAddress,
                                        help_text='Address to where the grant agreement is going to be sent',
                                        null=True, blank=True,
                                        on_delete=models.PROTECT)
-    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the proposal', blank=True)
+    keywords = models.ManyToManyField(Keyword, help_text='Keywords that describe the proposal', blank=True, null=True)
     geographical_areas = models.ManyToManyField(GeographicalArea,
-                                                help_text='Geographical area(s) covered by the proposal', blank=True)
+                                                help_text='Geographical area(s) covered by the proposal', blank=True, null=True)
     location = models.CharField(
         help_text='Name of more precise location of where proposal would take place (not coordinates)',
         max_length=200, blank=True, null=True)
@@ -1109,7 +1109,7 @@ class FundingItem(models.Model):
                                           help_text='Name of organisation from which the funding is sourced',
                                           on_delete=models.PROTECT)
     funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding',
-                                       on_delete=models.PROTECT)
+                                       on_delete=models.PROTECT, null=True, blank=True)
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10,
                                  validators=[MinValueValidator(0)])
 

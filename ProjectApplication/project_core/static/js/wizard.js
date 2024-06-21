@@ -4,29 +4,32 @@ $(document).ready(function () {
     var current = 1;
     var steps = $("fieldset").length;
 
-    function addvalidation() {
-        $("fieldset:hidden input").removeAttr("required");
-        $("fieldset:hidden select").removeAttr("required");
-        $("fieldset:hidden textarea").removeAttr("required");
-        $("input[name='proposal_application_form-title']:visible").attr("required", "required");
-        $("input[name='person_form-orcid']:visible").attr("required", "required");
-        $("input[name='person_form-first_name']:visible").attr("required", "required");
-        $("input[name='person_form-surname']:visible").attr("required", "required");
-        $("select[name='person_form-academic_title']:visible").attr("required", "required");
-        $("select[name='person_form-gender']:visible").attr("required", "required");
-        $("input[name='person_form-career_stage']:visible").attr("required", "required");
-        $("input[name='person_form-email']:visible").attr("required", "required");
-        $("input[name='person_form-phone']:visible").attr("required", "required");
-        $("select[name='person_form-organisation_names']:visible").attr("required", "required");
-        $("input[name='postal_address_form-address']:visible").attr("required", "required");
-        $("input[name='postal_address_form-city']:visible").attr("required", "required");
-        $("input[name='postal_address_form-postcode']:visible").attr("required", "required");
-        $("input[name='postal_address_form-country']:visible").attr("required", "required");
-        $("input[name='proposal_application_form-title']:visible").attr("required", "required");
-        $("input[name='proposal_application_form-start_date']:visible").attr("required", "required");
-        $("input[name='proposal_application_form-end_date']:visible").attr("required", "required");
-        $("input[name='proposal_application_form-duration_months']:visible").attr("required", "required");
-        $("input[name='data_collection_form-privacy_policy']:visible").attr("required", "required");
+    function addValidation() {
+        var errorMessages = []; // Array to store error messages
+
+        // Check each required field
+        $("input[name='proposal_application_form-title'], input[name='person_form-orcid'], input[name='person_form-first_name'], input[name='person_form-surname'], select[name='person_form-academic_title'], select[name='person_form-gender'], input[name='person_form-career_stage'], input[name='person_form-email'], input[name='person_form-phone'], select[name='person_form-organisation_names'], input[name='postal_address_form-address'], input[name='postal_address_form-city'], input[name='postal_address_form-postcode'], input[name='postal_address_form-country'], input[name='proposal_application_form-title'], input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months'], input[name='data_collection_form-privacy_policy']").each(function() {
+            if ($(this).val() === '') {
+                var label = getLabelText($(this));
+                errorMessages.push(label + ' is required.');
+            }
+        });
+
+        // Display error messages
+        if (errorMessages.length > 0) {
+            var errorMessageHtml = '<ul>';
+            errorMessages.forEach(function(message) {
+                errorMessageHtml += '<li>' + message + '</li>';
+            });
+            errorMessageHtml += '</ul>';
+
+            // Display error messages in a div
+            $('#error-messages').html(errorMessageHtml).css('display', 'block');;
+            $('html, body').animate({ scrollTop: 0 }, 'slow');
+        } else {
+            // Clear error messages if there are none
+            $('#error-messages').html('');
+        }
     }
 
     function storeFormData() {
@@ -69,11 +72,7 @@ $(document).ready(function () {
                             }
                         });
                     } else if (input.is(':checkbox') || input.is(':radio')) {
-                        if (localStorage.getItem(name + '_checked') === 'true') {
-                            input.prop('checked', true);
-                        } else {
-                            input.prop('checked', false);
-                        }
+                        input.prop('checked', localStorage.getItem(name + '_checked') === 'true');
                     } else {
                         input.val(value);
                     }
@@ -151,7 +150,7 @@ $(document).ready(function () {
         }
 
         // Keywords validation
-        var keywordsInput = current_fs.find("select[name='proposal_application_form-keywords']:visible");
+        var keywordsInput = current_fs.find("select[name='proposal_application_form-keywords']");
         if (keywordsInput.length) {
             var selectedKeywords = keywordsInput.find("option:selected");
             if (selectedKeywords.length < 5) {
@@ -162,7 +161,7 @@ $(document).ready(function () {
         }
 
         // Geographical areas validation
-        var geographicalAreas = current_fs.find("input[name='proposal_application_form-geographical_areas']:visible");
+        var geographicalAreas = current_fs.find("input[name='proposal_application_form-geographical_areas']");
         if (geographicalAreas.length && geographicalAreas.filter(':checked').length === 0) {
             isValid = false;
             var label = getLabelText(geographicalAreas.first());
@@ -207,63 +206,33 @@ $(document).ready(function () {
         current_fs = $(this).closest('fieldset');
         next_fs = $(this).closest('fieldset').next();
 
-        if (!validateCurrentFieldset()) {
-            return;
-        }
+        next_fs.show();
 
-        // Check for duplicate proposal before proceeding
-        checkDuplicateProposal(function (isDuplicateFree) {
-            if (!isDuplicateFree) {
-                return;
-            }
-
-            storeFormData();
-
-            $(".progressbar .step").eq($("fieldset").index(next_fs)).addClass("active");
-            $(".top-wizard-wrapper .step").eq($("fieldset").index(next_fs)).addClass("active");
-
-            var completedStepTop = $(".top-wizard-wrapper .step").eq($("fieldset").index(next_fs) - 1);
-            var completedStep = $(".progressbar .step").eq($("fieldset").index(next_fs) - 1);
-            completedStepTop.addClass("finished");
-            completedStep.addClass("finished");
-
-            next_fs.show();
-
-            current_fs.animate({
-                opacity: 0
-            }, {
-                step: function (now) {
-                    opacity = 1 - now;
-                    current_fs.css({
-                        'display': 'none',
-                        'position': 'relative'
-                    });
-                    next_fs.css({
-                        'opacity': opacity
-                    });
-                },
-                duration: 500,
-                complete: function () {
-                    addvalidation();
-                    if ($("fieldset").index(next_fs) === steps - 1) {
-                        populateSummary();
-                    }
+        current_fs.animate({
+            opacity: 0
+        }, {
+            step: function (now) {
+                opacity = 1 - now;
+                current_fs.css({
+                    'display': 'none',
+                    'position': 'relative'
+                });
+                next_fs.css({
+                    'opacity': opacity
+                });
+            },
+            duration: 500,
+            complete: function () {
+                if ($("fieldset").index(next_fs) === steps - 1) {
+                    populateSummary();
                 }
-            });
+            }
         });
     });
 
     $(".previous").click(function () {
         current_fs = $(this).closest('fieldset');
         previous_fs = $(this).closest('fieldset').prev();
-
-        $(".progressbar .step").eq($("fieldset").index(current_fs)).removeClass("active");
-        $(".top-wizard-wrapper .step").eq($("fieldset").index(current_fs)).removeClass("active");
-
-        var completedStepTop = $(".top-wizard-wrapper .step").eq($("fieldset").index(current_fs) - 1);
-        var completedStep = $(".progressbar .step").eq($("fieldset").index(current_fs) - 1);
-        completedStepTop.removeClass("finished");
-        completedStep.removeClass("finished");
 
         previous_fs.show();
 
@@ -284,21 +253,19 @@ $(document).ready(function () {
             },
             duration: 500
         });
-        addvalidation();
     });
 
-    function beforeSubmitActions() {
-        $("fieldset:hidden input").removeAttr("required");
-        $("fieldset:hidden select").removeAttr("required");
-        $("fieldset:hidden textarea").removeAttr("required");
-    }
+    $(document).on('click', '.submit_btn', function (e) {
+        e.preventDefault();
+        addValidation(); // Call addValidation directly
 
-    $(document).on('click', '.savedraft', function () {
-        if (!validateCurrentFieldset()) {
+        if ($('#error-messages').html().trim() !== '') {
+            // If there are error messages, return without submitting the form
             return;
         }
-        beforeSubmitActions();
-        localStorage.clear();
+
+        // If no errors, proceed with form submission
+        storeFormData();
         $("form#dd-form").submit();
         $("#final-result").click();
     });

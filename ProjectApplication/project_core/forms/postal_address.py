@@ -7,11 +7,16 @@ from ..models import PostalAddress, Country
 
 class PostalAddressForm(ModelForm):
     def __init__(self, *args, **kwargs):
+        self._all_fields_are_optional = kwargs.pop('all_fields_are_optional', True)
         super().__init__(*args, **kwargs)
 
         self.fields['address'].widget.attrs['rows'] = 7
         self.fields['country'].queryset = self.fields['country'].queryset.order_by('name')
         self.fields['country'].initial = Country.objects.get(name='Switzerland')
+
+        if self._all_fields_are_optional:
+            for field in self.fields.values():
+                field.required = False
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False

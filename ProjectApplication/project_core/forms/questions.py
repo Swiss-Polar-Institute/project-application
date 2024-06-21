@@ -44,11 +44,13 @@ class Questions(Form):
                 if question.answer_max_length:
                     question_text += ' (maximum {} words)'.format(question.answer_max_length)
 
-                self.fields['question_{}'.format(question.pk)] = forms.CharField(label=question_text,
-                                                                                 widget=CKEditorUploadingWidget(),
-                                                                                 initial=answer,
-                                                                                 help_text=question.question_description,
-                                                                                 required=question.answer_required)
+                self.fields['question_{}'.format(question.pk)] = forms.CharField(
+                    label=question_text,
+                    widget=CKEditorUploadingWidget(),
+                    initial=answer,
+                    help_text=question.question_description,
+                    required=False  # Set required to False here
+                )
 
                 self._questions_answers_text.append({'question': question, 'answer': answer})
 
@@ -57,36 +59,37 @@ class Questions(Form):
 
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
-                # TODO: refactor to avoid repetition
-                self.fields['question_{}'.format(question.pk)] = forms.FileField(label=question.question_text,
-                                                                                 help_text=question.question_description,
-                                                                                 initial=file,
-                                                                                 required=question.answer_required,
-                                                                                 validators=[*external_file_validator()])
-
+                self.fields[question_label] = forms.FileField(
+                    label=question.question_text,
+                    help_text=question.question_description,
+                    initial=file,
+                    required=False  # Set required to False here
+                )
             except ObjectDoesNotExist:
                 question_label_with_prefix = kwargs['prefix'] + '-' + question_label
 
                 if question_label_with_prefix in self.files:
-                    # TODO: refactor to avoid repetition
-                    self.fields[question_label] = forms.FileField(label=question.question_text,
-                                                                  help_text=question.question_description,
-                                                                  initial=self.files[question_label_with_prefix],
-                                                                  required=question.answer_required,
-                                                                  validators=[*external_file_validator()])
+                    self.fields[question_label] = forms.FileField(
+                        label=question.question_text,
+                        help_text=question.question_description,
+                        initial=self.files[question_label_with_prefix],
+                        required=False  # Set required to False here
+                    )
                 else:
-                    # TODO: refactor to avoid repetition
-                    self.fields[question_label] = forms.FileField(label=question.question_text,
-                                                                  help_text=question.question_description,
-                                                                  required=question.answer_required,
-                                                                  validators=[*external_file_validator()])
+                    self.fields[question_label] = forms.FileField(
+                        label=question.question_text,
+                        help_text=question.question_description,
+                        required=False  # Set required to False here
+                    )
 
-            self._questions_answers_file.append({'question': question,
-                                                 'answer': self.fields[question_label].initial}
-                                                )
+            self._questions_answers_file.append({'question': question, 'answer': self.fields[question_label].initial})
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
+
+        # Set required to False for all fields
+        for field in self.fields.values():
+            field.required = False
 
     def questions_answers_text(self):
         return self._questions_answers_text
@@ -97,7 +100,14 @@ class Questions(Form):
     def save_answers(self, proposal):
         all_good = True
 
-        for question, answer in self.cleaned_data.items():
+        if not self.is_bound:
+            logger.warning(f"Form is not bound")
+            return False
+
+        self.full_clean()  # Ensure the form is cleaned to populate cleaned_data
+
+        for question in self.fields:
+            answer = self.cleaned_data.get(question)
             call_question = CallQuestion.objects.get(id=int(question[len('question_'):]))
 
             if call_question.answer_type == CallQuestion.TEXT:
@@ -107,9 +117,6 @@ class Questions(Form):
                 )
             elif call_question.answer_type == CallQuestion.FILE:
                 if not answer:
-                    # Probably the user had uploaded an optional File,
-                    # then editting the draft the user clicked on "Clear"
-                    # now we should delete this file
                     file_to_delete = None
                     try:
                         file_to_delete = ProposalQAFile.objects.get(proposal=proposal, call_question=call_question)
@@ -118,14 +125,14 @@ class Questions(Form):
 
                     if file_to_delete:
                         file_to_delete.delete()
-
                 else:
                     if '/' not in answer.name:
                         answer.name = f'{self._call.id}-{proposal.id}-{answer.name}'
                     try:
                         ProposalQAFile.objects.update_or_create(
                             proposal=proposal, call_question=call_question,
-                            defaults={'file': answer})
+                            defaults={'file': answer}
+                        )
                     except EndpointConnectionError:
                         all_good = False
                         logger.warning(
@@ -140,8 +147,6 @@ class Questions(Form):
     def clean(self):
         cleaned_data = super().clean()
 
-        # list because otherwise dictionary size changes during execution
-        # (need to check why exactly)
         for question_number in list(cleaned_data.keys()):
             question_id = question_number[len('question_'):]
 
@@ -154,8 +159,10 @@ class Questions(Form):
                 current_words = len(answer.split())
 
                 if max_word_length is not None and current_words > max_word_length:
-                    self.add_error(question_number,
-                                   'Too long. Current: {} words, maximum: {} words'.format(current_words,
-                                                                                           max_word_length))
+                    self.add_error(
+                        question_number,
+                        'Too long. Current: {} words, maximum: {} words'.format(current_words, max_word_length)
+                    )
 
         return cleaned_data
+

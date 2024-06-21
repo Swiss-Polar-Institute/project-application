@@ -23,7 +23,7 @@ class PersonForm(Form):
     def __init__(self, *args, **kwargs):
         self.person_position = kwargs.pop('person_position', None)
         self._only_basic_fields = kwargs.pop('only_basic_fields', False)
-        self._all_fields_are_optional = kwargs.pop('all_fields_are_optional', False)
+        self._all_fields_are_optional = kwargs.pop('all_fields_are_optional', True)
         help_texts = kwargs.pop('help_texts', {})
         career_stage_queryset = kwargs.pop('career_stages_queryset', None)
 
@@ -215,15 +215,15 @@ class PersonForm(Form):
             return cd
 
         # If ORCID iD is filled in: other fields are mandatory
-        if self._all_fields_are_optional and cd['orcid']:
-            for field_str, field in self.fields.items():
-                if field_str not in cd or not cd[field_str]:  # It needs to be in cd and have a value
-                    self.add_error(field_str, 'Mandatory field if ORCiD iD is filled in')
-
-        if self._all_fields_are_optional and not cd['orcid']:
-            for field_str, field in self.fields.items():
-                if field_str in cd and cd[field_str]:
-                    self.add_error(field_str, 'It cannot contain any information if ORCiD ID is empty')
+        # if self._all_fields_are_optional and cd['orcid']:
+        #     for field_str, field in self.fields.items():
+        #         if field_str not in cd or not cd[field_str]:  # It needs to be in cd and have a value
+        #             self.add_error(field_str, 'Mandatory field if ORCiD iD is filled in')
+        #
+        # if self._all_fields_are_optional and not cd['orcid']:
+        #     for field_str, field in self.fields.items():
+        #         if field_str in cd and cd[field_str]:
+        #             self.add_error(field_str, 'It cannot contain any information if ORCiD ID is empty')
 
         return cd
 
