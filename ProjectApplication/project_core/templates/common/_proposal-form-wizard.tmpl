@@ -45,22 +45,31 @@
         <h2 class="section-title" style="margin-bottom: 50px;">Application Form</h2>
 
         <div class="top-wizard-wrapper">
-              <div class="step active">
+            <div class="step active">
                 <span>1. Applicant</span>
-              </div>
-              <div class="step">
+            </div>
+            <div class="step">
                 <span>2. Proposed Projects</span>
-              </div>
-              <div class="step">
+            </div>
+            <div class="step">
                 <span>3. Budget Request</span>
-              </div>
-              <div class="step">
-                <span>4. Custom Part</span>
-              </div>
-              <div class="step">
-                <span>5. Summary</span>
-              </div>
+            </div>
+            {% if extra_parts %}
+                {% for part in extra_parts %}
+                    <div class="step">
+                        <span>{{ forloop.counter|add:"3" }}. {{ part.title_rendered }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="step">
+                {% if extra_parts %}
+                    <span>{{ extra_parts|length|add:"4" }}. Summary</span>
+                {% else %}
+                    <span>4. Summary</span>
+                {% endif %}
+            </div>
         </div>
+
 <form action="{{ proposal_action_url }}" enctype="multipart/form-data" method="post" id="dd-form">
 <div class="step-wizard-wrapper">
    <div class="progressbar-wrapper">
@@ -78,13 +87,15 @@
             <span class="cursor-pointer">3. Budget Request</span>
           </div>
           {% if extra_parts %}
+           {% for part in extra_parts %}
               <div class="step">
                 <span class="bullet"></span>
-                <span class="cursor-pointer">4. Custom Part</span>
+                <span class="cursor-pointer">{{ forloop.counter|add:"3" }}. {{ part.title_rendered }}</span>
               </div>
+          {% endfor %}
               <div class="step">
                 <span class="bullet"></span>
-                <span class="cursor-pointer">5. Summary</span>
+                <span class="cursor-pointer">{{ extra_parts|length|add:"4" }}. Summary</span>
               </div>
           {% else %}
               <div class="step">
@@ -154,14 +165,13 @@
         </div>
       </fieldset>
      {% if extra_parts %}
+     {% for part in extra_parts %}
      <fieldset>
         <div class="form-fields-wrapper">
-            {% for part in extra_parts %}
-                <h2>Custom Part</h2>
+                <h2>Part {{ part.heading_number }}: {{ part.title_rendered }}</h2>
                 <div class="pre-wrap">{{ part.introductory_text|safe }}</div>
                 {% include 'common/_proposal_list_files.tmpl' with call_part=part only %}
                 {% include 'common/_form-dynamic_questions.tmpl' with questions_form=part.questions_form %}
-            {% endfor %}
         </div>
         <div class="action-btn">
           <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
@@ -169,6 +179,7 @@
           <input type="button" name="next" class="btn btn-primary next" value="Next">
         </div>
       </fieldset>
+      {% endfor %}
       {% endif %}
 
       <fieldset>
