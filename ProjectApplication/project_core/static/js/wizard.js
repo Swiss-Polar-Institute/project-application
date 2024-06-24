@@ -174,30 +174,30 @@ $(document).ready(function () {
         return label;
     }
 
-    function validateCurrentFieldset() {
-        current_fs = $(".next:visible").closest('fieldset');
-        next_fs = $(".next:visible").closest('fieldset').next();
-        var isValid = true;
-        clearValidationErrors();
-
-        current_fs.find(":input[required]").each(function () {
-            if (!this.checkValidity()) {
-                isValid = false;
-                var label = getLabelText($(this));
-                showValidationError($(this), label + ' is required.');
-            }
-        });
-
-        // Geographical areas validation
-        var geographicalAreas = current_fs.find("input[name='proposal_application_form-geographical_areas']");
-        if (geographicalAreas.length && geographicalAreas.filter(':checked').length === 0) {
-            isValid = false;
-            var label = getLabelText(geographicalAreas.first());
-            showValidationError(geographicalAreas.first(), 'At least one ' + label + ' must be selected.');
-        }
-
-        return isValid;
-    }
+    // function validateCurrentFieldset() {
+    //     current_fs = $(".next:visible").closest('fieldset');
+    //     next_fs = $(".next:visible").closest('fieldset').next();
+    //     var isValid = true;
+    //     clearValidationErrors();
+    //
+    //     current_fs.find(":input[required]").each(function () {
+    //         if (!this.checkValidity()) {
+    //             isValid = false;
+    //             var label = getLabelText($(this));
+    //             showValidationError($(this), label + ' is required.');
+    //         }
+    //     });
+    //
+    //     // Geographical areas validation
+    //     var geographicalAreas = current_fs.find("input[name='proposal_application_form-geographical_areas']");
+    //     if (geographicalAreas.length && geographicalAreas.filter(':checked').length === 0) {
+    //         isValid = false;
+    //         var label = getLabelText(geographicalAreas.first());
+    //         showValidationError(geographicalAreas.first(), 'At least one ' + label + ' must be selected.');
+    //     }
+    //
+    //     return isValid;
+    // }
 
     retrieveFormData();
 
@@ -249,6 +249,7 @@ $(document).ready(function () {
     $(".progressbar .step, .top-wizard-wrapper .step").click(function () {
         var index = $(this).index();
         setStep(index);
+        populateSummary();
     });
 
 
