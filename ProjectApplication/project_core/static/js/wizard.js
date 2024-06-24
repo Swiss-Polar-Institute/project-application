@@ -14,7 +14,55 @@ $(document).ready(function () {
                 errorMessages.push(label + ' is required.');
             }
         });
+        var keywordsInput = $("select[name='proposal_application_form-keywords']");
+        if (keywordsInput.length) {
+            var selectedKeywords = keywordsInput.find("option:selected");
+            if (selectedKeywords.length < 5) {
+                var label = getLabelText(keywordsInput);
+                errorMessages.push('Please enter at least 5 ' + label + '.');
+            }
+        }
 
+        function validateOrcid(orcid) {
+            var orcidRegex = /^(\d{4}-){3}\d{4}$/;
+            return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097";
+        }
+
+        var orcidInput = $("input[name='person_form-orcid']");
+        if (orcidInput.length) {
+            var orcidValue = orcidInput.val();
+            if (!validateOrcid(orcidValue)) {
+                var label = getLabelText(orcidInput);
+                errorMessages.push(orcidInput, 'Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.');
+            }
+        }
+
+        function checkDuplicateProposal(callback) {
+            var proposalTitle = $("input[name='proposal_title']").val();
+            var applicantId = $("input[name='applicant_id']").val();
+            var callId = $("input[name='call_id']").val();
+
+            $.ajax({
+                url: '/check_duplicate_proposal/',  // URL to check for duplicates
+                data: {
+                    'proposal_title': proposalTitle,
+                    'applicant_id': applicantId,
+                    'call_id': callId
+                },
+                success: function (data) {
+                    if (data.exists) {
+                        var proposalTitleInput = $("input[name='proposal_title']");
+                        var label = getLabelText(proposalTitleInput);
+                        errorMessages.push(proposalTitleInput, 'A proposal with this ' + label + ' already exists.');
+                    } else {
+                    }
+                },
+                error: function () {
+                    alert('Error checking for duplicate proposals.');
+                }
+            });
+        }
+        checkDuplicateProposal();
         // Display error messages
         if (errorMessages.length > 0) {
             var errorMessageHtml = '<ul>';
@@ -110,11 +158,6 @@ $(document).ready(function () {
         $('#summary-content').html(summaryHtml);
     }
 
-    function validateOrcid(orcid) {
-        var orcidRegex = /^(\d{4}-){3}\d{4}$/;
-        return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097";
-    }
-
     function clearValidationErrors() {
         $(".is-invalid").removeClass("is-invalid");
         $(".invalid-feedback").remove();
@@ -145,28 +188,6 @@ $(document).ready(function () {
             }
         });
 
-        // ORCID specific validation
-        var orcidInput = "input[name='person_form-orcid']";
-        if (orcidInput.length) {
-            var orcidValue = orcidInput.val();
-            if (!validateOrcid(orcidValue)) {
-                isValid = false;
-                var label = getLabelText(orcidInput);
-                showValidationError(orcidInput, 'Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.');
-            }
-        }
-
-        // Keywords validation
-        var keywordsInput = "select[name='proposal_application_form-keywords']";
-        if (keywordsInput.length) {
-            var selectedKeywords = keywordsInput.find("option:selected");
-            if (selectedKeywords.length < 5) {
-                isValid = false;
-                var label = getLabelText(keywordsInput);
-                showValidationError(keywordsInput, 'Please enter at least 5 ' + label + '.');
-            }
-        }
-
         // Geographical areas validation
         var geographicalAreas = current_fs.find("input[name='proposal_application_form-geographical_areas']");
         if (geographicalAreas.length && geographicalAreas.filter(':checked').length === 0) {
@@ -176,35 +197,6 @@ $(document).ready(function () {
         }
 
         return isValid;
-    }
-
-    function checkDuplicateProposal(callback) {
-        var proposalTitle = $("input[name='proposal_title']").val();
-        var applicantId = $("input[name='applicant_id']").val();
-        var callId = $("input[name='call_id']").val();
-
-        $.ajax({
-            url: '/check_duplicate_proposal/',  // URL to check for duplicates
-            data: {
-                'proposal_title': proposalTitle,
-                'applicant_id': applicantId,
-                'call_id': callId
-            },
-            success: function (data) {
-                if (data.exists) {
-                    var proposalTitleInput = $("input[name='proposal_title']");
-                    var label = getLabelText(proposalTitleInput);
-                    showValidationError(proposalTitleInput, 'A proposal with this ' + label + ' already exists.');
-                    callback(false);
-                } else {
-                    callback(true);
-                }
-            },
-            error: function () {
-                alert('Error checking for duplicate proposals.');
-                callback(false);
-            }
-        });
     }
 
     retrieveFormData();
@@ -222,43 +214,42 @@ $(document).ready(function () {
         $(".top-wizard-wrapper .step").slice(0, stepIndex + 1).addClass("active finished");
 
         // Hide all fieldsets and show the target fieldset with animation
-        $("fieldset").css({ 'display': 'none', 'position': 'relative', 'opacity': 0 });
-        $("fieldset").eq(stepIndex).css({ 'display': 'block' }).animate({
-          opacity: 1
+        $("fieldset").css({'display': 'none', 'position': 'relative', 'opacity': 0});
+        $("fieldset").eq(stepIndex).css({'display': 'block'}).animate({
+            opacity: 1
         }, 500);
     }
 
     $(".next").click(function () {
-    current_fs = $(this).closest('fieldset');
-    next_fs = $(this).closest('fieldset').next();
+        current_fs = $(this).closest('fieldset');
+        next_fs = $(this).closest('fieldset').next();
 
-    if (next_fs.length) {
-        var nextIndex = $("fieldset").index(next_fs);
-        setStep(nextIndex);
+        if (next_fs.length) {
+            var nextIndex = $("fieldset").index(next_fs);
+            setStep(nextIndex);
 
-        // Populate summary when reaching the last step
-        if (nextIndex === steps - 1) {
-            populateSummary();
+            // Populate summary when reaching the last step
+            if (nextIndex === steps - 1) {
+                populateSummary();
+            }
         }
-    }
-});
+    });
 
     $(".previous").click(function () {
         current_fs = $(this).closest('fieldset');
         previous_fs = $(this).closest('fieldset').prev();
 
         if (previous_fs.length) {
-          var prevIndex = $("fieldset").index(previous_fs);
-          setStep(prevIndex);
+            var prevIndex = $("fieldset").index(previous_fs);
+            setStep(prevIndex);
         }
         retrieveFormData();
     });
 
-    $(".progressbar .step, .top-wizard-wrapper .step").click(function() {
+    $(".progressbar .step, .top-wizard-wrapper .step").click(function () {
         var index = $(this).index();
         setStep(index);
-      });
-
+    });
 
 
     $(document).on('click', '.submit_btn', function (e) {
