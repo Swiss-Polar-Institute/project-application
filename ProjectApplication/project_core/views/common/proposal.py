@@ -20,11 +20,14 @@ from comments.utils import comments_attachments_forms
 from evaluation.models import CallEvaluation
 from project_core.forms.applicant_role import RoleDescriptionForm
 from project_core.forms.budget import BudgetItemFormSet
+from project_core.forms.budget_application import BudgetApplicationItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
 from project_core.forms.funding import ProposalFundingItemFormSet
 from project_core.forms.partners import ProposalPartnersInlineFormSet
 from project_core.forms.person import PersonForm
+from project_core.forms.person_application import PersonApplicationForm
 from project_core.forms.postal_address import PostalAddressForm
+from project_core.forms.postal_address_application import PostalAddressApplicationForm
 from project_core.forms.project_overarching import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.proposal_application import ProposalApplicationForm
@@ -36,9 +39,12 @@ from variable_templates.utils import get_template_value_for_call, apply_template
 PROPOSAL_FORM_NAME = 'proposal_form'
 PROPOSAL_APPLICATION_FORM_NAME = 'proposal_application_form'
 PERSON_FORM_NAME = 'person_form'
+PERSON_APPLICATION_FORM_NAME = 'person_application_form'
 POSTAL_ADDRESS_FORM_NAME = 'postal_address_form'
+POSTAL_ADDRESS_APPLICATION_FORM_NAME = 'postal_address_application_form'
 QUESTIONS_FORM_NAME = 'questions_form'
 BUDGET_FORM_NAME = 'budget_form'
+BUDGET_APPLICATION_FORM_NAME = 'budget_application_form'
 FUNDING_FORM_NAME = 'funding_form'
 DATA_COLLECTION_FORM_NAME = 'data_collection_form'
 PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
@@ -187,10 +193,15 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(prefix=PERSON_FORM_NAME,
                                      person_position=proposal.applicant,
                                      career_stages_queryset=call.enabled_career_stages_queryset())
+            person_application_form = PersonApplicationForm(prefix=PERSON_APPLICATION_FORM_NAME,
+                                     person_position=proposal.applicant,
+                                     career_stages_queryset=call.enabled_career_stages_queryset())
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME, instance=proposal.postal_address)
+            postal_address_application_form = PostalAddressApplicationForm(prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME, instance=proposal.postal_address)
             scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME,
                                                                        instance=proposal)
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
+            budget_application_form = BudgetApplicationItemFormSet(proposal=proposal, prefix=BUDGET_APPLICATION_FORM_NAME)
 
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME,
                                                       instance=proposal)
@@ -239,8 +250,11 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(prefix=PERSON_FORM_NAME,
                                      only_basic_fields=False,
                                      career_stages_queryset=call.enabled_career_stages_queryset())
-
+            person_application_form = PersonApplicationForm(prefix=PERSON_APPLICATION_FORM_NAME,
+                                     only_basic_fields=False,
+                                     career_stages_queryset=call.enabled_career_stages_queryset())
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
+            postal_address_application_form = PostalAddressApplicationForm(prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
             scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
             initial_budget = []
             for budget_category in call.budgetcategorycall_set.filter(enabled=True).order_by('order',
@@ -248,6 +262,7 @@ class AbstractProposalView(TemplateView):
                 initial_budget.append({'category': budget_category.budget_category, 'amount': None, 'details': None})
 
             budget_form = BudgetItemFormSet(call=call, prefix=BUDGET_FORM_NAME, initial=initial_budget)
+            budget_application_form = BudgetApplicationItemFormSet(call=call, prefix=BUDGET_APPLICATION_FORM_NAME, initial=initial_budget)
             funding_form = ProposalFundingItemFormSet(prefix=FUNDING_FORM_NAME)
             applicant_role_description_form = RoleDescriptionForm(prefix=APPLICANT_ROLE_DESCRIPTION_FORM_NAME,
                                                                   call=call)
@@ -271,9 +286,12 @@ class AbstractProposalView(TemplateView):
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[PROPOSAL_APPLICATION_FORM_NAME] = proposal_application_form
         context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
+        context[POSTAL_ADDRESS_APPLICATION_FORM_NAME] = postal_address_application_form
         context[PERSON_FORM_NAME] = person_form
+        context[PERSON_APPLICATION_FORM_NAME] = person_application_form
         context[SCIENTIFIC_CLUSTERS_FORM_NAME] = scientific_clusters_form
         context[BUDGET_FORM_NAME] = budget_form
+        context[BUDGET_APPLICATION_FORM_NAME] = budget_application_form
         context[FUNDING_FORM_NAME] = funding_form
         context[APPLICANT_ROLE_DESCRIPTION_FORM_NAME] = applicant_role_description_form
         context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
@@ -295,7 +313,7 @@ class AbstractProposalView(TemplateView):
 
         # Optional form, depending on call.other_funding_question
         funding_form = applicant_role_description_form = proposal_partners_form = None
-        proposal_project_overarching_form = scientific_clusters_form = budget_form = None
+        proposal_project_overarching_form = scientific_clusters_form = budget_application_form = None
 
         if 'uuid' in kwargs:
             # Editing an existing proposal
@@ -346,13 +364,15 @@ class AbstractProposalView(TemplateView):
             person_form = PersonForm(request.POST, person_position=proposal.applicant,
                                      prefix=PERSON_FORM_NAME,
                                      career_stages_queryset=call.enabled_career_stages_queryset())
-            postal_address_form = PostalAddressForm(request.POST, instance=proposal.postal_address,
-                                                    prefix=POSTAL_ADDRESS_FORM_NAME)
-
+            person_application_form = PersonApplicationForm(request.POST, person_position=proposal.applicant,
+                                     prefix=PERSON_APPLICATION_FORM_NAME,
+                                     career_stages_queryset=call.enabled_career_stages_queryset())
+            postal_address_application_form = PostalAddressApplicationForm(request.POST, instance=proposal.postal_address,
+                                                    prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
             proposal_parts = ProposalParts(request.POST, request.FILES, proposal)
 
             if call.budget_requested_part():
-                budget_form = BudgetItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_FORM_NAME)
+                budget_application_form = BudgetApplicationItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_APPLICATION_FORM_NAME)
 
             if call.other_funding_question:
                 funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME,
@@ -366,7 +386,7 @@ class AbstractProposalView(TemplateView):
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        instance=proposal,
                                                                        applicant_role_description_form=applicant_role_description_form,
-                                                                       person_form=person_form,
+                                                                       person_form=person_application_form,
                                                                        form_kwargs={
                                                                            'call': proposal.call})  # TODO exclude the values
 
@@ -386,16 +406,19 @@ class AbstractProposalView(TemplateView):
         else:
             # Creating a new proposal
             proposal_form = ProposalApplicationForm(request.POST, call=call, prefix=PROPOSAL_APPLICATION_FORM_NAME)
-            postal_address_form = PostalAddressForm(request.POST, prefix=POSTAL_ADDRESS_FORM_NAME)
+            postal_address_application_form = PostalAddressApplicationForm(request.POST, prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
 
             proposal_parts = ProposalParts(request.POST, request.FILES, proposal=None, call=call)
 
             person_form = PersonForm(request.POST,
                                      prefix=PERSON_FORM_NAME,
                                      career_stages_queryset=call.enabled_career_stages_queryset())
+            person_application_form = PersonApplicationForm(request.POST,
+                                     prefix=PERSON_APPLICATION_FORM_NAME,
+                                     career_stages_queryset=call.enabled_career_stages_queryset())
 
             if call.budget_requested_part():
-                budget_form = BudgetItemFormSet(request.POST, call=call, prefix=BUDGET_FORM_NAME)
+                budget_application_form = BudgetApplicationItemFormSet(request.POST, call=call, prefix=BUDGET_APPLICATION_FORM_NAME)
 
             if call.other_funding_question:
                 funding_form = ProposalFundingItemFormSet(request.POST, prefix=FUNDING_FORM_NAME)
@@ -406,7 +429,7 @@ class AbstractProposalView(TemplateView):
                                                                       call=call)
                 proposal_partners_form = ProposalPartnersInlineFormSet(request.POST, prefix=PROPOSAL_PARTNERS_FORM_NAME,
                                                                        applicant_role_description_form=applicant_role_description_form,
-                                                                       person_form=person_form,
+                                                                       person_form=person_application_form,
                                                                        form_kwargs={'call': call})
 
             if call.overarching_project_question:
@@ -420,7 +443,7 @@ class AbstractProposalView(TemplateView):
             data_collection_form = DataCollectionForm(request.POST, prefix=DATA_COLLECTION_FORM_NAME)
 
 
-        forms_to_validate = [person_form, postal_address_form, proposal_form]
+        forms_to_validate = [person_application_form, postal_address_application_form, proposal_form]
 
         if call.other_funding_question:
             forms_to_validate.append(funding_form)
@@ -436,7 +459,7 @@ class AbstractProposalView(TemplateView):
             forms_to_validate.append(scientific_clusters_form)
 
         if call.budget_requested_part():
-            forms_to_validate.append(budget_form)
+            forms_to_validate.append(budget_application_form)
 
         all_valid = True
         for form in forms_to_validate:
@@ -448,7 +471,7 @@ class AbstractProposalView(TemplateView):
         if all_valid:
             proposal = proposal_form.save(commit=False)
 
-            applicant = person_form.save_person()
+            applicant = person_application_form.save_person()
             data_collection_form.update(applicant)
 
             proposal.applicant = applicant
@@ -473,7 +496,7 @@ class AbstractProposalView(TemplateView):
                 project_overarching = proposal_project_overarching_form.save()
                 proposal.overarching_project = project_overarching
 
-            postal_address = postal_address_form.save()
+            postal_address = postal_address_application_form.save()
 
             proposal.postal_address = postal_address
 
@@ -489,7 +512,7 @@ class AbstractProposalView(TemplateView):
                                    'File attachments could not be saved - please try attaching the files again or contact SPI if this error reoccurs')
 
             if call.budget_requested_part():
-                budget_form.save_budgets(proposal)
+                budget_application_form.save_budgets(proposal)
 
             if call.proposal_partner_question:
                 proposal.applicant_role_description = applicant_role_description_form.save()
@@ -509,8 +532,9 @@ class AbstractProposalView(TemplateView):
                 reverse(self.created_or_updated_url, kwargs={'uuid': proposal.uuid})
             )
 
-        context[PERSON_FORM_NAME] = person_form
-        context[POSTAL_ADDRESS_FORM_NAME] = postal_address_form
+        context[PERSON_FORM_NAME] = person_application_form
+        context[PERSON_APPLICATION_FORM_NAME] = person_application_form
+        context[POSTAL_ADDRESS_APPLICATION_FORM_NAME] = postal_address_application_form
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[PROPOSAL_APPLICATION_FORM_NAME] = proposal_form
         for question_form in proposal_parts.get_forms():
@@ -530,7 +554,7 @@ class AbstractProposalView(TemplateView):
             context[SCIENTIFIC_CLUSTERS_FORM_NAME] = scientific_clusters_form
 
         if call.budget_requested_part():
-            context[BUDGET_FORM_NAME] = budget_form
+            context[BUDGET_APPLICATION_FORM_NAME] = budget_application_form
 
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
 

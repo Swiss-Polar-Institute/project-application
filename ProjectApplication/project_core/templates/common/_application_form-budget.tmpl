@@ -1,0 +1,52 @@
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load thousands_separator %}
+
+Maximum budget: {{ maximum_budget|thousands_separator }} CHF
+<p>
+    For each cost category, please give details of all items and related costs.<br>
+    For details on eligible costs and budget structure, please refer to the call text.
+</p>
+
+{{ budget_application_form.management_form }}
+
+{% if budget_application_form.non_form_errors %}
+    {{ budget_application_form|as_crispy_errors }}
+{% endif %}
+
+{% for form in budget_application_form.forms %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+{% endfor %}
+
+<table class="table table-striped table-sm">
+    <thead>
+    <tr>
+        {% for field in budget_application_form.forms.0.visible_fields %}
+            <th {% if forloop.first %}style="width:30%;"{% endif %}>
+                {% comment %}
+                            This is a copy-paste from https://django-crispy-forms.readthedocs.io/en/latest/form_helper.html
+                            on rendering labels. The Asterisk field is removed because it's only needed for the category.
+                            The rendering is consistent with other tables
+                            {% endcomment %}
+                <span class="control-label {% if field.field.required %}requiredField{% endif %}">
+                                {{ field.label|safe }}{% if field.field.required %}
+                                    <span class="asteriskField"><!-- * --></span>{% endif %}
+                            </span>
+            </th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for form in budget_application_form.forms %}
+        <tr>
+            {% for field in form.visible_fields %}
+                <td>
+                    {{ field|as_crispy_field }}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -113,7 +113,7 @@
       <fieldset>
         <div class="form-fields-wrapper">
           {% include 'common/_person-form.tmpl' with person_form=person_form %}
-          {% include 'common/_form-postal_address.tmpl' %}
+          {% include 'common/_application_form-postal_address.tmpl' %}
         </div>
         <div class="action-btn">
           <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
@@ -149,7 +149,7 @@
 
       <fieldset>
         <div class="form-fields-wrapper">
-                {% include 'common/_form-budget.tmpl' %}
+                {% include 'common/_application_form-budget.tmpl' %}
                 {% if other_funding_question %}
                     <h2>Part {{ part_numbers.other_sources_of_funding }}: Other sources of funding</h2>
                     {% include 'common/_form-funding_organisations.tmpl' %}

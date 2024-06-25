@@ -10,7 +10,7 @@ from project_core.models import BudgetCategory, ProposedBudgetItem, BudgetCatego
 from project_core.templatetags.thousands_separator import thousands_separator
 
 
-class BudgetItemForm(forms.Form):
+class BudgetApplicationItemForm(forms.Form):
     id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
 
     category = forms.CharField(widget=PlainTextWidget())
@@ -56,31 +56,31 @@ class BudgetItemForm(forms.Form):
 
         category = BudgetCategory.objects.get(id=cleaned_data['category'])
 
-        if 'amount' not in cleaned_data:
-            self.add_error('amount', 'Please write a number (do not use thousands separator if you have a problem)')
-            valid_amount = False
-            amount = None
-        else:
-            valid_amount = True
-            amount = cleaned_data['amount']
-
-        details = cleaned_data['details'] or ''
-
-        if valid_amount:
-            if amount is not None:
-                if details == '' and amount > 0:
-                    self.add_error('details', 'Please fill in details for {}'.format(category))
-                elif amount < 0:
-                    self.add_error('amount', 'Cannot be negative {}'.format(category))
-
-            else:
-                if details != '':
-                    self.add_error('amount', 'Please declare a budget amount for {}'.format(category))
+        # if 'amount' not in cleaned_data:
+        #     self.add_error('amount', 'Please write a number (do not use thousands separator if you have a problem)')
+        #     valid_amount = False
+        #     amount = None
+        # else:
+        #     valid_amount = True
+        #     amount = cleaned_data['amount']
+        #
+        # details = cleaned_data['details'] or ''
+        #
+        # if valid_amount:
+        #     if amount is not None:
+        #         if details == '' and amount > 0:
+        #             self.add_error('details', 'Please fill in details for {}'.format(category))
+        #         elif amount < 0:
+        #             self.add_error('amount', 'Cannot be negative {}'.format(category))
+        #
+        #     else:
+        #         if details != '':
+        #             self.add_error('amount', 'Please declare a budget amount for {}'.format(category))
 
         return cleaned_data
 
 
-class BudgetFormSet(BaseFormSet):
+class BudgetApplicationFormSet(BaseFormSet):
     def __init__(self, *args, **kwargs):
         proposal = kwargs.pop('proposal', None)
         self._call = kwargs.pop('call', None)
@@ -133,7 +133,7 @@ class BudgetFormSet(BaseFormSet):
             form.save_budget(proposal)
 
 
-BudgetItemFormSet = formset_factory(BudgetItemForm, formset=BudgetFormSet, can_delete=False, extra=0)
+BudgetApplicationItemFormSet = formset_factory(BudgetApplicationItemForm, formset=BudgetApplicationFormSet, can_delete=False, extra=0)
 
 # It's used like:
 # budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
