@@ -175,9 +175,6 @@
                     <h2>Part {{ part_numbers.other_sources_of_funding }}: Other sources of funding</h2>
                     {% include 'common/_form-funding_organisations.tmpl' %}
                 {% endif %}
-                <p></p>
-                <hr>
-                {% crispy data_collection_form %}
         </div>
         <div class="action-btn">
           <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
@@ -189,6 +186,9 @@
       <fieldset>
         <div class="form-fields-wrapper" id="summary-content">
         </div>
+        <p></p>
+        <hr>
+        {% crispy data_collection_form %}
         <div class="action-btn">
         {% if not preview %}
            <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
