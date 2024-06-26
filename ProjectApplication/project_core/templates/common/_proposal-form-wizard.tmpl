@@ -50,16 +50,16 @@
             <div class="step">
                 <span>2. Proposed Projects</span>
             </div>
-            <div class="step">
-                <span>3. Budget Request</span>
-            </div>
             {% if extra_parts %}
                 {% for part in extra_parts %}
                     <div class="step">
-                        <span>{{ forloop.counter|add:"3" }}. {{ part.title_rendered }}</span>
+                        <span>{{ forloop.counter|add:"2" }}. {{ part.title_rendered }}</span>
                     </div>
                 {% endfor %}
             {% endif %}
+            <div class="step">
+                <span>{{ extra_parts|length|add:"3" }}. Budget Request</span>
+            </div>
             <div class="step">
                 {% if extra_parts %}
                     <span>{{ extra_parts|length|add:"4" }}. Summary</span>
@@ -81,22 +81,27 @@
             <span class="bullet"></span>
             <span class="cursor-pointer">2. Proposed Projects</span>
           </div>
-          <div class="step">
-            <span class="bullet"></span>
-            <span class="cursor-pointer">3. Budget Request</span>
-          </div>
           {% if extra_parts %}
            {% for part in extra_parts %}
               <div class="step">
                 <span class="bullet"></span>
-                <span class="cursor-pointer">{{ forloop.counter|add:"3" }}. {{ part.title_rendered }}</span>
+                <span class="cursor-pointer">{{ forloop.counter|add:"2" }}. {{ part.title_rendered }}</span>
               </div>
           {% endfor %}
+              <div class="step">
+                <span class="bullet"></span>
+                <span class="cursor-pointer">{{ extra_parts|length|add:"3" }}. Budget Request</span>
+              </div>
               <div class="step">
                 <span class="bullet"></span>
                 <span class="cursor-pointer">{{ extra_parts|length|add:"4" }}. Summary</span>
               </div>
           {% else %}
+
+              <div class="step">
+                <span class="bullet"></span>
+                <span class="cursor-pointer">3. Budget Request</span>
+              </div>
               <div class="step">
                 <span class="bullet"></span>
                 <span class="cursor-pointer">4. Summary</span>
@@ -145,6 +150,23 @@
           <input type="button" name="next" class="btn btn-primary next" value="Next">
         </div>
       </fieldset>
+     {% if extra_parts %}
+     {% for part in extra_parts %}
+     <fieldset>
+        <div class="form-fields-wrapper">
+                <h2>Part {{ part.heading_number }}: {{ part.title_rendered }}</h2>
+                <div class="pre-wrap">{{ part.introductory_text|safe }}</div>
+                {% include 'common/_proposal_list_files.tmpl' with call_part=part only %}
+                {% include 'common/_form-dynamic_questions.tmpl' with questions_form=part.questions_form %}
+        </div>
+        <div class="action-btn">
+          <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
+          <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
+          <input type="button" name="next" class="btn btn-primary next" value="Next">
+        </div>
+      </fieldset>
+      {% endfor %}
+      {% endif %}
 
       <fieldset>
         <div class="form-fields-wrapper">
@@ -163,23 +185,6 @@
           <input type="button" name="next" class="btn btn-primary next" value="Next">
         </div>
       </fieldset>
-     {% if extra_parts %}
-     {% for part in extra_parts %}
-     <fieldset>
-        <div class="form-fields-wrapper">
-                <h2>Part {{ part.heading_number }}: {{ part.title_rendered }}</h2>
-                <div class="pre-wrap">{{ part.introductory_text|safe }}</div>
-                {% include 'common/_proposal_list_files.tmpl' with call_part=part only %}
-                {% include 'common/_form-dynamic_questions.tmpl' with questions_form=part.questions_form %}
-        </div>
-        <div class="action-btn">
-          <input type="submit" name="save_draft" class="btn btn-light savedraft" value="Save Draft" id="submit-id-submit">
-          <input type="button" name="previous" class="btn btn-outline-primary previous" value="Previous">
-          <input type="button" name="next" class="btn btn-primary next" value="Next">
-        </div>
-      </fieldset>
-      {% endfor %}
-      {% endif %}
 
       <fieldset>
         <div class="form-fields-wrapper" id="summary-content">

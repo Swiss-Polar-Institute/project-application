@@ -137,18 +137,12 @@ $(document).ready(function () {
         var summaryHtml = '';
         for (var i = 0; i < localStorage.length; i++) {
             var key = localStorage.key(i);
-            if (key.endsWith('_label')) {
+            if (key.endsWith('_label') && !key.includes('_checked')) {
                 var fieldName = key.replace('_label', '');
                 var label = localStorage.getItem(key);
                 var value = localStorage.getItem(fieldName);
-                if (value) {
-                    if ($(":input[name='" + fieldName + "']").is(':checkbox') || $(":input[name='" + fieldName + "']").is(':radio')) {
-                        if (localStorage.getItem(fieldName + '_checked') === 'true') {
-                            summaryHtml += '<p><strong>' + label + ':</strong> ' + value + '</p>';
-                        }
-                    } else {
-                        summaryHtml += '<p><strong>' + label + ':</strong> ' + value + '</p>';
-                    }
+                if (value && !value.includes('button') && !value.includes('submit')) {  // Exclude 'button' and 'submit' values
+                    summaryHtml += '<p><strong>' + label + ':</strong> ' + value + '</p>';
                 }
             }
         }
