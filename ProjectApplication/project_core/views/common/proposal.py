@@ -590,12 +590,10 @@ class AbstractProposalView(TemplateView):
 
 def check_duplicate_proposal(request):
     proposal_title = request.GET.get('proposal_title')
-    applicant_id = request.GET.get('applicant_id')
     call_id = request.GET.get('call_id')
 
     exists = Proposal.objects.filter(
         title=proposal_title,
-        applicant_id=applicant_id,
         call_id=call_id
     ).exists()
 

@@ -4,6 +4,35 @@ $(document).ready(function () {
     var current = 1;
     var steps = $("fieldset").length;
 
+    function checkDuplicateProposal(callback) {
+        var proposalTitle = $("input[name='proposal_application_form-title']").val();
+        var callId = $("input[name='proposal_application_form-call_id']").val();
+
+        $.ajax({
+            url: '/check_duplicate_proposal/',  // URL to check for duplicates
+            data: {
+                'proposal_title': proposalTitle,
+                'call_id': callId
+            },
+            success: function (data) {
+                if (data.exists) {
+                    var proposalTitleInput = $("input[name='proposal_title']");
+                    var label = getLabelText(proposalTitleInput);
+                    errorMessages.push(proposalTitleInput, 'A proposal with this ' + label + ' already exists.');
+                } else {
+                }
+            },
+            error: function () {
+                alert('Error checking for duplicate proposals.');
+            }
+        });
+    }
+
+    function validateOrcid(orcid) {
+        var orcidRegex = /^(\d{4}-){3}\d{4}$/;
+        return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097";
+    }
+
     function addValidation() {
         var errorMessages = []; // Array to store error messages
 
@@ -22,12 +51,6 @@ $(document).ready(function () {
                 errorMessages.push('Please enter at least 5 ' + label + '.');
             }
         }
-
-        function validateOrcid(orcid) {
-            var orcidRegex = /^(\d{4}-){3}\d{4}$/;
-            return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097";
-        }
-
         var orcidInput = $("input[name='person_form-orcid']");
         if (orcidInput.length) {
             var orcidValue = orcidInput.val();
@@ -35,32 +58,6 @@ $(document).ready(function () {
                 var label = getLabelText(orcidInput);
                 errorMessages.push(orcidInput, 'Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.');
             }
-        }
-
-        function checkDuplicateProposal(callback) {
-            var proposalTitle = $("input[name='proposal_title']").val();
-            var applicantId = $("input[name='applicant_id']").val();
-            var callId = $("input[name='call_id']").val();
-
-            $.ajax({
-                url: '/check_duplicate_proposal/',  // URL to check for duplicates
-                data: {
-                    'proposal_title': proposalTitle,
-                    'applicant_id': applicantId,
-                    'call_id': callId
-                },
-                success: function (data) {
-                    if (data.exists) {
-                        var proposalTitleInput = $("input[name='proposal_title']");
-                        var label = getLabelText(proposalTitleInput);
-                        errorMessages.push(proposalTitleInput, 'A proposal with this ' + label + ' already exists.');
-                    } else {
-                    }
-                },
-                error: function () {
-                    alert('Error checking for duplicate proposals.');
-                }
-            });
         }
         checkDuplicateProposal();
         // Display error messages
@@ -158,46 +155,11 @@ $(document).ready(function () {
         $('#summary-content').html(summaryHtml);
     }
 
-    function clearValidationErrors() {
-        $(".is-invalid").removeClass("is-invalid");
-        $(".invalid-feedback").remove();
-    }
-
-    function showValidationError(input, message) {
-        input.addClass("is-invalid");
-        input.after('<div class="invalid-feedback">' + message + '</div>');
-    }
-
     function getLabelText(input) {
         var name = input.attr('name');
         var label = $("label[for='" + name + "']").text() || input.closest('.form-group').find('label').first().text();
         return label;
     }
-
-    // function validateCurrentFieldset() {
-    //     current_fs = $(".next:visible").closest('fieldset');
-    //     next_fs = $(".next:visible").closest('fieldset').next();
-    //     var isValid = true;
-    //     clearValidationErrors();
-    //
-    //     current_fs.find(":input[required]").each(function () {
-    //         if (!this.checkValidity()) {
-    //             isValid = false;
-    //             var label = getLabelText($(this));
-    //             showValidationError($(this), label + ' is required.');
-    //         }
-    //     });
-    //
-    //     // Geographical areas validation
-    //     var geographicalAreas = current_fs.find("input[name='proposal_application_form-geographical_areas']");
-    //     if (geographicalAreas.length && geographicalAreas.filter(':checked').length === 0) {
-    //         isValid = false;
-    //         var label = getLabelText(geographicalAreas.first());
-    //         showValidationError(geographicalAreas.first(), 'At least one ' + label + ' must be selected.');
-    //     }
-    //
-    //     return isValid;
-    // }
 
     retrieveFormData();
 

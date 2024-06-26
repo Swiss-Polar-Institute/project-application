@@ -23,7 +23,7 @@
     <div class="container">
         <div class="information-wrapper">
           <h2 class="section-title">{{ call_name }}</h2>
-          <p>From December 2016 to March 2017, scientific teams from all over the world boarded the Russian research vessel Akademik Tryoshnikov for an unprecedented expedition around Antarctica, organised by the Swiss Polar Institute. During the Antarctic Circumnavigation Expedition (ACE), researchers worked in a number of fields, from biology to climatology to oceanography, to improve knowledge on what the future may hold for this continent and the world.</p>
+          <p>{{ call_introductory_message|safe }}</p>
 
           <div class="content-block">
             <div class="content-block--header">
@@ -32,7 +32,6 @@
             <div class="content-block--body">
               <ul>
                 <li>Please complete all mandatory fields and press "Save Draft" or "Submit".</li>
-                <li>{{ call_introductory_message|safe }}</li>
               </ul>
             </div>
           </div>

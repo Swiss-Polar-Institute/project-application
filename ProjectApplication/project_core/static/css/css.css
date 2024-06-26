@@ -365,6 +365,10 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
   transition: color .3s ease-in-out;
 }
 
+.top-wizard-wrapper .step {
+    font-size: 14px;
+}
+
 .progressbar .step:not(:first-child) {
   margin-block-start: 25px;
 }
@@ -380,18 +384,31 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
 .progressbar .step .bullet::before {
   content: "";
   position: absolute;
-  top: 4px;
+  top: 1px;
   font-size: 24px;
-  color: #3EC27B;
   line-height: 1;
 }
 
 .progressbar .step.active {
-  color: #000;
+    color: #000000;
 }
 
-.progressbar .step.active .bullet::before {
+.progressbar .step.valid {
+  color: #3EC27B;
+}
+
+.progressbar .step.valid .bullet::before {
   content: "\2713";
+  color: #3EC27B;
+}
+
+.progressbar .step.invalid {
+  color: #ff0000;
+}
+
+.progressbar .step.invalid .bullet::before {
+  content: "\292C";
+  color: #ff0000;
 }
 
 .form-wrapper {
@@ -481,8 +498,8 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
   margin: 4px 4px 4px 0;
 }
 
-.top-wizard-wrapper .step.active>*,
-.top-wizard-wrapper .step.finished>* {
+.top-wizard-wrapper .step.finished>*,
+.top-wizard-wrapper .step.active>* {
   background-color: #CC2027;
   border-color: #CC2027;
   color: #fff;
@@ -499,7 +516,7 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
 
 .top-wizard-wrapper .step > span:not(.arrow) {
   position: relative;
-  padding: 10px 30px 10px 50px;
+  padding: 10px 20px 10px 30px;
   width: 100%;
   display: block;
 }
@@ -512,7 +529,7 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
   left: 100%;
   height: 0;
   width: 0;
-  border: 23px solid transparent;
+  border: 21px solid transparent;
   border-right-width: 0;
   border-left-width: 12px;
 }
