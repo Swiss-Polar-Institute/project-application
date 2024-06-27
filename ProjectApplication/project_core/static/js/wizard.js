@@ -1,13 +1,11 @@
 $(document).ready(function () {
+    localStorage.clear();
     var current_fs, next_fs, previous_fs; // fieldsets
-    var opacity;
     var current = 1;
     var steps = $("fieldset").length;
+    var errorMessages = []; // Declare errorMessages outside functions for scope
 
-    function checkDuplicateProposal(callback) {
-        var proposalTitle = $("input[name='proposal_application_form-title']").val();
-        var callId = $("input[name='proposal_application_form-call_id']").val();
-
+    function checkDuplicateProposal(proposalTitle, callId, callback) {
         $.ajax({
             url: '/check_duplicate_proposal/',  // URL to check for duplicates
             data: {
@@ -16,11 +14,12 @@ $(document).ready(function () {
             },
             success: function (data) {
                 if (data.exists) {
-                    var proposalTitleInput = $("input[name='proposal_title']");
-                    var label = getLabelText(proposalTitleInput);
-                    errorMessages.push(proposalTitleInput, 'A proposal with this ' + label + ' already exists.');
-                } else {
+                    var proposalTitleInput = $("input[name='proposal_application_form-title']");
+                    var label = getLabelText(proposalTitleInput).replace('*', '');
+                    errorMessages.push('A proposal with this ' + label + ' already exists.');
+                    alert('A proposal with this ' + label + ' already exists.');
                 }
+                if (callback) callback();
             },
             error: function () {
                 alert('Error checking for duplicate proposals.');
@@ -33,50 +32,135 @@ $(document).ready(function () {
         return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097";
     }
 
-    function addValidation() {
-        var errorMessages = []; // Array to store error messages
+    function addValidation(callback) {
+        errorMessages = []; // Clear error messages
 
-        // Check each required field
-        $("input[name='proposal_application_form-title'], input[name='person_form-orcid'], input[name='person_form-first_name'], input[name='person_form-surname'], select[name='person_form-academic_title'], select[name='person_form-gender'], input[name='person_form-career_stage'], input[name='person_form-email'], input[name='person_form-phone'], select[name='person_form-organisation_names'], input[name='postal_address_form-address'], input[name='postal_address_form-city'], input[name='postal_address_form-postcode'], input[name='postal_address_form-country'], input[name='proposal_application_form-title'], input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months'], input[name='data_collection_form-privacy_policy']").each(function () {
-            if ($(this).val() === '') {
-                var label = getLabelText($(this));
+        var proposalTitle = $("input[name='proposal_application_form-title']").val();
+        var callId = $("input[name='proposal_application_form-call_id']").val();
+
+        $("input[name='proposal_application_form-title'], input[name='person_application_form-orcid'], input[name='person_application_form-first_name'], input[name='person_application_form-surname'], select[name='person_application_form-academic_title'], select[name='person_application_form-gender'], input[name='person_application_form-career_stage'], input[name='person_application_form-email'], input[name='person_application_form-phone'], select[name='person_application_form-organisation_names'], textarea[name='postal_address_application_form-address'], input[name='postal_address_application_form-city'], input[name='postal_address_application_form-postcode'], input[name='postal_address_application_form-country'], input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months']").each(function () {
+            var input = $(this);
+            var value = input.val();
+            var label = getLabelText(input).replace('*', ''); // Get field label
+            var formGroup = input.closest('.form-group'); // Find parent form-group
+
+            var errorSpan = formGroup.find('.error-message');
+            if (value === '') {
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                    formGroup.append(errorSpan); // Append error span
+                }
+                errorSpan.text(label + ' is required.'); // Update error message text
                 errorMessages.push(label + ' is required.');
+                formGroup.addClass("has-error");
+            } else {
+                if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
+                formGroup.removeClass("has-error");
             }
         });
+        var allFieldsFilled_step_1 = true;
+        $("input[name='person_application_form-orcid'], input[name='person_application_form-first_name'], input[name='person_application_form-surname'], select[name='person_application_form-academic_title'], select[name='person_application_form-gender'], input[name='person_application_form-career_stage'], input[name='person_application_form-email'], input[name='person_application_form-phone'], select[name='person_application_form-organisation_names'], textarea[name='postal_address_application_form-address'], input[name='postal_address_application_form-city'], input[name='postal_address_application_form-postcode'], input[name='postal_address_application_form-country']").each(function () {
+            if ($(this).val() === '') {
+                allFieldsFilled_step_1 = false;
+                return false;
+            }
+        });
+        if (allFieldsFilled_step_1) {
+             var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
+             $("." + step_class).addClass("valid");
+             $("." + step_class).removeClass("invalid");
+        } else {
+            var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
+            $("." + step_class).addClass("invalid");
+            $("." + step_class).removeClass("valid");
+        }
+
+        var allFieldsFilled_step_2 = true;
+
+        $("input[name='proposal_application_form-title'],input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months']").each(function () {
+            if ($(this).val() === '') {
+                allFieldsFilled_step_2 = false;
+                return false;
+            }
+        });
+        if (allFieldsFilled_step_2) {
+             var step_class = $("input[name='proposal_application_form-title']").closest('fieldset').attr('data-step');
+             $("." + step_class).addClass("valid");
+             $("." + step_class).removeClass("invalid");
+        } else {
+            var step_class = $("input[name='proposal_application_form-title']").closest('fieldset').attr('data-step');
+            $("." + step_class).addClass("invalid");
+            $("." + step_class).removeClass("valid");
+        }
+
+
         var keywordsInput = $("select[name='proposal_application_form-keywords']");
         if (keywordsInput.length) {
             var selectedKeywords = keywordsInput.find("option:selected");
+            var label = getLabelText(keywordsInput);
+            var formGroup = keywordsInput.closest('.form-group');
+            var errorSpan = formGroup.find('.error-message');
+
             if (selectedKeywords.length < 5) {
-                var label = getLabelText(keywordsInput);
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                    formGroup.append(errorSpan); // Append error span
+                }
+                errorSpan.text('Please enter at least 5 ' + label + '.'); // Update error message text
                 errorMessages.push('Please enter at least 5 ' + label + '.');
+                formGroup.addClass("has-error");
+                var step_class = $("select[name='proposal_application_form-keywords']").closest('fieldset').attr('data-step');
+                $("." + step_class).addClass("invalid");
+                $("." + step_class).removeClass("valid");
+            } else {
+                if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
+                formGroup.removeClass("has-error");
             }
         }
-        var orcidInput = $("input[name='person_form-orcid']");
+
+        var orcidInput = $("input[name='person_application_form-orcid']");
         if (orcidInput.length) {
             var orcidValue = orcidInput.val();
+            var label = getLabelText(orcidInput);
+            var formGroup = orcidInput.closest('.form-group');
+            var errorSpan = formGroup.find('.error-message');
+
             if (!validateOrcid(orcidValue)) {
-                var label = getLabelText(orcidInput);
-                errorMessages.push(orcidInput, 'Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.');
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                    formGroup.append(errorSpan); // Append error span
+                }
+                errorSpan.text('Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.'); // Update error message text
+                errorMessages.push('Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.');
+                formGroup.addClass("has-error");
+                var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
+                $("." + step_class).addClass("invalid");
+                $("." + step_class).removeClass("valid");
+            } else {
+                if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
+                formGroup.removeClass("has-error");
             }
         }
-        checkDuplicateProposal();
-        // Display error messages
-        if (errorMessages.length > 0) {
-            var errorMessageHtml = '<ul>';
-            errorMessages.forEach(function (message) {
-                errorMessageHtml += '<li>' + message + '</li>';
-            });
-            errorMessageHtml += '</ul>';
 
-            // Display error messages in a div
-            $('#error-messages').html(errorMessageHtml).css('display', 'block');
-            ;
-            $('html, body').animate({scrollTop: 0}, 'slow');
-        } else {
-            // Clear error messages if there are none
-            $('#error-messages').html('');
-        }
+        checkDuplicateProposal(proposalTitle, callId, function () {
+            // Display error messages
+            if (errorMessages.length > 0) {
+                console.log("test");
+                var errorMessageHtml = '<ul>';
+                errorMessages.forEach(function (message) {
+                    errorMessageHtml += '<li>' + message + '</li>';
+                });
+                errorMessageHtml += '</ul>';
+                var errormessagetext = "Please fill out all required fields."
+                $('#error-messages').html(errormessagetext).css('display', 'block');
+                $('html, body').animate({scrollTop: 0}, 'slow');
+            } else {
+                $("#final-result").removeClass("submit_btn");
+                $("#final-result").click();
+            }
+        });
     }
+
 
     function storeFormData() {
         $("fieldset:visible :input").each(function () {
@@ -107,8 +191,19 @@ $(document).ready(function () {
                 }
             }
         });
+        if (typeof CKEDITOR !== 'undefined') {
+            // Handle CKEditor fields
+            for (var instanceName in CKEDITOR.instances) {
+                var editor = CKEDITOR.instances[instanceName];
+                var editorData = editor.getData();
+                var label = $("label[for='" + instanceName + "']").text() || $("#" + instanceName).closest('.form-group').find('label').first().text();
+                if (label) {
+                    localStorage.setItem(instanceName + '_label', label);
+                }
+                localStorage.setItem(instanceName, editorData);
+            }
+        }
     }
-
 
     function retrieveFormData() {
         $("fieldset:visible :input").each(function () {
@@ -131,6 +226,15 @@ $(document).ready(function () {
                 }
             }
         });
+
+        // Handle CKEditor fields
+        for (var instanceName in CKEDITOR.instances) {
+            var editor = CKEDITOR.instances[instanceName];
+            var editorData = localStorage.getItem(instanceName);
+            if (editorData) {
+                editor.setData(editorData);
+            }
+        }
     }
 
     function populateSummary() {
@@ -139,9 +243,9 @@ $(document).ready(function () {
             var key = localStorage.key(i);
             if (key.endsWith('_label') && !key.includes('_checked')) {
                 var fieldName = key.replace('_label', '');
-                var label = localStorage.getItem(key);
+                var label = localStorage.getItem(key).replace('*', '');
                 var value = localStorage.getItem(fieldName);
-                if (value && !value.includes('button') && !value.includes('submit')) {  // Exclude 'button' and 'submit' values
+                if (value && !value.includes('button') && !value.includes('submit') && value != "---------") {
                     summaryHtml += '<p><strong>' + label + ':</strong> ' + value + '</p>';
                 }
             }
@@ -155,21 +259,16 @@ $(document).ready(function () {
         return label;
     }
 
-    retrieveFormData();
-
     function setStep(stepIndex) {
         storeFormData();
         if (stepIndex < 0 || stepIndex >= steps) return;
 
-        // Remove active and finished classes from all steps
         $(".progressbar .step").removeClass("active finished");
         $(".top-wizard-wrapper .step").removeClass("active finished");
 
-        // Add active class to the clicked step and all previous steps
         $(".progressbar .step").slice(0, stepIndex + 1).addClass("active finished");
         $(".top-wizard-wrapper .step").slice(0, stepIndex + 1).addClass("active finished");
 
-        // Hide all fieldsets and show the target fieldset with animation
         $("fieldset").css({'display': 'none', 'position': 'relative', 'opacity': 0});
         $("fieldset").eq(stepIndex).css({'display': 'block'}).animate({
             opacity: 1
@@ -184,7 +283,6 @@ $(document).ready(function () {
             var nextIndex = $("fieldset").index(next_fs);
             setStep(nextIndex);
 
-            // Populate summary when reaching the last step
             if (nextIndex === steps - 1) {
                 populateSummary();
             }
@@ -208,19 +306,10 @@ $(document).ready(function () {
         populateSummary();
     });
 
-
     $(document).on('click', '.submit_btn', function (e) {
         e.preventDefault();
-        addValidation(); // Call addValidation directly
-
-        if ($('#error-messages').html().trim() !== '') {
-            // If there are error messages, return without submitting the form
-            return;
-        }
-
-        // If no errors, proceed with form submission
-        $("form#dd-form").submit();
-        $("#final-result").click();
+        addValidation();
     });
+
     setStep(0);
 });

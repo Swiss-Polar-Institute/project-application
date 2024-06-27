@@ -34,6 +34,11 @@ class BudgetApplicationItemForm(forms.Form):
 
         self.fields['amount'].widget.attrs['min'] = 0
 
+        # Adding classes to fields
+        self.fields['category'].widget.attrs['class'] = 'custom-category-class'
+        self.fields['details'].widget.attrs['class'] = 'custom-details-class'
+        self.fields['amount'].widget.attrs['class'] = 'custom-amount-class'
+
         self.helper = FormHelper(self)
         self.helper.form_tag = False
         self.helper.form_show_labels = False

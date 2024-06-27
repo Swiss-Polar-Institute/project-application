@@ -73,26 +73,26 @@
 <div class="step-wizard-wrapper">
    <div class="progressbar-wrapper">
         <div class="progressbar">
-          <div class="step active">
+          <div class="step active step-1">
             <span class="bullet"></span>
             <span class="cursor-pointer">1. Applicant</span>
           </div>
-          <div class="step">
+          <div class="step step-2">
             <span class="bullet"></span>
             <span class="cursor-pointer">2. Proposed Projects</span>
           </div>
           {% if extra_parts %}
            {% for part in extra_parts %}
-              <div class="step">
+              <div class="step step-{{ forloop.counter|add:"2" }}">
                 <span class="bullet"></span>
                 <span class="cursor-pointer">{{ forloop.counter|add:"2" }}. {{ part.title_rendered }}</span>
               </div>
           {% endfor %}
-              <div class="step">
+              <div class="step step-{{ extra_parts|length|add:"3" }}">
                 <span class="bullet"></span>
                 <span class="cursor-pointer">{{ extra_parts|length|add:"3" }}. Budget Request</span>
               </div>
-              <div class="step">
+              <div class="step step-{{ extra_parts|length|add:"4" }}">
                 <span class="bullet"></span>
                 <span class="cursor-pointer">{{ extra_parts|length|add:"4" }}. Summary</span>
               </div>
@@ -114,7 +114,7 @@
    </div>
   <div class="form-wrapper">
     <!-- <form role="form"> -->
-      <fieldset>
+      <fieldset data-step="step-1">
         <div class="form-fields-wrapper">
           {% include 'common/_person-form.tmpl' with person_form=person_form %}
           {% include 'common/_application_form-postal_address.tmpl' %}
@@ -126,7 +126,7 @@
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset data-step="step-2">
         <div class="form-fields-wrapper">
              {% crispy proposal_application_form %}
              {% if overarching_project_question %}
@@ -152,7 +152,7 @@
       </fieldset>
      {% if extra_parts %}
      {% for part in extra_parts %}
-     <fieldset>
+     <fieldset data-step="step-{{ forloop.counter|add:"2" }}">
         <div class="form-fields-wrapper">
                 <h2>Part {{ part.heading_number }}: {{ part.title_rendered }}</h2>
                 <div class="pre-wrap">{{ part.introductory_text|safe }}</div>
@@ -168,7 +168,7 @@
       {% endfor %}
       {% endif %}
 
-      <fieldset>
+      <fieldset data-step="step-{{ extra_parts|length|add:"3" }}">
         <div class="form-fields-wrapper">
                 {% include 'common/_application_form-budget.tmpl' %}
                 {% if other_funding_question %}
@@ -183,7 +183,7 @@
         </div>
       </fieldset>
 
-      <fieldset>
+      <fieldset data-step="step-{{ extra_parts|length|add:"4" }}">
         <div class="form-fields-wrapper" id="summary-content">
         </div>
         <p></p>

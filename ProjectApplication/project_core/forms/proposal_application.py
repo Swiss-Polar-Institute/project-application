@@ -137,4 +137,8 @@ class ProposalApplicationForm(ModelForm):
         }
 
         labels = {'location': 'Precise region',
-                  'geographical_areas': 'Geographical focus'}
+                  'title': 'Title*',
+                  'keywords': 'Keywords*',
+                  'start_date': 'Start date*',
+                  'end_date': 'End date*',
+                  'geographical_areas': 'Geographical focus*'}

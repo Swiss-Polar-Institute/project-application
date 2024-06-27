@@ -493,7 +493,7 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
 
 .top-wizard-wrapper .step {
   position: relative;
-  flex: 0 20%;
+  /*flex: 0 20%;*/
   margin: 4px 4px 4px 0;
 }
 
@@ -564,5 +564,8 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
 .is-invalid,
 .is-invalid ~ .select2-container .custom-select{
     border-color: red !important;
+    color: red;
+    font-size: 14px;
+    line-height: 1;
 }
 .cursor-pointer {cursor: pointer;}

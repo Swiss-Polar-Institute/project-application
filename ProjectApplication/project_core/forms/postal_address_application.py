@@ -40,4 +40,4 @@ class PostalAddressApplicationForm(ModelForm):
         fields = ['address', 'city', 'postcode', 'country']
         help_texts = {
             'address': 'Please enter the professional postal address to which correspondence related to this proposal can be sent. Correspondence will be addressed to the applicant'}
-        labels = {'address': 'Professional postal address'}
+        labels = {'address': 'Professional postal address*', 'city': 'City*', 'postcode': 'Postcode*', 'country': 'Country*' }

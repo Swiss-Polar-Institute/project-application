@@ -33,7 +33,7 @@ from project_core.forms.proposal import ProposalForm
 from project_core.forms.proposal_application import ProposalApplicationForm
 from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, ProposalQAFile, CallCareerStage
-from project_core.views.common.proposal_parts import ProposalParts
+from project_core.views.common.proposal_parts import ProposalParts, ProposalApplicationParts
 from variable_templates.utils import get_template_value_for_call, apply_templates_to_string
 
 PROPOSAL_FORM_NAME = 'proposal_form'
@@ -108,7 +108,7 @@ class AbstractProposalDetailView(TemplateView):
 
         context['part_numbers'] = call.get_part_numbers_for_call()
 
-        context['parts_with_answers'] = ProposalParts(request.POST, request.FILES, proposal, call).get_parts()
+        context['parts_with_answers'] = ProposalApplicationParts(request.POST, request.FILES, proposal, call).get_parts()
 
         if request.user.groups.filter(name='logged').exists():
             href = description = None
@@ -221,7 +221,7 @@ class AbstractProposalView(TemplateView):
 
             context['proposal_status_is_draft'] = proposal.status_is_draft()
 
-            context['extra_parts'] = ProposalParts(None, None, proposal).get_parts()
+            context['extra_parts'] = ProposalApplicationParts(None, None, proposal).get_parts()
 
         else:
             if request.GET.get('call', None) is None:
@@ -279,7 +279,7 @@ class AbstractProposalView(TemplateView):
 
             context['action'] = 'New'
 
-            context['extra_parts'] = ProposalParts(None, None, proposal=None, call=call).get_parts()
+            context['extra_parts'] = ProposalApplicationParts(None, None, proposal=None, call=call).get_parts()
 
         context.update(call_context_for_template(call))
 
@@ -369,7 +369,7 @@ class AbstractProposalView(TemplateView):
                                      career_stages_queryset=call.enabled_career_stages_queryset())
             postal_address_application_form = PostalAddressApplicationForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
-            proposal_parts = ProposalParts(request.POST, request.FILES, proposal)
+            proposal_parts = ProposalApplicationParts(request.POST, request.FILES, proposal)
 
             if call.budget_requested_part():
                 budget_application_form = BudgetApplicationItemFormSet(request.POST, call=call, proposal=proposal, prefix=BUDGET_APPLICATION_FORM_NAME)
@@ -408,7 +408,7 @@ class AbstractProposalView(TemplateView):
             proposal_form = ProposalApplicationForm(request.POST, call=call, prefix=PROPOSAL_APPLICATION_FORM_NAME)
             postal_address_application_form = PostalAddressApplicationForm(request.POST, prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
 
-            proposal_parts = ProposalParts(request.POST, request.FILES, proposal=None, call=call)
+            proposal_parts = ProposalApplicationParts(request.POST, request.FILES, proposal=None, call=call)
 
             person_form = PersonForm(request.POST,
                                      prefix=PERSON_FORM_NAME,
@@ -594,7 +594,8 @@ def check_duplicate_proposal(request):
 
     exists = Proposal.objects.filter(
         title=proposal_title,
-        call_id=call_id
+        call_id=call_id,
+        proposal_status_id=8
     ).exists()
 
     return JsonResponse({'exists': exists})
