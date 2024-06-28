@@ -168,7 +168,7 @@
       {% endfor %}
       {% endif %}
 
-      <fieldset data-step="step-{{ extra_parts|length|add:"3" }}">
+      <fieldset data-step="step-{{ extra_parts|length|add:"3" }}" class="budget-class">
         <div class="form-fields-wrapper">
                 {% include 'common/_application_form-budget.tmpl' %}
                 {% if other_funding_question %}

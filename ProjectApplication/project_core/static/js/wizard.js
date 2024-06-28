@@ -39,6 +39,7 @@ $(document).ready(function () {
         var proposalTitle = $("input[name='proposal_application_form-title']").val();
         var callId = $("input[name='proposal_application_form-call_id']").val();
 
+        //adding error span
         $("input[name='proposal_application_form-title'], input[name='person_application_form-orcid'], input[name='person_application_form-first_name'], input[name='person_application_form-surname'], select[name='person_application_form-academic_title'], select[name='person_application_form-gender'], input[name='person_application_form-career_stage'], input[name='person_application_form-email'], input[name='person_application_form-phone'], select[name='person_application_form-organisation_names'], textarea[name='postal_address_application_form-address'], input[name='postal_address_application_form-city'], input[name='postal_address_application_form-postcode'], input[name='postal_address_application_form-country'], input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months']").each(function () {
             var input = $(this);
             var value = input.val();
@@ -91,64 +92,6 @@ $(document).ready(function () {
             }
         }
 
-        var allFieldsFilled_questions = true;
-        var step_class;
-
-        // Iterate over each div with class "questions"
-        $('fieldset.questions').each(function () {
-            // Find the first input, textarea, select, or checkbox element within the current div
-            var firstField = $(this).find('input, select, textarea').first();
-
-            // Check if the first field is empty
-            if (firstField.val() === '') {
-                allFieldsFilled_questions = false;
-                return false; // Exit the loop early if any field is empty
-            }
-
-            // Update step_class to reference data-step attribute of closest fieldset
-            step_class = firstField.closest('fieldset').attr('data-step');
-        });
-
-        if (allFieldsFilled_questions) {
-            $("." + step_class).addClass("valid").removeClass("invalid");
-        } else {
-            $("." + step_class).addClass("invalid").removeClass("valid");
-        }
-
-        var allFieldsFilled_step_1 = true;
-        $("input[name='person_application_form-orcid'], input[name='person_application_form-first_name'], input[name='person_application_form-surname'], select[name='person_application_form-academic_title'], select[name='person_application_form-gender'], input[name='person_application_form-career_stage'], input[name='person_application_form-email'], input[name='person_application_form-phone'], select[name='person_application_form-organisation_names'], textarea[name='postal_address_application_form-address'], input[name='postal_address_application_form-city'], input[name='postal_address_application_form-postcode'], input[name='postal_address_application_form-country']").each(function () {
-            if ($(this).val() === '') {
-                allFieldsFilled_step_1 = false;
-                return false;
-            }
-        });
-        if (allFieldsFilled_step_1) {
-            var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
-            $("." + step_class).addClass("valid");
-            $("." + step_class).removeClass("invalid");
-        } else {
-            var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
-            $("." + step_class).addClass("invalid");
-            $("." + step_class).removeClass("valid");
-        }
-
-        var allFieldsFilled_step_2 = true;
-
-        $("input[name='proposal_application_form-title'],input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months']").each(function () {
-            if ($(this).val() === '') {
-                allFieldsFilled_step_2 = false;
-                return false;
-            }
-        });
-        if (allFieldsFilled_step_2) {
-            var step_class = $("input[name='proposal_application_form-title']").closest('fieldset').attr('data-step');
-            $("." + step_class).addClass("valid");
-            $("." + step_class).removeClass("invalid");
-        } else {
-            var step_class = $("input[name='proposal_application_form-title']").closest('fieldset').attr('data-step');
-            $("." + step_class).addClass("invalid");
-            $("." + step_class).removeClass("valid");
-        }
 
 
         var keywordsInput = $("select[name='proposal_application_form-keywords']");
@@ -166,9 +109,6 @@ $(document).ready(function () {
                 errorSpan.text('Please enter at least 5 ' + label + '.'); // Update error message text
                 errorMessages.push('Please enter at least 5 ' + label + '.');
                 formGroup.addClass("has-error");
-                var step_class = $("select[name='proposal_application_form-keywords']").closest('fieldset').attr('data-step');
-                $("." + step_class).addClass("invalid");
-                $("." + step_class).removeClass("valid");
             } else {
                 if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
                 formGroup.removeClass("has-error");
@@ -190,14 +130,12 @@ $(document).ready(function () {
                 errorSpan.text('Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.'); // Update error message text
                 errorMessages.push('Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.');
                 formGroup.addClass("has-error");
-                var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
-                $("." + step_class).addClass("invalid");
-                $("." + step_class).removeClass("valid");
             } else {
                 if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
                 formGroup.removeClass("has-error");
             }
         }
+
         var privacyPolicy = $("input[name='data_collection_form-privacy_policy']");
         var formGroupPrivacyPolicy = privacyPolicy.closest('.form-group');
         var errorSpanPrivacyPolicy = formGroupPrivacyPolicy.find('.error-message');
@@ -214,6 +152,16 @@ $(document).ready(function () {
             errorMessages.push('This field is required.');
             formGroupPrivacyPolicy.addClass("has-error");
         }
+
+        // Iterate over each fieldset with class "questions-fields"
+        $('fieldset').each(function () {
+            var step_class = $(this).attr('data-step');
+            if ($(this).find('.error-message').length > 0) {
+                $("." + step_class).addClass("invalid").removeClass("valid");
+            } else {
+                $("." + step_class).addClass("valid").removeClass("invalid");
+            }
+        });
 
         checkDuplicateProposal(proposalTitle, callId, function () {
             // Display error messages
