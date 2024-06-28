@@ -4,6 +4,7 @@ $(document).ready(function () {
     var current = 1;
     var steps = $("fieldset").length;
     var errorMessages = []; // Declare errorMessages outside functions for scope
+    $('#id_data_collection_form-privacy_policy').removeAttr('required');
 
     function checkDuplicateProposal(proposalTitle, callId, callback) {
         $.ajax({
@@ -58,6 +59,62 @@ $(document).ready(function () {
                 formGroup.removeClass("has-error");
             }
         });
+        $('.quetions-fields input, .quetions-fields select, .quetions-fields textarea').each(function () {
+            var input = $(this);
+            var value = getInputValue(input);
+            var label = getLabelText(input).replace('*', '').replace('(maximum 2500 words)', '');
+            var formGroup = input.closest('.form-group');
+
+            var errorSpan = formGroup.find('.error-message');
+            if (value === '') {
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>');
+                    formGroup.append(errorSpan);
+                }
+                errorSpan.text(label + ' is required.');
+                errorMessages.push(label + ' is required.');
+                formGroup.addClass("has-error");
+            } else {
+                if (errorSpan.length > 0) errorSpan.remove();
+                formGroup.removeClass("has-error");
+            }
+        });
+
+        function getInputValue(input) {
+            if (input.is('textarea') && input.hasClass('ckeditoruploadingwidget')) {
+                var editorId = input.attr('id');
+                return CKEDITOR.instances[editorId].getData();
+            } else if (input.is('input[type="checkbox"]')) {
+                return input.is(':checked') ? input.attr('data-label') : '';
+            } else {
+                return input.val();
+            }
+        }
+
+        var allFieldsFilled_questions = true;
+        var step_class;
+
+        // Iterate over each div with class "questions"
+        $('fieldset.questions').each(function () {
+            // Find the first input, textarea, select, or checkbox element within the current div
+            var firstField = $(this).find('input, select, textarea').first();
+
+            // Check if the first field is empty
+            if (firstField.val() === '') {
+                allFieldsFilled_questions = false;
+                return false; // Exit the loop early if any field is empty
+            }
+
+            // Update step_class to reference data-step attribute of closest fieldset
+            step_class = firstField.closest('fieldset').attr('data-step');
+        });
+
+        if (allFieldsFilled_questions) {
+            $("." + step_class).addClass("valid").removeClass("invalid");
+        } else {
+            $("." + step_class).addClass("invalid").removeClass("valid");
+        }
+
         var allFieldsFilled_step_1 = true;
         $("input[name='person_application_form-orcid'], input[name='person_application_form-first_name'], input[name='person_application_form-surname'], select[name='person_application_form-academic_title'], select[name='person_application_form-gender'], input[name='person_application_form-career_stage'], input[name='person_application_form-email'], input[name='person_application_form-phone'], select[name='person_application_form-organisation_names'], textarea[name='postal_address_application_form-address'], input[name='postal_address_application_form-city'], input[name='postal_address_application_form-postcode'], input[name='postal_address_application_form-country']").each(function () {
             if ($(this).val() === '') {
@@ -66,9 +123,9 @@ $(document).ready(function () {
             }
         });
         if (allFieldsFilled_step_1) {
-             var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
-             $("." + step_class).addClass("valid");
-             $("." + step_class).removeClass("invalid");
+            var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
+            $("." + step_class).addClass("valid");
+            $("." + step_class).removeClass("invalid");
         } else {
             var step_class = $("input[name='person_application_form-orcid']").closest('fieldset').attr('data-step');
             $("." + step_class).addClass("invalid");
@@ -84,9 +141,9 @@ $(document).ready(function () {
             }
         });
         if (allFieldsFilled_step_2) {
-             var step_class = $("input[name='proposal_application_form-title']").closest('fieldset').attr('data-step');
-             $("." + step_class).addClass("valid");
-             $("." + step_class).removeClass("invalid");
+            var step_class = $("input[name='proposal_application_form-title']").closest('fieldset').attr('data-step');
+            $("." + step_class).addClass("valid");
+            $("." + step_class).removeClass("invalid");
         } else {
             var step_class = $("input[name='proposal_application_form-title']").closest('fieldset').attr('data-step');
             $("." + step_class).addClass("invalid");
@@ -141,6 +198,22 @@ $(document).ready(function () {
                 formGroup.removeClass("has-error");
             }
         }
+        var privacyPolicy = $("input[name='data_collection_form-privacy_policy']");
+        var formGroupPrivacyPolicy = privacyPolicy.closest('.form-group');
+        var errorSpanPrivacyPolicy = formGroupPrivacyPolicy.find('.error-message');
+
+        if (privacyPolicy.length && privacyPolicy.prop('checked')) {
+            if (errorSpanPrivacyPolicy.length > 0) errorSpanPrivacyPolicy.remove(); // Remove error span if input is valid
+            formGroupPrivacyPolicy.removeClass("has-error");
+        } else {
+            if (errorSpanPrivacyPolicy.length === 0) {
+                errorSpanPrivacyPolicy = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                formGroupPrivacyPolicy.append(errorSpanPrivacyPolicy); // Append error span
+            }
+            errorSpanPrivacyPolicy.text('This field is required.'); // Update error message text
+            errorMessages.push('This field is required.');
+            formGroupPrivacyPolicy.addClass("has-error");
+        }
 
         checkDuplicateProposal(proposalTitle, callId, function () {
             // Display error messages
@@ -163,7 +236,7 @@ $(document).ready(function () {
 
 
     function storeFormData() {
-        $("fieldset:visible :input").each(function () {
+        $("fieldset :input").each(function () {
             var input = $(this);
             var name = input.attr('name');
             if (name) {
@@ -175,9 +248,13 @@ $(document).ready(function () {
                     var selectedOptionText = input.find('option:selected').text();
                     localStorage.setItem(name, selectedOptionText);
                 } else if (input.is(':checkbox')) {
-                    localStorage.setItem(name + '_checked', input.is(':checked') ? 'true' : 'false');
+                    var checkboxId = input.attr('id');
+                    var checkboxLabel = $("label[for='" + checkboxId + "']").text().trim();
+                    localStorage.setItem(checkboxId + '_checked', input.is(':checked') ? 'true' : 'false');
                     if (input.is(':checked')) {
-                        localStorage.setItem(name, input.val());
+                        localStorage.setItem(checkboxId, checkboxLabel);
+                    } else {
+                        localStorage.removeItem(checkboxId); // Remove unchecked checkbox from storage
                     }
                 } else if (input.is(':radio')) {
                     if (input.is(':checked')) {
@@ -206,7 +283,7 @@ $(document).ready(function () {
     }
 
     function retrieveFormData() {
-        $("fieldset:visible :input").each(function () {
+        $("fieldset :input").each(function () {
             var input = $(this);
             var name = input.attr('name');
             if (name) {
@@ -238,18 +315,55 @@ $(document).ready(function () {
     }
 
     function populateSummary() {
-        var summaryHtml = '';
-        for (var i = 0; i < localStorage.length; i++) {
-            var key = localStorage.key(i);
-            if (key.endsWith('_label') && !key.includes('_checked')) {
-                var fieldName = key.replace('_label', '');
-                var label = localStorage.getItem(key).replace('*', '');
-                var value = localStorage.getItem(fieldName);
-                if (value && !value.includes('button') && !value.includes('submit') && value != "---------") {
-                    summaryHtml += '<p><strong>' + label + ':</strong> ' + value + '</p>';
+        var fieldsets = {};
+
+        // Group fields by their fieldset
+        $("fieldset").each(function () {
+            var fieldsetId = $(this).attr('id') || $(this).index();
+            fieldsets[fieldsetId] = [];
+            $(this).find(":input").each(function () {
+                var input = $(this);
+                var name = input.attr('name');
+                var inputId = input.attr('id'); // Get the ID of the input element
+                if (name) {
+                    var key = name + '_label';
+                    var label = localStorage.getItem(key) ? localStorage.getItem(key).replace('*', '') : null;
+                    var value = input.is(':checkbox') ? localStorage.getItem(inputId) : localStorage.getItem(name); // Use ID for checkboxes
+
+                    if (value && !value.includes('button') && !value.includes('submit') && value != "---------") {
+                        if (label) {
+                            fieldsets[fieldsetId].push('<p><strong>' + label + ':</strong> ' + value + '</p>');
+                        }
+                    }
                 }
+            });
+
+            // Handle CKEditor fields within each fieldset
+            $(this).find("textarea").each(function () {
+                var textarea = $(this);
+                var name = textarea.attr('name');
+                if (name && CKEDITOR.instances[name]) {
+                    var key = name + '_label';
+                    var label = localStorage.getItem(key) ? localStorage.getItem(key).replace('*', '') : null;
+                    var value = localStorage.getItem(name);
+
+                    if (value) {
+                        if (label) {
+                            fieldsets[fieldsetId].push('<p><strong>' + label + ':</strong> ' + value + '</p>');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Generate HTML grouped by fieldset
+        var summaryHtml = '';
+        for (var fieldset in fieldsets) {
+            if (fieldsets[fieldset].length > 0) {
+                summaryHtml += fieldsets[fieldset].join('');
             }
         }
+
         $('#summary-content').html(summaryHtml);
     }
 

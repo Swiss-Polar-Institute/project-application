@@ -152,7 +152,7 @@
       </fieldset>
      {% if extra_parts %}
      {% for part in extra_parts %}
-     <fieldset data-step="step-{{ forloop.counter|add:"2" }}">
+     <fieldset data-step="step-{{ forloop.counter|add:"2" }}" class="quetions-fields">
         <div class="form-fields-wrapper">
                 <h2>Part {{ part.heading_number }}: {{ part.title_rendered }}</h2>
                 <div class="pre-wrap">{{ part.introductory_text|safe }}</div>
