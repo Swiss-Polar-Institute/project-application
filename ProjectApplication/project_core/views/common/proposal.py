@@ -18,20 +18,20 @@ from django.views.generic import TemplateView
 from ProjectApplication import settings
 from comments.utils import comments_attachments_forms
 from evaluation.models import CallEvaluation
-from project_core.forms.applicant_role import RoleDescriptionForm
+from project_core.forms.applicant_role_application import RoleDescriptionForm
 from project_core.forms.budget import BudgetItemFormSet
 from project_core.forms.budget_application import BudgetApplicationItemFormSet
 from project_core.forms.datacollection import DataCollectionForm
-from project_core.forms.funding import ProposalFundingItemFormSet
-from project_core.forms.partners import ProposalPartnersInlineFormSet
+from project_core.forms.funding_application import ProposalFundingItemFormSet
+from project_core.forms.partners_application import ProposalPartnersInlineFormSet
 from project_core.forms.person import PersonForm
 from project_core.forms.person_application import PersonApplicationForm
 from project_core.forms.postal_address import PostalAddressForm
 from project_core.forms.postal_address_application import PostalAddressApplicationForm
-from project_core.forms.project_overarching import ProjectOverarchingForm
+from project_core.forms.project_overarching_application import ProjectOverarchingForm
 from project_core.forms.proposal import ProposalForm
 from project_core.forms.proposal_application import ProposalApplicationForm
-from project_core.forms.scientific_clusters import ScientificClustersInlineFormSet
+from project_core.forms.scientific_clusters_application import ScientificClustersInlineFormSet
 from project_core.models import Proposal, ProposalQAText, Call, ProposalStatus, ProposalQAFile, CallCareerStage
 from project_core.views.common.proposal_parts import ProposalParts, ProposalApplicationParts
 from variable_templates.utils import get_template_value_for_call, apply_templates_to_string

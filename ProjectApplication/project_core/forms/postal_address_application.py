@@ -16,6 +16,7 @@ class PostalAddressApplicationForm(ModelForm):
 
         if self._all_fields_are_optional:
             for field in self.fields.values():
+                field.widget.attrs.update({'class': 'required_field'})
                 field.required = False
 
         self.helper = FormHelper(self)
@@ -40,4 +41,4 @@ class PostalAddressApplicationForm(ModelForm):
         fields = ['address', 'city', 'postcode', 'country']
         help_texts = {
             'address': 'Please enter the professional postal address to which correspondence related to this proposal can be sent. Correspondence will be addressed to the applicant'}
-        labels = {'address': 'Professional postal address*', 'city': 'City*', 'postcode': 'Postcode*', 'country': 'Country*' }
+        labels = {'address': 'Professional postal address'}

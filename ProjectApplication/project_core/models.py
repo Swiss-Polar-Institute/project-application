@@ -785,9 +785,9 @@ class Role(models.Model):
 
 class RoleDescription(CreateModifyOn):
     # It holds the description of a Role for a Partner, Applicant, etc. (a person with a role)
-    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT)
-    description = models.TextField(help_text="Description of the role")
-    competences = models.TextField(help_text="Description of the key competences")
+    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT, null=True, blank=True)
+    description = models.TextField(help_text="Description of the role", null=True, blank=True)
+    competences = models.TextField(help_text="Description of the key competences", null=True, blank=True)
 
 
 class Proposal(CreateModifyOn):
@@ -1134,10 +1134,11 @@ class ProposalFundingItem(FundingItem):
 class Partner(models.Model):
     """Person who is a partner"""
 
-    person = models.ForeignKey(PersonPosition, help_text='Person that is a partner', on_delete=models.PROTECT)
-    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT)
-    role_description = models.TextField(help_text="Description of the partner's role")
-    competences = models.TextField(help_text="Description of the partner's key competences")
+    person = models.ForeignKey(PersonPosition, help_text='Person that is a partner', on_delete=models.PROTECT,
+                               null=True, blank=True)
+    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT, null=True, blank=True)
+    role_description = models.TextField(help_text="Description of the partner's role", null=True, blank=True)
+    competences = models.TextField(help_text="Description of the partner's key competences", null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -1150,7 +1151,7 @@ class ProposalPartner(Partner):
     """Partner that is part of a proposal."""
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal to on which the partner is collaborating',
-                                 on_delete=models.PROTECT)
+                                 on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
         unique_together = (('person', 'role', 'proposal'),)
@@ -1352,7 +1353,7 @@ class AbstractScientificCluster(CreateModifyOn):
 class ProposalScientificCluster(AbstractScientificCluster):
     proposal = models.ForeignKey(Proposal,
                                  help_text='Proposal that this Research Cluster refers to',
-                                 on_delete=models.PROTECT)
+                                 on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
         unique_together = (('title', 'proposal'),)

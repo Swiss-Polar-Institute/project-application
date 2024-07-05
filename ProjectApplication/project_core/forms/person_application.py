@@ -48,61 +48,68 @@ class PersonApplicationForm(Form):
                 # In the database is always saved as yyyy-mm (validator in the model) but it's visualized as mm-yyyy
                 phd_date_parts = self.person_position.person.phd_date.split('-')
                 phd_date_initial = f'{phd_date_parts[1]}-{phd_date_parts[0]}'
-
+        class_attr = {'class': 'required_field'}
         self.fields['orcid'] = forms.CharField(initial=orcid_initial,
-                                               **get_field_information(PhysicalPerson, 'orcid', label='ORCID iD*',
+                                               widget=forms.TextInput(attrs=class_attr),
+                                               **get_field_information(PhysicalPerson, 'orcid', label='ORCID iD',
                                                                        required=True,
                                                                        help_text='Enter your ORCID iD (e.g.: 0000-0002-1825-0097).<br>'
                                                                                  'Please create an <a href="https://orcid.org">ORCID iD</a> if you do not already have one'))
 
-        self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(), label='Academic title*',
+        self.fields['academic_title'] = forms.ModelChoiceField(queryset=PersonTitle.objects.all(), label='Academic title',
                                                                initial=academic_title_initial,
-                                                               required=not self._only_basic_fields)
+                                                               required=not self._only_basic_fields, widget=forms.Select(attrs=class_attr))
 
-        self.fields['first_name'] = forms.CharField(initial=first_name_initial,
-                                                    label='First name(s)*',
-                                                    help_text='Your name is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>')
-
-        self.fields['surname'] = forms.CharField(initial=surname_initial,
-                                                 label='Surname(s)*',
-                                                 help_text='Your surname is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>')
-
+        self.fields['first_name'] = forms.CharField(
+            initial=first_name_initial, label='First name(s)',
+            help_text='Your name is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>',
+            widget=forms.TextInput(attrs=class_attr)
+        )
+        self.fields['surname'] = forms.CharField(
+            initial=surname_initial, label='Surname(s)',
+            help_text='Your surname is populated from your ORCID record. If you would like to change it please amend it in <a href="https://orcid.org/login">ORCID</a>',
+            widget=forms.TextInput(attrs=class_attr)
+        )
         field_set_read_only([self.fields['first_name'], self.fields['surname']])
 
         if self._only_basic_fields == False:
-            self.fields['gender'] = forms.ModelChoiceField(queryset=Gender.objects.all(),label='Gender*',
-                                                           initial=gender_initial)
-
+            self.fields['gender'] = forms.ModelChoiceField(
+                queryset=Gender.objects.all(), label='Gender', initial=gender_initial,
+                widget=forms.Select(attrs=class_attr)
+            )
             if career_stage_queryset is None:
                 career_stage_queryset = CareerStage.objects.all().order_by('list_order', 'name')
-
             self.fields['career_stage'] = forms.ModelChoiceField(
-                queryset=career_stage_queryset, label='Career stage*',
-                initial=career_stage_initial)
-
-            self.fields['email'] = forms.EmailField(initial=email_initial, label='Email*',
-                                                    help_text='Please write a valid email address. You will receive a confirmation email when saving and submitting your application form. This email address will also be used for communication purposes')
-
-            self.fields['phone'] = PhoneNumberField(initial=phone_initial, label='Phone*',
-                                                    help_text='Phone number e.g.: +41222222222 . Extension can be added with xNN at the end')
-
-            self.fields['phd_date'] = forms.CharField(initial=phd_date_initial,
-                                                      label='Date of PhD',
-                                                      help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm-yyyy)',
-                                                      required=False,
-                                                      widget=XDSoftYearMonthPickerInput,
-                                                      validators=[RegexValidator(regex='^[0-9]{2}-[0-9]{4}$',
-                                                                                 message='Format is mm-yyyy',
-                                                                                 code='Invalid format')])
-
-            self.fields['organisation_names'] = organisations_name_autocomplete(initial=organisations_initial,
-                                                                                help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.')
-
-            self.fields['group'] = forms.CharField(initial=group_initial,
-                                                   help_text='Please type the names of the group(s) or laboratories to which you are affiliated for the purposes of this proposal',
-                                                   label='Group / lab',
-                                                   required=False)
-
+                queryset=career_stage_queryset, label='Career stage', initial=career_stage_initial,
+                widget=forms.Select(attrs=class_attr)
+            )
+            self.fields['email'] = forms.EmailField(
+                initial=email_initial, label='Email',
+                help_text='Please write a valid email address. You will receive a confirmation email when saving and submitting your application form. This email address will also be used for communication purposes',
+                widget=forms.EmailInput(attrs=class_attr)
+            )
+            self.fields['phone'] = PhoneNumberField(
+                initial=phone_initial, label='Phone',
+                help_text='Phone number e.g.: +41222222222 . Extension can be added with xNN at the end',
+                widget=forms.TextInput(attrs=class_attr)
+            )
+            self.fields['phd_date'] = forms.CharField(
+                initial=phd_date_initial, label='Date of PhD',
+                help_text='Where applicable, please enter the date on which you were awarded, or expect to be awarded your PhD (use the format mm-yyyy)',
+                required=False,
+                validators=[
+                    RegexValidator(regex='^[0-9]{2}-[0-9]{4}$', message='Format is mm-yyyy', code='Invalid format')]
+            )
+            self.fields['organisation_names'] = organisations_name_autocomplete(
+                initial=organisations_initial,
+                help_text='Please select the organisation(s) to which you are affiliated for the purposes of this proposal.'
+            )
+            self.fields['group'] = forms.CharField(
+                initial=group_initial,
+                help_text='Please type the names of the group(s) or laboratories to which you are affiliated for the purposes of this proposal',
+                label='Group / lab', required=False,
+            )
+            self.fields['organisation_names'].widget.attrs.update(class_attr)
             # If adding fields here: see below to remove them from the self.helper.layout
 
         used_help_texts = []

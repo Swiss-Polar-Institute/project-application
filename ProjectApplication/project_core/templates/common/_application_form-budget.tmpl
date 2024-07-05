@@ -40,7 +40,7 @@ Maximum budget: {{ maximum_budget|thousands_separator }} CHF
     </thead>
     <tbody>
     {% for form in budget_application_form.forms %}
-        <tr>
+        <tr class="budget-item">
             {% for field in form.visible_fields %}
                 <td>
                     {{ field|as_crispy_field }}

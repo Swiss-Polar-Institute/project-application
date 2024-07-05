@@ -29,6 +29,8 @@ class ProposalApplicationForm(ModelForm):
         # self.fields['geographical_areas'].required = True
 
         for field_name, field in self.fields.items():
+            if field_name != 'location':
+                field.widget.attrs.update({'class': 'required_field'})
             field.required = False
 
         if self._call is None:
@@ -136,9 +138,4 @@ class ProposalApplicationForm(ModelForm):
             'end_date': 'Date on which the {{ activity }} to be funded by SPI, is expected to end',
         }
 
-        labels = {'location': 'Precise region',
-                  'title': 'Title*',
-                  'keywords': 'Keywords*',
-                  'start_date': 'Start date*',
-                  'end_date': 'End date*',
-                  'geographical_areas': 'Geographical focus*'}
+        labels = {'location': 'Precise region'}

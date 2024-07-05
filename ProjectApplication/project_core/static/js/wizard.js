@@ -1,9 +1,16 @@
 $(document).ready(function () {
+    $('input.required_field, select.required_field, textarea.required_field').each(function () {
+        var fieldId = $(this).attr('id');
+        var label = $('label[for="' + fieldId + '"]');
+        if (!label.text().includes('*')) {
+            label.text(label.text().trim() + ' *');
+        }
+    });
     localStorage.clear();
-    var current_fs, next_fs, previous_fs; // fieldsets
+    var current_fs, next_fs, previous_fs;
     var current = 1;
     var steps = $("fieldset").length;
-    var errorMessages = []; // Declare errorMessages outside functions for scope
+    var errorMessages = [];
     $('#id_data_collection_form-privacy_policy').removeAttr('required');
 
     function checkDuplicateProposal(proposalTitle, callId, callback) {
@@ -40,24 +47,36 @@ $(document).ready(function () {
         var callId = $("input[name='proposal_application_form-call_id']").val();
 
         //adding error span
-        $("input[name='proposal_application_form-title'], input[name='person_application_form-orcid'], input[name='person_application_form-first_name'], input[name='person_application_form-surname'], select[name='person_application_form-academic_title'], select[name='person_application_form-gender'], input[name='person_application_form-career_stage'], input[name='person_application_form-email'], input[name='person_application_form-phone'], select[name='person_application_form-organisation_names'], textarea[name='postal_address_application_form-address'], input[name='postal_address_application_form-city'], input[name='postal_address_application_form-postcode'], input[name='postal_address_application_form-country'], input[name='proposal_application_form-start_date'], input[name='proposal_application_form-end_date'], input[name='proposal_application_form-duration_months']").each(function () {
+        $(".required_field").each(function () {
             var input = $(this);
-            var value = input.val();
-            var label = getLabelText(input).replace('*', ''); // Get field label
-            var formGroup = input.closest('.form-group'); // Find parent form-group
-
+            var ddId = $(this).attr('id');
+            if (input.hasClass('select2-hidden-accessible')) {
+                var value = $(this).val();
+            } else {
+                var value = input.val();
+            }
+            var label = getLabelText(input).replace('*', '');
+            var formGroup = input.closest('.form-group');
             var errorSpan = formGroup.find('.error-message');
-            if (value === '') {
+            if (value === '' || value === null) {
                 if (errorSpan.length === 0) {
-                    errorSpan = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
-                    formGroup.append(errorSpan); // Append error span
+                    errorSpan = $('<span class="error-message is-invalid"></span>');
+                    formGroup.append(errorSpan);
                 }
-                errorSpan.text(label + ' is required.'); // Update error message text
+                errorSpan.text(label + ' is required.');
                 errorMessages.push(label + ' is required.');
                 formGroup.addClass("has-error");
             } else {
-                if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
-                formGroup.removeClass("has-error");
+                if (errorSpan.length > 0) {
+                    errorSpan.remove();
+                    formGroup.removeClass("has-error");
+
+                    setTimeout(function () {
+                        $("#div_" + ddId).find('span.error-message').remove();
+                    }, 2000);
+
+                }
+
             }
         });
         $('.quetions-fields input, .quetions-fields select, .quetions-fields textarea').each(function () {
@@ -82,7 +101,7 @@ $(document).ready(function () {
         });
 
         function getInputValue(input) {
-            if (input.is('textarea') && input.hasClass('ckeditoruploadingwidget')) {
+            if (input.is('textarea') && input.hasClass('ckeditoruploadingwidget' && typeof CKEDITOR !== 'undefined')) {
                 var editorId = input.attr('id');
                 return CKEDITOR.instances[editorId].getData();
             } else if (input.is('input[type="checkbox"]')) {
@@ -91,7 +110,6 @@ $(document).ready(function () {
                 return input.val();
             }
         }
-
 
 
         var keywordsInput = $("select[name='proposal_application_form-keywords']");
@@ -184,58 +202,55 @@ $(document).ready(function () {
 
 
     function storeFormData() {
-        $("fieldset :input").each(function () {
-            var input = $(this);
-            var name = input.attr('name');
-            if (name) {
-                var label = $("label[for='" + name + "']").text() || input.closest('.form-group').find('label').first().text();
+        var fieldsToStore = [
+            'proposal_application_form-title',
+            'proposal_application_form-keywords',
+            'proposal_application_form-geographical_areas'
+        ];
+
+        fieldsToStore.forEach(function (fieldName) {
+            var input = $("[name='" + fieldName + "']");
+            if (input.length) {
+                var label = $("label[for='" + fieldName + "']").text() || input.closest('.form-group').find('label').first().text();
                 if (label) {
-                    localStorage.setItem(name + '_label', label);
+                    localStorage.setItem(fieldName + '_label', label);
                 }
                 if (input.is('select')) {
                     var selectedOptionText = input.find('option:selected').text();
-                    localStorage.setItem(name, selectedOptionText);
+                    localStorage.setItem(fieldName, selectedOptionText);
                 } else if (input.is(':checkbox')) {
-                    var checkboxId = input.attr('id');
-                    var checkboxLabel = $("label[for='" + checkboxId + "']").text().trim();
-                    localStorage.setItem(checkboxId + '_checked', input.is(':checked') ? 'true' : 'false');
-                    if (input.is(':checked')) {
-                        localStorage.setItem(checkboxId, checkboxLabel);
-                    } else {
-                        localStorage.removeItem(checkboxId); // Remove unchecked checkbox from storage
-                    }
+                    var checkedValues = [];
+                    input.each(function () {
+                        if ($(this).is(':checked')) {
+                            checkedValues.push($(this).val());
+                        }
+                    });
+                    localStorage.setItem(fieldName, JSON.stringify(checkedValues));
                 } else if (input.is(':radio')) {
                     if (input.is(':checked')) {
-                        localStorage.setItem(name, input.val());
-                        localStorage.setItem(name + '_checked', 'true');
+                        localStorage.setItem(fieldName, input.val());
+                        localStorage.setItem(fieldName + '_checked', 'true');
                     }
                 } else if (input.is('textarea')) {
-                    localStorage.setItem(name, input.val());
+                    localStorage.setItem(fieldName, input.val());
                 } else {
-                    localStorage.setItem(name, input.val());
+                    localStorage.setItem(fieldName, input.val());
                 }
             }
         });
-        if (typeof CKEDITOR !== 'undefined') {
-            // Handle CKEditor fields
-            for (var instanceName in CKEDITOR.instances) {
-                var editor = CKEDITOR.instances[instanceName];
-                var editorData = editor.getData();
-                var label = $("label[for='" + instanceName + "']").text() || $("#" + instanceName).closest('.form-group').find('label').first().text();
-                if (label) {
-                    localStorage.setItem(instanceName + '_label', label);
-                }
-                localStorage.setItem(instanceName, editorData);
-            }
-        }
     }
 
     function retrieveFormData() {
-        $("fieldset :input").each(function () {
-            var input = $(this);
-            var name = input.attr('name');
-            if (name) {
-                var value = localStorage.getItem(name);
+        var fieldsToRetrieve = [
+            'proposal_application_form-title',
+            'proposal_application_form-keywords',
+            'proposal_application_form-geographical_areas'
+        ];
+
+        fieldsToRetrieve.forEach(function (fieldName) {
+            var input = $("[name='" + fieldName + "']");
+            if (input.length) {
+                var value = localStorage.getItem(fieldName);
                 if (value) {
                     if (input.is('select')) {
                         input.find('option').each(function () {
@@ -243,77 +258,57 @@ $(document).ready(function () {
                                 $(this).prop('selected', true);
                             }
                         });
-                    } else if (input.is(':checkbox') || input.is(':radio')) {
-                        input.prop('checked', localStorage.getItem(name + '_checked') === 'true');
+                    } else if (input.is(':checkbox')) {
+                        var checkedValues = JSON.parse(value);
+                        input.each(function () {
+                            if (checkedValues.includes($(this).val())) {
+                                $(this).prop('checked', true);
+                            }
+                        });
+                    } else if (input.is(':radio')) {
+                        input.prop('checked', localStorage.getItem(fieldName + '_checked') === 'true');
                     } else {
                         input.val(value);
                     }
                 }
             }
         });
-
-        // Handle CKEditor fields
-        for (var instanceName in CKEDITOR.instances) {
-            var editor = CKEDITOR.instances[instanceName];
-            var editorData = localStorage.getItem(instanceName);
-            if (editorData) {
-                editor.setData(editorData);
-            }
-        }
     }
 
     function populateSummary() {
         var fieldsets = {};
+        var fieldsToPopulate = [
+            'proposal_application_form-title',
+            'proposal_application_form-keywords',
+            'proposal_application_form-geographical_areas'
+        ];
 
-        // Group fields by their fieldset
-        $("fieldset").each(function () {
-            var fieldsetId = $(this).attr('id') || $(this).index();
-            fieldsets[fieldsetId] = [];
-            $(this).find(":input").each(function () {
-                var input = $(this);
-                var name = input.attr('name');
-                var inputId = input.attr('id'); // Get the ID of the input element
-                if (name) {
-                    var key = name + '_label';
-                    var label = localStorage.getItem(key) ? localStorage.getItem(key).replace('*', '') : null;
-                    var value = input.is(':checkbox') ? localStorage.getItem(inputId) : localStorage.getItem(name); // Use ID for checkboxes
+        fieldsToPopulate.forEach(function (fieldName) {
+            var input = $("[name='" + fieldName + "']");
+            var label = localStorage.getItem(fieldName + '_label') ? localStorage.getItem(fieldName + '_label').replace('*', '') : null;
+            var value = localStorage.getItem(fieldName);
 
-                    if (value && !value.includes('button') && !value.includes('submit') && value != "---------") {
-                        if (label) {
-                            fieldsets[fieldsetId].push('<p><strong>' + label + ':</strong> ' + value + '</p>');
+            if (value && !value.includes('button') && !value.includes('submit') && value !== "---------") {
+                if (label) {
+                    if (input.is(':checkbox')) {
+                        var checkedValues = JSON.parse(value);
+                        if (checkedValues.length > 0) {
+                            var checkedLabels = checkedValues.map(function (val) {
+                                return $("label[for='" + input.filter("[value='" + val + "']").attr('id') + "']").text().trim();
+                            }).join(', ');
+                            fieldsets[fieldName] = '<p><strong>' + label + ':</strong> ' + checkedLabels + '</p>';
                         }
+                    } else {
+                        fieldsets[fieldName] = '<p><strong>' + label + ':</strong> ' + value + '</p>';
                     }
                 }
-            });
-
-            // Handle CKEditor fields within each fieldset
-            $(this).find("textarea").each(function () {
-                var textarea = $(this);
-                var name = textarea.attr('name');
-                if (name && CKEDITOR.instances[name]) {
-                    var key = name + '_label';
-                    var label = localStorage.getItem(key) ? localStorage.getItem(key).replace('*', '') : null;
-                    var value = localStorage.getItem(name);
-
-                    if (value) {
-                        if (label) {
-                            fieldsets[fieldsetId].push('<p><strong>' + label + ':</strong> ' + value + '</p>');
-                        }
-                    }
-                }
-            });
+            }
         });
 
-        // Generate HTML grouped by fieldset
-        var summaryHtml = '';
-        for (var fieldset in fieldsets) {
-            if (fieldsets[fieldset].length > 0) {
-                summaryHtml += fieldsets[fieldset].join('');
-            }
-        }
-
+        var summaryHtml = Object.values(fieldsets).join('');
         $('#summary-content').html(summaryHtml);
     }
+
 
     function getLabelText(input) {
         var name = input.attr('name');

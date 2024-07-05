@@ -45,7 +45,7 @@ class QuestionsApplication(Form):
                     question_text += ' (maximum {} words)'.format(question.answer_max_length)
 
                 self.fields['question_{}'.format(question.pk)] = forms.CharField(
-                    label=question_text + '*',
+                    label=question_text,
                     widget=CKEditorUploadingWidget(),
                     initial=answer,
                     help_text=question.question_description,
@@ -60,7 +60,7 @@ class QuestionsApplication(Form):
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
                 self.fields[question_label] = forms.FileField(
-                    label=question.question_text + '*',
+                    label=question.question_text,
                     help_text=question.question_description,
                     initial=file,
                     required=False  # Set required to False here
@@ -70,14 +70,14 @@ class QuestionsApplication(Form):
 
                 if question_label_with_prefix in self.files:
                     self.fields[question_label] = forms.FileField(
-                        label=question.question_text + '*',
+                        label=question.question_text,
                         help_text=question.question_description,
                         initial=self.files[question_label_with_prefix],
                         required=False  # Set required to False here
                     )
                 else:
                     self.fields[question_label] = forms.FileField(
-                        label=question.question_text + '*',
+                        label=question.question_text,
                         help_text=question.question_description,
                         required=False  # Set required to False here
                     )
@@ -89,6 +89,7 @@ class QuestionsApplication(Form):
 
         # Set required to False for all fields
         for field in self.fields.values():
+            field.widget.attrs.update({'class': 'required_field'})
             field.required = False
 
     def questions_answers_text(self):
