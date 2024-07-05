@@ -105,6 +105,11 @@ def management_file_validator():
             file_size_validator]
 
 
+def management_file_excel_validator():
+    return [FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'odt', 'jpg', 'jpeg', 'png', 'xlsx', 'xls']),
+            file_size_validator]
+
+
 def external_file_validator():
     return [FileExtensionValidator(allowed_extensions=['pdf']),
             file_size_validator]

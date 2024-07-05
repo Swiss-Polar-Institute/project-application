@@ -24,7 +24,7 @@ from . import utils
 from .utils.SpiS3Boto3Storage import SpiS3Boto3Storage
 from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field, \
-    management_file_validator, user_is_in_group_name
+    management_file_validator, user_is_in_group_name, management_file_excel_validator
 from django.core.exceptions import ValidationError
 
 logger = logging.getLogger('project_core')
@@ -1408,7 +1408,7 @@ class CallPartFile(CreateModifyOn):
     description = models.CharField(max_length=512, help_text='Description of this file', blank=True, null=True)
     file = models.FileField(storage=SpiS3Boto3Storage(),
                             upload_to=call_part_file_rename,
-                            validators=[*management_file_validator()])
+                            validators=[*management_file_excel_validator()])
 
     order = models.PositiveIntegerField(blank=True, null=True)
 
