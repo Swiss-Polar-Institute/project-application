@@ -96,8 +96,8 @@ class QuestionsApplication(Form):
         self.helper.form_tag = False
 
         # Set required to False for all fields if needed (optional)
-        # for field in self.fields.values():
-        #     field.required = False
+        for field in self.fields.values():
+            field.required = False
 
     def questions_answers_text(self):
         return self._questions_answers_text
