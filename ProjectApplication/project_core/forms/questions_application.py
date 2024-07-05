@@ -11,7 +11,7 @@ from project_core.models import ProposalQAFile, ProposalQAText, CallQuestion, Ca
 from project_core.utils.utils import external_file_validator
 from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
-logger = logging.getLogger('project_core')
+logger = logging.getLogger('project-core')
 
 
 class QuestionsApplication(Form):
@@ -44,14 +44,18 @@ class QuestionsApplication(Form):
                 if question.answer_max_length:
                     question_text += ' (maximum {} words)'.format(question.answer_max_length)
 
-                self.fields['question_{}'.format(question.pk)] = forms.CharField(
+                field = forms.CharField(
                     label=question_text,
                     widget=CKEditorUploadingWidget(),
                     initial=answer,
                     help_text=question.question_description,
-                    required=False  # Set required to False here
+                    required=question.answer_required
                 )
 
+                if question.answer_required:
+                    field.widget.attrs.update({'class': 'required_field'})
+
+                self.fields['question_{}'.format(question.pk)] = field
                 self._questions_answers_text.append({'question': question, 'answer': answer})
 
         for question in self._call_part.questions_type_files():
@@ -59,38 +63,41 @@ class QuestionsApplication(Form):
 
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
-                self.fields[question_label] = forms.FileField(
+                field = forms.FileField(
                     label=question.question_text,
                     help_text=question.question_description,
                     initial=file,
-                    required=False  # Set required to False here
+                    required=question.answer_required
                 )
             except ObjectDoesNotExist:
-                question_label_with_prefix = kwargs['prefix'] + '-' + question_label
+                question_label_with_prefix = kwargs['prefix'] + '-' + question_label if 'prefix' in kwargs else question_label
 
                 if question_label_with_prefix in self.files:
-                    self.fields[question_label] = forms.FileField(
+                    field = forms.FileField(
                         label=question.question_text,
                         help_text=question.question_description,
                         initial=self.files[question_label_with_prefix],
-                        required=False  # Set required to False here
+                        required=question.answer_required
                     )
                 else:
-                    self.fields[question_label] = forms.FileField(
+                    field = forms.FileField(
                         label=question.question_text,
                         help_text=question.question_description,
-                        required=False  # Set required to False here
+                        required=question.answer_required
                     )
 
-            self._questions_answers_file.append({'question': question, 'answer': self.fields[question_label].initial})
+            if question.answer_required:
+                field.widget.attrs.update({'class': 'required_field'})
+
+            self.fields[question_label] = field
+            self._questions_answers_file.append({'question': question, 'answer': field.initial})
 
         self.helper = FormHelper(self)
         self.helper.form_tag = False
 
-        # Set required to False for all fields
-        for field in self.fields.values():
-            field.widget.attrs.update({'class': 'required_field'})
-            field.required = False
+        # Set required to False for all fields if needed (optional)
+        # for field in self.fields.values():
+        #     field.required = False
 
     def questions_answers_text(self):
         return self._questions_answers_text
@@ -166,4 +173,3 @@ class QuestionsApplication(Form):
                     )
 
         return cleaned_data
-

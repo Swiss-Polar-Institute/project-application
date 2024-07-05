@@ -48,16 +48,26 @@ $(document).ready(function () {
 
         //adding error span
         $(".required_field").each(function () {
+
             var input = $(this);
-            var ddId = $(this).attr('id');
-            if (input.hasClass('select2-hidden-accessible')) {
-                var value = $(this).val();
-            } else {
-                var value = input.val();
+            if (input.hasClass('modelselect2multiple')) {
+               return true;
             }
+            var value;
+
+            if (input.hasClass('select2-hidden-accessible')) {
+                value = $(this).val();
+            } else if (input.is('textarea') && input.hasClass('ckeditoruploadingwidget') && typeof CKEDITOR !== 'undefined') {
+                var editorId = input.attr('id');
+                value = CKEDITOR.instances[editorId].getData();
+            } else {
+                value = input.val();
+            }
+
             var label = getLabelText(input).replace('*', '');
             var formGroup = input.closest('.form-group');
             var errorSpan = formGroup.find('.error-message');
+
             if (value === '' || value === null) {
                 if (errorSpan.length === 0) {
                     errorSpan = $('<span class="error-message is-invalid"></span>');
@@ -71,45 +81,12 @@ $(document).ready(function () {
                     errorSpan.remove();
                     formGroup.removeClass("has-error");
 
-                    setTimeout(function () {
-                        $("#div_" + ddId).find('span.error-message').remove();
-                    }, 2000);
-
+                    // setTimeout(function () {
+                    //     $("#div_" + ddId).find('span.error-message').remove();
+                    // }, 2000);
                 }
-
             }
         });
-        $('.quetions-fields input, .quetions-fields select, .quetions-fields textarea').each(function () {
-            var input = $(this);
-            var value = getInputValue(input);
-            var label = getLabelText(input).replace('*', '').replace('(maximum 2500 words)', '');
-            var formGroup = input.closest('.form-group');
-
-            var errorSpan = formGroup.find('.error-message');
-            if (value === '') {
-                if (errorSpan.length === 0) {
-                    errorSpan = $('<span class="error-message is-invalid"></span>');
-                    formGroup.append(errorSpan);
-                }
-                errorSpan.text(label + ' is required.');
-                errorMessages.push(label + ' is required.');
-                formGroup.addClass("has-error");
-            } else {
-                if (errorSpan.length > 0) errorSpan.remove();
-                formGroup.removeClass("has-error");
-            }
-        });
-
-        function getInputValue(input) {
-            if (input.is('textarea') && input.hasClass('ckeditoruploadingwidget' && typeof CKEDITOR !== 'undefined')) {
-                var editorId = input.attr('id');
-                return CKEDITOR.instances[editorId].getData();
-            } else if (input.is('input[type="checkbox"]')) {
-                return input.is(':checked') ? input.attr('data-label') : '';
-            } else {
-                return input.val();
-            }
-        }
 
 
         var keywordsInput = $("select[name='proposal_application_form-keywords']");
@@ -126,6 +103,27 @@ $(document).ready(function () {
                 }
                 errorSpan.text('Please enter at least 5 ' + label + '.'); // Update error message text
                 errorMessages.push('Please enter at least 5 ' + label + '.');
+                formGroup.addClass("has-error");
+            } else {
+                if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
+                formGroup.removeClass("has-error");
+            }
+        }
+
+        var organisationInput = $("select[name='person_application_form-organisation_names']");
+        if (organisationInput.length) {
+            var selectedKeywords = organisationInput.find("option:selected");
+            var label = getLabelText(organisationInput);
+            var formGroup = organisationInput.closest('.form-group');
+            var errorSpan = formGroup.find('.error-message');
+
+            if (selectedKeywords.length < 1) {
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                    formGroup.append(errorSpan); // Append error span
+                }
+                errorSpan.text(label + ' is required.'); // Update error message text
+                errorMessages.push(label + ' is required.');
                 formGroup.addClass("has-error");
             } else {
                 if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
@@ -183,6 +181,7 @@ $(document).ready(function () {
 
         checkDuplicateProposal(proposalTitle, callId, function () {
             // Display error messages
+            console.log(errorMessages);
             if (errorMessages.length > 0) {
                 console.log("test");
                 var errorMessageHtml = '<ul>';
