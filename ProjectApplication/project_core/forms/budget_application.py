@@ -122,16 +122,16 @@ class BudgetApplicationFormSet(BaseFormSet):
             # amount is removed from the form.cleaned_data
             return
 
-        for budget_item_form in self.forms:
-            amount = budget_item_form.cleaned_data['amount'] or 0
-
-            budget_amount += amount
-
-        if budget_amount > maximum_budget:
-            raise forms.ValidationError(
-                'Maximum allowed budget for this call is {} CHF. Your total proposed budget is {} CHF'.format(
-                    thousands_separator(maximum_budget),
-                    thousands_separator(budget_amount)))
+        # for budget_item_form in self.forms:
+        #     amount = budget_item_form.cleaned_data['amount'] or 0
+        #
+        #     budget_amount += amount
+        #
+        # if budget_amount > maximum_budget:
+        #     raise forms.ValidationError(
+        #         'Maximum allowed budget for this call is {} CHF. Your total proposed budget is {} CHF'.format(
+        #             thousands_separator(maximum_budget),
+        #             thousands_separator(budget_amount)))
 
     def save_budgets(self, proposal):
         for form in self.forms:

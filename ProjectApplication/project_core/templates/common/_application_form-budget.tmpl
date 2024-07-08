@@ -3,6 +3,7 @@
 {% load thousands_separator %}
 
 Maximum budget: {{ maximum_budget|thousands_separator }} CHF
+<input type="hidden" id="total_budget" value="{{ maximum_budget}}">
 <p>
     For each cost category, please give details of all items and related costs.<br>
     For details on eligible costs and budget structure, please refer to the call text.
@@ -20,7 +21,7 @@ Maximum budget: {{ maximum_budget|thousands_separator }} CHF
     {% endfor %}
 {% endfor %}
 
-<table class="table table-striped table-sm">
+<table class="table table-striped table-sm budget-table">
     <thead>
     <tr>
         {% for field in budget_application_form.forms.0.visible_fields %}

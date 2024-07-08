@@ -392,20 +392,20 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
     color: #000000;
 }
 
-.progressbar .step.valid {
+.progressbar .step.valid,.progressbar .step.budgetvalid {
   color: #3EC27B;
 }
 
-.progressbar .step.valid .bullet::before {
+.progressbar .step.valid .bullet::before,.progressbar .step.budgetvalid .bullet::before {
   content: "\2713";
   color: #3EC27B;
 }
 
-.progressbar .step.invalid {
+.progressbar .step.invalid, .progressbar .step.budgetinvalid {
   color: #ff0000;
 }
 
-.progressbar .step.invalid .bullet::before {
+.progressbar .step.invalid .bullet::before,.progressbar .step.budgetinvalid .bullet::before {
   content: "\292C";
   color: #ff0000;
 }

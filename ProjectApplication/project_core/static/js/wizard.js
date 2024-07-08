@@ -13,6 +13,61 @@ $(document).ready(function () {
     var errorMessages = [];
     $('#id_data_collection_form-privacy_policy').removeAttr('required');
 
+    function validateBudgetItems() {
+         var totalSum = 0;
+        errorMessages = []; // Clear existing error messages for this validation
+        var max_budget = $('#total_budget').val();
+        $('.budget-item').each(function () {
+            var detailsField = $(this).find('textarea[name$="-details"]');
+            var amountField = $(this).find('input[name$="-amount"]');
+            var detailsValue = detailsField.val().trim();
+            var amountValue = amountField.val().trim();
+            var formGroupDetails = detailsField.closest('.form-group');
+            var formGroupAmount = amountField.closest('.form-group');
+
+            // Clear previous error messages
+            formGroupDetails.find('.error-message').remove();
+            formGroupAmount.find('.error-message').remove();
+            formGroupDetails.removeClass("has-error");
+            formGroupAmount.removeClass("has-error");
+
+            var errorMessage = 'Both Details and Total (CHF) fields are required.';
+            var amountErrorMessage = 'Total (CHF) must be a number.';
+
+            if ((detailsValue && !amountValue) || (!detailsValue && amountValue)) {
+                if (!detailsValue) {
+                    formGroupDetails.addClass("has-error");
+                    formGroupDetails.append('<span class="error-message is-invalid">' + errorMessage + '</span>');
+                    errorMessages.push(errorMessage);
+                }
+                if (!amountValue) {
+                    formGroupAmount.addClass("has-error");
+                    formGroupAmount.append('<span class="error-message is-invalid">' + errorMessage + '</span>');
+                    errorMessages.push(errorMessage);
+                }
+            }
+
+            if (amountValue) {
+                var amount = parseFloat(amountValue);
+                if (isNaN(amount) || amount < 0) {
+                    formGroupAmount.addClass("has-error");
+                    formGroupAmount.append('<span class="error-message is-invalid">' + amountErrorMessage + '</span>');
+                    errorMessages.push(amountErrorMessage);
+                }else{
+                    totalSum += parseFloat(amountValue);
+                }
+            }
+        });
+        if (totalSum > max_budget) {
+            alert('Budget is greater than the maximum budget for this call.');
+            var budget_step_class = $('.budget-table').closest('fieldset').attr('data-step');
+            $("." + budget_step_class).addClass("budgetinvalid").removeClass("budgetvalid");
+        }else{
+            var budget_step_class = $('.budget-table').closest('fieldset').attr('data-step');
+            $("." + budget_step_class).addClass("budgetvalid").removeClass("budgetinvalid");
+        }
+    }
+
     function checkDuplicateProposal(proposalTitle, callId, callback) {
         $.ajax({
             url: '/check_duplicate_proposal/',  // URL to check for duplicates
@@ -51,7 +106,7 @@ $(document).ready(function () {
 
             var input = $(this);
             if (input.hasClass('modelselect2multiple')) {
-               return true;
+                return true;
             }
             var value;
 
@@ -88,6 +143,7 @@ $(document).ready(function () {
             }
         });
 
+        validateBudgetItems();
 
         var keywordsInput = $("select[name='proposal_application_form-keywords']");
         if (keywordsInput.length) {
