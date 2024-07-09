@@ -569,3 +569,12 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
     line-height: 1;
 }
 .cursor-pointer {cursor: pointer;}
+
+.information-wrapper .section-title {
+    margin-bottom: 15px;
+}
+
+.information-wrapper p {
+    letter-spacing: 0.5px;
+    line-height: 1.7;
+}
