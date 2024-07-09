@@ -14,6 +14,7 @@ from django.utils import timezone
 from ..models import Call, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory, \
     CallPart, CallCareerStage, CareerStage
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 logger = logging.getLogger('project_core')
 
@@ -130,6 +131,8 @@ class CallForm(forms.ModelForm):
                                                                  label='Career stages',
                                                                  help_text='Select the career stages to be displayed in the proposal form')
 
+
+        self.fields['introductory_message'].widget = CKEditorUploadingWidget()
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
         self.fields['budget_categories'].label = 'Budget categories (drag and drop to order them)'
         self.fields['budget_categories'].help_text = 'If you need to add a new budget category: contact an admin (DarwinDigital)'
@@ -221,7 +224,16 @@ class CallForm(forms.ModelForm):
     def clean_introductory_message(self):
         data = self.cleaned_data['introductory_message']
 
-        data = bleach.clean(bleach.linkify(data, parse_email=True))
+        # Define the allowed tags and attributes
+        allowed_tags = bleach.ALLOWED_TAGS + ['p', 'strong', 'em', 'ul', 'li', 'ol', 'a']
+        allowed_attributes = bleach.ALLOWED_ATTRIBUTES
+        allowed_attributes.update({
+            'a': ['href', 'title'],
+            '*': ['style']  # Allow style attribute on any tag
+        })
+
+        # Clean the data using bleach with the updated tags and attributes
+        data = bleach.clean(bleach.linkify(data, parse_email=True), tags=allowed_tags, attributes=allowed_attributes)
 
         return data
 
