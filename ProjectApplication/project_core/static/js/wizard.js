@@ -13,9 +13,8 @@ $(document).ready(function () {
     var errorMessages = [];
     $('#id_data_collection_form-privacy_policy').removeAttr('required');
 
-    function validateBudgetItems() {
+    function validateBudgetItems(errorMessages) {
          var totalSum = 0;
-        errorMessages = []; // Clear existing error messages for this validation
         var max_budget = $('#total_budget').val();
         $('.budget-item').each(function () {
             var detailsField = $(this).find('textarea[name$="-details"]');
@@ -143,7 +142,10 @@ $(document).ready(function () {
             }
         });
 
-        validateBudgetItems();
+
+        validateBudgetItems(errorMessages);
+
+
 
         var keywordsInput = $("select[name='proposal_application_form-keywords']");
         if (keywordsInput.length) {
@@ -237,9 +239,7 @@ $(document).ready(function () {
 
         checkDuplicateProposal(proposalTitle, callId, function () {
             // Display error messages
-            console.log(errorMessages);
             if (errorMessages.length > 0) {
-                console.log("test");
                 var errorMessageHtml = '<ul>';
                 errorMessages.forEach(function (message) {
                     errorMessageHtml += '<li>' + message + '</li>';
