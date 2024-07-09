@@ -225,7 +225,7 @@ class CallForm(forms.ModelForm):
         data = self.cleaned_data['introductory_message']
 
         # Define the allowed tags and attributes
-        allowed_tags = bleach.ALLOWED_TAGS + ['p', 'strong', 'em', 'ul', 'li', 'ol', 'a']
+        allowed_tags = bleach.ALLOWED_TAGS + ['p', 'strong', 'em', 'ul', 'li', 'ol', 'a', 'br']
         allowed_attributes = bleach.ALLOWED_ATTRIBUTES
         allowed_attributes.update({
             'a': ['href', 'title'],
