@@ -74,7 +74,6 @@ class FilterMediumSerializer(serializers.ListSerializer):
 
 
 class MediumSerializer(serializers.ModelSerializer):
-    photographer = serializers.CharField(source='photographer.full_name')
 
     class Meta:
         model = Medium
