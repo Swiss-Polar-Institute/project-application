@@ -3,7 +3,7 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from project_core.models import (
-    Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument, Trace, TraceCoordinates
+    Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument, Trace, TraceCoordinates, PhysicalPerson
 )
 from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors, Dataset, Publication
 
@@ -74,11 +74,23 @@ class FilterMediumSerializer(serializers.ListSerializer):
 
 
 class MediumSerializer(serializers.ModelSerializer):
+    photographer = serializers.SerializerMethodField()
 
     class Meta:
         model = Medium
         fields = ('photographer', 'file', 'file_web', 'key_image', 'primary_image')
         list_serializer_class = FilterMediumSerializer
+
+    def get_photographer(self, obj):
+        if str(obj.photographer).isdigit():
+            try:
+                physical_person = PhysicalPerson.objects.get(id=obj.photographer)
+                return f"{physical_person.first_name} {physical_person.surname}"
+            except PhysicalPerson.DoesNotExist:
+                return None
+        elif isinstance(obj.photographer, str):
+            return obj.photographer
+        return None
 
 
 class FieldNoteSerializer(serializers.ModelSerializer):
