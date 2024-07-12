@@ -154,22 +154,4 @@ class QuestionsApplication(Form):
 
     def clean(self):
         cleaned_data = super().clean()
-
-        for question_number in list(cleaned_data.keys()):
-            question_id = question_number[len('question_'):]
-
-            call_question = CallQuestion.objects.get(id=question_id)
-
-            if call_question.answer_type == CallQuestion.TEXT:
-                answer = cleaned_data[question_number]
-
-                max_word_length = call_question.answer_max_length
-                current_words = len(answer.split())
-
-                if max_word_length is not None and current_words > max_word_length:
-                    self.add_error(
-                        question_number,
-                        'Too long. Current: {} words, maximum: {} words'.format(current_words, max_word_length)
-                    )
-
         return cleaned_data
