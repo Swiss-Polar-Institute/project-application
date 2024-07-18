@@ -578,3 +578,180 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
     letter-spacing: 0.5px;
     line-height: 1.7;
 }
+.hero {
+  position: relative;
+  padding: 120px 0;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 70%;
+  z-index: 1;
+  background: linear-gradient(90deg, #CC2027 0%, rgba(102, 16, 20, 0) 100%);
+}
+
+
+.hero .hero--img {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.hero .hero--img img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.hero .hero--content {
+  position: relative;
+  max-width: 50%;
+  color: #fff;
+  z-index: 2;
+}
+
+.hero .hero--content h1 {
+  font-size: 50px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  margin: 0 0 20px;
+}
+
+.hero .hero--content p {
+  font-size: 20px;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.choose-option {
+  padding: 50px 0 100px;
+  background-color: #f6f6f6;
+}
+
+.choose-option .choose-options--wrapper {
+  display: grid;
+  gap: 20px;
+  max-width: 50%;
+}
+
+.choose-option .card--options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  background-color: #fff;
+  padding: 45px 50px;
+  border-radius: 6px;
+  box-shadow: 0px 6px 40px 0px #00000008;
+}
+
+.choose-option .card--options .card--options--left .subtitle {
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: rgba(68, 68, 68, .7);
+  margin-bottom: 10px;
+}
+
+.choose-option .card--options .card--options--left h3 {
+  font-size: 30px;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin: 0;
+  color: #444444;
+}
+
+.choose-option .card--options .card--options--right {
+  flex-shrink: 0;
+}
+
+.choose-option .card--options .btn {
+  display: inline-block;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 13px 40px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: all .3s ease-in;
+}
+
+.choose-option .card--options .btn-icon img {
+  width: 18px;
+}
+
+.choose-option .card--options .btn.btn-primary {
+  color: #fff;
+  border-color: #CC2027;
+  background-color: #CC2027;
+}
+
+.choose-option .card--options .btn.btn-primary:hover {
+  color: #CC2027;
+  background-color: transparent;
+}
+
+.site-footer {
+    background-color: #CC2027;
+    color: #0c0c0c;
+    text-align: center;
+    padding: 30px 0;
+}
+
+.site-footer p {
+    margin: 0;
+}
+
+/* < 1200px */
+@media (max-width: 1199px) {
+  .hero .hero--content,
+  .choose-option .choose-options--wrapper {
+    max-width: 70%;
+  }
+}
+
+/* < 992px */
+@media (max-width: 991px) {
+  .hero .hero--content,
+  .choose-option .choose-options--wrapper {
+    max-width: 100%;
+  }
+}
+
+/* < 768px */
+@media (max-width: 767px) {
+  .hero {
+    padding: 80px 0;
+  }
+  .hero .hero--content h1 {
+    font-size: 30px;
+  }
+  .hero .hero--content p {
+    font-size: 16px;
+  }
+  .choose-option .card--options .card--options--left h3 {
+    font-size: 18px;
+  }
+}
+
+/* < 576px */
+@media (max-width: 575px) {
+  .choose-option .card--options {
+    padding: 20px;
+  }
+  .choose-option .card--options .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  .choose-option .card--options .card--options--left .subtitle {
+    font-size: 12px;
+    letter-spacing: 0.2px;
+  }
+  .choose-option .card--options .btn-icon img {
+    width: 10px;
+  }
+}

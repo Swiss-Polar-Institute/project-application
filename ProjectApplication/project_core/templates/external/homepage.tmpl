@@ -1,23 +1,57 @@
 {% extends 'common/_base.tmpl' %}
 {% load git_commit %}
+{% load static %}
 {% block title %}Swiss Polar Institute{% endblock %}
 
 {% block body_contents %}
     <div class="container" role="main">
         {% include 'common/_logo.tmpl' %}
         <p></p>
-        <h1>Welcome to the SPI Projects homepage</h1>
-
-        Options:
-        <ul>
-            <li><a href="{% url 'call-list' %}">Proposal submission</a></li>
-        </ul>
-
-        <hr>
-        <a href="{% url 'logged-homepage' %}">Reviewers and management: click here to login</a>
-
-        <div class="fixed-bottom">
-            <span class="text-muted"><small>Version: {% version_date %}</small></span>
-        </div>
     </div>
+    <section class="hero">
+        <div class="hero--img">
+          <img src="{% static 'images/hero.png' %}" alt="Hero Image">
+        </div>
+        <div class="container">
+            <div class="hero--content">
+                <h1>Welcome to the SPI Projects homepage</h1>
+                <p>Please choose one of the options bellow.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="choose-option">
+        <div class="container">
+            <div class="choose-options--wrapper">
+                <div class="card--options">
+                    <div class="card--options--left">
+                        <div class="subtitle">For Applicants</div>
+                        <h3>Submit a proposal</h3>
+                    </div>
+                    <div class="card--options--right">
+                        <a href="{% url 'call-list' %}" title="Submit a proposal" class="btn-icon">
+                              <span class="icon">
+                                <img src="{% static 'images/angle-right.svg' %}" alt="Right Arrow">
+                              </span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card--options">
+                      <div class="card--options--left">
+                            <div class="subtitle">For reviewers / administrators</div>
+                            <h3>LOGIN</h3>
+                      </div>
+                      <div class="card--options--right">
+                            <a href="{% url 'logged-homepage' %}" class="btn btn-primary" title="Login">Login</a>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="site-footer">
+        <div class="container">
+            <p>Copyright &copy; 2024 Swiss Polar Institute</p>
+        </div>
+    </footer>
 {% endblock %}
