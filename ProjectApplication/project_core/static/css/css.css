@@ -651,6 +651,7 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
   border-radius: 6px;
   box-shadow: 0px 6px 40px 0px #00000008;
   transition: all .3s ease;
+  cursor: pointer;
 }
 
 .choose-option .card--options:hover {
@@ -711,6 +712,7 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
 
 .site-footer p {
     margin: 0;
+    color: #ffffff;
 }
 
 .authentication {
