@@ -14,8 +14,8 @@
         </div>
         <div class="container">
             <div class="hero--content">
-                <h1>Welcome to the SPI Projects homepage</h1>
-                <p>Please choose one of the options bellow.</p>
+                <h1>Welcome to the SPI Funding Applications</h1>
+                <p>Please choose one of the options below.</p>
             </div>
         </div>
     </section>
@@ -23,29 +23,33 @@
     <section class="choose-option">
         <div class="container">
             <div class="choose-options--wrapper">
-                <div class="card--options">
+                <a href="{% url 'call-list' %}" title="Submit a proposal" class="card--options">
                     <div class="card--options--left">
-                        <div class="subtitle">For Applicants</div>
+                        <div class="subtitle">For applicants</div>
                         <h3>Submit a proposal</h3>
                     </div>
                     <div class="card--options--right">
-                        <a href="{% url 'call-list' %}" title="Submit a proposal" class="btn-icon">
-                              <span class="icon">
+                        <div class="btn-icon">
+                            <span class="icon">
                                 <img src="{% static 'images/angle-right.svg' %}" alt="Right Arrow">
-                              </span>
-                        </a>
+                            </span>
+                        </div>
                     </div>
-                </div>
+                </a>
 
-                <div class="card--options">
-                      <div class="card--options--left">
-                            <div class="subtitle">For reviewers / administrators</div>
-                            <h3>LOGIN</h3>
-                      </div>
-                      <div class="card--options--right">
-                            <a href="{% url 'logged-homepage' %}" class="btn btn-primary" title="Login">Login</a>
-                      </div>
-                </div>
+                <a href="{% url 'call-list' %}" title="Login" class="card--options">
+                    <div class="card--options--left">
+                        <div class="subtitle">For reviewers / administrators</div>
+                        <h3>LOGIN</h3>
+                    </div>
+                    <div class="card--options--right">
+                       <div class="btn-icon">
+                            <span class="icon">
+                                <img src="{% static 'images/angle-right.svg' %}" alt="Right Arrow">
+                            </span>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </section>

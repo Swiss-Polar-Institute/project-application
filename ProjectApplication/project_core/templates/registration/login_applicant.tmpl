@@ -1,58 +1,80 @@
 {% extends 'common/_base.tmpl' %}
-
+{% load static %}
 {% block title %}Management login{% endblock %}
 
 {% block body_contents %}
-
     <div class="container" role="main">
         {% include 'common/_logo.tmpl' %}
         <p></p>
-        <h1>Login</h1>
-        {% if form.errors %}
-            <div class="authentication_error">
-                <p>Your username and password didn't match. Please try again.</p>
-            </div>
-        {% endif %}
-
-        {% if next %}
-            {% if user.is_authenticated %}
-                <div class="authentication_error">
-                    <p>Your account doesn't have access to the page that you tried to access.</p>
-                    <p>You can try to <a href="{% url 'logged-homepage' %}">go to the main management area</a> or login
-                        with another account below.
-                    </p>
-                </div>
-            {% else %}
-                <div class="authentication_error">
-                    Please login to access the page you require.
-                </div>
-            {% endif %}
-        {% endif %}
-        <p></p>
-        <form method="post" action="{% url 'applicant-login' %}">
-            {% csrf_token %}
-            <table>
-
-                <tr>
-                    <td>{{ form.username.label_tag }}</td>
-                    <td>{{ form.username }}</td>
-                </tr>
-                <tr>
-                    <td>{{ form.password.label_tag }}</td>
-                    <td>{{ form.password }}</td>
-                </tr>
-            </table>
-
-            {% include 'common/_submit-button.tmpl' %}
-            <input type="hidden" name="next" value="{{ next }}"/>
-        </form>
-        <hr>
-        <p>If you have any issue please contact: <a href="mailto:grants@swisspolar.ch">grants@swisspolar.ch</a></p>
-        <p>
-            <a href="{% url 'homepage' %}">Homepage</a>
-        </p>
-        {# Assumes you setup the password_reset view in your URLconf #}
-        <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
-        <p><a href="{% url 'register' %}">Register?</a></p>
     </div>
+
+    <section class="authentication">
+        <div class="container">
+            <div class="card-authentication">
+                <h1>Login to continue</h1>
+                <p>Please login to access the page you require.</p>
+
+                {% if form.errors %}
+                    <div class="authentication_error">
+                        <p>Your username and password didn't match. Please try again.</p>
+                    </div>
+                {% endif %}
+
+                {% if next %}
+                    {% if user.is_authenticated %}
+                        <div class="authentication_error">
+                            <p>Your account doesn't have access to the page that you tried to access.</p>
+                            <p>You can try to <a href="{% url 'logged-homepage' %}">go to the main management area</a> or login
+                                with another account below.
+                            </p>
+                        </div>
+                    {% else %}
+                        <div class="authentication_error">
+                            Please login to access the page you require.
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                <form method="post" action="{% url 'applicant-login' %}">
+                    {% csrf_token %}
+                    <div class="form-fields-container">
+                        <div class="floating-label">
+                           <input type="text" name="{{ form.username.name }}" placeholder="Username" value="{{ form.username.value|default_if_none:'' }}">
+                           {{ form.username.label_tag }}
+                        </div>
+
+						<div class="floating-label">
+							<input type="password" name="{{ form.password.name }}" placeholder="Password" value="{{ form.password.value|default_if_none:'' }}">
+							{{ form.password.label_tag }}
+						</div>
+                    </div>
+
+                    <div class="card-authentication--cta">
+                        {% include 'common/_submit-button.tmpl' %}
+                        <a href="{% url 'password_reset' %}" title="Forgot Password?">Forgot Password?</a>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <p>If you have any issue please contact: <a href="mailto:grants@swisspolar.ch">grants@swisspolar.ch</a></p>
+                    <p>
+                        <a href="{% url 'homepage' %}" title="GO TO HOMEPAGE" class="link-red">
+                            <span>GO TO HOMEPAGE</span>
+                            <span class="icon">
+                                <img src="{% static 'images/angle-right.svg' %}" alt="Right Arrow">
+                            </span>
+                        </a>
+                    </p>
+                    <br>
+                    <p>No Account? <a href="{% url 'register' %}" title="Register here">Register here</a></p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>Copyright &copy; 2024 Swiss Polar Institute</p>
+        </div>
+    </footer>
 {% endblock %}
