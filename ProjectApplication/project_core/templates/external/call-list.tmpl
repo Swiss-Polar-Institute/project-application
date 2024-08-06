@@ -4,18 +4,35 @@
 {% block body_contents %}
     <div class="container" role="main">
         {% include 'logged/_navbar.tmpl' %}
-        <h1>Open calls</h1>
+    </div>    
+        <section class="choose-option extend">
+             <div class="container">
+                <h1>Open calls</h1>
 
 
-        {% if calls %}
-            Click on a call to create a proposal.
-            <ul>
-                {% for call in calls %}
-                    <li><a href="{% url 'proposal-add' %}?call={{ call.pk }}">{{ call.long_name }}</a></li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            No calls at the moment.
-        {% endif %}
-    </div>
+                {% if calls %}
+                    Click on a call to create a proposal.
+                    <br/><br/>
+                   <div class="choose-options--wrapper">
+                        {% for call in calls %}
+                            <a href="{% url 'proposal-add' %}?call={{ call.pk }}" class="card--options">
+                               <div class="card--options--left">
+                                    <h3>{{ call.long_name }}</h3>
+                               </div>
+                                <div class="card--options--right">
+                                <div class="btn-icon">
+                                    <span class="icon">
+                                        <img src="/static/images/angle-right.svg" alt="Right Arrow">
+                                    </span>
+                                </div>
+                            </div>
+                              </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    No calls at the moment.
+                {% endif %}
+            </div>    
+        </section>
+    
 {% endblock %}
