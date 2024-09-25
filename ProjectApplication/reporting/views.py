@@ -611,7 +611,7 @@ class ProjectsAllInformationExcel(View):
     def _headers():
         return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
                 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary']
+                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary', 'On website']
 
     @staticmethod
     def _rows():
@@ -630,6 +630,11 @@ class ProjectsAllInformationExcel(View):
             else:
                 career_stage = 'N/A'
 
+            if project.on_website == 1:
+                on_website = 'True'
+            else:
+                on_website = 'False'
+
             geographical_areas = ', '.join([str(area) for area in project.geographical_areas.order_by('name')])
 
             extra_information = {
@@ -643,6 +648,7 @@ class ProjectsAllInformationExcel(View):
                 'Status': project.status,
                 'Call Year': project.finance_year,
                 'Lay summary': project.main_lay_summary_web(),
+                'On website': on_website,
             }
 
             rows.append({**financial_information, **extra_information})
