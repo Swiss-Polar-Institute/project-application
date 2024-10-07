@@ -90,9 +90,13 @@ $(document).ready(function () {
     }
 
     function validateOrcid(orcid) {
-        var orcidRegex = /^(\d{4}-){3}\d{4}$/;
-        return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097";
+    if (typeof orcid !== 'string') {
+        return false; // Input is not a valid string
     }
+
+    var orcidRegex = /^(\d{4}-){3}(\d{3}[0-9X])$/; // Updated regex to allow 'X'
+    return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097"; // Check format and exclude specific ORCID
+}
 
     function addValidation(callback) {
         errorMessages = []; // Clear error messages
