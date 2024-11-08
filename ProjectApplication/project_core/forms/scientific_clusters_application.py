@@ -51,7 +51,7 @@ class ScientificClusterForm(forms.ModelForm):
             ),
             Div(
                 Div(
-                    HTML('<h4>Sub-PI</h4>Add information about one sub-PI per cluster'), css_class='col-12'),
+                    HTML('<h4>Cluster PI</h4>Add information about one cluster PI per cluster'), css_class='col-12'),
                 css_class='row'
             ),
             *self._person_form.helper.layout
@@ -59,13 +59,13 @@ class ScientificClusterForm(forms.ModelForm):
         self.fields.update(self._person_form.fields)
 
     def _get_person_form(self):
-        help_texts = {'orcid': "Sub-PI\'s ORCID iD (e.g.: 0000-0002-1825-0097)",
+        help_texts = {'orcid': "Cluster PI\'s ORCID iD (e.g.: 0000-0002-1825-0097)",
                       'first_name': 'Name populated from the ORCID record. If you would like to change it, amend it in ORCID',
                       'surname': 'Surname populated from the ORCID record. If you would like to change it, amend it in ORCID',
-                      'phd_date': 'If applicable, enter the date that the sub-PI was awarded their PhD (mm-yyyy)',
-                      'email': 'Enter a valid email address for the sub-PI. Note this email address will not receive a confirmation email upon submission',
-                      'organisation_names': 'Select the organisation(s) to which the sub-PI is affiliated for the purposes of this proposal. If they are not available amongst the options provided, type the full name and click on “Create”',
-                      'group': 'Type the names of the group(s) or laboratories to which the sub-PI is affiliated for the purposes of this proposal'}
+                      'phd_date': 'If applicable, enter the date that the cluster PI was awarded their PhD (mm-yyyy)',
+                      'email': 'Enter a valid email address for the cluster PI. Note this email address will not receive a confirmation email upon submission',
+                      'organisation_names': 'Select the organisation(s) to which the cluster PI is affiliated for the purposes of this proposal. If they are not available amongst the options provided, type the full name and click on “Create”',
+                      'group': 'Type the names of the group(s) or laboratories to which the cluster PI is affiliated for the purposes of this proposal'}
 
         # This is a QueryDict, not a dict
         person_form_data = self.data.copy()
