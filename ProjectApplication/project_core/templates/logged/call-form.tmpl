@@ -63,8 +63,7 @@
             }
         }
 
-        $(call_long_name_selector).prop('readonly', true);
-        $(call_short_name_selector).prop('readonly', true);
+
 
         $(funding_instrument_selector).change(update_call_name);
         $(finance_year_selector).on('input', update_call_name);
