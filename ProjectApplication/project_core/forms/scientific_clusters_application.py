@@ -10,10 +10,10 @@ from project_core.models import Proposal, ProposalScientificCluster
 
 
 class ScientificClusterForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, career_stages_queryset=None, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._person_form = self._get_person_form()
+        self._person_form = self._get_person_form(career_stages_queryset)
 
         # Set required=False for all fields in this form
         for field_name, field in self.fields.items():
@@ -58,8 +58,8 @@ class ScientificClusterForm(forms.ModelForm):
         )
         self.fields.update(self._person_form.fields)
 
-    def _get_person_form(self):
-        help_texts = {'orcid': "Cluster PI\'s ORCID iD (e.g.: 0000-0002-1825-0097)",
+    def _get_person_form(self, career_stages_queryset):
+        help_texts = {'orcid': "Cluster PI's ORCID iD (e.g.: 0000-0002-1825-0097)",
                       'first_name': 'Name populated from the ORCID record. If you would like to change it, amend it in ORCID',
                       'surname': 'Surname populated from the ORCID record. If you would like to change it, amend it in ORCID',
                       'phd_date': 'If applicable, enter the date that the cluster PI was awarded their PhD (mm-yyyy)',
@@ -88,12 +88,11 @@ class ScientificClusterForm(forms.ModelForm):
 
         sub_pi = self.instance.sub_pi if self.instance and hasattr(self.instance, 'sub_pi') else None
 
-        person = PersonForm(data=person_form_data, person_position=sub_pi, help_texts=help_texts)
+        person = PersonForm(data=person_form_data, person_position=sub_pi, help_texts=help_texts, career_stages_queryset=career_stages_queryset)
         return person
 
     def is_valid(self):
         scientific_cluster_is_valid = super().is_valid()
-
         return scientific_cluster_is_valid and self._person_form.is_valid()
 
     def clean(self):
@@ -130,8 +129,11 @@ class ScientificClusterForm(forms.ModelForm):
 
 
 class ScientificClustersFormSet(BaseInlineFormSet):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, career_stages_queryset=None, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # Save career_stages_queryset for future use in forms
+        self.career_stages_queryset = career_stages_queryset
 
         self.helper = FormHelper()
         self.helper.form_tag = False
@@ -139,11 +141,18 @@ class ScientificClustersFormSet(BaseInlineFormSet):
     def get_queryset(self):
         return super().get_queryset().order_by('id')
 
+    def get_form_kwargs(self, index: int):
+        # Pass career_stages_queryset to each form in the formset
+        kwargs = super().get_form_kwargs(index)
+        kwargs['career_stages_queryset'] = self.career_stages_queryset
+        return kwargs
+
     def save(self, *args, **kwargs):
         self.is_valid()
         return super().save(*args, **kwargs)
 
 
-ScientificClustersInlineFormSet = inlineformset_factory(Proposal, ProposalScientificCluster, form=ScientificClusterForm,
-                                                        formset=ScientificClustersFormSet,
-                                                        min_num=1, extra=0, can_delete=True)
+ScientificClustersInlineFormSet = inlineformset_factory(
+    Proposal, ProposalScientificCluster, form=ScientificClusterForm,
+    formset=ScientificClustersFormSet, min_num=1, extra=0, can_delete=True
+)
