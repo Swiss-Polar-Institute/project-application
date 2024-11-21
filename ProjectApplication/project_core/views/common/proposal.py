@@ -199,7 +199,7 @@ class AbstractProposalView(TemplateView):
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME, instance=proposal.postal_address)
             postal_address_application_form = PostalAddressApplicationForm(prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME, instance=proposal.postal_address)
             scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME,
-                                                                       instance=proposal)
+                                                                       instance=proposal,career_stages_queryset=call.enabled_career_stages_queryset())
             budget_form = BudgetItemFormSet(proposal=proposal, prefix=BUDGET_FORM_NAME)
             budget_application_form = BudgetApplicationItemFormSet(proposal=proposal, prefix=BUDGET_APPLICATION_FORM_NAME)
 
@@ -255,7 +255,7 @@ class AbstractProposalView(TemplateView):
                                      career_stages_queryset=call.enabled_career_stages_queryset())
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
             postal_address_application_form = PostalAddressApplicationForm(prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
-            scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME)
+            scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME, career_stages_queryset=call.enabled_career_stages_queryset())
             initial_budget = []
             for budget_category in call.budgetcategorycall_set.filter(enabled=True).order_by('order',
                                                                                              'budget_category__name'):
