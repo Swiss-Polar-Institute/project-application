@@ -38,8 +38,8 @@ class ProposalApplicationForm(ModelForm):
 
         self._raise_duplicated_title = False
 
-        if self._call.overall_budget_question:
-            self.fields['overall_budget'] = FlexibleDecimalField(help_text='Approximate budget as detailed in programme description including the 5% opportunity fund', label='Requested overall budget (CHF)', required=False)
+        # if self._call.overall_budget_question:
+        #     self.fields['overall_budget'] = FlexibleDecimalField(help_text='Approximate budget as detailed in programme description including the 5% opportunity fund', label='Requested overall budget (CHF)', required=False)
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
@@ -97,13 +97,13 @@ class ProposalApplicationForm(ModelForm):
             )
         )
 
-        if call.overall_budget_question:
-            divs.append(
-                Div(
-                    Div('overall_budget', css_class='col-4'),
-                    css_class='row'
-                )
-            )
+        # if call.overall_budget_question:
+        #     divs.append(
+        #         Div(
+        #             Div('overall_budget', css_class='col-4'),
+        #             css_class='row'
+        #         )
+        #     )
         self.helper.layout = Layout(*divs)
 
     def clean(self):
