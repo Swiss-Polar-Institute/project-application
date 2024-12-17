@@ -118,7 +118,12 @@ div.selector-filter {
 /*  font-weight: 500;*/
 /*  color: #007bff;*/
 /*}*/
-
+.newnavbar {
+  background-color: #FFFFFF !important;
+}
+.newnavbar .nav-link, .newnavbar .navbar-text {
+  color: #000000 !important;
+}
 .sidebar {
     padding: 0;
     height: 100vh;
@@ -628,12 +633,21 @@ is from: https://github.com/yourlabs/django-autocomplete-light/issues/1149
   line-height: 1.2;
   margin: 0;
 }
-
+.hero .legendimg {
+  position: absolute;
+  bottom: 10px;
+  right: 15px;
+  color: #FFF;
+  font-size: 12px;
+}
 .choose-option {
   padding: 50px 0 100px;
   background-color: #f6f6f6;
 }
-
+.choose-option.extend {
+  padding: 50px 0 100vh;
+  background-color: #f6f6f6;
+}
 .choose-option .choose-options--wrapper {
   display: grid;
   gap: 20px;
