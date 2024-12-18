@@ -11,6 +11,7 @@
     <section class="hero">
         <div class="hero--img">
           <img src="{% static 'images/hero.png' %}" alt="Hero Image">
+          <div class="legendimg">@Giovanna Ceppi, all rights reserved</div> 
         </div>
         <div class="container">
             <div class="hero--content">
@@ -37,7 +38,7 @@
                     </div>
                 </a>
 
-                <a href="{% url 'call-list' %}" title="Login" class="card--options">
+                <a href="{% url 'logged-homepage' %}" title="Login" class="card--options">
                     <div class="card--options--left">
                         <div class="subtitle">For reviewers / administrators</div>
                         <h3>LOGIN</h3>
