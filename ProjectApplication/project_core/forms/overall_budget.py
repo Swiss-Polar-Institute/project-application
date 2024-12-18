@@ -35,14 +35,23 @@ class OverallBudgetForm(ModelForm):
         if self._call is None:
             self._call = self.instance.call
 
-        if self._call.overall_budget_question:
-            self.fields['overall_budget'] = FlexibleDecimalField(
-                help_text='Approximate budget as detailed in programme description including the 5% opportunity fund',
-                label='Requested overall budget (CHF)', required=False)
+        # Remove the `overall_budget` field if the question is not enabled
+        if not self._call.overall_budget_question:
+            self.fields.pop('overall_budget', None)
+        else:
+            # Add to the layout only if the field exists
+            self.helper.layout = Layout(
+                Div(
+                    Div('overall_budget', css_class='col-6'),
+                    css_class='row'
+                )
+            )
 
+        # Set initial values for fields
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
-            self.fields['overall_budget'].initial = self.instance.overall_budget
+            if 'overall_budget' in self.fields:
+                self.fields['overall_budget'].initial = self.instance.overall_budget
             call = self._call = self.instance.call
         else:
             self.fields['call_id'].initial = self._call.id
