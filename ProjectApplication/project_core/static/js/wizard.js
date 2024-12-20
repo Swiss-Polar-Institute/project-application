@@ -99,10 +99,22 @@ $(document).ready(function () {
 }
 
     function addValidation(callback) {
+        var max_budget = $('#total_budget').val();
         errorMessages = []; // Clear error messages
 
         var proposalTitle = $("input[name='proposal_application_form-title']").val();
         var callId = $("input[name='proposal_application_form-call_id']").val();
+        var overall_budget = $("input[name='overall_budget_form-overall_budget']").val();
+        if (overall_budget > max_budget) {
+            alert('Budget is greater than the maximum budget for this call.');
+            $("input[name='overall_budget_form-overall_budget']").closest('.form-group').addClass("has-error");
+            let errorSpan = $('<span class="error-message is-invalid"></span>');
+            $("input[name='overall_budget_form-overall_budget']").closest('.form-group').find('.error-message').remove(); // Remove existing error span if any
+            $("input[name='overall_budget_form-overall_budget']").after(errorSpan);
+        } else {
+            $("input[name='overall_budget_form-overall_budget']").closest('.form-group').removeClass("has-error");
+            $("input[name='overall_budget_form-overall_budget']").closest('.form-group').find('.error-message').remove(); // Remove error span
+        }
 
         //adding error span
         $(".required_field").each(function () {
