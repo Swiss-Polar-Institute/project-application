@@ -52,7 +52,7 @@ PROPOSAL_PARTNERS_FORM_NAME = 'proposal_partners_form'
 APPLICANT_ROLE_DESCRIPTION_FORM_NAME = 'applicant_role_description_form'
 PROPOSAL_PROJECT_OVERARCHING_FORM_NAME = 'project_overarching_form'
 SCIENTIFIC_CLUSTERS_FORM_NAME = 'scientific_clusters_form'
-OVERALL_BUDGET_FORM_NAME = 'overall_budget_form'
+# OVERALL_BUDGET_FORM_NAME = 'overall_budget_form'
 
 
 logger = logging.getLogger('comments')
@@ -218,7 +218,7 @@ class AbstractProposalView(TemplateView):
                                                       person_position=proposal.applicant)
             overarching_form = ProjectOverarchingForm(prefix=PROPOSAL_PROJECT_OVERARCHING_FORM_NAME,
                                                       instance=proposal.overarching_project)
-            overall_budget_form = OverallBudgetForm(call=call, prefix=OVERALL_BUDGET_FORM_NAME, instance=proposal)
+            # overall_budget_form = OverallBudgetForm(call=call, prefix=OVERALL_BUDGET_FORM_NAME, instance=proposal)
             context['proposal_action_url'] = reverse(self.action_url_update, kwargs={'uuid': proposal.uuid})
 
             context['action'] = 'Edit'
@@ -258,7 +258,7 @@ class AbstractProposalView(TemplateView):
                                      only_basic_fields=False,
                                      career_stages_queryset=call.enabled_career_stages_queryset())
             postal_address_form = PostalAddressForm(prefix=POSTAL_ADDRESS_FORM_NAME)
-            overall_budget_form = OverallBudgetForm(call=call, prefix=OVERALL_BUDGET_FORM_NAME)
+            # overall_budget_form = OverallBudgetForm(call=call, prefix=OVERALL_BUDGET_FORM_NAME)
             postal_address_application_form = PostalAddressApplicationForm(prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
             scientific_clusters_form = ScientificClustersInlineFormSet(prefix=SCIENTIFIC_CLUSTERS_FORM_NAME, career_stages_queryset=call.enabled_career_stages_queryset())
             initial_budget = []
@@ -302,7 +302,7 @@ class AbstractProposalView(TemplateView):
         context[PROPOSAL_PARTNERS_FORM_NAME] = proposal_partners_form
         context[DATA_COLLECTION_FORM_NAME] = data_collection_form
         context[PROPOSAL_PROJECT_OVERARCHING_FORM_NAME] = overarching_form
-        context[OVERALL_BUDGET_FORM_NAME] = overall_budget_form
+        # context[OVERALL_BUDGET_FORM_NAME] = overall_budget_form
 
         context['part_numbers'] = call.get_part_numbers_for_call()
         context['activity'] = get_template_value_for_call('activity', call)
@@ -375,7 +375,7 @@ class AbstractProposalView(TemplateView):
                                      career_stages_queryset=call.enabled_career_stages_queryset())
             postal_address_application_form = PostalAddressApplicationForm(request.POST, instance=proposal.postal_address,
                                                     prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
-            overall_budget_form = OverallBudgetForm(request.POST, call=call, instance=proposal,prefix=OVERALL_BUDGET_FORM_NAME)
+            # overall_budget_form = OverallBudgetForm(request.POST, call=call, instance=proposal,prefix=OVERALL_BUDGET_FORM_NAME)
             proposal_parts = ProposalApplicationParts(request.POST, request.FILES, proposal)
 
             if call.budget_requested_part():
@@ -414,7 +414,7 @@ class AbstractProposalView(TemplateView):
             # Creating a new proposal
             proposal_form = ProposalApplicationForm(request.POST, call=call, prefix=PROPOSAL_APPLICATION_FORM_NAME)
             postal_address_application_form = PostalAddressApplicationForm(request.POST, prefix=POSTAL_ADDRESS_APPLICATION_FORM_NAME)
-            overall_budget_form = OverallBudgetForm(request.POST, prefix=OVERALL_BUDGET_FORM_NAME, call=call)
+            # overall_budget_form = OverallBudgetForm(request.POST, prefix=OVERALL_BUDGET_FORM_NAME, call=call)
             proposal_parts = ProposalApplicationParts(request.POST, request.FILES, proposal=None, call=call)
 
             person_form = PersonForm(request.POST,
@@ -504,7 +504,7 @@ class AbstractProposalView(TemplateView):
                 proposal.overarching_project = project_overarching
 
             postal_address = postal_address_application_form.save()
-            overall_budget = overall_budget_form.save(commit=False)
+            # overall_budget = overall_budget_form.save(commit=False)
 
             proposal.postal_address = postal_address
 
@@ -543,7 +543,7 @@ class AbstractProposalView(TemplateView):
         context[PERSON_FORM_NAME] = person_application_form
         context[PERSON_APPLICATION_FORM_NAME] = person_application_form
         context[POSTAL_ADDRESS_APPLICATION_FORM_NAME] = postal_address_application_form
-        context[OVERALL_BUDGET_FORM_NAME] = overall_budget_form
+        # context[OVERALL_BUDGET_FORM_NAME] = overall_budget_form
         context[PROPOSAL_FORM_NAME] = proposal_form
         context[PROPOSAL_APPLICATION_FORM_NAME] = proposal_form
         for question_form in proposal_parts.get_forms():

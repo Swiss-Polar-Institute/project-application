@@ -26,6 +26,7 @@ from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field, \
     management_file_validator, user_is_in_group_name, management_file_excel_validator
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('project_core')
 

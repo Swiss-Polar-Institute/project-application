@@ -17,7 +17,7 @@ Maximum budget: {{ maximum_budget|thousands_separator }} CHF
         For each cost category, please give details of all items and related costs. For details on eligible costs and budget structure, please refer to the call text.
     </p>
 {% endif %}
-{% crispy overall_budget_form %}
+
 {{ budget_application_form.management_form }}
 
 {% if budget_application_form.non_form_errors %}
