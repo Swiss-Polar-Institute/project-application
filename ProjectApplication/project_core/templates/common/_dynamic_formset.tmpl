@@ -14,6 +14,9 @@
             <td>
                 {% crispy form %}
             </td>
+            <td>
+                <a href="javascript:void()" class="btn-danger delete-row" onclick="deleteRow(this)" style="display: none;">X</a>
+            </td>
         </tr>
     {% endfor %}
     </tbody>
@@ -246,6 +249,28 @@
         });
     }
 
+    function updateDeleteButtons() {
+        const rows = $('#{{ form_set.prefix }} tbody tr');
+        const deleteButtons = rows.find('.delete-row');
+
+        if (rows.length <= 1) {
+            deleteButtons.hide(); // Hide delete buttons if there's only one row
+        } else {
+            deleteButtons.show(); // Show delete buttons if there are two or more rows
+        }
+    }
+
+    function deleteRow(button) {
+        // Find the row corresponding to the delete button
+        var row = $(button).closest('tr');
+
+        // Hide the row for a smooth transition (optional)
+        row.fadeOut(function() {
+            // Remove the row from the DOM
+            row.remove();
+        });
+    }
+
     jQueryForFormset(function () {
         jQueryForFormset('#{{ form_set.prefix }} tbody tr').formset({
             prefix: '{{ form_set.prefix }}',
@@ -272,6 +297,12 @@
                 delete_allow_overbudget_field(row);
                 highlight_row_delete_link_hover(row);
                 enable_orcid_in_row(row);
+                updateDeleteButtons();
+            },
+            removed: function (row) {
+                // When a row is removed, update the formset management form
+                 updateDeleteButtons();
+                // You can add any additional cleanup here if necessary
             }
         });
         hide_delete_links("{{ form_set.prefix }}");
