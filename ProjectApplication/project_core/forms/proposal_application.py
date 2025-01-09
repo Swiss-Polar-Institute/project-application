@@ -97,7 +97,7 @@ class ProposalApplicationForm(ModelForm):
             )
         )
 
-        if call.overall_budget_question and 'flag' not in call.long_name.lower():
+        if call.overall_budget_question:
             divs.append(
                 Div(
                     Div('overall_budget', css_class='col-4'),
