@@ -11,7 +11,7 @@ class OverallBudgetForm(ModelForm):
     call_id = forms.IntegerField(widget=forms.HiddenInput(), required=False)
     overall_budget = FlexibleDecimalField(
         required=False,
-        help_text='Approximate budget as detailed in programme description including the 5% opportunity fund.',
+        help_text='Please report the total budget figure. A detailed budget should be uploaded in the following section, adhering to the structure in the respective template. For further information on eligible costs, please refer to the call text.',
         label='Requested overall budget (CHF)',
         widget=forms.TextInput(attrs={'class': 'custom-overall-budget-class'})
     )

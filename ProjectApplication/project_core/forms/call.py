@@ -109,6 +109,15 @@ class CallForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        if "flag" in self.instance.long_name.lower():
+            self.fields['overall_budget_question'].help_text = (
+                'Select if you prefer to request the overall budget total, rather than detailed budget categories (e.g., for FLAG calls for pre- and full proposals)'
+            )
+        else:
+            self.fields['overall_budget_question'].help_text = (
+                'Select if you would like to request the overall budget total. Budget details can be broken down separately by selecting the categories that budget can be allocated to.'
+            )
+
         self.budget_categories_order_key = f'budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
         budget_category_choices, enabled_budget_categories = CheckboxSelectMultipleSortable.get_choices_initial(
@@ -308,7 +317,6 @@ class CallForm(forms.ModelForm):
                       'overarching_project_question': 'Select if you would to ask about the overarching project',
                       'scientific_clusters_question': 'Select if you would to include a sub-section about "Research Clusters"',
                       'keywords_in_general_information_question': 'Select if you would like to request keywords in the "General Information" section',
-                      'overall_budget_question': 'Select if you would like to request the overall budget total. Budget details can be broken down separately by selecting the categories that budget can be allocated to'
                       }
 
         labels = {
