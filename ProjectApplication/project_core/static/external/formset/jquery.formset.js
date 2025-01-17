@@ -216,16 +216,15 @@
                     delCssSelector = $.trim(options.deleteCssClass).replace(/\s+/g, '.');
                 applyExtraClasses(row, formCount);
                 row.insertBefore(buttonRow).show();
-                options.added = function(row) {
-                    // Apply the required class and add * to labels for all required fields
-                    row.find('input.required_field, select.required_field, textarea.required_field').each(function() {
-                        const $field = $(this);
-                        const $label = $field.closest('.form-group').find('label');
-                        if (!$label.hasClass('required')) {
-                            $label.addClass('required').append(' <span>*</span>');
-                        }
-                    });
-                };
+                // options.added = function(row) {
+                //     row.find('input.required_field, select.required_field, textarea.required_field').each(function() {
+                //         const $field = $(this);
+                //         const $label = $field.closest('.form-group').find('label');
+                //         if (!$label.hasClass('required')) {
+                //             $label.addClass('required').append(' <span>*</span>');
+                //         }
+                //     });
+                // };
                 row.find(childElementSelector).each(function() {
                     updateElementIndex($(this), options.prefix, formCount);
                 });
