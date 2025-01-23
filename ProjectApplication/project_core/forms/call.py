@@ -115,7 +115,7 @@ class CallForm(forms.ModelForm):
             )
         else:
             self.fields['overall_budget_question'].help_text = (
-                'Select if you would like to request the overall budget total. Budget details can be broken down separately by selecting the categories that budget can be allocated to.'
+                'Select if you prefer to request the overall budget total, rather than detailed budget categories (e.g., for FLAG calls for pre- and full proposals)'
             )
 
         self.budget_categories_order_key = f'budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
