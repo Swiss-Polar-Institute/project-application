@@ -49,6 +49,14 @@ class ProposalApplicationForm(ModelForm):
             self.fields['call_id'].initial = self._call.id
             call = Call.objects.get(id=self._call.id)
 
+        if self._call and self._call.funding_instrument:
+            funding_long_name = self._call.funding_instrument.long_name
+            print(f"Funding Instrument: {funding_long_name}")  # For debugging
+
+            if funding_long_name == "CASCADES Expedition":
+                self.fields['geographical_areas'].help_text = "For a CASCADES expedition proposal, choose the Arctic."
+                self.fields['location'].help_text = "State which leg(s) are relevant to the proposed project."
+
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
 
