@@ -10,9 +10,15 @@ Maximum budget: {{ maximum_budget|thousands_separator }} CHF
         The above-indicated maximum budget is only available to a Flagship Initiatives programme located in the Antarctic region. Applicants can apply for a maximum funding of 1’500’000 CHF for a Flagship Initiatives programme in regions other than Antarctica / Southern Ocean.
     </p>
 {% else %}
-    <p>
-        Please ignore this section, as the detailed budget must be uploaded in Section 3.
-    </p>
+    {% if funding_long_name == "CASCADES Expedition" %}
+        <p>
+            Please ignore this section, as the detailed budget must be uploaded in Section 3.
+        </p>
+    {% else %}
+         <p>
+           For each cost category, please give details of all items and related costs. For details on eligible costs and budget structure, please refer to the call text.
+         </p>
+    {% endif %}
 {% endif %}
 
 {{ budget_application_form.management_form }}

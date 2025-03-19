@@ -612,6 +612,7 @@ def check_duplicate_proposal(request):
 def call_context_for_template(call):
     context = {'maximum_budget': call.budget_maximum,
                'call_name': call.long_name,
+               'funding_long_name': call.funding_instrument.long_name,
                'call_introductory_message': call.introductory_message,
                'call_submission_deadline': call.submission_deadline,
                'other_funding_question': call.other_funding_question,
