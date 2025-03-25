@@ -5,7 +5,7 @@ from rest_framework import serializers
 from project_core.models import (
     Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument, Trace, TraceCoordinates, PhysicalPerson
 )
-from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors, Dataset, Publication
+from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors, Dataset, Publication, CarbonEmission
 
 
 class FundingInstrumentSerializer(serializers.ModelSerializer):
@@ -53,6 +53,18 @@ class LocationSerializer(serializers.ModelSerializer):
         model = Location
         fields = ('latitude', 'longitude', )
         list_serializer_class = FilterLocationSerializer
+
+class FilterCarbonEmissionSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.order_by('estimate_carbon_emission')
+        return super().to_representation(data)
+
+
+class CarbonEmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarbonEmission
+        fields = ('file', 'estimate_carbon_emission', 'effective_carbon_emission', )
+        list_serializer_class = FilterCarbonEmissionSerializer
 
 
 class PersonSerializer(serializers.ModelSerializer):
@@ -144,13 +156,14 @@ class PublicationSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     principal_investigator = PersonPositionSerializer(read_only=True)
     project_location = LocationSerializer(many=True, read_only=True)
+    project_carbonemission = CarbonEmissionSerializer(many=True, read_only=True)
     project_person = PersonSerializer(many=True, read_only=True)
     medium_set = MediumSerializer(many=True, read_only=True)
     funding_instrument = FundingInstrumentSerializer(read_only=True)
 
     class Meta:
         model = Project
-        fields = ('uuid', 'title', 'status', 'key', 'principal_investigator', 'project_location', 'project_person',
+        fields = ('uuid', 'title', 'status', 'key', 'principal_investigator', 'project_location', 'project_carbonemission', 'project_person',
                   'medium_set', 'funding_instrument'
                   )
 
