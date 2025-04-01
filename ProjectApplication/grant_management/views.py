@@ -33,6 +33,7 @@ from .forms.milestones import MilestoneInlineFormSet
 from .forms.project import ProjectForm
 from .forms.publications import PublicationsInlineFormSet
 from .forms.social_network import SocialNetworksInlineFormSet
+from .forms.carbon_emission import CarbonEmissionInlineFormSet
 
 
 class ProjectList(TemplateView):
@@ -296,6 +297,10 @@ class LocationsUpdateView(GrantManagementInlineFormset):
     human_type = 'location'
     tab = 'other'
 
+class CarbonEmissionUpdateView(GrantManagementInlineFormset):
+    inline_formset = CarbonEmissionInlineFormSet
+    human_type = 'carbon Emission'
+    tab = 'other'
 
 class PersonsUpdateView(GrantManagementInlineFormset):
     inline_formset = PersonsInlineFormSet
