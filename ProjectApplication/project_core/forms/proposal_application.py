@@ -56,6 +56,9 @@ class ProposalApplicationForm(ModelForm):
             if funding_long_name == "CASCADES Expedition":
                 self.fields['geographical_areas'].help_text = "For a CASCADES expedition proposal, choose the Arctic."
                 self.fields['location'].help_text = "State which leg(s) are relevant to the proposed project."
+            if funding_long_name == "SPI Forel Grants":
+                self.fields['geographical_areas'].help_text = "For a proposal on the Forel, choose the Artic."
+                self.fields['location'].help_text = "State which leg(s) are relevant to the proposed project."
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
