@@ -31,6 +31,12 @@ class CarbonEmissionForm(forms.ModelForm):
                 css_class='row'
             ),
             Div(
+                Div('project', hidden=True),
+                Div('id', hidden=True),
+                Div('effective_carbon_emission_file', css_class='col-6'),
+                css_class='row'
+            ),
+            Div(
                 Div('effective_carbon_emission', css_class='col-6'),
                 css_class='row'
             )
@@ -39,10 +45,8 @@ class CarbonEmissionForm(forms.ModelForm):
 
     class Meta:
         model = CarbonEmission
-        fields = ['project', 'estimate_carbon_emission', 'effective_carbon_emission', 'file']
-        labels = {'file': 'Carbon Emission'}
-        help_texts = {
-            'estimate_carbon_emission': 'Estimate carbon emission'}
+        fields = ['project', 'estimate_carbon_emission', 'effective_carbon_emission_file', 'effective_carbon_emission', 'file']
+        labels = {'file': 'Estimate Carbon Emission File', 'effective_carbon_emission_file': 'Effective Carbon Emission File'}
 
 
 class CarbonEmissionFormSet(BaseInlineFormSet):

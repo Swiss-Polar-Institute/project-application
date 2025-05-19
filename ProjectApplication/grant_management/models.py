@@ -478,11 +478,18 @@ def carbon_emission_file_rename(instance, filename):
     filename = filename.replace(' ', '_')  # Replace spaces with underscores
     return f'grant_management/CarbonEmission/Project-{project_key}-{filename}'
 
+def effective_carbon_emission_file_rename(instance, filename):
+    project_key = instance.project.key if instance.project and hasattr(instance.project, 'key') else 'Unknown'
+    filename = filename.replace(' ', '_')  # Replace spaces with underscores
+    return f'grant_management/EffectiveCarbonEmission/Project-{project_key}-{filename}'
+
 class CarbonEmission(CreateModifyOn):
     project = models.ForeignKey(Project, help_text='Project that the coordinate belongs to',
                                 on_delete=models.PROTECT,
                                 related_name='project_carbonemission')
     file = models.FileField(storage=S3Boto3Storage(), upload_to=carbon_emission_file_rename,
+                            blank=True, null=True)
+    effective_carbon_emission_file = models.FileField(storage=S3Boto3Storage(), upload_to=effective_carbon_emission_file_rename,
                             blank=True, null=True)
     estimate_carbon_emission = models.CharField(max_length=200, help_text="Estimate Carbon Emission", blank=True, null=True)
     effective_carbon_emission = models.CharField(max_length=200, help_text="Effective Carbon Emission", blank=True, null=True)

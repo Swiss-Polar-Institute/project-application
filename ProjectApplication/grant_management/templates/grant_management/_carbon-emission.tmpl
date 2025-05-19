@@ -3,15 +3,17 @@
         <thead>
         <tr>
             <th>Estimate carbon emission</th>
+            <th>Estimate carbon emission file</th>
             <th>Effective carbon emission</th>
-            <th>File</th>
+            <th>Effective carbon emission file</th>
         </tr>
         </thead>
         {% for emission in emissions %}
             <tr>
                 <td>{{ emission.estimate_carbon_emission }}</td>
-                <td>{{ emission.effective_carbon_emission }}</td>
                 <td>{% include 'common/_file_to_download.tmpl' with file_field=emission.file %}</td>
+                <td>{{ emission.effective_carbon_emission }}</td>
+                <td>{% include 'common/_file_to_download.tmpl' with file_field=emission.effective_carbon_emission_file %}</td>
             </tr>
         {% endfor %}
     </table>
