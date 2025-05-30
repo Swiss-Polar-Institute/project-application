@@ -46,7 +46,7 @@ class CarbonEmissionForm(forms.ModelForm):
     class Meta:
         model = CarbonEmission
         fields = ['project', 'estimate_carbon_emission', 'effective_carbon_emission_file', 'effective_carbon_emission', 'file']
-        labels = {'file': 'Estimate Carbon Emission File', 'effective_carbon_emission_file': 'Effective Carbon Emission File'}
+        labels = {'file': 'Estimate Carbon Emission File', 'effective_carbon_emission_file': 'Effective Carbon Emission File', 'estimate_carbon_emission': 'Estimate Carbon Emission (unit: Kg)', 'effective_carbon_emission': 'Effective Carbon Emission (unit: Kg)'}
 
 
 class CarbonEmissionFormSet(BaseInlineFormSet):

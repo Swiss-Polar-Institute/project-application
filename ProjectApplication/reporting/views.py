@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from project_core.models import Call, Project, Gender, CareerStage, Proposal, FundingInstrument
-from grant_management.models import Invoice, Installment
+from grant_management.models import Invoice, Installment, CarbonEmission
 from project_core.templatetags.thousands_separator import thousands_separator
 from reporting.models import FundingInstrumentYearMissingData
 
@@ -611,7 +611,7 @@ class ProjectsAllInformationExcel(View):
     def _headers():
         return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
                 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary', 'On website']
+                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary', 'On website', 'Estimate carbon emission (unit: Kg)', 'Effective carbon emission (unit: Kg)']
 
     @staticmethod
     def _rows():
@@ -636,6 +636,16 @@ class ProjectsAllInformationExcel(View):
                 on_website = 'False'
 
             geographical_areas = ', '.join([str(area) for area in project.geographical_areas.order_by('name')])
+            estimate_carbon_emission = ', '.join([
+                str(e['estimate_carbon_emission'])
+                for e in
+                project.project_carbonemission.order_by('estimate_carbon_emission').values('estimate_carbon_emission')
+            ])
+            effective_carbon_emission = ', '.join([
+                str(e['effective_carbon_emission'])
+                for e in
+                project.project_carbonemission.order_by('effective_carbon_emission').values('effective_carbon_emission')
+            ])
 
             extra_information = {
                 'Grant scheme': project.funding_instrument.long_name,
@@ -649,6 +659,8 @@ class ProjectsAllInformationExcel(View):
                 'Call Year': project.finance_year,
                 'Lay summary': project.main_lay_summary_web(),
                 'On website': on_website,
+                'Estimate carbon emission (unit: Kg)': estimate_carbon_emission,
+                'Effective carbon emission (unit: Kg)': effective_carbon_emission,
             }
 
             rows.append({**financial_information, **extra_information})
