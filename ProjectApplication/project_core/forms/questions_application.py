@@ -60,6 +60,7 @@ class QuestionsApplication(Form):
 
         for question in self._call_part.questions_type_files():
             question_label = 'question_{}'.format(question.pk)
+            file = None
 
             try:
                 file = ProposalQAFile.objects.get(proposal=self._proposal, call_question=question).file
@@ -86,7 +87,7 @@ class QuestionsApplication(Form):
                         required=question.answer_required
                     )
 
-            if question.answer_required:
+            if question.answer_required and not file:
                 field.widget.attrs.update({'class': 'required_field'})
 
             self.fields[question_label] = field
