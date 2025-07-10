@@ -306,6 +306,15 @@
                 enable_orcid_in_row(row);
                 requiredFields(row);
                 updateDeleteButtons();
+                $(row).find('.modelselect2multiple').each(function () {
+                    $(this).select2({
+                        ajax: {
+                            url: '/logged/autocomplete/tags/', // Make sure this URL matches your backend
+                            dataType: 'json'
+                        },
+                        containerCssClass: 'form-control'
+                    });
+                });
             },
             removed: function (row) {
                 // When a row is removed, update the formset management form
