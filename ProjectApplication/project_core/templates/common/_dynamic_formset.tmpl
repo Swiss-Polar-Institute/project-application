@@ -261,15 +261,12 @@
     }
 
     function deleteRow(button) {
-        // Find the row corresponding to the delete button
-        var row = $(button).closest('tr');
-
-        // Hide the row for a smooth transition (optional)
-        row.fadeOut(function() {
-            // Remove the row from the DOM
-            row.remove();
-        });
-    }
+    var row = $(button).closest('tr');
+    // Find the DELETE input (checkbox or hidden input)
+    var deleteInput = row.find('input[type=checkbox][name$="-DELETE"], input[type=hidden][name$="-DELETE"]');
+    deleteInput.prop('checked', true).val('on');
+    row.hide(); // Just hide, don't remove from DOM!
+}
 
     function requiredFields(row){
         row.find('input.required_field, select.required_field, textarea.required_field').each(function() {
