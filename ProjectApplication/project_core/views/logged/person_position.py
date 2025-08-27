@@ -15,7 +15,7 @@ class PersonPositionListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['contacts'] = PersonPosition.objects.filter(privacy_policy=True)
+        context['contacts'] = PersonPosition.objects.all()
 
         context.update({'active_section': 'lists',
                         'active_subsection': 'contact-list',
