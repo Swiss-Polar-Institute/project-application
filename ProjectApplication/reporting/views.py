@@ -300,7 +300,7 @@ class ObjectsPerFundingInstrumentPerYear:
             calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
 
             if calls.exists():
-                return self._model.objects.filter(call__in=calls).count()
+                return self._model.objects.filter(call__in=calls).exclude(proposal_status=9).count()
             else:
                 return '-'
         elif self._model == Project:
