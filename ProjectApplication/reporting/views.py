@@ -332,6 +332,62 @@ class ObjectsPerFundingInstrumentPerYear:
         result['data'] = data
         return result
 
+class ProposalObjectsPerFundingInstrumentPerYear:
+    def __init__(self, model, missing_data):
+        self._model = model
+
+        self._missing_data = missing_data
+
+        self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
+
+        self._funding_instruments_long_names = []
+        for funding_instrument in self._funding_instruments:
+            self._funding_instruments_long_names.append(funding_instrument.long_name)
+
+        # Get start year from proposal end dates
+        self._start_year = Proposal.objects.aggregate(Min('end_date__year'))['end_date__year__min']
+        self._end_year = Proposal.objects.aggregate(Max('end_date__year'))['end_date__year__max']
+
+    def _get_headers(self):
+        return ['Year'] + self._funding_instruments_long_names
+
+    def _count_objects(self, funding_instrument, year):
+        if self._model == Proposal:
+            calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
+
+            if calls.exists():
+                return self._model.objects.filter(call__in=calls).exclude(proposal_status=9).count()
+            else:
+                return '-'
+        elif self._model == Project:
+            return self._model.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year).count()
+        else:
+            assert False
+
+    def calculate_result(self):
+        data = []
+        for year in range(self._start_year, self._end_year + 1):
+            row = {}
+            row['Year'] = year
+
+            for funding_instrument in self._funding_instruments:
+                is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+                    self._missing_data,
+                    funding_instrument=funding_instrument,
+                    year=year)
+                if is_missing_data:
+                    row[funding_instrument.long_name] = missing_data_reason
+                    continue
+
+                row[funding_instrument.long_name] = self._count_objects(funding_instrument, year)
+
+            data.append(row)
+
+        result = {}
+        result['headers'] = self._get_headers()
+        result['data'] = data
+        return result
+
 
 def value_or_missing_data(is_missing_data, missing_data_reason, value):
     if is_missing_data:
@@ -543,7 +599,7 @@ def career_stage_project_principal_investigator_per_call():
 
 
 def proposals_per_funding_instrument():
-    proposals_calculator = ObjectsPerFundingInstrumentPerYear(Proposal,
+    proposals_calculator = ProposalObjectsPerFundingInstrumentPerYear(Proposal,
                                                               FundingInstrumentYearMissingData.MissingDataType.PROPOSALS)
 
     return proposals_calculator.calculate_result()
