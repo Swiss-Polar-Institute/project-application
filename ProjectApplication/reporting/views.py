@@ -311,8 +311,10 @@ class ObjectsPerFundingInstrumentPerYear:
     def calculate_result(self):
         data = []
         for year in range(self._start_year, self._end_year + 1):
-            row = {}
-            row['Year'] = year
+            # Check if this year has any data before creating a row
+            year_has_data = False
+            year_data = {}
+            year_data['Year'] = year
 
             for funding_instrument in self._funding_instruments:
                 is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
@@ -320,17 +322,26 @@ class ObjectsPerFundingInstrumentPerYear:
                     funding_instrument=funding_instrument,
                     year=year)
                 if is_missing_data:
-                    row[funding_instrument.long_name] = missing_data_reason
+                    year_data[funding_instrument.long_name] = missing_data_reason
+                    year_has_data = True
                     continue
 
-                row[funding_instrument.long_name] = self._count_objects(funding_instrument, year)
+                count = self._count_objects(funding_instrument, year)
+                year_data[funding_instrument.long_name] = count
 
-            data.append(row)
+                # Check if this funding instrument has data for this year
+                if count != '-' and count > 0:
+                    year_has_data = True
+
+            # Only add the year if it has data
+            if year_has_data:
+                data.append(year_data)
 
         result = {}
         result['headers'] = self._get_headers()
         result['data'] = data
         return result
+
 
 class ProposalObjectsPerFundingInstrumentPerYear:
     def __init__(self, model, missing_data):
@@ -365,8 +376,10 @@ class ProposalObjectsPerFundingInstrumentPerYear:
     def calculate_result(self):
         data = []
         for year in range(self._start_year, self._end_year + 1):
-            row = {}
-            row['Year'] = year
+            # Check if this year has any data before creating a row
+            year_has_data = False
+            year_data = {}
+            year_data['Year'] = year
 
             for funding_instrument in self._funding_instruments:
                 is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
@@ -374,12 +387,20 @@ class ProposalObjectsPerFundingInstrumentPerYear:
                     funding_instrument=funding_instrument,
                     year=year)
                 if is_missing_data:
-                    row[funding_instrument.long_name] = missing_data_reason
+                    year_data[funding_instrument.long_name] = missing_data_reason
+                    year_has_data = True
                     continue
 
-                row[funding_instrument.long_name] = self._count_objects(funding_instrument, year)
+                count = self._count_objects(funding_instrument, year)
+                year_data[funding_instrument.long_name] = count
 
-            data.append(row)
+                # Check if this funding instrument has data for this year
+                if count != '-' and count > 0:
+                    year_has_data = True
+
+            # Only add the year if it has data
+            if year_has_data:
+                data.append(year_data)
 
         result = {}
         result['headers'] = self._get_headers()
@@ -438,7 +459,7 @@ def calculate_unpaid_invoice(year):
             total += project.invoices_paid_amount()
             for installment in Installment.objects.filter(project=project):
                 for invoice in Invoice.objects.filter(installment=installment):
-                     total -= invoice.amount
+                    total -= invoice.amount
         else:
             # If the project is closed
             pass
@@ -499,6 +520,7 @@ def calculate_open_for_payment_funding_instrument_year(funding_instrument_long_n
             pass
 
     return total
+
 
 def calculate_unpaid_invoice_funding_instrument_year(funding_instrument_long_name, year):
     total = 0
@@ -598,7 +620,7 @@ def career_stage_project_principal_investigator_per_call():
 
 def proposals_per_funding_instrument():
     proposals_calculator = ProposalObjectsPerFundingInstrumentPerYear(Proposal,
-                                                              FundingInstrumentYearMissingData.MissingDataType.PROPOSALS)
+                                                                      FundingInstrumentYearMissingData.MissingDataType.PROPOSALS)
 
     return proposals_calculator.calculate_result()
 
@@ -665,7 +687,8 @@ class ProjectsAllInformationExcel(View):
     def _headers():
         return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
                 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary', 'On website', 'Estimate carbon emission (unit: Kg)', 'Effective carbon emission (unit: Kg)']
+                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary',
+                'On website', 'Estimate carbon emission (unit: Kg)', 'Effective carbon emission (unit: Kg)']
 
     @staticmethod
     def _rows():
@@ -749,8 +772,6 @@ class ProjectsAllInformationExcel(View):
         return response
 
 
-
-
 class ProjectsBalanceExcel(View):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -758,7 +779,7 @@ class ProjectsBalanceExcel(View):
     @staticmethod
     def headers():
         return ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Unpaid Invoices' ,'Total paid', 'Balance due', 'Status']
+                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status']
 
     @staticmethod
     def financial_information(project):
