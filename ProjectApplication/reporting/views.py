@@ -688,13 +688,18 @@ class ProjectsAllInformationExcel(View):
         return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
                 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
                 'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary',
-                'On website', 'Estimate carbon emission (unit: Kg)', 'Effective carbon emission (unit: Kg)']
+                'On website', 'Estimate carbon emission (unit: Kg)', 'Effective carbon emission (unit: Kg)', 'Number of Publications', 'Number of Datasets']
 
     @staticmethod
     def _rows():
         rows = []
 
-        for project in Project.objects.all().order_by('key'):
+        projects = Project.objects.all().annotate(
+            num_publications=Count('publication', distinct=True),
+            num_datasets=Count('dataset', distinct=True)
+        ).order_by('key')
+
+        for project in projects:
             financial_information = ProjectsBalanceExcel.financial_information(project)
 
             if project.principal_investigator.person.gender:
@@ -738,6 +743,8 @@ class ProjectsAllInformationExcel(View):
                 'On website': on_website,
                 'Estimate carbon emission (unit: Kg)': estimate_carbon_emission,
                 'Effective carbon emission (unit: Kg)': effective_carbon_emission,
+                'Number of Publications': project.num_publications,
+                'Number of Datasets': project.num_datasets,
             }
 
             rows.append({**financial_information, **extra_information})
