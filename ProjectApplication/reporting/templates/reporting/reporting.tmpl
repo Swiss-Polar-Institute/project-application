@@ -31,6 +31,11 @@
                            id="downloads-tab" data-toggle="tab" href="#downloads"
                            role="tab">Downloads</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if active_tab == 'deliverables' %}active{% endif %}"
+                           id="deliverables-tab" data-toggle="tab" href="#deliverables"
+                           role="tab">Deliverables</a>
+                    </li>
                 </ul>
             </div>
 
@@ -53,6 +58,10 @@
                 <div class="tab-pane fade {% if active_tab == 'downloads' %}show active{% endif %}" id="downloads"
                      role="tabpanel">
                     {% include 'reporting/_downloads.tmpl' %}
+                </div>
+                <div class="tab-pane fade {% if active_tab == 'deliverables' %}show active{% endif %}" id="deliverables"
+                     role="tabpanel">
+                    {% include 'reporting/_deliverables.tmpl' %}
                 </div>
             </div>
         </div>

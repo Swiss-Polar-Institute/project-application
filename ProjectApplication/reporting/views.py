@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from project_core.models import Call, Project, Gender, CareerStage, Proposal, FundingInstrument
-from grant_management.models import Invoice, Installment, CarbonEmission
+from grant_management.models import Invoice, Installment, CarbonEmission, Publication, Dataset
 from project_core.templatetags.thousands_separator import thousands_separator
 from reporting.models import FundingInstrumentYearMissingData
 
@@ -408,6 +408,69 @@ class ProposalObjectsPerFundingInstrumentPerYear:
         return result
 
 
+# -----------------------------
+# Publications per Funding Instrument
+# -----------------------------
+class PublicationsPerFundingInstrumentPerYear:
+    def __init__(self, missing_data):
+        self._missing_data = missing_data
+        self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
+        self._funding_instruments_long_names = [fi.long_name for fi in self._funding_instruments]
+        self._start_year = Publication.objects.aggregate(Min('published_date__year'))['published_date__year__min'] or timezone.now().year
+        self._end_year = Publication.objects.aggregate(Max('published_date__year'))['published_date__year__max'] or timezone.now().year
+
+    def _get_headers(self):
+        return ['Year'] + self._funding_instruments_long_names
+
+    def _count_publications(self, funding_instrument, year):
+        return Publication.objects.filter(project__funding_instrument=funding_instrument, published_date__year=year).count()
+
+    def calculate_result(self):
+        data = []
+        for year in range(self._start_year, self._end_year + 1):
+            year_data = {'Year': year}
+            for fi in self._funding_instruments:
+                year_data[fi.long_name] = self._count_publications(fi, year)
+            missing_data, reason = FundingInstrumentYearMissingData.is_missing_data(self._missing_data, year=year)
+            if missing_data:
+                for fi in self._funding_instruments:
+                    year_data[fi.long_name] = reason
+            data.append(year_data)
+        return {'headers': self._get_headers(), 'data': data}
+
+
+# -----------------------------
+# Datasets per Funding Instrument
+# -----------------------------
+class DatasetsPerFundingInstrumentPerYear:
+    def __init__(self, missing_data):
+        self._missing_data = missing_data
+        self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
+        self._funding_instruments_long_names = [fi.long_name for fi in self._funding_instruments]
+        self._start_year = Dataset.objects.aggregate(Min('project__finance_year'))['project__finance_year__min'] or timezone.now().year
+        self._end_year = Dataset.objects.aggregate(Max('project__finance_year'))['project__finance_year__max'] or timezone.now().year
+
+    def _get_headers(self):
+        return ['Year'] + self._funding_instruments_long_names
+
+    def _count_datasets(self, funding_instrument, year):
+        return Dataset.objects.filter(project__funding_instrument=funding_instrument, project__finance_year=year).count()
+
+    def calculate_result(self):
+        data = []
+        for year in range(self._start_year, self._end_year + 1):
+            year_data = {'Year': year}
+            for fi in self._funding_instruments:
+                year_data[fi.long_name] = self._count_datasets(fi, year)
+            missing_data, reason = FundingInstrumentYearMissingData.is_missing_data(self._missing_data, year=year)
+            if missing_data:
+                for fi in self._funding_instruments:
+                    year_data[fi.long_name] = reason
+            data.append(year_data)
+        return {'headers': self._get_headers(), 'data': data}
+
+
+
 def value_or_missing_data(is_missing_data, missing_data_reason, value):
     if is_missing_data:
         return missing_data_reason
@@ -661,6 +724,11 @@ class Reporting(TemplateView):
 
         context['projects_per_funding_instrument'] = projects_per_funding_instrument()
 
+        context['publications_per_funding_instrument'] = PublicationsPerFundingInstrumentPerYear(
+            FundingInstrumentYearMissingData.MissingDataType.PUBLICATIONS).calculate_result()
+        context['datasets_per_funding_instrument'] = DatasetsPerFundingInstrumentPerYear(
+            FundingInstrumentYearMissingData.MissingDataType.DATASETS).calculate_result()
+
         context.update({'active_section': 'reporting',
                         'active_subsection': 'reporting',
                         'sidebar_template': 'reporting/_sidebar-reporting.tmpl',
@@ -892,3 +960,5 @@ def excel_dict_writer(filename, headers, rows, col_widths):
     output.seek(0)
 
     return output
+
+
