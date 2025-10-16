@@ -447,15 +447,14 @@ class DatasetsPerFundingInstrumentPerYear:
         self._missing_data = missing_data
         self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
         self._funding_instruments_long_names = [fi.long_name for fi in self._funding_instruments]
-        self._start_year = Dataset.objects.aggregate(Min('project__finance_year'))['project__finance_year__min'] or timezone.now().year
-        self._end_year = Dataset.objects.aggregate(Max('project__finance_year'))['project__finance_year__max'] or timezone.now().year
+        self._start_year = Dataset.objects.aggregate(Min('published_date__year'))['published_date__year__min'] or timezone.now().year
+        self._end_year = Dataset.objects.aggregate(Max('published_date__year'))['published_date__year__max'] or timezone.now().year
 
     def _get_headers(self):
         return ['Year'] + self._funding_instruments_long_names
 
     def _count_datasets(self, funding_instrument, year):
-        return Dataset.objects.filter(project__funding_instrument=funding_instrument, project__finance_year=year).count()
-
+        return Dataset.objects.filter(project__funding_instrument=funding_instrument, published_date__year=year).count()
     def calculate_result(self):
         data = []
         for year in range(self._start_year, self._end_year + 1):
