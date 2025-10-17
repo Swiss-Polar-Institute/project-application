@@ -17,14 +17,71 @@
 <script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>
 
 <script>
-    jQueryForFormset(function () {
-        jQueryForFormset('#funding_form_table tbody tr').formset({
-            prefix: 'funding_form',
-            added: highlight_row_delete_link_hover
-        });
-        highlight_row_delete_link_hover('#funding_form_table');
-    })
+jQueryForFormset(function () {
+// Add delete link to existing rows and hide the Django DELETE checkbox
+    jQueryForFormset('#funding_form_table tbody tr').each(function() {
+        var $row = jQueryForFormset(this);
+        $row.addClass('budget-item-2');
+
+        // Hide the Django DELETE checkbox
+        $row.find('input:checkbox[id$="-DELETE"]').closest('td').hide();
+
+        // Add a remove link if not already present
+        if ($row.find('a.delete-row').length === 0) {
+            $row.append('<td><a class="delete-row" href="javascript:void(0);">Remove</a></td>');
+        }
+    });
+
+    // Initialize formset
+    jQueryForFormset('#funding_form_table tbody tr').formset({
+        prefix: 'funding_form',
+
+        // Callback when a new row is added
+        added: function(row) {
+            // Highlight newly added row
+            highlight_row_delete_link_hover(row);
+
+            // Re-initialize Select2 on newly added row
+            row.find('select[data-autocomplete-light-function="select2"]').each(function() {
+                var $select = $(this);
+
+                // Destroy previous Select2 instance if exists
+                if ($select.hasClass('select2-hidden-accessible')) {
+                    $select.select2('destroy');
+                }
+
+                // Re-initialize with DAL URL
+                $select.select2({
+                    ajax: {
+                        url: $select.data('autocomplete-light-url'),
+                        dataType: 'json',
+                        delay: 250,
+                        processResults: function(data) {
+                            return { results: data.results };
+                        }
+                    },
+                    minimumInputLength: 1,
+                    width: 'resolve'
+                });
+            });
+
+            // Ensure delete link is visible for the new row
+            row.find('a.delete-row').show();
+        }
+    });
+
+    // Apply highlight to existing rows on page load
+    highlight_row_delete_link_hover('#funding_form_table');
+    // Handle click on Remove link
+    jQueryForFormset('#funding_form_table').on('click', 'a.delete-row', function() {
+        var $row = jQueryForFormset(this).closest('tr');
+        $row.find('input:checkbox[id$="-DELETE"]').prop('checked', true); // mark for deletion
+        $row.fadeOut(300, function() { $row.remove(); });
+    });
+
+});
 </script>
+
 
 <style>
     #funding_form_table .asteriskField {
