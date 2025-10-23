@@ -17,34 +17,16 @@ $(document).ready(function () {
          var totalSum = 0;
         var max_budget = $('#total_budget').val();
         $('.budget-item').each(function () {
-            var detailsField = $(this).find('textarea[name$="-details"]');
             var amountField = $(this).find('input[name$="-amount"]');
-            var detailsValue = detailsField.val().trim();
             var amountValue = amountField.val().trim();
-            var formGroupDetails = detailsField.closest('.form-group');
             var formGroupAmount = amountField.closest('.form-group');
 
-            // Clear previous error messages
-            formGroupDetails.find('.error-message').remove();
             formGroupAmount.find('.error-message').remove();
-            formGroupDetails.removeClass("has-error");
             formGroupAmount.removeClass("has-error");
 
             var errorMessage = 'Both Details and Total (CHF) fields are required.';
             var amountErrorMessage = 'Total (CHF) must be a number.';
 
-            if ((detailsValue && !amountValue) || (!detailsValue && amountValue)) {
-                if (!detailsValue) {
-                    formGroupDetails.addClass("has-error");
-                    formGroupDetails.append('<span class="error-message is-invalid">' + errorMessage + '</span>');
-                    errorMessages.push(errorMessage);
-                }
-                if (!amountValue) {
-                    formGroupAmount.addClass("has-error");
-                    formGroupAmount.append('<span class="error-message is-invalid">' + errorMessage + '</span>');
-                    errorMessages.push(errorMessage);
-                }
-            }
 
             if (amountValue) {
                 var amount = parseFloat(amountValue);
