@@ -1,8 +1,10 @@
 {% load crispy_forms_tags %}
 {% load crispy_forms_filters %}
 {% load thousands_separator %}
-
+<div class="max-budget-wrapper">
 Maximum budget: {{ maximum_budget|thousands_separator }} CHF
+</div>
+<div class="budget-error-message"></div>
 
 <input type="hidden" id="total_budget" value="{{ maximum_budget}}">
 {% if "flag" in call_name|lower %}

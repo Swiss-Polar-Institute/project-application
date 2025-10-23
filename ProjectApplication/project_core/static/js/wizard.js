@@ -14,40 +14,56 @@ $(document).ready(function () {
     $('#id_data_collection_form-privacy_policy').removeAttr('required');
 
     function validateBudgetItems(errorMessages) {
-         var totalSum = 0;
-        var max_budget = $('#total_budget').val();
-        $('.budget-item').each(function () {
-            var amountField = $(this).find('input[name$="-amount"]');
-            var amountValue = amountField.val().trim();
-            var formGroupAmount = amountField.closest('.form-group');
+    var totalSum = 0;
+    var max_budget = parseFloat($('#total_budget').val()) || 0;
 
-            formGroupAmount.find('.error-message').remove();
-            formGroupAmount.removeClass("has-error");
+    // Loop through both budget tables
+    $('.budget-item, .budget-item-2').each(function () {
+        var $row = $(this);
 
-            var errorMessage = 'Both Details and Total (CHF) fields are required.';
-            var amountErrorMessage = 'Total (CHF) must be a number.';
+        // For normal budget rows
+        var detailsField = $row.find('textarea[name$="-details"]');
+        var amountField = $row.find('input[name$="-amount"]');
+        var orgField = $row.find('select[name$="-organisation_name"]');  // For budget-item-2
+        var statusField = $row.find('select[name$="-funding_status"]');  // For budget-item-2
 
+        // Clear previous errors
+        $(".budget-error-message").find('.error-message').remove();
+        $(".budget-error-message").removeClass("has-error");
 
-            if (amountValue) {
-                var amount = parseFloat(amountValue);
-                if (isNaN(amount) || amount < 0) {
-                    formGroupAmount.addClass("has-error");
-                    formGroupAmount.append('<span class="error-message is-invalid">' + amountErrorMessage + '</span>');
-                    errorMessages.push(amountErrorMessage);
-                }else{
-                    totalSum += parseFloat(amountValue);
-                }
+        var amountValue = amountField.val().trim();
+        if (amountValue) {
+            var amount = parseFloat(amountValue);
+            if (isNaN(amount) || amount < 0) {
+                $(".budget-error-message").addClass("has-error");
+                $(".budget-error-message").append('<span class="error-message is-invalid">Total (CHF) must be a number.<br></span>');
+                $(".budget-error-message").push('Total (CHF) must be a number.');
+            } else {
+                totalSum += amount;
             }
-        });
-        if (totalSum > max_budget) {
-            alert('Budget is greater than the maximum budget for this call.');
-            var budget_step_class = $('.budget-table').closest('fieldset').attr('data-step');
-            $("." + budget_step_class).addClass("budgetinvalid").removeClass("budgetvalid");
-        }else{
-            var budget_step_class = $('.budget-table').closest('fieldset').attr('data-step');
-            $("." + budget_step_class).addClass("budgetvalid").removeClass("budgetinvalid");
         }
+        // Conditional check for budget-item-2
+        if ($row.hasClass('budget-item-2')) {
+            var statusValue = statusField.val();
+            var orgValue = orgField.val();
+            if ((amountValue || statusValue) && !orgValue) {
+                $(".budget-error-message").addClass("has-error");
+                $(".budget-error-message").append('<span class="error-message is-invalid">Organisation Name is required if Amount or Funding Status is filled.<br></span>');
+                $(".budget-error-message").push('Organisation Name is required if Amount or Funding Status is filled.');
+            }
+        }
+    });
+
+    if (totalSum > max_budget) {
+        alert('Budget is greater than the maximum budget for this call.');
+        $(".budget-error-message").addClass("has-error");
+        $(".budget-error-message").append('<span class="error-message is-invalid">Budget is greater than the maximum budget for this call.<br></span>');
+        $(".budget-error-message").push('Budget is greater than the maximum budget for this call.');
+        $('.max-budget-wrapper').closest('fieldset').addClass("invalid").removeClass("valid");
+    } else {
+        $('.max-budget-wrapper').closest('fieldset').addClass("valid").removeClass("invalid");
     }
+}
 
     function checkDuplicateProposal(proposalTitle, callId, callback) {
         $.ajax({

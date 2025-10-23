@@ -6,8 +6,11 @@
 {% crispy funding_form %}
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
 <script>
     var jQueryForFormset = $.noConflict(true);
+    {#jquery.formset doesn't work with jQuery 3 that we are using in the application#}
+    {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 </script>
 
 <script src="{% static 'external/formset/jquery.formset.js' %}"></script>
@@ -15,11 +18,10 @@
 
 <script>
 jQueryForFormset(function () {
-
-    // Add delete link to existing rows and hide the Django DELETE checkbox
+// Add delete link to existing rows and hide the Django DELETE checkbox
     jQueryForFormset('#funding_form_table tbody tr').each(function() {
         var $row = jQueryForFormset(this);
-        $row.addClass('budget-item');
+        $row.addClass('budget-item-2');
 
         // Hide the Django DELETE checkbox
         $row.find('input:checkbox[id$="-DELETE"]').closest('td').hide();
@@ -36,12 +38,12 @@ jQueryForFormset(function () {
 
         // Callback when a new row is added
         added: function(row) {
-            row.addClass('budget-item');
+            // Highlight newly added row
             highlight_row_delete_link_hover(row);
 
             // Re-initialize Select2 on newly added row
             row.find('select[data-autocomplete-light-function="select2"]').each(function() {
-                var $select = jQueryForFormset(this);
+                var $select = $(this);
 
                 // Destroy previous Select2 instance if exists
                 if ($select.hasClass('select2-hidden-accessible')) {
@@ -63,44 +65,26 @@ jQueryForFormset(function () {
                 });
             });
 
-            // Hide DELETE checkbox and add Remove link if missing
-            row.find('input:checkbox[id$="-DELETE"]').closest('td').hide();
-            if (row.find('a.delete-row').length === 0) {
-                row.append('<td><a class="delete-row" href="javascript:void(0);">Remove</a></td>');
-            }
-
-            // Ensure delete link is visible
+            // Ensure delete link is visible for the new row
             row.find('a.delete-row').show();
         }
     });
 
     // Apply highlight to existing rows on page load
     highlight_row_delete_link_hover('#funding_form_table');
-
     // Handle click on Remove link
     jQueryForFormset('#funding_form_table').on('click', 'a.delete-row', function() {
         var $row = jQueryForFormset(this).closest('tr');
         $row.find('input:checkbox[id$="-DELETE"]').prop('checked', true); // mark for deletion
-
-        // Hide the row (don’t remove from DOM so Django sees DELETE flag)
-        $row.fadeOut(300);
+        $row.fadeOut(300, function() { $row.remove(); });
     });
 
 });
 </script>
 
+
 <style>
     #funding_form_table .asteriskField {
         display: none;
-    }
-
-    #funding_form_table a.delete-row {
-        color: red;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    #funding_form_table tr.budget-item {
-        border-bottom: 1px solid #ddd;
     }
 </style>
