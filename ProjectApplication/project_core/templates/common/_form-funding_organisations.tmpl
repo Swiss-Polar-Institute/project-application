@@ -76,7 +76,8 @@ jQueryForFormset(function () {
     jQueryForFormset('#funding_form_table').on('click', 'a.delete-row', function() {
         var $row = jQueryForFormset(this).closest('tr');
         $row.find('input:checkbox[id$="-DELETE"]').prop('checked', true); // mark for deletion
-        $row.fadeOut(300, function() { $row.remove(); });
+        $row.css('visibility', 'hidden');
+
     });
 
 });

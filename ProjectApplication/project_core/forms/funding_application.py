@@ -26,7 +26,7 @@ class ProposalFundingItemForm(ModelForm):
 
     class Meta:
         model = ProposalFundingItem
-        fields = ['organisation_name', 'funding_status', 'amount', 'proposal']
+        fields = ['organisation_name', 'funding_status', 'amount']
         labels = {'amount': 'Total (CHF)'}
         localized_fields = ('amount',)
         help_texts = {
@@ -46,25 +46,24 @@ class ProposalFundingFormSet(BaseInlineFormSet):
 
     def save_fundings(self, proposal):
         for form in self.forms:
-            if form.cleaned_data:
-                # Handle deletion of existing items
-                if form.cleaned_data.get('DELETE', False) and form.cleaned_data.get('id'):
-                    proposal_item = form.cleaned_data['id']
-                    proposal_item.delete()
-                else:
-                    # Set a default value for amount if it's None
-                    if form.cleaned_data.get('amount') is None:
-                        form.cleaned_data['amount'] = 0
-                    # Save only if there is some data to save
-                    if form.cleaned_data.get('organisation_name') or form.cleaned_data.get('amount') is not None:
-                        proposal_item = form.save(commit=False)
-                        proposal_item.proposal = proposal
-                        proposal_item.save()
-                    # Handle the case where the form is empty but should not be deleted
-                    elif not form.cleaned_data.get('DELETE', False):
-                        proposal_item = form.instance
-                        proposal_item.proposal = proposal
-                        proposal_item.save()
+            if not form.cleaned_data:
+                continue  # skip unsubmitted rows
+
+            if form.cleaned_data.get('DELETE', False) and form.cleaned_data.get('id'):
+                form.cleaned_data['id'].delete()
+                continue
+
+            # skip blank rows
+            if not form.cleaned_data.get('organisation_name') and not form.cleaned_data.get('amount'):
+                continue
+
+            # default value for amount
+            if form.cleaned_data.get('amount') is None:
+                form.cleaned_data['amount'] = 0
+
+            proposal_item = form.save(commit=False)
+            proposal_item.proposal = proposal
+            proposal_item.save()
 
 
 ProposalFundingItemFormSet = inlineformset_factory(
