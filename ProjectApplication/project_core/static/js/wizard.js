@@ -18,7 +18,7 @@ $(document).ready(function () {
     var max_budget = parseFloat($('#total_budget').val()) || 0;
 
     // Loop through both budget tables
-    $('.budget-item, .budget-item-2').each(function () {
+    $('.budget-item').each(function () {
         var $row = $(this);
 
         // For normal budget rows
@@ -102,16 +102,16 @@ $(document).ready(function () {
 
         var proposalTitle = $("input[name='proposal_application_form-title']").val();
         var callId = $("input[name='proposal_application_form-call_id']").val();
-        var overall_budget = $("input[name='overall_budget_form-overall_budget']").val();
+        var overall_budget = $("input[name='proposal_application_form-overall_budget']").val();
         if (overall_budget > max_budget) {
             alert('Budget is greater than the maximum budget for this call.');
-            $("input[name='overall_budget_form-overall_budget']").closest('.form-group').addClass("has-error");
+            $("input[name='proposal_application_form-overall_budget']").closest('.form-group').addClass("has-error");
             let errorSpan = $('<span class="error-message is-invalid"></span>');
-            $("input[name='overall_budget_form-overall_budget']").closest('.form-group').find('.error-message').remove(); // Remove existing error span if any
-            $("input[name='overall_budget_form-overall_budget']").after(errorSpan);
+            $("input[name='proposal_application_form-overall_budget']").closest('.form-group').find('.error-message').remove(); // Remove existing error span if any
+            $("input[name='proposal_application_form-overall_budget']").after(errorSpan);
         } else {
-            $("input[name='overall_budget_form-overall_budget']").closest('.form-group').removeClass("has-error");
-            $("input[name='overall_budget_form-overall_budget']").closest('.form-group').find('.error-message').remove(); // Remove error span
+            $("input[name='proposal_application_form-overall_budget']").closest('.form-group').removeClass("has-error");
+            $("input[name='proposal_application_form-overall_budget']").closest('.form-group').find('.error-message').remove(); // Remove error span
         }
 
         //adding error span
@@ -436,6 +436,65 @@ $(document).ready(function () {
         e.preventDefault();
         addValidation();
     });
+   $(document).on('click', '.savedraft', function (e) {
+        var max_budget = parseFloat($('#total_budget').val()) || 0;
+        var proposalTitle = $("input[name='proposal_application_form-title']").val();
+        var totalSum = 0; // <-- missing before
+
+       if(proposalTitle  === ""){
+           e.preventDefault();
+           alert("Proposal title is required.");
+       }
+
+        $('.budget-item').each(function () {
+            var $row = $(this);
+            var amountField = $row.find('input[name$="-amount"]');
+
+            // Clear previous errors
+            $(".budget-error-message").find('.error-message').remove();
+            $(".budget-error-message").removeClass("has-error");
+
+            var amountValue = amountField.val().trim();
+            if (amountValue) {
+                var amount = parseFloat(amountValue);
+                if (isNaN(amount) || amount < 0) {
+                    e.preventDefault();
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Total (CHF) must be a number.<br></span>');
+                } else {
+                    totalSum += amount;
+                }
+            }
+        }); // ✅ closing .each()
+
+        // Now validate total sum
+        if (totalSum > max_budget) {
+            e.preventDefault();
+            alert('Budget is greater than the maximum budget for this call.');
+            $(".budget-error-message").addClass("has-error");
+            $(".budget-error-message").append('<span class="error-message is-invalid">Budget is greater than the maximum budget for this call.<br></span>');
+            $('.max-budget-wrapper').closest('fieldset').addClass("invalid").removeClass("valid");
+        } else {
+            $('.max-budget-wrapper').closest('fieldset').addClass("valid").removeClass("invalid");
+        }
+
+        // Validate overall_budget
+        var overall_budget = parseFloat($("input[name='proposal_application_form-overall_budget']").val()) || 0;
+        var $overallField = $("input[name='proposal_application_form-overall_budget']");
+        var $formGroup = $overallField.closest('.form-group');
+        $formGroup.find('.error-message').remove();
+        $formGroup.removeClass("has-error");
+
+        if (overall_budget > max_budget) {
+            e.preventDefault(); // stop submission only when invalid
+            alert('Budget is greater than the maximum budget for this call.');
+            let errorSpan = $('<span class="error-message is-invalid"></span>')
+                .text('Budget is greater than the maximum budget for this call.');
+            $formGroup.addClass("has-error").append(errorSpan);
+        }
+    }); // ✅ closing click handler
+
+
 
     setStep(0);
 });

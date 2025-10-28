@@ -40,6 +40,9 @@ class ProposalApplicationForm(ModelForm):
 
         if self._call.overall_budget_question:
             self.fields['overall_budget'] = FlexibleDecimalField(help_text='Please report the total budget figure. A detailed budget should be uploaded in the following section, adhering to the structure in the respective template. For further information on eligible costs, please refer to the call text.', label='Requested overall budget (CHF)', required=False)
+            self.fields['overall_budget'].widget.attrs.update({
+                'class': 'overall_budget_field'
+            })
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
