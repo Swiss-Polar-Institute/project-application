@@ -61,12 +61,25 @@ $(document).ready(function () {
                 errorMessages.push('Total (CHF) must be a number.');
             }
 
-            // ✅ Conditional check for organisation
-            if ((amountValue || statusValue) && !orgValue) {
-                $(".budget-error-message").addClass("has-error");
-                $(".budget-error-message").append('<span class="error-message is-invalid">Organisation Name is required if Amount or Funding Status is filled.<br></span>');
-                errorMessages.push('Organisation Name is required if Amount or Funding Status is filled.');
+            // if any of the three has a value, all three are required
+            if (amountValue || statusValue || orgValue) {
+                if (!amountValue || isNaN(parseFloat(amountValue)) || parseFloat(amountValue) < 0) {
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Valid Amount (CHF) is required when any funding information is provided.<br></span>');
+                    errorMessages.push('Valid Amount (CHF) is required when any funding information is provided.');
+                }
+                if (!statusValue) {
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Funding Status is required when any funding information is provided.<br></span>');
+                    errorMessages.push('Funding Status is required when any funding information is provided.');
+                }
+                if (!orgValue) {
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Organisation Name is required when any funding information is provided.<br></span>');
+                    errorMessages.push('Organisation Name is required when any funding information is provided.');
+                }
             }
+
         });
 
 
@@ -494,10 +507,20 @@ $(document).ready(function () {
                 alert("Total (CHF) must be a number.");
             }
 
-            // ✅ Conditional check for organisation
-            if ((amountValue || statusValue) && !orgValue) {
-                e.preventDefault();
-                alert("Organisation Name is required if Amount or Funding Status is filled.");
+            // if any of the three has a value, all three are required
+            if (amountValue || statusValue || orgValue) {
+                if (!amountValue || isNaN(parseFloat(amountValue)) || parseFloat(amountValue) < 0) {
+                     e.preventDefault();
+                    alert('Valid Amount (CHF) is required when any funding information is provided.');
+                }
+                if (!statusValue) {
+                     e.preventDefault();
+                     alert('Funding Status is required when any funding information is provided.');
+                }
+                if (!orgValue) {
+                     e.preventDefault();
+                     alert('Organisation Name is required when any funding information is provided.');
+                }
             }
         });
 
