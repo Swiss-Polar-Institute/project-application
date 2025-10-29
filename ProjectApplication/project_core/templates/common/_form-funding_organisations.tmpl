@@ -43,26 +43,43 @@ jQueryForFormset(function () {
 
             // Re-initialize Select2 on newly added row
             row.find('select[data-autocomplete-light-function="select2"]').each(function() {
-                var $select = $(this);
+                var $select = $(this);  // use the main jQuery (DAL/select2)
 
-                // Destroy previous Select2 instance if exists
+                // Destroy old instance if present
                 if ($select.hasClass('select2-hidden-accessible')) {
                     $select.select2('destroy');
                 }
 
-                // Re-initialize with DAL URL
+                // Initialize Select2 to allow empty queries (so results appear without typing)
                 $select.select2({
                     ajax: {
                         url: $select.data('autocomplete-light-url'),
                         dataType: 'json',
                         delay: 250,
+                        data: function(params) {
+                            // params.term will be undefined/empty on first open;
+                            // send empty string so server can return default suggestions
+                            return { q: params.term || '' };
+                        },
                         processResults: function(data) {
                             return { results: data.results };
                         }
                     },
-                    minimumInputLength: 1,
-                    width: 'resolve'
+                    minimumInputLength: 0,   // allow results for empty query
+                    width: 'resolve',
+                    placeholder: ''
                 });
+
+                // OPTIONAL: automatically open the dropdown for the new row so the user sees suggestions
+                // (Select2 will fire the AJAX with q='' because minimumInputLength:0)
+                setTimeout(function() {
+                    try {
+                        //$select.select2('open');
+                    } catch (e) {
+                        // ignore if open fails (some select2 versions may throw if not focusable)
+                        console.warn('select2 open failed', e);
+                    }
+                }, 0);
             });
 
             // Ensure delete link is visible for the new row
