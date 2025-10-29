@@ -40,6 +40,7 @@ $(document).ready(function () {
         });
 
         // 🔹 Loop through funding budget rows (budget-item-2)
+        var emptyRows = 0;
         $('.budget-item-2').each(function () {
             var $row = $(this);
             var amountField = $row.find('input[name$="-amount"]');
@@ -49,6 +50,11 @@ $(document).ready(function () {
             var amountValue = amountField.val().trim();
             var statusValue = statusField.val();
             var orgValue = orgField.val();
+
+            // ✅ Count empty rows
+            if (!amountValue && !statusValue && !orgValue) {
+                emptyRows++;
+            }
 
             // Validate numeric
             var amount = parseFloat(amountValue);
@@ -65,6 +71,14 @@ $(document).ready(function () {
                 errorMessages.push('Organisation Name is required if Amount or Funding Status is filled.');
             }
         });
+
+// ✅ New check: detect blank rows if more than one exists
+        if ($('.budget-item-2').length > 1 && emptyRows > 0) {
+            $(".budget-error-message").addClass("has-error");
+            $(".budget-error-message").append('<span class="error-message is-invalid">There is a blank funding row. Please fill in or remove it.<br></span>');
+            errorMessages.push('There is a blank funding row. Please fill in or remove it.');
+        }
+
 
         // 🔹 Validate total budget limit
         if (totalSum > max_budget) {
