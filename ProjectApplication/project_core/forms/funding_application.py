@@ -14,6 +14,9 @@ class ProposalFundingItemForm(ModelForm):
         self.fields['organisation_name'].queryset = OrganisationName.objects.all()
         self.fields['organisation_name'].required = False
 
+        existing_classes = self.fields['organisation_name'].widget.attrs.get('class', '')
+        self.fields['organisation_name'].widget.attrs['class'] = f"{existing_classes} org-select".strip()
+
         self.fields['funding_status'].required = False
         self.fields['amount'].widget.attrs['min'] = 0
         self.fields['amount'].required = False

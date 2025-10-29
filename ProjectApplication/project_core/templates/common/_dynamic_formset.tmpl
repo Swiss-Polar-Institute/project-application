@@ -6,7 +6,22 @@
 {% if form_set.non_form_errors %}
     {{ form_set|as_crispy_errors }}
 {% endif %}
-
+<style>
+.org-select{
+background: #ffffff !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 40px;
+    height: 100% !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+ height: 100% !important;
+}
+.select2-container .select2-selection--single {
+        height: 40px !important;
+}
+</style>
 <table id="{{ form_set.prefix }}" class="table table-striped table-sm">
     <tbody>
     {% for form in form_set %}
