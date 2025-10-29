@@ -50,12 +50,9 @@ $(document).ready(function () {
             var amountValue = amountField.val().trim();
             var statusValue = statusField.val();
             var orgValue = orgField.val();
-
-            // ✅ Count empty rows
             if (!amountValue && !statusValue && !orgValue) {
-                emptyRows++;
+                $row.remove();
             }
-
             // Validate numeric
             var amount = parseFloat(amountValue);
             if (amountValue && (isNaN(amount) || amount < 0)) {
@@ -71,13 +68,6 @@ $(document).ready(function () {
                 errorMessages.push('Organisation Name is required if Amount or Funding Status is filled.');
             }
         });
-
-// ✅ New check: detect blank rows if more than one exists
-        if ($('.budget-item-2').length > 1 && emptyRows > 0) {
-            $(".budget-error-message").addClass("has-error");
-            $(".budget-error-message").append('<span class="error-message is-invalid">There is a blank funding row. Please fill in or remove it.<br></span>');
-            errorMessages.push('There is a blank funding row. Please fill in or remove it.');
-        }
 
 
         // 🔹 Validate total budget limit
@@ -483,6 +473,33 @@ $(document).ready(function () {
             e.preventDefault();
             alert("Proposal title is required.");
         }
+        // 🔹 Loop through funding budget rows (budget-item-2)
+        var emptyRows = 0;
+        $('.budget-item-2').each(function () {
+            var $row = $(this);
+            var amountField = $row.find('input[name$="-amount"]');
+            var orgField = $row.find('select[name$="-organisation_name"]');
+            var statusField = $row.find('select[name$="-funding_status"]');
+
+            var amountValue = amountField.val().trim();
+            var statusValue = statusField.val();
+            var orgValue = orgField.val();
+            if (!amountValue && !statusValue && !orgValue) {
+                $row.remove();
+            }
+            // Validate numeric
+            var amount = parseFloat(amountValue);
+            if (amountValue && (isNaN(amount) || amount < 0)) {
+                e.preventDefault();
+                alert("Total (CHF) must be a number.");
+            }
+
+            // ✅ Conditional check for organisation
+            if ((amountValue || statusValue) && !orgValue) {
+                e.preventDefault();
+                alert("Organisation Name is required if Amount or Funding Status is filled.");
+            }
+        });
 
         $('.budget-item').each(function () {
             var $row = $(this);
