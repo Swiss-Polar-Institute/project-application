@@ -101,6 +101,35 @@ jQueryForFormset(function () {
 
             // Ensure delete link is visible for the new row
             row.find('a.delete-row').show();
+            $(row).find('.modelselect2multiple').each(function () {
+                    $(this).select2({
+                        ajax: {
+                            url: '/autocomplete/organisations/', // Make sure this URL matches your backend
+                            dataType: 'json'
+                        },
+                        containerCssClass: 'form-control'
+                    });
+                });
+                // ✅ Reinitialize autocomplete for the "oragnisations" field (autocomplete-organisation-names)
+                $(row).find('select[name$="-organisation_name"]').each(function () {
+                    const $select = $(this);
+
+                    if ($select.data('select2')) {
+                        $select.select2('destroy');
+                    }
+
+                    if (typeof window.__dal__initialize !== 'undefined') {
+                        window.__dal__initialize($select);
+                    } else {
+                        $select.select2({
+                            ajax: {
+                                url: '{% url "autocomplete-organisation-names" %}',
+                                dataType: 'json'
+                            },
+                            containerCssClass: 'form-control'
+                        });
+                    }
+                });
         }
     });
 
