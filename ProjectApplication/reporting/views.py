@@ -846,6 +846,53 @@ class ProjectsAllInformationExcel(View):
         return response
 
 
+class ProjectReferenceNameWithCoordinatesExcel(View):
+    @staticmethod
+    def _headers():
+        return ['Key', 'location', 'latitude', 'longitude']
+
+    @staticmethod
+    def _rows():
+        rows = []
+
+        projects = Project.objects.filter(key__icontains='SPI').prefetch_related('project_location').order_by('key')
+        for project in projects:
+            for location in project.project_location.all().order_by('name'):
+                rows.append({
+                    'Key': project.key,
+                    'location': location.name,
+                    'latitude': location.latitude,
+                    'longitude': location.longitude,
+                })
+
+        return rows
+
+    @staticmethod
+    def _col_widths():
+        return {
+            'Key': 18,
+            'location': 50,
+            'latitude': 12,
+            'longitude': 12,
+        }
+
+    def get(self, request, *args, **kwargs):
+        now = timezone.localtime()
+        filename = f'project-reference-name-with-coordinates-{now:%Y%m%d-%H%M}.xlsx'
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        response.content = excel_dict_writer(
+            filename,
+            ProjectReferenceNameWithCoordinatesExcel._headers(),
+            ProjectReferenceNameWithCoordinatesExcel._rows(),
+            ProjectReferenceNameWithCoordinatesExcel._col_widths()
+        )
+
+        return response
+
+
 class ProjectsBalanceExcel(View):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -959,5 +1006,3 @@ def excel_dict_writer(filename, headers, rows, col_widths):
     output.seek(0)
 
     return output
-
-
