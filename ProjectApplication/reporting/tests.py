@@ -4,7 +4,7 @@ from decimal import Decimal
 from django.test import TestCase
 from django.urls import reverse
 
-from grant_management.models import GrantAgreement, Invoice, Location
+from grant_management.models import CarbonEmission, GrantAgreement, Invoice, Location
 from project_core.models import OrganisationName
 from project_core.tests import database_population
 from reporting.models import FundingInstrumentYearMissingData
@@ -195,6 +195,25 @@ class ProjectsAllInformationExcelTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
         self.assertGreaterEqual(int(response['content-length']), 5900)
+
+    def test_rows_sums_multiple_carbon_emission_reports(self):
+        project = database_population.create_project()
+
+        CarbonEmission.objects.create(
+            project=project,
+            estimate_carbon_emission='10.25',
+            effective_carbon_emission='5.50'
+        )
+        CarbonEmission.objects.create(
+            project=project,
+            estimate_carbon_emission='20.50',
+            effective_carbon_emission='11.00'
+        )
+
+        rows = ProjectsAllInformationExcel._rows()
+
+        self.assertEqual(rows[0]['Estimate carbon emission (unit: Kg)'], Decimal('30.75'))
+        self.assertEqual(rows[0]['Effective carbon emission (unit: Kg)'], Decimal('16.50'))
 
     def data_one_project(self):
         database_population.create_project()

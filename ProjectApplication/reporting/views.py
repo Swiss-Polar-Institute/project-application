@@ -1,6 +1,6 @@
 import datetime
 import io
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 import xlsxwriter
 from django.db.models import Count, F, Sum, Min, Max
@@ -758,13 +758,50 @@ class ProjectsAllInformationExcel(View):
                 'On website', 'Estimate carbon emission (unit: Kg)', 'Effective carbon emission (unit: Kg)', 'Number of Publications', 'Number of Datasets']
 
     @staticmethod
+    def _carbon_emission_decimal(value):
+        value = str(value).strip().replace("'", "").replace(" ", "")
+
+        if ',' in value and '.' in value:
+            if value.rfind(',') > value.rfind('.'):
+                value = value.replace('.', '').replace(',', '.')
+            else:
+                value = value.replace(',', '')
+        else:
+            value = value.replace(',', '.')
+
+        decimal_value = Decimal(value)
+        if not decimal_value.is_finite():
+            raise InvalidOperation
+
+        return decimal_value
+
+    @staticmethod
+    def _sum_carbon_emission_values(carbon_emissions, field_name):
+        values = [
+            str(value).strip()
+            for value in [getattr(carbon_emission, field_name) for carbon_emission in carbon_emissions]
+            if value is not None and str(value).strip()
+        ]
+
+        if not values:
+            return ''
+
+        try:
+            return sum(
+                (ProjectsAllInformationExcel._carbon_emission_decimal(value) for value in values),
+                Decimal('0')
+            )
+        except InvalidOperation:
+            return ', '.join(values)
+
+    @staticmethod
     def _rows():
         rows = []
 
         projects = Project.objects.all().annotate(
             num_publications=Count('publication', distinct=True),
             num_datasets=Count('dataset', distinct=True)
-        ).order_by('key')
+        ).prefetch_related('project_carbonemission').order_by('key')
 
         for project in projects:
             financial_information = ProjectsBalanceExcel.financial_information(project)
@@ -785,16 +822,15 @@ class ProjectsAllInformationExcel(View):
                 on_website = 'False'
 
             geographical_areas = ', '.join([str(area) for area in project.geographical_areas.order_by('name')])
-            estimate_carbon_emission = ', '.join([
-                str(e['estimate_carbon_emission'])
-                for e in
-                project.project_carbonemission.order_by('estimate_carbon_emission').values('estimate_carbon_emission')
-            ])
-            effective_carbon_emission = ', '.join([
-                str(e['effective_carbon_emission'])
-                for e in
-                project.project_carbonemission.order_by('effective_carbon_emission').values('effective_carbon_emission')
-            ])
+            carbon_emissions = list(project.project_carbonemission.all())
+            estimate_carbon_emission = ProjectsAllInformationExcel._sum_carbon_emission_values(
+                carbon_emissions,
+                'estimate_carbon_emission'
+            )
+            effective_carbon_emission = ProjectsAllInformationExcel._sum_carbon_emission_values(
+                carbon_emissions,
+                'effective_carbon_emission'
+            )
 
             extra_information = {
                 'Grant scheme': project.funding_instrument.long_name,
