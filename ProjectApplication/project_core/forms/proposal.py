@@ -33,7 +33,7 @@ class ProposalForm(ModelForm):
         self._raise_duplicated_title = False
 
         if self._call.overall_budget_question:
-            self.fields['overall_budget'] = FlexibleDecimalField(help_text = 'Approximate budget as detailed in programme description including the 5% opportunity fund', label = 'Requested overall budget (CHF)')
+            self.fields['overall_budget'] = FlexibleDecimalField(help_text = 'Please report the total budget figure. A detailed budget should be uploaded in the following section, adhering to the structure in the respective template. For further information on eligible costs, please refer to the call text.', label = 'Requested overall budget (CHF)')
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
@@ -114,12 +114,12 @@ class ProposalForm(ModelForm):
 
         errors = {}
 
-        if 'overall_budget' in cleaned_data and cleaned_data['overall_budget'] is not None:
-            if cleaned_data['overall_budget'] < 0:
-                errors['overall_budget'] = 'Budget needs to be greater than 0'
-            elif cleaned_data['overall_budget'] > self._call.budget_maximum:
-                errors['overall_budget'] = f'Budget is greater than the maximum budget for this call: ' \
-                                           f'{thousands_separator(self._call.budget_maximum)} CHF'
+        # if 'overall_budget' in cleaned_data and cleaned_data['overall_budget'] is not None:
+        #     if cleaned_data['overall_budget'] < 0:
+        #         errors['overall_budget'] = 'Budget needs to be greater than 0'
+        #     elif cleaned_data['overall_budget'] > self._call.budget_maximum:
+        #         errors['overall_budget'] = f'Budget is greater than the maximum budget for this call: ' \
+        #                                    f'{thousands_separator(self._call.budget_maximum)} CHF'
 
         if self._call.keywords_in_general_information_question:
             keywords_validation(errors, cleaned_data, 'keywords')

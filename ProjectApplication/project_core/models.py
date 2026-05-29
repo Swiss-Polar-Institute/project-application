@@ -24,7 +24,9 @@ from . import utils
 from .utils.SpiS3Boto3Storage import SpiS3Boto3Storage
 from .utils.orcid import raise_error_if_orcid_invalid
 from .utils.utils import bytes_to_human_readable, external_file_validator, calculate_md5_from_file_field, \
-    management_file_validator, user_is_in_group_name
+    management_file_validator, user_is_in_group_name, management_file_excel_validator
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 logger = logging.getLogger('project_core')
 
@@ -590,7 +592,7 @@ class PersonPosition(CreateModifyOn):
     """Information about a person that may change as they move through their career."""
 
     person = models.ForeignKey(PhysicalPerson, help_text='A unique physical person', on_delete=models.PROTECT)
-    academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', on_delete=models.PROTECT)
+    academic_title = models.ForeignKey(PersonTitle, help_text='Title of the person', on_delete=models.SET_NULL, null=True, blank=True)
     career_stage = models.ForeignKey(CareerStage, help_text='Stage of the person in the career',
                                      on_delete=models.PROTECT, blank=True, null=True)
     organisation_names = models.ManyToManyField(OrganisationName, help_text='Organisation(s) represented by the person')
@@ -784,9 +786,9 @@ class Role(models.Model):
 
 class RoleDescription(CreateModifyOn):
     # It holds the description of a Role for a Partner, Applicant, etc. (a person with a role)
-    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT)
-    description = models.TextField(help_text="Description of the role")
-    competences = models.TextField(help_text="Description of the key competences")
+    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT, null=True, blank=True)
+    description = models.TextField(help_text="Description of the role", null=True, blank=True)
+    competences = models.TextField(help_text="Description of the key competences", null=True, blank=True)
 
 
 class Proposal(CreateModifyOn):
@@ -803,7 +805,7 @@ class Proposal(CreateModifyOn):
     )
 
     uuid = models.UUIDField(db_index=True, default=uuid_lib.uuid4, editable=False, unique=True)
-    title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=True)
+    title = models.CharField(help_text='Title of the proposal being submitted', max_length=500, blank=True, null=True)
     postal_address = models.ForeignKey(PostalAddress,
                                        help_text='Address to where the grant agreement is going to be sent',
                                        null=True, blank=True,
@@ -847,7 +849,7 @@ class Proposal(CreateModifyOn):
     history = HistoricalRecords()
 
     class Meta:
-        unique_together = (('title', 'applicant', 'call'),)
+        pass
 
     def __str__(self):
         return '{} - {}'.format(self.title, self.applicant)
@@ -979,6 +981,16 @@ class Proposal(CreateModifyOn):
     def reviewers(self):
         return self.reviewer_set.all().order_by('person__first_name', 'person__surname')
 
+    def clean(self):
+        # Call the parent class's clean method
+        super().clean()
+
+        # Check for unique constraint only if proposal_status_id is not 9
+        if self.proposal_status_id != 9:
+            if Proposal.objects.filter(title=self.title, applicant=self.applicant, call=self.call).exclude(
+                    id=self.id).exists():
+                raise ValidationError(_('Proposal with this Title, Applicant, and Call already exists.'))
+
 
 def cleanup_file_name(filename):
     filename = filename.replace(' ', '_')
@@ -1098,7 +1110,7 @@ class FundingItem(models.Model):
                                           help_text='Name of organisation from which the funding is sourced',
                                           on_delete=models.PROTECT)
     funding_status = models.ForeignKey(FundingStatus, help_text='Status of the funding',
-                                       on_delete=models.PROTECT)
+                                       on_delete=models.PROTECT, null=True, blank=True)
     amount = models.DecimalField(help_text='Amount given in funding', decimal_places=2, max_digits=10,
                                  validators=[MinValueValidator(0)])
 
@@ -1123,10 +1135,11 @@ class ProposalFundingItem(FundingItem):
 class Partner(models.Model):
     """Person who is a partner"""
 
-    person = models.ForeignKey(PersonPosition, help_text='Person that is a partner', on_delete=models.PROTECT)
-    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT)
-    role_description = models.TextField(help_text="Description of the partner's role")
-    competences = models.TextField(help_text="Description of the partner's key competences")
+    person = models.ForeignKey(PersonPosition, help_text='Person that is a partner', on_delete=models.PROTECT,
+                               null=True, blank=True)
+    role = models.ForeignKey(Role, help_text='Role of the partner', on_delete=models.PROTECT, null=True, blank=True)
+    role_description = models.TextField(help_text="Description of the partner's role", null=True, blank=True)
+    competences = models.TextField(help_text="Description of the partner's key competences", null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -1139,7 +1152,7 @@ class ProposalPartner(Partner):
     """Partner that is part of a proposal."""
 
     proposal = models.ForeignKey(Proposal, help_text='Proposal to on which the partner is collaborating',
-                                 on_delete=models.PROTECT)
+                                 on_delete=models.PROTECT, null=True, blank=True)
 
     class Meta:
         unique_together = (('person', 'role', 'proposal'),)
@@ -1341,7 +1354,7 @@ class AbstractScientificCluster(CreateModifyOn):
 class ProposalScientificCluster(AbstractScientificCluster):
     proposal = models.ForeignKey(Proposal,
                                  help_text='Proposal that this Research Cluster refers to',
-                                 on_delete=models.PROTECT)
+                                 on_delete=models.PROTECT, blank=True, null=True)
 
     class Meta:
         unique_together = (('title', 'proposal'),)
@@ -1396,7 +1409,7 @@ class CallPartFile(CreateModifyOn):
     description = models.CharField(max_length=512, help_text='Description of this file', blank=True, null=True)
     file = models.FileField(storage=SpiS3Boto3Storage(),
                             upload_to=call_part_file_rename,
-                            validators=[*management_file_validator()])
+                            validators=[*management_file_excel_validator()])
 
     order = models.PositiveIntegerField(blank=True, null=True)
 

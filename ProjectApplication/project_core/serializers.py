@@ -3,9 +3,9 @@ from django.db.models import Q
 from rest_framework import serializers
 
 from project_core.models import (
-    Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument, Trace, TraceCoordinates
+    Project, Keyword, GeographicalArea, PersonPosition, OrganisationName, FundingInstrument, Trace, TraceCoordinates, PhysicalPerson
 )
-from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors, Dataset, Publication
+from grant_management.models import Location, Medium, LaySummary, FieldNote, CoInvestors, Dataset, Publication, CarbonEmission
 
 
 class FundingInstrumentSerializer(serializers.ModelSerializer):
@@ -54,6 +54,18 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ('latitude', 'longitude', )
         list_serializer_class = FilterLocationSerializer
 
+class FilterCarbonEmissionSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.order_by('estimate_carbon_emission')
+        return super().to_representation(data)
+
+
+class CarbonEmissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarbonEmission
+        fields = ('file', 'estimate_carbon_emission', 'effective_carbon_emission', )
+        list_serializer_class = FilterCarbonEmissionSerializer
+
 
 class PersonSerializer(serializers.ModelSerializer):
     co_investigator = serializers.CharField(source='co_investigator.full_name')
@@ -74,12 +86,23 @@ class FilterMediumSerializer(serializers.ListSerializer):
 
 
 class MediumSerializer(serializers.ModelSerializer):
-    photographer = serializers.CharField(source='photographer.full_name')
+    photographer = serializers.SerializerMethodField()
 
     class Meta:
         model = Medium
         fields = ('photographer', 'file', 'file_web', 'key_image', 'primary_image')
         list_serializer_class = FilterMediumSerializer
+
+    def get_photographer(self, obj):
+        if str(obj.photographer).isdigit():
+            try:
+                physical_person = PhysicalPerson.objects.get(id=obj.photographer)
+                return f"{physical_person.first_name} {physical_person.surname}"
+            except PhysicalPerson.DoesNotExist:
+                return None
+        elif isinstance(obj.photographer, str):
+            return obj.photographer
+        return None
 
 
 class FieldNoteSerializer(serializers.ModelSerializer):
@@ -133,13 +156,14 @@ class PublicationSerializer(serializers.ModelSerializer):
 class ProjectSerializer(serializers.ModelSerializer):
     principal_investigator = PersonPositionSerializer(read_only=True)
     project_location = LocationSerializer(many=True, read_only=True)
+    project_carbonemission = CarbonEmissionSerializer(many=True, read_only=True)
     project_person = PersonSerializer(many=True, read_only=True)
     medium_set = MediumSerializer(many=True, read_only=True)
     funding_instrument = FundingInstrumentSerializer(read_only=True)
 
     class Meta:
         model = Project
-        fields = ('uuid', 'title', 'status', 'key', 'principal_investigator', 'project_location', 'project_person',
+        fields = ('uuid', 'title', 'status', 'key', 'principal_investigator', 'project_location', 'project_carbonemission', 'project_person',
                   'medium_set', 'funding_instrument'
                   )
 

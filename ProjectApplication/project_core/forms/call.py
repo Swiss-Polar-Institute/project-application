@@ -14,6 +14,7 @@ from django.utils import timezone
 from ..models import Call, CallQuestion, FundingInstrument, BudgetCategoryCall, BudgetCategory, \
     CallPart, CallCareerStage, CareerStage
 from ..widgets import XDSoftYearMonthDayHourMinutePickerInput, CheckboxSelectMultipleSortable
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 
 logger = logging.getLogger('project_core')
 
@@ -108,6 +109,15 @@ class CallForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        if "flag" in self.instance.long_name.lower():
+            self.fields['overall_budget_question'].help_text = (
+                'Select if you prefer to request the overall budget total, rather than detailed budget categories (e.g., for FLAG calls for pre- and full proposals)'
+            )
+        else:
+            self.fields['overall_budget_question'].help_text = (
+                'Select if you would like to request the overall budget total. Budget details can be broken down separately by selecting the categories that budget can be allocated to.'
+            )
+
         self.budget_categories_order_key = f'budget_categories-{CheckboxSelectMultipleSortable.order_of_values_name}'
 
         budget_category_choices, enabled_budget_categories = CheckboxSelectMultipleSortable.get_choices_initial(
@@ -130,6 +140,8 @@ class CallForm(forms.ModelForm):
                                                                  label='Career stages',
                                                                  help_text='Select the career stages to be displayed in the proposal form')
 
+
+        self.fields['introductory_message'].widget = CKEditorUploadingWidget()
         self.fields['funding_instrument'].queryset = FundingInstrument.objects.order_by('long_name')
         self.fields['budget_categories'].label = 'Budget categories (drag and drop to order them)'
         self.fields['budget_categories'].help_text = 'If you need to add a new budget category: contact an admin (DarwinDigital)'
@@ -221,7 +233,16 @@ class CallForm(forms.ModelForm):
     def clean_introductory_message(self):
         data = self.cleaned_data['introductory_message']
 
-        data = bleach.clean(bleach.linkify(data, parse_email=True))
+        # Define the allowed tags and attributes
+        allowed_tags = bleach.ALLOWED_TAGS + ['p', 'strong', 'em', 'ul', 'li', 'ol', 'a', 'br','h1','h2', 'h3', 'h4', 'h5', 'h6', 'u']
+        allowed_attributes = bleach.ALLOWED_ATTRIBUTES
+        allowed_attributes.update({
+            'a': ['href', 'title'],
+            '*': ['style']  # Allow style attribute on any tag
+        })
+
+        # Clean the data using bleach with the updated tags and attributes
+        data = bleach.clean(bleach.linkify(data, parse_email=True), tags=allowed_tags, attributes=allowed_attributes)
 
         return data
 
@@ -296,7 +317,6 @@ class CallForm(forms.ModelForm):
                       'overarching_project_question': 'Select if you would to ask about the overarching project',
                       'scientific_clusters_question': 'Select if you would to include a sub-section about "Research Clusters"',
                       'keywords_in_general_information_question': 'Select if you would like to request keywords in the "General Information" section',
-                      'overall_budget_question': 'Select if you would like to request the overall budget total. Budget details can be broken down separately by selecting the categories that budget can be allocated to'
                       }
 
         labels = {

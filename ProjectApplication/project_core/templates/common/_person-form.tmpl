@@ -1,9 +1,9 @@
 {% load static %}
 {% load crispy_forms_tags %}
-{% crispy person_form %}
+{% crispy person_application_form %}
 
 <script type="text/javascript" src="{% static 'js/orcid.js' %}"></script>
 
 <script>
-    setupOrcidLookupForForm('{{ person_form.prefix }}', 'orcid', 'first_name', 'surname');
+    setupOrcidLookupForForm('{{ person_application_form.prefix }}', 'orcid', 'first_name', 'surname');
 </script>

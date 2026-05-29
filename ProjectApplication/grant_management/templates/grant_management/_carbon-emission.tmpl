@@ -1,0 +1,49 @@
+{% with emissions=project.project_carbonemission.all %}
+    <table id="carbon_emission_table" class="table table-striped table-sm table-hover display">
+        <thead>
+        <tr>
+            <th>Estimate carbon emission (unit: Kg)</th>
+            <th>Estimate carbon emission file</th>
+            <th>Effective carbon emission (unit: Kg)</th>
+            <th>Effective carbon emission file</th>
+        </tr>
+        </thead>
+        {% for emission in emissions %}
+            <tr>
+                <td>{{ emission.estimate_carbon_emission }}</td>
+                <td>{% include 'common/_file_to_download.tmpl' with file_field=emission.file %}</td>
+                <td>{{ emission.effective_carbon_emission }}</td>
+                <td>{% include 'common/_file_to_download.tmpl' with file_field=emission.effective_carbon_emission_file %}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <script type="text/javascript" class="init">
+        $(document).ready(function () {
+            $('#carbon_emission_table').DataTable({
+                    "pageLength": 100,
+                    "order": [[0, "asc"]],
+                    "bFilter": false,
+                    "bPaginate": false,
+                    "info": false,
+                    "language": {
+                        "zeroRecords": "No Carbon Emissions have been added"
+                    },
+                    "columns": [
+                        {"width": "50%"},
+                        {"width": "25%"},
+                        {"width": "25%"}
+                    ],
+                }
+            );
+        });
+    </script>
+
+    <style>
+        #carbon_emission_table > td:nth-child(1), #carbon_emission_table > td:nth-child(2) {
+            white-space: nowrap;
+        }
+    </style>
+
+{% endwith %}
+<p></p>

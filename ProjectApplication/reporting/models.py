@@ -12,6 +12,8 @@ class FundingInstrumentYearMissingData(models.Model):
         GENDER_FUNDED_PROJECT_PI = 'GENDER_FUNDED_PROJECT_PI', 'Gender Funded Project PI'
         PROPOSALS = 'PROPOSALS'
         PROJECTS = 'PROJECTS'
+        PUBLICATIONS = 'PUBLICATIONS', 'Publications'
+        DATASETS = 'DATASETS', 'Datasets'
 
     funding_instrument = models.ForeignKey(FundingInstrument, on_delete=models.PROTECT, null=True, blank=True)
     finance_year = models.IntegerField(null=True, blank=True)

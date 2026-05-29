@@ -1,6 +1,6 @@
 import datetime
 import io
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 import xlsxwriter
 from django.db.models import Count, F, Sum, Min, Max
@@ -10,7 +10,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from project_core.models import Call, Project, Gender, CareerStage, Proposal, FundingInstrument
-from grant_management.models import Invoice, Installment
+from grant_management.models import Invoice, Installment, CarbonEmission, Publication, Dataset
 from project_core.templatetags.thousands_separator import thousands_separator
 from reporting.models import FundingInstrumentYearMissingData
 
@@ -300,7 +300,7 @@ class ObjectsPerFundingInstrumentPerYear:
             calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
 
             if calls.exists():
-                return self._model.objects.filter(call__in=calls).count()
+                return self._model.objects.filter(call__in=calls).exclude(proposal_status=9).count()
             else:
                 return '-'
         elif self._model == Project:
@@ -311,8 +311,10 @@ class ObjectsPerFundingInstrumentPerYear:
     def calculate_result(self):
         data = []
         for year in range(self._start_year, self._end_year + 1):
-            row = {}
-            row['Year'] = year
+            # Check if this year has any data before creating a row
+            year_has_data = False
+            year_data = {}
+            year_data['Year'] = year
 
             for funding_instrument in self._funding_instruments:
                 is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
@@ -320,17 +322,152 @@ class ObjectsPerFundingInstrumentPerYear:
                     funding_instrument=funding_instrument,
                     year=year)
                 if is_missing_data:
-                    row[funding_instrument.long_name] = missing_data_reason
+                    year_data[funding_instrument.long_name] = missing_data_reason
+                    year_has_data = True
                     continue
 
-                row[funding_instrument.long_name] = self._count_objects(funding_instrument, year)
+                count = self._count_objects(funding_instrument, year)
+                year_data[funding_instrument.long_name] = count
 
-            data.append(row)
+                # Check if this funding instrument has data for this year
+                if count != '-' and count > 0:
+                    year_has_data = True
+
+            # Only add the year if it has data
+            if year_has_data:
+                data.append(year_data)
 
         result = {}
         result['headers'] = self._get_headers()
         result['data'] = data
         return result
+
+
+class ProposalObjectsPerFundingInstrumentPerYear:
+    def __init__(self, model, missing_data):
+        self._model = model
+
+        self._missing_data = missing_data
+
+        self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
+
+        self._funding_instruments_long_names = []
+        for funding_instrument in self._funding_instruments:
+            self._funding_instruments_long_names.append(funding_instrument.long_name)
+
+        # Get start year from proposal end dates
+        self._start_year = Proposal.objects.aggregate(Min('end_date__year'))['end_date__year__min']
+        self._end_year = Proposal.objects.aggregate(Max('end_date__year'))['end_date__year__max']
+
+    def _get_headers(self):
+        return ['Year'] + self._funding_instruments_long_names
+
+    def _count_objects(self, funding_instrument, year):
+        if self._model == Proposal:
+            calls = Call.objects.filter(funding_instrument=funding_instrument).filter(finance_year=year)
+
+            if calls.exists():
+                return self._model.objects.filter(call__in=calls).exclude(proposal_status=9).count()
+            else:
+                return '-'
+        else:
+            assert False
+
+    def calculate_result(self):
+        data = []
+        for year in range(self._start_year, self._end_year + 1):
+            # Check if this year has any data before creating a row
+            year_has_data = False
+            year_data = {}
+            year_data['Year'] = year
+
+            for funding_instrument in self._funding_instruments:
+                is_missing_data, missing_data_reason = FundingInstrumentYearMissingData.is_missing_data(
+                    self._missing_data,
+                    funding_instrument=funding_instrument,
+                    year=year)
+                if is_missing_data:
+                    year_data[funding_instrument.long_name] = missing_data_reason
+                    year_has_data = True
+                    continue
+
+                count = self._count_objects(funding_instrument, year)
+                year_data[funding_instrument.long_name] = count
+
+                # Check if this funding instrument has data for this year
+                if count != '-' and count > 0:
+                    year_has_data = True
+
+            # Only add the year if it has data
+            if year_has_data:
+                data.append(year_data)
+
+        result = {}
+        result['headers'] = self._get_headers()
+        result['data'] = data
+        return result
+
+
+# -----------------------------
+# Publications per Funding Instrument
+# -----------------------------
+class PublicationsPerFundingInstrumentPerYear:
+    def __init__(self, missing_data):
+        self._missing_data = missing_data
+        self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
+        self._funding_instruments_long_names = [fi.long_name for fi in self._funding_instruments]
+        self._start_year = Publication.objects.aggregate(Min('published_date__year'))['published_date__year__min'] or timezone.now().year
+        self._end_year = Publication.objects.aggregate(Max('published_date__year'))['published_date__year__max'] or timezone.now().year
+
+    def _get_headers(self):
+        return ['Year'] + self._funding_instruments_long_names
+
+    def _count_publications(self, funding_instrument, year):
+        return Publication.objects.filter(project__funding_instrument=funding_instrument, published_date__year=year).count()
+
+    def calculate_result(self):
+        data = []
+        for year in range(self._start_year, self._end_year + 1):
+            year_data = {'Year': year}
+            for fi in self._funding_instruments:
+                year_data[fi.long_name] = self._count_publications(fi, year)
+            missing_data, reason = FundingInstrumentYearMissingData.is_missing_data(self._missing_data, year=year)
+            if missing_data:
+                for fi in self._funding_instruments:
+                    year_data[fi.long_name] = reason
+            data.append(year_data)
+        return {'headers': self._get_headers(), 'data': data}
+
+
+# -----------------------------
+# Datasets per Funding Instrument
+# -----------------------------
+class DatasetsPerFundingInstrumentPerYear:
+    def __init__(self, missing_data):
+        self._missing_data = missing_data
+        self._funding_instruments = list(FundingInstrument.objects.all().order_by('long_name'))
+        self._funding_instruments_long_names = [fi.long_name for fi in self._funding_instruments]
+        self._start_year = Dataset.objects.aggregate(Min('published_date__year'))['published_date__year__min'] or timezone.now().year
+        self._end_year = Dataset.objects.aggregate(Max('published_date__year'))['published_date__year__max'] or timezone.now().year
+
+    def _get_headers(self):
+        return ['Year'] + self._funding_instruments_long_names
+
+    def _count_datasets(self, funding_instrument, year):
+        return Dataset.objects.filter(project__funding_instrument=funding_instrument, published_date__year=year).count()
+    def calculate_result(self):
+        data = []
+        for year in range(self._start_year, self._end_year + 1):
+            year_data = {'Year': year}
+            for fi in self._funding_instruments:
+                year_data[fi.long_name] = self._count_datasets(fi, year)
+            missing_data, reason = FundingInstrumentYearMissingData.is_missing_data(self._missing_data, year=year)
+            if missing_data:
+                for fi in self._funding_instruments:
+                    year_data[fi.long_name] = reason
+            data.append(year_data)
+        return {'headers': self._get_headers(), 'data': data}
+
 
 
 def value_or_missing_data(is_missing_data, missing_data_reason, value):
@@ -384,7 +521,7 @@ def calculate_unpaid_invoice(year):
             total += project.invoices_paid_amount()
             for installment in Installment.objects.filter(project=project):
                 for invoice in Invoice.objects.filter(installment=installment):
-                     total -= invoice.amount
+                    total -= invoice.amount
         else:
             # If the project is closed
             pass
@@ -445,6 +582,7 @@ def calculate_open_for_payment_funding_instrument_year(funding_instrument_long_n
             pass
 
     return total
+
 
 def calculate_unpaid_invoice_funding_instrument_year(funding_instrument_long_name, year):
     total = 0
@@ -543,8 +681,8 @@ def career_stage_project_principal_investigator_per_call():
 
 
 def proposals_per_funding_instrument():
-    proposals_calculator = ObjectsPerFundingInstrumentPerYear(Proposal,
-                                                              FundingInstrumentYearMissingData.MissingDataType.PROPOSALS)
+    proposals_calculator = ProposalObjectsPerFundingInstrumentPerYear(Proposal,
+                                                                      FundingInstrumentYearMissingData.MissingDataType.PROPOSALS)
 
     return proposals_calculator.calculate_result()
 
@@ -585,6 +723,11 @@ class Reporting(TemplateView):
 
         context['projects_per_funding_instrument'] = projects_per_funding_instrument()
 
+        context['publications_per_funding_instrument'] = PublicationsPerFundingInstrumentPerYear(
+            FundingInstrumentYearMissingData.MissingDataType.PUBLICATIONS).calculate_result()
+        context['datasets_per_funding_instrument'] = DatasetsPerFundingInstrumentPerYear(
+            FundingInstrumentYearMissingData.MissingDataType.DATASETS).calculate_result()
+
         context.update({'active_section': 'reporting',
                         'active_subsection': 'reporting',
                         'sidebar_template': 'reporting/_sidebar-reporting.tmpl',
@@ -611,13 +754,56 @@ class ProjectsAllInformationExcel(View):
     def _headers():
         return ['Key', 'Grant scheme', 'Name of PI', 'Organisation', 'Gender', 'Career stage', 'Geographic focus',
                 'Location', 'Keywords', 'Title', 'Signed date', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary']
+                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status', 'Call Year', 'Lay summary',
+                'On website', 'Estimate carbon emission (unit: Kg)', 'Effective carbon emission (unit: Kg)', 'Number of Publications', 'Number of Datasets']
+
+    @staticmethod
+    def _carbon_emission_decimal(value):
+        value = str(value).strip().replace("'", "").replace(" ", "")
+
+        if ',' in value and '.' in value:
+            if value.rfind(',') > value.rfind('.'):
+                value = value.replace('.', '').replace(',', '.')
+            else:
+                value = value.replace(',', '')
+        else:
+            value = value.replace(',', '.')
+
+        decimal_value = Decimal(value)
+        if not decimal_value.is_finite():
+            raise InvalidOperation
+
+        return decimal_value
+
+    @staticmethod
+    def _sum_carbon_emission_values(carbon_emissions, field_name):
+        values = [
+            str(value).strip()
+            for value in [getattr(carbon_emission, field_name) for carbon_emission in carbon_emissions]
+            if value is not None and str(value).strip()
+        ]
+
+        if not values:
+            return ''
+
+        try:
+            return sum(
+                (ProjectsAllInformationExcel._carbon_emission_decimal(value) for value in values),
+                Decimal('0')
+            )
+        except InvalidOperation:
+            return ', '.join(values)
 
     @staticmethod
     def _rows():
         rows = []
 
-        for project in Project.objects.all().order_by('key'):
+        projects = Project.objects.all().annotate(
+            num_publications=Count('publication', distinct=True),
+            num_datasets=Count('dataset', distinct=True)
+        ).prefetch_related('project_carbonemission').order_by('key')
+
+        for project in projects:
             financial_information = ProjectsBalanceExcel.financial_information(project)
 
             if project.principal_investigator.person.gender:
@@ -630,7 +816,21 @@ class ProjectsAllInformationExcel(View):
             else:
                 career_stage = 'N/A'
 
+            if project.on_website == 1:
+                on_website = 'True'
+            else:
+                on_website = 'False'
+
             geographical_areas = ', '.join([str(area) for area in project.geographical_areas.order_by('name')])
+            carbon_emissions = list(project.project_carbonemission.all())
+            estimate_carbon_emission = ProjectsAllInformationExcel._sum_carbon_emission_values(
+                carbon_emissions,
+                'estimate_carbon_emission'
+            )
+            effective_carbon_emission = ProjectsAllInformationExcel._sum_carbon_emission_values(
+                carbon_emissions,
+                'effective_carbon_emission'
+            )
 
             extra_information = {
                 'Grant scheme': project.funding_instrument.long_name,
@@ -643,6 +843,11 @@ class ProjectsAllInformationExcel(View):
                 'Status': project.status,
                 'Call Year': project.finance_year,
                 'Lay summary': project.main_lay_summary_web(),
+                'On website': on_website,
+                'Estimate carbon emission (unit: Kg)': estimate_carbon_emission,
+                'Effective carbon emission (unit: Kg)': effective_carbon_emission,
+                'Number of Publications': project.num_publications,
+                'Number of Datasets': project.num_datasets,
             }
 
             rows.append({**financial_information, **extra_information})
@@ -677,6 +882,51 @@ class ProjectsAllInformationExcel(View):
         return response
 
 
+class ProjectReferenceNameWithCoordinatesExcel(View):
+    @staticmethod
+    def _headers():
+        return ['Key', 'location', 'latitude', 'longitude']
+
+    @staticmethod
+    def _rows():
+        rows = []
+
+        projects = Project.objects.filter(key__icontains='SPI').prefetch_related('project_location').order_by('key')
+        for project in projects:
+            for location in project.project_location.all().order_by('name'):
+                rows.append({
+                    'Key': project.key,
+                    'location': location.name,
+                    'latitude': location.latitude,
+                    'longitude': location.longitude,
+                })
+
+        return rows
+
+    @staticmethod
+    def _col_widths():
+        return {
+            'Key': 18,
+            'location': 50,
+            'latitude': 12,
+            'longitude': 12,
+        }
+
+    def get(self, request, *args, **kwargs):
+        now = timezone.localtime()
+        filename = f'project-reference-name-with-coordinates-{now:%Y%m%d-%H%M}.xlsx'
+
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+        response.content = excel_dict_writer(
+            filename,
+            ProjectReferenceNameWithCoordinatesExcel._headers(),
+            ProjectReferenceNameWithCoordinatesExcel._rows(),
+            ProjectReferenceNameWithCoordinatesExcel._col_widths()
+        )
+
+        return response
 
 
 class ProjectsBalanceExcel(View):
@@ -686,7 +936,7 @@ class ProjectsBalanceExcel(View):
     @staticmethod
     def headers():
         return ['Key', 'Signed date', 'Organisation', 'Title', 'Start date', 'End date', 'Allocated budget',
-                'Underspending', 'Unpaid Invoices' ,'Total paid', 'Balance due', 'Status']
+                'Underspending', 'Unpaid Invoices', 'Total paid', 'Balance due', 'Status']
 
     @staticmethod
     def financial_information(project):

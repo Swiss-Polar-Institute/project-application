@@ -1,71 +1,366 @@
 $(document).ready(function () {
-    var current_fs, next_fs, previous_fs; // fieldsets
-    var opacity;
+    $('input.required_field, select.required_field, textarea.required_field').each(function () {
+        var fieldId = $(this).attr('id');
+        var label = $('label[for="' + fieldId + '"]');
+        if (!label.text().includes('*')) {
+            label.text(label.text().trim() + ' *');
+        }
+    });
+    localStorage.clear();
+    var current_fs, next_fs, previous_fs;
     var current = 1;
     var steps = $("fieldset").length;
+    var errorMessages = [];
+    $('#id_data_collection_form-privacy_policy').removeAttr('required');
 
-    function addvalidation(){
-        $("fieldset:hidden input").removeAttr("required");
-        $("fieldset:hidden select").removeAttr("required");
-        $("fieldset:hidden textarea").removeAttr("required");
-        $("input[name='proposal_application_form-title']:visible").attr("required","required");
-        $("input[name='person_form-orcid']:visible").attr("required","required");
-        $("input[name='person_form-first_name']:visible").attr("required","required");
-        $("input[name='person_form-surname']:visible").attr("required","required");
-        $("select[name='person_form-academic_title']:visible").attr("required","required");
-        $("select[name='person_form-gender']:visible").attr("required","required");
-        $("input[name='person_form-career_stage']:visible").attr("required","required");
-        $("input[name='person_form-email']:visible").attr("required","required");
-        $("input[name='person_form-phone']:visible").attr("required","required");
-        $("select[name='person_form-organisation_names']:visible").attr("required","required");
-        $("input[name='postal_address_form-address']:visible").attr("required","required");
-        $("input[name='postal_address_form-city']:visible").attr("required","required");
-        $("input[name='postal_address_form-postcode']:visible").attr("required","required");
-        $("input[name='postal_address_form-country']:visible").attr("required","required");
-        $("input[name='proposal_application_form-title']:visible").attr("required","required");
-        $("input[name='proposal_application_form-geographical_areas']:visible").attr("required","required");
-        $("select[name='proposal_application_form-keywords']:visible").attr("required","required");
-        $("input[name='proposal_application_form-start_date']:visible").attr("required","required");
-        $("input[name='proposal_application_form-end_date']:visible").attr("required","required");
-        $("input[name='proposal_application_form-duration_months']:visible").attr("required","required");
-        $("input[name='data_collection_form-privacy_policy']:visible").attr("required","required");
+    function validateBudgetItems(errorMessages) {
+        var totalSum = 0;
+        var max_budget = parseFloat($('#total_budget').val()) || 0;
+
+        // ✅ Clear previous budget errors once
+        $(".budget-error-message").find('.error-message').remove();
+        $(".budget-error-message").removeClass("has-error");
+
+        // 🔹 Loop through normal budget rows
+        $('.budget-item').each(function () {
+            var $row = $(this);
+            var amountField = $row.find('input[name$="-amount"]');
+            var amountValue = amountField.val().trim();
+
+            if (amountValue) {
+                var amount = parseFloat(amountValue);
+                if (isNaN(amount) || amount < 0) {
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Total (CHF) must be a number.<br></span>');
+                    errorMessages.push('Total (CHF) must be a number.');
+                } else {
+                    totalSum += amount;
+                }
+            }
+        });
+
+        // 🔹 Loop through funding budget rows (budget-item-2)
+        var emptyRows = 0;
+        $('.budget-item-2').each(function () {
+            var $row = $(this);
+            var amountField = $row.find('input[name$="-amount"]');
+            var orgField = $row.find('select[name$="-organisation_name"]');
+            var statusField = $row.find('select[name$="-funding_status"]');
+
+            var amountValue = amountField.val().trim();
+            var statusValue = statusField.val();
+            var orgValue = orgField.val();
+            if (!amountValue && !statusValue && !orgValue) {
+                $row.remove();
+            }
+            // Validate numeric
+            var amount = parseFloat(amountValue);
+            if (amountValue && (isNaN(amount) || amount < 0)) {
+                $(".budget-error-message").addClass("has-error");
+                $(".budget-error-message").append('<span class="error-message is-invalid">Total (CHF) must be a number.<br></span>');
+                errorMessages.push('Total (CHF) must be a number.');
+            }
+
+            // if any of the three has a value, all three are required
+            if (amountValue || statusValue || orgValue) {
+                if (!amountValue || isNaN(parseFloat(amountValue)) || parseFloat(amountValue) < 0) {
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Valid Amount (CHF) is required when any funding information is provided.<br></span>');
+                    errorMessages.push('Valid Amount (CHF) is required when any funding information is provided.');
+                }
+                if (!statusValue) {
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Funding Status is required when any funding information is provided.<br></span>');
+                    errorMessages.push('Funding Status is required when any funding information is provided.');
+                }
+                if (!orgValue) {
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Organisation Name is required when any funding information is provided.<br></span>');
+                    errorMessages.push('Organisation Name is required when any funding information is provided.');
+                }
+            }
+
+        });
+
+
+        // 🔹 Validate total budget limit
+        if (totalSum > max_budget) {
+            alert('Budget is greater than the maximum budget for this call.');
+            $(".budget-error-message").addClass("has-error");
+            $(".budget-error-message").append('<span class="error-message is-invalid">Budget is greater than the maximum budget for this call.<br></span>');
+            errorMessages.push('Budget is greater than the maximum budget for this call.');
+            $('.max-budget-wrapper').closest('fieldset').addClass("invalid").removeClass("valid");
+        } else {
+            $('.max-budget-wrapper').closest('fieldset').addClass("valid").removeClass("invalid");
+        }
     }
 
 
+    function checkDuplicateProposal(proposalTitle, callId, callback) {
+        $.ajax({
+            url: '/check_duplicate_proposal/',  // URL to check for duplicates
+            data: {
+                'proposal_title': proposalTitle,
+                'call_id': callId
+            },
+            success: function (data) {
+                if (data.exists) {
+                    var proposalTitleInput = $("input[name='proposal_application_form-title']");
+                    var label = getLabelText(proposalTitleInput).replace('*', '');
+                    errorMessages.push('A proposal with this ' + label + ' already exists.');
+                    alert('A proposal with this ' + label + ' already exists.');
+                }
+                if (callback) callback();
+            },
+            error: function () {
+                alert('Error checking for duplicate proposals.');
+            }
+        });
+    }
+
+    function validateOrcid(orcid) {
+        if (typeof orcid !== 'string') {
+            return false; // Input is not a valid string
+        }
+
+        var orcidRegex = /^(\d{4}-){3}(\d{3}[0-9X])$/; // Updated regex to allow 'X'
+        return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097"; // Check format and exclude specific ORCID
+    }
+
+    function addValidation(callback) {
+        var max_budget = $('#total_budget').val();
+        errorMessages = []; // Clear error messages
+
+        var proposalTitle = $("input[name='proposal_application_form-title']").val();
+        var callId = $("input[name='proposal_application_form-call_id']").val();
+        var overall_budget = $("input[name='proposal_application_form-overall_budget']").val();
+        if (overall_budget > max_budget) {
+            alert('Budget is greater than the maximum budget for this call.');
+            var $overallField = $("input[name='proposal_application_form-overall_budget']");
+            var $formGroup = $overallField.closest('.form-group');
+
+            $formGroup.addClass("has-error");
+            $formGroup.find('.error-message').remove(); // Remove existing error span if any
+
+            // ✅ Create error span with text
+            let errorSpan = $('<span class="error-message is-invalid"></span>')
+                .text('Budget is greater than the maximum budget for this call.');
+
+            $overallField.after(errorSpan);
+        } else {
+            var $overallField = $("input[name='proposal_application_form-overall_budget']");
+            var $formGroup = $overallField.closest('.form-group');
+
+            $formGroup.removeClass("has-error");
+            $formGroup.find('.error-message').remove(); // Remove error span
+        }
+
+
+        //adding error span
+        $(".required_field").each(function () {
+
+            var input = $(this);
+            if (input.hasClass('modelselect2multiple')) {
+                return true;
+            }
+            var value;
+
+            if (input.hasClass('select2-hidden-accessible')) {
+                value = $(this).val();
+            } else if (input.is('textarea') && input.hasClass('ckeditoruploadingwidget') && typeof CKEDITOR !== 'undefined') {
+                var editorId = input.attr('id');
+                value = CKEDITOR.instances[editorId].getData();
+            } else {
+                value = input.val();
+            }
+
+            var label = getLabelText(input).replace('*', '');
+            var formGroup = input.closest('.form-group');
+            var errorSpan = formGroup.find('.error-message');
+
+            if (value === '' || value === null) {
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>');
+                    formGroup.append(errorSpan);
+                }
+                errorSpan.text(label + ' is required.');
+                errorMessages.push(label + ' is required.');
+                formGroup.addClass("has-error");
+            } else {
+                if (errorSpan.length > 0) {
+                    errorSpan.remove();
+                    formGroup.removeClass("has-error");
+
+                    // setTimeout(function () {
+                    //     $("#div_" + ddId).find('span.error-message').remove();
+                    // }, 2000);
+                }
+            }
+        });
+
+
+        validateBudgetItems(errorMessages);
+
+
+        var keywordsInput = $("select[name='proposal_application_form-keywords']");
+        if (keywordsInput.length) {
+            var selectedKeywords = keywordsInput.find("option:selected");
+            var label = getLabelText(keywordsInput);
+            var formGroup = keywordsInput.closest('.form-group');
+            var errorSpan = formGroup.find('.error-message');
+
+            if (selectedKeywords.length < 5) {
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                    formGroup.append(errorSpan); // Append error span
+                }
+                errorSpan.text('Please enter at least 5 ' + label + '.'); // Update error message text
+                errorMessages.push('Please enter at least 5 ' + label + '.');
+                formGroup.addClass("has-error");
+            } else {
+                if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
+                formGroup.removeClass("has-error");
+            }
+        }
+
+        var organisationInput = $("select[name='person_application_form-organisation_names']");
+        if (organisationInput.length) {
+            var selectedKeywords = organisationInput.find("option:selected");
+            var label = getLabelText(organisationInput);
+            var formGroup = organisationInput.closest('.form-group');
+            var errorSpan = formGroup.find('.error-message');
+
+            if (selectedKeywords.length < 1) {
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                    formGroup.append(errorSpan); // Append error span
+                }
+                errorSpan.text(label + ' is required.'); // Update error message text
+                errorMessages.push(label + ' is required.');
+                formGroup.addClass("has-error");
+            } else {
+                if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
+                formGroup.removeClass("has-error");
+            }
+        }
+
+        var orcidInput = $("input[name='person_application_form-orcid']");
+        if (orcidInput.length) {
+            var orcidValue = orcidInput.val();
+            var label = getLabelText(orcidInput);
+            var formGroup = orcidInput.closest('.form-group');
+            var errorSpan = formGroup.find('.error-message');
+
+            if (!validateOrcid(orcidValue)) {
+                if (errorSpan.length === 0) {
+                    errorSpan = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                    formGroup.append(errorSpan); // Append error span
+                }
+                errorSpan.text('Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.'); // Update error message text
+                errorMessages.push('Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.');
+                formGroup.addClass("has-error");
+            } else {
+                if (errorSpan.length > 0) errorSpan.remove(); // Remove error span if input is valid
+                formGroup.removeClass("has-error");
+            }
+        }
+
+        var privacyPolicy = $("input[name='data_collection_form-privacy_policy']");
+        var formGroupPrivacyPolicy = privacyPolicy.closest('.form-group');
+        var errorSpanPrivacyPolicy = formGroupPrivacyPolicy.find('.error-message');
+
+        if (privacyPolicy.length && privacyPolicy.prop('checked')) {
+            if (errorSpanPrivacyPolicy.length > 0) errorSpanPrivacyPolicy.remove(); // Remove error span if input is valid
+            formGroupPrivacyPolicy.removeClass("has-error");
+        } else {
+            if (errorSpanPrivacyPolicy.length === 0) {
+                errorSpanPrivacyPolicy = $('<span class="error-message is-invalid"></span>'); // Create error span if not already present
+                formGroupPrivacyPolicy.append(errorSpanPrivacyPolicy); // Append error span
+            }
+            errorSpanPrivacyPolicy.text('This field is required.'); // Update error message text
+            errorMessages.push('This field is required.');
+            formGroupPrivacyPolicy.addClass("has-error");
+        }
+
+        // Iterate over each fieldset with class "questions-fields"
+        $('fieldset').each(function () {
+            var step_class = $(this).attr('data-step');
+            if ($(this).find('.error-message').length > 0) {
+                $("." + step_class).addClass("invalid").removeClass("valid");
+            } else {
+                $("." + step_class).addClass("valid").removeClass("invalid");
+            }
+        });
+
+        checkDuplicateProposal(proposalTitle, callId, function () {
+            // Display error messages
+            if (errorMessages.length > 0) {
+                var errorMessageHtml = '<ul>';
+                errorMessages.forEach(function (message) {
+                    errorMessageHtml += '<li>' + message + '</li>';
+                });
+                errorMessageHtml += '</ul>';
+                var errormessagetext = "Please fill out all required fields."
+                $('#error-messages').html(errormessagetext).css('display', 'block');
+                $('html, body').animate({scrollTop: 0}, 'slow');
+            } else {
+                $("#final-result").removeClass("submit_btn");
+                $("#final-result").click();
+            }
+        });
+    }
+
 
     function storeFormData() {
+        var fieldsToStore = [
+            'proposal_application_form-title',
+            'proposal_application_form-keywords',
+            'proposal_application_form-geographical_areas'
+        ];
 
-        $("fieldset:visible :input").each(function () {
-            var input = $(this);
-            var name = input.attr('name');
-            if (name) {
-                var label = $("label[for='" + name + "']").text() || input.closest('.form-group').find('label').first().text();
+        fieldsToStore.forEach(function (fieldName) {
+            var input = $("[name='" + fieldName + "']");
+            if (input.length) {
+                var label = $("label[for='" + fieldName + "']").text() || input.closest('.form-group').find('label').first().text();
                 if (label) {
-                    localStorage.setItem(name + '_label', label);
+                    localStorage.setItem(fieldName + '_label', label);
                 }
                 if (input.is('select')) {
                     var selectedOptionText = input.find('option:selected').text();
-                    localStorage.setItem(name, selectedOptionText);
-                } else if (input.is(':checkbox') || input.is(':radio')) {
+                    localStorage.setItem(fieldName, selectedOptionText);
+                } else if (input.is(':checkbox')) {
+                    var checkedValues = [];
+                    input.each(function () {
+                        if ($(this).is(':checked')) {
+                            checkedValues.push($(this).val());
+                        }
+                    });
+                    localStorage.setItem(fieldName, JSON.stringify(checkedValues));
+                } else if (input.is(':radio')) {
                     if (input.is(':checked')) {
-                        localStorage.setItem(name, input.val());
-                        localStorage.setItem(name + '_checked', 'true');
-                    } else {
-                        localStorage.setItem(name + '_checked', 'false');
+                        localStorage.setItem(fieldName, input.val());
+                        localStorage.setItem(fieldName + '_checked', 'true');
                     }
+                } else if (input.is('textarea')) {
+                    localStorage.setItem(fieldName, input.val());
                 } else {
-                    localStorage.setItem(name, input.val());
+                    localStorage.setItem(fieldName, input.val());
                 }
             }
         });
     }
 
     function retrieveFormData() {
-        $("fieldset:visible :input").each(function () {
-            var input = $(this);
-            var name = input.attr('name');
-            if (name) {
-                var value = localStorage.getItem(name);
+        var fieldsToRetrieve = [
+            'proposal_application_form-title',
+            'proposal_application_form-keywords',
+            'proposal_application_form-geographical_areas'
+        ];
+
+        fieldsToRetrieve.forEach(function (fieldName) {
+            var input = $("[name='" + fieldName + "']");
+            if (input.length) {
+                var value = localStorage.getItem(fieldName);
                 if (value) {
                     if (input.is('select')) {
                         input.find('option').each(function () {
@@ -73,12 +368,15 @@ $(document).ready(function () {
                                 $(this).prop('selected', true);
                             }
                         });
-                    } else if (input.is(':checkbox') || input.is(':radio')) {
-                        if (localStorage.getItem(name + '_checked') === 'true') {
-                            input.prop('checked', true);
-                        } else {
-                            input.prop('checked', false);
-                        }
+                    } else if (input.is(':checkbox')) {
+                        var checkedValues = JSON.parse(value);
+                        input.each(function () {
+                            if (checkedValues.includes($(this).val())) {
+                                $(this).prop('checked', true);
+                            }
+                        });
+                    } else if (input.is(':radio')) {
+                        input.prop('checked', localStorage.getItem(fieldName + '_checked') === 'true');
                     } else {
                         input.val(value);
                     }
@@ -88,41 +386,39 @@ $(document).ready(function () {
     }
 
     function populateSummary() {
-        var summaryHtml = '';
-        for (var i = 0; i < localStorage.length; i++) {
-            var key = localStorage.key(i);
-            if (key.endsWith('_label')) {
-                var fieldName = key.replace('_label', '');
-                var label = localStorage.getItem(key);
-                var value = localStorage.getItem(fieldName);
-                if (value) {
-                    if ($(":input[name='" + fieldName + "']").is(':checkbox') || $(":input[name='" + fieldName + "']").is(':radio')) {
-                        if (localStorage.getItem(fieldName + '_checked') === 'true') {
-                            summaryHtml += '<p><strong>' + label + ':</strong> ' + value + '</p>';
+        var fieldsets = {};
+        var fieldsToPopulate = [
+            'proposal_application_form-title',
+            'proposal_application_form-keywords',
+            'proposal_application_form-geographical_areas'
+        ];
+
+        fieldsToPopulate.forEach(function (fieldName) {
+            var input = $("[name='" + fieldName + "']");
+            var label = localStorage.getItem(fieldName + '_label') ? localStorage.getItem(fieldName + '_label').replace('*', '') : null;
+            var value = localStorage.getItem(fieldName);
+
+            if (value && !value.includes('button') && !value.includes('submit') && value !== "---------") {
+                if (label) {
+                    if (input.is(':checkbox')) {
+                        var checkedValues = JSON.parse(value);
+                        if (checkedValues.length > 0) {
+                            var checkedLabels = checkedValues.map(function (val) {
+                                return $("label[for='" + input.filter("[value='" + val + "']").attr('id') + "']").text().trim();
+                            }).join(', ');
+                            fieldsets[fieldName] = '<p><strong>' + label + ':</strong> ' + checkedLabels + '</p>';
                         }
                     } else {
-                        summaryHtml += '<p><strong>' + label + ':</strong> ' + value + '</p>';
+                        fieldsets[fieldName] = '<p><strong>' + label + ':</strong> ' + value + '</p>';
                     }
                 }
             }
-        }
+        });
+
+        var summaryHtml = Object.values(fieldsets).join('');
         $('#summary-content').html(summaryHtml);
     }
 
-    function validateOrcid(orcid) {
-        var orcidRegex = /^(\d{4}-){3}\d{4}$/;
-        return orcidRegex.test(orcid) && orcid !== "0000-0002-1825-0097";
-    }
-
-    function clearValidationErrors() {
-        $(".is-invalid").removeClass("is-invalid");
-        $(".invalid-feedback").remove();
-    }
-
-    function showValidationError(input, message) {
-        input.addClass("is-invalid");
-        input.after('<div class="invalid-feedback">' + message + '</div>');
-    }
 
     function getLabelText(input) {
         var name = input.attr('name');
@@ -130,172 +426,152 @@ $(document).ready(function () {
         return label;
     }
 
-    function validateCurrentFieldset() {
-        var isValid = true;
-        clearValidationErrors();
+    function setStep(stepIndex) {
+        storeFormData();
+        if (stepIndex < 0 || stepIndex >= steps) return;
 
-        current_fs.find(":input[required]").each(function () {
-            if (!this.checkValidity()) {
-                isValid = false;
-                var label = getLabelText($(this));
-                showValidationError($(this), label + ' is required.');
-            }
-        });
+        $(".progressbar .step").removeClass("active finished");
+        $(".top-wizard-wrapper .step").removeClass("active finished");
 
-        // ORCID specific validation
-        var orcidInput = current_fs.find("input[name='person_form-orcid']");
-        if (orcidInput.length) {
-            var orcidValue = orcidInput.val();
-            if (!validateOrcid(orcidValue)) {
-                isValid = false;
-                var label = getLabelText(orcidInput);
-                showValidationError(orcidInput, 'Invalid ' + label + '. The ORCID 0000-0002-1825-0097 is not allowed.');
-            }
-        }
+        $(".progressbar .step").slice(0, stepIndex + 1).addClass("active finished");
+        $(".top-wizard-wrapper .step").slice(0, stepIndex + 1).addClass("active finished");
 
-        // Keywords validation
-        var keywordsInput = current_fs.find("select[name='proposal_form-keywords']");
-        if (keywordsInput.length) {
-            var selectedKeywords = keywordsInput.find("option:selected");
-            if (selectedKeywords.length < 5) {
-                isValid = false;
-                var label = getLabelText(keywordsInput);
-                showValidationError(keywordsInput, 'Please enter at least 5 ' + label + '.');
-            }
-        }
-
-        return isValid;
+        $("fieldset").css({'display': 'none', 'position': 'relative', 'opacity': 0});
+        $("fieldset").eq(stepIndex).css({'display': 'block'}).animate({
+            opacity: 1
+        }, 500);
     }
-
-    function checkDuplicateProposal(callback) {
-        var proposalTitle = $("input[name='proposal_title']").val();
-        var applicantId = $("input[name='applicant_id']").val();
-        var callId = $("input[name='call_id']").val();
-
-        $.ajax({
-            url: '/check_duplicate_proposal/',  // URL to check for duplicates
-            data: {
-                'proposal_title': proposalTitle,
-                'applicant_id': applicantId,
-                'call_id': callId
-            },
-            success: function (data) {
-                if (data.exists) {
-                    var proposalTitleInput = $("input[name='proposal_title']");
-                    var label = getLabelText(proposalTitleInput);
-                    showValidationError(proposalTitleInput, 'A proposal with this ' + label + ' already exists.');
-                    callback(false);
-                } else {
-                    callback(true);
-                }
-            },
-            error: function () {
-                alert('Error checking for duplicate proposals.');
-                callback(false);
-            }
-        });
-    }
-
-    retrieveFormData();
 
     $(".next").click(function () {
-
         current_fs = $(this).closest('fieldset');
         next_fs = $(this).closest('fieldset').next();
 
-        if (!validateCurrentFieldset()) {
-            return;
-        }
+        if (next_fs.length) {
+            var nextIndex = $("fieldset").index(next_fs);
+            setStep(nextIndex);
 
-        // Check for duplicate proposal before proceeding
-        checkDuplicateProposal(function (isDuplicateFree) {
-            if (!isDuplicateFree) {
-                return;
+            if (nextIndex === steps - 1) {
+                populateSummary();
             }
-
-            storeFormData();
-
-            $(".progressbar .step").eq($("fieldset").index(next_fs)).addClass("active");
-            $(".top-wizard-wrapper .step").eq($("fieldset").index(next_fs)).addClass("active");
-
-            var completedStepTop = $(".top-wizard-wrapper .step").eq($("fieldset").index(next_fs) - 1);
-            var completedStep = $(".progressbar .step").eq($("fieldset").index(next_fs) - 1);
-            completedStepTop.addClass("finished");
-            completedStep.addClass("finished");
-
-            next_fs.show();
-
-            current_fs.animate({
-                opacity: 0
-            }, {
-                step: function (now) {
-                    opacity = 1 - now;
-                    current_fs.css({
-                        'display': 'none',
-                        'position': 'relative'
-                    });
-                    next_fs.css({
-                        'opacity': opacity
-                    });
-                },
-                duration: 500,
-                complete: function () {
-                    addvalidation();
-                    if ($("fieldset").index(next_fs) === steps - 1) {
-                        populateSummary();
-                    }
-                }
-            });
-        });
+        }
     });
 
     $(".previous").click(function () {
         current_fs = $(this).closest('fieldset');
         previous_fs = $(this).closest('fieldset').prev();
 
-        $(".progressbar .step").eq($("fieldset").index(current_fs)).removeClass("active");
-        $(".top-wizard-wrapper .step").eq($("fieldset").index(current_fs)).removeClass("active");
-
-        var completedStepTop = $(".top-wizard-wrapper .step").eq($("fieldset").index(current_fs) - 1);
-        var completedStep = $(".progressbar .step").eq($("fieldset").index(current_fs) - 1);
-        completedStepTop.removeClass("finished");
-        completedStep.removeClass("finished");
-
-        previous_fs.show();
-
+        if (previous_fs.length) {
+            var prevIndex = $("fieldset").index(previous_fs);
+            setStep(prevIndex);
+        }
         retrieveFormData();
+    });
 
-        current_fs.animate({
-            opacity: 0
-        }, {
-            step: function (now) {
-                opacity = 1 - now;
-                current_fs.css({
-                    'display': 'none',
-                    'position': 'relative'
-                });
-                previous_fs.css({
-                    'opacity': opacity
-                });
-            },
-            duration: 500
+    $(".progressbar .step, .top-wizard-wrapper .step").click(function () {
+        var index = $(this).index();
+        setStep(index);
+        populateSummary();
+    });
+
+    $(document).on('click', '.submit_btn', function (e) {
+        e.preventDefault();
+        addValidation();
+    });
+    $(document).on('click', '.savedraft', function (e) {
+        var max_budget = parseFloat($('#total_budget').val()) || 0;
+        var proposalTitle = $("input[name='proposal_application_form-title']").val();
+        var totalSum = 0; // <-- missing before
+
+        if (proposalTitle === "") {
+            e.preventDefault();
+            alert("Proposal title is required.");
+        }
+        // 🔹 Loop through funding budget rows (budget-item-2)
+        var emptyRows = 0;
+        $('.budget-item-2').each(function () {
+            var $row = $(this);
+            var amountField = $row.find('input[name$="-amount"]');
+            var orgField = $row.find('select[name$="-organisation_name"]');
+            var statusField = $row.find('select[name$="-funding_status"]');
+
+            var amountValue = amountField.val().trim();
+            var statusValue = statusField.val();
+            var orgValue = orgField.val();
+            if (!amountValue && !statusValue && !orgValue) {
+                $row.remove();
+            }
+            // Validate numeric
+            var amount = parseFloat(amountValue);
+            if (amountValue && (isNaN(amount) || amount < 0)) {
+                e.preventDefault();
+                alert("Total (CHF) must be a number.");
+            }
+
+            // if any of the three has a value, all three are required
+            if (amountValue || statusValue || orgValue) {
+                if (!amountValue || isNaN(parseFloat(amountValue)) || parseFloat(amountValue) < 0) {
+                     e.preventDefault();
+                    alert('Valid Amount (CHF) is required when any funding information is provided.');
+                }
+                if (!statusValue) {
+                     e.preventDefault();
+                     alert('Funding Status is required when any funding information is provided.');
+                }
+                if (!orgValue) {
+                     e.preventDefault();
+                     alert('Organisation Name is required when any funding information is provided.');
+                }
+            }
         });
-        addvalidation();
-    });
 
-    function beforeSubmitActions() {
-        $("fieldset:hidden input").removeAttr("required");
-        $("fieldset:hidden select").removeAttr("required");
-        $("fieldset:hidden textarea").removeAttr("required");
-    }
+        $('.budget-item').each(function () {
+            var $row = $(this);
+            var amountField = $row.find('input[name$="-amount"]');
+
+            // Clear previous errors
+            $(".budget-error-message").find('.error-message').remove();
+            $(".budget-error-message").removeClass("has-error");
+
+            var amountValue = amountField.val().trim();
+            if (amountValue) {
+                var amount = parseFloat(amountValue);
+                if (isNaN(amount) || amount < 0) {
+                    e.preventDefault();
+                    $(".budget-error-message").addClass("has-error");
+                    $(".budget-error-message").append('<span class="error-message is-invalid">Total (CHF) must be a number.<br></span>');
+                } else {
+                    totalSum += amount;
+                }
+            }
+        }); // ✅ closing .each()
+
+        // Now validate total sum
+        if (totalSum > max_budget) {
+            e.preventDefault();
+            alert('Budget is greater than the maximum budget for this call.');
+            $(".budget-error-message").addClass("has-error");
+            $(".budget-error-message").append('<span class="error-message is-invalid">Budget is greater than the maximum budget for this call.<br></span>');
+            $('.max-budget-wrapper').closest('fieldset').addClass("invalid").removeClass("valid");
+        } else {
+            $('.max-budget-wrapper').closest('fieldset').addClass("valid").removeClass("invalid");
+        }
+
+        // Validate overall_budget
+        var overall_budget = parseFloat($("input[name='proposal_application_form-overall_budget']").val()) || 0;
+        var $overallField = $("input[name='proposal_application_form-overall_budget']");
+        var $formGroup = $overallField.closest('.form-group');
+        $formGroup.find('.error-message').remove();
+        $formGroup.removeClass("has-error");
+
+        if (overall_budget > max_budget) {
+            e.preventDefault(); // stop submission only when invalid
+            alert('Budget is greater than the maximum budget for this call.');
+            let errorSpan = $('<span class="error-message is-invalid"></span>')
+                .text('Budget is greater than the maximum budget for this call.');
+            $formGroup.addClass("has-error").append(errorSpan);
+        }
+    }); // ✅ closing click handler
 
 
-    $(document).on('click','.savedraft',function (){
-        beforeSubmitActions();
-        localStorage.clear();
-         $("form#dd-form").submit();
-         $("#final-result").click();
-    });
-
-
+    setStep(0);
 });

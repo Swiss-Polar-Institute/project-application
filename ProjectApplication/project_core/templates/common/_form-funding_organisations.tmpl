@@ -4,6 +4,23 @@
     Please outline the status of other sources of funding.
 </p>
 {% crispy funding_form %}
+<style>
+.org-select{
+background:#ffffff!important;
+}
+.select2-container--default.select2-selection--single.select2-selection__rendered{
+  color:#444;
+ line-height:40px;
+  height:100%!important;
+}
+.select2-container--default.select2-selection--single.select2-selection__arrow{
+ height:100%!important;
+}
+.select2-container.select2-selection--single{
+  height:40px!important;
+}
+</style>
+
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
@@ -13,18 +30,122 @@
     {#Here we load the older one, we use for the formset but we let the $ be the newer version#}
 </script>
 
-<script src="{% static 'external/formset/jquery.formset.js' %}"></script>
+<script src="{% static 'external/formset/jquery-budget.formset.js' %}"></script>
 <script src="{% static 'external/formset/dynamic_formset_highlight_to_remove_row.js' %}"></script>
 
 <script>
-    jQueryForFormset(function () {
-        jQueryForFormset('#funding_form_table tbody tr').formset({
-            prefix: 'funding_form',
-            added: highlight_row_delete_link_hover
-        });
-        highlight_row_delete_link_hover('#funding_form_table');
-    })
+jQueryForFormset(function () {
+// Add delete link to existing rows and hide the Django DELETE checkbox
+    jQueryForFormset('#funding_form_table tbody tr').each(function() {
+        var $row = jQueryForFormset(this);
+        $row.addClass('budget-item-2');
+
+        // Hide the Django DELETE checkbox
+        $row.find('input:checkbox[id$="-DELETE"]').closest('td').hide();
+
+        // Add a remove link if not already present
+        if ($row.find('a.delete-row').length === 0) {
+            $row.append('<td><a class="delete-row" href="javascript:void(0);">Remove</a></td>');
+        }
+    });
+
+    // Initialize formset
+    jQueryForFormset('#funding_form_table tbody tr').formset({
+        prefix: 'funding_form',
+
+        // Callback when a new row is added
+        added: function(row) {
+            // Highlight newly added row
+            highlight_row_delete_link_hover(row);
+
+            // Re-initialize Select2 on newly added row
+            row.find('select[data-autocomplete-light-function="select2"]').each(function() {
+                var $select = $(this);  // use the main jQuery (DAL/select2)
+
+                // Destroy old instance if present
+                if ($select.hasClass('select2-hidden-accessible')) {
+                    $select.select2('destroy');
+                }
+
+                // Initialize Select2 to allow empty queries (so results appear without typing)
+                $select.select2({
+                    ajax: {
+                        url: $select.data('autocomplete-light-url'),
+                        dataType: 'json',
+                        delay: 250,
+                        data: function(params) {
+                            // params.term will be undefined/empty on first open;
+                            // send empty string so server can return default suggestions
+                            return { q: params.term || '' };
+                        },
+                        processResults: function(data) {
+                            return { results: data.results };
+                        }
+                    },
+                    minimumInputLength: 0,   // allow results for empty query
+                    width: 'resolve',
+                    placeholder: ''
+                });
+
+                // OPTIONAL: automatically open the dropdown for the new row so the user sees suggestions
+                // (Select2 will fire the AJAX with q='' because minimumInputLength:0)
+                setTimeout(function() {
+                    try {
+                        //$select.select2('open');
+                    } catch (e) {
+                        // ignore if open fails (some select2 versions may throw if not focusable)
+                        console.warn('select2 open failed', e);
+                    }
+                }, 0);
+            });
+
+            // Ensure delete link is visible for the new row
+            row.find('a.delete-row').show();
+            $(row).find('.modelselect2multiple').each(function () {
+                    $(this).select2({
+                        ajax: {
+                            url: '/autocomplete/organisations/', // Make sure this URL matches your backend
+                            dataType: 'json'
+                        },
+                        containerCssClass: 'form-control'
+                    });
+                });
+                // ✅ Reinitialize autocomplete for the "oragnisations" field (autocomplete-organisation-names)
+                $(row).find('select[name$="-organisation_name"]').each(function () {
+                    const $select = $(this);
+
+                    if ($select.data('select2')) {
+                        $select.select2('destroy');
+                    }
+
+                    if (typeof window.__dal__initialize !== 'undefined') {
+                        window.__dal__initialize($select);
+                    } else {
+                        $select.select2({
+                            ajax: {
+                                url: '{% url "autocomplete-organisation-names" %}',
+                                dataType: 'json'
+                            },
+                            containerCssClass: 'form-control'
+                        });
+                    }
+                });
+        }
+    });
+
+    // Apply highlight to existing rows on page load
+    highlight_row_delete_link_hover('#funding_form_table');
+    // Handle click on Remove link
+    jQueryForFormset('#funding_form_table').on('click', 'a.delete-row', function() {
+        var $row = jQueryForFormset(this).closest('tr');
+        $row.find('input:checkbox[id$="-DELETE"]').prop('checked', true); // mark for deletion
+        $row.css('visibility', 'hidden');
+
+    });
+
+});
 </script>
+
 
 <style>
     #funding_form_table .asteriskField {

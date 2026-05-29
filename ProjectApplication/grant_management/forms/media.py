@@ -62,6 +62,8 @@ class MediumModelForm(forms.ModelForm):
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['received_date'])
 
+        self.fields['file'].widget.attrs.update({'multiple': True})
+
         self.fields['blog_posts'] = BlogPostMultipleChoiceField(
             queryset=project.blogpost_set.all().order_by('received_date'),
             widget=CheckboxSelectMultiple,
@@ -143,18 +145,77 @@ class MediaFormSet(BaseInlineFormSet):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
-    def save(self, *args, **kwargs):
-        result = super().save(*args, **kwargs)
+    def save_new(self, form, commit=True):
+        uploaded_files = form.files.getlist(form.add_prefix('file'))
+        saved_objs = []
 
-        if settings.SPI_MEDIA_GALLERY_IMPORT_CALLBACK is not None:
-            try:
-                # TODO: use Celery/some way to schedule a ping
-                headers = {'ApiKey': settings.API_SECRET_KEY}
-                requests.get(settings.SPI_MEDIA_GALLERY_IMPORT_CALLBACK, headers=headers)
-            except ConnectionError:
-                logger.warning('NOTIFY: Notifying SPI Media Gallery for new media failed -ConnectionError')
+        # If no file uploaded at all (empty), skip
+        if not uploaded_files:
+            return None
 
-        return result
+        # If only one file and form was never saved before → treat normally
+        if len(uploaded_files) == 1:
+            obj = form.save(commit=False)
+            obj.file = uploaded_files[0]
+            obj.project = self.instance
+            if commit:
+                obj.save()
+                form.save_m2m()
+            return obj
+
+        # If multiple files, copy the form for each
+        for uploaded_file in uploaded_files:
+            obj = form.save(commit=False)
+            obj.pk = None  # force new object
+            obj.file = uploaded_file
+            obj.project = self.instance
+            if commit:
+                obj.save()
+                form.save_m2m()
+            saved_objs.append(obj)
+
+        return saved_objs
+
+    def save(self, commit=True):
+        self.saved_instances = []
+        self.deleted_objects = []
+
+        for form in self.forms:
+            if self.can_delete and self._should_delete_form(form):
+                self.deleted_objects.append(form.instance)
+                continue
+
+            if form.has_changed():
+                if form.instance.pk:
+                    obj = self.save_existing(form, form.instance, commit)
+                    self.saved_instances.append(obj)
+                    if commit and hasattr(form, 'save_m2m'):
+                        try:
+                            form.save_m2m()
+                        except Exception as e:
+                            logger.warning(f"Error calling save_m2m on form: {e}")
+                else:
+                    created = self.save_new(form, commit)
+                    if isinstance(created, list):
+                        self.saved_instances.extend(created)
+                    elif created:
+                        self.saved_instances.append(created)
+
+        # ✅ Actually delete the marked objects
+        for obj in self.deleted_objects:
+            if commit:
+                obj.delete()
+
+        # ✅ SPI callback
+        if commit:
+            if settings.SPI_MEDIA_GALLERY_IMPORT_CALLBACK is not None:
+                try:
+                    headers = {'ApiKey': settings.API_SECRET_KEY}
+                    requests.get(settings.SPI_MEDIA_GALLERY_IMPORT_CALLBACK, headers=headers)
+                except requests.ConnectionError:
+                    logger.warning('NOTIFY: Notifying SPI Media Gallery for new media failed - ConnectionError')
+
+        return self.saved_instances
 
     def get_queryset(self):
         return super().get_queryset().order_by('received_date')

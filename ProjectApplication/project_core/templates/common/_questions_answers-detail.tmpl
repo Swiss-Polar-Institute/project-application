@@ -3,7 +3,7 @@
 {% for question_answer_text in part.questions_answers_text %}
     <strong>{{ question_answer_text.question.question_text }}</strong><br>
     {#    @formatter:off#}
-    <div class="border p-1 bg-white rounded pre-wrap">{% if question_answer_text.answer %}{{ question_answer_text.answer|safe }}{% else %}This question has not been answered{% endif %}</div>
+    <div class="border p-1 bg-white rounded">{% if question_answer_text.answer %}{{ question_answer_text.answer|safe }}{% else %}This question has not been answered{% endif %}</div>
     {#    @formatter:on#}
     <br>
 {% endfor %}

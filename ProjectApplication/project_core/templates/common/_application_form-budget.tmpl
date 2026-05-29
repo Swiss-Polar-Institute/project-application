@@ -1,0 +1,71 @@
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load thousands_separator %}
+<div class="max-budget-wrapper">
+Maximum budget: {{ maximum_budget|thousands_separator }} CHF
+</div>
+<div class="budget-error-message"></div>
+
+<input type="hidden" id="total_budget" value="{{ maximum_budget}}">
+{% if "flag" in call_name|lower %}
+    <p>
+        The above-indicated maximum budget is only available to a Flagship Initiatives programme located in the Antarctic region. Applicants can apply for a maximum funding of 1’500’000 CHF for a Flagship Initiatives programme in regions other than Antarctica / Southern Ocean.
+    </p>
+{% else %}
+    {% if funding_long_name == "CASCADES Expedition" %}
+        <p>
+            Please ignore this section, as the detailed budget must be uploaded in Section 3.
+        </p>
+    {% elif funding_long_name == "SPI Forel Grants" %}
+        <p>
+            Please ignore this section, as the detailed budget must be uploaded in Section 3.
+        </p>
+    {% else %}
+         <p>
+           For each cost category, please give details of all items and related costs. For details on eligible costs and budget structure, please refer to the call text.
+         </p>
+    {% endif %}
+{% endif %}
+
+{{ budget_application_form.management_form }}
+
+{% if budget_application_form.non_form_errors %}
+    {{ budget_application_form|as_crispy_errors }}
+{% endif %}
+
+{% for form in budget_application_form.forms %}
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+{% endfor %}
+
+<table class="table table-striped table-sm budget-table">
+    <thead>
+    <tr>
+        {% for field in budget_application_form.forms.0.visible_fields %}
+            <th {% if forloop.first %}style="width:30%;"{% endif %}>
+                {% comment %}
+                            This is a copy-paste from https://django-crispy-forms.readthedocs.io/en/latest/form_helper.html
+                            on rendering labels. The Asterisk field is removed because it's only needed for the category.
+                            The rendering is consistent with other tables
+                            {% endcomment %}
+                <span class="control-label {% if field.field.required %}requiredField{% endif %}">
+                                {{ field.label|safe }}{% if field.field.required %}
+                                    <span class="asteriskField"><!-- * --></span>{% endif %}
+                            </span>
+            </th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    {% for form in budget_application_form.forms %}
+        <tr class="budget-item">
+            {% for field in form.visible_fields %}
+                <td>
+                    {{ field|as_crispy_field }}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

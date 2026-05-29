@@ -10,5 +10,8 @@ urlpatterns = [
          name='logged-reporting-finance-projects_balance-excel'),
     path('logged/reporting/excel/downloads/projects_information',
          reporting.views.ProjectsAllInformationExcel.as_view(),
-         name='logged-reporting-projects_information-excel')
+         name='logged-reporting-projects_information-excel'),
+    path('logged/reporting/excel/downloads/project_reference_name_with_coordinates',
+         reporting.views.ProjectReferenceNameWithCoordinatesExcel.as_view(),
+         name='logged-reporting-project-reference-name-with-coordinates-excel')
 ]

@@ -97,12 +97,12 @@
                         del.val('on');
                         row.hide();
                         forms = $('.' + options.formCssClass).not(':hidden');
-                        totalForms.val(forms.length);
+                        //totalForms.val(forms.length);
                     } else {
                         row.remove();
                         // Update the TOTAL_FORMS count:
                         forms = $('.' + options.formCssClass).not('.formset-custom-template');
-                        totalForms.val(forms.length);
+                        //totalForms.val(forms.length);
                     }
                     for (var i=0, formCount=forms.length; i<formCount; i++) {
                         // Apply `extraClasses` to form rows so they're nicely alternating:
@@ -216,6 +216,15 @@
                     delCssSelector = $.trim(options.deleteCssClass).replace(/\s+/g, '.');
                 applyExtraClasses(row, formCount);
                 row.insertBefore(buttonRow).show();
+                // options.added = function(row) {
+                //     row.find('input.required_field, select.required_field, textarea.required_field').each(function() {
+                //         const $field = $(this);
+                //         const $label = $field.closest('.form-group').find('label');
+                //         if (!$label.hasClass('required')) {
+                //             $label.addClass('required').append(' <span>*</span>');
+                //         }
+                //     });
+                // };
                 row.find(childElementSelector).each(function() {
                     updateElementIndex($(this), options.prefix, formCount);
                 });

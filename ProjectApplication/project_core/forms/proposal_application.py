@@ -29,6 +29,8 @@ class ProposalApplicationForm(ModelForm):
         # self.fields['geographical_areas'].required = True
 
         for field_name, field in self.fields.items():
+            if field_name != 'location':
+                field.widget.attrs.update({'class': 'required_field'})
             field.required = False
 
         if self._call is None:
@@ -37,7 +39,10 @@ class ProposalApplicationForm(ModelForm):
         self._raise_duplicated_title = False
 
         if self._call.overall_budget_question:
-            self.fields['overall_budget'] = FlexibleDecimalField(help_text='Approximate budget as detailed in programme description including the 5% opportunity fund', label='Requested overall budget (CHF)', required=False)
+            self.fields['overall_budget'] = FlexibleDecimalField(help_text='Please report the total budget figure. A detailed budget should be uploaded in the following section, adhering to the structure in the respective template. For further information on eligible costs, please refer to the call text.', label='Requested overall budget (CHF)', required=False)
+            self.fields['overall_budget'].widget.attrs.update({
+                'class': 'overall_budget_field'
+            })
 
         if self.instance.id:
             self.fields['call_id'].initial = self.instance.call.id
@@ -46,6 +51,17 @@ class ProposalApplicationForm(ModelForm):
         else:
             self.fields['call_id'].initial = self._call.id
             call = Call.objects.get(id=self._call.id)
+
+        if self._call and self._call.funding_instrument:
+            funding_long_name = self._call.funding_instrument.long_name
+            print(f"Funding Instrument: {funding_long_name}")  # For debugging
+
+            if funding_long_name == "CASCADES Expedition":
+                self.fields['geographical_areas'].help_text = "For a CASCADES expedition proposal, choose the Arctic."
+                self.fields['location'].help_text = "State which leg(s) are relevant to the proposed project."
+            if funding_long_name == "SPI Forel Grants":
+                self.fields['geographical_areas'].help_text = "For a proposal on the Forel, choose the Artic."
+                self.fields['location'].help_text = "State which leg(s) are relevant to the proposed project."
 
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['start_date'])
         XDSoftYearMonthDayPickerInput.set_format_to_field(self.fields['end_date'])
@@ -136,5 +152,4 @@ class ProposalApplicationForm(ModelForm):
             'end_date': 'Date on which the {{ activity }} to be funded by SPI, is expected to end',
         }
 
-        labels = {'location': 'Precise region',
-                  'geographical_areas': 'Geographical focus'}
+        labels = {'location': 'Precise region'}

@@ -4,11 +4,11 @@ from decimal import Decimal
 from django.test import TestCase
 from django.urls import reverse
 
-from grant_management.models import GrantAgreement, Invoice
+from grant_management.models import CarbonEmission, GrantAgreement, Invoice, Location
 from project_core.models import OrganisationName
 from project_core.tests import database_population
 from reporting.models import FundingInstrumentYearMissingData
-from reporting.views import ProjectsBalanceExcel, ProjectsAllInformationExcel
+from reporting.views import ProjectsBalanceExcel, ProjectsAllInformationExcel, ProjectReferenceNameWithCoordinatesExcel
 
 
 class ReportingTest(TestCase):
@@ -196,6 +196,25 @@ class ProjectsAllInformationExcelTest(TestCase):
         self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
         self.assertGreaterEqual(int(response['content-length']), 5900)
 
+    def test_rows_sums_multiple_carbon_emission_reports(self):
+        project = database_population.create_project()
+
+        CarbonEmission.objects.create(
+            project=project,
+            estimate_carbon_emission='10.25',
+            effective_carbon_emission='5.50'
+        )
+        CarbonEmission.objects.create(
+            project=project,
+            estimate_carbon_emission='20.50',
+            effective_carbon_emission='11.00'
+        )
+
+        rows = ProjectsAllInformationExcel._rows()
+
+        self.assertEqual(rows[0]['Estimate carbon emission (unit: Kg)'], Decimal('30.75'))
+        self.assertEqual(rows[0]['Effective carbon emission (unit: Kg)'], Decimal('16.50'))
+
     def data_one_project(self):
         database_population.create_project()
 
@@ -248,3 +267,30 @@ class ProjectsAllInformationExcelTest(TestCase):
                            'Name of PI': 'James Alan', 'Gender': 'N/A', 'Career stage': 'N/A',
                            'Geographic focus': 'Arctic', 'Location': 'Somewhere in the world', 'Keywords': 'Algae',
                            'Status': 'Ongoing'}])
+
+
+class ProjectReferenceNameWithCoordinatesExcelTest(TestCase):
+    def setUp(self):
+        self._client_management = database_population.create_management_logged_client()
+
+    def test_get_with_locations_ok(self):
+        project = database_population.create_project()
+        Location.objects.create(project=project, name='Arctic Base', latitude=Decimal('67.12'), longitude=Decimal('-34.56'))
+        Location.objects.create(project=project, name='Field Camp', latitude=Decimal('68.34'), longitude=Decimal('-33.22'))
+
+        response = self._client_management.get(reverse('logged-reporting-project-reference-name-with-coordinates-excel'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response['content-disposition'].endswith('.xlsx"'))
+        self.assertGreaterEqual(int(response['content-length']), 5400)
+
+    def test_rows_only_contains_spi_keys(self):
+        project_spi = database_population.create_project(key='SPI-2020-001')
+        project_non_spi = database_population.create_project(key='PAF-2020-001', title='Non SPI project')
+
+        Location.objects.create(project=project_spi, name='SPI Location', latitude=Decimal('60.00'), longitude=Decimal('10.00'))
+        Location.objects.create(project=project_non_spi, name='PAF Location', latitude=Decimal('61.00'), longitude=Decimal('11.00'))
+
+        rows = ProjectReferenceNameWithCoordinatesExcel._rows()
+
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]['Key'], 'SPI-2020-001')
